@@ -33,6 +33,7 @@ import org.activiti.bpmn.model.ReceiveTask;
 import org.activiti.bpmn.model.ScriptTask;
 import org.activiti.bpmn.model.SendTask;
 import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
@@ -330,8 +331,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
 
   public IntermediateThrowSignalEventActivityBehavior createIntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent,
-          EventSubscriptionDeclaration eventSubscriptionDeclaration) {
-    return new IntermediateThrowSignalEventActivityBehavior(eventSubscriptionDeclaration);
+          Signal signal, EventSubscriptionDeclaration eventSubscriptionDeclaration) {
+    return new IntermediateThrowSignalEventActivityBehavior(throwEvent, signal, eventSubscriptionDeclaration);
   }
 
   public IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(ThrowEvent throwEvent,

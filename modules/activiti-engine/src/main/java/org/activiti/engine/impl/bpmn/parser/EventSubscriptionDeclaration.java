@@ -26,6 +26,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Daniel Meyer
  * @author Falko Menge
+ * @author Joram Barrez
  */
 public class EventSubscriptionDeclaration implements Serializable {
 
@@ -37,6 +38,7 @@ public class EventSubscriptionDeclaration implements Serializable {
   protected boolean async;
   protected String activityId;
   protected boolean isStartEvent;
+  protected String configuration; 
 
   public EventSubscriptionDeclaration(String eventName, String eventType) {
     this.eventName = eventName;
@@ -74,6 +76,14 @@ public class EventSubscriptionDeclaration implements Serializable {
   public String getEventType() {
     return eventType;
   }
+  
+  public String getConfiguration() {
+    return configuration;
+  }
+
+  public void setConfiguration(String configuration) {
+    this.configuration = configuration;
+  }
 
   public EventSubscriptionEntity prepareEventSubscriptionEntity(ExecutionEntity execution) {
     EventSubscriptionEntity eventSubscriptionEntity = null;
@@ -90,6 +100,11 @@ public class EventSubscriptionDeclaration implements Serializable {
       ActivityImpl activity = execution.getProcessDefinition().findActivity(activityId);
       eventSubscriptionEntity.setActivity(activity);
     }
+    
+    if (configuration != null) {
+      eventSubscriptionEntity.setConfiguration(configuration);
+    }
+    
     return eventSubscriptionEntity;
   }
 

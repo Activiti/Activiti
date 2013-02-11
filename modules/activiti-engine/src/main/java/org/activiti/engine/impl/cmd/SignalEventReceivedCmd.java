@@ -75,7 +75,11 @@ public class SignalEventReceivedCmd implements Command<Void> {
       payload = new HashMap<String, Object>(variables);
     }
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : signalEvents) {
-      signalEventSubscriptionEntity.eventReceived(payload, false);        
+      // We only throw the event to globally scoped signals. 
+      // Process instance scoped signals must be thrown within the process itself 
+      if (signalEventSubscriptionEntity.isGlobalScoped()) {
+        signalEventSubscriptionEntity.eventReceived(payload, false);
+      }
     }
     
     return null;

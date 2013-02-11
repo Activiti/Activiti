@@ -17,5 +17,5 @@ package org.activiti.bpmn.model;
  * @author Tijs Rademakers
  */
 public class ThrowEvent extends Event {
-
+  
 }

@@ -10,27 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.bpmn.model;
+package org.activiti.workflow.simple.definition;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.activiti.workflow.simple.converter.step.DefaultFormPropertyTypes;
+
 
 /**
- * @author Tijs Rademakers
+ * @author Joram Barrez
  */
-public class Event extends FlowNode {
-
-  protected List<EventDefinition> eventDefinitions = new ArrayList<EventDefinition>();
-
-  public List<EventDefinition> getEventDefinitions() {
-    return eventDefinitions;
-  }
-
-  public void setEventDefinitions(List<EventDefinition> eventDefinitions) {
-    this.eventDefinitions = eventDefinitions;
-  }
+public class FormPropertyReferenceDefinition extends FormPropertyDefinition {
   
-  public void addEventDefinition(EventDefinition eventDefinition) {
-    eventDefinitions.add(eventDefinition);
+  protected String reference;
+  
+  public FormPropertyReferenceDefinition() {
+    this.type = DefaultFormPropertyTypes.REFERENCE;
   }
+
+  public String getReference() {
+    return reference;
+  }
+
+  public void setReference(String reference) {
+    this.reference = reference;
+  }
+
 }

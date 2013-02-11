@@ -41,6 +41,16 @@ public class SignalParser implements BpmnXMLConstants {
       }
       
       Signal signal = new Signal(signalId, signalName);
+      
+      String scope = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_SCOPE);
+      if (scope != null) {
+        if (!scope.equals(Signal.SCOPE_GLOBAL) 
+                && !scope.equals(Signal.SCOPE_PROCESS_INSTANCE)) {
+          model.addProblem("Invalid value for 'scope'. Only 'global' and 'processInstance' is supported, but value is '" + scope + "'", signal);
+        }
+        signal.setScope(scope);
+      }
+      
       BpmnXMLUtil.addXMLLocation(signal, xtr);
       model.addSignal(signal);
     }

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.event.signal;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -165,7 +167,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
       fail("exception expected");
     } catch (Exception e) {
       if(!e.getMessage().contains("has no name")) {
-        fail("different exception expected");
+        fail("different exception expected, was " + e.getMessage());
       }
     }    
   }
@@ -267,7 +269,62 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     
     tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
     assertEquals(1, tasks.size());
+  }
+  
+  @Deployment
+  public void testUseSignalForExceptionsBetweenParallelPaths() {
+    runtimeService.startProcessInstanceByKey("processWithSignal");
     
+    // First task should be to select the developers
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Enter developers", task.getName());
+    taskService.complete(task.getId(), CollectionUtil.singletonMap("developers", Arrays.asList("developerOne", "developerTwo", "developerThree")));
+    
+    // Should be three distinct tasks for each developer
+    assertEquals("Develop specifications", taskService.createTaskQuery().taskAssignee("developerOne").singleResult().getName());
+    assertEquals("Develop specifications", taskService.createTaskQuery().taskAssignee("developerTwo").singleResult().getName());
+    assertEquals("Develop specifications", taskService.createTaskQuery().taskAssignee("developerThree").singleResult().getName());
+    
+    // Negotiate with client is a task for kermit
+    task = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
+    assertEquals("Negotiate with client", task.getName());
+    
+    // When the kermit task is completed, it throws a signal which should cancel the multi instance
+    taskService.complete(task.getId(), CollectionUtil.singletonMap("negotationFailed", true));
+    
+    // No tasks should be open then and process should have ended
+    assertEquals(0, taskService.createTaskQuery().count());
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+  
+  @Deployment
+  public void testSignalWithProcessInstanceScope() {
+    // Start the process that catches the signal
+    ProcessInstance processInstanceCatch = runtimeService.startProcessInstanceByKey("processWithSignalCatch");
+    assertEquals("userTaskWithSignalCatch", taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName());
+    
+    // Then start the process that will throw thee signal
+    runtimeService.startProcessInstanceByKey("processWithSignalThrow");
+    
+    // Since the signal is process instance scoped, the second process shouldn't have proceeded in any way
+    assertEquals("userTaskWithSignalCatch", taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName());
+    
+    // Let's try to trigger the cacth using the API, that should also fail
+    runtimeService.signalEventReceived("The Signal");
+    assertEquals("userTaskWithSignalCatch", taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName());
+  }
+  
+  @Deployment
+  public void testSignalWithGlobalScope() {
+    // Start the process that catches the signal
+    ProcessInstance processInstanceCatch = runtimeService.startProcessInstanceByKey("processWithSignalCatch");
+    assertEquals("userTaskWithSignalCatch", taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName());
+    
+    // Then start the process that will throw thee signal
+    runtimeService.startProcessInstanceByKey("processWithSignalThrow");
+    
+    // Since the signal is process instance scoped, the second process shouldn't have proceeded in any way
+    assertEquals("userTaskAfterSignalCatch", taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName());
   }
   
 }

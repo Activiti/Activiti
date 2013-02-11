@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.ThrowEvent;
@@ -35,12 +36,18 @@ public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<
   
   protected void executeParse(BpmnParse bpmnParse, SignalEventDefinition signalDefinition) {
     
+    Signal signal = null;
     if (bpmnParse.getBpmnModel().containsSignalId(signalDefinition.getSignalRef())) {
-      String signalName = bpmnParse.getBpmnModel().getSignal(signalDefinition.getSignalRef()).getName();
+      signal = bpmnParse.getBpmnModel().getSignal(signalDefinition.getSignalRef());
+      String signalName = signal.getName();
       if (StringUtils.isEmpty(signalName)) {
         bpmnParse.getBpmnModel().addProblem("signalName is required for a signal event", signalDefinition);
       }
       signalDefinition.setSignalRef(signalName);
+    }
+    
+    if (signal == null) {
+      return;
     }
     
     ActivityImpl activity = bpmnParse.getCurrentActivity();
@@ -56,6 +63,11 @@ public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<
       activity.setProperty("type", "intermediateSignalCatch");   
       
       EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
+      
+      if (signal.getScope() != null) {
+        eventSubscriptionDeclaration.setConfiguration(signal.getScope());
+      }
+      
       if (getPrecedingEventBasedGateway(bpmnParse, (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement()) != null) {
         eventSubscriptionDeclaration.setActivityId(activity.getId());
         addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, activity.getParent());      
@@ -66,11 +78,13 @@ public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<
       
     } else if (bpmnParse.getCurrentFlowElement() instanceof ThrowEvent) {
       
+      ThrowEvent throwEvent = (ThrowEvent) bpmnParse.getCurrentFlowElement();
+      
       activity.setProperty("type", "intermediateSignalThrow");  
       EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
       eventSubscriptionDeclaration.setAsync(signalDefinition.isAsync());
       
-      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowSignalEventActivityBehavior((ThrowEvent) bpmnParse.getCurrentFlowElement(), eventSubscriptionDeclaration)); 
+      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowSignalEventActivityBehavior(throwEvent, signal, eventSubscriptionDeclaration)); 
       
     } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
       
@@ -82,6 +96,11 @@ public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<
         
       EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
       eventSubscriptionDeclaration.setActivityId(activity.getId());
+      
+      if (signal.getScope() != null) {
+        eventSubscriptionDeclaration.setConfiguration(signal.getScope());
+      }
+      
       addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, activity.getParent());
         
       if (activity.getParent() instanceof ActivityImpl) {     
