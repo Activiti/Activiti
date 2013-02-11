@@ -124,7 +124,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
   
   // test case for ACT-1428
   @Deployment
-  public void testNulLVariable() {
+  public void testNullVariable() {
 	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
 	    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
@@ -169,13 +169,6 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	    assertNull(resultVar);
 	    
 	    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
-	    
-	    
-	    
-	    
-	    
-	    
-	  
   }
 
 }
