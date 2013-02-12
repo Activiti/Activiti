@@ -25,5 +25,9 @@ public interface DefaultFormPropertyTypes {
   
   String LIST = "list";
   
+  String PEOPLE = "people";
+  
+  String REFERENCE = "reference";
+  
 }
 

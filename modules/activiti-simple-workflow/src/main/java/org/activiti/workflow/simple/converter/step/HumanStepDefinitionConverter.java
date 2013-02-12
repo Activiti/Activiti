@@ -12,16 +12,11 @@
  */
 package org.activiti.workflow.simple.converter.step;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.activiti.bpmn.model.FormProperty;
-import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.FormDefinition;
-import org.activiti.workflow.simple.definition.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.util.BpmnModelUtil;
@@ -34,8 +29,6 @@ import org.activiti.workflow.simple.util.BpmnModelUtil;
  */
 public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<HumanStepDefinition, UserTask> {
 
-  private static final String USER_TASK_PREFIX = "userTask";
-
   private static final String DEFAULT_INITIATOR_VARIABLE = "initiator";
   private static final String DEFAULT_INITIATOR_ASSIGNEE_EXPRESSION = "${initiator}";
 
@@ -45,7 +38,7 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
   
   protected UserTask createProcessArtifact(HumanStepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
     UserTask userTask = createUserTask(stepDefinition, conversion);
-    addFlowElement(conversion, userTask);
+    addFlowElement(conversion, userTask, true);
     
     return userTask;
   }
@@ -55,7 +48,7 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
     // TODO: validate and throw exception on missing properties
     
     UserTask userTask = new UserTask();
-    userTask.setId(conversion.getUniqueNumberedId(USER_TASK_PREFIX));
+    userTask.setId(conversion.getUniqueNumberedId(ConversionConstants.USER_TASK_ID_PREFIX));
     userTask.setName(humanStepDefinition.getName());
     userTask.setDocumentation(humanStepDefinition.getDescription());
 
@@ -89,37 +82,7 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
       FormDefinition formDefinition = humanStepDefinition.getForm();
       
       // Form properties
-      for (FormPropertyDefinition propertyDefinition : formDefinition.getFormProperties()) {
-        FormProperty formProperty = new FormProperty();
-        formProperty.setId(propertyDefinition.getPropertyName());
-        formProperty.setName(propertyDefinition.getPropertyName());
-        formProperty.setRequired(propertyDefinition.isRequired());
-        
-        String type = DefaultFormPropertyTypes.TEXT;
-        if (DefaultFormPropertyTypes.NUMBER.equals(propertyDefinition.getType())) {
-          type = "long";
-        } else if (DefaultFormPropertyTypes.DATE.equals(propertyDefinition.getType())) {
-          type = "date";
-        } else if (DefaultFormPropertyTypes.LIST.equals(propertyDefinition.getType())) {
-          
-          type = "enum";
-          
-          if (!propertyDefinition.getValues().isEmpty()) {
-            List<FormValue> formValues = new ArrayList<FormValue>(propertyDefinition.getValues().size());
-            for (String formValueString : propertyDefinition.getValues()) {
-              FormValue formValue = new FormValue();
-              // We're using same value for id and name for the moment
-              formValue.setId(formValueString);
-              formValue.setName(formValueString);
-              formValues.add(formValue);
-            }
-          }
-        }
-        formProperty.setType(type);
-        
-        userTask.getFormProperties().add(formProperty);
-      }
-      
+      userTask.setFormProperties(convertProperties(formDefinition));
     }
 
     return userTask;

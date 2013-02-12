@@ -17,8 +17,13 @@ package org.activiti.bpmn.model;
  */
 public class Signal extends BaseElement {
 
+  public static final String SCOPE_GLOBAL = "global";
+  public static final String SCOPE_PROCESS_INSTANCE = "processInstance";
+
   protected String name;
   
+  protected String scope;
+
   public Signal() {
   }
   
@@ -34,4 +39,13 @@ public class Signal extends BaseElement {
   public void setName(String name) {
     this.name = name;
   }
+  
+  public String getScope() {
+    return scope;
+  }
+
+  public void setScope(String scope) {
+    this.scope = scope;
+  }
+  
 }

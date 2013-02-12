@@ -12,11 +12,19 @@
  */
 package org.activiti.workflow.simple.converter.step;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.FormProperty;
+import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.definition.FormDefinition;
+import org.activiti.workflow.simple.definition.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 
 /**
@@ -54,15 +62,14 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
 
   /**
    * Adds a flow element to the {@link Process}.
-   * A sequence flow from the last known element to this element will be generated,
-   * unless the sequence flow generation is globally disabled.
+   * A sequence flow will NOT automatically be added
    */
   protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement) {
-      addFlowElement(conversion, flowElement, true);
+      addFlowElement(conversion, flowElement, false);
   }
 
-  protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement, boolean addSequenceFlow) {
-      if (conversion.isSequenceflowGenerationEnabled() && addSequenceFlow) {
+  protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement, boolean addSequenceFlowToLastActivity) {
+      if (conversion.isSequenceflowGenerationEnabled() && addSequenceFlowToLastActivity) {
           addSequenceFlow(conversion, conversion.getLastActivityId(), flowElement.getId());
       }
       conversion.getProcess().addFlowElement(flowElement);
@@ -70,6 +77,10 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
       if (conversion.isUpdateLastActivityEnabled()) {
         conversion.setLastActivityId(flowElement.getId());
       }
+  }
+  
+  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, FlowNode sourceActivity, FlowNode targetActivity) {
+    return addSequenceFlow(conversion, sourceActivity.getId(), targetActivity.getId());
   }
 
   /**
@@ -80,18 +91,65 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
    * @param sourceActivityId
    * @param targetActivityId
    */
-  public void addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, String targetActivityId) {
+  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, String targetActivityId) {
       SequenceFlow sequenceFlow = new SequenceFlow();
       sequenceFlow.setId(conversion.getUniqueNumberedId(getSequenceFlowPrefix()));
       sequenceFlow.setSourceRef(sourceActivityId);
       sequenceFlow.setTargetRef(targetActivityId);
 
       conversion.getProcess().addFlowElement(sequenceFlow);
+      return sequenceFlow;
   }
-    
+  
   // Subclasses can overwrite this if they want a different sequence flow prefix
   protected String getSequenceFlowPrefix() {
     return ConversionConstants.DEFAULT_SEQUENCEFLOW_PREFIX;
+  }
+  
+  /**
+   * Converts form properties. Multiple step types can contain forms,
+   * hence why it it a shared method here.
+   */
+  protected List<FormProperty> convertProperties(FormDefinition formDefinition) {
+    
+    List<FormProperty> formProperties = new ArrayList<FormProperty>();
+    
+    for (FormPropertyDefinition propertyDefinition : formDefinition.getFormProperties()) {
+      FormProperty formProperty = new FormProperty();
+      formProperties.add(formProperty);
+      
+      formProperty.setId(propertyDefinition.getPropertyName());
+      formProperty.setName(propertyDefinition.getPropertyName());
+      formProperty.setRequired(propertyDefinition.isRequired());
+      
+      String type = null;
+      if (DefaultFormPropertyTypes.NUMBER.equals(propertyDefinition.getType())) {
+        type = "long";
+      } else if (DefaultFormPropertyTypes.DATE.equals(propertyDefinition.getType())) {
+        type = "date";
+      } else if (DefaultFormPropertyTypes.LIST.equals(propertyDefinition.getType())) {
+        
+        type = "enum";
+        
+        if (!propertyDefinition.getValues().isEmpty()) {
+          List<FormValue> formValues = new ArrayList<FormValue>(propertyDefinition.getValues().size());
+          for (String formValueString : propertyDefinition.getValues()) {
+            FormValue formValue = new FormValue();
+            // We're using same value for id and name for the moment
+            formValue.setId(formValueString);
+            formValue.setName(formValueString);
+            formValues.add(formValue);
+          }
+        }
+      } else if (DefaultFormPropertyTypes.TEXT.equals(propertyDefinition.getType())){
+        type = "text";
+      } else {
+        type = propertyDefinition.getType(); // just copy whatever the user provided
+      }
+      formProperty.setType(type);
+    }
+    
+    return formProperties;
   }
   
 }

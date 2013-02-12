@@ -93,11 +93,19 @@
     	and EXC.SUSPENSION_STATE_ = 1
   </select>
   
+   <select id="selectSignalEventSubscriptionsByProcessInstanceAndEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR EVT
+    where (EVENT_TYPE_ = 'signal')
+        and EVENT_NAME_ = #{parameter.eventName}  
+        and PROC_INST_ID_ = #{parameter.processInstanceId}
+  </select> 
+  
   <select id="selectSignalEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = 'signal')
-    	and (EXECUTION_ID_ = #{parameter})  
+        and (EXECUTION_ID_ = #{parameter})  
   </select>
   
   <select id="selectSignalEventSubscriptionsByNameAndExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">

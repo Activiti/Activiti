@@ -15,6 +15,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.Signal;
+import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -27,9 +29,13 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {    
       
+  private static final long serialVersionUID = -2961893934810190972L;
+  
+  protected final boolean processInstanceScope;
   protected final EventSubscriptionDeclaration signalDefinition;
 
-  public IntermediateThrowSignalEventActivityBehavior(EventSubscriptionDeclaration signalDefinition) {
+  public IntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, Signal signal, EventSubscriptionDeclaration signalDefinition) {
+    this.processInstanceScope = Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope());
     this.signalDefinition = signalDefinition;
   }
   
@@ -37,11 +43,18 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     
     CommandContext commandContext = Context.getCommandContext();
     
-    List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName = commandContext
-      .getEventSubscriptionEntityManager()
-      .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName());
+    List<SignalEventSubscriptionEntity> subscriptionEntities = null;
+    if (processInstanceScope) {
+      subscriptionEntities = commandContext
+              .getEventSubscriptionEntityManager()
+              .findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalDefinition.getEventName());
+    } else {
+      subscriptionEntities = commandContext
+              .getEventSubscriptionEntityManager()
+              .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName());
+    }
     
-    for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : findSignalEventSubscriptionsByEventName) {
+    for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
       signalEventSubscriptionEntity.eventReceived(null, signalDefinition.isAsync());
     }
     
