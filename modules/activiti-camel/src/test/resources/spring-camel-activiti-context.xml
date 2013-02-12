@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/osgi  http://www.springframework.org/schema/osgi/spring-osgi.xsd
+                           http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+        <property name="targetDataSource">
+            <bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+                <property name="driverClass" value="org.h2.Driver"/>
+                <property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"/>
+                <property name="username" value="sa"/>
+                <property name="password" value=""/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="databaseSchemaUpdate" value="true"/>
+        <property name="jobExecutorActivate" value="false"/>
+    </bean>
+
+    <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+        <property name="processEngineConfiguration" ref="processEngineConfiguration"/>
+    </bean>
+
+    <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
+
+    <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
+        <route id="incomingRoute">
+          <from uri="activiti:camelProcess:serviceTask1" />
+          <setBody>
+            <property>var1</property>
+          </setBody>
+          <to uri="mock:service1" />
+          <setProperty propertyName="var2">
+            <constant>var2</constant>
+          </setProperty>
+          <setBody>
+            <mvel>properties</mvel>
+          </setBody>
+        </route>
+        <route id="incomingRoute2">
+          <from uri="activiti:camelProcess:serviceTask2?copyVariablesToBody=true" />
+          <to uri="mock:service2" />
+        </route>
+        <route id="startRoute">
+          <from uri="direct:start" />
+          <to uri="activiti:camelProcess" />
+        </route>
+        <route id="startRoute2">
+          <from uri="direct:receive" />
+          <to uri="activiti:camelProcess:receive" />
+        </route>
+    </camelContext>
+
+    <bean id="sleepBean" class="org.activiti.camel.SleepBean"/>
+
+</beans>

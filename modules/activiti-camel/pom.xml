@@ -53,6 +53,12 @@
       <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-mvel</artifactId>
+      <scope>test</scope>
+      <version>2.10.0</version>
+    </dependency>
 
   </dependencies>
 

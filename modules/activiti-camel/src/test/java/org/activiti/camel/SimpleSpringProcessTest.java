@@ -23,8 +23,8 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.Collections;
 import java.util.Map;
 
-@ContextConfiguration("classpath:camel-activiti-context.xml")
-public class SimpleProcessTest extends SpringActivitiTestCase {
+@ContextConfiguration("classpath:spring-camel-activiti-context.xml")
+public class SimpleSpringProcessTest extends SpringActivitiTestCase {
 
   MockEndpoint service1;
 
