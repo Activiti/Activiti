@@ -567,9 +567,9 @@ public class ProcessEnginesServletContextListener implements ServletContextListe
 }</programlisting>
       The <literal>contextInitialized</literal> method will delegate to <literal>ProcessEngines.init()</literal>. That will
       look for <literal>activiti.cfg.xml</literal> resource files on the classpath,
-      and create a <literal>ProcessEngines</literal> for the given configurations (e.g. multiple jars with a configuration file).
+      and create a <literal>ProcessEngine</literal> for the given configurations (e.g. multiple jars with a configuration file).
       If you have multiple such resource files on the classpath, make sure they all have different names.
-      When the process engine  is needed, it can be fetched using <programlisting>ProcessEngines.getDefaultProcessEngine()</programlisting>
+      When the process engine is needed, it can be fetched using <programlisting>ProcessEngines.getDefaultProcessEngine()</programlisting>
       or <programlisting>ProcessEngines.getProcessEngine("myName");</programlisting>
       Of course, it is also possible to use any of the variants of creating a process engine, 
       as described in the <link linkend="configuration">configuration section</link>.
