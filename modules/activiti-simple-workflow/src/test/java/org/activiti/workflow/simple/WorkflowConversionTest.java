@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -30,6 +31,7 @@ import org.activiti.engine.test.ActivitiRule;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.activiti.workflow.simple.diagram.WorkflowDIGenerator2;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -47,6 +49,10 @@ public class WorkflowConversionTest {
   @Rule
   public ActivitiRule activitiRule = new ActivitiRule();
   
+  protected RuntimeService runtimeService;
+  protected TaskService taskService;
+  
+  
   protected WorkflowDefinitionConversionFactory conversionFactory;
   
   @Before
@@ -55,6 +61,8 @@ public class WorkflowConversionTest {
     // Alternatively, the following setup could be done using a dependency injection container
     
     conversionFactory = new WorkflowDefinitionConversionFactory();
+    runtimeService = activitiRule.getRuntimeService();
+    taskService = activitiRule.getTaskService();
   }
   
   @After
@@ -182,6 +190,38 @@ public class WorkflowConversionTest {
     assertEquals(1, taskService.createTaskQuery().taskCandidateGroupIn(Arrays.asList("management", "sales")).count());
   }
   
+  @Test
+  public void testFeedbackStepAllFeedbackProvided() {
+    WorkflowDefinition workflowDefinition = new WorkflowDefinition()
+      .name("testWorkflow")
+      .description("This is a test workflow")
+      .addFeedbackStep("Test feedback", "kermit", Arrays.asList("gonzo", "mispiggy", "fozzie"));
+    
+//    WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(workflowDefinition);
+//    conversion.convert();
+//    
+//    System.out.println("=============================");
+//    System.out.println("=============================");
+//    System.out.println("=============================");
+//    
+//    WorkflowDIGenerator2 workflowDIGenerator2 = new WorkflowDIGenerator2(conversion.getBpmnModel());
+//    workflowDIGenerator2.generateDiagramInterchangeInformation();
+//    
+//    System.out.println("=============================");
+//    System.out.println("=============================");
+//    System.out.println("=============================");
+    
+    
+    activitiRule.getRuntimeService().startProcessInstanceById(convertAndDeploy(workflowDefinition));
+    
+    // Four tasks should be available after process start
+    assertEquals(4, taskService.createTaskQuery().count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("gonzo").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("mispiggy").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("fozzie").count());
+  }
+  
   // Helper methods -----------------------------------------------------------------------------
   
   protected String convertAndDeploy(WorkflowDefinition workflowDefinition) {
@@ -189,6 +229,7 @@ public class WorkflowConversionTest {
     // Convert
     WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(workflowDefinition);
     conversion.convert();
+    
     log.info("Converted process : " + conversion.getbpm20Xml());
     
 //    InputStream is = conversion.getWorkflowDiagramImage();

@@ -674,6 +674,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-modeler</module>
@@ -757,6 +758,7 @@
         <module>modules/activiti-spring</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-modeler</module>
@@ -793,6 +795,7 @@
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-simple-workflow</module>
       </modules>
       <properties>

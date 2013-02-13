@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.workflow.simple.converter.listener.DefaultWorkflowDefinitionConversionListener;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
+import org.activiti.workflow.simple.converter.step.FeedbackStepDefinitionConverter;
 import org.activiti.workflow.simple.converter.step.HumanStepDefinitionConverter;
 import org.activiti.workflow.simple.converter.step.ParallelStepsDefinitionConverter;
 import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
@@ -52,6 +53,7 @@ public class WorkflowDefinitionConversionFactory {
     List<StepDefinitionConverter> converters = new ArrayList<StepDefinitionConverter>();
     converters.add(new ParallelStepsDefinitionConverter());
     converters.add(new HumanStepDefinitionConverter());
+    converters.add(new FeedbackStepDefinitionConverter());
     setDefaultStepDefinitionConverters(converters);
   }
   
