@@ -99,7 +99,7 @@
     
     <para>
       Note that the Activiti Explorer demo setup is a way of showing the capabilities and functionality of
-      Activiti as easy and as fast as possible. This does however, <emphasis role="bold">not</emphasis> mean
+      Activiti as easily and as fast as possible. This does however, <emphasis role="bold">not</emphasis> mean
       that it is the only way of using Activiti. As Activiti is 'just a jar', it can 
       be embedded in any Java environment: with swing or on a Tomcat, JBoss, WebSphere, etc.
       Or you could very well choose to run Activiti as a typical, standalone BPM server.
