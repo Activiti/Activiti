@@ -87,7 +87,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
       classes available that can be used to define the <literal>processEngineConfiguration</literal>.
       These classes represent different environments, and set defaults accordingly. It's a best 
       practice to select the class the matches (the most) your environment, to minimalise the
-      number of properties needed to configure the engine. Following classes are currently available
+      number of properties needed to configure the engine. The following classes are currently available
       (more will follow in future releases):
       <itemizedlist id="configurationClasses">
         <listitem>
@@ -155,7 +155,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     <para>
       The data source that is constructed based on the provided JDBC properties
       will have the default <ulink url="http://www.mybatis.org/">MyBatis</ulink> connection pool
-      settings. Following attributes can optionally be set to tweak that connection pool (taken from the MyBatis documentation):
+      settings. The following attributes can optionally be set to tweak that connection pool (taken from the MyBatis documentation):
       <itemizedlist>
         <listitem>
           <para>
@@ -214,20 +214,20 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
     ...
       </programlisting>
-      Note that Activiti does not ship with a library that allows to define such data source.
+      Note that Activiti does not ship with a library that allows to define such a data source.
       So you have to make sure that the libraries (e.g. from DBCP) are on your classpath.
     </para>
     
     <para>
-      Following properties can be set, regardless of using the JDBC or data source approach:
+      The following properties can be set, regardless of whether you are using the JDBC or data source approach:
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">databaseType</emphasis>: It's normally not necessary to 
+            <emphasis role="bold">databaseType</emphasis>: it's normally not necessary to 
             specify this property as it is automatically analyzed from the database connection meta data.  
             Should only be specified in case automatic detection fails.
-            Possible values: {h2, mysql, oracle, postgres, mssql, db2}
-            <emphasis role="bold">This property is required when not using the default H2 database</emphasis>
+            Possible values: {h2, mysql, oracle, postgres, mssql, db2}.
+            <emphasis role="bold">This property is required when not using the default H2 database</emphasis>.
             This setting will determine which create/drop scripts and queries will be used. See 
             <link linkend="supporteddatabases">the 'supported databases' section</link> for 
             an overview of which types are supported.
@@ -247,7 +247,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
               </listitem>
               <listitem>
                 <para>
-                  <literal>true</literal>: Upon building of the process engine, a check is performed and 
+                  <literal>true</literal>: Upon building the process engine, a check is performed and 
                   an update of the schema is performed if it is necessary. If the schema doesn't exist,
                   it is created.
                 </para>
@@ -267,7 +267,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
   
   <section id="supporteddatabases">
     <title>Supported databases</title>
-    <para>Following are the types (case sensitive!) that Activiti uses to refer to databases.</para>
+    <para>Listed below are the types (case sensitive!) that Activiti uses to refer to databases.</para>
     <table id="databaseTypes">
       <title>Supported databases</title>
       <tgroup cols='3'>
@@ -326,7 +326,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     <title>Creating the database tables</title>
     
     <para>
-      The easiest way to create the database tables for your database is to
+      The easiest way to create the database tables for your database is to:
       <itemizedlist>
         <listitem>
           <para>Add the activiti-engine jars to your classpath</para>
@@ -346,7 +346,8 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     
     <para>
       However, often only database administrators can execute DDL statements on a database.
-      The SQL DDL statements can be found on the Activiti downloads page or inside the Activiti engine jar (<emphasis>activiti-engine-x.jar</emphasis>), in 
+      The SQL DDL statements can be found on the Activiti downloads page or inside the Activiti distribution folder, in the <literal>database</literal> subdirectory. The scripts are also in 
+      the engine jar (<emphasis>activiti-engine-x.jar</emphasis>), in 
       the package <emphasis>org/activiti/db/create</emphasis> (the <emphasis>drop</emphasis> folder contains the drop statements).
       The SQL files are of the form
       <programlisting>activiti.{db}.{create|drop}.{type}.sql</programlisting>
@@ -357,11 +358,12 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           <para><emphasis role="bold">engine:</emphasis> the tables needed for engine execution. Required.</para>
         </listitem>
         <listitem>
-          <para><emphasis role="bold">identity:</emphasis> optional tables, when using the default identity management as shipped with the engine.</para>
+          <para><emphasis role="bold">identity:</emphasis> the tables containing users, groups and memberships of users to groups. These tables are optional and should be used when using 
+          the default identity management as shipped with the engine.</para>
         </listitem>
         <listitem>
-          <para><emphasis role="bold">history:</emphasis> contain the history and audit information. Optional: not needed when history level is set to <emphasis>none</emphasis>
-          Note that this will also disable some features such as commenting on tasks which store the data in the history database.</para>
+          <para><emphasis role="bold">history:</emphasis> the tables that contain the history and audit information. Optional: not needed when history level is set to <emphasis>none</emphasis>
+          Note that this will also disable some features (such as commenting on tasks) which store the data in the history database.</para>
         </listitem>
       </itemizedlist>
     </para>
@@ -372,13 +374,13 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     <title>Database table names explained</title>
     <para>
       The database names of Activiti all start with <emphasis role="bold">ACT_</emphasis>. The 
-      second part is a two-character identification of use case of the table. This use case 
+      second part is a two-character identification of the use case of the table. This use case 
       will also roughly match the service API.
       <itemizedlist>
         <listitem>
           <para>
             <emphasis role="bold">ACT_RE_*</emphasis>: 'RE' stands for <literal>repository</literal>. 
-            Tables with this prefix will contain 'static'' information such as process definitions and,
+            Tables with this prefix contain 'static' information such as process definitions and
             process resources (images, rules, etc.).
           </para>
         </listitem>
@@ -386,7 +388,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           <para>
             <emphasis role="bold">ACT_RU_*</emphasis>: 'RU' stands for <literal>runtime</literal>.
             These are the runtime tables, that contain the runtime data of process instances,
-            user tasks,variables, jobs, etc. Activiti only stores the runtime data during process instance
+            user tasks, variables, jobs, etc. Activiti only stores the runtime data during process instance
             execution, and removes the records when a process instance ends. This keeps 
             the runtime tables small and fast.
           </para>
@@ -438,7 +440,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
 &lt;/beans&gt;</programlisting>
      <para> <emphasis role="bold">Also, include a suitable database driver for your database to the classpath.</emphasis>
      Upgrade the Activiti libraries in your application. Or start up a new version 
-     of Activiti and point it to an database that contains an older version.  With <literal>databaseSchemaUpdate</literal>
+     of Activiti and point it to a database that contains an older version.  With <literal>databaseSchemaUpdate</literal>
      set to <literal>true</literal>, Activiti will automatically upgrade the DB schema to the newer version
      the first time when it notices that libraries and DB schema are out of sync.
      </para>
@@ -449,23 +451,23 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
   
   <section id="jobExecutorConfiguration">
     <title>Job executor activation</title>
-    <para>The JobExecutor is a component that manages a couple of threads to fire timers (and later also asynchronous messages).
-    For unit testing scenarios, it is cumbersome to work with multiple threads.  Therefor the API allows to query for 
+    <para>The <literal>JobExecutor</literal> is a component that manages a couple of threads to fire timers (and later also asynchronous messages).
+    For unit testing scenarios, it is cumbersome to work with multiple threads. Therefore the API allows to query for 
     (<literal>ManagementService.createJobQuery</literal>) and execute jobs (<literal>ManagementService.executeJob</literal>) through 
-    the API so that job execution can be controlled from within a unit test.  To avoid that the job executor interferes, it can be turned off. 
+    the API so that job execution can be controlled from within a unit test.  To avoid interference by the job executor, it can be turned off. 
     </para>
     <para> 
-    By default, the JobExecutor is activated when the process engine boots.  Specify
+    By default, the <literal>JobExecutor</literal> is activated when the process engine boots. Specify
     <programlisting>&lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /></programlisting>
-    when you don't want the JobExecutor to be activated upon process engine boot.  
+    when you don't want the <literal>JobExecutor</literal> to be activated upon booting the process engine.
     </para>
   </section>
   
   <section id="mailServerConfiguration">
     <title>Mail server configuration</title>
     <para>
-      Optional. Activiti supports sending e-mails in business processes. To actually send an e-mail, a valid
-      SMTP mail server configuration is required.  See the 
+      Configuring a mail server is optional. Activiti supports sending e-mails in business processes. To actually send an e-mail, a valid
+      SMTP mail server configuration is required. See the 
       <link linkend="bpmnEmailTaskServerConfiguration">e-mail task</link> for the configuration options.
     </para>
   </section>
@@ -473,7 +475,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
   <section id="historyConfiguration">
     <title>History configuration</title>
     <para>
-      Optional. Allows to tweak settings that influence the <link linkend="history">history capabilities</link>
+      Customizing the configuration of history storage is optional. This allows you to tweak settings that influence the <link linkend="history">history capabilities</link>
       of the engine. See <link linkend="historyConfig">history configuration</link> for more details.
       <programlisting>&lt;property name=&quot;history&quot; value=&quot;audit&quot; /&gt;</programlisting>
     </para>
@@ -482,10 +484,10 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
   <section id="exposingConfigurationBeans">
     <title>Exposing configuration beans in expressions and scripts</title>
     <para>By default, all beans that you specify in the <literal>activiti.cfg.xml</literal> configuration 
-    or in your own spring configuration file are available to expressions and in the scripts.
-    If you want to limit the visibility of beans in your configuration file, then you can 
+    or in your own Spring configuration file are available to expressions and in the scripts.
+    If you want to limit the visibility of beans in your configuration file, you can 
     configure a property called <literal>beans</literal> in your process engine configuration.
-    The beans property in ProcessEngineConfiguration is a map. When you specify that property,
+    The beans property in <literal>ProcessEngineConfiguration</literal> is a map. When you specify that property,
     only beans specified in that map will be visible to expressions and scripts.  The exposed beans 
     will be exposed with the names as you specify in that map.  
     </para>
