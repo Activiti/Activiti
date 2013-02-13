@@ -12,40 +12,20 @@
  */
 package org.activiti.bpmn.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Tijs Rademakers
  */
-public class FlowElementsContainer extends BaseElement {
+public interface FlowElementsContainer {
 
-  protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
-
-  public FlowElement getFlowElement(String id) {
-    FlowElement foundElement = null;
-    for (FlowElement element : flowElementList) {
-      if (id.equals(element.getId())) {
-        foundElement = element;
-        break;
-      }
-    }
-    return foundElement;
-  }
+  FlowElement getFlowElement(String id);
+  Collection<FlowElement> getFlowElements();
+  void addFlowElement(FlowElement element);
+  void removeFlowElement(String elementId);
   
-  public Collection<FlowElement> getFlowElements() {
-    return flowElementList;
-  }
-  
-  public void addFlowElement(FlowElement element) {
-    flowElementList.add(element);
-  }
-  
-  public void removeFlowElement(String elementId) {
-    FlowElement element = getFlowElement(elementId);
-    if (element != null) {
-      flowElementList.remove(element);
-    }
-  }
+  Artifact getArtifact(String id);
+  Collection<Artifact> getArtifacts();
+  void addArtifact(Artifact artifact);
+  void removeArtifact(String artifactId);
 }
