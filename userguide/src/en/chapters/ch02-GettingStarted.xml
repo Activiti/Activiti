@@ -115,7 +115,7 @@
     </para>
     <para>In addition, be aware that the Activiti Explorer generates demo user and groups, process definitions and models by default.
     To disable this, the activiti-standalone-context.xml file in the WEB-INF folder should be changed. To disable the demo setup fully you can use the following snippet
-    of the demoDataGenerator bean definition. But as you can see you can also enable and disable items individually.
+    of the <literal>demoDataGenerator</literal> bean definition. But as you can see you can also enable and disable items individually.
     </para>
     <programlisting>
       &lt;bean id="demoDataGenerator" class="org.activiti.explorer.demo.DemoDataGenerator">
@@ -133,9 +133,9 @@
     
     <para>
         To include the Activiti jar and its dependent libraries, we advise using 
-        <ulink url="http://maven.apache.org/">Maven</ulink>Maven (or <ulink url="http://ant.apache.org/ivy/">Ivy</ulink>), as it 
-        simplies dependency management on both our and your side a lot. Follow the instructions
-        at <ulink url="http://www.activiti.org/community.html#maven.respository"></ulink> to
+        <ulink url="http://maven.apache.org/">Maven</ulink> (or <ulink url="http://ant.apache.org/ivy/">Ivy</ulink>), as it 
+        simplifies dependency management on both our and your side a lot. Follow the instructions
+        at <ulink url="http://www.activiti.org/community.html#maven.repository"></ulink> to
         include the necessary jars in your environment.
     </para>    
     
@@ -173,12 +173,12 @@ org.activiti:activiti-engine:jar:5.12-SNAPSHOT
         Playing around with the <link linkend="activitiExplorer">Activiti Explorer</link> web application
         is a good way to get familiar with the Activiti concepts and functionality. However, the 
         main purpose of Activiti is of course to enable powerful BPM and workflow capabilities
-        in your own application. The following chapters will get you familiar with how to
+        in your own application. The following chapters will help you to get familiar with how to
         use Activiti programmatically in your environment:
         <itemizedlist>
             <listitem>
                 <para>
-                    <link linkend="configuration">The chapter on configuration</link> will learn you
+                    <link linkend="configuration">The chapter on configuration</link> will teach you
                     how to set up Activiti and how to obtain an instance of the <literal>ProcessEngine</literal>
                     class which is your central access point to all the engine functionality of Activiti.    
                 </para>
@@ -186,14 +186,14 @@ org.activiti:activiti-engine:jar:5.12-SNAPSHOT
             <listitem>
                 <para>
                     <link linkend="chapterApi">The API chapter</link> will guide you through the 
-                    services which form the API of Activiti. These services offer the Activiti engine
-                    functionality in a convienent yet powerful way and can be used in any Java
+                    services which form Activiti's API. These services offer the Activiti engine
+                    functionality in a convenient yet powerful way and can be used in any Java
                     environment.
                 </para>
             </listitem>
             <listitem>
                 <para>
-                    Interested in getting insight on BPMN 2.0, the format in which process for the 
+                    Interested in getting insight on BPMN 2.0, the format in which processes for the 
                     Activiti engine are written? Then continue on to the <link linkend="bpmn20">BPMN 2.0 section</link>.
                 </para>
             </listitem>
