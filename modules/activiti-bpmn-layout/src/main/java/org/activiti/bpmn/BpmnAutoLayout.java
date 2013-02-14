@@ -19,13 +19,16 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.swing.SwingConstants;
 
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Process;
@@ -74,63 +77,72 @@ public class BpmnAutoLayout {
   }
   
   public void execute() {
-    
     for (Process process : bpmnModel.getProcesses()) {
+      layout(process);
+    }
+  }
+
+  protected void layout(FlowElementsContainer flowElementsContainer) {
+    graph = new mxGraph();
+    cellParent = graph.getDefaultParent();
+    graph.getModel().beginUpdate();
+    
+    handledFlowElements = new HashMap<String, FlowElement>();
+    generatedVertices = new HashMap<String, Object>();
+    generatedEdges = new HashMap<String, Object>();
+    
+    sequenceFlows = new HashMap<String, SequenceFlow>(); // Sequence flow are gathered and processed afterwards, because we must be sure we alreadt found source and target
+    boundaryEvents = new ArrayList<BoundaryEvent>(); // Boundary events are gathered and processed afterwards, because we must be sure we have its parent
+    
+    // Process all elements
+    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
       
-      graph = new mxGraph();
-      cellParent = graph.getDefaultParent();
-      graph.getModel().beginUpdate();
-      
-      handledFlowElements = new HashMap<String, FlowElement>();
-      generatedVertices = new HashMap<String, Object>();
-      generatedEdges = new HashMap<String, Object>();
-      
-      sequenceFlows = new HashMap<String, SequenceFlow>(); // Sequence flow are gathered and processed afterwards, because we must be sure we alreadt found source and target
-      boundaryEvents = new ArrayList<BoundaryEvent>(); // Boundary events are gathered and processed afterwards, because we must be sure we have its parent
-      
-      // Process all elements
-      for (FlowElement flowElement : process.getFlowElements()) {
-        
-        if (flowElement instanceof SequenceFlow) {
-          handleSequenceFlow(flowElement);
-        } else if (flowElement instanceof Event) {
-          handleEvent(flowElement);
-        } else if (flowElement instanceof Gateway) {
-          createGatewayVertex(flowElement);
-        } else if (flowElement instanceof Task) {
-          handleTask(flowElement);
-        } else if (flowElement instanceof SubProcess) {
-          // TODO
-        }
-        
-        handledFlowElements.put(flowElement.getId(), flowElement);
+      if (flowElement instanceof SequenceFlow) {
+        handleSequenceFlow((SequenceFlow) flowElement);
+      } else if (flowElement instanceof Event) {
+        handleEvent(flowElement);
+      } else if (flowElement instanceof Gateway) {
+        createGatewayVertex(flowElement);
+      } else if (flowElement instanceof Task || flowElement instanceof CallActivity) {
+        handleActivity(flowElement);
+      } else if (flowElement instanceof SubProcess) {
+        handleSubProcess(flowElement);
       }
       
-      // Process gathered elements
-      handleBoundaryEvents();
-      handleSequenceFlow();
-      
-      // All elements are now put in the graph. Let's layout them!
-      CustomLayout layout = new CustomLayout(graph, SwingConstants.WEST);
-      layout.setIntraCellSpacing(100.0);
-      layout.setResizeParent(true);
-      layout.setFineTuning(true);
-      layout.setParentBorder(20);
-      layout.setMoveParent(true);
-      layout.setDisableEdgeStyle(false);
-      layout.execute(graph.getDefaultParent());
-      
-      graph.getModel().endUpdate();
-      
-      generateDiagramInterchangeElements();
+      handledFlowElements.put(flowElement.getId(), flowElement);
     }
     
+    // Process gathered elements
+    handleBoundaryEvents();
+    handleSequenceFlow();
+    
+    // All elements are now put in the graph. Let's layout them!
+    CustomLayout layout = new CustomLayout(graph, SwingConstants.WEST);
+    layout.setIntraCellSpacing(100.0);
+    layout.setResizeParent(true);
+    layout.setFineTuning(true);
+    layout.setParentBorder(20);
+    layout.setMoveParent(true);
+    layout.setDisableEdgeStyle(false);
+    layout.setUseBoundingBox(true);
+    layout.execute(graph.getDefaultParent());
+    
+    graph.getModel().endUpdate();
+    
+    generateDiagramInterchangeElements();
   }
 
   // BPMN element handling
+  
+  protected void ensureSequenceFlowIdSet(SequenceFlow sequenceFlow) {
+    if (sequenceFlow.getId() == null) {
+      sequenceFlow.setId("sequenceFlow-" + UUID.randomUUID().toString());
+    }
+  }
 
-  protected void handleSequenceFlow(FlowElement flowElement) {
-    sequenceFlows.put(flowElement.getId(), (SequenceFlow) flowElement);
+  protected void handleSequenceFlow(SequenceFlow sequenceFlow) {
+    ensureSequenceFlowIdSet(sequenceFlow);
+    sequenceFlows.put(sequenceFlow.getId(), sequenceFlow);
   }
   
   protected void handleEvent(FlowElement flowElement) {
@@ -142,9 +154,18 @@ public class BpmnAutoLayout {
     }
   }
   
-  protected void handleTask(FlowElement flowElement) {
-    Object taskVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, taskWidth, taskHeight);
-    generatedVertices.put(flowElement.getId(), taskVertex);
+  protected void handleActivity(FlowElement flowElement) {
+    Object activityVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, taskWidth, taskHeight);
+    generatedVertices.put(flowElement.getId(), activityVertex);
+  }
+  
+  protected void handleSubProcess(FlowElement flowElement) {
+    BpmnAutoLayout bpmnAutoLayout = new BpmnAutoLayout(bpmnModel);
+    bpmnAutoLayout.layout((SubProcess) flowElement);
+    
+    // TODO: get max size terug van alle element voor totale rectangle
+    
+    // TODO: pas alle DI aan met de translatie voor dit subprocess
   }
   
   protected void handleBoundaryEvents() {
