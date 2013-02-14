@@ -77,6 +77,11 @@ public class BpmnAutoLayout {
   }
   
   public void execute() {
+    // Reset any previous DI information
+    bpmnModel.getLocationMap().clear();
+    bpmnModel.getFlowLocationMap().clear();
+    
+    // Generate DI for each process
     for (Process process : bpmnModel.getProcesses()) {
       layout(process);
     }
@@ -93,6 +98,7 @@ public class BpmnAutoLayout {
     
     sequenceFlows = new HashMap<String, SequenceFlow>(); // Sequence flow are gathered and processed afterwards, because we must be sure we alreadt found source and target
     boundaryEvents = new ArrayList<BoundaryEvent>(); // Boundary events are gathered and processed afterwards, because we must be sure we have its parent
+    
     
     // Process all elements
     for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
@@ -135,6 +141,7 @@ public class BpmnAutoLayout {
   // BPMN element handling
   
   protected void ensureSequenceFlowIdSet(SequenceFlow sequenceFlow) {
+    // We really must have ids for sequence flow to be able to generate stuff
     if (sequenceFlow.getId() == null) {
       sequenceFlow.setId("sequenceFlow-" + UUID.randomUUID().toString());
     }
@@ -163,7 +170,10 @@ public class BpmnAutoLayout {
     BpmnAutoLayout bpmnAutoLayout = new BpmnAutoLayout(bpmnModel);
     bpmnAutoLayout.layout((SubProcess) flowElement);
     
-    // TODO: get max size terug van alle element voor totale rectangle
+    double subProcessWidth = bpmnAutoLayout.getGraph().getView().getGraphBounds().getWidth();
+    double subProcessHeight = bpmnAutoLayout.getGraph().getView().getGraphBounds().getHeight();
+    Object subProcessVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, subProcessWidth, subProcessHeight);
+    generatedVertices.put(flowElement.getId(), subProcessVertex);
     
     // TODO: pas alle DI aan met de translatie voor dit subprocess
   }
@@ -257,11 +267,6 @@ public class BpmnAutoLayout {
   // Diagram interchange generation
   
   protected void generateDiagramInterchangeElements() {
-    
-    // Reset any previous DI information
-    bpmnModel.getLocationMap().clear();
-    bpmnModel.getFlowLocationMap().clear();
-
     generateActivityDiagramInterchangeElements();
     generateSequenceFlowDiagramInterchangeElements();
   }
@@ -272,6 +277,27 @@ public class BpmnAutoLayout {
       mxCellState cellState = graph.getView().getState(vertex);
       createDiagramInterchangeInformation(handledFlowElements.get(flowElementId), 
               (int) cellState.getX(), (int) cellState.getY(), (int) cellState.getWidth(), (int) cellState.getHeight());
+      
+      // The DI for the elements of a subprocess are generated without knowledge of the rest of the graph
+      // So we must translate all it's elements with the x and y of the subprocess itself
+      if (handledFlowElements.get(flowElementId) instanceof SubProcess) {
+        SubProcess subProcess =(SubProcess) handledFlowElements.get(flowElementId);
+        double subProcessX = cellState.getX();
+        double subProcessY = cellState.getY();
+        for (FlowElement subProcessElement : subProcess.getFlowElements()) {
+          if (subProcessElement instanceof SequenceFlow) {
+            List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(subProcessElement.getId());
+            for (GraphicInfo graphicInfo : graphicInfoList) {
+              graphicInfo.setX(graphicInfo.getX() + subProcessX);
+              graphicInfo.setY(graphicInfo.getY() + subProcessY);
+            }
+          } else {
+            GraphicInfo graphicInfo = bpmnModel.getLocationMap().get(subProcessElement.getId());
+            graphicInfo.setX(graphicInfo.getX() + subProcessX);
+            graphicInfo.setY(graphicInfo.getY() + subProcessY);
+          }
+        }
+      }
     }
   }
 
@@ -386,10 +412,19 @@ public class BpmnAutoLayout {
   
   // Getters and Setters
   
+  
+  public mxGraph getGraph() {
+    return graph;
+  }
+
+  public void setGraph(mxGraph graph) {
+    this.graph = graph;
+  }
+  
   public int getEventSize() {
     return eventSize;
   }
-  
+
   public void setEventSize(int eventSize) {
     this.eventSize = eventSize;
   }
