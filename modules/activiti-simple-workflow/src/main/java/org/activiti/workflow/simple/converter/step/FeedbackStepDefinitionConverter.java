@@ -70,7 +70,7 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
     addSequenceFlow(conversion, fork, gatherFeedbackUserTask);
     
     // Global signal event
-    Signal signal = createSignalDeclaration();
+    Signal signal = createSignalDeclaration(conversion);
     
     // Signal throw event after the gather feedback task
     ThrowEvent signalThrowEvent = createSignalThrow(conversion, signal);
@@ -115,7 +115,7 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
     feedbackProvidersProperty.setId(VARIABLE_FEEDBACK_PROVIDERS);
     feedbackProvidersProperty.setName("Who needs to provide feedback?");
     feedbackProvidersProperty.setRequired(true);
-    feedbackProvidersProperty.setType(DefaultFormPropertyTypes.PEOPLE);
+    feedbackProvidersProperty.setType("enum");
     
     selectPeopleUserTask.setFormProperties(Arrays.asList(feedbackProvidersProperty));
     return selectPeopleUserTask;
@@ -140,12 +140,15 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
     return gatherFeedbackUserTask;
   }
 
-  protected Signal createSignalDeclaration() {
+  protected Signal createSignalDeclaration(WorkflowDefinitionConversion conversion) {
     Signal signal = new Signal();
-    String uniqueSignalId = UUID.randomUUID().toString();
+    String uniqueSignalId = "signal-" + UUID.randomUUID().toString();
     signal.setId(uniqueSignalId);
     signal.setName(uniqueSignalId);
     signal.setScope(Signal.SCOPE_PROCESS_INSTANCE);
+    
+    conversion.getBpmnModel().addSignal(signal);
+    
     return signal;
   }
 
@@ -156,6 +159,9 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
     SignalEventDefinition signalThrowEventDefinition = new SignalEventDefinition();
     signalThrowEventDefinition.setSignalRef(signal.getId());
     signalThrowEvent.addEventDefinition(signalThrowEventDefinition);
+    
+    addFlowElement(conversion, signalThrowEvent);
+    
     return signalThrowEvent;
   }
 
@@ -187,6 +193,7 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
   protected BoundaryEvent createBoundarySignalCatch(WorkflowDefinitionConversion conversion, Signal signal, UserTask feedbackTask) {
     BoundaryEvent boundarySignalCatch = new BoundaryEvent();
     boundarySignalCatch.setId(conversion.getUniqueNumberedId(ConversionConstants.BOUNDARY_ID_PREFIX));
+    boundarySignalCatch.setAttachedToRef(feedbackTask);
     boundarySignalCatch.setAttachedToRefId(feedbackTask.getId());
     boundarySignalCatch.setCancelActivity(true);
     addFlowElement(conversion, boundarySignalCatch);

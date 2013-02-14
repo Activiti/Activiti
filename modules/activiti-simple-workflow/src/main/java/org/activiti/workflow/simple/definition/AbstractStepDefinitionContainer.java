@@ -35,6 +35,8 @@ public abstract class AbstractStepDefinitionContainer<T> implements StepDefiniti
   public List<StepDefinition> getSteps() {
     return steps;
   }
+  
+  // Human step
 
   public T addHumanStep(String name, String assignee) {
     return (T) addHumanStep(name, assignee, false);
@@ -82,6 +84,19 @@ public abstract class AbstractStepDefinitionContainer<T> implements StepDefiniti
 
     addStep(humanStepDefinition);
     return humanStepDefinition;
+  }
+  
+  // Feedback step
+  
+  public T addFeedbackStep(String name, String initiator, List<String> feedbackProviders) {
+    FeedbackStepDefinition feedbackStepDefinition = new FeedbackStepDefinition();
+    feedbackStepDefinition.setName(name);
+    feedbackStepDefinition.setFeedbackInitiator(initiator);
+    feedbackStepDefinition.setFeedbackProviders(feedbackProviders);
+    
+    addStep(feedbackStepDefinition);
+    
+    return (T) this;
   }
   
 }
