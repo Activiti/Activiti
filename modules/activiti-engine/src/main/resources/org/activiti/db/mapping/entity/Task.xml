@@ -99,9 +99,10 @@
     where T.PROC_INST_ID_ = #{parameter}
   </select>
   
+  <!-- Using distinct here because a task can appear multiple times in a resultset when -->
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
     ${limitBefore}
-    select distinct RES.* ${limitBetween}
+    select RES.* ${limitBetween}
     <include refid="selectTaskByQueryCriteriaSql"/> 
     ${orderBy}
     ${limitAfter}
