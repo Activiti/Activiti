@@ -8,7 +8,7 @@
              http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
 
 
-    <process id="asyncCamelProcess">
+    <process id="parallelCamelProcess">
 
         <startEvent id="start"/>
         <sequenceFlow sourceRef="start" targetRef="parallelSplit"/>
@@ -16,15 +16,13 @@
         <sequenceFlow sourceRef="parallelSplit" targetRef="serviceTaskAsync1"/>
         <sequenceFlow sourceRef="parallelSplit" targetRef="serviceTaskAsync2"/>
         <serviceTask id="serviceTaskAsync1" activiti:type="camel"/>
-        <sequenceFlow sourceRef="serviceTaskAsync1" targetRef="receive1"/>
-        <receiveTask id="receive1" name="Wait State" />
-        <sequenceFlow sourceRef="receive1" targetRef="parallelJoin"/>
+        <sequenceFlow sourceRef="serviceTaskAsync1" targetRef="parallelJoin"/>
         <serviceTask id="serviceTaskAsync2" activiti:type="camel"/>
-        <sequenceFlow sourceRef="serviceTaskAsync2" targetRef="receive2"/>
-        <receiveTask id="receive2" name="Wait State" />
-        <sequenceFlow sourceRef="receive2" targetRef="parallelJoin"/>
+        <sequenceFlow sourceRef="serviceTaskAsync2" targetRef="parallelJoin"/>
         <parallelGateway id="parallelJoin"/>
-        <sequenceFlow sourceRef="parallelJoin" targetRef="end"/>
+        <sequenceFlow sourceRef="parallelJoin" targetRef="testJoin"/>
+        <serviceTask id="testJoin" activiti:class="org.activiti.camel.TestJoinDelegate" />
+        <sequenceFlow sourceRef="testJoin" targetRef="end"/>
         <endEvent id="end"/>
 
     </process>

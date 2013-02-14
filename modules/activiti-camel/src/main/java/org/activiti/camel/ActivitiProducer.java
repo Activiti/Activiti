@@ -18,9 +18,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultProducer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ActivitiProducer extends DefaultProducer {
 
   private RuntimeService runtimeService;
@@ -46,6 +43,7 @@ public class ActivitiProducer extends DefaultProducer {
   public void process(Exchange exchange) throws Exception {
     if (shouldStartProcess()) {
       ProcessInstance pi = startProcess(exchange);
+      exchange.setProperty(PROCESS_ID_PROPERTY, pi.getProcessInstanceId());
       exchange.getOut().setBody(pi.getId());
     } else {
       signal(exchange);
@@ -100,7 +98,4 @@ public class ActivitiProducer extends DefaultProducer {
   protected ActivitiEndpoint getActivitiEndpoint() {
     return (ActivitiEndpoint) getEndpoint();
   }
-
-
-
 }
