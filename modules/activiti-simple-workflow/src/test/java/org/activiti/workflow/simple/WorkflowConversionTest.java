@@ -31,7 +31,6 @@ import org.activiti.engine.test.ActivitiRule;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
-import org.activiti.workflow.simple.diagram.WorkflowDIGenerator2;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
