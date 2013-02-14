@@ -211,14 +211,14 @@ public class WorkflowConversionTest {
 //    System.out.println("=============================");
     
     
-    activitiRule.getRuntimeService().startProcessInstanceById(convertAndDeploy(workflowDefinition));
-    
-    // Four tasks should be available after process start
-    assertEquals(4, taskService.createTaskQuery().count());
-    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
-    assertEquals(1, taskService.createTaskQuery().taskAssignee("gonzo").count());
-    assertEquals(1, taskService.createTaskQuery().taskAssignee("mispiggy").count());
-    assertEquals(1, taskService.createTaskQuery().taskAssignee("fozzie").count());
+//    activitiRule.getRuntimeService().startProcessInstanceById(convertAndDeploy(workflowDefinition));
+//    
+//    // Four tasks should be available after process start
+//    assertEquals(4, taskService.createTaskQuery().count());
+//    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+//    assertEquals(1, taskService.createTaskQuery().taskAssignee("gonzo").count());
+//    assertEquals(1, taskService.createTaskQuery().taskAssignee("mispiggy").count());
+//    assertEquals(1, taskService.createTaskQuery().taskAssignee("fozzie").count());
   }
   
   // Helper methods -----------------------------------------------------------------------------
