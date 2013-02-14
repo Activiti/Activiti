@@ -14,6 +14,7 @@
 package org.activiti.bpmn;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -37,6 +38,7 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxPoint;
+import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxEdgeStyle;
 import com.mxgraph.view.mxGraph;
 
@@ -50,17 +52,18 @@ public class BpmnAutoLayout {
   private static final String STYLE_EVENT = "styleEvent";
   private static final String STYLE_GATEWAY = "styleGateway";
   private static final String STYLE_SEQUENCEFLOW = "styleSequenceFlow";
+  private static final String STYLE_BOUNDARY_SEQUENCEFLOW = "styleBoundarySequenceFlow";
   
   protected BpmnModel bpmnModel;
   
   protected int eventSize = 30;
-  protected int gatewaySize = 30;
+  protected int gatewaySize = 40;
   protected int taskWidth = 100;
-  protected int taskHeight = 50;
+  protected int taskHeight = 60;
   
   protected mxGraph graph;
   protected Object cellParent;
-  protected List<SequenceFlow> sequenceFlows;
+  protected Map<String, SequenceFlow> sequenceFlows;
   protected List<BoundaryEvent> boundaryEvents;
   protected Map<String, FlowElement> handledFlowElements;
   protected Map<String, Object> generatedVertices;
@@ -82,7 +85,7 @@ public class BpmnAutoLayout {
       generatedVertices = new HashMap<String, Object>();
       generatedEdges = new HashMap<String, Object>();
       
-      sequenceFlows = new ArrayList<SequenceFlow>(); // Sequence flow are gathered and processed afterwards, because we must be sure we alreadt found source and target
+      sequenceFlows = new HashMap<String, SequenceFlow>(); // Sequence flow are gathered and processed afterwards, because we must be sure we alreadt found source and target
       boundaryEvents = new ArrayList<BoundaryEvent>(); // Boundary events are gathered and processed afterwards, because we must be sure we have its parent
       
       // Process all elements
@@ -127,7 +130,7 @@ public class BpmnAutoLayout {
   // BPMN element handling
 
   protected void handleSequenceFlow(FlowElement flowElement) {
-    sequenceFlows.add((SequenceFlow) flowElement);
+    sequenceFlows.put(flowElement.getId(), (SequenceFlow) flowElement);
   }
   
   protected void handleEvent(FlowElement flowElement) {
@@ -170,14 +173,34 @@ public class BpmnAutoLayout {
     
     Hashtable<String, Object> edgeStyle = new Hashtable<String, Object>();
     edgeStyle.put(mxConstants.STYLE_ORTHOGONAL, true);
-    edgeStyle.put(mxConstants.STYLE_EDGE, mxEdgeStyle.ElbowConnector); // TODO: DISCUSS
+    edgeStyle.put(mxConstants.STYLE_EDGE, mxEdgeStyle.ElbowConnector);
+    edgeStyle.put(mxConstants.STYLE_ENTRY_X, 0.0);
+    edgeStyle.put(mxConstants.STYLE_ENTRY_Y, 0.5);
     graph.getStylesheet().putCellStyle(STYLE_SEQUENCEFLOW, edgeStyle);
     
-    for (SequenceFlow sequenceFlow : sequenceFlows) {
+    Hashtable<String, Object> boundaryEdgeStyle = new Hashtable<String, Object>();
+    boundaryEdgeStyle.put(mxConstants.STYLE_EXIT_X, 0.5);
+    boundaryEdgeStyle.put(mxConstants.STYLE_EXIT_Y, 1.0);
+    boundaryEdgeStyle.put(mxConstants.STYLE_ENTRY_X, 0.5);
+    boundaryEdgeStyle.put(mxConstants.STYLE_ENTRY_Y, 1.0);
+    boundaryEdgeStyle.put(mxConstants.STYLE_EDGE, mxEdgeStyle.orthConnector);
+    graph.getStylesheet().putCellStyle(STYLE_BOUNDARY_SEQUENCEFLOW, boundaryEdgeStyle);
+    
+    for (SequenceFlow sequenceFlow : sequenceFlows.values()) {
       Object sourceVertex = generatedVertices.get(sequenceFlow.getSourceRef());
       Object targertVertex = generatedVertices.get(sequenceFlow.getTargetRef());
       
-      Object sequenceFlowEdge = graph.insertEdge(cellParent, sequenceFlow.getId(), "", sourceVertex, targertVertex, STYLE_SEQUENCEFLOW);
+      String style = null;
+     
+      if (handledFlowElements.get(sequenceFlow.getSourceRef()) instanceof BoundaryEvent) {
+        // Sequence flow out of boundary events are handled in a different way,
+        // to make them visually appealing for the eye of the dear end user.
+        style = STYLE_BOUNDARY_SEQUENCEFLOW;
+      } else {
+        style = STYLE_SEQUENCEFLOW;
+      }
+      
+      Object sequenceFlowEdge = graph.insertEdge(cellParent, sequenceFlow.getId(), "", sourceVertex, targertVertex, style);
       generatedEdges.put(sequenceFlow.getId(), sequenceFlowEdge);
     }
   }
@@ -218,25 +241,104 @@ public class BpmnAutoLayout {
     bpmnModel.getLocationMap().clear();
     bpmnModel.getFlowLocationMap().clear();
 
+    generateActivityDiagramInterchangeElements();
+    generateSequenceFlowDiagramInterchangeElements();
+  }
+  
+  protected void generateActivityDiagramInterchangeElements() {
     for (String flowElementId : generatedVertices.keySet()) {
       Object vertex = generatedVertices.get(flowElementId);
-      mxGeometry geometry = graph.getCellGeometry(vertex);
+      mxCellState cellState = graph.getView().getState(vertex);
       createDiagramInterchangeInformation(handledFlowElements.get(flowElementId), 
-              (int) geometry.getX(), (int) geometry.getY(), (int) geometry.getWidth(), (int) geometry.getHeight());
+              (int) cellState.getX(), (int) cellState.getY(), (int) cellState.getWidth(), (int) cellState.getHeight());
     }
-    
+  }
+
+  protected void generateSequenceFlowDiagramInterchangeElements() {
     for (String sequenceFlowId : generatedEdges.keySet()) {
       Object edge = generatedEdges.get(sequenceFlowId);
       List<mxPoint> points = graph.getView().getState(edge).getAbsolutePoints();
-      int[] waypoints = new int[points.size() * 2];
-      int index = 0;
-      for (mxPoint point : points) {
-        waypoints[index++] = (int) point.getX();
-        waypoints[index++] = (int) point.getY();
+      
+      // JGraphX has this funny way of generating the outgoing sequence flow of a gateway
+      // Visually, we'd like them to originate from one of the corners of the rhombus,
+      // hence we force the starting point of the sequence flow to the closest rhombus corner point.
+      FlowElement sourceElement = handledFlowElements.get(sequenceFlows.get(sequenceFlowId).getSourceRef()); 
+      if (sourceElement instanceof Gateway && ((Gateway) sourceElement).getOutgoingFlows().size() > 1) {
+        mxPoint startPoint = points.get(0);
+        Object gatewayVertex = generatedVertices.get(sourceElement.getId());
+        mxCellState gatewayState = graph.getView().getState(gatewayVertex);
+        
+        mxPoint northPoint = new mxPoint(gatewayState.getX() + (gatewayState.getWidth()) / 2, gatewayState.getY());
+        mxPoint southPoint = new mxPoint(gatewayState.getX() + (gatewayState.getWidth()) / 2, gatewayState.getY() + gatewayState.getHeight());
+        mxPoint eastPoint = new mxPoint(gatewayState.getX() + gatewayState.getWidth(), gatewayState.getY() + (gatewayState.getHeight()) / 2);
+        mxPoint westPoint = new mxPoint(gatewayState.getX(), gatewayState.getY() + (gatewayState.getHeight()) / 2);
+        
+        double closestDistance = Double.MAX_VALUE;
+        mxPoint closestPoint = null;
+        for (mxPoint rhombusPoint : Arrays.asList(northPoint, southPoint, eastPoint, westPoint)) {
+          double distance = euclidianDistance(startPoint, rhombusPoint);
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestPoint = rhombusPoint;
+          }
+        }
+        startPoint.setX(closestPoint.getX());
+        startPoint.setY(closestPoint.getY());
+        
+        // We also need to move the second point.
+        // Since we know the layout is from left to right, this is not a problem
+        if (points.size() > 1) {
+          mxPoint nextPoint = points.get(1);
+          nextPoint.setY(closestPoint.getY());
+        }
+        
       }
-      createDiagramInterchangeInformation((SequenceFlow) handledFlowElements.get(sequenceFlowId), waypoints);
+      
+      createDiagramInterchangeInformation((SequenceFlow) handledFlowElements.get(sequenceFlowId), optimizeEdgePoints(points));
+    }
+  }
+
+  protected double euclidianDistance(mxPoint point1, mxPoint point2) {
+    return Math.sqrt( ( (point2.getX() - point1.getX())*(point2.getX() - point1.getX()) 
+            + (point2.getY() - point1.getY())*(point2.getY() - point1.getY()) ) );
+  }
+  
+  // JGraphX sometime generates points that visually are not really necessary.
+  // This method will remove any such points.
+  protected List<mxPoint> optimizeEdgePoints(List<mxPoint> unoptimizedPointsList) {
+    List<mxPoint> optimizedPointsList = new ArrayList<mxPoint>();
+    for (int i=0; i<unoptimizedPointsList.size(); i++) {
+
+      boolean keepPoint = true;
+      mxPoint currentPoint = unoptimizedPointsList.get(i);
+      
+      // When three points are on the same x-axis with same y value, the middle point can be removed
+      if (i > 0 && i != unoptimizedPointsList.size() - 1) {
+        
+        mxPoint previousPoint = unoptimizedPointsList.get(i - 1);
+        mxPoint nextPoint = unoptimizedPointsList.get(i + 1);
+        
+        if (currentPoint.getX() >= previousPoint.getX() 
+                && currentPoint.getX() <= nextPoint.getX()
+                && currentPoint.getY() == previousPoint.getY()
+                && currentPoint.getY() == nextPoint.getY()) {
+          keepPoint = false;
+        } else if (currentPoint.getY() >= previousPoint.getY()
+                && currentPoint.getY() <= nextPoint.getY()
+                && currentPoint.getX() == previousPoint.getX()
+                && currentPoint.getX() == nextPoint.getX()) {
+          keepPoint = false;
+        }
+        
+      }
+      
+      if (keepPoint) {
+        optimizedPointsList.add(currentPoint);
+      }
+      
     }
     
+    return optimizedPointsList;
   }
   
   protected void createDiagramInterchangeInformation(FlowElement flowElement, int x, int y, int width, int height) {
@@ -249,13 +351,13 @@ public class BpmnAutoLayout {
     bpmnModel.addGraphicInfo(flowElement.getId(), graphicInfo);
   }
   
-  protected void createDiagramInterchangeInformation(SequenceFlow sequenceFlow, int[] waypoints) {
+  protected void createDiagramInterchangeInformation(SequenceFlow sequenceFlow, List<mxPoint> waypoints) {
     List<GraphicInfo> graphicInfoForWaypoints = new ArrayList<GraphicInfo>();
-    for (int i = 0; i < waypoints.length; i += 2) {
+    for (mxPoint waypoint : waypoints) {
       GraphicInfo graphicInfo = new GraphicInfo();
       graphicInfo.setElement(sequenceFlow);
-      graphicInfo.setX(waypoints[i]);
-      graphicInfo.setY(waypoints[i + 1]);
+      graphicInfo.setX(waypoint.getX());
+      graphicInfo.setY(waypoint.getY());
       graphicInfoForWaypoints.add(graphicInfo);
     }
     bpmnModel.addFlowGraphicInfoList(sequenceFlow.getId(), graphicInfoForWaypoints);
