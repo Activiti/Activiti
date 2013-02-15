@@ -27,5 +27,11 @@ public interface TaskListener extends Serializable {
   String EVENTNAME_ASSIGNMENT = "assignment";
   String EVENTNAME_COMPLETE = "complete";
   
+  /**
+   * Not an actual event, used as a marker-value for {@link TaskListener}s that should be called for all events,
+   * including {@link #EVENTNAME_CREATE}, {@link #EVENTNAME_ASSIGNMENT} and {@link #EVENTNAME_COMPLETE}.
+   */
+  String EVENTNAME_ALL_EVENTS = "all";
+  
   void notify(DelegateTask delegateTask);
 }

@@ -17,14 +17,20 @@ import org.activiti.engine.delegate.TaskListener;
 
 
 /**
- * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public class TaskCreateListener implements TaskListener {
+public class TaskAllEventsListener implements TaskListener {
 
   private static final long serialVersionUID = 1L;
 
   public void notify(DelegateTask delegateTask) {
-    delegateTask.setDescription("TaskCreateListener is listening!");
+    String events = (String) delegateTask.getVariable("events");
+    if(events == null) {
+      events = delegateTask.getEventName();
+    } else {
+      events = events + " - " + delegateTask.getEventName();
+    }
+    delegateTask.setVariable("events", events);
   }
 
 }
