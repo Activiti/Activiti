@@ -248,6 +248,11 @@
           "title" : "Complete",
           "value" : "complete",
           "refToView" : ""
+        }, {
+          "id" : "c4",
+          "title" : "All Events",
+          "value" : "all",
+          "refToView" : ""
         } ]
       }, {
         "id" : "task_listener_class",
