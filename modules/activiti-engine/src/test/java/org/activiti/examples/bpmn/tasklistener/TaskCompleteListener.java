@@ -22,6 +22,7 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class TaskCompleteListener implements TaskListener {
   
+  private static final long serialVersionUID = 1L;
   private Expression greeter;
   private Expression shortName;
 

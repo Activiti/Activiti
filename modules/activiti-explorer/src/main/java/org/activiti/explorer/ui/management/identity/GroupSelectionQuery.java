@@ -53,7 +53,7 @@ public class GroupSelectionQuery extends AbstractLazyLoadingQuery {
     
     int nrFound = 0;
     int tries = 0;
-    while (nrFound == 0) { // must stop at some point in time, as otherwise size() would be reached
+    while (nrFound < count && tries < 5) { // must stop at some point in time, as otherwise size() would be reached
       
       List<Group> groups = identityService.createGroupQuery()
         .orderByGroupType().asc()

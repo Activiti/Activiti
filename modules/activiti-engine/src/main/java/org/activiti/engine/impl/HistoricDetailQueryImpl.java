@@ -20,6 +20,8 @@ import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
+import org.activiti.engine.impl.variable.HistoricJPAEntityVariableType;
+import org.activiti.engine.impl.variable.JPAEntityVariableType;
 
 
 /**
@@ -99,10 +101,23 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
     List<HistoricDetail> historicDetails = commandContext
       .getHistoricDetailEntityManager()
       .findHistoricDetailsByQueryCriteria(this, page);
+    
+    HistoricDetailVariableInstanceUpdateEntity varUpdate = null;
     if (historicDetails!=null) {
       for (HistoricDetail historicDetail: historicDetails) {
         if (historicDetail instanceof HistoricDetailVariableInstanceUpdateEntity) {
-          ((HistoricDetailVariableInstanceUpdateEntity)historicDetail).getByteArrayValue();
+          varUpdate = (HistoricDetailVariableInstanceUpdateEntity)historicDetail;
+          
+          // Touch byte-array to ensure initialized inside context
+          varUpdate.getByteArrayValue();
+          
+          // ACT-863: EntityManagerFactorySession instance needed for fetching value, touch while inside context to store
+          // cached value
+          if(varUpdate.getVariableType() instanceof JPAEntityVariableType) {
+            // Use HistoricJPAEntityVariableType to force caching of value to return from query
+            varUpdate.setVariableType(HistoricJPAEntityVariableType.getSharedInstance());
+            varUpdate.getValue();
+          }
         }
       }
     }

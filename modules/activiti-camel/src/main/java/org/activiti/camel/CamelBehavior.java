@@ -84,6 +84,7 @@ public class CamelBehavior extends BpmnActivityBehavior implements ActivityBehav
       SpringProcessEngineConfiguration springConfiguration, String camelContext) {
     
     Exchange ex = new DefaultExchange(getContext(springConfiguration, camelContext));
+    ex.setProperty(ActivitiProducer.PROCESS_ID_PROPERTY, activityExecution.getProcessInstanceId());
     Map<String, Object> variables = activityExecution.getVariables();
     if (endpoint.isCopyVariablesToProperties()) {
       for (Map.Entry<String, Object> var : variables.entrySet()) {

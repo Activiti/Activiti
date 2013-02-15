@@ -10,6 +10,10 @@
     <property name="history" value="full" />
     <property name="databaseSchemaUpdate" value="true" />
     
+    <property name="jpaPersistenceUnitName" value="activiti-jpa-pu" />
+    <property name="jpaHandleTransaction" value="true" />
+    <property name="jpaCloseEntityManager" value="true" />
+    
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />
     

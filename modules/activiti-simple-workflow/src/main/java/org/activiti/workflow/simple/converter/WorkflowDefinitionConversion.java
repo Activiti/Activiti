@@ -110,7 +110,7 @@ public class WorkflowDefinitionConversion {
     
     // Add DI information to bpmn model
     WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(bpmnModel);
-    workflowDIGenerator.generateDI();
+//    workflowDIGenerator.generateDI();
   }
   
   public void convertSteps(List<StepDefinition> stepDefinitions) {

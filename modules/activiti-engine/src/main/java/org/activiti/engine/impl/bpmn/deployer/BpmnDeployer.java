@@ -172,9 +172,6 @@ public class BpmnDeployer implements Deployer {
         processDefinition.setId(persistedProcessDefinition.getId());
         processDefinition.setVersion(persistedProcessDefinition.getVersion());
         processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
-        
-        addAuthorizations(processDefinition);
-
       }
 
       // Add to cache

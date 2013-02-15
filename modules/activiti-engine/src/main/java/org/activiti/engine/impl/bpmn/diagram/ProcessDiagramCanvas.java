@@ -634,7 +634,7 @@ public class ProcessDiagramCanvas {
     }
     
     
-    int currentY = y + ICON_SIZE + ICON_PADDING + ((availableHeight - currentHeight) /2);
+    int currentY = y + ICON_SIZE + ((availableHeight - currentHeight) /2);
     int currentX = 0;
     
     // Actually draw the lines

@@ -39,16 +39,18 @@ public class HumanStepDefinition extends AbstractNamedStepDefinition {
     return assignee;
   }
 
-  public void setAssignee(String assignee) {
+  public HumanStepDefinition setAssignee(String assignee) {
     this.assignee = assignee;
+    return this;
   }
 
   public List<String> getCandidateUsers() {
     return candidateUsers;
   }
 
-  public void setCandidateUsers(List<String> candidateUsers) {
+  public HumanStepDefinition setCandidateUsers(List<String> candidateUsers) {
     this.candidateUsers = candidateUsers;
+    return this;
   }
 
   public List<String> getCandidateGroups() {
@@ -68,15 +70,17 @@ public class HumanStepDefinition extends AbstractNamedStepDefinition {
     return strb.toString();
   }
 
-  public void setCandidateGroups(List<String> candidateGroups) {
+  public HumanStepDefinition setCandidateGroups(List<String> candidateGroups) {
     this.candidateGroups = candidateGroups;
+    return this;
   }
 
   public FormDefinition getForm() {
     return form;
   }
 
-  public void setForm(FormDefinition form) {
+  public HumanStepDefinition setForm(FormDefinition form) {
     this.form = form;
+    return this;
   }
 }

@@ -18,10 +18,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+
 /**
  * @author Tijs Rademakers
  */
-public class SubProcess extends Activity {
+public class SubProcess extends Activity implements FlowElementsContainer {
 
   protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
   protected List<Artifact> artifactList = new ArrayList<Artifact>();

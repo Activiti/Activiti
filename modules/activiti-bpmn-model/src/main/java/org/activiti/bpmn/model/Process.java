@@ -16,10 +16,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * @author Tijs Rademakers
  */
-public class Process extends FlowElementsContainer implements HasExecutionListeners {
+public class Process extends BaseElement implements FlowElementsContainer, HasExecutionListeners {
 
   protected String name;
   protected boolean executable = true;
@@ -27,6 +29,7 @@ public class Process extends FlowElementsContainer implements HasExecutionListen
   protected IOSpecification ioSpecification;
   protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
   protected List<Lane> lanes = new ArrayList<Lane>();
+  protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
   protected List<Artifact> artifactList = new ArrayList<Artifact>();
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
@@ -77,6 +80,34 @@ public class Process extends FlowElementsContainer implements HasExecutionListen
 
   public void setLanes(List<Lane> lanes) {
     this.lanes = lanes;
+  }
+  
+  public FlowElement getFlowElement(String id) {
+    FlowElement foundElement = null;
+    if (StringUtils.isNotEmpty(id)) {  
+      for (FlowElement element : flowElementList) {
+        if (id.equals(element.getId())) {
+          foundElement = element;
+          break;
+        }
+      }
+    }
+    return foundElement;
+  }
+  
+  public Collection<FlowElement> getFlowElements() {
+    return flowElementList;
+  }
+  
+  public void addFlowElement(FlowElement element) {
+    flowElementList.add(element);
+  }
+  
+  public void removeFlowElement(String elementId) {
+    FlowElement element = getFlowElement(elementId);
+    if (element != null) {
+      flowElementList.remove(element);
+    }
   }
   
   public Artifact getArtifact(String id) {
