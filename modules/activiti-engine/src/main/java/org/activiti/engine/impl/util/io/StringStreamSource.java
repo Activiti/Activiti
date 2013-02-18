@@ -12,12 +12,14 @@
  */
 package org.activiti.engine.impl.util.io;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class StringStreamSource implements StreamSource {
   
@@ -28,7 +30,7 @@ public class StringStreamSource implements StreamSource {
   }
 
   public InputStream getInputStream() {
-    return new ByteArrayInputStream(string.getBytes());
+    return new BufferedInputStream(new ByteArrayInputStream(string.getBytes()));
   }
 
   public String toString() {

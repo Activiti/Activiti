@@ -17,8 +17,13 @@ import java.io.InputStream;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public interface StreamSource {
 
+  /**
+   * Creates a <b>NEW</b> {@link InputStream} to the provided resource.
+   */
   InputStream getInputStream();
+  
 }

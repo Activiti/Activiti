@@ -17,6 +17,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.identity.LoggedInUser;
@@ -223,7 +224,19 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
     super.terminalError(event);
     
-    notificationManager.showErrorNotification(Messages.UNCAUGHT_EXCEPTION, event.getThrowable().getCause().getMessage());
+    // Look for an Activiti Exception, as it'll probably be more meaningful.
+    // If not found, just show default
+    Throwable exception = event.getThrowable().getCause();
+    int depth = 0; // To avoid going too deep in the stack
+    while (exception != null && depth<20 && !(exception instanceof ActivitiException)) {
+      exception = exception.getCause();
+      depth++;
+    }
+    
+    if (exception == null) {
+      exception = event.getThrowable().getCause();
+    }
+    notificationManager.showErrorNotification(Messages.UNCAUGHT_EXCEPTION, exception.getMessage());
   }
   
   // URL Handling ---------------------------------------------------------------------------------

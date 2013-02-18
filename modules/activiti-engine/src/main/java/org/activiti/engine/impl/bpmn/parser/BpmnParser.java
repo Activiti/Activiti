@@ -16,7 +16,6 @@ import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.cfg.BpmnParseFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.util.xml.Parser;
 
 
 /**
@@ -29,7 +28,7 @@ import org.activiti.engine.impl.util.xml.Parser;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class BpmnParser extends Parser {
+public class BpmnParser {
   
   /**
    * The BPMN 2.0 namespace

@@ -13,7 +13,6 @@
 package org.activiti.bpmn.converter;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +24,7 @@ import javax.xml.XMLConstants;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stax.StAXSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -147,8 +146,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     this.startEventFormTypes = startEventFormTypes;
   }
   
-  public void validateModel(InputStream inputStream) throws Exception {
-    
+  public void validateModel(XMLStreamReader xtr) throws Exception {
     SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
     Schema schema = null;
     if (classloader != null) {
@@ -162,9 +160,9 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     if (schema == null) {
       throw new XMLException("BPMN XSD could not be found");
     }
-
+    
     Validator validator = schema.newValidator();
-    validator.validate(new StreamSource(inputStream));
+    validator.validate(new StAXSource(xtr));
   }
 
 	public BpmnModel convertToBpmnModel(XMLStreamReader xtr) { 

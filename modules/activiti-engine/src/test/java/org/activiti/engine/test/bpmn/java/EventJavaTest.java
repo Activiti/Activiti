@@ -15,6 +15,8 @@ package org.activiti.engine.test.bpmn.java;
 
 import java.io.ByteArrayInputStream;
 
+import javax.xml.stream.XMLInputFactory;
+
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
@@ -66,7 +68,8 @@ public class EventJavaTest extends PluggableActivitiTestCase {
     
     byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
     
-    new BpmnXMLConverter().validateModel(new ByteArrayInputStream(xml));
+    XMLInputFactory xif = XMLInputFactory.newInstance();
+    new BpmnXMLConverter().validateModel(xif.createXMLStreamReader(new ByteArrayInputStream(xml)));
     
     Deployment deployment = repositoryService.createDeployment().name("test").addString("test.bpmn20.xml", new String(xml)).deploy();
     repositoryService.deleteDeployment(deployment.getId());

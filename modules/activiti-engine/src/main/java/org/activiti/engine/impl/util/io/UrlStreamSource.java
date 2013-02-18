@@ -12,11 +12,11 @@
  */
 package org.activiti.engine.impl.util.io;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 
 
@@ -33,7 +33,7 @@ public class UrlStreamSource implements StreamSource {
 
   public InputStream getInputStream() {
     try {
-      return url.openStream();
+      return new BufferedInputStream(url.openStream());
     } catch (IOException e) {
       throw new ActivitiIllegalArgumentException("couldn't open url '"+url+"'", e);
     }
