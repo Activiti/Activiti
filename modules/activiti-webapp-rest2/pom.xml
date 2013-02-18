@@ -15,6 +15,19 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.zeroturnaround</groupId>
+        <artifactId>jrebel-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-rebel-xml</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!-- A simple Jetty test server at http://localhost:8080/activiti-webapp-rest can be launched with the Maven goal jetty:run 
       and stopped with jetty:stop -->
       <plugin>
@@ -22,8 +35,13 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.1.24</version>
         <configuration>
-          
-          <stopPort>9966</stopPort>
+          <connectors>
+            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+              <port>8081</port>
+              <maxIdleTime>60000</maxIdleTime>
+            </connector>
+          </connectors>
+          <stopPort>9955</stopPort>
           <stopKey>activiti-webapp-rest</stopKey>
           <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
           <scanIntervalSeconds>0</scanIntervalSeconds>
@@ -37,6 +55,41 @@
         </configuration>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.zeroturnaround
+                    </groupId>
+                    <artifactId>
+                      jrebel-maven-plugin
+                    </artifactId>
+                    <versionRange>
+                      [1.0.7,)
+                    </versionRange>
+                    <goals>
+                      <goal>generate</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <dependencies>

@@ -1,0 +1,12 @@
+{
+	"processInstanceId": "4400",
+	"processDefinitionId": "techCollectionProcess:2:2368",
+	"activities": [
+		"paymentReceived_sendSMS_CallActivity"
+	],
+	"flows": [
+		"flow3",
+		"flow2",
+		"newPaymentFlow"
+	]
+}

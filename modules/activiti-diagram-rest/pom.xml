@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <name>Activiti - Diagram - REST</name>
+  <artifactId>activiti-diagram-rest</artifactId>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <relativePath>../..</relativePath>
+    <version>5.12-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<configuration>
+				<source>1.6</source>
+				<target>1.6</target>
+			</configuration>
+		</plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- Activiti -->
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-common-rest</artifactId>
+    </dependency>
+  </dependencies>
+  
+  <profiles>
+    <profile>
+      <id>distro</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.1.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  
+  <repositories>
+    <repository>
+      <id>Alfresco thirdparty</id>
+      <url>https://maven.alfresco.com/nexus/content/repositories/thirdparty/</url>
+    </repository>
+  </repositories>
+
+</project>

@@ -1,0 +1,12 @@
+{
+	"name": "Send SMS Process",
+	"key": "sendSMSProcess",
+	"id": "sendSMSProcess:2:2361",
+	"version": 2,
+	"resourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/common/SendSMSProcess.bpmn",
+	"category": "http://www.activiti.org/test",
+	"deploymentId": "2332",
+	"diagramResourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/common/SendSMSProcess.sendSMSProcess.png",
+	"graphicNotationDefined": false,
+	"startFormResourceKey": null
+}

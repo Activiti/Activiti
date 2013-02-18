@@ -1,0 +1,420 @@
+{
+	"processDefinition": {
+		"id": "techCollectionProcess:2:2368",
+		"category": "http://www.activiti.org/test",
+		"diagramResourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/collection/TechCollectionProcess.techCollectionProcess.png",
+		"name": "ТЕХНОЛОГИЧЕСКОЕ СОПРОВОЖДЕНИЕ",
+		"startFormResourceKey": null,
+		"javaClass": "org.activiti.rest.api.process.ProcessDefinitionResponse",
+		"deploymentId": "2332",
+		"graphicNotationDefined": false,
+		"key": "techCollectionProcess",
+		"resourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/collection/TechCollectionProcess.bpmn",
+		"version": 2
+	},
+	"activities": [{
+		"activityId": "startevent1",
+		"properties": {
+			"name": "Start",
+			"line": 11,
+			"type": "startEvent"
+		},
+		"x": 40,
+		"y": 300,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "eventgateway1",
+		"properties": {
+			"name": "Event Gateway",
+			"line": 12,
+			"timerDeclarations": [{
+				"isExclusive": true,
+				"retries": "3",
+				"type": "timer-intermediate-transition",
+				"configuration": "timerintermediatecatchevent1",
+				"expression": "PT35M"
+			}],
+			"type": "eventBasedGateway",
+			"eventDefinitions": [{
+				"activityId": "SignalCatch_NewLoan",
+				"eventName": "newLoan",
+				"eventType": "signal",
+				"isAsync": false,
+				"isStartEvent": false
+			},
+			{
+				"activityId": "SignalCatch_NewPayment",
+				"eventName": "newPayment",
+				"eventType": "signal",
+				"isAsync": false,
+				"isStartEvent": false
+			}]
+		},
+		"nestedActivities": ["SignalCatch_NewLoan",
+		"SignalCatch_NewPayment",
+		"timerintermediatecatchevent1"],
+		"x": 107,
+		"y": 297,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "SignalCatch_NewLoan",
+		"properties": {
+			"name": "SignalCatch_NewLoan",
+			"line": 13,
+			"type": "intermediateSignalCatch"
+		},
+		"x": 190,
+		"y": 110,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "SignalCatch_NewPayment",
+		"properties": {
+			"name": "SignalCatch_NewPayment",
+			"line": 16,
+			"type": "intermediateSignalCatch"
+		},
+		"x": 190,
+		"y": 390,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "timerintermediatecatchevent1",
+		"properties": {
+			"name": "TimerCatchEvent",
+			"line": 52,
+			"type": "intermediateTimer"
+		},
+		"x": 181,
+		"y": 300,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "paymentReceived_sendSMS_CallActivity",
+		"properties": {
+			"name": "SEND SMS: PAYMENT RECEIVED",
+			"line": 19,
+			"errorEventDefinitions": [{
+				"errorCode": "sendSMSError",
+				"handlerActivityId": "sendFailedBoundaryError2"
+			}],
+			"type": "callActivity",
+			"processDefinitonKey": "sendSimpleSMSProcess",
+			"processDefinitons": [{
+				"processDefinitionId": "sendSimpleSMSProcess:2:2372",
+				"processDefinitionKey": "sendSimpleSMSProcess",
+				"processDefinitionName": "ПРОСТАЯ ОТПРАВКА SMS"
+			}]
+		},
+		"collapsed": true,
+		"nestedActivities": ["sendFailedBoundaryError2"],
+		"x": 320,
+		"y": 350,
+		"width": 231,
+		"height": 115
+	},
+	{
+		"activityId": "sendFailedBoundaryError2",
+		"properties": {
+			"name": "SEND SMS ERROR",
+			"line": 25,
+			"type": "boundaryError"
+		},
+		"isInterrupting": true,
+		"x": 510,
+		"y": 430,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "parallelgateway1",
+		"properties": {
+			"name": "Parallel Gateway",
+			"line": 29,
+			"type": "parallelGateway"
+		},
+		"x": 262,
+		"y": 107,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "mailtask1",
+		"properties": {
+			"name": "SEND MAIL: NEW LOAN NOTIFICATION",
+			"line": 30,
+			"type": "serviceTask"
+		},
+		"x": 320,
+		"y": 33,
+		"width": 231,
+		"height": 115
+	},
+	{
+		"activityId": "newCreditor_sendSMS_CallActivity",
+		"properties": {
+			"name": "SEND SMS: NEW LOAN NOTIFICATION",
+			"line": 39,
+			"errorEventDefinitions": [{
+				"errorCode": "sendSMSError",
+				"handlerActivityId": "sendFailedBoundaryError1"
+			}],
+			"type": "callActivity",
+			"processDefinitonKey": "sendSimpleSMSProcess",
+			"processDefinitons": [{
+				"processDefinitionId": "sendSimpleSMSProcess:2:2372",
+				"processDefinitionKey": "sendSimpleSMSProcess",
+				"processDefinitionName": "ПРОСТАЯ ОТПРАВКА SMS"
+			}]
+		},
+		"collapsed": true,
+		"nestedActivities": ["sendFailedBoundaryError1"],
+		"x": 320,
+		"y": 173,
+		"width": 231,
+		"height": 115
+	},
+	{
+		"activityId": "sendFailedBoundaryError1",
+		"properties": {
+			"name": "SEND SMS ERROR",
+			"line": 45,
+			"type": "boundaryError"
+		},
+		"isInterrupting": true,
+		"x": 510,
+		"y": 256,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "parallelgateway2",
+		"properties": {
+			"name": "Parallel Gateway",
+			"line": 48,
+			"type": "parallelGateway"
+		},
+		"x": 645,
+		"y": 133,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "endevent1",
+		"properties": {
+			"name": "End",
+			"line": 28,
+			"type": "endEvent"
+		},
+		"x": 685,
+		"y": 390,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent2",
+		"properties": {
+			"name": "End",
+			"line": 49,
+			"type": "endEvent"
+		},
+		"x": 719,
+		"y": 136,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent3",
+		"properties": {
+			"name": "End",
+			"line": 50,
+			"type": "endEvent"
+		},
+		"x": 685,
+		"y": 316,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent4",
+		"properties": {
+			"name": "End",
+			"line": 51,
+			"type": "endEvent"
+		},
+		"x": 685,
+		"y": 480,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent5",
+		"properties": {
+			"name": "End",
+			"line": 57,
+			"type": "endEvent"
+		},
+		"x": 246,
+		"y": 300,
+		"width": 35,
+		"height": 35
+	}],
+	"sequenceFlows": [{
+		"id": "flow3",
+		"name": "",
+		"flow": "(startevent1)--flow3-->(eventgateway1)",
+		"xPointArray": [75,
+		107],
+		"yPointArray": [317,
+		317]
+	},
+	{
+		"id": "flow1",
+		"name": "",
+		"flow": "(eventgateway1)--flow1-->(SignalCatch_NewLoan)",
+		"xPointArray": [127,
+		127,
+		190],
+		"yPointArray": [297,
+		127,
+		127]
+	},
+	{
+		"id": "flow2",
+		"name": "",
+		"flow": "(eventgateway1)--flow2-->(SignalCatch_NewPayment)",
+		"xPointArray": [127,
+		127,
+		190],
+		"yPointArray": [337,
+		407,
+		407]
+	},
+	{
+		"id": "flow16",
+		"name": "",
+		"flow": "(eventgateway1)--flow16-->(timerintermediatecatchevent1)",
+		"xPointArray": [147,
+		181],
+		"yPointArray": [317,
+		317]
+	},
+	{
+		"id": "newLoanFlow",
+		"name": "НОВАЯ ССУДА",
+		"flow": "(SignalCatch_NewLoan)--newLoanFlow-->(parallelgateway1)",
+		"xPointArray": [225,
+		262],
+		"yPointArray": [127,
+		127]
+	},
+	{
+		"id": "newPaymentFlow",
+		"name": "НОВЫЙ ПЛАТЕЖ",
+		"flow": "(SignalCatch_NewPayment)--newPaymentFlow-->(paymentReceived_sendSMS_CallActivity)",
+		"xPointArray": [225,
+		320],
+		"yPointArray": [407,
+		407]
+	},
+	{
+		"id": "flow15",
+		"name": "",
+		"flow": "(timerintermediatecatchevent1)--flow15-->(endevent5)",
+		"xPointArray": [216,
+		246],
+		"yPointArray": [317,
+		317]
+	},
+	{
+		"id": "flow5",
+		"name": "",
+		"flow": "(paymentReceived_sendSMS_CallActivity)--flow5-->(endevent1)",
+		"xPointArray": [551,
+		685],
+		"yPointArray": [407,
+		407]
+	},
+	{
+		"id": "flow13",
+		"name": "",
+		"flow": "(sendFailedBoundaryError2)--flow13-->(endevent4)",
+		"xPointArray": [525,
+		524,
+		685],
+		"yPointArray": [460,
+		497,
+		497]
+	},
+	{
+		"id": "flow7",
+		"name": "",
+		"flow": "(parallelgateway1)--flow7-->(parallelgateway2)",
+		"xPointArray": [282,
+		282,
+		665],
+		"yPointArray": [107,
+		76,
+		133]
+	},
+	{
+		"id": "flow8",
+		"name": "",
+		"flow": "(parallelgateway1)--flow8-->(newCreditor_sendSMS_CallActivity)",
+		"xPointArray": [282,
+		282,
+		320],
+		"yPointArray": [147,
+		232,
+		230]
+	},
+	{
+		"id": "flow9",
+		"name": "",
+		"flow": "(mailtask1)--flow9-->(parallelgateway2)",
+		"xPointArray": [551,
+		664,
+		665],
+		"yPointArray": [90,
+		89,
+		133]
+	},
+	{
+		"id": "flow10",
+		"name": "",
+		"flow": "(newCreditor_sendSMS_CallActivity)--flow10-->(parallelgateway2)",
+		"xPointArray": [551,
+		664,
+		665],
+		"yPointArray": [230,
+		229,
+		173]
+	},
+	{
+		"id": "flow12",
+		"name": "",
+		"flow": "(sendFailedBoundaryError1)--flow12-->(endevent3)",
+		"xPointArray": [525,
+		524,
+		685],
+		"yPointArray": [286,
+		333,
+		333]
+	},
+	{
+		"id": "flow11",
+		"name": "",
+		"flow": "(parallelgateway2)--flow11-->(endevent2)",
+		"xPointArray": [685,
+		719],
+		"yPointArray": [153,
+		153]
+	}]
+}

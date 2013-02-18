@@ -64,7 +64,7 @@ public class PvmTestCase extends TestCase {
       
       super.runTest();
 
-    }  catch (AssertionFailedError e) {
+    } catch (AssertionFailedError e) {
       log.error(EMPTY_LINE);
       log.error("ASSERTION FAILED: {}", e, e);
       throw e;

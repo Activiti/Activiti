@@ -1,0 +1,450 @@
+{
+	"processDefinition": {
+		"id": "smsCollectionProcess:2:2367",
+		"category": "http://www.activiti.org/test",
+		"diagramResourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/collection/common/SMSCollectionProcess.smsCollectionProcess.png",
+		"name": "SMS ВЗЫСКАНИЕ",
+		"startFormResourceKey": null,
+		"javaClass": "org.activiti.rest.api.process.ProcessDefinitionResponse",
+		"deploymentId": "2332",
+		"graphicNotationDefined": false,
+		"key": "smsCollectionProcess",
+		"resourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/collection/common/SMSCollectionProcess.bpmn",
+		"version": 2
+	},
+	"activities": [{
+		"activityId": "startevent1",
+		"properties": {
+			"name": "Start",
+			"line": 9,
+			"type": "startEvent"
+		},
+		"x": 90,
+		"y": 262,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "exclusivegateway4",
+		"properties": {
+			"default": "flow13_invalidArguments",
+			"name": "Exclusive Gateway",
+			"line": 13,
+			"type": "exclusiveGateway"
+		},
+		"x": 180,
+		"y": 259,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "subprocess1_smsCollection",
+		"properties": {
+			"triggeredByEvent": false,
+			"initial": "startevent2",
+			"name": "МЕРОПРИЯТИЯ SMS ВЗЫСКАНИЕ",
+			"line": 17,
+			"errorEventDefinitions": [{
+				"errorCode": "SMSCollectionError",
+				"handlerActivityId": "boundaryerror3_smsSendErrorEnd"
+			}],
+			"type": "subProcess",
+			"isExpanded": true
+		},
+		"nestedActivities": ["startevent2",
+		"scripttask3_smsElementsHard",
+		"exclusivegateway1",
+		"scripttask2_smsElementsSoft",
+		"scripttask1_smsElementsDefault",
+		"sendSerialSMScallactivity",
+		"exclusivegateway5",
+		"exclusivegateway7",
+		"endevent1",
+		"endevent2_SMSCollectionError",
+		"boundaryerror3_smsSendErrorEnd"],
+		"x": 260,
+		"y": 94,
+		"width": 861,
+		"height": 371
+	},
+	{
+		"activityId": "startevent2",
+		"properties": {
+			"name": "Start",
+			"line": 73,
+			"type": "startEvent"
+		},
+		"x": 280,
+		"y": 174,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "scripttask3_smsElementsHard",
+		"properties": {
+			"name": "УСТАНОВИТЬ НАБОР SMS-СООБЩЕНИЙ ПО-УМОЛЧАНИЮ ДЛЯ  HARD",
+			"line": 22,
+			"type": "scriptTask"
+		},
+		"x": 601,
+		"y": 344,
+		"width": 170,
+		"height": 81
+	},
+	{
+		"activityId": "exclusivegateway1",
+		"properties": {
+			"default": "flow2_DEFAULT",
+			"name": "Exclusive Gateway",
+			"line": 34,
+			"type": "exclusiveGateway"
+		},
+		"x": 491,
+		"y": 265,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "scripttask2_smsElementsSoft",
+		"properties": {
+			"name": "УСТАНОВИТЬ НАБОР SMS-СООБЩЕНИЙ ПО-УМОЛЧАНИЮ ДЛЯ SOFT",
+			"line": 36,
+			"type": "scriptTask"
+		},
+		"x": 610,
+		"y": 144,
+		"width": 171,
+		"height": 81
+	},
+	{
+		"activityId": "scripttask1_smsElementsDefault",
+		"properties": {
+			"name": "УСТАНОВИТЬ НАБОР SMS-СООБЩЕНИЙ ПО-УМОЛЧАНИЮ",
+			"line": 48,
+			"type": "scriptTask"
+		},
+		"x": 621,
+		"y": 243,
+		"width": 150,
+		"height": 81
+	},
+	{
+		"activityId": "sendSerialSMScallactivity",
+		"properties": {
+			"name": "СЕРИЙНАЯ ОТПРАВКА SMS",
+			"line": 60,
+			"errorEventDefinitions": [{
+				"errorCode": "smsSendError",
+				"handlerActivityId": "boundaryerror1_smsSendError"
+			},
+			{
+				"errorCode": "invalidArguments",
+				"handlerActivityId": "boundaryerror1_invalidArguments"
+			}],
+			"type": "callActivity",
+			"processDefinitonKey": "sendSerialSMSProcess",
+			"processDefinitons": [{
+				"processDefinitionId": "sendSerialSMSProcess:2:2365",
+				"processDefinitionKey": "sendSerialSMSProcess",
+				"processDefinitionName": "Send Serial SMS"
+			}]
+		},
+		"collapsed": true,
+		"nestedActivities": ["boundaryerror1_smsSendError",
+		"boundaryerror1_invalidArguments"],
+		"x": 881,
+		"y": 242,
+		"width": 144,
+		"height": 84
+	},
+	{
+		"activityId": "boundaryerror1_smsSendError",
+		"properties": {
+			"name": "SMS Send Error",
+			"line": 67,
+			"type": "boundaryError"
+		},
+		"isInterrupting": true,
+		"x": 980,
+		"y": 310,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "boundaryerror1_invalidArguments",
+		"properties": {
+			"name": "Invalid Arguments",
+			"line": 70,
+			"type": "boundaryError"
+		},
+		"isInterrupting": true,
+		"x": 900,
+		"y": 310,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "exclusivegateway5",
+		"properties": {
+			"name": "Exclusive Gateway",
+			"line": 74,
+			"type": "exclusiveGateway"
+		},
+		"x": 811,
+		"y": 263,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "exclusivegateway7",
+		"properties": {
+			"name": "Exclusive Gateway",
+			"line": 75,
+			"type": "exclusiveGateway"
+		},
+		"x": 932,
+		"y": 344,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "endevent1",
+		"properties": {
+			"name": "End",
+			"line": 35,
+			"type": "endEvent"
+		},
+		"x": 1060,
+		"y": 266,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent2_SMSCollectionError",
+		"properties": {
+			"name": "Serial SMSCollectionError END",
+			"line": 76,
+			"type": "errorEndEvent"
+		},
+		"x": 935,
+		"y": 400,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "boundaryerror3_smsSendErrorEnd",
+		"properties": {
+			"name": "SMS Boundary ErrorEnd",
+			"line": 94,
+			"type": "boundaryError"
+		},
+		"isInterrupting": true,
+		"x": 710,
+		"y": 450,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "endevent_smsSendErrorEnd",
+		"properties": {
+			"name": "SMS Send ErrorEnd",
+			"line": 10,
+			"type": "errorEndEvent"
+		},
+		"x": 707,
+		"y": 500,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent2_invalidArguments",
+		"properties": {
+			"name": "Invalid Arguments Error End",
+			"line": 14,
+			"type": "errorEndEvent"
+		},
+		"x": 183,
+		"y": 181,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent4",
+		"properties": {
+			"name": "End",
+			"line": 97,
+			"type": "endEvent"
+		},
+		"x": 850,
+		"y": 510,
+		"width": 35,
+		"height": 35
+	}],
+	"sequenceFlows": [{
+		"id": "flow22",
+		"name": "",
+		"flow": "(startevent1)--flow22-->(exclusivegateway4)",
+		"xPointArray": [125,
+		180],
+		"yPointArray": [279,
+		279]
+	},
+	{
+		"id": "flow12",
+		"name": "",
+		"flow": "(exclusivegateway4)--flow12-->(subprocess1_smsCollection)",
+		"xPointArray": [220,
+		260],
+		"yPointArray": [279,
+		279]
+	},
+	{
+		"id": "flow13_invalidArguments",
+		"name": "Invalid Arguments",
+		"flow": "(exclusivegateway4)--flow13_invalidArguments-->(endevent2_invalidArguments)",
+		"isDefault": true,
+		"xPointArray": [200,
+		200],
+		"yPointArray": [259,
+		216]
+	},
+	{
+		"id": "flow30",
+		"name": "",
+		"flow": "(subprocess1_smsCollection)--flow30-->(endevent4)",
+		"xPointArray": [690,
+		867],
+		"yPointArray": [465,
+		510]
+	},
+	{
+		"id": "flow23",
+		"name": "",
+		"flow": "(startevent2)--flow23-->(exclusivegateway1)",
+		"xPointArray": [297,
+		511],
+		"yPointArray": [209,
+		265]
+	},
+	{
+		"id": "flow18",
+		"name": "",
+		"flow": "(scripttask3_smsElementsHard)--flow18-->(exclusivegateway5)",
+		"xPointArray": [771,
+		831,
+		831],
+		"yPointArray": [384,
+		384,
+		303]
+	},
+	{
+		"id": "flow2_DEFAULT",
+		"name": "DEFAULT",
+		"flow": "(exclusivegateway1)--flow2_DEFAULT-->(scripttask1_smsElementsDefault)",
+		"isDefault": true,
+		"xPointArray": [531,
+		621],
+		"yPointArray": [285,
+		283]
+	},
+	{
+		"id": "flow3_SOFT",
+		"name": "SOFT",
+		"flow": "(exclusivegateway1)--flow3_SOFT-->(scripttask2_smsElementsSoft)",
+		"xPointArray": [511,
+		510,
+		610],
+		"yPointArray": [265,
+		184,
+		184]
+	},
+	{
+		"id": "flow4_HARD",
+		"name": "HARD",
+		"flow": "(exclusivegateway1)--flow4_HARD-->(scripttask3_smsElementsHard)",
+		"xPointArray": [511,
+		510,
+		601],
+		"yPointArray": [305,
+		384,
+		384]
+	},
+	{
+		"id": "flow16",
+		"name": "",
+		"flow": "(scripttask2_smsElementsSoft)--flow16-->(exclusivegateway5)",
+		"xPointArray": [781,
+		831,
+		831],
+		"yPointArray": [184,
+		184,
+		263]
+	},
+	{
+		"id": "flow17",
+		"name": "",
+		"flow": "(scripttask1_smsElementsDefault)--flow17-->(exclusivegateway5)",
+		"xPointArray": [771,
+		811],
+		"yPointArray": [283,
+		283]
+	},
+	{
+		"id": "flow15",
+		"name": "",
+		"flow": "(sendSerialSMScallactivity)--flow15-->(endevent1)",
+		"xPointArray": [1025,
+		1060],
+		"yPointArray": [284,
+		283]
+	},
+	{
+		"id": "flow27",
+		"name": "ОШИБКА ОТПРАВКИ",
+		"flow": "(boundaryerror1_smsSendError)--flow27-->(exclusivegateway7)",
+		"xPointArray": [995,
+		993,
+		972],
+		"yPointArray": [340,
+		365,
+		364]
+	},
+	{
+		"id": "flow26",
+		"name": "Invalid Arguments",
+		"flow": "(boundaryerror1_invalidArguments)--flow26-->(exclusivegateway7)",
+		"xPointArray": [915,
+		914,
+		932],
+		"yPointArray": [340,
+		364,
+		364]
+	},
+	{
+		"id": "flow19",
+		"name": "",
+		"flow": "(exclusivegateway5)--flow19-->(sendSerialSMScallactivity)",
+		"xPointArray": [851,
+		881],
+		"yPointArray": [283,
+		284]
+	},
+	{
+		"id": "flow28",
+		"name": "",
+		"flow": "(exclusivegateway7)--flow28-->(endevent2_SMSCollectionError)",
+		"xPointArray": [952,
+		952],
+		"yPointArray": [384,
+		400]
+	},
+	{
+		"id": "flow29",
+		"name": "",
+		"flow": "(boundaryerror3_smsSendErrorEnd)--flow29-->(endevent_smsSendErrorEnd)",
+		"xPointArray": [725,
+		724],
+		"yPointArray": [480,
+		500]
+	}]
+}

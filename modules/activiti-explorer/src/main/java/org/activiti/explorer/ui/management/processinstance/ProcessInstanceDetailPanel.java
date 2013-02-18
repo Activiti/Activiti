@@ -13,10 +13,18 @@
 
 package org.activiti.explorer.ui.management.processinstance;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngines;
@@ -40,18 +48,21 @@ import org.activiti.explorer.ui.custom.UserProfileLink;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.ProcessDefinitionImageStreamResourceBuilder;
 import org.activiti.explorer.ui.variable.VariableRendererManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -62,6 +73,8 @@ import com.vaadin.ui.themes.Reindeer;
 public class ProcessInstanceDetailPanel extends DetailPanel {
 
   private static final long serialVersionUID = 1L;
+  
+  protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessInstanceDetailPanel.class);
 
   protected RuntimeService runtimeService;
   protected RepositoryService repositoryService;
@@ -147,33 +160,91 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
       .getDeployedProcessDefinition(processDefinition.getId());
 
     // Only show when graphical notation is defined
-    if (processDefinitionEntity != null && processDefinitionEntity.isGraphicalNotationDefined()) {
-      StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
-        .buildStreamResource(processInstance, repositoryService, runtimeService);
-
-      if(diagram != null) {
-        Label header = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
-        header.addStyleName(ExplorerLayout.STYLE_H3);
-        header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
-        header.addStyleName(ExplorerLayout.STYLE_NO_LINE);
-        panelLayout.addComponent(header);
-        
-        Embedded embedded = new Embedded(null, diagram);
-        embedded.setType(Embedded.TYPE_IMAGE);
-        embedded.setSizeUndefined();
+    if (processDefinitionEntity != null) {
+      
+      boolean didDrawImage = false;
+      
+      if (ExplorerApp.get().isUseJavascriptDiagram()) {
+        try {
+          
+          final InputStream definitionStream = repositoryService.getResourceAsStream(
+              processDefinition.getDeploymentId(), processDefinition.getResourceName());
+          XMLInputFactory xif = XMLInputFactory.newInstance();
+          XMLStreamReader xtr = xif.createXMLStreamReader(definitionStream);
+          BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+          
+          if (bpmnModel.getFlowLocationMap().size() > 0) {
+            
+            int maxX = 0;
+            int maxY = 0;
+            for (String key : bpmnModel.getLocationMap().keySet()) {
+              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(key);
+              double elementX = graphicInfo.getX() + graphicInfo.getWidth();
+              if (maxX < elementX) {
+                maxX = (int) elementX;
+              }
+              double elementY = graphicInfo.getY() + graphicInfo.getHeight();
+              if (maxY < elementY) {
+                maxY = (int) elementY;
+              }
+            }
+            
+            Panel imagePanel = new Panel(); // using panel for scrollbars
+            imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
+            imagePanel.setWidth(100, UNITS_PERCENTAGE);
+            imagePanel.setHeight(100, UNITS_PERCENTAGE);
+          
+            URL url = new URL(ExplorerApp.get().getURL().toString().replace("/ui", "") + 
+                "diagram-viewer/index.html?processDefinitionId=" + processDefinition.getId() + "&processInstanceId=" + processInstance.getId());
+            Embedded browserPanel = new Embedded("", new ExternalResource(url));
+            browserPanel.setType(Embedded.TYPE_BROWSER);
+            browserPanel.setWidth(maxX + 350 + "px");
+            browserPanel.setHeight(maxY + 220 + "px");
+            
+            HorizontalLayout panelLayoutT = new HorizontalLayout();
+            panelLayoutT.setSizeUndefined();
+            imagePanel.setContent(panelLayoutT);
+            imagePanel.addComponent(browserPanel);
+            
+            panelLayout.addComponent(imagePanel);
+            
+            didDrawImage = true;
+          }
+          
+        } catch (Exception e) {
+          LOGGER.error("Error loading process diagram component", e);
+        }
+      }
+      
+      if(didDrawImage == false && processDefinitionEntity.isGraphicalNotationDefined()) {
+      
+        StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
+          .buildStreamResource(processInstance, repositoryService, runtimeService);
   
-        Panel imagePanel = new Panel(); // using panel for scrollbars
-        imagePanel.setScrollable(true);
-        imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
-        imagePanel.setWidth(100, UNITS_PERCENTAGE);
-        imagePanel.setHeight(100, UNITS_PERCENTAGE);
-        
-        HorizontalLayout panelLayoutT = new HorizontalLayout();
-        panelLayoutT.setSizeUndefined();
-        imagePanel.setContent(panelLayoutT);
-        imagePanel.addComponent(embedded);
-        
-        panelLayout.addComponent(imagePanel);
+        if(diagram != null) {
+          Label header = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
+          header.addStyleName(ExplorerLayout.STYLE_H3);
+          header.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+          header.addStyleName(ExplorerLayout.STYLE_NO_LINE);
+          panelLayout.addComponent(header);
+          
+          Embedded embedded = new Embedded(null, diagram);
+          embedded.setType(Embedded.TYPE_IMAGE);
+          embedded.setSizeUndefined();
+    
+          Panel imagePanel = new Panel(); // using panel for scrollbars
+          imagePanel.setScrollable(true);
+          imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
+          imagePanel.setWidth(100, UNITS_PERCENTAGE);
+          imagePanel.setHeight(100, UNITS_PERCENTAGE);
+          
+          HorizontalLayout panelLayoutT = new HorizontalLayout();
+          panelLayoutT.setSizeUndefined();
+          imagePanel.setContent(panelLayoutT);
+          imagePanel.addComponent(embedded);
+          
+          panelLayout.addComponent(imagePanel);
+        }
       }
     }
   }
