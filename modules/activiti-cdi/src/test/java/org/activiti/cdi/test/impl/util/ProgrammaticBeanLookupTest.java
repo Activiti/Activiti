@@ -103,9 +103,4 @@ public class ProgrammaticBeanLookupTest {
 	@Named("testOnly")
 	public static class AlternativeTestBean extends TestBean {
 	}
-	
-	@Named("testOnly")
-	public static class SomeNameBean{
-		
-	}
 }
