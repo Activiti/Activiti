@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.util.io;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -20,6 +21,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class ResourceStreamSource implements StreamSource {
 
@@ -40,12 +42,12 @@ public class ResourceStreamSource implements StreamSource {
     if (classLoader==null) {
       inputStream = ReflectUtil.getResourceAsStream(resource);
     } else {
-      classLoader.getResourceAsStream(resource);
+      inputStream = classLoader.getResourceAsStream(resource);
     }
     if (inputStream==null) {
       throw new ActivitiIllegalArgumentException("resource '"+resource+"' doesn't exist");
     }
-    return inputStream;
+    return new BufferedInputStream(inputStream);
   }
 
   public String toString() {
