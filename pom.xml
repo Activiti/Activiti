@@ -687,6 +687,7 @@
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-simple-workflow</module>
+        <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
         <module>modules/activiti-explorer</module>
         <module>modules/activiti-webapp-explorer2</module>
@@ -719,6 +720,7 @@
       <id>check</id>
       <modules>
         <module>modules/activiti-spring</module>
+        <module>modules/activiti-common-rest</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
@@ -771,6 +773,7 @@
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-simple-workflow</module>
+        <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
         <module>modules/activiti-explorer</module>
         <module>modules/activiti-rest</module>
