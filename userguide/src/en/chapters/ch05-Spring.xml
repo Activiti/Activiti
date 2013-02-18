@@ -4,7 +4,7 @@
 <chapter id="springintegration">
   <title>Spring integration</title>
 
-  <para>While you definitely can use Activiti without Spring, we've provided some very nice integration features
+  <para>While you can definitely use Activiti without Spring, we've provided some very nice integration features
   that are explained in this chapter.  
   </para>
   
@@ -16,8 +16,8 @@
       The starting point of the integration is the class
 	    <literal>org.activiti.spring.ProcessEngineFactoryBean</literal>. That bean
 	    takes a process engine configuration and creates the process engine. 
-	    This means that the way and all configuration properties documented in the <link linkend="configuration">configuration section</link>
-	    are exactly the same as for Spring:    
+	    This means that the creation and configuration of properties for Spring is the same as documented in the <link linkend="configuration">configuration section</link>.
+	    For Spring integration the configuration and engine beans will look like this:    
     <programlisting>
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
     ...
@@ -27,24 +27,24 @@
   &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
 &lt;/bean&gt;
   </programlisting>
-      Do note that the <literal>processEngineConfiguration</literal> bean now uses the 
+      Note that the <literal>processEngineConfiguration</literal> bean now uses the 
       <literal>org.activiti.spring.SpringProcessEngineConfiguration</literal> class.
     </para>
   </section>
 
   <section>
     <title>Transactions</title>
-    <para>We'll explain the <literal>SpringTransactionIntegrationTest</literal> found in the spring examples
+    <para>We'll explain the <literal>SpringTransactionIntegrationTest</literal> found in the Spring examples
     of the distribution step by step.  
-    Here is the spring configuration file that we use in this example 
-    (located in SpringTransactionIntegrationTest-context.xml).  The quoted section 
+    Below is the Spring configuration file that we use in this example 
+    (you can find it in SpringTransactionIntegrationTest-context.xml). The section shown below 
     contains the dataSource, transactionManager, processEngine and the Activiti
     Engine services.
     </para>
     <para>
       When passing the DataSource to the <literal>SpringProcessEngineConfiguration</literal> (using property "dataSource"), Activiti uses a <literal>org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy</literal> internally, which wraps the passed DataSource.
-      This is done make sure the SQL connections retrieved from the DataSource and the Spring transactions play well together.
-      This implies that it's no longer needed to proxy the dataSource yourself in spring-configuration, however it's allowed to pass a <literal>TransactionAwareDataSourceProxy</literal> into the <literal>SpringProcessEngineConfiguration</literal>.
+      This is done to make sure the SQL connections retrieved from the DataSource and the Spring transactions play well together.
+      This implies that it's no longer needed to proxy the dataSource yourself in Spring configuration, although it's still allowed to pass a <literal>TransactionAwareDataSourceProxy</literal> into the <literal>SpringProcessEngineConfiguration</literal>.
       In this case no additional wrapping will occur.
     </para>
     <para>
@@ -88,7 +88,7 @@
   &lt;bean id=&quot;managementService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getManagementService&quot; /&gt;
 
 ...</programlisting>
-  <para>The remainder of that spring configuration file contains the beans and configuration that we'll use in this particular
+  <para>The remainder of that Spring configuration file contains the beans and configuration that we'll use in this particular
   example:</para>
   <programlisting>
 &lt;beans&gt;  
@@ -102,16 +102,16 @@
   &lt;bean id=&quot;printer&quot; class=&quot;org.activiti.spring.test.Printer&quot; /&gt;
 
 &lt;/beans&gt;</programlisting>
-    <para>First the application context is created with any of the Spring ways to do that.  In this 
+    <para>First the application context is created with any of the Spring ways to do that. In this 
     example you could use a classpath XML resource to configure our Spring application context:
     <programlisting>ClassPathXmlApplicationContext applicationContext = 
     new ClassPathXmlApplicationContext(&quot;org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml&quot;);</programlisting>
-    or since it is a test:
+    or, since it is a test:
     <programlisting>@ContextConfiguration(&quot;classpath:org/activiti/spring/test/transaction/SpringTransactionIntegrationTest-context.xml&quot;)</programlisting>
     </para>
     <para>Then we can get the service beans and invoke methods on them.  The ProcessEngineFactoryBean will have 
     added an extra interceptor to the services that applies Propagation.REQUIRED transaction semantics on 
-    the Activiti service methods.  So we can use for example the repositoryService to deploy
+    the Activiti service methods.  So, for example, we can use the repositoryService to deploy
     a process like this:  
     </para>
     <programlisting>RepositoryService repositoryService = (RepositoryService) applicationContext.getBean(&quot;repositoryService&quot;);
@@ -154,7 +154,7 @@ userBean.hello();</programlisting>
     will also 'see' all the Spring beans. It's possible to limit the beans you want to expose in expressions or even exposing no beans at all using a map that you can configure. 
     The example below exposes a single bean (printer), available to use under the key "printer". 
     <emphasis role="bold">To have NO beans exposed at all, just pass an empty list as 'beans' property on the SpringProcessEngineConfiguration. 
-    When no 'beans' property is set, all spring-beans in the context will be available. </emphasis>
+    When no 'beans' property is set, all Spring beans in the context will be available. </emphasis>
     </para>
     <programlisting>
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
@@ -212,7 +212,7 @@ userBean.hello();</programlisting>
     will new deployments be deployed to the Activiti DB. This makes sense in a lot of use case,
     where the Spring container is rebooted often (e.g. testing).
     </para>
-    <para>Here's an example</para>
+    <para>Here's an example:</para>
     <programlisting>
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
   ...
@@ -229,7 +229,7 @@ userBean.hello();</programlisting>
     <para>
       When integrating with Spring, business processes can be tested very easily using the
       standard <link linkend="apiUnitTesting">Activiti testing facilities</link>.
-      Following example shows how a business process is tested in a typical Spring-based unit test:
+      The following example shows how a business process is tested in a typical Spring-based unit test:
       <programlisting>
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(&quot;classpath:org/activiti/spring/test/junit4/springTypicalUsageTest-context.xml&quot;)
