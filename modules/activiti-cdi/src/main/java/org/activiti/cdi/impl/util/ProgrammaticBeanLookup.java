@@ -14,7 +14,6 @@ package org.activiti.cdi.impl.util;
 
 import java.lang.reflect.Type;
 import java.util.Iterator;
-import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -41,11 +40,11 @@ public class ProgrammaticBeanLookup {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static Object lookup(String name, BeanManager bm) {
-    Set<Bean< ? >> beans = bm.getBeans(name);
-    if (beans.isEmpty()) {
+    Iterator<Bean< ? >> iter = bm.getBeans(name).iterator();
+    if (!iter.hasNext()) {
       throw new IllegalStateException("CDI BeanManager cannot find an instance of requested type '" + name + "'");
     }
-    Bean bean = bm.resolve(beans);
+    Bean bean = iter.next();
     CreationalContext ctx = bm.createCreationalContext(bean);
     // select one beantype randomly. A bean has a non-empty set of beantypes.
     Type type = (Type) bean.getTypes().iterator().next();
