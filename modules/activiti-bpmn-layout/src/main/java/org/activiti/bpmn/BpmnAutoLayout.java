@@ -63,6 +63,7 @@ public class BpmnAutoLayout {
   protected int gatewaySize = 40;
   protected int taskWidth = 100;
   protected int taskHeight = 60;
+  protected int subProcessMargin = 20;
   
   protected mxGraph graph;
   protected Object cellParent;
@@ -172,7 +173,8 @@ public class BpmnAutoLayout {
     
     double subProcessWidth = bpmnAutoLayout.getGraph().getView().getGraphBounds().getWidth();
     double subProcessHeight = bpmnAutoLayout.getGraph().getView().getGraphBounds().getHeight();
-    Object subProcessVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, subProcessWidth, subProcessHeight);
+    Object subProcessVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, 
+            subProcessWidth + 2 * subProcessMargin, subProcessHeight + 2 * subProcessMargin);
     generatedVertices.put(flowElement.getId(), subProcessVertex);
     
     // TODO: pas alle DI aan met de translatie voor dit subprocess
@@ -284,17 +286,19 @@ public class BpmnAutoLayout {
         SubProcess subProcess =(SubProcess) handledFlowElements.get(flowElementId);
         double subProcessX = cellState.getX();
         double subProcessY = cellState.getY();
+        double translationX = subProcessX + subProcessMargin;
+        double translationY = subProcessY + subProcessMargin;
         for (FlowElement subProcessElement : subProcess.getFlowElements()) {
           if (subProcessElement instanceof SequenceFlow) {
             List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(subProcessElement.getId());
             for (GraphicInfo graphicInfo : graphicInfoList) {
-              graphicInfo.setX(graphicInfo.getX() + subProcessX);
-              graphicInfo.setY(graphicInfo.getY() + subProcessY);
+              graphicInfo.setX(graphicInfo.getX() + translationX);
+              graphicInfo.setY(graphicInfo.getY() + translationY);
             }
           } else {
             GraphicInfo graphicInfo = bpmnModel.getLocationMap().get(subProcessElement.getId());
-            graphicInfo.setX(graphicInfo.getX() + subProcessX);
-            graphicInfo.setY(graphicInfo.getY() + subProcessY);
+            graphicInfo.setX(graphicInfo.getX() + translationX);
+            graphicInfo.setY(graphicInfo.getY() + translationY);
           }
         }
       }
@@ -454,6 +458,14 @@ public class BpmnAutoLayout {
     this.taskHeight = taskHeight;
   } 
   
+  public int getSubProcessMargin() {
+    return subProcessMargin;
+  }
+  
+  public void setSubProcessMargin(int subProcessMargin) {
+    this.subProcessMargin = subProcessMargin;
+  }
+
   // Due to a bug (see http://forum.jgraph.com/questions/5952/mxhierarchicallayout-not-correct-when-using-child-vertex)
   // We must extend the default hierarchical layout to tweak it a bit (see url link) otherwise the layouting crashes.
   //
