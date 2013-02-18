@@ -56,11 +56,11 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>2.1.0-1</version>
+        <version>2.3.0</version>
         <configuration>
           <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
           <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-         <runTarget>activiti-webapp-explorer2</runTarget>
+          <runTarget>activiti-explorer2</runTarget>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <noServer>true</noServer>
           <port>8080</port>
@@ -79,11 +79,6 @@
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-maven-plugin</artifactId>
         <version>1.0.1</version>
-        <configuration>
-          <modules>
-            <module>org.vaadin.jouni.animator.AnimatorWidgetset</module>
-          </modules>
-        </configuration>
         <executions>
           <execution>
             <goals>
@@ -154,6 +149,7 @@
   </build>
 
   <dependencies>
+    
     <!-- Activiti -->
     <dependency>
       <groupId>org.activiti</groupId>
@@ -170,6 +166,10 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-modeler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-diagram-rest</artifactId>
     </dependency>
     <dependency>
         <groupId>org.activiti</groupId>

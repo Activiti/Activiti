@@ -1,0 +1,119 @@
+﻿<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  
+  <link rel="stylesheet" href="style.css" type="text/css" media="screen">
+  <!--<script src="http://raphaeljs.com/raphael.js" type="text/javascript" charset="utf-8"></script>-->
+  <script src="js/raphael.js" type="text/javascript" charset="utf-8"></script>
+  
+  <script src="js/jquery/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/jquery/jquery.progressbar.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/jquery/jquery.asyncqueue.js" type="text/javascript" charset="utf-8"></script>
+  
+  <script src="js/Color.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/Polyline.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/ActivityImpl.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/ActivitiRest.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/LineBreakMeasurer.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/ProcessDiagramGenerator.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/ProcessDiagramCanvas.js" type="text/javascript" charset="utf-8"></script>
+  
+  <style type="text/css" media="screen">
+    
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <div id="pb1"></div>
+  <div id="overlayBox" >
+    <div id="diagramBreadCrumbs" class="diagramBreadCrumbs" onmousedown="return false" onselectstart="return false"></div>
+    <div id="diagramHolder" class="diagramHolder"></div>
+    <div class="diagram-info" id="diagramInfo"></div>
+  </div>
+</div>
+<script language='javascript'>
+var DiagramGenerator = {};
+var pb1;
+$(document).ready(function(){
+  var diagrams = [];
+  
+  var query_string = {};
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+    query_string[pair[0]] = pair[1];
+  } 
+  
+  var processDefinitionId = query_string["processDefinitionId"];
+  var processInstanceId = query_string["processInstanceId"];
+  
+  console.log("Initialize progress bar");
+  
+  pb1 = new $.ProgressBar({
+    boundingBox: '#pb1',
+    label: 'Progressbar!',
+    on: {
+      complete: function() {
+        console.log("Progress Bar COMPLETE");
+        this.set('label', 'complete!');
+        if (processInstanceId) {
+          ProcessDiagramGenerator.drawHighLights(processInstanceId);
+        }
+      },
+      valueChange: function(e) {
+        this.set('label', e.newVal + '%');
+      }
+    },
+    value: 0
+  });
+  console.log("Progress bar inited");
+  
+  ProcessDiagramGenerator.options = {
+    /*
+    processInstanceHighLightsUrl: "./activiti-rest/process-instance.php?id={processInstanceId}",
+    processDefinitionUrl: "./activiti-rest/process-difinition-diagram-layout.php?id={processDefinitionId}",
+    processDefinitionByKeyUrl: "./activiti-rest/process-definition.php?id={processDefinitionKey}",
+    */
+    diagramBreadCrumbsId: "diagramBreadCrumbs",
+    diagramHolderId: "diagramHolder",
+    diagramInfoId: "diagramInfo",
+  };
+  
+  var baseUrl = window.document.location.protocol + "//" + window.document.location.host + "/";
+  var shortenedUrl = window.document.location.href.replace(baseUrl, "");
+  baseUrl = baseUrl + shortenedUrl.substring(0, shortenedUrl.indexOf("/"));
+  
+  ActivitiRest.options = {
+    processInstanceHighLightsUrl: baseUrl + "/service/process-instance/{processInstanceId}/highlights?callback=?",
+    processDefinitionUrl: baseUrl + "/service/process-definition/{processDefinitionId}/diagram-layout?callback=?",
+    processDefinitionByKeyUrl: baseUrl + "/service/process-definition/{processDefinitionKey}/diagram-layout?callback=?",
+  };
+  
+  if (processDefinitionId) {
+    ProcessDiagramGenerator.drawDiagram(processDefinitionId);
+    
+  } else {
+    alert("processDefinitionId parameter is required");
+  }
+  
+  /*
+  // Draw all diagrams from list
+  for (var i in diagrams) {
+    var processDefinitionId = diagrams[i];
+    console.log("diagramKey: " + processDefinitionId);
+    
+    //pb1.set('value', 0);
+    
+    setTimeout(function(processDefinitionId) {
+      ProcessDiagramGenerator.drawDiagram(processDefinitionId);
+    }(processDefinitionId));
+  }
+  */
+
+});
+
+
+</script>
+</body>
+</html>

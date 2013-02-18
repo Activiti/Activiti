@@ -1,0 +1,448 @@
+{
+	"processDefinition": {
+		"id": "sendSMSProcess:2:2361",
+		"category": "http://www.activiti.org/test",
+		"diagramResourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/common/SendSMSProcess.sendSMSProcess.png",
+		"name": "Send SMS Process",
+		"startFormResourceKey": null,
+		"javaClass": "org.activiti.rest.api.process.ProcessDefinitionResponse",
+		"deploymentId": "2332",
+		"graphicNotationDefined": true,
+		"key": "sendSMSProcess",
+		"resourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/common/SendSMSProcess.bpmn",
+		"version": 2
+	},
+	"activities": [{
+		"activityId": "startevent1",
+		"properties": {
+			"name": "Start",
+			"line": 14,
+			"type": "startEvent"
+		},
+		"x": 40,
+		"y": 107,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "sendSMSCheckDeliverySubprocess",
+		"properties": {
+			"triggeredByEvent": false,
+			"initial": "startevent2",
+			"name": "Send SMS Check Delivery",
+			"line": 15,
+			"timerDeclarations": [{
+				"isExclusive": true,
+				"retries": "3",
+				"type": "timer-transition",
+				"configuration": "boundarytimer_SEND_SMS_TIMEOUT",
+				"expression": "P2D"
+			}],
+			"errorEventDefinitions": [{
+				"errorCode": "sendFailed",
+				"handlerActivityId": "boundaryerror_SEND_FAILED"
+			}],
+			"multiInstance": "sequential",
+			"type": "subProcess",
+			"isExpanded": true,
+			"eventDefinitions": [{
+				"activityId": "boundarysignal1",
+				"eventName": "interruptProcess",
+				"eventType": "signal",
+				"isAsync": false,
+				"isStartEvent": false
+			}]
+		},
+		"multiInstance": "sequential",
+		"nestedActivities": ["startevent2",
+		"servicetask_GET_STATUS",
+		"exclusivegateway2",
+		"timerintermediatecatchevent1",
+		"endevent5",
+		"endevent6",
+		"boundaryerror_SEND_FAILED",
+		"boundarytimer_SEND_SMS_TIMEOUT",
+		"boundarysignal1"],
+		"x": 49,
+		"y": 273,
+		"width": 492,
+		"height": 205
+	},
+	{
+		"activityId": "startevent2",
+		"properties": {
+			"name": "Start",
+			"line": 30,
+			"type": "startEvent"
+		},
+		"x": 80,
+		"y": 360,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "servicetask_GET_STATUS",
+		"properties": {
+			"name": "Get Message Status",
+			"line": 24,
+			"type": "serviceTask"
+		},
+		"x": 250,
+		"y": 332,
+		"width": 143,
+		"height": 91
+	},
+	{
+		"activityId": "exclusivegateway2",
+		"properties": {
+			"default": "flow9",
+			"name": "Exclusive Gateway",
+			"line": 25,
+			"type": "exclusiveGateway"
+		},
+		"x": 420,
+		"y": 357,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "timerintermediatecatchevent1",
+		"properties": {
+			"name": "TimerCatchEvent",
+			"line": 31,
+			"timerDeclarations": [{
+				"isExclusive": true,
+				"retries": "3",
+				"type": "timer-intermediate-transition",
+				"configuration": "timerintermediatecatchevent1",
+				"expression": "PT0M"
+			}],
+			"type": "intermediateTimer"
+		},
+		"x": 160,
+		"y": 360,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent5",
+		"properties": {
+			"name": "End",
+			"line": 26,
+			"type": "endEvent"
+		},
+		"x": 490,
+		"y": 298,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent6",
+		"properties": {
+			"name": "ErrorEnd",
+			"line": 27,
+			"type": "errorEndEvent"
+		},
+		"x": 490,
+		"y": 410,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "boundaryerror_SEND_FAILED",
+		"properties": {
+			"name": "Send Failed",
+			"line": 50,
+			"type": "boundaryError"
+		},
+		"isInterrupting": true,
+		"x": 339,
+		"y": 462,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "boundarytimer_SEND_SMS_TIMEOUT",
+		"properties": {
+			"name": "SEND_SMS_TIMEOUT",
+			"line": 53,
+			"type": "boundaryTimer"
+		},
+		"isInterrupting": true,
+		"x": 197,
+		"y": 462,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "boundarysignal1",
+		"properties": {
+			"name": "",
+			"line": 58,
+			"type": "boundarySignal"
+		},
+		"isInterrupting": true,
+		"x": 477,
+		"y": 462,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "exclusivegateway1",
+		"properties": {
+			"default": "flow3_InvalidArguments",
+			"name": "Exclusive Gateway",
+			"line": 61,
+			"type": "exclusiveGateway"
+		},
+		"x": 169,
+		"y": 104,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "servicetask_SEND_SMS",
+		"properties": {
+			"name": "Send SMS",
+			"line": 75,
+			"type": "serviceTask"
+		},
+		"x": 137,
+		"y": 176,
+		"width": 105,
+		"height": 55
+	},
+	{
+		"activityId": "exclusivegateway3",
+		"properties": {
+			"default": "flow19_SendFailed",
+			"name": "Exclusive Gateway",
+			"line": 76,
+			"type": "exclusiveGateway"
+		},
+		"x": 274,
+		"y": 183,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "endErrorEvent_INVALID_ARGUMENTS",
+		"properties": {
+			"name": "ErrorEnd",
+			"line": 62,
+			"type": "errorEndEvent"
+		},
+		"x": 274,
+		"y": 39,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endErrorEventInterrupted",
+		"properties": {
+			"name": "ErrorEndInterrupted",
+			"line": 65,
+			"type": "errorEndEvent"
+		},
+		"x": 474,
+		"y": 520,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endErrorEvent_SEND_FAILED",
+		"properties": {
+			"name": "ErrorEnd",
+			"line": 68,
+			"type": "errorEndEvent"
+		},
+		"x": 336,
+		"y": 520,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent4",
+		"properties": {
+			"name": "End",
+			"line": 71,
+			"type": "endEvent"
+		},
+		"x": 590,
+		"y": 358,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endErrorEvent__SEND_SMS_TIMEOUT",
+		"properties": {
+			"name": "ErrorEnd",
+			"line": 72,
+			"type": "errorEndEvent"
+		},
+		"x": 194,
+		"y": 520,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent7_sendFailed",
+		"properties": {
+			"name": "Send Failed ErrorEnd",
+			"line": 77,
+			"type": "errorEndEvent"
+		},
+		"x": 395,
+		"y": 124,
+		"width": 35,
+		"height": 35
+	}],
+	"sequenceFlows": [{
+		"id": "flow1",
+		"name": "Check Attributes",
+		"flow": "(startevent1)--flow1-->(exclusivegateway1)",
+		"xPointArray": [75,
+		169],
+		"yPointArray": [124,
+		124]
+	},
+	{
+		"id": "flow6",
+		"name": "",
+		"flow": "(sendSMSCheckDeliverySubprocess)--flow6-->(endevent4)",
+		"xPointArray": [541,
+		590],
+		"yPointArray": [375,
+		375]
+	},
+	{
+		"id": "flow19",
+		"name": "",
+		"flow": "(startevent2)--flow19-->(timerintermediatecatchevent1)",
+		"xPointArray": [115,
+		160],
+		"yPointArray": [377,
+		377]
+	},
+	{
+		"id": "flow17",
+		"name": "",
+		"flow": "(servicetask_GET_STATUS)--flow17-->(exclusivegateway2)",
+		"xPointArray": [393,
+		420],
+		"yPointArray": [377,
+		377]
+	},
+	{
+		"id": "flow9",
+		"name": "",
+		"flow": "(exclusivegateway2)--flow9-->(endevent5)",
+		"isDefault": true,
+		"xPointArray": [440,
+		439,
+		490],
+		"yPointArray": [357,
+		315,
+		315]
+	},
+	{
+		"id": "flow15_sendFailed",
+		"name": "Send Failed",
+		"flow": "(exclusivegateway2)--flow15_sendFailed-->(endevent6)",
+		"xPointArray": [440,
+		439,
+		490],
+		"yPointArray": [397,
+		427,
+		427]
+	},
+	{
+		"id": "flow20",
+		"name": "",
+		"flow": "(timerintermediatecatchevent1)--flow20-->(servicetask_GET_STATUS)",
+		"xPointArray": [195,
+		250],
+		"yPointArray": [377,
+		377]
+	},
+	{
+		"id": "flow5",
+		"name": "",
+		"flow": "(boundaryerror_SEND_FAILED)--flow5-->(endErrorEvent_SEND_FAILED)",
+		"xPointArray": [354,
+		353],
+		"yPointArray": [492,
+		520]
+	},
+	{
+		"id": "flow7",
+		"name": "",
+		"flow": "(boundarytimer_SEND_SMS_TIMEOUT)--flow7-->(endErrorEvent__SEND_SMS_TIMEOUT)",
+		"xPointArray": [212,
+		211],
+		"yPointArray": [492,
+		520]
+	},
+	{
+		"id": "flow13",
+		"name": "",
+		"flow": "(boundarysignal1)--flow13-->(endErrorEventInterrupted)",
+		"xPointArray": [492,
+		491],
+		"yPointArray": [492,
+		520]
+	},
+	{
+		"id": "flow2",
+		"name": "",
+		"flow": "(exclusivegateway1)--flow2-->(servicetask_SEND_SMS)",
+		"xPointArray": [189,
+		189,
+		189],
+		"yPointArray": [144,
+		169,
+		176]
+	},
+	{
+		"id": "flow3_InvalidArguments",
+		"name": "Invalid Arguments",
+		"flow": "(exclusivegateway1)--flow3_InvalidArguments-->(endErrorEvent_INVALID_ARGUMENTS)",
+		"isDefault": true,
+		"xPointArray": [189,
+		189,
+		274],
+		"yPointArray": [104,
+		56,
+		56]
+	},
+	{
+		"id": "flow16",
+		"name": "",
+		"flow": "(servicetask_SEND_SMS)--flow16-->(exclusivegateway3)",
+		"xPointArray": [242,
+		274],
+		"yPointArray": [203,
+		203]
+	},
+	{
+		"id": "flow18",
+		"name": "",
+		"flow": "(exclusivegateway3)--flow18-->(sendSMSCheckDeliverySubprocess)",
+		"xPointArray": [294,
+		295],
+		"yPointArray": [223,
+		273]
+	},
+	{
+		"id": "flow19_SendFailed",
+		"name": "Send Failed",
+		"flow": "(exclusivegateway3)--flow19_SendFailed-->(endevent7_sendFailed)",
+		"isDefault": true,
+		"xPointArray": [294,
+		294,
+		395],
+		"yPointArray": [183,
+		141,
+		141]
+	}]
+}

@@ -33,7 +33,7 @@ import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.rest.application.ActivitiRestApplication;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.restlet.Component;
@@ -50,9 +50,7 @@ public class BaseRestTestCase extends PvmTestCase {
   protected ObjectMapper objectMapper = new ObjectMapper();
   
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
-      "ACT_GE_PROPERTY",
-      "ACT_DATABASECHANGELOGLOCK",
-      "ACT_DATABASECHANGELOG"
+      "ACT_GE_PROPERTY"
     );
 
   protected ProcessEngine processEngine;
@@ -147,7 +145,7 @@ public class BaseRestTestCase extends PvmTestCase {
     component = new Component();  
     // Add a new HTTP server listening on port 8182.  
     component.getServers().add(Protocol.HTTP, 8182);   
-    component.getDefaultHost().attach(new ActivitiRestApplication());
+    component.getDefaultHost().attach(new ActivitiRestServicesApplication());
     component.start();
   }
   

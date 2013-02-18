@@ -1,0 +1,331 @@
+{
+	"processDefinition": {
+		"id": "sendSerialSMSProcess:2:2365",
+		"category": "http://www.activiti.org/test",
+		"diagramResourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/common/SendSerialSMSProcess.sendSerialSMSProcess.png",
+		"name": "Send Serial SMS",
+		"startFormResourceKey": null,
+		"javaClass": "org.activiti.rest.api.process.ProcessDefinitionResponse",
+		"deploymentId": "2332",
+		"graphicNotationDefined": true,
+		"key": "sendSerialSMSProcess",
+		"resourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/common/SendSerialSMSProcess.bpmn",
+		"version": 2
+	},
+	"activities": [{
+		"activityId": "startevent1",
+		"properties": {
+			"name": "Start",
+			"line": 14,
+			"type": "startEvent"
+		},
+		"x": 136,
+		"y": 275,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "subprocess1_sendSerialSMS",
+		"properties": {
+			"triggeredByEvent": false,
+			"initial": "timerstartevent1_sendSMSElement",
+			"name": "Send Serial SMS Subprocess",
+			"line": 15,
+			"errorEventDefinitions": [{
+				"errorCode": "timeout",
+				"handlerActivityId": "boundaryerror1_timeout"
+			},
+			{
+				"errorCode": "sendFailed",
+				"handlerActivityId": "boundaryerror2_sendFailed"
+			},
+			{
+				"errorCode": "interrupted",
+				"handlerActivityId": "boundaryerror3_interrupted"
+			},
+			{
+				"errorCode": "invalidArguments",
+				"handlerActivityId": "boundaryerror4_invalidArguments"
+			}],
+			"multiInstance": "sequential",
+			"type": "subProcess",
+			"isExpanded": true
+		},
+		"multiInstance": "sequential",
+		"nestedActivities": ["timerstartevent1_sendSMSElement",
+		"callactivity3_SendSMS",
+		"endevent2",
+		"boundaryerror1_timeout",
+		"boundaryerror2_sendFailed",
+		"boundaryerror3_interrupted",
+		"boundaryerror4_invalidArguments"],
+		"x": 300,
+		"y": 190,
+		"width": 471,
+		"height": 205
+	},
+	{
+		"activityId": "timerstartevent1_sendSMSElement",
+		"properties": {
+			"name": "Timer sendSMS start",
+			"line": 21,
+			"type": "startEvent"
+		},
+		"x": 330,
+		"y": 277,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "callactivity3_SendSMS",
+		"properties": {
+			"name": "Send SMS",
+			"line": 26,
+			"type": "callActivity",
+			"processDefinitonKey": "sendSMSProcess",
+			"processDefinitons": [{
+				"processDefinitionId": "sendSMSProcess:2:2361",
+				"processDefinitionKey": "sendSMSProcess",
+				"processDefinitionName": "Send SMS Process"
+			}]
+		},
+		"collapsed": true,
+		"x": 450,
+		"y": 267,
+		"width": 105,
+		"height": 55
+	},
+	{
+		"activityId": "endevent2",
+		"properties": {
+			"name": "End",
+			"line": 32,
+			"type": "endEvent"
+		},
+		"x": 610,
+		"y": 277,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "boundaryerror1_timeout",
+		"properties": {
+			"name": "Delivery Timeout",
+			"line": 36,
+			"type": "boundaryError"
+		},
+		"isInterrupting": true,
+		"x": 640,
+		"y": 360,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "boundaryerror2_sendFailed",
+		"properties": {
+			"name": "Send Failed",
+			"line": 39,
+			"type": "boundaryError"
+		},
+		"isInterrupting": true,
+		"x": 560,
+		"y": 360,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "boundaryerror3_interrupted",
+		"properties": {
+			"name": "Interrupted",
+			"line": 42,
+			"type": "boundaryError"
+		},
+		"isInterrupting": true,
+		"x": 410,
+		"y": 360,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "boundaryerror4_invalidArguments",
+		"properties": {
+			"name": "Invalid Arguments",
+			"line": 45,
+			"type": "boundaryError"
+		},
+		"isInterrupting": true,
+		"x": 333,
+		"y": 360,
+		"width": 30,
+		"height": 30
+	},
+	{
+		"activityId": "exclusivegateway1",
+		"properties": {
+			"name": "Exclusive Gateway",
+			"line": 51,
+			"type": "exclusiveGateway"
+		},
+		"x": 450,
+		"y": 470,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "exclusivegateway2",
+		"properties": {
+			"default": "flow11_invalidArguments",
+			"name": "Exclusive Gateway",
+			"line": 53,
+			"type": "exclusiveGateway"
+		},
+		"x": 193,
+		"y": 272,
+		"width": 40,
+		"height": 40
+	},
+	{
+		"activityId": "endErrorEvent2_smsSendError",
+		"properties": {
+			"name": "SMS Send Error End",
+			"line": 48,
+			"type": "errorEndEvent"
+		},
+		"x": 453,
+		"y": 540,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent3",
+		"properties": {
+			"name": "End",
+			"line": 52,
+			"type": "endEvent"
+		},
+		"x": 830,
+		"y": 275,
+		"width": 35,
+		"height": 35
+	},
+	{
+		"activityId": "endevent4_invalidArguments",
+		"properties": {
+			"name": "Invalid Arguments",
+			"line": 54,
+			"type": "errorEndEvent"
+		},
+		"x": 310,
+		"y": 110,
+		"width": 35,
+		"height": 35
+	}],
+	"sequenceFlows": [{
+		"id": "flow3",
+		"name": "",
+		"flow": "(startevent1)--flow3-->(exclusivegateway2)",
+		"xPointArray": [171,
+		193],
+		"yPointArray": [292,
+		292]
+	},
+	{
+		"id": "flow9",
+		"name": "",
+		"flow": "(subprocess1_sendSerialSMS)--flow9-->(endevent3)",
+		"xPointArray": [771,
+		783,
+		830],
+		"yPointArray": [292,
+		292,
+		292]
+	},
+	{
+		"id": "flow6",
+		"name": "",
+		"flow": "(timerstartevent1_sendSMSElement)--flow6-->(callactivity3_SendSMS)",
+		"xPointArray": [365,
+		450],
+		"yPointArray": [294,
+		294]
+	},
+	{
+		"id": "flow8",
+		"name": "",
+		"flow": "(callactivity3_SendSMS)--flow8-->(endevent2)",
+		"xPointArray": [555,
+		610],
+		"yPointArray": [294,
+		294]
+	},
+	{
+		"id": "flow8_timeout",
+		"name": "Delivery Timeout",
+		"flow": "(boundaryerror1_timeout)--flow8_timeout-->(exclusivegateway1)",
+		"xPointArray": [655,
+		654,
+		490],
+		"yPointArray": [390,
+		489,
+		490]
+	},
+	{
+		"id": "flow8_sendFailed",
+		"name": "Send Failed",
+		"flow": "(boundaryerror2_sendFailed)--flow8_sendFailed-->(exclusivegateway1)",
+		"xPointArray": [575,
+		470],
+		"yPointArray": [390,
+		470]
+	},
+	{
+		"id": "flow8_interrupted",
+		"name": "Interrupted",
+		"flow": "(boundaryerror3_interrupted)--flow8_interrupted-->(exclusivegateway1)",
+		"xPointArray": [425,
+		470],
+		"yPointArray": [390,
+		470]
+	},
+	{
+		"id": "flow8_invalidArguments",
+		"name": "Invalid Arguments",
+		"flow": "(boundaryerror4_invalidArguments)--flow8_invalidArguments-->(exclusivegateway1)",
+		"xPointArray": [348,
+		347,
+		450],
+		"yPointArray": [390,
+		491,
+		490]
+	},
+	{
+		"id": "flow7_smsError",
+		"name": "SMS Error / smsSendError",
+		"flow": "(exclusivegateway1)--flow7_smsError-->(endErrorEvent2_smsSendError)",
+		"xPointArray": [470,
+		470],
+		"yPointArray": [510,
+		540]
+	},
+	{
+		"id": "flow11_invalidArguments",
+		"name": "invalidArguments",
+		"flow": "(exclusivegateway2)--flow11_invalidArguments-->(endevent4_invalidArguments)",
+		"isDefault": true,
+		"xPointArray": [213,
+		213,
+		310],
+		"yPointArray": [272,
+		127,
+		127]
+	},
+	{
+		"id": "flow10",
+		"name": "",
+		"flow": "(exclusivegateway2)--flow10-->(subprocess1_sendSerialSMS)",
+		"xPointArray": [233,
+		300],
+		"yPointArray": [292,
+		292]
+	}]
+}

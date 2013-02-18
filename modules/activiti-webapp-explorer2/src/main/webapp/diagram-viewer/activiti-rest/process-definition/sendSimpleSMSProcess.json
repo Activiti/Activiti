@@ -1,0 +1,12 @@
+{
+	"name": "œ–Œ—“¿ﬂ Œ“œ–¿¬ ¿ SMS",
+	"key": "sendSimpleSMSProcess",
+	"id": "sendSimpleSMSProcess:2:2372",
+	"version": 2,
+	"resourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/collection/common/SendSimpleSMSProcess.bpmn",
+	"category": "http://www.activiti.org/test",
+	"deploymentId": "2332",
+	"diagramResourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/collection/common/SendSimpleSMSProcess.sendSimpleSMSProcess.png",
+	"graphicNotationDefined": false,
+	"startFormResourceKey": null
+}

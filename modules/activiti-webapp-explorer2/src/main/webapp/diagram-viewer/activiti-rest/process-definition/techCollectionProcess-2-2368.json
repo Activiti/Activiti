@@ -1,0 +1,12 @@
+{
+	"name": "ТЕХНОЛОГИЧЕСКОЕ СОПРОВОЖДЕНИЕ",
+	"key": "techCollectionProcess",
+	"id": "techCollectionProcess:2:2368",
+	"version": 2,
+	"resourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/collection/TechCollectionProcess.bpmn",
+	"category": "http://www.activiti.org/test",
+	"deploymentId": "2332",
+	"diagramResourceName": "pkb-bpmn-models/src/main/resources/com/fsphere/bpmn20/diagrams/collection/TechCollectionProcess.techCollectionProcess.png",
+	"graphicNotationDefined": false,
+	"startFormResourceKey": null
+}

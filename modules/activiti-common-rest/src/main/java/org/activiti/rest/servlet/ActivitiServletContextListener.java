@@ -38,5 +38,4 @@ public class ActivitiServletContextListener implements ServletContextListener {
   public void contextDestroyed(ServletContextEvent event) {
     ProcessEngines.destroy();
   }
-
 }

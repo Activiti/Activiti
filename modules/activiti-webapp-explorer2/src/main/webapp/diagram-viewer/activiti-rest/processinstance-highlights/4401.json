@@ -1,0 +1,10 @@
+{
+	"processInstanceId": "4401",
+	"processDefinitionId": "sendSimpleSMSProcess:2:2372",
+	"activities": [
+		"sendSMS_Boundary_callactivity"
+	],
+	"flows": [
+		"flow1"
+	]
+}

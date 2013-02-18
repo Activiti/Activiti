@@ -43,6 +43,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   protected static ThreadLocal<ExplorerApp> current = new ThreadLocal<ExplorerApp>();
   
   protected String environment;
+  protected boolean useJavascriptDiagram;
   protected UserCache userCache;
   protected MainWindow mainWindow;
   protected ViewManager viewManager;
@@ -238,6 +239,12 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   public void setEnvironment(String environment) {
     this.environment = environment;
+  }
+  public boolean isUseJavascriptDiagram() {
+    return useJavascriptDiagram;
+  }
+  public void setUseJavascriptDiagram(boolean useJavascriptDiagram) {
+    this.useJavascriptDiagram = useJavascriptDiagram;
   }
   public void setUserCache(UserCache userCache) {
     this.userCache = userCache;

@@ -12,35 +12,22 @@
  */
 package org.activiti.editor.rest.application;
 
-import org.activiti.editor.rest.main.EditorRestResource;
-import org.activiti.editor.rest.main.PluginRestResource;
-import org.activiti.editor.rest.main.StencilsetRestResource;
-import org.activiti.editor.rest.model.ModelEditorJsonRestResource;
-import org.activiti.editor.rest.model.ModelSaveRestResource;
-import org.restlet.Application;
+import org.activiti.rest.application.ActivitiRestApplication;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
 
 /**
  * @author Tijs Rademakers
  */
-public class ActivitiRestApplication extends Application {
+public class ModelerRestApplication extends ActivitiRestApplication {
   
   /**
    * Creates a root Restlet that will receive all incoming calls.
    */
   @Override
   public synchronized Restlet createInboundRoot() {
-    
     Router router = new Router(getContext());
-    
-    router.attach("/model/{modelId}/json", ModelEditorJsonRestResource.class);
-    router.attach("/model/{modelId}/save", ModelSaveRestResource.class);
-    
-    router.attach("/editor", EditorRestResource.class);
-    router.attach("/editor/plugins", PluginRestResource.class);
-    router.attach("/editor/stencilset", StencilsetRestResource.class);
-    
+    ModelerServicesInit.attachResources(router);
     return router;
   }
 }

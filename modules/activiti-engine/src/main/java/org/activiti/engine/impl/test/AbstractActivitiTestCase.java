@@ -79,8 +79,6 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       initializeServices();
     }
 
-    log.error(EMPTY_LINE);
-
     try {
       
       deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
