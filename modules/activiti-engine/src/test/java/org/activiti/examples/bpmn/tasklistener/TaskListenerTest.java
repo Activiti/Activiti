@@ -32,6 +32,18 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
   }
   
   @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
+  public void testTaskAssignmentListener() {
+    runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("TaskCreateListener is listening!", task.getDescription());
+    
+    // Set assignee and check if event is received
+    taskService.setAssignee(task.getId(), "kermit");
+    task = taskService.createTaskQuery().singleResult();
+  assertEquals("TaskAssignmentListener is listening: kermit", task.getDescription());
+  }
+  
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testTaskCompleteListener() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");
     assertEquals(null, runtimeService.getVariable(processInstance.getId(), "greeting"));
@@ -55,6 +67,20 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertEquals("Write meeting notes", runtimeService.getVariable(processInstance.getId(), "greeting2"));
+  }
+  
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
+  public void testAllEventsTaskListener() {
+    runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+    
+    // Set assignee and complete task
+    taskService.setAssignee(task.getId(), "kermit");
+    taskService.complete(task.getId());
+    
+    // Verify the all-listener has received all events
+    String eventsReceived = (String) runtimeService.getVariable(task.getProcessInstanceId(), "events");
+    assertEquals("create - assignment - complete", eventsReceived);
   }
 
 }

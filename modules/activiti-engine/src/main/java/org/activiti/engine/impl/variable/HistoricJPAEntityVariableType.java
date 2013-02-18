@@ -10,21 +10,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.examples.bpmn.tasklistener;
 
-import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.TaskListener;
+package org.activiti.engine.impl.variable;
 
 
 /**
- * @author Joram Barrez
+ * Subclass of {@link JPAEntityVariableType} which is cacheable, unlike the super-class. This is used
+ * when fetching historic variables
+ * 
+ * @author Frederik Heremans
  */
-public class TaskCreateListener implements TaskListener {
+public class HistoricJPAEntityVariableType extends JPAEntityVariableType {
 
-  private static final long serialVersionUID = 1L;
-
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.setDescription("TaskCreateListener is listening!");
+  private static final HistoricJPAEntityVariableType INSTANCE = new HistoricJPAEntityVariableType();
+  
+  @Override
+  public boolean isCachable() {
+    return true;
   }
-
+  
+  public static HistoricJPAEntityVariableType getSharedInstance() {
+    return INSTANCE;
+  }
+  
 }

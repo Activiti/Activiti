@@ -29,6 +29,8 @@ public class JPAEntityVariableType implements VariableType {
   
   private JPAEntityMappings mappings;
   
+  private boolean forceCacheable = false;
+  
   public JPAEntityVariableType() {
     mappings = new JPAEntityMappings();
   }
@@ -38,7 +40,7 @@ public class JPAEntityVariableType implements VariableType {
   }
 
   public boolean isCachable() {
-    return false;
+    return forceCacheable;
   }
 
   public boolean isAbleToStore(Object value) {
@@ -77,6 +79,13 @@ public class JPAEntityVariableType implements VariableType {
       return mappings.getJPAEntity(valueFields.getTextValue(), valueFields.getTextValue2());      
     }
     return null;
+  }
+
+  /**
+   * Force the value to be cacheable.
+   */
+  public void setForceCacheable(boolean forceCachedValue) {
+    this.forceCacheable = forceCachedValue;
   }
 
  

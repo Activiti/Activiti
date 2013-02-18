@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.bpmn.diagram;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.Lane;
 import org.activiti.engine.impl.pvm.process.LaneSet;
 import org.activiti.engine.impl.pvm.process.ParticipantProcess;
+import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 
 /**
@@ -369,7 +371,7 @@ public class ProcessDiagramGenerator {
     }
 
     
-    /*
+    
     // Original transitions drawing  
 
     // Outgoing transitions of activity
@@ -388,27 +390,27 @@ public class ProcessDiagramGenerator {
           processDiagramCanvas.drawSequenceflow(waypoints.get(i - 2), waypoints.get(i - 1), waypoints.get(i), waypoints.get(i + 1), drawConditionalIndicator, highLighted);
         }
       }
-    }*/
+    }
     
     // Outgoing transitions of activity
-    for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
-      boolean highLighted = (highLightedFlows.contains(sequenceFlow.getId()));
-      boolean drawConditionalIndicator = sequenceFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION) != null
-              && !((String) activity.getProperty("type")).toLowerCase().contains("gateway");
-      boolean isDefault = sequenceFlow.getId().equals(activity.getProperty("default"))
-    		  && ((String) activity.getProperty("type")).toLowerCase().contains("gateway");
-      
-      List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();
-      int xPoints[]= new int[waypoints.size()/2];
-      int yPoints[]= new int[waypoints.size()/2];
-      for (int i=0, j=0; i < waypoints.size(); i+=2, j++) { // waypoints.size()
-                                                      // minimally 4: x1, y1,
-                                                      // x2, y2
-      	xPoints[j] = waypoints.get(i);
-      	yPoints[j] = waypoints.get(i+1);
-      }
-      processDiagramCanvas.drawSequenceflow(xPoints, yPoints, drawConditionalIndicator, isDefault, highLighted);
-    }
+//    for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
+//      boolean highLighted = (highLightedFlows.contains(sequenceFlow.getId()));
+//      boolean drawConditionalIndicator = sequenceFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION) != null
+//              && !((String) activity.getProperty("type")).toLowerCase().contains("gateway");
+//      boolean isDefault = sequenceFlow.getId().equals(activity.getProperty("default"))
+//    		  && ((String) activity.getProperty("type")).toLowerCase().contains("gateway");
+//      
+//      List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();
+//      int xPoints[]= new int[waypoints.size()/2];
+//      int yPoints[]= new int[waypoints.size()/2];
+//      for (int i=0, j=0; i < waypoints.size(); i+=2, j++) { // waypoints.size()
+//                                                      // minimally 4: x1, y1,
+//                                                      // x2, y2
+//      	xPoints[j] = waypoints.get(i);
+//      	yPoints[j] = waypoints.get(i+1);
+//      }
+//      processDiagramCanvas.drawSequenceflow(xPoints, yPoints, drawConditionalIndicator, isDefault, highLighted);
+//    }
 
     // Nested activities (boundary events)
     for (ActivityImpl nestedActivity : activity.getActivities()) {
@@ -422,6 +424,8 @@ public class ProcessDiagramGenerator {
   }
 
   protected static ProcessDiagramCanvas initProcessDiagramCanvas(ProcessDefinitionEntity processDefinition) {
+    
+    // We need to calculate maximum values to know how big the image will be in its entirety
     int minX = Integer.MAX_VALUE;
     int maxX = 0;
     int minY = Integer.MAX_VALUE;
@@ -436,7 +440,7 @@ public class ProcessDiagramGenerator {
       maxY = pProc.getY() + pProc.getHeight();
     }
     
-    for (ActivityImpl activity : processDefinition.getActivities()) {
+    for (ActivityImpl activity : gatherAllActivities(processDefinition)) {
 
       // width
       if (activity.getX() + activity.getWidth() > maxX) {
@@ -506,6 +510,18 @@ public class ProcessDiagramGenerator {
     }
     
     return new ProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY);
+  }
+  
+  protected static List<ActivityImpl> gatherAllActivities(ScopeImpl scope) {
+    List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
+    for (ActivityImpl activity : scope.getActivities()) {
+      activities.add(activity);
+      
+      if (activity.getActivities() != null && activity.getActivities().size() > 0) {
+        activities.addAll(gatherAllActivities(activity));
+      }
+    }
+    return activities;
   }
 
   protected interface ActivityDrawInstruction {

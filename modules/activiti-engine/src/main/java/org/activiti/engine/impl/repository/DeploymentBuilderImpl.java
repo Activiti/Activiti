@@ -14,10 +14,13 @@ package org.activiti.engine.impl.repository;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
@@ -92,6 +95,17 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
       }
     } catch (Exception e) {
       throw new ActivitiException("problem reading zip input stream", e);
+    }
+    return this;
+  }
+  
+  public DeploymentBuilder addBpmnModel(String resourceName, BpmnModel bpmnModel) {
+    BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
+    try {
+      String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(bpmnModel), "UTF-8");
+      addString(resourceName, bpmn20Xml);
+    } catch (UnsupportedEncodingException e) {
+      throw new ActivitiException("Errot while transforming BPMN model to xml: not UTF-8 encoded", e);
     }
     return this;
   }

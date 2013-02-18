@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.zip.ZipInputStream;
 
+import org.activiti.bpmn.model.BpmnModel;
+
 /**
  * Builder for creating new deployments.
  * 
@@ -36,6 +38,7 @@ public interface DeploymentBuilder {
   DeploymentBuilder addClasspathResource(String resource);
   DeploymentBuilder addString(String resourceName, String text);
   DeploymentBuilder addZipInputStream(ZipInputStream zipInputStream);
+  DeploymentBuilder addBpmnModel(String resourceName, BpmnModel bpmnModel);
   
   /**
    * Gives the deployment the given name.

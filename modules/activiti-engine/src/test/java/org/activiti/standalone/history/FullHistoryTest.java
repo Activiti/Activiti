@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
@@ -32,12 +35,15 @@ import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.variable.EntityManagerSession;
+import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.api.runtime.DummySerializable;
 import org.activiti.engine.test.history.SerializableVariable;
+import org.activiti.standalone.jpa.FieldAccessJPAEntity;
 
 
 /**
@@ -1259,4 +1265,41 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
      */
     assertFalse(historicActivityInstance2.getExecutionId().equals(update2.getExecutionId()));
   }  
+  
+  @Deployment(resources = { 
+  "org/activiti/standalone/jpa/JPAVariableTest.testQueryJPAVariable.bpmn20.xml" })
+    public void testReadJpaVariableValueFromHistoricVariableUpdate() {
+    
+    EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration
+            .getSessionFactories()
+            .get(EntityManagerSession.class);
+          
+    EntityManagerFactory  entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
+          
+    String executionId = runtimeService.startProcessInstanceByKey("JPAVariableProcess").getProcessInstanceId();
+    String variableName = "name";
+    
+    FieldAccessJPAEntity entity = new FieldAccessJPAEntity();
+    entity.setId(1L);
+    entity.setValue("Test");
+    
+    EntityManager manager = entityManagerFactory.createEntityManager();
+    manager.getTransaction().begin();
+    manager.persist(entity);
+    manager.flush();
+    manager.getTransaction().commit();
+    manager.close();
+    
+    runtimeService.setVariable(executionId, variableName, entity);
+    runtimeService.signal(executionId);
+    
+    List<HistoricDetail> variableUpdates = historyService.createHistoricDetailQuery().processInstanceId(executionId).variableUpdates().list();
+    
+    assertEquals(1, variableUpdates.size());
+    HistoricVariableUpdate update = (HistoricVariableUpdate) variableUpdates.get(0);
+    assertNotNull(update.getValue());
+    assertTrue(update.getValue() instanceof FieldAccessJPAEntity);
+    
+    assertEquals(entity.getId(), ((FieldAccessJPAEntity)update.getValue()).getId());
+    }
 }
