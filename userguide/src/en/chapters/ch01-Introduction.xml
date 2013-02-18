@@ -34,14 +34,6 @@
     </para>
   </section>
   <section>
-    <title>Ant 1.8.1+</title>
-    <para>Download the latest stable version of ant from <ulink url="http://ant.apache.org/bindownload.cgi">the Ant download page</ulink>.
-    Unzip the file and make sure that the <literal>bin</literal> folder is
-    in the path of your OS.  Verify with running <literal>ant -version</literal>
-    in the command line.  That should print the installed version ant.
-    </para>
-  </section>
-  <section>
     <title>Eclipse Indigo and Juno</title>
     <para>Download the the eclipse distribution of your choice from <ulink url="http://www.eclipse.org/downloads/">the Eclipse download page</ulink>.
     Unzip the downloaded file and then you should be able to start it with the eclipse file in the directory <literal>eclipse</literal>. 
@@ -52,11 +44,18 @@
 
 <section id="reporting.problems">
   <title>Reporting problems</title>
-  <para>Every self respecting developer should have read 
-  <ulink url="http://www.catb.org/~esr/faqs/smart-questions.html">How to ask questions the smart way</ulink> 
+  <para>Every self-respecting developer should have read 
+  <ulink url="http://www.catb.org/~esr/faqs/smart-questions.html">How to ask questions the smart way</ulink>.
   </para>
   <para>After you've done that you can post questions and comments on <ulink url="http://forums.activiti.org/en/viewforum.php?f=3">the Users forum</ulink> and 
-  create issues in <ulink url="http://jira.codehaus.org/browse/ACT">our JIRA issue tracker</ulink> </para>
+  create issues in <ulink url="http://jira.codehaus.org/browse/ACT">our JIRA issue tracker</ulink>.
+    <note>
+      <para>
+        Even though Activiti is hosted on GitHub, issues should not be reported using GitHub's issue system. If you wish to report an issue, 
+        do not create a GitHub issue, but use <ulink url="http://jira.codehaus.org/browse/ACT">JIRA</ulink>.
+      </para>
+    </note>
+  </para>
 </section>
 
 <section id="experimental">
