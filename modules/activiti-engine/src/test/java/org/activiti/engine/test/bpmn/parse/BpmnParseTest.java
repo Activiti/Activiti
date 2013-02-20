@@ -43,9 +43,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
       repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
       fail();
     } catch (ActivitiException e) {
-      assertTextPresent("cvc-complex-type.3.2.2:", e.getCause().getMessage());
-      assertTextPresent("invalidAttribute", e.getCause().getMessage());
-      assertTextPresent("process", e.getCause().getMessage());
+      assertTextPresent("Could not validate XML with BPMN 2.0 XSD", e.getCause().getMessage());
     }
   }
   
