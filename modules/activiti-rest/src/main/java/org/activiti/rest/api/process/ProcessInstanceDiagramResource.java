@@ -36,23 +36,21 @@ public class ProcessInstanceDiagramResource extends SecuredResource {
   
   @Get
   public InputRepresentation getInstanceDiagram() {
-    if(authenticate() == false) return null;
-    
     String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
     
     if(processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("No process instance id provided");
     }
 
-    ExecutionEntity pi =
-        (ExecutionEntity) ActivitiUtil.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    ExecutionEntity pi = (ExecutionEntity) ActivitiUtil.getRuntimeService().createProcessInstanceQuery()
+        .processInstanceId(processInstanceId).singleResult();
 
     if (pi == null) {
       throw new ActivitiObjectNotFoundException("Process instance with id" + processInstanceId + " could not be found", ProcessInstance.class);
     }
 
-    ProcessDefinitionEntity pde = (ProcessDefinitionEntity) ((RepositoryServiceImpl) ActivitiUtil.getRepositoryService())
-        .getDeployedProcessDefinition(pi.getProcessDefinitionId());
+    ProcessDefinitionEntity pde = (ProcessDefinitionEntity) ((RepositoryServiceImpl) 
+        ActivitiUtil.getRepositoryService()).getDeployedProcessDefinition(pi.getProcessDefinitionId());
 
     if (pde != null && pde.isGraphicalNotationDefined()) {
       InputStream resource = ProcessDiagramGenerator.generateDiagram(pde, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstanceId));
