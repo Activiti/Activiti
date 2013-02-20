@@ -16,9 +16,6 @@ public class ProcessDefinitionDiagramResource extends SecuredResource {
 
 	@Get
 	public InputRepresentation getDiagram() {
-		if (authenticate() == false)
-			return null;
-
 		String processDefinitionId = (String) getRequest().getAttributes().get("processDefinitionId");
 
 		if (processDefinitionId == null) {

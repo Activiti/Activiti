@@ -43,6 +43,34 @@
   
   <section>
   
+    <title>Process diagram</title>
+    
+    <para>
+      The Explorer includes functionality to dynamically generate an overview of a process definition using the <ulink url="http://raphaeljs.com/">Raphaël</ulink> Javascript framework.
+      This process image can only be generated when the process definition XML contains BPMN DI information. When there's no BPMN DI information in the process definition XML and the deployment contains a process definition image, that image will be shown.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.process.definition.image.png"/></imageobject></mediaobject>
+    </para>
+    <para>
+      When you don't want to use the Javascript process definition overview you can disable it in the ui.properties file
+      <programlisting>
+        activiti.ui.jsdiagram = false
+      </programlisting>
+    </para>
+    <para>
+      In addition to showing the process diagram in the Explorer it's also easy to include the process diagram anywhere you want.
+      The following URL will show the process definition image, based on a process definition id: 
+      <programlisting>
+        http://localhost:8080/activiti-explorer/diagram-viewer/index.html?processDefinitionId=reviewSaledLead:1:36
+      </programlisting>
+      It's also possible to show the current state of a process instance by adding a processInstanceId request parameter like this: 
+      <programlisting>
+        http://localhost:8080/activiti-explorer/diagram-viewer/index.html?processDefinitionId=reviewSaledLead:1:36&amp;processInstanceId=41
+      </programlisting>
+    </para>
+  </section>
+  
+  <section>
+  
     <title>Tasks</title>
     
     <para>

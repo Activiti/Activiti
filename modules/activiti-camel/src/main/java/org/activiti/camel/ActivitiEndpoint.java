@@ -30,7 +30,9 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   private boolean copyVariablesFromProperties = false;
 
   public ActivitiEndpoint(String uri, CamelContext camelContext, RuntimeService runtimeService) {
-    super(uri, camelContext);
+    super();
+    setCamelContext(camelContext);
+    setEndpointUri(uri);
     this.runtimeService = runtimeService;
   }
 

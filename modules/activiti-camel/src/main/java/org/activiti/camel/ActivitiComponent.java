@@ -12,12 +12,12 @@
  */
 package org.activiti.camel;
 
+import java.util.Map;
+
 import org.activiti.engine.RuntimeService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.impl.DefaultComponent;
-
-import java.util.Map;
 
 public class ActivitiComponent extends DefaultComponent {
 
@@ -43,7 +43,6 @@ public class ActivitiComponent extends DefaultComponent {
   @Override
   protected Endpoint createEndpoint(String s, String s1, Map<String, Object> stringObjectMap) throws Exception {
     ActivitiEndpoint ae = new ActivitiEndpoint(s, getCamelContext(), runtimeService);
-    //setProperties(ae, stringObjectMap);
     return ae;
   }
 }

@@ -17,6 +17,9 @@
     <activiti.artifact>
       org.activiti.bpmn.converter
     </activiti.artifact>
+    <activiti.osgi.export.additional>
+      org.activiti.bpmn.constants
+    </activiti.osgi.export.additional>
   </properties>
 
   <build>
