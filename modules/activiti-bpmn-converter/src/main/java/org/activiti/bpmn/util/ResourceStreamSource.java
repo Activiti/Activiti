@@ -10,13 +10,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.util.io;
+package org.activiti.bpmn.util;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.util.ReflectUtil;
 
 
 /**
@@ -40,12 +37,12 @@ public class ResourceStreamSource implements StreamSource {
   public InputStream getInputStream() {
     InputStream inputStream = null;
     if (classLoader==null) {
-      inputStream = ReflectUtil.getResourceAsStream(resource);
+      Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
     } else {
       inputStream = classLoader.getResourceAsStream(resource);
     }
     if (inputStream==null) {
-      throw new ActivitiIllegalArgumentException("resource '"+resource+"' doesn't exist");
+      throw new RuntimeException("resource '"+resource+"' doesn't exist");
     }
     return new BufferedInputStream(inputStream);
   }
@@ -53,4 +50,5 @@ public class ResourceStreamSource implements StreamSource {
   public String toString() {
     return "Resource["+resource+"]";
   }
+  
 }

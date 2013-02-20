@@ -583,7 +583,7 @@ public class ProcessDiagramCanvas {
     }
 
     // text
-    if (name != null) {
+    if (name != null && name.length() > 0) {
       drawMultilineText(name, x, y, width, height);
     }
   }

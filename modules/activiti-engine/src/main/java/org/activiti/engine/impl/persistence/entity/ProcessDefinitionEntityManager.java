@@ -30,6 +30,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  * @author Tom Baeyens
  * @author Falko Menge
  * @author Saeid Mirzaei
+ * @author Joram Barrez
  */
 public class ProcessDefinitionEntityManager extends AbstractManager {
 
@@ -41,7 +42,7 @@ public class ProcessDefinitionEntityManager extends AbstractManager {
     getDbSqlSession().delete("deleteProcessDefinitionsByDeploymentId", deploymentId);
   }
 
-  public ProcessDefinitionEntity findLatestProcessDefinitionById(String processDefinitionId) {
+  public ProcessDefinitionEntity findProcessDefinitionById(String processDefinitionId) {
     return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectProcessDefinitionById", processDefinitionId);
   }
   

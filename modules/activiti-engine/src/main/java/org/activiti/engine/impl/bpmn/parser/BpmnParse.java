@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -22,9 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
@@ -40,6 +36,11 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.parse.Problem;
+import org.activiti.bpmn.util.InputStreamSource;
+import org.activiti.bpmn.util.ResourceStreamSource;
+import org.activiti.bpmn.util.StreamSource;
+import org.activiti.bpmn.util.StringStreamSource;
+import org.activiti.bpmn.util.UrlStreamSource;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.Condition;
@@ -63,11 +64,6 @@ import org.activiti.engine.impl.pvm.process.HasDIBounds;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
-import org.activiti.engine.impl.util.io.InputStreamSource;
-import org.activiti.engine.impl.util.io.ResourceStreamSource;
-import org.activiti.engine.impl.util.io.StreamSource;
-import org.activiti.engine.impl.util.io.StringStreamSource;
-import org.activiti.engine.impl.util.io.UrlStreamSource;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,41 +164,10 @@ public class BpmnParse implements BpmnXMLConstants {
   }
 
   public BpmnParse execute() {
-    BpmnXMLConverter converter = new BpmnXMLConverter();
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-
-    if (xif.isPropertySupported(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES)) {
-      xif.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
-    }
-
-    if (xif.isPropertySupported(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES)) {
-      xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-    }
-
-    if (xif.isPropertySupported(XMLInputFactory.SUPPORT_DTD)) {
-      xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-    }
-
-    InputStreamReader in = null;
     try {
-
-      in = new InputStreamReader(streamSource.getInputStream(), "UTF-8");
-      XMLStreamReader xtr = xif.createXMLStreamReader(in);
-
-      // Schema validation
-      try {
-        converter.validateModel(xtr);
-        
-        // The input stream is closed after schema validation
-        in = new InputStreamReader(streamSource.getInputStream(), "UTF-8");
-        xtr = xif.createXMLStreamReader(in);
-        
-      } catch (Exception e) {
-        throw new ActivitiException("Could not validate XML with BPMN 2.0 XSD", e);
-      }
-
-      // XML conversion
-      bpmnModel = converter.convertToBpmnModel(xtr);
+      BpmnXMLConverter converter = new BpmnXMLConverter();
+      bpmnModel = converter.convertToBpmnModel(streamSource, true);
+      
       createImports();
       createItemDefinitions();
       createMessages();
@@ -213,14 +178,6 @@ public class BpmnParse implements BpmnXMLConstants {
         throw (ActivitiException) e;
       } else {
         throw new ActivitiException("Error parsing XML", e);
-      }
-    } finally {
-      try {
-        if (in != null) {
-          in.close();
-        }
-      } catch (Exception e) {
-        LOGGER.info("Problem closing BPMN input stream", e);
       }
     }
 
@@ -727,5 +684,5 @@ public class BpmnParse implements BpmnXMLConstants {
   public void removeCurrentScope() {
     currentScopeStack.pop();
   }
-
+  
 }

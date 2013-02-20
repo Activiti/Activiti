@@ -20,17 +20,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.Lane;
-import org.activiti.engine.impl.pvm.process.LaneSet;
-import org.activiti.engine.impl.pvm.process.ParticipantProcess;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
+import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.BusinessRuleTask;
+import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.ErrorEventDefinition;
+import org.activiti.bpmn.model.EventGateway;
+import org.activiti.bpmn.model.EventSubProcess;
+import org.activiti.bpmn.model.ExclusiveGateway;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowElementsContainer;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.Gateway;
+import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.model.InclusiveGateway;
+import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.Lane;
+import org.activiti.bpmn.model.ManualTask;
+import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
+import org.activiti.bpmn.model.ParallelGateway;
+import org.activiti.bpmn.model.Pool;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ReceiveTask;
+import org.activiti.bpmn.model.ScriptTask;
+import org.activiti.bpmn.model.SendTask;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.bpmn.model.SignalEventDefinition;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.Task;
+import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.bpmn.model.UserTask;
 
 /**
  * Class to generate an image based the diagram interchange information in a
@@ -40,240 +65,249 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
  */
 public class ProcessDiagramGenerator {
 
-  protected static final Map<String, ActivityDrawInstruction> activityDrawInstructions = new HashMap<String, ActivityDrawInstruction>();
-
+  protected static final Map<Class<? extends BaseElement>, ActivityDrawInstruction> activityDrawInstructions = new HashMap<Class<? extends BaseElement>, ActivityDrawInstruction>();
+  
   // The instructions on how to draw a certain construct is
   // created statically and stored in a map for performance.
   static {
     // start event
-    activityDrawInstructions.put("startEvent", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(StartEvent.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawNoneStartEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        StartEvent startEvent = (StartEvent) flowNode;
+        if (startEvent.getEventDefinitions() != null && startEvent.getEventDefinitions().size() > 0) {
+         if (startEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
+           processDiagramCanvas.drawTimerStartEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+         } else if (startEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+           processDiagramCanvas.drawErrorStartEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+         }
+        } else {
+          processDiagramCanvas.drawNoneStartEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+        }
       }
     });
 
-    // start timer event
-    activityDrawInstructions.put("startTimerEvent", new ActivityDrawInstruction() {
-
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawTimerStartEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
-      }
-    });
-    
     // signal catch
-    activityDrawInstructions.put("intermediateSignalCatch", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(IntermediateCatchEvent.class, new ActivityDrawInstruction() {
       
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawCatchingSignalEvent((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), false);
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) flowNode;
+        if (intermediateCatchEvent.getEventDefinitions() != null && intermediateCatchEvent.getEventDefinitions().size() > 0) {
+          if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
+            processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), false);
+          } else if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
+            processDiagramCanvas.drawCatchingTimerEvent(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), false);
+          }
+        }
       }
     });
     
     // signal throw
-    activityDrawInstructions.put("intermediateSignalThrow", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(ThrowEvent.class, new ActivityDrawInstruction() {
       
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawThrowingSignalEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
-      }
-    });
-    
-    // none throw
-    activityDrawInstructions.put("intermediateThrowEvent", new ActivityDrawInstruction() {
-      
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawThrowingNoneEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        ThrowEvent throwEvent = (ThrowEvent) flowNode;
+        if (throwEvent.getEventDefinitions() != null && throwEvent.getEventDefinitions().size() > 0) {
+          if (throwEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
+            processDiagramCanvas.drawThrowingSignalEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+          }
+        } else {
+          processDiagramCanvas.drawThrowingNoneEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+        }
       }
     });
     
     // end event
-    activityDrawInstructions.put("endEvent", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(EndEvent.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawNoneEndEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        EndEvent endEvent = (EndEvent) flowNode;
+        if (endEvent.getEventDefinitions() != null && endEvent.getEventDefinitions().size() > 0) {
+          if (endEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+            processDiagramCanvas.drawErrorEndEvent(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+          }
+        } else {
+          processDiagramCanvas.drawNoneEndEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+        }
       }
     });
 
-    // error end event
-    activityDrawInstructions.put("errorEndEvent", new ActivityDrawInstruction() {
-
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawErrorEndEvent((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
-      }
-    });
-    
-    // error start event
-    activityDrawInstructions.put("errorStartEvent", new ActivityDrawInstruction() {
-
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawErrorStartEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
-      }
-    });
-    
     // task
-    activityDrawInstructions.put("task", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(Task.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawTask((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(),
-                activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawTask(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
 
     // user task
-    activityDrawInstructions.put("userTask", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(UserTask.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawUserTask((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(),
-                activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawUserTask(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
 
     // script task
-    activityDrawInstructions.put("scriptTask", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(ScriptTask.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawScriptTask((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(),
-                activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawScriptTask(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
 
     // service task
-    activityDrawInstructions.put("serviceTask", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(ServiceTask.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawServiceTask((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(),
-                activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawServiceTask(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
 
     // receive task
-    activityDrawInstructions.put("receiveTask", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(ReceiveTask.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawReceiveTask((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(),
-                activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawReceiveTask(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
 
     // send task
-    activityDrawInstructions.put("sendTask", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(SendTask.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawSendTask((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(),
-                activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawSendTask(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
 
     // manual task
-    activityDrawInstructions.put("manualTask", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(ManualTask.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawManualTask((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(),
-                activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawManualTask(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
     
     // businessRuleTask task
-    activityDrawInstructions.put("businessRuleTask", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(BusinessRuleTask.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawBusinessRuleTask((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(),
-                activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawBusinessRuleTask(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
 
     // exclusive gateway
-    activityDrawInstructions.put("exclusiveGateway", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(ExclusiveGateway.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawExclusiveGateway(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawExclusiveGateway((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
 
     // inclusive gateway
-    activityDrawInstructions.put("inclusiveGateway", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(InclusiveGateway.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawInclusiveGateway(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawInclusiveGateway((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
 
     // parallel gateway
-    activityDrawInstructions.put("parallelGateway", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(ParallelGateway.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawParallelGateway(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawParallelGateway((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
     
     // event based gateway
-    activityDrawInstructions.put("eventBasedGateway", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(EventGateway.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawEventBasedGateway(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawEventBasedGateway((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
     
 
     // Boundary timer
-    activityDrawInstructions.put("boundaryTimer", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(BoundaryEvent.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        BoundaryEventActivityBehavior behavior = (BoundaryEventActivityBehavior)activityImpl.getActivityBehavior();
-        processDiagramCreator.drawCatchingTimerEvent((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), behavior.isInterrupting());
-      }
-    });
-
-    // Boundary catch error
-    activityDrawInstructions.put("boundaryError", new ActivityDrawInstruction() {
-
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        BoundaryEventActivityBehavior behavior = (BoundaryEventActivityBehavior)activityImpl.getActivityBehavior();
-        processDiagramCreator.drawCatchingErrorEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), behavior.isInterrupting());
-      }
-    });
-    
-    // Boundary signal event
-    activityDrawInstructions.put("boundarySignal", new ActivityDrawInstruction() {
-
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        BoundaryEventActivityBehavior behavior = (BoundaryEventActivityBehavior)activityImpl.getActivityBehavior();
-        processDiagramCreator.drawCatchingSignalEvent((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), behavior.isInterrupting());
-      }
-    });
-
-    // timer catch event
-    activityDrawInstructions.put("intermediateTimer", new ActivityDrawInstruction() {
-
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawCatchingTimerEvent((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), false);
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        BoundaryEvent boundaryEvent = (BoundaryEvent) flowNode;
+        if (boundaryEvent.getEventDefinitions() != null && boundaryEvent.getEventDefinitions().size() > 0) {
+          if (boundaryEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
+            
+            processDiagramCanvas.drawCatchingTimerEvent(flowNode.getName(), (int) graphicInfo.getX(), 
+                    (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), boundaryEvent.isCancelActivity());
+            
+          } else if (boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+            
+            processDiagramCanvas.drawCatchingErrorEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(),
+                    (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), boundaryEvent.isCancelActivity());
+            
+          } else if (boundaryEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
+            processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(), (int) graphicInfo.getX(), 
+                    (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), boundaryEvent.isCancelActivity());
+          }
+        }
+        
       }
     });
 
     // subprocess
-    activityDrawInstructions.put("subProcess", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(SubProcess.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        Boolean isExpanded = (Boolean) activityImpl.getProperty(BpmnParse.PROPERTYNAME_ISEXPANDED);
-        Boolean isTriggeredByEvent = (Boolean) activityImpl.getProperty("triggeredByEvent");
-        if(isTriggeredByEvent == null) {
-          isTriggeredByEvent = Boolean.TRUE;
-        }
-        if (isExpanded != null && isExpanded == false) {
-          processDiagramCreator.drawCollapsedSubProcess((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(),
-                  activityImpl.getWidth(), activityImpl.getHeight(), isTriggeredByEvent);
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        if (!graphicInfo.isExpanded()) {
+          processDiagramCanvas.drawCollapsedSubProcess(flowNode.getName(), (int) graphicInfo.getX(), 
+                  (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), false);
         } else {
-          processDiagramCreator.drawExpandedSubProcess((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(),
-                  activityImpl.getWidth(), activityImpl.getHeight(), isTriggeredByEvent);
+          processDiagramCanvas.drawExpandedSubProcess(flowNode.getName(), (int) graphicInfo.getX(), 
+                  (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), false);
+        }
+      }
+    });
+    
+    // Event subprocess
+    activityDrawInstructions.put(EventSubProcess.class, new ActivityDrawInstruction() {
+
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        if (!graphicInfo.isExpanded()) {
+          processDiagramCanvas.drawCollapsedSubProcess(flowNode.getName(), (int) graphicInfo.getX(), 
+                  (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), true);
+        } else {
+          processDiagramCanvas.drawExpandedSubProcess(flowNode.getName(), (int) graphicInfo.getX(), 
+                  (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), true);
         }
       }
     });
 
     // call activity
-    activityDrawInstructions.put("callActivity", new ActivityDrawInstruction() {
+    activityDrawInstructions.put(CallActivity.class, new ActivityDrawInstruction() {
 
-      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
-        processDiagramCreator.drawCollapsedCallActivity((String) activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(),
-                activityImpl.getWidth(), activityImpl.getHeight());
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+        processDiagramCanvas.drawCollapsedCallActivity(flowNode.getName(), (int) graphicInfo.getX(), 
+                (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
       }
     });
 
@@ -283,114 +317,116 @@ public class ProcessDiagramGenerator {
    * Generates a PNG diagram image of the given process definition, using the
    * diagram interchange information of the process.
    */
-  public static InputStream generatePngDiagram(ProcessDefinitionEntity processDefinition) {
-    return generateDiagram(processDefinition, "png", Collections.<String> emptyList());
+  public static InputStream generatePngDiagram(BpmnModel bpmnModel) {
+    return generateDiagram(bpmnModel, "png", Collections.<String> emptyList());
   }
-
+  
   /**
    * Generates a JPG diagram image of the given process definition, using the
    * diagram interchange information of the process.
    */
-  public static InputStream generateJpgDiagram(ProcessDefinitionEntity processDefinition) {
-    return generateDiagram(processDefinition, "jpg", Collections.<String> emptyList());
+  public static InputStream generateJpgDiagram(BpmnModel bpmnModel) {
+    return generateDiagram(bpmnModel, "jpg", Collections.<String> emptyList());
   }
 
-  protected static ProcessDiagramCanvas generateDiagram(ProcessDefinitionEntity processDefinition, List<String> highLightedActivities) {
-	  return generateDiagram(processDefinition, highLightedActivities, Collections.<String> emptyList());
+  protected static ProcessDiagramCanvas generateDiagram(BpmnModel bpmnModel, List<String> highLightedActivities) {
+	  return generateDiagram(bpmnModel, highLightedActivities, Collections.<String> emptyList());
   }
-  protected static ProcessDiagramCanvas generateDiagram(ProcessDefinitionEntity processDefinition, List<String> highLightedActivities, List<String> highLightedFlows) {
-    ProcessDiagramCanvas processDiagramCanvas = initProcessDiagramCanvas(processDefinition);
+  
+  protected static ProcessDiagramCanvas generateDiagram(BpmnModel bpmnModel, List<String> highLightedActivities, List<String> highLightedFlows) {
+    ProcessDiagramCanvas processDiagramCanvas = initProcessDiagramCanvas(bpmnModel);
     
-    // Draw pool shape, if process is participant in collaboration
-    if(processDefinition.getParticipantProcess() != null) {
-      ParticipantProcess pProc = processDefinition.getParticipantProcess();
-      processDiagramCanvas.drawPoolOrLane(pProc.getName(), pProc.getX(), pProc.getY(), pProc.getWidth(), pProc.getHeight());
+//    // Draw pool shape, if process is participant in collaboration
+    for (Pool pool : bpmnModel.getPools()) {
+      GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(pool.getId());
+      processDiagramCanvas.drawPoolOrLane(pool.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), 
+              (int) graphicInfo.getWidth(),  (int) graphicInfo.getHeight());
     }
     
     // Draw lanes
-    if(processDefinition.getLaneSets() != null && processDefinition.getLaneSets().size() > 0) {
-      for(LaneSet laneSet : processDefinition.getLaneSets()) {
-        if(laneSet.getLanes() != null && laneSet.getLanes().size() > 0) {
-          for(Lane lane : laneSet.getLanes()) {
-            processDiagramCanvas.drawPoolOrLane(lane.getName(), lane.getX(), lane.getY(), lane.getWidth(), lane.getHeight());
-          }
-        }
+    for (Process process : bpmnModel.getProcesses()) {
+      for (Lane lane : process.getLanes()) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(lane.getId());
+        processDiagramCanvas.drawPoolOrLane(lane.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), 
+                (int) graphicInfo.getWidth(),  (int) graphicInfo.getHeight());
       }
     }
     
     // Draw activities and their sequence-flows
-    for (ActivityImpl activity : processDefinition.getActivities()) {
-      drawActivity(processDiagramCanvas, activity, highLightedActivities, highLightedFlows);
+    for (FlowNode flowNode : bpmnModel.getProcesses().get(0).findFlowElementsOfType(FlowNode.class)) {
+      drawActivity(processDiagramCanvas, bpmnModel, flowNode, highLightedActivities, highLightedFlows);
     }
     return processDiagramCanvas;
   }
-
-  public static InputStream generateDiagram(ProcessDefinitionEntity processDefinition, String imageType, List<String> highLightedActivities) {
-    return generateDiagram(processDefinition, highLightedActivities, Collections.<String> emptyList()).generateImage(imageType);
+  
+  public static InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities) {
+    ProcessDiagramCanvas canvas = generateDiagram(bpmnModel, highLightedActivities, Collections.<String> emptyList());
+    return canvas.generateImage(imageType);
+  }
+  
+  public static InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities, List<String> highLightedFlows) {
+    return generateDiagram(bpmnModel, highLightedActivities, highLightedFlows).generateImage(imageType);
   }
 
-  public static InputStream generateDiagram(ProcessDefinitionEntity processDefinition, String imageType, List<String> highLightedActivities, List<String> highLightedFlows) {
-    return generateDiagram(processDefinition, highLightedActivities, highLightedFlows).generateImage(imageType);
-  }
-
-  protected static void drawActivity(ProcessDiagramCanvas processDiagramCanvas, ActivityImpl activity, List<String> highLightedActivities, List<String> highLightedFlows) {
-    String type = (String) activity.getProperty("type");
+  protected static void drawActivity(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode, List<String> highLightedActivities, List<String> highLightedFlows) {
     
-    ActivityDrawInstruction drawInstruction = activityDrawInstructions.get(type);
+    ActivityDrawInstruction drawInstruction = activityDrawInstructions.get(flowNode.getClass());
     if (drawInstruction != null) {
 
-      drawInstruction.draw(processDiagramCanvas, activity);
+      drawInstruction.draw(processDiagramCanvas, bpmnModel, flowNode);
 
       // Gather info on the multi instance marker
       boolean multiInstanceSequential = false, multiInstanceParallel = false, collapsed = false;
-      String multiInstance = (String) activity.getProperty("multiInstance");
-      if (multiInstance != null) {
-        if ("sequential".equals(multiInstance)) {
-          multiInstanceSequential = true;
-        } else {
-          multiInstanceParallel = true;
+      if (flowNode instanceof Activity) {
+        Activity activity = (Activity) flowNode;
+        MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics = activity.getLoopCharacteristics();
+        if (multiInstanceLoopCharacteristics != null) {
+          multiInstanceSequential = multiInstanceLoopCharacteristics.isSequential();
+          multiInstanceParallel = !multiInstanceSequential;
         }
       }
 
       // Gather info on the collapsed marker
-      collapsed = (activity.getActivityBehavior() instanceof CallActivityBehavior);
-      Boolean expanded = (Boolean) activity.getProperty(BpmnParse.PROPERTYNAME_ISEXPANDED);
-      if (expanded != null) {
-        collapsed = !expanded;
+      GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId()); 
+      if (flowNode instanceof SubProcess) {
+        collapsed = !graphicInfo.isExpanded();
+      } else if (flowNode instanceof CallActivity) {
+        collapsed = true;
       }
 
       // Actually draw the markers
-      processDiagramCanvas.drawActivityMarkers(activity.getX(), activity.getY(), activity.getWidth(), activity.getHeight(), multiInstanceSequential,
-              multiInstanceParallel, collapsed);
+      processDiagramCanvas.drawActivityMarkers((int) graphicInfo.getX(), (int) graphicInfo.getY(),(int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), 
+              multiInstanceSequential, multiInstanceParallel, collapsed);
 
       // Draw highlighted activities
-      if (highLightedActivities.contains(activity.getId())) {
-        drawHighLight(processDiagramCanvas, activity);
+      if (highLightedActivities.contains(flowNode.getId())) {
+        drawHighLight(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
       }
 
     }
 
-    
-    
-    // Original transitions drawing  
-
     // Outgoing transitions of activity
-    for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
-      List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();
-      for (int i = 2; i < waypoints.size(); i += 2) { // waypoints.size()
-                                                      // minimally 4: x1, y1,
-                                                      // x2, y2
+    for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
+      List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(sequenceFlow.getId());
+      for (int i=1; i<graphicInfoList.size(); i++) {
+        
+        GraphicInfo graphicInfo = graphicInfoList.get(i);
+        GraphicInfo previousGraphicInfo = graphicInfoList.get(i-1);
+
         boolean highLighted = (highLightedFlows.contains(sequenceFlow.getId()));
-        boolean drawConditionalIndicator = (i == 2) && sequenceFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION) != null
-                && !((String) activity.getProperty("type")).toLowerCase().contains("gateway");
-        if (i < waypoints.size() - 2) {
-          processDiagramCanvas.drawSequenceflowWithoutArrow(waypoints.get(i - 2), waypoints.get(i - 1), waypoints.get(i), waypoints.get(i + 1),
-                  drawConditionalIndicator, highLighted);
+        boolean drawConditionalIndicator = (i == 1) && sequenceFlow.getConditionExpression() != null && !(flowNode instanceof Gateway);
+        
+        if (i < graphicInfoList.size() - 1) {
+          processDiagramCanvas.drawSequenceflowWithoutArrow((int) previousGraphicInfo.getX(), (int) previousGraphicInfo.getY(), 
+                  (int) graphicInfo.getX(), (int) graphicInfo.getY(), drawConditionalIndicator, highLighted);
         } else {
-          processDiagramCanvas.drawSequenceflow(waypoints.get(i - 2), waypoints.get(i - 1), waypoints.get(i), waypoints.get(i + 1), drawConditionalIndicator, highLighted);
+          processDiagramCanvas.drawSequenceflow((int) previousGraphicInfo.getX(), (int) previousGraphicInfo.getY(), 
+                  (int) graphicInfo.getX(), (int) graphicInfo.getY(), drawConditionalIndicator, highLighted);
         }
       }
     }
+    
+    // TODO: curvy parameter
     
     // Outgoing transitions of activity
 //    for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
@@ -412,121 +448,136 @@ public class ProcessDiagramGenerator {
 //      processDiagramCanvas.drawSequenceflow(xPoints, yPoints, drawConditionalIndicator, isDefault, highLighted);
 //    }
 
-    // Nested activities (boundary events)
-    for (ActivityImpl nestedActivity : activity.getActivities()) {
-      drawActivity(processDiagramCanvas, nestedActivity, highLightedActivities, highLightedFlows);
+    // Nested elements
+    if (flowNode instanceof FlowElementsContainer) {
+      for (FlowElement nestedFlowElement : ((FlowElementsContainer) flowNode).getFlowElements()) {
+        if (nestedFlowElement instanceof FlowNode) {
+          drawActivity(processDiagramCanvas, bpmnModel, (FlowNode) nestedFlowElement, highLightedActivities, highLightedFlows);
+        }
+      }
     }
   }
 
-  private static void drawHighLight(ProcessDiagramCanvas processDiagramCanvas, ActivityImpl activity) {
-    processDiagramCanvas.drawHighLight(activity.getX(), activity.getY(), activity.getWidth(), activity.getHeight());
+  private static void drawHighLight(ProcessDiagramCanvas processDiagramCanvas, GraphicInfo graphicInfo) {
+    processDiagramCanvas.drawHighLight((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
 
   }
 
-  protected static ProcessDiagramCanvas initProcessDiagramCanvas(ProcessDefinitionEntity processDefinition) {
+  protected static ProcessDiagramCanvas initProcessDiagramCanvas(BpmnModel bpmnModel) {
     
     // We need to calculate maximum values to know how big the image will be in its entirety
-    int minX = Integer.MAX_VALUE;
-    int maxX = 0;
-    int minY = Integer.MAX_VALUE;
-    int maxY = 0;
-    
-    if(processDefinition.getParticipantProcess() != null) {
-      ParticipantProcess pProc = processDefinition.getParticipantProcess();
-      
-      minX = pProc.getX();
-      maxX = pProc.getX() + pProc.getWidth();
-      minY = pProc.getY();
-      maxY = pProc.getY() + pProc.getHeight();
+    double minX = Double.MAX_VALUE;
+    double maxX = 0;
+    double minY = Double.MAX_VALUE;
+    double maxY = 0;
+
+    for (Pool pool : bpmnModel.getPools()) {
+      GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(pool.getId());
+      minX = graphicInfo.getX();
+      maxX = graphicInfo.getX() + graphicInfo.getWidth();
+      minY = graphicInfo.getY();
+      maxY = graphicInfo.getY() + graphicInfo.getHeight();
     }
     
-    for (ActivityImpl activity : gatherAllActivities(processDefinition)) {
+    List<FlowNode> flowNodes = gatherAllFlowNodes(bpmnModel);
+    for (FlowNode flowNode : flowNodes) {
 
+      GraphicInfo flowNodeGraphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+      
       // width
-      if (activity.getX() + activity.getWidth() > maxX) {
-        maxX = activity.getX() + activity.getWidth();
+      if (flowNodeGraphicInfo.getX() + flowNodeGraphicInfo.getWidth() > maxX) {
+        maxX = flowNodeGraphicInfo.getX() + flowNodeGraphicInfo.getWidth();
       }
-      if (activity.getX() < minX) {
-        minX = activity.getX();
+      if (flowNodeGraphicInfo.getX() < minX) {
+        minX = flowNodeGraphicInfo.getX();
       }
       // height
-      if (activity.getY() + activity.getHeight() > maxY) {
-        maxY = activity.getY() + activity.getHeight();
+      if (flowNodeGraphicInfo.getY() + flowNodeGraphicInfo.getHeight() > maxY) {
+        maxY = flowNodeGraphicInfo.getY() + flowNodeGraphicInfo.getHeight();
       }
-      if (activity.getY() < minY) {
-        minY = activity.getY();
+      if (flowNodeGraphicInfo.getY() < minY) {
+        minY = flowNodeGraphicInfo.getY();
       }
 
-      for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
-        List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();
-        for (int i = 0; i < waypoints.size(); i += 2) {
+      for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
+        List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(sequenceFlow.getId());
+        for (GraphicInfo graphicInfo : graphicInfoList) {
           // width
-          if (waypoints.get(i) > maxX) {
-            maxX = waypoints.get(i);
+          if (graphicInfo.getX() > maxX) {
+            maxX = graphicInfo.getX();
           }
-          if (waypoints.get(i) < minX) {
-            minX = waypoints.get(i);
+          if (graphicInfo.getX() < minX) {
+            minX = graphicInfo.getX();
           }
           // height
-          if (waypoints.get(i + 1) > maxY) {
-            maxY = waypoints.get(i + 1);
+          if (graphicInfo.getY() > maxY) {
+            maxY = graphicInfo.getY();
           }
-          if (waypoints.get(i + 1) < minY) {
-            minY = waypoints.get(i + 1);
+          if (graphicInfo.getY()< minY) {
+            minY = graphicInfo.getY();
           }
         }
       }
     }
     
-    if(processDefinition.getLaneSets() != null && processDefinition.getLaneSets().size() > 0) {
-      for(LaneSet laneSet : processDefinition.getLaneSets()) {
-        if(laneSet.getLanes() != null && laneSet.getLanes().size() > 0) {
-          for(Lane lane : laneSet.getLanes()) {
-            // width
-            if (lane.getX() + lane.getWidth() > maxX) {
-              maxX = lane.getX() + lane.getWidth();
-            }
-            if (lane.getX() < minX) {
-              minX = lane.getX();
-            }
-            // height
-            if (lane.getY() + lane.getHeight() > maxY) {
-              maxY = lane.getY() + lane.getHeight();
-            }
-            if (lane.getY() < minY) {
-              minY = lane.getY();
-            }
-          }
+    int nrOfLanes = 0;
+    for (Process process : bpmnModel.getProcesses()) {
+      for (Lane l : process.getLanes()) {
+        
+        nrOfLanes++;
+        
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(l.getId());
+        // // width
+        if (graphicInfo.getX() + graphicInfo.getWidth() > maxX) {
+          maxX = graphicInfo.getX() + graphicInfo.getWidth();
+        }
+        if (graphicInfo.getX() < minX) {
+          minX = graphicInfo.getX();
+        }
+        // height
+        if (graphicInfo.getY() + graphicInfo.getHeight() > maxY) {
+          maxY = graphicInfo.getY() + graphicInfo.getHeight();
+        }
+        if (graphicInfo.getY() < minY) {
+          minY = graphicInfo.getY();
         }
       }
     }
     
     // Special case, see http://jira.codehaus.org/browse/ACT-1431
-    if ( (processDefinition.getActivities() == null || processDefinition.getActivities().size() == 0) 
-            && (processDefinition.getLaneSets() == null || processDefinition.getLaneSets().size() == 0)) {
+    if (flowNodes.size() == 0 && bpmnModel.getPools().size() == 0 && nrOfLanes == 0) {
       // Nothing to show
       minX = 0;
       minY = 0;
     }
     
-    return new ProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY);
+    return new ProcessDiagramCanvas((int) maxX + 10,(int) maxY + 10, (int) minX, (int) minY);
   }
   
-  protected static List<ActivityImpl> gatherAllActivities(ScopeImpl scope) {
-    List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
-    for (ActivityImpl activity : scope.getActivities()) {
-      activities.add(activity);
-      
-      if (activity.getActivities() != null && activity.getActivities().size() > 0) {
-        activities.addAll(gatherAllActivities(activity));
+  protected static List<FlowNode> gatherAllFlowNodes(BpmnModel bpmnModel) {
+    List<FlowNode> flowNodes = new ArrayList<FlowNode>();
+    for (Process process : bpmnModel.getProcesses()) {
+      flowNodes.addAll(gatherAllFlowNodes(process));
+    }
+    return flowNodes;
+  }
+  
+  protected static List<FlowNode> gatherAllFlowNodes(FlowElementsContainer flowElementsContainer) {
+    List<FlowNode> flowNodes = new ArrayList<FlowNode>();
+    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+      if (flowElement instanceof FlowNode) {
+        flowNodes.add((FlowNode) flowElement);
+      }
+      if (flowElement instanceof FlowElementsContainer) {
+        flowNodes.addAll(gatherAllFlowNodes((FlowElementsContainer) flowElement));
       }
     }
-    return activities;
+    return flowNodes;
   }
 
   protected interface ActivityDrawInstruction {
 
-    void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl);
+    void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode);
 
   }
 

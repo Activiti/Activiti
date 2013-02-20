@@ -14,9 +14,9 @@ package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.Map;
 
 /**
  * @author Tijs Rademakers
@@ -30,6 +30,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
   protected List<Lane> lanes = new ArrayList<Lane>();
   protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
+  protected Map<String, FlowElement> flowElementMap = new HashMap<String, FlowElement>(); // The flow elements are twice stored. The map is used for performance when retrieving by id 
   protected List<Artifact> artifactList = new ArrayList<Artifact>();
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
@@ -82,17 +83,25 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     this.lanes = lanes;
   }
   
-  public FlowElement getFlowElement(String id) {
-    FlowElement foundElement = null;
-    if (StringUtils.isNotEmpty(id)) {  
-      for (FlowElement element : flowElementList) {
-        if (id.equals(element.getId())) {
-          foundElement = element;
-          break;
-        }
+  public FlowElement getFlowElement(String flowElementId) {
+    FlowElement flowElement = flowElementMap.get(flowElementId);
+    
+    // It could be the id has changed after insertion into the map,
+    // So if it is not found, we loop through the list
+    if (flowElement == null) {
+     flowElement = findFlowElementInList(flowElementId);
+    }
+    
+    return flowElement;
+  }
+  
+  protected FlowElement findFlowElementInList(String flowElementId) {
+    for (FlowElement f : flowElementList) {
+      if (f.getId() != null && f.getId().equals(flowElementId)) {
+        return f;
       }
     }
-    return foundElement;
+    return null;
   }
   
   public Collection<FlowElement> getFlowElements() {
@@ -101,12 +110,19 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   
   public void addFlowElement(FlowElement element) {
     flowElementList.add(element);
+    flowElementMap.put(element.getId(), element);
   }
   
   public void removeFlowElement(String elementId) {
-    FlowElement element = getFlowElement(elementId);
+    FlowElement element = flowElementMap.get(elementId);
+    
+    if (element == null) {
+      element = findFlowElementInList(elementId);
+    }
+    
     if (element != null) {
       flowElementList.remove(element);
+      flowElementMap.remove(elementId);
     }
   }
   
@@ -151,4 +167,16 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   public void setCandidateStarterGroups(List<String> candidateStarterGroups) {
     this.candidateStarterGroups = candidateStarterGroups;
   }
+  
+  @SuppressWarnings("unchecked")
+  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsOfType(Class<FlowElementType> type) {
+    List<FlowElementType> flowElements = new ArrayList<FlowElementType>();
+    for (FlowElement flowElement : this.getFlowElements()) {
+      if (type.isInstance(flowElement)) {
+        flowElements.add((FlowElementType) flowElement);
+      }
+    }
+    return flowElements;
+  }
+  
 }

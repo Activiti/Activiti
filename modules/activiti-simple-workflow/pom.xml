@@ -27,6 +27,10 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-converter</artifactId>
 		</dependency>
+		<dependency>
+		  <groupId>org.activiti</groupId>
+		  <artifactId>activiti-bpmn-layout</artifactId>
+		</dependency>
 		<!-- Json parsing -->
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>

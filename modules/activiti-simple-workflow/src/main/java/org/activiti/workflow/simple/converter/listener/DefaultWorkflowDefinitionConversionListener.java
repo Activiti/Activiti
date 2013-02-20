@@ -26,7 +26,6 @@ import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
-import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
  * Default listener for {@link WorkflowDefinitionConversion} lifecycle events.
@@ -98,7 +97,7 @@ public class DefaultWorkflowDefinitionConversionListener implements WorkflowDefi
         // We must add the ingoing and outgoing sequence flow to each of the flow nodes
         SequenceFlowMapping sequenceFlowMapping = generateSequenceflowMappings(process);
         
-        for (FlowNode flowNode : BpmnModelUtil.findFlowElementsOfType(process, FlowNode.class)) {
+        for (FlowNode flowNode : process.findFlowElementsOfType(FlowNode.class)) {
           List<SequenceFlow> incomingSequenceFlow = sequenceFlowMapping.getIncomingSequenceFlowMapping().get(flowNode.getId());
           if (incomingSequenceFlow != null) {
             flowNode.setIncomingFlows(incomingSequenceFlow);
@@ -115,7 +114,7 @@ public class DefaultWorkflowDefinitionConversionListener implements WorkflowDefi
       HashMap<String, List<SequenceFlow>> incomingSequenceFlowMapping = new HashMap<String, List<SequenceFlow>>();
       HashMap<String, List<SequenceFlow>> outgoingSequenceFlowMapping = new HashMap<String, List<SequenceFlow>>();
       
-      for (FlowElement flowElement : BpmnModelUtil.findFlowElementsOfType(process, SequenceFlow.class)) {
+      for (FlowElement flowElement : process.findFlowElementsOfType(SequenceFlow.class)) {
         SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
         String srcId = sequenceFlow.getSourceRef();
         String targetId = sequenceFlow.getTargetRef();

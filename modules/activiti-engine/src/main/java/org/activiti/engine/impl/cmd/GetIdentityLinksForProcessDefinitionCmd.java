@@ -42,7 +42,7 @@ public class GetIdentityLinksForProcessDefinitionCmd implements Command<List<Ide
     ProcessDefinitionEntity processDefinition = Context
         .getCommandContext()
         .getProcessDefinitionEntityManager()
-        .findLatestProcessDefinitionById(processDefinitionId);
+        .findProcessDefinitionById(processDefinitionId);
       
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);

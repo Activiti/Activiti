@@ -58,7 +58,7 @@ public class DeleteIdentityLinkForProcessDefinitionCmd implements Command<Object
     ProcessDefinitionEntity processDefinition = Context
         .getCommandContext()
         .getProcessDefinitionEntityManager()
-        .findLatestProcessDefinitionById(processDefinitionId);
+        .findProcessDefinitionById(processDefinitionId);
       
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);

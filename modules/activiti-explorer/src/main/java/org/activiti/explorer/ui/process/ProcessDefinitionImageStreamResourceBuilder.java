@@ -16,6 +16,7 @@ package org.activiti.explorer.ui.process;
 import java.io.InputStream;
 import java.util.UUID;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
@@ -73,7 +74,9 @@ public class ProcessDefinitionImageStreamResourceBuilder {
 
     if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
       try {
-        InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(processDefinition, "png", 
+        
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getId());
+        InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(bpmnModel, "png", 
                 runtimeService.getActiveActivityIds(processInstance.getId()));
               
         if(definitionImageStream != null) {
@@ -100,7 +103,9 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processDefinitionId);
 
     if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
-      InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(processDefinition, "png", 
+      
+      BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+      InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(bpmnModel, "png", 
         runtimeService.getActiveActivityIds(processInstanceId));
       
       StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
