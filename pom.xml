@@ -41,9 +41,8 @@
     <activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg>
     -->
     <activiti.osgi.export.pkg>
-      ${activiti.artifact},
-      ${activiti.osgi.export.additional},
-      *
+      ${activiti.artifact}*,
+      ${activiti.osgi.export.additional}
     </activiti.osgi.export.pkg>
     <activiti.osgi.private.pkg></activiti.osgi.private.pkg>
     <activiti.osgi.version>version=${project.version}</activiti.osgi.version>
