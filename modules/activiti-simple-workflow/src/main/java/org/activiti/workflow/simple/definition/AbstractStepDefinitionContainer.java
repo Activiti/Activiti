@@ -88,11 +88,18 @@ public abstract class AbstractStepDefinitionContainer<T> implements StepDefiniti
   
   // Feedback step
   
+  public T addFeedbackStep(String name, String initiator) {
+    return addFeedbackStep(name, initiator, null);
+  }
+  
   public T addFeedbackStep(String name, String initiator, List<String> feedbackProviders) {
     FeedbackStepDefinition feedbackStepDefinition = new FeedbackStepDefinition();
     feedbackStepDefinition.setName(name);
     feedbackStepDefinition.setFeedbackInitiator(initiator);
-    feedbackStepDefinition.setFeedbackProviders(feedbackProviders);
+    
+    if (feedbackProviders != null) {
+      feedbackStepDefinition.setFeedbackProviders(feedbackProviders);
+    }
     
     addStep(feedbackStepDefinition);
     

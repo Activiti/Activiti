@@ -12,15 +12,19 @@
  */
 package org.activiti.workflow.simple.converter.step;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.ExclusiveGateway;
+import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FormProperty;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.bpmn.model.Signal;
@@ -115,9 +119,44 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
     feedbackProvidersProperty.setId(VARIABLE_FEEDBACK_PROVIDERS);
     feedbackProvidersProperty.setName("Who needs to provide feedback?");
     feedbackProvidersProperty.setRequired(true);
-    feedbackProvidersProperty.setType("enum");
+    feedbackProvidersProperty.setType("string"); // TODO: we need some kind of 'people' property type here
     
     selectPeopleUserTask.setFormProperties(Arrays.asList(feedbackProvidersProperty));
+    
+    // When the list of feedback providers is fixed up front, we need to add a script listener
+    // that injects these variables into the process (instead of having it provided by the end user in a form)
+    if (feedbackStepDefinition.getFeedbackProviders() != null && feedbackStepDefinition.getFeedbackProviders().size() > 0) {
+      if (selectPeopleUserTask.getTaskListeners() == null) 
+      {
+        selectPeopleUserTask.setTaskListeners(new ArrayList<ActivitiListener>());
+      }
+      
+      ActivitiListener taskListener = new ActivitiListener();
+      taskListener.setEvent("complete");
+      taskListener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+      taskListener.setImplementation("org.activiti.engine.impl.bpmn.listener.ScriptTaskListener");
+      
+      FieldExtension languageField = new FieldExtension();
+      languageField.setFieldName("language");
+      languageField.setStringValue("JavaScript");
+      
+      FieldExtension scriptField = new FieldExtension();
+      scriptField.setFieldName("script");
+      
+      StringBuilder script = new StringBuilder();
+      script.append("var feedbackProviders = new java.util.ArrayList();" + System.getProperty("line.separator"));
+      for (String feedbackProvider : feedbackStepDefinition.getFeedbackProviders()) {
+        script.append("feedbackProviders.add('" + feedbackProvider + "');" + System.getProperty("line.separator"));
+      }
+      script.append("task.getExecution().setVariable('" + VARIABLE_FEEDBACK_PROVIDERS + "', feedbackProviders);" + System.getProperty("line.separator"));
+      scriptField.setStringValue(script.toString());
+
+      taskListener.setFieldExtensions(Arrays.asList(languageField, scriptField));
+      
+      selectPeopleUserTask.getTaskListeners().add(taskListener);
+    }
+    
+    
     return selectPeopleUserTask;
   }
 
@@ -178,6 +217,7 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
     UserTask feedbackTask = new UserTask();
     feedbackTask.setId(conversion.getUniqueNumberedId(ConversionConstants.USER_TASK_ID_PREFIX));
     feedbackTask.setName(feedbackStepDefinition.getName());
+    feedbackTask.setAssignee("${" + VARIABLE_FEEDBACK_PROVIDER + "}");
     
     MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics = new MultiInstanceLoopCharacteristics();
     multiInstanceLoopCharacteristics.setSequential(false);

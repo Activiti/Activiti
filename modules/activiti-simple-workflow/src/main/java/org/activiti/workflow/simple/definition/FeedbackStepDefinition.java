@@ -14,6 +14,8 @@ package org.activiti.workflow.simple.definition;
 
 import java.util.List;
 
+import org.activiti.workflow.simple.converter.step.FeedbackStepDefinitionConverter;
+
 
 /**
  * A feedback step is a step where one person initiates the gathering of 
@@ -21,6 +23,18 @@ import java.util.List;
  * 
  * The feedback initiator has the possibility to stop to the collection
  * of the feedback, even if not all selected users have provided feedback.
+ * 
+ * There are a few options when it comes to selecting which people will need to provide feedback:
+ * <ul>
+ *   <li>A fixed list of users</li>
+ *   <li>A fixed list of groups</li>
+ *   <li>A mix of the two above</li>
+ *   <li>
+ *     The list of users/groups is provided at runtime through the form by the user.
+ *     In this case, the name of the variables which are submitted through the form
+ *     <b>must</b> must match the default one, see {@link FeedbackStepDefinitionConverter}.     
+ *   </li>
+ * </ul>
  * 
  * @author Joram Barrez
  */
