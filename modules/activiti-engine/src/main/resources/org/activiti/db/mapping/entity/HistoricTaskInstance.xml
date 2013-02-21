@@ -37,6 +37,7 @@
         DURATION_,
         DELETE_REASON_,
         TASK_DEF_KEY_,
+        FORM_KEY_,
         PRIORITY_,
         DUE_DATE_
       ) values (
@@ -55,6 +56,7 @@
         #{durationInMillis ,jdbcType=BIGINT},
         #{deleteReason ,jdbcType=VARCHAR},
         #{taskDefinitionKey ,jdbcType=VARCHAR},
+        #{formKey ,jdbcType=VARCHAR},
         #{priority, jdbcType=INTEGER},
         #{dueDate, jdbcType=TIMESTAMP}
       )
@@ -75,6 +77,7 @@
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
       DELETE_REASON_ = #{deleteReason ,jdbcType=VARCHAR},
       TASK_DEF_KEY_ = #{taskDefinitionKey ,jdbcType=VARCHAR},
+      FORM_KEY_ = #{formKey ,jdbcType=VARCHAR},
       PRIORITY_ = #{priority, jdbcType=INTEGER},
       DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP}
     where ID_ = #{id}
@@ -104,6 +107,7 @@
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
     <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
     <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR" />
+    <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER" />
     <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP" />
   </resultMap>

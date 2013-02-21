@@ -72,6 +72,9 @@ public interface HistoricTaskInstance {
   /** Task definition key. */
   String getTaskDefinitionKey();
   
+  /** Task form key. */
+  String getFormKey();
+  
   /** Task priority **/
   int getPriority();
   

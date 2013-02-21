@@ -10,7 +10,7 @@
     
     <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
 
-    <userTask id="task" name="Clean up">
+    <userTask id="task" name="Clean up" activiti:formKey="#{formKeyVar}">
       <documentation>
         Schedule an engineering meeting for next week with the new hire.
       </documentation>

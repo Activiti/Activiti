@@ -22,6 +22,7 @@ import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
@@ -460,11 +461,23 @@ public class HistoryManager extends AbstractManager {
   /**
    * Record task definition key change, if audit history is enabled.
    */
-  public void recordTaskDefinitionKeyChange(String taskId, String taskDefinitionKey) {
+  public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinitionKey) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
-      if (historicTaskInstance!=null) {
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, task.getId());
+      if (historicTaskInstance != null) {
         historicTaskInstance.setTaskDefinitionKey(taskDefinitionKey);
+        
+        if (taskDefinitionKey != null) {
+          TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
+          if (taskFormHandler != null) {
+            if (taskFormHandler.getFormKey() != null) {
+              Object formValue = taskFormHandler.getFormKey().getValue(task.getExecution());
+              if (formValue != null) {
+                historicTaskInstance.setFormKey(formValue.toString());
+              }
+            }
+          }
+        }
       }
     }
   }

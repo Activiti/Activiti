@@ -693,6 +693,7 @@
         <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
+        <module>modules/activiti-diagram-rest</module>
         <module>modules/activiti-explorer</module>
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-rest</module>
@@ -779,6 +780,7 @@
         <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
+        <module>modules/activiti-diagram-rest</module>
         <module>modules/activiti-explorer</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>

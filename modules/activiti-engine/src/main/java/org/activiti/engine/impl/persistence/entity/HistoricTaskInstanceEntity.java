@@ -36,6 +36,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected String owner;
   protected String assignee;
   protected String taskDefinitionKey;
+  protected String formKey;
   protected int priority;
   protected Date dueDate;
   protected Date claimTime;
@@ -45,7 +46,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
 
   public HistoricTaskInstanceEntity(TaskEntity task, ExecutionEntity execution) {
     this.id = task.getId();
-    if (execution!=null) {
+    if (execution != null) {
       this.processDefinitionId = execution.getProcessDefinitionId();
       this.processInstanceId = execution.getProcessInstanceId();
       this.executionId = execution.getId();
@@ -57,6 +58,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     this.assignee = task.getAssignee();
     this.startTime = ClockUtil.getCurrentTime();
     this.taskDefinitionKey = task.getTaskDefinitionKey();
+    
     this.setPriority(task.getPriority());
     this.setDueDate(task.getDueDate());
   }
@@ -73,6 +75,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     persistentState.put("description", description);
     persistentState.put("deleteReason", deleteReason);
     persistentState.put("taskDefinitionKey", taskDefinitionKey);
+    persistentState.put("formKey", formKey);
     persistentState.put("priority", priority);
     if(parentTaskId != null) {
       persistentState.put("parentTaskId", parentTaskId);
@@ -116,6 +119,12 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   }
   public void setTaskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
+  }
+  public String getFormKey() {
+    return formKey;
+  }
+  public void setFormKey(String formKey) {
+    this.formKey = formKey;
   }
   public int getPriority() {
     return priority;

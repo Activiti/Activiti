@@ -50,6 +50,7 @@ create table ACT_HI_TASKINST (
     DELETE_REASON_ NVARCHAR2(2000),
     PRIORITY_ INTEGER,
     DUE_DATE_ TIMESTAMP(6),
+    FORM_KEY_ NVARCHAR2(255),
     primary key (ID_)
 );
 
