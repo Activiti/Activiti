@@ -172,7 +172,7 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
           Map<String, BaseElement> processElements) {
     UserTask gatherFeedbackUserTask = new UserTask();
     gatherFeedbackUserTask.setId(conversion.getUniqueNumberedId(ConversionConstants.USER_TASK_ID_PREFIX));
-    gatherFeedbackUserTask.setName(feedbackStepDefinition.getName());
+    gatherFeedbackUserTask.setName(getGatherFeedbackTaskName());
     gatherFeedbackUserTask.setAssignee(feedbackStepDefinition.getFeedbackInitiator());
     addFlowElement(conversion, gatherFeedbackUserTask);
     processElements.put(SELECT_PEOPLE_USER_TASK, gatherFeedbackUserTask);
@@ -216,7 +216,7 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
           Map<String, BaseElement> processElements) {
     UserTask feedbackTask = new UserTask();
     feedbackTask.setId(conversion.getUniqueNumberedId(ConversionConstants.USER_TASK_ID_PREFIX));
-    feedbackTask.setName(feedbackStepDefinition.getName());
+    feedbackTask.setName(getProvideFeedbackTaskName());
     feedbackTask.setAssignee("${" + VARIABLE_FEEDBACK_PROVIDER + "}");
     
     MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics = new MultiInstanceLoopCharacteristics();
@@ -251,8 +251,19 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
     return mergingExclusiveGateway;
   }
   
+  
+  // The following are default task names and can be overidden by subclasses
+  
   protected String getSelectPeopleTaskName() {
     return "Choose people";
+  }
+  
+  protected String getProvideFeedbackTaskName() {
+    return "Provide feedback";
+  }
+  
+  protected String getGatherFeedbackTaskName() {
+    return "Gather feedback";
   }
   
 }
