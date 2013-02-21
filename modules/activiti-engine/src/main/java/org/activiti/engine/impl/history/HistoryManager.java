@@ -17,11 +17,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
@@ -39,6 +41,7 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -460,11 +463,21 @@ public class HistoryManager extends AbstractManager {
   /**
    * Record task definition key change, if audit history is enabled.
    */
-  public void recordTaskDefinitionKeyChange(String taskId, String taskDefinitionKey) {
+  public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinitionKey) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, task.getId());
       if (historicTaskInstance!=null) {
         historicTaskInstance.setTaskDefinitionKey(taskDefinitionKey);
+        
+        if (taskDefinitionKey != null) {
+          TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
+          if (taskFormHandler != null) {
+            TaskFormData formData = taskFormHandler.createTaskForm(task);
+            if (StringUtils.isNotEmpty(formData.getFormKey())) {
+              historicTaskInstance.setFormKey(formData.getFormKey());
+            }
+          }
+        }
       }
     }
   }

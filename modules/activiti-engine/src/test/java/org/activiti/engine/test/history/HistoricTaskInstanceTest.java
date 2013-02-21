@@ -16,8 +16,9 @@ package org.activiti.engine.test.history;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -35,7 +36,9 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testHistoricTaskInstance() throws Exception {
-    String processInstanceId = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
+    Map<String, Object> varMap = new HashMap<String, Object>();
+    varMap.put("formKeyVar", "expressionFormKey");
+    String processInstanceId = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest", varMap).getId();
     
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
     
@@ -60,6 +63,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(dueDate, historicTaskInstance.getDueDate());
     assertEquals("kermit", historicTaskInstance.getAssignee());
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
+    assertEquals("expressionFormKey", historicTaskInstance.getFormKey());
     assertNull(historicTaskInstance.getEndTime());
     assertNull(historicTaskInstance.getDurationInMillis());
     assertNull(historicTaskInstance.getWorkTimeInMillis());
@@ -72,6 +76,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
     assertNotNull(historicTaskInstance.getClaimTime());
     assertNull(historicTaskInstance.getWorkTimeInMillis());
+    assertEquals("expressionFormKey", historicTaskInstance.getFormKey());
     
     taskService.complete(taskId);
     
@@ -86,6 +91,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals("kermit", historicTaskInstance.getAssignee());
     assertEquals(TaskEntity.DELETE_REASON_COMPLETED, historicTaskInstance.getDeleteReason());
     assertEquals(taskDefinitionKey, historicTaskInstance.getTaskDefinitionKey());
+    assertEquals("expressionFormKey", historicTaskInstance.getFormKey());
     assertNotNull(historicTaskInstance.getEndTime());
     assertNotNull(historicTaskInstance.getDurationInMillis());
     assertNotNull(historicTaskInstance.getClaimTime());
@@ -159,6 +165,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().processDefinitionKey("HistoricTaskQueryTest").count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().processDefinitionKey("unexistingdefinitionkey").count());
     
+    // Form key
+    HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery()
+        .processInstanceId(finishedInstance.getId()).singleResult();
+    assertEquals("formKeyTest", historicTask.getFormKey());
     
     // Assignee
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskAssignee("kermit").count());

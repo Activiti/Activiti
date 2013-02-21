@@ -544,7 +544,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     
     CommandContext commandContext = Context.getCommandContext();
     if(commandContext != null) {
-      commandContext.getHistoryManager().recordTaskDefinitionKeyChange(id, taskDefinitionKey);
+      commandContext.getHistoryManager().recordTaskDefinitionKeyChange(this, taskDefinitionKey);
     }
   }
 
@@ -622,7 +622,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     
     CommandContext commandContext = Context.getCommandContext();
     if(commandContext != null) {
-      commandContext.getHistoryManager().recordTaskDefinitionKeyChange(id, taskDefinitionKey);
+      commandContext.getHistoryManager().recordTaskDefinitionKeyChange(this, taskDefinitionKey);
     }
   }
 

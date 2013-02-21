@@ -1,2 +1,6 @@
 alter table ACT_HI_TASKINST
-add CLAIM_TIME_ TIMESTAMP(6);
+  add CLAIM_TIME_ TIMESTAMP(6);
+
+alter table ACT_HI_TASKINST
+  add FORM_KEY_ NVARCHAR2(255);
+  
