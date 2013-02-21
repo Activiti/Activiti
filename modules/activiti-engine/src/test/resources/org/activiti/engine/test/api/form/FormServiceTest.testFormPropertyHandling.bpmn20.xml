@@ -15,7 +15,11 @@
       </extensionElements>
     </startEvent>
 
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="wait" />
+    
+    <receiveTask id="wait" />
+    
+    <sequenceFlow id="flow2" sourceRef="wait" targetRef="task" />
     
     <userTask id="task"
               activiti:assignee="kermit">
@@ -28,9 +32,9 @@
       </extensionElements>
     </userTask>
 
-    <sequenceFlow id="flow2" sourceRef="task" targetRef="wait" />
+    <sequenceFlow id="flow3" sourceRef="task" targetRef="wait2" />
     
-    <receiveTask id="wait" />
+    <receiveTask id="wait2" />
 
   </process>
   

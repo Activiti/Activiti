@@ -184,6 +184,8 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     Address address = new Address();
     address.setStreet("broadway");
     runtimeService.setVariable(processInstanceId, "address", address);
+    
+    runtimeService.signal(runtimeService.createExecutionQuery().processInstanceId(processInstanceId).singleResult().getId());
 
     String taskId = taskService.createTaskQuery().singleResult().getId();
     TaskFormData taskFormData = formService.getTaskFormData(taskId);

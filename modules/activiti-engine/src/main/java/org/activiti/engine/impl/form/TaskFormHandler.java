@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.form;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
@@ -23,4 +24,6 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 public interface TaskFormHandler extends FormHandler {
 
   TaskFormData createTaskForm(TaskEntity task);
+  
+  Expression getFormKey();
 }

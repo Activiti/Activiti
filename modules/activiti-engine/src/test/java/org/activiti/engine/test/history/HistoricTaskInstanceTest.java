@@ -168,7 +168,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     // Form key
     HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery()
         .processInstanceId(finishedInstance.getId()).singleResult();
-    assertEquals("formKeyTest", historicTask.getFormKey());
+    assertEquals("testFormKey", historicTask.getFormKey());
     
     // Assignee
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskAssignee("kermit").count());
