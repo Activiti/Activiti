@@ -26,7 +26,7 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/repository/nonSchemaConformantXml.bpmn20.xml").deploy().getId();
     } catch (ActivitiException e) {
-      assertTextPresent("Could not validate XML with BPMN 2.0 XSD", e.getMessage());
+      assertTextPresent("Could not validate XML with BPMN 2.0 XSD", e.getCause().getMessage());
     }
     
   }

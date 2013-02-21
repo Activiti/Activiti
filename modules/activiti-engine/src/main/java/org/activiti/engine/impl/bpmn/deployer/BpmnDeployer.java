@@ -83,11 +83,6 @@ public class BpmnDeployer implements Deployer {
           .sourceInputStream(inputStream)
           .deployment(deployment)
           .name(resourceName);
-        
-        if (!deployment.isValidatingSchema()) {
-          //bpmnParse.setSchemaResource(null);
-        }
-        
         bpmnParse.execute();
         
         for (ProcessDefinitionEntity processDefinition: bpmnParse.getProcessDefinitions()) {
@@ -102,7 +97,7 @@ public class BpmnDeployer implements Deployer {
             if (Context.getProcessEngineConfiguration().isCreateDiagramOnDeploy() &&
                   diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
               try {
-                  byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(processDefinition), null);
+                  byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(bpmnParse.getBpmnModel()), null);
                   diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
                   createResource(diagramResourceName, diagramBytes, deployment);
               } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).

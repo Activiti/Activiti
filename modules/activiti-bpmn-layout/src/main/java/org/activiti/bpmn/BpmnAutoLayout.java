@@ -176,8 +176,6 @@ public class BpmnAutoLayout {
     Object subProcessVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, 
             subProcessWidth + 2 * subProcessMargin, subProcessHeight + 2 * subProcessMargin);
     generatedVertices.put(flowElement.getId(), subProcessVertex);
-    
-    // TODO: pas alle DI aan met de translatie voor dit subprocess
   }
   
   protected void handleBoundaryEvents() {
@@ -186,6 +184,7 @@ public class BpmnAutoLayout {
       geometry.setOffset(new mxPoint(-(eventSize/2), -(eventSize/2)));
       geometry.setRelative(true);
       mxCell boundaryPort = new mxCell(null, geometry, "shape=ellipse;perimter=ellipsePerimeter");
+      boundaryPort.setId("boundary-event-" + boundaryEvent.getId());
       boundaryPort.setVertex(true);
 
       Object portParent = null;
@@ -277,13 +276,18 @@ public class BpmnAutoLayout {
     for (String flowElementId : generatedVertices.keySet()) {
       Object vertex = generatedVertices.get(flowElementId);
       mxCellState cellState = graph.getView().getState(vertex);
-      createDiagramInterchangeInformation(handledFlowElements.get(flowElementId), 
+      GraphicInfo subProcessGraphicInfo = createDiagramInterchangeInformation(handledFlowElements.get(flowElementId), 
               (int) cellState.getX(), (int) cellState.getY(), (int) cellState.getWidth(), (int) cellState.getHeight());
       
       // The DI for the elements of a subprocess are generated without knowledge of the rest of the graph
       // So we must translate all it's elements with the x and y of the subprocess itself
       if (handledFlowElements.get(flowElementId) instanceof SubProcess) {
         SubProcess subProcess =(SubProcess) handledFlowElements.get(flowElementId);
+        
+        // Always expanded when auto layouting
+        subProcessGraphicInfo.setExpanded(true);
+        
+        // Translate
         double subProcessX = cellState.getX();
         double subProcessY = cellState.getY();
         double translationX = subProcessX + subProcessMargin;
@@ -392,7 +396,7 @@ public class BpmnAutoLayout {
     return optimizedPointsList;
   }
   
-  protected void createDiagramInterchangeInformation(FlowElement flowElement, int x, int y, int width, int height) {
+  protected GraphicInfo createDiagramInterchangeInformation(FlowElement flowElement, int x, int y, int width, int height) {
     GraphicInfo graphicInfo = new GraphicInfo();
     graphicInfo.setX(x);
     graphicInfo.setY(y);
@@ -400,6 +404,8 @@ public class BpmnAutoLayout {
     graphicInfo.setHeight(height);
     graphicInfo.setElement(flowElement);
     bpmnModel.addGraphicInfo(flowElement.getId(), graphicInfo);
+    
+    return graphicInfo;
   }
   
   protected void createDiagramInterchangeInformation(SequenceFlow sequenceFlow, List<mxPoint> waypoints) {

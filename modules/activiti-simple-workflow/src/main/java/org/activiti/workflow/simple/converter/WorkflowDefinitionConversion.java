@@ -17,15 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
 import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
-import org.activiti.workflow.simple.diagram.WorkflowDIGenerator;
 
 /**
  * Instances of this class are created by a {@link WorkflowDefinitionConversionFactory}.
@@ -109,8 +110,8 @@ public class WorkflowDefinitionConversion {
    }
     
     // Add DI information to bpmn model
-    WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(bpmnModel);
-//    workflowDIGenerator.generateDI();
+    BpmnAutoLayout bpmnAutoLayout = new BpmnAutoLayout(bpmnModel);
+    bpmnAutoLayout.execute();
   }
   
   public void convertSteps(List<StepDefinition> stepDefinitions) {
@@ -225,8 +226,7 @@ public class WorkflowDefinitionConversion {
     if (bpmnModel == null) {
       convert();
     }
-    WorkflowDIGenerator workflowDIGenerator = new WorkflowDIGenerator(bpmnModel);
-    return workflowDIGenerator.generateDiagram();
+    return ProcessDiagramGenerator.generatePngDiagram(bpmnModel);
   }
   
 }

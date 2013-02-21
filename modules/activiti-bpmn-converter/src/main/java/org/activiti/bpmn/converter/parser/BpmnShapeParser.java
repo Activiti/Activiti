@@ -22,6 +22,7 @@ import org.activiti.bpmn.model.GraphicInfo;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class BpmnShapeParser implements BpmnXMLConstants {
   
@@ -29,19 +30,20 @@ public class BpmnShapeParser implements BpmnXMLConstants {
     
   	String id = xtr.getAttributeValue(null, ATTRIBUTE_DI_BPMNELEMENT);
   	GraphicInfo graphicInfo = new GraphicInfo();
+  	
+  	String strIsExpanded = xtr.getAttributeValue(null, ATTRIBUTE_DI_IS_EXPANDED);
+    if ("true".equalsIgnoreCase(strIsExpanded)) {
+      graphicInfo.setExpanded(true);
+    }
+  	
     BpmnXMLUtil.addXMLLocation(graphicInfo, xtr);
 		while (xtr.hasNext()) {
 			xtr.next();
 			if (xtr.isStartElement() && ELEMENT_DI_BOUNDS.equalsIgnoreCase(xtr.getLocalName())) {
-				graphicInfo.setX(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue());
-				graphicInfo.setY(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue());
-				graphicInfo.setWidth(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)).intValue());
-				graphicInfo.setHeight(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)).intValue());
-				
-				String strIsExpanded = xtr.getAttributeValue(null, ATTRIBUTE_DI_IS_EXPANDED);
-				if ("true".equalsIgnoreCase(strIsExpanded)) {
-				  graphicInfo.setExpanded(true);
-				}
+				graphicInfo.setX(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)));
+				graphicInfo.setY(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)));
+				graphicInfo.setWidth(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)));
+				graphicInfo.setHeight(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)));
 				
 				model.addGraphicInfo(id, graphicInfo);
 				break;

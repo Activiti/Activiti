@@ -37,7 +37,6 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   protected String category;
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
-  protected boolean validatingSchema = true;
   protected boolean isNew;
   
   /**
@@ -129,14 +128,6 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   
   public void setDeploymentTime(Date deploymentTime) {
     this.deploymentTime = deploymentTime;
-  }
-
-  public boolean isValidatingSchema() {
-    return validatingSchema;
-  }
-  
-  public void setValidatingSchema(boolean validatingSchema) {
-    this.validatingSchema = validatingSchema;
   }
 
   public boolean isNew() {

@@ -19,7 +19,6 @@ import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.FormDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
-import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
  * {@link StepDefinitionConverter} for converting a {@link HumanStepDefinition} to a {@link UserTask}.
@@ -57,7 +56,7 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
       userTask.setAssignee(getInitiatorExpression());
 
       // Add the initiator variable declaration to the start event
-      for (StartEvent startEvent : BpmnModelUtil.findFlowElementsOfType(conversion.getProcess(), StartEvent.class)) {
+      for (StartEvent startEvent : conversion.getProcess().findFlowElementsOfType(StartEvent.class)) {
         startEvent.setInitiator(getInitiatorVariable());
       }
       

@@ -236,6 +236,11 @@
         <artifactId>activiti-cxf</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-bpmn-layout</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- EMAIL -->
       <dependency>
         <groupId>org.apache.commons</groupId>

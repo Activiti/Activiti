@@ -10,14 +10,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.util.io;
+package org.activiti.bpmn.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.activiti.engine.ActivitiException;
 
 /**
  * @author Tom Baeyens
@@ -43,7 +41,7 @@ public class InputStreamSource implements StreamSource {
       try {
         bytes = getBytesFromInputStream(inputStream);
       } catch (IOException e) {
-        throw new ActivitiException("Could not read from inputstream", e);
+        throw new RuntimeException("Could not read from inputstream", e);
       }
     }
     return new BufferedInputStream(new ByteArrayInputStream(bytes));
@@ -64,7 +62,7 @@ public class InputStreamSource implements StreamSource {
     }
 
     if (offset < bytes.length) {
-      throw new ActivitiException("Could not completely read inputstream ");
+      throw new RuntimeException("Could not completely read inputstream ");
     }
 
     // Close the input stream and return bytes

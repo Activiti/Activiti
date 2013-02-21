@@ -50,7 +50,7 @@ public class DeploymentManager {
     ProcessDefinitionEntity processDefinition = Context
       .getCommandContext()
       .getProcessDefinitionEntityManager()
-      .findLatestProcessDefinitionById(processDefinitionId);
+      .findProcessDefinitionById(processDefinitionId);
     if(processDefinition == null) {
       throw new ActivitiObjectNotFoundException("no deployed process definition found with id '" + processDefinitionId + "'", ProcessDefinition.class);
     }

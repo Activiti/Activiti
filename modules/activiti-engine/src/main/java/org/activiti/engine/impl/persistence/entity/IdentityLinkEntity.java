@@ -138,7 +138,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
       this.processDef = Context
               .getCommandContext()
               .getProcessDefinitionEntityManager()
-              .findLatestProcessDefinitionById(processDefId);
+              .findProcessDefinitionById(processDefId);
     }
     return processDef;
   }

@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.DiagramLayout;
@@ -215,6 +216,14 @@ public interface RepositoryService {
    * Properties (e.g. documentation).
    */
   ProcessDefinition getProcessDefinition(String processDefinitionId);  
+  
+  /**
+   * Returns the {@link BpmnModel} corresponding with the process definition with
+   * the provided process definition id. The {@link BpmnModel} is a pojo versions
+   * of the BPMN 2.0 xml and can be used to introspect the process definition
+   * using regular Java.
+   */
+  BpmnModel getBpmnModel(String processDefinitionId);
 
   /**
    * Provides positions and dimensions of elements in a process diagram as
