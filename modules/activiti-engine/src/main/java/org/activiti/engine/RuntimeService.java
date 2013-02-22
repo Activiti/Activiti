@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
@@ -26,8 +24,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 
-/** Service which provides access to {@link Deployment}s,
- * {@link ProcessDefinition}s and {@link ProcessInstance}s.
+/** 
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
