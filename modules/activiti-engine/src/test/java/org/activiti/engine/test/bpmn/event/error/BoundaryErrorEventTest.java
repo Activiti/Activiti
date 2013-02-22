@@ -22,6 +22,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -378,7 +379,35 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
       assertTextPresent("No catching boundary event found for error with errorCode '23', neither in same process nor in parent process", e.getMessage());
     }
   }
-  
+
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnScriptTask.bpmn20.xml"
+  })
+  public void testCatchErrorOnScriptTask() {
+      String procId = runtimeService.startProcessInstanceByKey("catchErrorOnScriptTask").getId();
+      assertProcessEnded(procId);
+  }
+
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorOnScriptTaskWithEmptyErrorEventDefinition.bpmn20.xml"
+  })
+  public void testUncaughtErrorOnScriptTaskWithEmptyErrorEventDefinition() {
+    String procId = runtimeService.startProcessInstanceByKey("uncaughtErrorOnScriptTaskWithEmptyErrorEventDefinition").getId();
+    assertProcessEnded(procId);
+  }
+
+  @Deployment(resources = {
+            "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorOnScriptTask.bpmn20.xml"
+  })
+  public void testUncaughtErrorOnScriptTask() {
+    try {
+      String procId = runtimeService.startProcessInstanceByKey("uncaughtErrorOnScriptTask").getId();
+      assertProcessEnded(procId);
+    } catch (NullPointerException e) {
+      fail("The script throws error event with errorCode 'errorUncaught', but no catching boundary event was defined. Execution should simply be ended (none end event semantics).");
+    }
+  }
+
   @Deployment
   public void testCatchErrorThrownByJavaDelegateOnMultiInstanceServiceTaskSequential() {
     Map<String, Object> variables = new HashMap<String, Object>();
