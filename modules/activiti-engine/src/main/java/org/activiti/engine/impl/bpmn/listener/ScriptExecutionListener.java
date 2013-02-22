@@ -13,44 +13,42 @@
 
 package org.activiti.engine.impl.bpmn.listener;
 
-import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 
-/**
- * @author Rich Kroll
- * @author Joram Barrez
- */
-public class ScriptTaskListener implements TaskListener {
+public class ScriptExecutionListener implements ExecutionListener {
+  
+  private static final long serialVersionUID = 1L;
 
-	private static final long serialVersionUID = -8915149072830499057L;
+  private Expression script;
 
-  protected Expression script;
+	private Expression language = null;
 
-  protected Expression language = null;
+	private Expression resultVariable = null;
 
-  protected Expression resultVariable = null;
-
-	public void notify(DelegateTask delegateTask) {
+	@Override
+  public void notify(DelegateExecution execution) throws Exception {
+    
 		if (script == null) {
-			throw new IllegalArgumentException("The field 'script' should be set on the TaskListener");
+			throw new IllegalArgumentException("The field 'script' should be set on the ExecutionListener");
 		}
 
 		if (language == null) {
-			throw new IllegalArgumentException("The field 'language' should be set on the TaskListener");
+			throw new IllegalArgumentException("The field 'language' should be set on the ExecutionListener");
 		}
 
 		ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 
-		Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), delegateTask);
+		Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), execution);
 
 		if (resultVariable != null) {
-			delegateTask.setVariable(resultVariable.getExpressionText(), result);
+		  execution.setVariable(resultVariable.getExpressionText(), result);
 		}
 	}
-	
+
 	public void setScript(Expression script) {
 		this.script = script;
 	}
@@ -62,5 +60,4 @@ public class ScriptTaskListener implements TaskListener {
 	public void setResultVariable(Expression resultVariable) {
 		this.resultVariable = resultVariable;
 	}
-	
 }
