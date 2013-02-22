@@ -93,24 +93,24 @@ FormService formService = processEngine.getFormService();</programlisting>
         currently is.
         Lastly, the <literal>RuntimeService</literal> is used whenever a process instance is waiting for an external trigger and the process
         needs to be continued. A process instance can have various <literal>wait states</literal> and this service contains
-        various operations to 'signal' the instance that the external trigger is received and the process instance can be continues. 
+        various operations to 'signal' the instance that the external trigger is received and the process instance can be continued. 
     </para>
     
     <para>
-        Task that need to be performed by actual human users of the system are core to a BPM engine such as Activiti. 
+        Tasks that need to be performed by actual human users of the system are core to a BPM engine such as Activiti. 
         Everything around tasks is grouped in the <emphasis role="bold">TaskService</emphasis>, such as
         <itemizedlist>
             <listitem><para>
                 Querying tasks assigned to users or groups
             </para></listitem>
             <listitem><para>
-                Creating new <emphasis>standalone</emphasis> tasks. This are tasks that are not related to a process instances.
+                Creating new <emphasis>standalone</emphasis> tasks. These are tasks that are not related to a process instances.
             </para></listitem>
             <listitem><para>
                 Manipulating to which user a task is assigned or which users are in some way involved with the task.
             </para></listitem>
             <listitem><para>
-                Claiming and completing task. Claiming means that someone decided to be the assigee for the task, meaninung
+                Claiming and completing a task. Claiming means that someone decided to be the assigee for the task, meaning
                 that this user will complete the task. Completing means 'doing the work of the tasks'. Typically this is 
                 filling in a form of sorts.
             </para></listitem>
@@ -118,7 +118,7 @@ FormService formService = processEngine.getFormService();</programlisting>
     </para>
     
     <para>
-        The <emphasis>IdentityService</emphasis> is pretty simple. It allows the management (creation, update, deletion, querying, ...)
+        The <emphasis role="bold">IdentityService</emphasis> is pretty simple. It allows the management (creation, update, deletion, querying, ...)
         of groups and users. It is important to understand that Activiti actually doesn't do any checking on users at runtime.
         For example, a task could be assigned to any user, but the engine does not verify if that user is known to the system.
         This is because the Activiti engine can also used in conjunction with services such as ldap, active directory, etc.
@@ -461,27 +461,20 @@ try {
       
       Sometimes you need more powerful queries, e.g. queries using an OR operator or restrictions you can not express using the Query API.
       For these cases, we introduced native queries, which allow you to write your own SQL queries. The return type is defined by the Query object you use
-      and the data is mapped into the correct objects, e.g. Tasks. Since the query will be fired at the database you have to 
+      and the data is mapped into the correct objects, e.g. Task, ProcessInstance, Execution, etc.... Since the query will be fired at the database you have to 
       use table and column names as they are defined in the database; this requires some knowledge about the internal data structure and it is recommended to use native
       queries with care. The table names can be retrieved via the API to keep the dependency as small as possible.
       
       <programlisting>
       List&lt;Task&gt; tasks = taskService.createNativeTaskQuery()
-         .from(managementService.getTableName(Task.class) + " WHERE NAME_ = #{taskName}")
-         .parameter("taskName", "gonzoTask").list();
+        .sql(&quot;SELECT count(*) FROM &quot; + managementService.getTableName(Task.class) + &quot; T WHERE T.NAME_ = #{taskName}&quot;)
+        .parameter(&quot;taskName&quot;, &quot;gonzoTask&quot;)
+        .list();
 
-      List&lt;Task&gt; tasks = taskService.createNativeTaskQuery()
-         .from("ACT_RU_TASK")
-         .list();
-
-      List&lt;Task&gt; tasks = taskService.createNativeTaskQuery()
-         .select("DISTINCT T1.*") // default is "*", but can be overwritten if you need it
-         .from("ACT_RU_TASK T1, ACT_RU_TASK T2 WHERE T1.ID_ = T2.ID_") // okay, joining with ourselves doesn't make too much sense, agreed
-         .list();
-      
-      List&lt;Task&gt; tasks = taskService.createNativeTaskQuery()
-         .from(managementService.getTableName(Task.class) + " TASK, " + managementService.getTableName(VariableInstanceEntity.class) + " var WHERE VAR.TASK_ID_ = TASK.ID_")
-         .list();
+      long count = taskService.createNativeTaskQuery()
+        .sql(&quot;SELECT count(*) FROM &quot; + managementService.getTableName(Task.class) + &quot; T1, &quot;
+               + managementService.getTableName(VariableInstanceEntity.class) + &quot; V1 WHERE V1.TASK_ID_ = T1.ID_&quot;)
+        .count();
       </programlisting>
     </para>
   </section>
