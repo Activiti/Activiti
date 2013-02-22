@@ -163,7 +163,7 @@
         and RES.BUSINESS_KEY_ = #{businessKey}
       </if>
       <if test="activityId != null">
-        and RES.ACT_ID_ = #{activityId}
+        and RES.ACT_ID_ = #{activityId} and IS_ACTIVE_ = #{isActive}
       </if>
       <if test="superProcessInstanceId != null">
         <!-- A sub process instance is stored under a certain *execution*, potentially nested.

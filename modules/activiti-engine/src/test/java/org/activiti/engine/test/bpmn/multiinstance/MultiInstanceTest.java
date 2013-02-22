@@ -991,4 +991,68 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, processInstances.size());
     assertProcessEnded(processInstance.getId());
   }
+  
+  @Deployment
+  public void testMultiInstanceParallelReceiveTask() {
+    runtimeService.startProcessInstanceByKey("multi-instance-receive");
+    List<Execution> executions = runtimeService.createExecutionQuery().activityId("theReceiveTask").list();
+    assertEquals(4, executions.size());
+    
+    // Complete all four of the executions
+    for (Execution execution : executions) {
+      runtimeService.signal(execution.getId());
+    }
+    
+    // There is one task after the task
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
+    
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+  
+  @Deployment
+  public void testMultiInstanceParalelReceiveTaskWithTimer() {
+    Date startTime = new Date();
+    ClockUtil.setCurrentTime(startTime);
+    
+    runtimeService.startProcessInstanceByKey("multiInstanceReceiveWithTimer");
+    List<Execution> executions = runtimeService.createExecutionQuery().activityId("theReceiveTask").list();
+    assertEquals(3, executions.size());
+    
+    // Signal only one execution. Then the timer will fire
+    runtimeService.signal(executions.get(1).getId());
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + 60000L));
+    waitForJobExecutorToProcessAllJobs(10000L, 1000L);
+    
+    // The process should now be in the task after the timer
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Task after timer", task.getName());
+    
+    // Completing it should end the process
+    taskService.complete(task.getId());
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+  
+  @Deployment
+  public void testMultiInstanceSequentialReceiveTask() {
+    runtimeService.startProcessInstanceByKey("multi-instance-receive");
+    Execution execution = runtimeService.createExecutionQuery().activityId("theReceiveTask").singleResult();
+    assertNotNull(execution);
+    
+    // Complete all four of the executions
+    while (execution != null) {
+      runtimeService.signal(execution.getId());
+      execution = runtimeService.createExecutionQuery().activityId("theReceiveTask").singleResult();
+    }
+    
+    // There is one task after the task
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
+    
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+  
+  
 }

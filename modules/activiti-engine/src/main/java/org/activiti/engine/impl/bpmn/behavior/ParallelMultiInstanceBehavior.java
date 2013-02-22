@@ -82,6 +82,15 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         executeOriginalBehavior(concurrentExecution, loopCounter);
       }
     }
+    
+    // See ACT-1586: ExecutionQuery returns wrong results when using multi instance on a receive task
+    // The parent execution must be set to false, so it wouldn't show up in the execution query
+    // when using .activityId(something). Do not we cannot nullify the activityId (that would
+    // have been a better solution), as it would break boundary event behavior.
+    if (!concurrentExecutions.isEmpty()) {
+      ExecutionEntity executionEntity = (ExecutionEntity) execution;
+      executionEntity.setActive(false);
+    }
   }
   
   /**
