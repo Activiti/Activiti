@@ -24,13 +24,40 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
   
   public void testDeployNonSchemaConformantXml() {
     try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/repository/nonSchemaConformantXml.bpmn20.xml").deploy().getId();
+      repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/api/repository/nonSchemaConformantXml.bpmn20.xml")
+        .deploy()
+        .getId();
+      fail();
     } catch (ActivitiException e) {
       assertTextPresent("Could not validate XML with BPMN 2.0 XSD", e.getCause().getMessage());
     }
     
   }
-
+  
+  public void testDeployBpmnWithInvalidDiagramInterchange() {
+    try {
+      deploymentId = repositoryService.createDeployment()
+              .addClasspathResource("org/activiti/engine/test/api/repository/invalidBpmnElementReferenceInDiagramInterchange.bpmn20.xml")
+              .deploy()
+              .getId();
+    } catch (ActivitiException e) {
+      assertTextPresent("Invalid reference in diagram interchange definition: could not find", e.getMessage());
+    }
+  }
+  
+  public void testDeployWithMissingWaypointsForSequenceflowInDiagramInterchange() {
+    try {
+      repositoryService.createDeployment()
+            .addClasspathResource("org/activiti/engine/test/api/repository/noWayPointsForSequenceFlowInDiagramInterchange.bpmn20.xml")
+            .deploy()
+            .getId();
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent("Could not validate XML with BPMN 2.0 XSD", e.getCause().getMessage());
+    }
+  }
+  
   // Need to put this in a String here, if we use a separate file, the cpu usage
   // of Eclipse skyrockets, regardless of the file is opened or not
   
