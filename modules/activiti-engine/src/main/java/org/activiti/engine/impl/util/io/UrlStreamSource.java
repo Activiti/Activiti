@@ -10,28 +10,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.bpmn.util;
+package org.activiti.engine.impl.util.io;
 
-import java.io.ByteArrayInputStream;
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+
+import org.activiti.engine.ActivitiIllegalArgumentException;
 
 
 /**
  * @author Tom Baeyens
  */
-public class StringStreamSource implements StreamSource {
+public class UrlStreamSource implements StreamSource {
+
+  URL url;
   
-  String string;
-  
-  public StringStreamSource(String string) {
-    this.string = string;
+  public UrlStreamSource(URL url) {
+    this.url = url;
   }
 
   public InputStream getInputStream() {
-    return new ByteArrayInputStream(string.getBytes());
-  }
-
-  public String toString() {
-    return "String";
+    try {
+      return new BufferedInputStream(url.openStream());
+    } catch (IOException e) {
+      throw new ActivitiIllegalArgumentException("couldn't open url '"+url+"'", e);
+    }
   }
 }

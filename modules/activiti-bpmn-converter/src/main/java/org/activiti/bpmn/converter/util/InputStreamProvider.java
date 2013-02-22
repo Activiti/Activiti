@@ -10,20 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.bpmn.util;
+package org.activiti.bpmn.converter.util;
 
 import java.io.InputStream;
 
 
 /**
- * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface StreamSource {
-
+public interface InputStreamProvider {
+  
   /**
    * Creates a <b>NEW</b> {@link InputStream} to the provided resource.
    */
   InputStream getInputStream();
-  
+
 }
