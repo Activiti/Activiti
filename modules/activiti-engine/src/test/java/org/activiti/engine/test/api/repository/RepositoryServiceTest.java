@@ -20,6 +20,11 @@ import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.ParallelGateway;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -317,10 +322,56 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
       
       byte[] bytes = baos.toByteArray();
       assertTrue(bytes.length > 0);
-      System.out.println("-----> " + bytes.length);
     } catch (IOException e) {
       e.printStackTrace();
       fail();
     }
   }
+  
+  @Deployment
+  public void testGetBpmnModel() {
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    
+    // Some basic assertions
+    BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
+    assertNotNull(bpmnModel);
+    assertEquals(1, bpmnModel.getProcesses().size());
+    assertTrue(bpmnModel.getLocationMap().size() > 0);
+    assertTrue(bpmnModel.getFlowLocationMap().size() > 0);
+    
+    // Test the flow
+    org.activiti.bpmn.model.Process process = bpmnModel.getProcesses().get(0);
+    List<StartEvent> startEvents = process.findFlowElementsOfType(StartEvent.class); 
+    assertEquals(1, startEvents.size());
+    StartEvent startEvent = startEvents.get(0);
+    assertEquals(1, startEvent.getOutgoingFlows().size());
+    assertEquals(0, startEvent.getIncomingFlows().size());
+    
+    String nextElementId = startEvent.getOutgoingFlows().get(0).getTargetRef();
+    UserTask userTask = (UserTask) process.getFlowElement(nextElementId);
+    assertEquals("First Task", userTask.getName());
+    
+    assertEquals(1, userTask.getOutgoingFlows().size());
+    assertEquals(1, userTask.getIncomingFlows().size());
+    nextElementId = userTask.getOutgoingFlows().get(0).getTargetRef();
+    ParallelGateway parallelGateway = (ParallelGateway) process.getFlowElement(nextElementId);
+    assertEquals(2, parallelGateway.getOutgoingFlows().size());
+    
+    nextElementId = parallelGateway.getOutgoingFlows().get(0).getTargetRef();
+    assertEquals(1, parallelGateway.getIncomingFlows().size());
+    userTask = (UserTask) process.getFlowElement(nextElementId);
+    assertEquals(1, userTask.getOutgoingFlows().size());
+    
+    nextElementId = userTask.getOutgoingFlows().get(0).getTargetRef();
+    parallelGateway = (ParallelGateway) process.getFlowElement(nextElementId);
+    assertEquals(1, parallelGateway.getOutgoingFlows().size());
+    assertEquals(2, parallelGateway.getIncomingFlows().size());
+    
+    nextElementId = parallelGateway.getOutgoingFlows().get(0).getTargetRef();
+    EndEvent endEvent = (EndEvent) process.getFlowElement(nextElementId);
+    assertEquals(0, endEvent.getOutgoingFlows().size());
+    assertEquals(1, endEvent.getIncomingFlows().size());
+  }
+  
+  
 }

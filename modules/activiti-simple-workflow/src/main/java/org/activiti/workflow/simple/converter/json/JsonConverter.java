@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.workflow.simple.definition.AbstractNamedStepDefinition;
+import org.activiti.workflow.simple.definition.FeedbackStepDefinition;
 import org.activiti.workflow.simple.definition.FormDefinition;
 import org.activiti.workflow.simple.definition.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
@@ -58,6 +59,11 @@ public class JsonConverter {
   public static final String HUMAN_STEP_ASSIGNEE_TYPE_INITIATOR = "initiator";
   public static final String HUMAN_STEP_GROUPS = "groups";
   
+  public static final String STEP_TYPE_FEEDBACK_STEP = "feedback-step";
+  
+  public static final String FEEDBACK_STEP_INITIATOR = "initiator";
+  public static final String FEEDBACK_STEP_FEEDBACK_PROVIDERS = "feedback-providers";
+  
   public static final String FORM = "form";
   public static final String FORM_PROPERTY_NAME = "name";
   public static final String FORM_PROPERTY_TYPE = "type";
@@ -93,6 +99,8 @@ public class JsonConverter {
       String type = getStringFieldValue(stepJsonNode, STEP_TYPE, true);
       if (STEP_TYPE_HUMAN_STEP.equals(type)) {
         stepDefinitionContainerToAddTo.addStep(convertToHumanStepDefinition(stepJsonNode));
+      } else if (STEP_TYPE_FEEDBACK_STEP.equals(type)){
+        stepDefinitionContainerToAddTo.addStep(convertToFeedbackStepDefinition(stepJsonNode));
       }
     }
   }
@@ -156,6 +164,25 @@ public class JsonConverter {
     
     // Form
     ArrayNode formPropertyArray = getArray(humanStepJson, FORM, false);
+    humanStepDefinition.setForm(convertToFormDefinition(formPropertyArray));
+    
+    return humanStepDefinition;
+  }
+  
+  protected FeedbackStepDefinition convertToFeedbackStepDefinition(JsonNode feedbackStepNode) {
+    FeedbackStepDefinition feedbackStepDefinition = new FeedbackStepDefinition();
+    
+    // Initiator
+    feedbackStepDefinition.setFeedbackInitiator(getStringFieldValue(feedbackStepNode, FEEDBACK_STEP_INITIATOR, true));
+    
+    // Form
+    ArrayNode formPropertyArray = getArray(feedbackStepNode, FORM, false);
+    feedbackStepDefinition.setFormDefinitionForFeedbackProviders(convertToFormDefinition(formPropertyArray)); 
+    
+    return feedbackStepDefinition;
+  }
+  
+  protected FormDefinition convertToFormDefinition(ArrayNode formPropertyArray) {
     if (formPropertyArray != null) {
       Iterator<JsonNode> formProperyIterator = formPropertyArray.iterator();
       FormDefinition formDefinition = new FormDefinition();
@@ -168,11 +195,9 @@ public class JsonConverter {
         propertyDefinition.setValues(getStringList(formPropertyJsonNode, FORM_PROPERTY_VALUES, false));
         formDefinition.addFormProperty(propertyDefinition);
       }
-      
-      humanStepDefinition.setForm(formDefinition);
+      return formDefinition;
     }
-    
-    return humanStepDefinition;
+    return null;
   }
   
   // Json Helper methods
@@ -282,6 +307,8 @@ public class JsonConverter {
       return convertToJson(objectMapper, (ParallelStepsDefinition) stepDefinition);
     } else if (stepDefinition instanceof HumanStepDefinition) {
       return convertToJson(objectMapper, (HumanStepDefinition) stepDefinition);
+    } else if (stepDefinition instanceof FeedbackStepDefinition) {
+      return convertToJson(objectMapper, (FeedbackStepDefinition) stepDefinition);
     } else {
       throw new ActivitiException("Unknown step definition type " + stepDefinition.getClass().getName() + ": cannot complete json conversion");
     }
@@ -320,22 +347,44 @@ public class JsonConverter {
     
     // Form
     if (humanStepDefinition.getForm() != null) {
-      FormDefinition formDefinition = humanStepDefinition.getForm();
-      ArrayNode form = humanStepNode.putArray(FORM);
-      
-      if (formDefinition.getFormProperties() != null && formDefinition.getFormProperties().size() > 0) {
-        for (FormPropertyDefinition propertyDefinition : formDefinition.getFormProperties()) {
-          ObjectNode formPropertyNode = objectMapper.createObjectNode();
-          formPropertyNode.put(FORM_PROPERTY_NAME, propertyDefinition.getPropertyName());
-          formPropertyNode.put(FORM_PROPERTY_TYPE, propertyDefinition.getType());
-          formPropertyNode.put(FORM_PROPERTY_MANDATORY, propertyDefinition.isRequired());
-          form.add(formPropertyNode);
-        }
-      }
-      
+      humanStepNode.put(FORM, convertFormToJson(objectMapper, humanStepDefinition.getForm()));
     }
     
     return humanStepNode;
+  }
+  
+  protected JsonNode convertToJson(ObjectMapper objectMapper, FeedbackStepDefinition feedbackStepDefinition) {
+    ObjectNode feedbackStepNode = objectMapper.createObjectNode();
+    feedbackStepNode.put(FEEDBACK_STEP_INITIATOR, feedbackStepDefinition.getFeedbackInitiator());
+    
+    // Feedback providers
+    if (feedbackStepDefinition.getFeedbackProviders() != null && feedbackStepDefinition.getFeedbackProviders().size() > 0) {
+      ArrayNode feedbackProviders = feedbackStepNode.putArray(FEEDBACK_STEP_FEEDBACK_PROVIDERS);
+      for (String feedbackProvider : feedbackStepDefinition.getFeedbackProviders()) {
+        feedbackProviders.add(feedbackProvider);
+      }
+    }
+    
+    // Form
+    if (feedbackStepDefinition.getFormDefinitionForFeedbackProviders() != null) {
+      feedbackStepNode.put(FORM, convertFormToJson(objectMapper, feedbackStepDefinition.getFormDefinitionForFeedbackProviders()));
+    }
+    
+    return feedbackStepNode;
+  }
+  
+  protected ArrayNode convertFormToJson(ObjectMapper objectMapper, FormDefinition formDefinition) {
+    ArrayNode form = objectMapper.createArrayNode();
+    if (formDefinition.getFormProperties() != null && formDefinition.getFormProperties().size() > 0) {
+      for (FormPropertyDefinition propertyDefinition : formDefinition.getFormProperties()) {
+        ObjectNode formPropertyNode = objectMapper.createObjectNode();
+        formPropertyNode.put(FORM_PROPERTY_NAME, propertyDefinition.getPropertyName());
+        formPropertyNode.put(FORM_PROPERTY_TYPE, propertyDefinition.getType());
+        formPropertyNode.put(FORM_PROPERTY_MANDATORY, propertyDefinition.isRequired());
+        form.add(formPropertyNode);
+      }
+    }
+    return form;
   }
   
 }

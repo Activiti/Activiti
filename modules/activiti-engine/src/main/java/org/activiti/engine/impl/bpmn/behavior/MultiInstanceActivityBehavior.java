@@ -132,6 +132,9 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       nrOfInstances = ((Collection) obj).size();
     } else if (collectionVariable != null) {
       Object obj = execution.getVariable(collectionVariable);
+      if (obj == null) {
+        throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + " is not found");
+      }
       if (!(obj instanceof Collection)) {
         throw new ActivitiIllegalArgumentException("Variable " + collectionVariable+"' is not a Collection");
       }
