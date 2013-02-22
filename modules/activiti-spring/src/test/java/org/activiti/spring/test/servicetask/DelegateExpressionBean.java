@@ -15,6 +15,8 @@ package org.activiti.spring.test.servicetask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.el.FixedValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
@@ -22,15 +24,24 @@ import org.activiti.engine.impl.el.FixedValue;
  */
 public class DelegateExpressionBean implements JavaDelegate {
 
+  private static final Logger log = LoggerFactory.getLogger(DelegateExpressionBean.class);
   private SentenceGenerator sentenceGenerator;
 
   private FixedValue someField;
 
   public void execute(DelegateExecution execution) throws Exception {
-    execution.setVariable("myVar", sentenceGenerator.getSentence());
+    log.info("Entering DelegateExpressionBean.execute()");
+    if(sentenceGenerator != null) {
+      execution.setVariable("myVar", sentenceGenerator.getSentence());
+    } else {
+      execution.setVariable("myVar", "SentenceGenerator is not injected by spring");
+    }
     if (someField != null) {
       execution.setVariable("fieldInjection", someField.getValue(execution));
+    } else {
+      execution.setVariable("fieldInjection", "Field injection not working");
     }
+    log.info("Leaving DelegateExpressionBean.execute()");
   }
 
   public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
