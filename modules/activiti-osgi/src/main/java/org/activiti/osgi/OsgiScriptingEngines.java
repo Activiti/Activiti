@@ -36,8 +36,19 @@ public class OsgiScriptingEngines extends ScriptingEngines {
     super(scriptEngineManager);
   }
 
+  @Override
   public Object evaluate(String script, String language, VariableScope variableScope) {
     Bindings bindings = createBindings(variableScope);
+    return evaluate(script, language, bindings);
+  }
+  
+  @Override
+  public Object evaluate(String script, String language, VariableScope variableScope, boolean storeScriptVariables) {
+    return evaluate(script, language, createBindings(variableScope, storeScriptVariables));
+  }
+  
+  @Override
+  protected Object evaluate(String script, String language, Bindings bindings) {
     ScriptEngine scriptEngine = null;
     try {
       scriptEngine = Extender.resolveScriptEngine(language);
@@ -46,7 +57,7 @@ public class OsgiScriptingEngines extends ScriptingEngines {
     }
     
     if (scriptEngine == null) {
-      return super.evaluate(script, language, variableScope);
+      return super.evaluate(script, language, bindings);
     }
 
     try {
