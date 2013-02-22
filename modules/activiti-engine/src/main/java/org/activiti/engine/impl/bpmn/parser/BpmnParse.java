@@ -28,6 +28,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Import;
 import org.activiti.bpmn.model.Interface;
@@ -459,9 +460,33 @@ public class BpmnParse implements BpmnXMLConstants {
 
   public void processDI() {
     if (bpmnModel.getLocationMap().size() > 0) {
+
+      // Verify if all referenced elements exist
+      for (String bpmnReference : bpmnModel.getLocationMap().keySet()) {
+        if (bpmnModel.getFlowElement(bpmnReference) == null) {
+          LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof FlowNode)) {
+          LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a flow node");
+        }
+      }
+      for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
+        if (bpmnModel.getFlowElement(bpmnReference) == null) {
+          LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)) {
+          if (bpmnModel.getFlowLocationMap().get(bpmnReference).size() > 0) {
+            LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
+          } else {
+            LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
+          }
+        }
+      }
+      
       for (Process process : bpmnModel.getProcesses()) {
-        if (process.isExecutable() == false)
+        if (!process.isExecutable()) {
           continue;
+        }
+        
+        // Parse diagram interchange information
         ProcessDefinitionEntity processDefinition = getProcessDefinition(process.getId());
         if (processDefinition != null) {
           processDefinition.setGraphicalNotationDefined(true);
@@ -480,7 +505,7 @@ public class BpmnParse implements BpmnXMLConstants {
       }
     }
   }
-
+  
   public void createBPMNShape(String key, GraphicInfo graphicInfo, ProcessDefinitionEntity processDefinition) {
     ActivityImpl activity = processDefinition.findActivity(key);
     if (activity != null) {

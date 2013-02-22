@@ -13,6 +13,8 @@
 
 package org.activiti.standalone.jpa;
 
+import java.io.Serializable;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
@@ -21,7 +23,9 @@ import javax.persistence.Entity;
  * @author Frederik Heremans
  */
 @Entity
-public class CompoundIdJPAEntity {
+public class CompoundIdJPAEntity implements Serializable {
+  
+  private static final long serialVersionUID = 1L;
   
   @EmbeddedId
   private EmbeddableCompoundId id;

@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.query.NativeQuery;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.DelegationState;
@@ -280,7 +281,7 @@ public interface TaskService {
   TaskQuery createTaskQuery();
   
   /**
-   * Returns a new 
+   * Returns a new {@link NativeQuery} for tasks.
    */
   NativeTaskQuery createNativeTaskQuery();
 
