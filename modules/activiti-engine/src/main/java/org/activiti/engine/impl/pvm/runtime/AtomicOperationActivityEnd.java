@@ -77,12 +77,15 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
         execution.remove();        
         // if we are a scope under the process instance 
         // and have no outgoing transitions: end the process instance here
-        if(activity.getParent() == activity.getProcessDefinition() 
-                && activity.getOutgoingTransitions().isEmpty()) {
+        if(activity.getParent() == activity.getProcessDefinition()) {
           parentScopeExecution.setActivity(activity);
-          // we call end() because it sets isEnded on the execution
-          parentScopeExecution.end(); 
-        } else {
+          if(activity.getOutgoingTransitions().isEmpty()) {
+              // we call end() because it sets isEnded on the execution
+              parentScopeExecution.end(); 
+          } else {
+        	  parentScopeExecution.performOperation(PROCESS_END);
+          }
+        } else {          	
           parentScopeExecution.setActivity(parentActivity);
           parentScopeExecution.performOperation(ACTIVITY_END);
         }
