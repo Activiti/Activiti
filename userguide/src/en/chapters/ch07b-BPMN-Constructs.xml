@@ -4151,7 +4151,90 @@ public class StartProcessInstanceTestDelegateWithInjection {
 		  </section>
 		
 		</section>
+    
+    <section id="bpmnCamelTask">
+    
+      <title>Camel Task</title>
+      
+      <para>
+        The Camel task allows to send messages to and receive messages from Camel and thereby enhances the integration features of Activiti.
+        Note that the Camel task is <emphasis role="bold">not</emphasis> an 'official' task 
+        of the BPMN 2.0 spec (and it does not have a dedicated icon as a consequence).
+        Hence, in Activiti the Camel task is implemented as a dedicated service task. 
+        Also note to include the Activiti Camel module in your project to use the Camel task functionality.
+      </para>
+            
+      <section id="bpmnCamelTaskUsage">
+      
+        <title>Defining a Camel Task</title>
+        
+        <para>
+          The Camel task is implemented as a dedicated <link linkend="bpmnJavaServiceTask">Service Task</link>
+          and is defined by setting <emphasis>'camel'</emphasis> for the <emphasis>type</emphasis> of the service task.
+          <programlisting>
+&lt;serviceTask id=&quot;sendCamel&quot; <emphasis role="bold">activiti:type=&quot;camel&quot;</emphasis>&gt;         
+          </programlisting>
+        </para>
+        
+        <para>
+          The process definition itself needs nothing else then the camel type definition on a service task.
+          The integration logic is all delegated to the Camel container. By default the Activiti Engine looks for a camelContext bean in the Spring container.
+          The camelContext bean defines the Camel routes that will be loaded by the Camel container. In the following example the routes are loaded from a specific Java package,
+          but you can also define routes directly in the Spring configuration itself.
+         <programlisting>
+&lt;camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring"&gt;
+  &lt;packageScan&gt;
+    &lt;package&gt;org.activiti.camel.route&lt;/package&gt;
+  &lt;/packageScan&gt;
+&lt;/camelContext&gt;</programlisting>
+        </para>
+        
+        <para>
+          For more documentation about Camel routes you can look on the Camel website. This user guide only shows an example route definition related to the Activiti integration.
+          When a Camel task is executed a route is searched for that corresponds to the key of process definition and the identifier of that task, like in the short example above &quot;sendCamel&quot;.
+          An example route defined in Java can look like this:
+          <programlisting>
+public class AsyncCamelRoute extends RouteBuilder {
 
+  @Override
+  public void configure() throws Exception {
+
+    from("activiti:asyncCamelProcess:serviceTaskAsync1?copyVariablesToProperties=true").setHeader("destination", constant("activiti:asyncCamelProcess:receive1")).to("seda:asyncQueue");
+    from("seda:asyncQueue").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
+    
+    from("activiti:asyncCamelProcess:serviceTaskAsync2?copyVariablesToProperties=true").setHeader("destination", constant("activiti:asyncCamelProcess:receive2")).to("seda:asyncQueue2");
+    from("seda:asyncQueue2").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
+    
+    from("seda:receiveQueue").recipientList(header("destination"));
+  }
+}</programlisting>
+          Note the from endpoint definition &quot;activiti:asyncCamelProcess:serviceTaskAsync1&quot; where activiti relates to the Activiti Camel component. asyncCamelProcess refers to the process definition
+          key of the process definition. And serviceTaskAsync1 relates to the identifier of the Camel task. The process variables can be copied to the body or the properties of the Camel payload.
+          In this example the variables are copied as message properties. copyVariablesToBody will copy the variables to the body of the Camel message.
+          In this example you can also see that a Camel message can be sent to a receive task of an Activiti process instance. In this example a bit of additional Camel logic is used to send the Camel message
+          to the receive task that's defined in the message header destination property. But eventually the message will be sent to the receive1 or receive2 receive tasks.
+          By default the message body of the Camel message is expected as a Map and all Map entries will be copied to the Activiti execution. When defining the copyVariablesToProperties=true option the message properties are
+          copied to the Activiti execution.
+        </para>
+        
+        <para>
+          In addition to sending messages from a process instance to Camel and back again you can also start a process instance from a Camel message.
+          <programlisting>from("direct:start").to("activiti:camelProcess");</programlisting>
+          Note that camelProcess is the process definition key of the process definition for which a process instance will be created when a message is read from the direct:start queue.
+        </para>
+        
+        <para>
+          If you want to define multiple Camel context beans and/or want to use a different bean name, this can be overriden on the Camel task definition like this:
+          <programlisting>
+&lt;serviceTask id="serviceTask1" activiti:type="camel"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:field name="camelContext" stringValue="customCamelContext" /&gt;
+  &lt;/extensionElements&gt;
+&lt;/serviceTask&gt;</programlisting>
+        </para>
+      </section>
+    
+    </section>
 
 		<section id="bpmnManualTask">
 		

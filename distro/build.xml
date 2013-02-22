@@ -63,14 +63,26 @@
 			<fileset dir="../modules/activiti-bpmn-converter/target">
         <include name="activiti-bpmn-converter-*.jar" />
       </fileset>
+			<fileset dir="../modules/activiti-bpmn-layout/target">
+        <include name="activiti-bpmn-layout-*.jar" />
+      </fileset>
 			<fileset dir="../modules/activiti-json-converter/target">
         <include name="activiti-json-converter-*.jar" />
+      </fileset>
+			<fileset dir="../modules/activiti-simple-workflow/target">
+        <include name="activiti-simple-workflow-*.jar" />
       </fileset>
 			<fileset dir="../modules/activiti-explorer/target">
         <include name="activiti-explorer-*.jar" />
       </fileset>
+			<fileset dir="../modules/activiti-common-rest/target">
+        <include name="activiti-common-rest-*.jar" />
+      </fileset>
 			<fileset dir="../modules/activiti-modeler/target">
         <include name="activiti-modeler-*.jar" />
+      </fileset>
+			<fileset dir="../modules/activiti-diagram-rest/target">
+        <include name="activiti-diagram-rest-*.jar" />
       </fileset>
 			<fileset dir="../modules/activiti-rest/target">
         <include name="activiti-rest-*.jar" />
@@ -130,7 +142,7 @@
 	<target name="copy.docs" depends="build.docs" unless="nodocs">
 		<!-- COPY XSD -->
 		<copy todir="${target.distro.root}/docs/xsd">
-			<fileset dir="../modules/activiti-engine/src/main/resources/org/activiti/impl/bpmn/parser">
+			<fileset dir="../modules/activiti-bpmn-converter/src/main/resources/org/activiti/impl/bpmn/parser">
 				<include name="*.xsd" />
 			</fileset>
 		</copy>
