@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
@@ -161,6 +162,8 @@ public class JPAEntityMappings {
       return new BigDecimal(string);
     } else if(type == BigInteger.class) {
       return new BigInteger(string);
+    } else if(type == UUID.class) {
+        return UUID.fromString(string);
     } else {
       throw new ActivitiIllegalArgumentException("Unsupported Primary key type for JPA-Entity: " + type.getName());
     }
@@ -179,7 +182,8 @@ public class JPAEntityMappings {
     } else if(value instanceof Long || value instanceof String || value instanceof Byte 
        || value instanceof Short || value instanceof Integer || value instanceof Float 
        || value instanceof Double || value instanceof Character || value instanceof BigDecimal 
-       || value instanceof BigInteger) {
+       || value instanceof BigInteger
+       || value instanceof UUID) {
       return value.toString();
     } else {
       throw new ActivitiIllegalArgumentException("Unsupported Primary key type for JPA-Entity: " + value.getClass().getName());
