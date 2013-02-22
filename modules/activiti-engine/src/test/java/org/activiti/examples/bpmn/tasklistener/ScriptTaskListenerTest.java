@@ -12,6 +12,7 @@
  */
 package org.activiti.examples.bpmn.tasklistener;
 
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -29,13 +30,16 @@ public class ScriptTaskListenerTest extends PluggableActivitiTestCase {
 		
 		taskService.complete(task.getId());
 
-		Task task2 = taskService.createTaskQuery().singleResult();
-		assertEquals("Task name not set with 'bar' variable", "BAR", task2.getName());
+		HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+		assertEquals("kermit", historicTask.getOwner());
 		
-		Object bar = runtimeService.getVariable(task2.getExecutionId(), "bar");
+		task = taskService.createTaskQuery().singleResult();
+		assertEquals("Task name not set with 'bar' variable", "BAR", task.getName());
+		
+		Object bar = runtimeService.getVariable(task.getExecutionId(), "bar");
 		assertNull("Expected 'bar' variable to be local to script", bar);
 		
-		Object foo = runtimeService.getVariable(task2.getExecutionId(), "foo");
+		Object foo = runtimeService.getVariable(task.getExecutionId(), "foo");
 		assertEquals("Could not find the 'foo' variable in variable scope", "FOO", foo);
 	}
 
