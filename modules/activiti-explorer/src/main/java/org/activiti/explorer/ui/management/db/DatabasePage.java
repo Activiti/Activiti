@@ -37,7 +37,7 @@ public class DatabasePage extends ManagementPage {
 
   private static final long serialVersionUID = 1L;
   
-  protected ManagementService managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
+  protected transient ManagementService managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
   protected String tableName;
   
   public DatabasePage() {

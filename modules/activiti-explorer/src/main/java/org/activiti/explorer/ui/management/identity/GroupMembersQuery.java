@@ -43,9 +43,10 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class GroupMembersQuery extends AbstractLazyLoadingQuery {
   
+  protected transient IdentityService identityService;
+
   protected String groupId;
   protected MemberShipChangeListener memberShipChangeListener;
-  protected IdentityService identityService;
   protected String sortby;
   protected boolean ascending;
   

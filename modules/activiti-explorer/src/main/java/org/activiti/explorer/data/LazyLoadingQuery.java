@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer.data;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.vaadin.data.Item;
@@ -23,7 +24,7 @@ import com.vaadin.data.Item;
  * 
  * @author Joram Barrez
  */
-public interface LazyLoadingQuery {
+public interface LazyLoadingQuery extends Serializable {
   
   int size();
   

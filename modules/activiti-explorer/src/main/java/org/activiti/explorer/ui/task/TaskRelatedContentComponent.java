@@ -60,7 +60,7 @@ public class TaskRelatedContentComponent extends VerticalLayout implements Relat
 
   private static final long serialVersionUID = 1L;
   
-  protected TaskService taskService;
+  protected transient TaskService taskService;
   protected I18nManager i18nManager;
   protected AttachmentRendererManager attachmentRendererManager;
   

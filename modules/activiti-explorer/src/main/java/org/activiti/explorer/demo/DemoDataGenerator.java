@@ -41,9 +41,9 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
   
   protected static final Logger LOGGER = LoggerFactory.getLogger(DemoDataGenerator.class);
 
-  protected ProcessEngine processEngine;
-  protected IdentityService identityService;
-  protected RepositoryService repositoryService;
+  protected transient ProcessEngine processEngine;
+  protected transient IdentityService identityService;
+  protected transient RepositoryService repositoryService;
   
   protected boolean createDemoUsersAndGroups;
   protected boolean createDemoProcessDefinitions;

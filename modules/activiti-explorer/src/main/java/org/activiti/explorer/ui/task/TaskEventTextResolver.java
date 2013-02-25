@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.task;
 
+import java.io.Serializable;
+
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Event;
 import org.activiti.explorer.ExplorerApp;
@@ -31,17 +33,17 @@ import com.vaadin.ui.Label;
  * @author Joram Barrez
  * @author Tom Baeyens
  */
-public class TaskEventTextResolver {
+public class TaskEventTextResolver implements Serializable {
   
+  private static final long serialVersionUID = -1241011503689621172L;
   protected I18nManager i18nManager;
-  protected UserCache userCache;
   
   public TaskEventTextResolver() {
     this.i18nManager = ExplorerApp.get().getI18nManager();
-    this.userCache = ExplorerApp.get().getUserCache();
   }
   
   public Label resolveText(Event event) {
+    UserCache userCache = ExplorerApp.get().getUserCache();
     User user = userCache.findUser(event.getUserId());
     String eventAuthor = "<span class='" + ExplorerLayout.STYLE_TASK_EVENT_AUTHOR + "'>" 
           + user.getFirstName() + " " + user.getLastName() + "</span> ";

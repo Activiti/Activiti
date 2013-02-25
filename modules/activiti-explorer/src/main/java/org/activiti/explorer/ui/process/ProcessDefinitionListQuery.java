@@ -29,7 +29,7 @@ import com.vaadin.data.util.PropertysetItem;
  */
 public class ProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
   
-  protected RepositoryService repositoryService;
+  protected transient RepositoryService repositoryService;
   
   protected ProcessDefinitionFilter filter;
   

@@ -40,9 +40,9 @@ public class StartProcessInstanceClickListener implements ClickListener {
 
   private static final long serialVersionUID = 1L;
   
-  protected RuntimeService runtimeService;
-  protected TaskService taskService;
-  protected FormService formService;
+  protected transient RuntimeService runtimeService;
+  protected transient TaskService taskService;
+  protected transient FormService formService;
   protected NotificationManager notificationManager;
   
   protected ProcessDefinition processDefinition;

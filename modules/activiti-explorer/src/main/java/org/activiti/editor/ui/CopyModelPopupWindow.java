@@ -53,7 +53,7 @@ public class CopyModelPopupWindow extends PopupWindow implements ModelDataJsonCo
   protected TextField nameTextField;
   protected TextArea descriptionTextArea;
   
-  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   
   public CopyModelPopupWindow(Model model) {
     this.modelData = model;

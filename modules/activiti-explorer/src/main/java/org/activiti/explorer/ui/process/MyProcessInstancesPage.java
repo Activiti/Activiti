@@ -30,8 +30,8 @@ public class MyProcessInstancesPage extends ProcessInstancePage {
 
   protected String processInstanceId;
   
-  protected RepositoryService repositoryService;
-  protected HistoryService historyService;
+  protected transient RepositoryService repositoryService;
+  protected transient HistoryService historyService;
   
   public MyProcessInstancesPage() {
     historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();

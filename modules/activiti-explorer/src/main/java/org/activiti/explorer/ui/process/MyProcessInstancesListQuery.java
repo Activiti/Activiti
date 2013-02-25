@@ -34,8 +34,8 @@ import com.vaadin.data.util.ObjectProperty;
  */
 public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
   
-  protected HistoryService historyService;
-  protected RepositoryService repositoryService;
+  protected transient HistoryService historyService;
+  protected transient RepositoryService repositoryService;
   
   protected Map<String, ProcessDefinition> cachedProcessDefinitions;
   

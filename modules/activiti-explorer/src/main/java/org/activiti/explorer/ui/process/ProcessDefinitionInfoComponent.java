@@ -63,8 +63,8 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
   protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionInfoComponent.class);
 
   // Services
-  protected RepositoryService repositoryService;
-  protected ManagementService managementService;
+  protected transient RepositoryService repositoryService;
+  protected transient ManagementService managementService;
   protected I18nManager i18nManager;
   
   // Members

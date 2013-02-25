@@ -31,7 +31,7 @@ import com.vaadin.data.Item;
 public abstract class AbstractTaskListQuery extends AbstractLazyLoadingQuery {
   
   protected String userId;
-  protected TaskService taskService;
+  protected transient TaskService taskService;
   
   public AbstractTaskListQuery() {
     this.userId = ExplorerApp.get().getLoggedInUser().getId();

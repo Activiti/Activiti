@@ -43,9 +43,9 @@ public class TaskNavigator implements Navigator {
   public static final String PARAMETER_CATEGORY = "category";
   public static final String PARAMETER_GROUP = "group";
   
-  protected TaskService taskService;
-  protected HistoryService historyService;
-  protected IdentityService identityService;
+  protected transient TaskService taskService;
+  protected transient HistoryService historyService;
+  protected transient IdentityService identityService;
   
   public TaskNavigator() {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();

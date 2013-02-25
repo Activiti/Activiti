@@ -14,6 +14,8 @@
 package org.activiti.explorer.ui.management.deployment;
 
 
+import java.io.Serializable;
+
 import org.activiti.explorer.ComponentFactories;
 import org.activiti.explorer.ui.ComponentFactory;
 import org.activiti.explorer.ui.process.DefaultProcessDefinitionFilter;
@@ -28,8 +30,10 @@ import org.activiti.explorer.ui.process.DefaultProcessDefinitionFilter;
  * 
  * @author Frederik Heremans
  */
-public class DeploymentFilterFactory implements ComponentFactory<DeploymentFilter> {
+public class DeploymentFilterFactory implements ComponentFactory<DeploymentFilter>, Serializable {
 
+  private static final long serialVersionUID = 6401451647516737141L;
+  
   private DeploymentFilter deploymentFilter;
 
   public void initialise(String environment) {

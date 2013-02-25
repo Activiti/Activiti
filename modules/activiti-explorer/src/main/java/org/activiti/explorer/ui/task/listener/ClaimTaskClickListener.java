@@ -36,7 +36,7 @@ public class ClaimTaskClickListener implements ClickListener {
   
   protected String taskId;
 
-  protected TaskService taskService;
+  protected transient TaskService taskService;
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
   protected NotificationManager notificationManager;

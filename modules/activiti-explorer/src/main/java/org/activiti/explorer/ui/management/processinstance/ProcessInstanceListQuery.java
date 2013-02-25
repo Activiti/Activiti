@@ -34,8 +34,8 @@ import com.vaadin.data.Item;
  */
 public class ProcessInstanceListQuery extends AbstractLazyLoadingQuery {
   
-  protected RuntimeService runtimeService;
-  protected RepositoryService repositoryService;
+  protected transient RuntimeService runtimeService;
+  protected transient RepositoryService repositoryService;
   
   protected Map<String, String> cachedProcessDefinitionNames = new HashMap<String, String>();
   

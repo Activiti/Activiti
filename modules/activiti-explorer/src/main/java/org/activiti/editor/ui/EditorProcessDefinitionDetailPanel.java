@@ -90,7 +90,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   protected FormPropertiesForm processDefinitionStartForm;
   protected EditorProcessDefinitionInfoComponent definitionInfoComponent;
   
-  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   
   public EditorProcessDefinitionDetailPanel(String modelId, EditorProcessDefinitionPage processDefinitionPage) {
     this.i18nManager = ExplorerApp.get().getI18nManager();

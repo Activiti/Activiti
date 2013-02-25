@@ -51,7 +51,7 @@ public class CreateAttachmentPopupWindow extends PopupWindow {
 
   protected I18nManager i18nManager;
   protected AttachmentRendererManager attachmentRendererManager;
-  protected TaskService taskService;
+  protected transient TaskService taskService;
 
   protected HorizontalLayout layout;
   protected GridLayout detailLayout;

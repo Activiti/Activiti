@@ -35,7 +35,6 @@ import com.vaadin.ui.Form;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 
@@ -47,7 +46,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class NewUserPopupWindow extends PopupWindow {
   
   private static final long serialVersionUID = 1L;
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   protected I18nManager i18nManager;
   protected Form form;
   

@@ -12,6 +12,8 @@
  */
 package org.activiti.workflow.simple.converter.step;
 
+import java.io.Serializable;
+
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.StepDefinition;
 
@@ -28,7 +30,7 @@ import org.activiti.workflow.simple.definition.StepDefinition;
  * 
  * @author Frederik Heremans
  */
-public interface StepDefinitionConverter {
+public interface StepDefinitionConverter extends Serializable {
 
   /**
    * @return class that this converter is capable of handling.

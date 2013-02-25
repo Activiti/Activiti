@@ -41,11 +41,10 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   private static final long serialVersionUID = -1L;
 
   // Thread local storage of instance for each user
-  protected static ThreadLocal<ExplorerApp> current = new ThreadLocal<ExplorerApp>();
+  protected transient static ThreadLocal<ExplorerApp> current = new ThreadLocal<ExplorerApp>();
   
   protected String environment;
   protected boolean useJavascriptDiagram;
-  protected UserCache userCache;
   protected MainWindow mainWindow;
   protected ViewManager viewManager;
   protected NotificationManager notificationManager;
@@ -54,8 +53,11 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   protected FormPropertyRendererManager formPropertyRendererManager;
   protected VariableRendererManager variableRendererManager;
   protected LoginHandler loginHandler;
-  protected WorkflowDefinitionConversionFactory workflowDefinitionConversionFactory;
   protected ComponentFactories componentFactories;
+  protected WorkflowDefinitionConversionFactory workflowDefinitionConversionFactory;
+  
+  // Transient member
+  protected transient UserCache userCache; // transient, beceause the cache can be rebuild anyway
 
   // Flag to see if the session has been invalidated, when the application was closed
   protected boolean invalidatedSession = false;

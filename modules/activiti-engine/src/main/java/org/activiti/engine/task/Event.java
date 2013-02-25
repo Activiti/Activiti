@@ -13,6 +13,7 @@
 
 package org.activiti.engine.task;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import org.activiti.engine.TaskService;
  * @see {@link TaskService#getTaskEvents(String)
  * @author Tom Baeyens
  */
-public interface Event {
+public interface Event extends Serializable {
   
   /** A user identity link was added with following message parts:
    * [0] userId

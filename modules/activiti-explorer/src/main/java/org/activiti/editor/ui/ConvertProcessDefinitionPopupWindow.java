@@ -54,10 +54,11 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
   
   private static final long serialVersionUID = 1L;
   
+  protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  protected transient RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
+  
   protected I18nManager i18nManager;
   protected NotificationManager notificationManager;
-  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-  protected RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
   protected VerticalLayout windowLayout;
   protected ProcessDefinition processDefinition;
   

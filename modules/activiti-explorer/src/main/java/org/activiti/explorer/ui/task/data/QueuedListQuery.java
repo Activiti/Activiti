@@ -23,7 +23,7 @@ import org.activiti.engine.task.TaskQuery;
 public class QueuedListQuery extends AbstractTaskListQuery {
   
   protected String groupId;
-  protected TaskService taskService;
+  protected transient TaskService taskService;
   
   public QueuedListQuery(String groupId) {
     this.groupId = groupId;

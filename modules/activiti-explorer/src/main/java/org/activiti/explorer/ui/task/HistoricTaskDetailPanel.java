@@ -61,9 +61,9 @@ public class HistoricTaskDetailPanel extends DetailPanel {
   protected HistoricTaskInstance historicTask;
   
   // Services
-  protected HistoryService historyService;
-  protected TaskService taskService;
-  protected ViewManager viewManager;
+  protected transient HistoryService historyService;
+  protected transient TaskService taskService;
+  protected transient ViewManager viewManager;
   protected I18nManager i18nManager;
   protected NotificationManager notificationManager;
   protected AttachmentRendererManager attachmentRendererManager;

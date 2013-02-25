@@ -45,7 +45,7 @@ public class UserDetailsComponent extends HorizontalLayout {
     
     private static final long serialVersionUID = 1L;
     
-    protected IdentityService identityService;
+    protected transient IdentityService identityService;
     protected ViewManager viewManager;
     
     protected User user;

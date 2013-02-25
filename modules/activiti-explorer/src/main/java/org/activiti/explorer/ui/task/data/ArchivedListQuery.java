@@ -34,7 +34,7 @@ import com.vaadin.data.Item;
 public class ArchivedListQuery extends AbstractLazyLoadingQuery {
 
   protected String userId;
-  protected HistoryService historyService;
+  protected transient HistoryService historyService;
   
   public ArchivedListQuery() {
     this.userId = ExplorerApp.get().getLoggedInUser().getId();

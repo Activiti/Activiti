@@ -76,11 +76,11 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
   
   protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessInstanceDetailPanel.class);
 
-  protected RuntimeService runtimeService;
-  protected RepositoryService repositoryService;
-  protected TaskService taskService;
-  protected HistoryService historyService;
-  protected IdentityService identityService;
+  protected transient RuntimeService runtimeService;
+  protected transient RepositoryService repositoryService;
+  protected transient TaskService taskService;
+  protected transient HistoryService historyService;
+  protected transient IdentityService identityService;
   protected I18nManager i18nManager;
   protected VariableRendererManager variableRendererManager;
   

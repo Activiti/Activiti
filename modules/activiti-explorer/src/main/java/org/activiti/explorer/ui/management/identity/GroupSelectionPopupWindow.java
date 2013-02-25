@@ -43,7 +43,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class GroupSelectionPopupWindow extends PopupWindow {
   
   private static final long serialVersionUID = 1L;
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   protected I18nManager i18nManager;
   protected String userId;
   protected Table groupTable;

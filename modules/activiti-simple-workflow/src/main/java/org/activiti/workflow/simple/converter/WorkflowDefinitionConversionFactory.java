@@ -12,6 +12,7 @@
  */
 package org.activiti.workflow.simple.converter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +36,10 @@ import org.activiti.workflow.simple.definition.WorkflowDefinition;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public class WorkflowDefinitionConversionFactory {
+public class WorkflowDefinitionConversionFactory implements Serializable {
 
+  private static final long serialVersionUID = 229288964476630200L;
+  
   protected HashMap<Class< ? >, StepDefinitionConverter> defaultStepConverters;
   protected HashMap<Class< ? >, StepDefinitionConverter> stepConverters;
   
