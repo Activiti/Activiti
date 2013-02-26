@@ -129,6 +129,7 @@ create table ACT_RU_IDENTITYLINK (
     TYPE_ NVARCHAR2(255),
     USER_ID_ NVARCHAR2(255),
     TASK_ID_ NVARCHAR2(64),
+    PROC_INST_ID_ varchar(64),
     PROC_DEF_ID_ NVARCHAR2(64),
     primary key (ID_)
 );

@@ -46,7 +46,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery processDefinitionKey(String processDefinitionKey);
 
   /**
-   * Selects the process instances which are defined by a process definition
+   * Select the process instances which are defined by a process definition
    * with the given id.
    */
   ProcessInstanceQuery processDefinitionId(String processDefinitionId);
@@ -63,6 +63,11 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * such process instance that can be the result of this query.
    */
   ProcessInstanceQuery subProcessInstanceId(String subProcessInstanceId);
+  
+  /**
+   * Select the process instances with which the user with the given id is involved. 
+   */
+  ProcessInstanceQuery involvedUser(String userId);
   
   /** 
    * Only select process instances which have a global variable with the given value. The type
@@ -165,14 +170,14 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery variableValueLike(String name, String value);
   
   /**
-   * Only selects process instances which are suspended, either because the 
+   * Only select process instances which are suspended, either because the 
    * process instance itself is suspended or because the corresponding process 
    * definition is suspended
    */
   ProcessInstanceQuery suspended();
   
   /**
-   * Only selects process instances which are active, which means that 
+   * Only select process instances which are active, which means that 
    * neither the process instance nor the corresponding process definition 
    * are suspended.
    */

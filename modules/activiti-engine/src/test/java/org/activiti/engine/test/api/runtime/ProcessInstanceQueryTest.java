@@ -1224,7 +1224,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
-    public void testClashingValues() throws Exception {
+  public void testClashingValues() throws Exception {
       Map<String, Object> vars = new HashMap<String, Object>();
       vars.put("var", 1234L);
       

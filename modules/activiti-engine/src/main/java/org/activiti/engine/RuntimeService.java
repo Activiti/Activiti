@@ -24,6 +24,8 @@ import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.runtime.NativeProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
 
 
 /** Service which provides access to {@link Deployment}s,
@@ -267,6 +269,24 @@ public interface RuntimeService {
    * @throws ActivitiObjectNotFoundException when no execution is found for the given executionId. 
    */
   void signal(String executionId, Map<String, Object> processVariables);
+  
+  // Identity Links ///////////////////////////////////////////////////////////////
+  
+  /**
+   * Involves a user with a process instance. The type of identity link is defined by the
+   * given identityLinkType.
+   * @param processInstanceId id of the process instance, cannot be null.
+   * @param userId id of the user involve, cannot be null.
+   * @param identityLinkType type of identityLink, cannot be null (@see {@link IdentityLinkType}).
+   * @throws ActivitiObjectNotFoundException when the process instance doesn't exist.
+   */
+  void addUserIdentityLink(String processInstanceId, String userId, String identityLinkType);
+  
+  /**
+   * Retrieves the {@link IdentityLink}s associated with the given process instance.
+   * Such an {@link IdentityLink} informs how a certain user is involved with a process instance.
+   */
+  List<IdentityLink> getIdentityLinksForProcessInstance(String instanceId);
   
   // Variables ////////////////////////////////////////////////////////////////////
   
@@ -514,5 +534,5 @@ public interface RuntimeService {
    * @throws ActivitiException if the execution has not subscribed to the signal
    */
   void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables);
-   
+
 }

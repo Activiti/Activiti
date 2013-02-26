@@ -19,36 +19,35 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.IdentityLink;
 
 
 /**
- * @author Tijs Rademakers
+ * @author Marcus Klimstra
  */
-public class GetIdentityLinksForProcessDefinitionCmd implements Command<List<IdentityLink>>, Serializable {
+public class GetIdentityLinksForProcessInstanceCmd implements Command<List<IdentityLink>>, Serializable {
   
   private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
+  
+  protected String processInstanceId;
 
-  public GetIdentityLinksForProcessDefinitionCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
+  public GetIdentityLinksForProcessInstanceCmd(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
   }
   
   @SuppressWarnings({"unchecked", "rawtypes"})
   public List<IdentityLink> execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = Context
+    ExecutionEntity processInstance = Context
         .getCommandContext()
-        .getProcessDefinitionEntityManager()
-        .findProcessDefinitionById(processDefinitionId);
+        .getExecutionEntityManager()
+        .findExecutionById(processInstanceId);
       
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
+    if (processInstance == null) {
+      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processInstanceId, ExecutionEntity.class);
     }
     
-    List<IdentityLink> identityLinks = (List) processDefinition.getIdentityLinks();
-    return identityLinks;
+    return (List) processInstance.getIdentityLinks();
   }
   
 }

@@ -131,6 +131,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected List<EventSubscriptionEntity> eventSubscriptions;  
   protected List<JobEntity> jobs;
   protected List<TaskEntity> tasks;
+  protected List<IdentityLinkEntity> identityLinks;
   protected int cachedEntityState;
   
   // cascade deletion ////////////////////////////////////////////////////////
@@ -831,6 +832,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     
     // remove event scopes:            
     removeEventScopes();
+    
+    // remove identity links
+    removeIdentityLinks();
 
     // finally delete this execution
     Context.getCommandContext()
@@ -1180,7 +1184,48 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     getTasksInternal().remove(task);
   }
     
+  // identity links ///////////////////////////////////////////////////////////
 
+  public List<IdentityLinkEntity> getIdentityLinks() {
+    if (identityLinks == null) {
+      identityLinks = Context
+        .getCommandContext()
+        .getIdentityLinkEntityManager()
+        .findIdentityLinksByProcessInstanceId(id);
+    }
+    
+    return identityLinks;
+  }
+
+  public IdentityLinkEntity addIdentityLink(String userId, String type) {
+    IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
+    getIdentityLinks().add(identityLinkEntity);
+    identityLinkEntity.setProcessInstance(this);
+    identityLinkEntity.setUserId(userId);
+    identityLinkEntity.setType(type);
+    return identityLinkEntity;
+  }
+  
+  /** 
+   * Adds an IdentityLink for this user with the specified type, 
+   * but only if the user is not associated with this instance yet.
+   **/
+  public IdentityLinkEntity involveUser(String userId, String type) {
+    for (IdentityLinkEntity identityLink : getIdentityLinks()) {
+      if (identityLink.getUserId().equals(userId)) {
+        return identityLink;
+      }
+    }
+    return addIdentityLink(userId, type);
+  }
+  
+  public void removeIdentityLinks() {
+    Context
+      .getCommandContext()
+      .getIdentityLinkEntityManager()
+      .deleteIdentityLinksByProcInstance(id);
+  }
+  
   // getters and setters //////////////////////////////////////////////////////
   
   

@@ -32,6 +32,7 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.delegate.TaskListenerInvocation;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -129,13 +130,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     dbSqlSession.update(this);
   }
   
-  /** new task.  Embedded state and create time will be initialized.
-   * But this task still will have to be persisted with 
-   * TransactionContext
-   *     .getCurrent()
-   *     .getPersistenceSession()
-   *     .insert(task);
-   */
+  /**  Creates a new task.  Embedded state and create time will be initialized.
+   * But this task still will have to be persisted. See {@link #insert(ExecutionEntity)}. */
   public static TaskEntity create() {
     TaskEntity task = new TaskEntity();
     task.isIdentityLinksInitialized = true;
@@ -146,6 +142,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void complete() {
     fireEvent(TaskListener.EVENTNAME_COMPLETE);
 
+    if (Authentication.getAuthenticatedUserId() != null) {
+      getProcessInstance().involveUser(Authentication.getAuthenticatedUserId(), IdentityLinkType.PARTICIPANT);
+    }
+    
     Context
       .getCommandContext()
       .getTaskEntityManager()
@@ -271,6 +271,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(type);
+    getProcessInstance().involveUser(owner, IdentityLinkType.PARTICIPANT);
     return identityLinkEntity;
   }
   
@@ -420,16 +421,16 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     this.assignee = assignee;
 
     CommandContext commandContext = Context.getCommandContext();
+    // if there is no command context, then it means that the user is calling the 
+    // setAssignee outside a service method.  E.g. while creating a new task.
     if (commandContext!=null) {
       commandContext
         .getHistoryManager()
         .recordTaskAssigneeChange(id, assignee);
       
-      // if there is no command context, then it means that the user is calling the 
-      // setAssignee outside a service method.  E.g. while creating a new task.
-      if (commandContext!=null) {
-        fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
-      }
+      getProcessInstance().involveUser(assignee, IdentityLinkType.PARTICIPANT);
+      
+      fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
     }
   }
 
@@ -452,6 +453,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       commandContext
         .getHistoryManager()
         .recordTaskOwnerChange(id, owner);
+      
+      getProcessInstance().involveUser(owner, IdentityLinkType.PARTICIPANT);
     }
   }
 
@@ -636,6 +639,12 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     this.executionId = executionId;
   }
   public ExecutionEntity getProcessInstance() {
+    if (processInstance == null) {
+      processInstance = Context
+          .getCommandContext()
+          .getExecutionEntityManager()
+          .findExecutionById(processInstanceId);
+    }
     return processInstance;
   }
   public void setProcessInstance(ExecutionEntity processInstance) {
