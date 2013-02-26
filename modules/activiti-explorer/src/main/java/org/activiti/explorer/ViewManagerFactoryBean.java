@@ -13,6 +13,8 @@
 
 package org.activiti.explorer;
 
+import java.io.Serializable;
+
 import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.alfresco.AlfrescoViewManager;
 import org.springframework.beans.factory.FactoryBean;
@@ -21,7 +23,7 @@ import org.springframework.beans.factory.FactoryBean;
 /**
  * @author Joram Barrez
  */
-public class ViewManagerFactoryBean implements FactoryBean<ViewManager> {
+public class ViewManagerFactoryBean implements FactoryBean<ViewManager>, Serializable {
 
   protected String environment;
   protected MainWindow mainWindow;

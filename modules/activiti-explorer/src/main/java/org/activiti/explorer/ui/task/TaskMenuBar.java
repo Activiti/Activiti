@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.task;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import org.activiti.engine.IdentityService;
@@ -29,10 +31,10 @@ import org.activiti.explorer.ui.custom.ToolbarEntry;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.custom.ToolbarPopupEntry;
 import org.activiti.explorer.ui.task.data.ArchivedListQuery;
-import org.activiti.explorer.ui.task.data.TasksListQuery;
 import org.activiti.explorer.ui.task.data.InboxListQuery;
 import org.activiti.explorer.ui.task.data.InvolvedListQuery;
 import org.activiti.explorer.ui.task.data.QueuedListQuery;
+import org.activiti.explorer.ui.task.data.TasksListQuery;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -54,7 +56,7 @@ public class TaskMenuBar extends ToolBar {
   public static final String ENTRY_INVOLVED = "involved";
   public static final String ENTRY_ARCHIVED = "archived";
   
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   protected ViewManager viewManager;
   protected I18nManager i18nManager;
   

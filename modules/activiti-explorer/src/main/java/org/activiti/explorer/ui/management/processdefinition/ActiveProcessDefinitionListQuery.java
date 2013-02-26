@@ -29,7 +29,7 @@ import com.vaadin.data.Item;
  */
 public class ActiveProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
   
-  protected RepositoryService repositoryService;
+  protected transient RepositoryService repositoryService;
   
   public ActiveProcessDefinitionListQuery() {
     this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();

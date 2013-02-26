@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.variable;
 
+import java.io.Serializable;
+
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -21,7 +23,7 @@ import org.springframework.beans.factory.InitializingBean;
  * 
  * @author Frederik Heremans
  */
-public class VariableRendererConfigurer implements InitializingBean {
+public class VariableRendererConfigurer implements InitializingBean, Serializable {
 
   private VariableRenderer renderer;
   private VariableRendererManager variableRendererManager;

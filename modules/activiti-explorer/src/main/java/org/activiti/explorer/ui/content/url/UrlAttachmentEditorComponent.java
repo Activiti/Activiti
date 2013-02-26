@@ -39,7 +39,7 @@ public class UrlAttachmentEditorComponent extends Form implements AttachmentEdit
   protected String processInstanceId;
   
   protected I18nManager i18nManager;
-  protected TaskService taskService;
+  protected transient TaskService taskService;
   
   public UrlAttachmentEditorComponent(String taskId, String processInstanceId) {
     this(null, taskId, processInstanceId);

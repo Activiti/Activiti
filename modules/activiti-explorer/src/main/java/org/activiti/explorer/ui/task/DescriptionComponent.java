@@ -39,7 +39,7 @@ public class DescriptionComponent extends CssLayout {
   
   protected Task task;
   protected I18nManager i18nManager;
-  protected TaskService taskService;
+  protected transient TaskService taskService;
   
   protected Label descriptionLabel;
   protected VerticalLayout editLayout;

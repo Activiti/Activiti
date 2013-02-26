@@ -10,23 +10,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.definition;
+package org.activiti.engine.impl.util.io;
 
-import java.io.Serializable;
-import java.util.List;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 
 /**
  * @author Joram Barrez
  */
-public interface StepDefinitionContainer<T> extends Serializable {
+public class BytesStreamSource implements StreamSource {
+
+  protected byte[] bytes;
   
-  List<StepDefinition> getSteps();
-
-  void addStep(StepDefinition stepDefinition);
-
-  T addHumanStep(String name, String assignee);
-
-  T addHumanStepForWorkflowInitiator(String name);
+  public BytesStreamSource(byte[] bytes) {
+    this.bytes = bytes;
+  }
+  
+  public InputStream getInputStream() {
+    return new ByteArrayInputStream(bytes);
+  }
 
 }

@@ -50,7 +50,7 @@ public class JobDetailPanel extends DetailPanel {
 
   private static final long serialVersionUID = 1L;
   
-  protected ManagementService managementService;
+  protected transient ManagementService managementService;
   protected I18nManager i18nManager;
   protected NotificationManager notificationManager;
   

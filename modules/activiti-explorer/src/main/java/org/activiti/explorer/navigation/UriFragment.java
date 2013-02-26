@@ -13,6 +13,7 @@
 
 package org.activiti.explorer.navigation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -27,7 +28,7 @@ import org.activiti.explorer.util.UriUtility;
  * 
  * @author Frederik Heremans
  */
-public class UriFragment {
+public class UriFragment implements Serializable {
 
   private List<String> uriParts;
   private Map<String, String> parameters;

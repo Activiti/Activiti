@@ -34,7 +34,7 @@ import com.vaadin.data.util.PropertysetItem;
  */
 public class GroupSelectionQuery extends AbstractLazyLoadingQuery {
   
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   protected String userId;
   
   public GroupSelectionQuery(IdentityService identityService, String userId) {

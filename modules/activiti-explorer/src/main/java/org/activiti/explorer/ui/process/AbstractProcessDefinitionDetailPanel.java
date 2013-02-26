@@ -53,9 +53,9 @@ public abstract class AbstractProcessDefinitionDetailPanel extends DetailPanel {
   protected AbstractPage parentPage;
   
   // Services
-  protected RepositoryService repositoryService;
-  protected ManagementService managementService;
-  protected FormService formService; 
+  protected transient RepositoryService repositoryService;
+  protected transient ManagementService managementService;
+  protected transient FormService formService; 
   protected I18nManager i18nManager;
   
   // UI

@@ -35,17 +35,6 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
     
   }
   
-  public void testDeployBpmnWithInvalidDiagramInterchange() {
-    try {
-      deploymentId = repositoryService.createDeployment()
-              .addClasspathResource("org/activiti/engine/test/api/repository/invalidBpmnElementReferenceInDiagramInterchange.bpmn20.xml")
-              .deploy()
-              .getId();
-    } catch (ActivitiException e) {
-      assertTextPresent("Invalid reference in diagram interchange definition: could not find", e.getMessage());
-    }
-  }
-  
   public void testDeployWithMissingWaypointsForSequenceflowInDiagramInterchange() {
     try {
       repositoryService.createDeployment()

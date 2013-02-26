@@ -10,25 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.bpmn.util;
+package org.activiti.engine.impl.util.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public class BytesStreamSource implements StreamSource {
-
-  protected byte[] bytes;
+public class StringStreamSource implements StreamSource {
   
-  public BytesStreamSource(byte[] bytes) {
-    this.bytes = bytes;
+  String string;
+  
+  public StringStreamSource(String string) {
+    this.string = string;
   }
-  
+
   public InputStream getInputStream() {
-    return new ByteArrayInputStream(bytes);
+    return new ByteArrayInputStream(string.getBytes());
   }
 
+  public String toString() {
+    return "String";
+  }
 }

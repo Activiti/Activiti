@@ -13,14 +13,18 @@
 
 package org.activiti.explorer.navigation;
 
+import java.io.Serializable;
+
 import org.activiti.explorer.ExplorerApp;
 
 
 /**
  * @author Frederik Heremans
  */
-public class ProcessNavigator implements Navigator {
+public class ProcessNavigator implements Navigator, Serializable {
 
+  private static final long serialVersionUID = -4980737250067435656L;
+  
   public static final String process_URI_PART = "process";
   
   public String getTrigger() {

@@ -45,7 +45,7 @@ public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
   private static final long serialVersionUID = 1L;
 
   // Services
-  protected RepositoryService repositoryService;
+  protected transient RepositoryService repositoryService;
   protected I18nManager i18nManager;
   
   // Members

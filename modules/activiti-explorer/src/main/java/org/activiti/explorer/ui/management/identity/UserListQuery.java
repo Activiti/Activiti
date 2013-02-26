@@ -31,7 +31,7 @@ import com.vaadin.data.util.PropertysetItem;
  */
 public class UserListQuery extends AbstractLazyLoadingQuery {
   
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   
   public UserListQuery() {
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();

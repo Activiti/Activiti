@@ -33,18 +33,18 @@ import com.vaadin.data.util.PropertysetItem;
  */
 public class JobListQuery extends AbstractLazyLoadingQuery {
   
-  protected ManagementService repositoryService;
+  protected transient ManagementService managementService;
   
   public JobListQuery() {
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getManagementService();
+    this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
   }
 
   public int size() {
-    return (int) repositoryService.createJobQuery().count();
+    return (int) managementService.createJobQuery().count();
   }
 
   public List<Item> loadItems(int start, int count) {
-    List<Job> jobs = repositoryService.createJobQuery()
+    List<Job> jobs = managementService.createJobQuery()
       .orderByJobDuedate().asc()
       .orderByJobId().asc()
       .list();
@@ -57,7 +57,7 @@ public class JobListQuery extends AbstractLazyLoadingQuery {
   }
 
   public Item loadSingleResult(String id) {
-    Job job = repositoryService.createJobQuery().jobId(id).singleResult();
+    Job job = managementService.createJobQuery().jobId(id).singleResult();
     if (job != null) {
       return new JobListItem(job);      
     }

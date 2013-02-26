@@ -27,7 +27,7 @@ public class InputStreamStreamSource implements StreamSource {
 
   private static final long serialVersionUID = -860417435916179985L;
   
-  protected InputStream inputStream;
+  protected transient InputStream inputStream;
   
   public InputStreamStreamSource(InputStream inputStream) {
     this.inputStream = inputStream;

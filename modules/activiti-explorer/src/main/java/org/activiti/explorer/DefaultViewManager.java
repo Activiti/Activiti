@@ -13,6 +13,7 @@
 
 package org.activiti.explorer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -56,16 +57,18 @@ import com.vaadin.ui.Window;
 /**
  * @author Joram Barrez
  */
-public class DefaultViewManager implements ViewManager {
+public class DefaultViewManager implements ViewManager, Serializable {
   
+  private static final long serialVersionUID = -1712344958488358861L;
+
   protected AbstractPage currentPage;
   
   @Autowired
   protected MainWindow mainWindow;
 
-  protected TaskService taskService;
-  protected HistoryService historyService;
-  protected IdentityService identityService;
+  protected transient TaskService taskService;
+  protected transient HistoryService historyService;
+  protected transient IdentityService identityService;
   
   public DefaultViewManager() {
     this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();

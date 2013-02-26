@@ -13,6 +13,7 @@
 
 package org.activiti.explorer.ui.variable;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ import java.util.Map;
  * 
  * @author Frederik Heremans
  */
-public class VariableRendererManager {
+public class VariableRendererManager implements Serializable {
 
   private Map<Class<?>, VariableRenderer> renderers = new HashMap<Class<?>, VariableRenderer>();
   

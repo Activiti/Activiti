@@ -12,11 +12,13 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.io.Serializable;
+
 /**
  * Marker interface for all 'patterns' that are known by the simple workflow API.
  * 
  * @author Joram Barrez
  */
-public interface StepDefinition {
+public interface StepDefinition extends Serializable {
   
 }

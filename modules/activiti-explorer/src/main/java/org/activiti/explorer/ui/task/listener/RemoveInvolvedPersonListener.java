@@ -27,7 +27,6 @@ import org.activiti.explorer.ui.custom.ConfirmationDialogPopupWindow;
 import org.activiti.explorer.ui.event.ConfirmationEvent;
 import org.activiti.explorer.ui.event.ConfirmationEventListener;
 import org.activiti.explorer.ui.task.TaskDetailPanel;
-import org.activiti.explorer.ui.task.TaskInvolvedPeopleComponent;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -42,10 +41,12 @@ public class RemoveInvolvedPersonListener implements ClickListener {
   protected IdentityLink identityLink;
   protected Task task;
   protected TaskDetailPanel taskDetailPanel;
+  
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
-  protected IdentityService identityService;
-  protected TaskService taskService;
+  
+  protected transient IdentityService identityService;
+  protected transient TaskService taskService;
   
   public RemoveInvolvedPersonListener(IdentityLink identityLink, Task task, TaskDetailPanel taskDetailPanel) {
     this.identityLink = identityLink;

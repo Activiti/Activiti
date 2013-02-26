@@ -49,7 +49,7 @@ public class ImportUploadReceiver implements Receiver, FinishedListener, ModelDa
 
   private static final long serialVersionUID = 1L;
   
-  protected RepositoryService repositoryService;
+  protected transient RepositoryService repositoryService;
   protected I18nManager i18nManager;
   protected NotificationManager notificationManager;
   protected ViewManager viewManager;

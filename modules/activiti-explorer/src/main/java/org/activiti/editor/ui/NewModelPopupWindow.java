@@ -58,7 +58,7 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
   protected TextArea descriptionTextArea;
   protected SelectEditorComponent selectEditorComponent;
   
-  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   
   public NewModelPopupWindow() {
     this.windowLayout = (VerticalLayout) getContent();

@@ -64,9 +64,9 @@ public class TaskDetailPanel extends DetailPanel {
   protected Task task;
   
   // Services
-  protected TaskService taskService;
-  protected FormService formService;
-  protected RepositoryService repositoryService;
+  protected transient TaskService taskService;
+  protected transient FormService formService;
+  protected transient RepositoryService repositoryService;
   protected ViewManager viewManager;
   protected I18nManager i18nManager;
   protected NotificationManager notificationManager;

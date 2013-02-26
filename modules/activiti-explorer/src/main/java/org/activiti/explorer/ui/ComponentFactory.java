@@ -12,6 +12,8 @@
  */
 package org.activiti.explorer.ui;
 
+import java.io.Serializable;
+
 import com.vaadin.ui.Component;
 
 
@@ -21,7 +23,7 @@ import com.vaadin.ui.Component;
  * 
  * @author Joram Barrez
  */
-public interface ComponentFactory<T> {
+public interface ComponentFactory<T> extends Serializable {
   
   void initialise(String environment);
   

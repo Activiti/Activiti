@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +24,10 @@ import org.activiti.explorer.ui.management.ManagementMenuBarFactory;
  * @author Joram Barrez
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class ComponentFactories {
+public class ComponentFactories implements Serializable {
   
+  private static final long serialVersionUID = 7863017440773004716L;
+
   // Component factories are configured here, and not in the Spring context,
   // as this would require a lot of XML (Alfresco doesnt use component scanning)
   public static final String MAIN_MENU = "mainMenu";

@@ -15,13 +15,16 @@ package org.activiti.engine.identity;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 
 
 /**
  * @author Tom Baeyens
  */
-public class Picture {
+public class Picture implements Serializable {
 
+  private static final long serialVersionUID = 2384375526314443322L;
+  
   protected byte[] bytes;
   protected String mimeType;
 

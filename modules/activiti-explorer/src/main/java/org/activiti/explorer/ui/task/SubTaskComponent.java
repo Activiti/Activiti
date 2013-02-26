@@ -56,8 +56,8 @@ public class SubTaskComponent extends CustomComponent {
   private static final long serialVersionUID = 1L;
   
   protected I18nManager i18nManager;
-  protected TaskService taskService;
-  protected HistoryService historyService;
+  protected transient TaskService taskService;
+  protected transient HistoryService historyService;
   
   protected Task parentTask;
   protected TaskDetailPanel taskDetailPanel;

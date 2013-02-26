@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.process;
 
+import java.io.Serializable;
+
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -23,7 +25,7 @@ import com.vaadin.data.util.ObjectProperty;
 /**
  * @author Frederik Heremans
  */
-public class DefaultProcessDefinitionFilter implements ProcessDefinitionFilter {
+public class DefaultProcessDefinitionFilter implements ProcessDefinitionFilter, Serializable {
 
   protected static final String PROPERTY_ID = "id";
   protected static final String PROPERTY_NAME = "name";
