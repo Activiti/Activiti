@@ -25,8 +25,11 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultExchange;
 
+@Deprecated
 public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+  
   private Collection<ContextProvider> contextProviders;
 
   public CamelBehaviour(Collection<ContextProvider> camelContext) {
@@ -76,7 +79,7 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
         ex.setProperty(var.getKey(), var.getValue());
       }
     }
-    if (endpoint.isCopyVariablesToBody()) {
+    if (endpoint.isCopyVariablesToBodyAsMap()) {
       ex.getIn().setBody(new HashMap<String,Object>(variables));
     }
     return ex;

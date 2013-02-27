@@ -19,9 +19,23 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.impl.DefaultComponent;
 
+/**
+ * This class has been modified to be consistent with the changes to CamelBehavior and its implementations. The set of changes
+ * significantly increases the flexibility of our Camel integration, as you can either choose one of three "out-of-the-box" modes,
+ * or you can choose to create your own. Please reference the comments for the "CamelBehavior" class for more information on the 
+ * out-of-the-box implementation class options. 
+ * 
+ * @author Ryan Johnston (@rjfsu), Tijs Rademakers
+ */
 public class ActivitiComponent extends DefaultComponent {
 
   private RuntimeService runtimeService;
+  
+  private boolean copyVariablesToProperties;
+
+  private boolean copyVariablesToBodyAsMap;
+
+  private boolean copyCamelBodyToBody;
 
   public ActivitiComponent() {}
   
@@ -43,6 +57,33 @@ public class ActivitiComponent extends DefaultComponent {
   @Override
   protected Endpoint createEndpoint(String s, String s1, Map<String, Object> stringObjectMap) throws Exception {
     ActivitiEndpoint ae = new ActivitiEndpoint(s, getCamelContext(), runtimeService);
+    ae.setCopyVariablesToProperties(this.copyVariablesToProperties);
+    ae.setCopyVariablesToBodyAsMap(this.copyVariablesToBodyAsMap);
+    ae.setCopyCamelBodyToBody(this.copyCamelBodyToBody);
     return ae;
+  }
+  
+  public boolean isCopyVariablesToProperties() {
+    return copyVariablesToProperties;
+  }
+  
+  public void setCopyVariablesToProperties(boolean copyVariablesToProperties) {
+    this.copyVariablesToProperties = copyVariablesToProperties;
+  }
+  
+  public boolean isCopyCamelBodyToBody() {
+    return copyCamelBodyToBody;
+  }
+  
+  public void setCopyCamelBodyToBody(boolean copyCamelBodyToBody) {
+    this.copyCamelBodyToBody = copyCamelBodyToBody;
+  }
+  
+  public boolean isCopyVariablesToBodyAsMap() {
+    return copyVariablesToBodyAsMap;
+  }
+  
+  public void setCopyVariablesToBodyAsMap(boolean copyVariablesToBodyAsMap) {
+    this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
   }
 }
