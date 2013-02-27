@@ -34,4 +34,8 @@ public class IdentityLinkType {
 
   public static final String OWNER = "owner";
 
+  public static final String STARTER = "starter";
+  
+  public static final String PARTICIPANT = "participant";
+
 }

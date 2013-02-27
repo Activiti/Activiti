@@ -105,7 +105,7 @@
     <include refid="selectExecutionsByQueryCriteriaSql"/>
   </select>
   
-  <!--  same as selectExecutionByQueryCriteria, but with different parameterType -->
+  <!--  same as selectExecutionsByQueryCriteria, but with different parameterType -->
   <select id="selectProcessInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="executionResultMap">
   	${limitBefore}
     select RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId
@@ -121,6 +121,9 @@
   
   <sql id="selectExecutionsByQueryCriteriaSql">
     from ${prefix}ACT_RU_EXECUTION RES
+    <if test="involvedUser != null">
+      inner join ${prefix}ACT_RU_IDENTITYLINK I on I.PROC_INST_ID_ = RES.ID_
+    </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       <choose>
         <when test="queryVariableValue.local">
@@ -180,6 +183,9 @@
         <if test="suspensionState.stateCode == 2">
         	and (RES.SUSPENSION_STATE_ = 2)
         </if>
+      </if>
+      <if test="involvedUser != null">
+        and I.USER_ID_ = #{involvedUser}
       </if>
       <!-- PLEASE NOTE: If you change anything have a look into the HistoricVariableInstance & HistoricProcessInstance, the same query object is used there! -->
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">

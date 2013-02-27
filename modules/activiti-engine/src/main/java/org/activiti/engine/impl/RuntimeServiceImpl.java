@@ -18,15 +18,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
 import org.activiti.engine.impl.cmd.MessageEventReceivedCmd;
 import org.activiti.engine.impl.cmd.RemoveExecutionVariablesCmd;
@@ -41,6 +42,7 @@ import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.runtime.NativeProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.task.IdentityLink;
 
 /**
  * @author Tom Baeyens
@@ -173,6 +175,14 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   
   public void signal(String executionId, Map<String, Object> processVariables) {
     commandExecutor.execute(new SignalCmd(executionId, null, null, processVariables));
+  }
+
+  public void addUserIdentityLink(String processInstanceId, String userId, String identityLinkType) {
+    commandExecutor.execute(new AddIdentityLinkForProcessInstanceCmd(processInstanceId, userId, identityLinkType));
+  }
+
+  public List<IdentityLink> getIdentityLinksForProcessInstance(String processInstanceId) {
+    return commandExecutor.execute(new GetIdentityLinksForProcessInstanceCmd(processInstanceId));
   }
 
   public ProcessInstanceQuery createProcessInstanceQuery() {

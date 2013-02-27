@@ -74,13 +74,10 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
       task.addIdentityLink(userId, groupId, type);
     }
 
-    if(assignedToNoOne)
-    {
+    if (assignedToNoOne) {
       // ACT-1317: Special handling when assignee is set to NULL, a CommentEntity notifying of assignee-delete should be created
       commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, false, true);
-    }
-    else
-    {
+    } else {
       commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, true);
     }
     
