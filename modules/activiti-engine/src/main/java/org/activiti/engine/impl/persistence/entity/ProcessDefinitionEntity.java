@@ -84,10 +84,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     // Reset the process instance in order to have the db-generated process instance id available
     processInstance.setProcessInstance(processInstance);
     
+    String authenticatedUserId = Authentication.getAuthenticatedUserId();
     String initiatorVariableName = (String) getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
     if (initiatorVariableName!=null) {
-      String authenticatedUserId = Authentication.getAuthenticatedUserId();
       processInstance.setVariable(initiatorVariableName, authenticatedUserId);
+    }
+    if (authenticatedUserId != null) {
+      processInstance.addIdentityLink(authenticatedUserId, IdentityLinkType.STARTER);
     }
     
     Context.getCommandContext().getHistoryManager()
