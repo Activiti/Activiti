@@ -432,7 +432,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         .getHistoryManager()
         .recordTaskAssigneeChange(id, assignee);
       
-      if (processInstanceId != null) {
+      if (assignee != null && processInstanceId != null) {
         getProcessInstance().involveUser(assignee, IdentityLinkType.PARTICIPANT);
       }
       
@@ -460,7 +460,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         .getHistoryManager()
         .recordTaskOwnerChange(id, owner);
       
-      if (processInstanceId != null) {
+      if (owner != null && processInstanceId != null) {
         getProcessInstance().involveUser(owner, IdentityLinkType.PARTICIPANT);
       }
     }
