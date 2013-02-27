@@ -43,6 +43,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String processDefinitionKey;
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
+  protected String involvedUser;
   protected SuspensionState suspensionState;
   
   // Unused, see dynamic query
@@ -122,6 +123,13 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     return this;
   }
   
+  public ProcessInstanceQuery involvedUser(String involvedUser) {
+    if (involvedUser == null) {
+      throw new ActivitiIllegalArgumentException("Involved user is null");
+    }
+    this.involvedUser = involvedUser;
+    return this;
+  }
 
   public ProcessInstanceQuery orderByProcessInstanceId() {
     this.orderProperty = ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID;
@@ -195,6 +203,9 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
   }  
+  public String getInvolvedUser() {
+    return involvedUser;
+  }
   public SuspensionState getSuspensionState() {
     return suspensionState;
   }  

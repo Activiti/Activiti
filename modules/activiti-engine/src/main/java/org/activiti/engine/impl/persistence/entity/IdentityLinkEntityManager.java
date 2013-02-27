@@ -36,6 +36,11 @@ public class IdentityLinkEntityManager extends AbstractManager {
   }
   
   @SuppressWarnings("unchecked")
+  public List<IdentityLinkEntity> findIdentityLinksByProcessInstanceId(String processInstanceId) {
+    return getDbSqlSession().selectList("selectIdentityLinksByProcessInstance", processInstanceId);
+  }
+  
+  @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(String processDefinitionId) {
     return getDbSqlSession().selectList("selectIdentityLinksByProcessDefinition", processDefinitionId);
   }
@@ -65,9 +70,16 @@ public class IdentityLinkEntityManager extends AbstractManager {
       deleteIdentityLink(identityLink);
     }
   }
+
+  public void deleteIdentityLinksByProcInstance(String processInstanceId) {
+    List<IdentityLinkEntity> identityLinks = findIdentityLinksByProcessInstanceId(processInstanceId);
+    for (IdentityLinkEntity identityLink: identityLinks) {
+      deleteIdentityLink(identityLink);
+    }
+  }
   
   public void deleteIdentityLinksByProcDef(String processDefId) {
     getDbSqlSession().delete("deleteIdentityLinkByProcDef", processDefId);
   }
-  
+
 }
