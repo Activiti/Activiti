@@ -107,12 +107,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
       bundleChanged(event);
     }
 
-    List<BundleScriptEngineResolver> r = new ArrayList<BundleScriptEngineResolver>();
-    registerScriptEngines(bundle, r);
-    for (BundleScriptEngineResolver service : r) {
-        service.register();
-    }
-    resolvers.put(bundle.getBundleId(), r);
+    checkBundleScriptEngines(bundle);
     
     return bundle;
   }
@@ -157,7 +152,18 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
     Bundle bundle = event.getBundle();
     if (event.getType() == BundleEvent.RESOLVED) {
       checkBundle(bundle);
+    } else if (event.getType() == BundleEvent.STARTED) {
+      checkBundleScriptEngines(bundle);
     }
+  }
+  
+  private void checkBundleScriptEngines(Bundle bundle) {
+    List<BundleScriptEngineResolver> r = new ArrayList<BundleScriptEngineResolver>();
+    registerScriptEngines(bundle, r);
+    for (BundleScriptEngineResolver service : r) {
+      service.register();
+    }
+    resolvers.put(bundle.getBundleId(), r);
   }
 
   private void checkBundle(Bundle bundle) {

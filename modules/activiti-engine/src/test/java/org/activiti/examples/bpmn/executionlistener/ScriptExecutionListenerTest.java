@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -30,19 +31,21 @@ public class ScriptExecutionListenerTest extends PluggableActivitiTestCase {
 	public void testScriptExecutionListener() {
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("scriptExecutionListenerProcess");     
 
-		List<HistoricVariableInstance> historicVariables = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
-		Map<String, Object> varMap = new HashMap<String, Object>();
-		for (HistoricVariableInstance historicVariableInstance : historicVariables) {
-		  varMap.put(historicVariableInstance.getVariableName(), historicVariableInstance.getValue());
-    }
-		
-		assertTrue(varMap.containsKey("foo"));
-		assertEquals("FOO", varMap.get("foo"));
-		assertTrue(varMap.containsKey("var1"));
-    assertEquals("test", varMap.get("var1"));
-    assertFalse(varMap.containsKey("bar"));
-    assertTrue(varMap.containsKey("myVar"));
-    assertEquals("BAR", varMap.get("myVar"));
+		if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+  		List<HistoricVariableInstance> historicVariables = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
+  		Map<String, Object> varMap = new HashMap<String, Object>();
+  		for (HistoricVariableInstance historicVariableInstance : historicVariables) {
+  		  varMap.put(historicVariableInstance.getVariableName(), historicVariableInstance.getValue());
+      }
+  		
+  		assertTrue(varMap.containsKey("foo"));
+  		assertEquals("FOO", varMap.get("foo"));
+  		assertTrue(varMap.containsKey("var1"));
+      assertEquals("test", varMap.get("var1"));
+      assertFalse(varMap.containsKey("bar"));
+      assertTrue(varMap.containsKey("myVar"));
+      assertEquals("BAR", varMap.get("myVar"));
+		}
 	}
 
 }
