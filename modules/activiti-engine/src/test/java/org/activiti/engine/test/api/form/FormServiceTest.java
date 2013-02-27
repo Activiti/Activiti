@@ -244,6 +244,34 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     assertEquals("rubensstraat", address.getStreet());
     assertEquals(expectedVariables, variables);
   }
+  
+  @Deployment
+  public void testFormPropertyExpression() {
+    Map<String, Object> varMap = new HashMap<String, Object>();
+    varMap.put("speaker", "Mike"); // variable name mapping
+    Address address = new Address();
+    varMap.put("address", address);
+
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    ProcessInstance processInstance = runtimeService.startProcessInstanceById(procDefId, varMap);
+
+    String taskId = taskService.createTaskQuery().singleResult().getId();
+    TaskFormData taskFormData = formService.getTaskFormData(taskId);
+
+    List<FormProperty> formProperties = taskFormData.getFormProperties();
+    FormProperty propertySpeaker = formProperties.get(0);
+    assertEquals("speaker", propertySpeaker.getId());
+    assertEquals("Mike", propertySpeaker.getValue());
+
+    assertEquals(2, formProperties.size());
+
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("street", "Broadway");
+    formService.submitTaskFormData(taskId, properties);
+
+    address = (Address) runtimeService.getVariable(processInstance.getId(), "address");
+    assertEquals("Broadway", address.getStreet());
+  }
 
   @SuppressWarnings("unchecked")
   @Deployment

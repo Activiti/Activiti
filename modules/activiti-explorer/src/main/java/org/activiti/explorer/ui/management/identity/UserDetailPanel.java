@@ -59,8 +59,8 @@ public class UserDetailPanel extends DetailPanel implements MemberShipChangeList
 
   private static final long serialVersionUID = 1L;
   
+  protected transient IdentityService identityService;
   protected I18nManager i18nManager;
-  protected IdentityService identityService;
   
   protected UserPage userPage;
   protected User user;

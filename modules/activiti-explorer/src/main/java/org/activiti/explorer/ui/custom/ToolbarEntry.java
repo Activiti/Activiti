@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.custom;
 
+import java.io.Serializable;
+
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.Alignment;
@@ -121,7 +123,7 @@ public class ToolbarEntry extends CustomComponent {
     layout.setComponentAlignment(countButton, Alignment.MIDDLE_LEFT);
   }
   
-  public interface ToolbarCommand {
+  public interface ToolbarCommand extends Serializable {
     void toolBarItemSelected();
   }
 }

@@ -18,7 +18,6 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import com.vaadin.ui.LoginForm;

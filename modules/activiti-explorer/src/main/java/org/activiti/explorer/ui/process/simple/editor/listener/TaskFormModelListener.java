@@ -12,10 +12,12 @@
  */
 package org.activiti.explorer.ui.process.simple.editor.listener;
 
+import java.io.Serializable;
+
 /**
  * @author Joram Barrez
  */
-public interface TaskFormModelListener {
+public interface TaskFormModelListener extends Serializable {
 
   void formAdded(Object taskItemId);
 

@@ -12,30 +12,38 @@
  */
 package org.activiti.examples.bpmn.tasklistener;
 
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Rich Kroll
+ * @author Rich Kroll, Tijs Rademakers
  */
 public class ScriptTaskListenerTest extends PluggableActivitiTestCase {
 
 	@Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/ScriptTaskListenerTest.bpmn20.xml" })
 	public void testScriptTaskListener() {
-		runtimeService.startProcessInstanceByKey("scriptTaskListenerProcess");
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("scriptTaskListenerProcess");
 		Task task = taskService.createTaskQuery().singleResult();
 		assertEquals("Name does not match", "All your base are belong to us", task.getName());
 		
 		taskService.complete(task.getId());
 
-		Task task2 = taskService.createTaskQuery().singleResult();
-		assertEquals("Task name not set with 'bar' variable", "BAR", task2.getName());
-		
-		Object bar = runtimeService.getVariable(task2.getExecutionId(), "bar");
+		if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+  		HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+  		assertEquals("kermit", historicTask.getOwner());
+  		
+  		task = taskService.createTaskQuery().singleResult();
+  		assertEquals("Task name not set with 'bar' variable", "BAR", task.getName());
+		}
+  		
+		Object bar = runtimeService.getVariable(processInstance.getId(), "bar");
 		assertNull("Expected 'bar' variable to be local to script", bar);
 		
-		Object foo = runtimeService.getVariable(task2.getExecutionId(), "foo");
+		Object foo = runtimeService.getVariable(processInstance.getId(), "foo");
 		assertEquals("Could not find the 'foo' variable in variable scope", "FOO", foo);
 	}
 

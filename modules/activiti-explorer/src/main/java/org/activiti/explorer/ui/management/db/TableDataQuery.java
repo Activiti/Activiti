@@ -33,7 +33,7 @@ import com.vaadin.data.Item;
 public class TableDataQuery extends AbstractLazyLoadingQuery {
   
   protected String tableName;
-  protected ManagementService managementService;
+  protected transient ManagementService managementService;
   protected Object[] sortPropertyIds;
   protected boolean[] sortPropertyIdsAscending;
   

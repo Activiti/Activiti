@@ -28,6 +28,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Import;
 import org.activiti.bpmn.model.Interface;
@@ -36,11 +37,6 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.parse.Problem;
-import org.activiti.bpmn.util.InputStreamSource;
-import org.activiti.bpmn.util.ResourceStreamSource;
-import org.activiti.bpmn.util.StreamSource;
-import org.activiti.bpmn.util.StringStreamSource;
-import org.activiti.bpmn.util.UrlStreamSource;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.Condition;
@@ -64,6 +60,11 @@ import org.activiti.engine.impl.pvm.process.HasDIBounds;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.activiti.engine.impl.util.io.InputStreamSource;
+import org.activiti.engine.impl.util.io.ResourceStreamSource;
+import org.activiti.engine.impl.util.io.StreamSource;
+import org.activiti.engine.impl.util.io.StringStreamSource;
+import org.activiti.engine.impl.util.io.UrlStreamSource;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -459,9 +460,33 @@ public class BpmnParse implements BpmnXMLConstants {
 
   public void processDI() {
     if (bpmnModel.getLocationMap().size() > 0) {
+
+      // Verify if all referenced elements exist
+      for (String bpmnReference : bpmnModel.getLocationMap().keySet()) {
+        if (bpmnModel.getFlowElement(bpmnReference) == null) {
+          LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof FlowNode)) {
+          LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a flow node");
+        }
+      }
+      for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
+        if (bpmnModel.getFlowElement(bpmnReference) == null) {
+          LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)) {
+          if (bpmnModel.getFlowLocationMap().get(bpmnReference).size() > 0) {
+            LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
+          } else {
+            LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
+          }
+        }
+      }
+      
       for (Process process : bpmnModel.getProcesses()) {
-        if (process.isExecutable() == false)
+        if (!process.isExecutable()) {
           continue;
+        }
+        
+        // Parse diagram interchange information
         ProcessDefinitionEntity processDefinition = getProcessDefinition(process.getId());
         if (processDefinition != null) {
           processDefinition.setGraphicalNotationDefined(true);
@@ -480,7 +505,7 @@ public class BpmnParse implements BpmnXMLConstants {
       }
     }
   }
-
+  
   public void createBPMNShape(String key, GraphicInfo graphicInfo, ProcessDefinitionEntity processDefinition) {
     ActivityImpl activity = processDefinition.findActivity(key);
     if (activity != null) {

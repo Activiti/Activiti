@@ -59,7 +59,7 @@ public class GroupDetailPanel extends DetailPanel implements MemberShipChangeLis
 
   private static final long serialVersionUID = 1L;
   
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   protected I18nManager i18nManager;
 
   protected GroupPage groupPage;

@@ -13,13 +13,17 @@
 
 package org.activiti.standalone.jpa;
 
+import java.io.Serializable;
+
 import javax.persistence.Embeddable;
 
 /**
  * @author Frederik Heremans
  */
 @Embeddable
-public class EmbeddableCompoundId {
+public class EmbeddableCompoundId implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private long idPart1;
 

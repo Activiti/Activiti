@@ -60,11 +60,11 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
 
   private static final long serialVersionUID = 1L;
   
-  protected HistoryService historyService;
-  protected RepositoryService repositoryService;
-  protected IdentityService identityService;
-  protected I18nManager i18nManager;
-  protected VariableRendererManager variableRendererManager;
+  protected transient HistoryService historyService;
+  protected transient RepositoryService repositoryService;
+  protected transient IdentityService identityService;
+  protected transient I18nManager i18nManager;
+  protected transient VariableRendererManager variableRendererManager;
 
   protected HorizontalLayout definitionsLayout;
   protected Table definitionsTable;

@@ -30,7 +30,7 @@ import com.vaadin.data.Item;
  */
 public class ProcessInstanceTableLazyQuery extends AbstractLazyLoadingQuery {
   
-  protected RuntimeService runtimeService;
+  protected transient RuntimeService runtimeService;
   protected String processDefinitionId;
   
   public ProcessInstanceTableLazyQuery() {

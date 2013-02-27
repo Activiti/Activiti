@@ -13,7 +13,6 @@
 
 package org.activiti.explorer;
 
-import org.activiti.engine.repository.Model;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 
 import com.vaadin.ui.Window;

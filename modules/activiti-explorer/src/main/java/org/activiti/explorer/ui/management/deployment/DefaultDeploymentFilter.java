@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.management.deployment;
 
+import java.io.Serializable;
+
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -23,8 +25,10 @@ import org.activiti.explorer.ui.management.deployment.DeploymentListQuery.Deploy
 /**
  * @author Frederik Heremans
  */
-public class DefaultDeploymentFilter implements DeploymentFilter {
+public class DefaultDeploymentFilter implements DeploymentFilter, Serializable {
 
+  private static final long serialVersionUID = 9094140663326243967L;
+  
   protected static final String PROPERTY_ID = "id";
   protected static final String PROPERTY_NAME = "name";
   protected static final String PROPERTY_KEY = "key";

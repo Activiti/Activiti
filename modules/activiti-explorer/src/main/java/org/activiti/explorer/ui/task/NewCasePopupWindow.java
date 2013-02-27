@@ -50,7 +50,7 @@ public class NewCasePopupWindow extends PopupWindow {
 
   private static final long serialVersionUID = 1L;
   
-  protected TaskService taskService;
+  protected transient TaskService taskService;
   protected I18nManager i18nManager;
   
 //  protected HorizontalLayout layout;

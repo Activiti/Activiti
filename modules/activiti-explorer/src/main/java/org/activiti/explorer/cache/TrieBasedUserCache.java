@@ -49,7 +49,7 @@ public class TrieBasedUserCache implements UserCache {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(TrieBasedUserCache.class);
   
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   protected RadixTree<List<User>> userTrie = new RadixTreeImpl<List<User>>();
   protected Map<String, List<String>> keyCache = new HashMap<String, List<String>>();
   protected Map<String, User> userCache = new HashMap<String, User>();

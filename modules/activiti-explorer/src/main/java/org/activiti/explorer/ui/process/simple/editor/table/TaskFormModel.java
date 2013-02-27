@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer.ui.process.simple.editor.table;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.activiti.workflow.simple.definition.FormDefinition;
 /**
  * @author Joram Barrez
  */
-public class TaskFormModel {
+public class TaskFormModel implements Serializable {
 
   protected List<TaskFormModelListener> formModelListeners = new ArrayList<TaskFormModelListener>();
 

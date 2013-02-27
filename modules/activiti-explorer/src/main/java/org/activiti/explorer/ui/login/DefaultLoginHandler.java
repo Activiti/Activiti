@@ -33,7 +33,7 @@ import org.activiti.explorer.identity.LoggedInUserImpl;
  */
 public class DefaultLoginHandler implements LoginHandler {
 
-  private IdentityService identityService;
+  private transient IdentityService identityService;
 
   public LoggedInUserImpl authenticate(String userName, String password) {
     LoggedInUserImpl loggedInUser = null;

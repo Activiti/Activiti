@@ -32,7 +32,7 @@ import com.vaadin.data.util.PropertysetItem;
  */
 public class DeploymentListQuery extends AbstractLazyLoadingQuery {
   
-  protected RepositoryService repositoryService;
+  protected transient RepositoryService repositoryService;
   protected DeploymentFilter deploymentFilter;
   
   public DeploymentListQuery(DeploymentFilter deploymentFilter) {

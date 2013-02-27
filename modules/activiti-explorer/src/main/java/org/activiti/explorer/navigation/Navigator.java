@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.navigation;
 
+import java.io.Serializable;
+
 
 
 /**
@@ -20,7 +22,7 @@ package org.activiti.explorer.navigation;
  * 
  * @author Frederik Heremans
  */
-public interface Navigator {
+public interface Navigator extends Serializable {
 
   /**
    * Gets the string that triggers this handler to be used

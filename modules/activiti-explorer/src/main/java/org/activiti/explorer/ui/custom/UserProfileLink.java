@@ -18,7 +18,6 @@ import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ViewManager;
-import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.util.InputStreamStreamSource;
 
@@ -44,14 +43,12 @@ public class UserProfileLink extends HorizontalLayout {
 
   private static final long serialVersionUID = 1L;
   
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   protected ViewManager viewManager;
-  protected UserCache userCache;
   
   public UserProfileLink(IdentityService identityService, boolean renderPicture, final String userId) {
     this.identityService = identityService;
     this.viewManager = ExplorerApp.get().getViewManager();
-    this.userCache = ExplorerApp.get().getUserCache();
     
     setSizeUndefined();
     setSpacing(true);
@@ -89,7 +86,7 @@ public class UserProfileLink extends HorizontalLayout {
   }
   
   protected void initUserLink(final String userId) {
-    User user = userCache.findUser(userId);
+    User user = ExplorerApp.get().getUserCache().findUser(userId);
     Button userButton = new Button(user.getFirstName() + " " + user.getLastName());
     ClickListener buttonClickListener = new ClickListener() {
       public void buttonClick(ClickEvent event) {

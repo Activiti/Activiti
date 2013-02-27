@@ -53,12 +53,12 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   
   protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnJsonConverter.class);
   
-  private ObjectMapper objectMapper = new ObjectMapper();
+  protected ObjectMapper objectMapper = new ObjectMapper();
   
-  private static Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap = 
+  protected static Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap = 
       new HashMap<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>>();
   
-  private static Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap = 
+  protected static Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap = 
       new HashMap<String, Class<? extends BaseBpmnJsonConverter>>();
   
   static {

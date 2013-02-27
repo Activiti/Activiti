@@ -43,7 +43,8 @@ import com.vaadin.ui.themes.Reindeer;
 public class ChangePasswordPopupWindow extends PopupWindow {
   
   private static final long serialVersionUID = 1L;
-  protected IdentityService identityService;
+  
+  protected transient IdentityService identityService;
   protected LoggedInUser currentUser;
   protected I18nManager i18nManager;
   

@@ -24,7 +24,7 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
  * @author Joram Barrez
  */
 public class ScriptTaskListener implements TaskListener {
-  
+
 	private static final long serialVersionUID = -8915149072830499057L;
 
   protected Expression script;

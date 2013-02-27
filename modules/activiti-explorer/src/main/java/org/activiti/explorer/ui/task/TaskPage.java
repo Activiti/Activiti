@@ -45,8 +45,9 @@ public abstract class TaskPage extends AbstractTablePage {
   
   private static final long serialVersionUID = 1L;
 
+  protected transient TaskService taskService;
+
   protected String taskId;
-  protected TaskService taskService;
   protected Table taskTable;
   protected LazyLoadingContainer taskListContainer;
   protected LazyLoadingQuery lazyLoadingQuery;

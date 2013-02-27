@@ -50,7 +50,7 @@ public class DeploymentDetailPanel extends DetailPanel {
 
   private static final long serialVersionUID = 1L;
   
-  protected RepositoryService repositoryService;
+  protected transient RepositoryService repositoryService;
   protected ViewManager viewManager;
   protected I18nManager i18nManager;
   

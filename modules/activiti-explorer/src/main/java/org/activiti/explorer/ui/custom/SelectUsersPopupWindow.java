@@ -22,7 +22,6 @@ import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.identity.LoggedInUser;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.event.SubmitEvent;
@@ -66,7 +65,6 @@ public class SelectUsersPopupWindow extends PopupWindow {
   protected boolean showRoles = true;
   protected Collection<String> ignoredUserIds;
   
-  protected UserCache userCache;
   protected I18nManager i18nManager;
   
   protected VerticalLayout windowLayout;
@@ -80,7 +78,6 @@ public class SelectUsersPopupWindow extends PopupWindow {
   public SelectUsersPopupWindow(String title, boolean multiSelect) {
     this.title = title;
     this.multiSelect = multiSelect;
-    this.userCache = ExplorerApp.get().getUserCache();
     this.i18nManager = ExplorerApp.get().getI18nManager();
   }
   
@@ -176,7 +173,7 @@ public class SelectUsersPopupWindow extends PopupWindow {
   protected void searchPeople(String searchText) {
     if (searchText.length() >= 2) {
       matchingUsersTable.removeAllItems();
-      List<User> results = userCache.findMatchingUsers(searchText);
+      List<User> results = ExplorerApp.get().getUserCache().findMatchingUsers(searchText);
       for (User user : results) {
         if (!multiSelect || !selectedUsersTable.containsId(user.getId())) {
           if (ignoredUserIds == null || !ignoredUserIds.contains(user.getId())) {

@@ -10,30 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.bpmn.util;
+package org.activiti.engine.impl.util.io;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+
+import org.activiti.bpmn.converter.util.InputStreamProvider;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class UrlStreamSource implements StreamSource {
+public interface StreamSource extends InputStreamProvider {
 
-  URL url;
+  /**
+   * Creates a <b>NEW</b> {@link InputStream} to the provided resource.
+   */
+  InputStream getInputStream();
   
-  public UrlStreamSource(URL url) {
-    this.url = url;
-  }
-
-  public InputStream getInputStream() {
-    try {
-      return new BufferedInputStream(url.openStream());
-    } catch (IOException e) {
-      throw new RuntimeException("couldn't open url '"+url+"'", e);
-    }
-  }
 }

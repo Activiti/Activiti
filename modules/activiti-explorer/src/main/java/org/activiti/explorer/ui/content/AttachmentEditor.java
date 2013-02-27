@@ -13,13 +13,15 @@
 
 package org.activiti.explorer.ui.content;
 
+import java.io.Serializable;
+
 import org.activiti.engine.task.Attachment;
 import org.activiti.explorer.I18nManager;
 
 import com.vaadin.terminal.Resource;
 
 
-public interface AttachmentEditor {
+public interface AttachmentEditor extends Serializable {
   
   /**
    * Get the name of this editor. Only one editor with the same name can e used.

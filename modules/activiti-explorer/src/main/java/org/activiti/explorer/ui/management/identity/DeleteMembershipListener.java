@@ -32,7 +32,7 @@ import com.vaadin.event.MouseEvents.ClickListener;
 public class DeleteMembershipListener implements ClickListener {
   
   private static final long serialVersionUID = 1L;
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   protected String userId;
   protected String groupId;
   protected MemberShipChangeListener membershipChangeListener;

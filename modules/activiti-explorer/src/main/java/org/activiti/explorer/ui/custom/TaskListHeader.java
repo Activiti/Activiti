@@ -19,7 +19,6 @@ import org.activiti.engine.task.Task;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.event.Action;
@@ -47,7 +46,7 @@ public class TaskListHeader extends Panel {
   private static final long serialVersionUID = 1L;
 
   protected I18nManager i18nManager;
-  protected TaskService taskService;
+  protected transient TaskService taskService;
   
   protected HorizontalLayout layout;
   protected TextField inputField;

@@ -52,9 +52,9 @@ public class TaskInvolvedPeopleComponent extends CustomComponent {
 
   private static final long serialVersionUID = 1L;
   
+  protected transient TaskService taskService;
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
-  protected TaskService taskService;
   
   protected Task task;
   protected TaskDetailPanel taskDetailPanel;

@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.login;
 
+import java.io.Serializable;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,7 +26,7 @@ import org.activiti.explorer.identity.LoggedInUser;
  * 
  * @author Frederik Heremans
  */
-public interface LoginHandler {
+public interface LoginHandler extends Serializable {
 
   /**
    * Authenticate the user with the given username and given password.

@@ -59,6 +59,7 @@ import org.activiti.bpmn.converter.parser.PotentialStarterParser;
 import org.activiti.bpmn.converter.parser.ProcessParser;
 import org.activiti.bpmn.converter.parser.SignalParser;
 import org.activiti.bpmn.converter.parser.SubProcessParser;
+import org.activiti.bpmn.converter.util.InputStreamProvider;
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
@@ -72,7 +73,6 @@ import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
-import org.activiti.bpmn.util.StreamSource;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,7 +173,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     validator.validate(new StAXSource(xtr));
   }
   
-  public BpmnModel convertToBpmnModel(StreamSource streamSource, boolean validateSchema) {
+  public BpmnModel convertToBpmnModel(InputStreamProvider inputStreamProvider, boolean validateSchema) {
     XMLInputFactory xif = XMLInputFactory.newInstance();
 
     if (xif.isPropertySupported(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES)) {
@@ -190,7 +190,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
     InputStreamReader in = null;
     try {
-      in = new InputStreamReader(streamSource.getInputStream(), "UTF-8");
+      in = new InputStreamReader(inputStreamProvider.getInputStream(), "UTF-8");
       XMLStreamReader xtr = xif.createXMLStreamReader(in);
   
       try {
@@ -198,7 +198,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           validateModel(xtr);
   
           // The input stream is closed after schema validation
-          in = new InputStreamReader(streamSource.getInputStream(), "UTF-8");
+          in = new InputStreamReader(inputStreamProvider.getInputStream(), "UTF-8");
           xtr = xif.createXMLStreamReader(in);
         }
   

@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl;
 
+import java.io.Serializable;
+
 import org.activiti.engine.delegate.DelegateExecution;
 
 
@@ -19,7 +21,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 /**
  * @author Tom Baeyens
  */
-public interface Condition {
+public interface Condition extends Serializable {
 
   boolean evaluate(DelegateExecution execution);
 }

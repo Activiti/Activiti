@@ -42,7 +42,7 @@ public class ProcessDefinitionPage extends AbstractTablePage {
   private static final long serialVersionUID = 1L;
   
   // Services
-  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   
   // UI
   protected String processDefinitionId;

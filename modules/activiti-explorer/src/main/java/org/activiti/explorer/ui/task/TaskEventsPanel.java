@@ -57,8 +57,8 @@ public class TaskEventsPanel extends Panel {
   
   private static final long serialVersionUID = 1L;
   
-  protected IdentityService identityService;
-  protected TaskService taskService; 
+  protected transient IdentityService identityService;
+  protected transient TaskService taskService; 
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
   protected TaskEventTextResolver taskEventTextResolver;

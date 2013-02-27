@@ -42,7 +42,7 @@ public class DeleteModelPopupWindow extends PopupWindow implements ModelDataJson
   protected VerticalLayout windowLayout;
   protected Model modelData;
   
-  protected RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
   
   public DeleteModelPopupWindow(Model model) {
     this.modelData = model;

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="Examples">
+
+	<process id="scriptExecutionListenerProcess" name="Script Execution Listener Example">
+		<startEvent id="startevent1" name="Start"></startEvent>
+			
+		<sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="endevent1">
+			<extensionElements>
+				<activiti:executionListener event="take" class="org.activiti.engine.impl.bpmn.listener.ScriptExecutionListener">
+					<activiti:field name="script">
+						<activiti:string>
+            	def bar = "BAR";  // local variable
+            	foo = "FOO"; // pushes variable to execution context
+              execution.setVariable("var1", "test"); // test access to execution instance
+            	bar // implicit return value
+            </activiti:string>
+					</activiti:field>
+					<activiti:field name="language" stringValue="groovy" />
+					<activiti:field name="resultVariable" stringValue="myVar" />
+				</activiti:executionListener>
+			</extensionElements>
+		</sequenceFlow>
+		
+		<endEvent id="endevent1" name="End"></endEvent>
+	  
+	</process>
+</definitions>

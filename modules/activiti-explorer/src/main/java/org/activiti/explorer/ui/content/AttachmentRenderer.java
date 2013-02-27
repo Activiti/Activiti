@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.content;
 
+import java.io.Serializable;
+
 import org.activiti.engine.task.Attachment;
 import org.activiti.explorer.I18nManager;
 
@@ -26,7 +28,7 @@ import com.vaadin.ui.Component;
  * 
  * @author Frederik Heremans
  */
-public interface AttachmentRenderer {
+public interface AttachmentRenderer extends Serializable {
 
   /**
    * Returns true if this renderer is capable of rendering attachments of the given type.

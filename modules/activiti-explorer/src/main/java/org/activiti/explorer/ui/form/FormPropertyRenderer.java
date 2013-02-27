@@ -13,6 +13,8 @@
 
 package org.activiti.explorer.ui.form;
 
+import java.io.Serializable;
+
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
 
@@ -24,7 +26,7 @@ import com.vaadin.ui.Field;
  * 
  * @author Frederik Heremans
  */
-public interface FormPropertyRenderer {
+public interface FormPropertyRenderer extends Serializable {
 
   /**
    * The form type this renderer should be used for.

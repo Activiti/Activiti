@@ -30,7 +30,7 @@ import com.vaadin.data.util.PropertysetItem;
  */
 public class GroupListQuery extends AbstractLazyLoadingQuery {
   
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   
   public GroupListQuery() {
     this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();

@@ -38,7 +38,7 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class GroupsForUserQuery extends AbstractLazyLoadingQuery {
   
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   protected String userId;
   protected UserDetailPanel userDetailPanel;
   

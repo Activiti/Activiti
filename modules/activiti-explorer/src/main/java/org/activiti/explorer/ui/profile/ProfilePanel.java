@@ -62,7 +62,7 @@ public class ProfilePanel extends Panel {
   private static final long serialVersionUID = -4274649964206760400L;
   
   // services
-  protected IdentityService identityService;
+  protected transient IdentityService identityService;
   protected I18nManager i18nManager;
   protected ViewManager viewManager;
   
