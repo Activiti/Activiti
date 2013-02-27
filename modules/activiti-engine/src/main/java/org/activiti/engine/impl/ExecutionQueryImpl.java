@@ -206,6 +206,9 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
   }  
+  public String getInvolvedUser() {
+    return null;
+  }
   public SuspensionState getSuspensionState() {
     return suspensionState;
   }  

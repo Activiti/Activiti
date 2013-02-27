@@ -142,7 +142,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void complete() {
     fireEvent(TaskListener.EVENTNAME_COMPLETE);
 
-    if (Authentication.getAuthenticatedUserId() != null) {
+    if (Authentication.getAuthenticatedUserId() != null && processInstanceId != null) {
       getProcessInstance().involveUser(Authentication.getAuthenticatedUserId(), IdentityLinkType.PARTICIPANT);
     }
     
@@ -271,7 +271,11 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(type);
-    getProcessInstance().involveUser(owner, IdentityLinkType.PARTICIPANT);
+    
+    if (userId != null && processInstanceId != null) {
+      getProcessInstance().involveUser(userId, IdentityLinkType.PARTICIPANT);
+    }
+    
     return identityLinkEntity;
   }
   
@@ -428,7 +432,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         .getHistoryManager()
         .recordTaskAssigneeChange(id, assignee);
       
-      getProcessInstance().involveUser(assignee, IdentityLinkType.PARTICIPANT);
+      if (processInstanceId != null) {
+        getProcessInstance().involveUser(assignee, IdentityLinkType.PARTICIPANT);
+      }
       
       fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
     }
@@ -454,7 +460,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         .getHistoryManager()
         .recordTaskOwnerChange(id, owner);
       
-      getProcessInstance().involveUser(owner, IdentityLinkType.PARTICIPANT);
+      if (processInstanceId != null) {
+        getProcessInstance().involveUser(owner, IdentityLinkType.PARTICIPANT);
+      }
     }
   }
 
@@ -639,7 +647,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     this.executionId = executionId;
   }
   public ExecutionEntity getProcessInstance() {
-    if (processInstance == null) {
+    if (processInstance == null && processInstanceId != null) {
       processInstance = Context
           .getCommandContext()
           .getExecutionEntityManager()

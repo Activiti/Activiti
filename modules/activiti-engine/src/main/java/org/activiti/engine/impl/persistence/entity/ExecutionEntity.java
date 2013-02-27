@@ -1212,7 +1212,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
    **/
   public IdentityLinkEntity involveUser(String userId, String type) {
     for (IdentityLinkEntity identityLink : getIdentityLinks()) {
-      if (identityLink.getUserId().equals(userId)) {
+      if (userId.equals(identityLink.getUserId())) {
         return identityLink;
       }
     }
