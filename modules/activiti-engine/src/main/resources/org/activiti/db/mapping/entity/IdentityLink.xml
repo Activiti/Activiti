@@ -25,10 +25,6 @@
     delete from ${prefix}ACT_RU_IDENTITYLINK where ID_ = #{id}
   </delete>
   
-  <delete id="deleteIdentityLinksByProcInstance" parameterType="string">
-    delete from ${prefix}ACT_RU_IDENTITYLINK where PROC_INST_ID_ = #{id}
-  </delete>
-
   <delete id="deleteIdentityLinkByProcDef" parameterType="string">
     delete from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{id}
   </delete>

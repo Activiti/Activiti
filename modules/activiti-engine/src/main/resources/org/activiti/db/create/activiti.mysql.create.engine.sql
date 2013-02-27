@@ -211,6 +211,11 @@ alter table ACT_RU_IDENTITYLINK
     foreign key (PROC_DEF_ID_) 
     references ACT_RE_PROCDEF(ID_);
     
+alter table ACT_RU_IDENTITYLINK
+    add constraint ACT_FK_IDL_PROCINST
+    foreign key (PROC_INST_ID_) 
+    references ACT_RU_EXECUTION (ID_);       
+    
 alter table ACT_RU_TASK
     add constraint ACT_FK_TASK_EXE
     foreign key (EXECUTION_ID_)

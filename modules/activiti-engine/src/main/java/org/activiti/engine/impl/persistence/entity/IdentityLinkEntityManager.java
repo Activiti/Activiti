@@ -72,7 +72,10 @@ public class IdentityLinkEntityManager extends AbstractManager {
   }
 
   public void deleteIdentityLinksByProcInstance(String processInstanceId) {
-    getDbSqlSession().delete("deleteIdentityLinksByProcInstance", processInstanceId);
+    List<IdentityLinkEntity> identityLinks = findIdentityLinksByProcessInstanceId(processInstanceId);
+    for (IdentityLinkEntity identityLink: identityLinks) {
+      deleteIdentityLink(identityLink);
+    }
   }
   
   public void deleteIdentityLinksByProcDef(String processDefId) {
