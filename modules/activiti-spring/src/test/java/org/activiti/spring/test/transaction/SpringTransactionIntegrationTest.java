@@ -15,6 +15,7 @@ package org.activiti.spring.test.transaction;
 
 import javax.sql.DataSource;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
@@ -31,6 +32,9 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
   
   @Autowired
   protected UserBean userBean;
+  
+  @Autowired
+  protected DeployBean deployBean;
   
   @Autowired
   protected DataSource dataSource;
@@ -67,6 +71,18 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
     
     // Cleanup
     jdbcTemplate.execute("drop table MY_TABLE if exists;");
+  }
+  
+  public void testRollBackOnDeployment() {
+    // The second process should fail. None of the processes should be deployed, the first one should be rolled back
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().count());
+    try {
+      deployBean.deployProcesses();
+      fail();
+    } catch (ActivitiException e) {
+      // Parse exception should happen
+    }
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().count());
   }
   
   

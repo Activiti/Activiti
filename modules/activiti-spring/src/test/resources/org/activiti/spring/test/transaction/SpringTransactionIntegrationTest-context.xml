@@ -43,6 +43,10 @@
     <property name="taskService" ref="taskService" />
     <property name="dataSource" ref="dataSource" />
   </bean>
+  
+  <bean id="deployBean" class="org.activiti.spring.test.transaction.DeployBean">
+    <property name="repositoryService" ref="repositoryService" />
+  </bean>
 
   <bean id="printer" class="org.activiti.spring.test.transaction.Printer" />
 
