@@ -13,6 +13,8 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
@@ -48,7 +50,31 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
   protected ProcessDefinitionEntity processDef;
 
   public Object getPersistentState() {
-    return this.type;
+    Map<String, Object> persistentState = new  HashMap<String, Object>();
+    persistentState.put("id", this.id);
+    persistentState.put("type", this.type);
+    
+    if (this.userId != null) {
+      persistentState.put("userId", this.userId);
+    }
+    
+    if (this.groupId != null) {
+      persistentState.put("groupId", this.groupId);
+    }
+    
+    if (this.taskId != null) {
+      persistentState.put("taskId", this.taskId);
+    }
+    
+    if (this.processInstanceId != null) {
+      persistentState.put("processInstanceId", this.processInstanceId);
+    }
+    
+    if (this.processDefId != null) {
+      persistentState.put("processDefId", this.processDefId);
+    }
+    
+    return persistentState;
   }
   
   public static IdentityLinkEntity createAndInsert() {
