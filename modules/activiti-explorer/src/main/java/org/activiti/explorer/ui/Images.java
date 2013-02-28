@@ -91,4 +91,7 @@ public class Images {
   public static final Resource PROCESS_EDITOR_BPMN = new ThemeResource("img/button-bpmn-48.png");
   public static final Resource PROCESS_EDITOR_TABLE = new ThemeResource("img/button-table-48.png");
   
+  // Reports
+  public static final Resource REPORT_50 = new ThemeResource("img/report-50.png");
+  
 }

@@ -85,6 +85,10 @@ public interface ViewManager {
   
   void showSimpleTableProcessEditor(String modelId, WorkflowDefinition workflowDefinition);
   
+  // Reports
+  
+  void showRunReportPage();
+  
   // Management
   
   void showDatabasePage();

@@ -280,6 +280,10 @@ public interface Messages {
   String PROCESS_DELETE_POPUP_MESSAGE = "process.delete.popup.message";
   String PROCESS_DELETE_POPUP_DELETE_BUTTON = "process.delete.popup.delete.button";
   
+  // Reporting menu
+  String REPORTING_MENU_RUN_REPORTS = "reporting.menu.run.reports";
+  String REPORTING_MENU_SAVED_REPORTS = "reporting.menu.saved.reports";
+  
   // Management menu
   String MGMT_MENU_DATABASE = "management.menu.database";
   String MGMT_MENU_DEPLOYMENTS = "management.menu.deployments";

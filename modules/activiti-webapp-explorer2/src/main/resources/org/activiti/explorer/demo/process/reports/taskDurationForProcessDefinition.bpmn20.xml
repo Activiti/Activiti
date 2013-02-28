@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+	expressionLanguage="http://www.w3.org/1999/XPath" 
+	targetNamespace="activiti-report">
+
+	<process id="task-duration-report" name="Task duration report" isExecutable="true">
+	
+		<startEvent id="startevent1" name="Start">
+	      <extensionElements>
+	        <activiti:formProperty id="processDefinitionId" name="Select process definition" type="processDefinition" required="true" />
+	      </extensionElements>
+		</startEvent>
+		<sequenceFlow id="flow1" sourceRef="startevent1" targetRef="generateDataset" />
+		
+		<scriptTask id="generateDataset" name="Execute script" scriptFormat="JavaScript" activiti:autoStoreVariables="false">
+          <script><![CDATA[
+          
+               importPackage(java.sql);
+               importPackage(java.lang);
+               importPackage(org.activiti.util);
+               
+               var processDefinitionId = execution.getVariable("processDefinitionId");
+               var processDefinition = execution.getEngineServices().getRepositoryService().createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
+               
+               var connection = AmazingUtil.getCurrentDatabaseConnection();
+               var select = connection.createStatement();
+                
+               var result = select.executeQuery("SELECT NAME_, avg(DURATION_) from ACT_HI_TASKINST WHERE PROC_DEF_ID_ = '" + processDefinitionId + "' GROUP BY NAME_");
+            
+               var reportData = {};
+               reportData.type = "barChart";
+               reportData.description = "Average task duration for process definition '" + processDefinition.getName() + "' (version " + processDefinition.getVersion() + ")";
+               reportData.data = {};
+            
+               while (result.next()) { // process results one row at a time
+                 var name = result.getString(1);
+                 var val = result.getLong(2);
+                 reportData.data[name] = val;
+               }
+               
+               // Limitation! Cannot store / retrieve native json variables over multiple steps! TODO: discuss! 
+               
+               execution.setVariable("reportData", reportData);
+          ]]></script>
+        </scriptTask>
+        <sequenceFlow id="flow3" sourceRef="generateDataset" targetRef="theEnd" />
+        
+		<endEvent id="theEnd" />
+		
+	</process>
+
+</definitions>
