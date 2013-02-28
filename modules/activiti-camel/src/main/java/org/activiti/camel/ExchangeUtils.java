@@ -12,24 +12,52 @@
  */
 package org.activiti.camel;
 
-import org.apache.camel.Exchange;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.camel.Exchange;
+
+/**
+ * This class contains one method - prepareVariables - that is used to copy variables from Camel into Activiti.
+ * 
+ * @author Ryan Johnston (@rjfsu), Tijs Rademakers
+ */
 public class ExchangeUtils {
 
-  static Map<String, Object> prepareVariables(Exchange exchange, ActivitiEndpoint activitiEndpoint) {
-    Map<String, Object> ret = new HashMap<String, Object>();
+  /**
+   * Copies variables from Camel into Activiti.
+   * 
+   * This method will conditionally copy the Camel body to the "camelBody" variable if it is of type java.lang.String, OR it will copy the Camel body to
+   * individual variables within Activiti if it is of type Map<String,Object>.
+   * If the copyVariablesFromProperties parameter is set on the endpoint, the properties are copied instead
+   * 
+   * @param exchange The Camel Exchange object
+   * @param activitiEndpoint The ActivitiEndpoint implementation
+   * @return A Map<String,Object> containing all of the variables to be used in Activiti
+   */
+  
+  public static Map<String, Object> prepareVariables(Exchange exchange, ActivitiEndpoint activitiEndpoint) {
     boolean shouldReadFromProperties = activitiEndpoint.isCopyVariablesFromProperties();
-    Map<?, ?> m = shouldReadFromProperties ? exchange.getProperties() : exchange.getIn().getBody(Map.class);
-    if (m != null) {
-      for (Map.Entry e : m.entrySet()) {
-        if (e.getKey() instanceof String) {
-          ret.put((String) e.getKey(), e.getValue());
+    Map<String, Object> camelVarMap = null;
+    
+    if (shouldReadFromProperties) {
+      camelVarMap = exchange.getProperties();
+    } else {
+      camelVarMap = new HashMap<String, Object>();
+      Object camelBody = exchange.getIn().getBody();
+      if(camelBody instanceof String) {
+        camelVarMap.put("camelBody", camelBody);
+      }
+      else if(camelBody instanceof Map<?,?>) {
+        Map<?,?> camelBodyMap = (Map<?,?>)camelBody;
+        for (@SuppressWarnings("rawtypes") Map.Entry e : camelBodyMap.entrySet()) {
+          if (e.getKey() instanceof String) {
+            camelVarMap.put((String) e.getKey(), e.getValue());
+          }
         }
       }
     }
-    return ret;
+    
+    return camelVarMap;
   }
 }

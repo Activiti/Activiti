@@ -31,39 +31,61 @@ import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultExchange;
 import org.apache.commons.lang.StringUtils;
 
-public class CamelBehavior extends BpmnActivityBehavior implements ActivityBehavior {
+/**
+* This abstract class takes the place of the now-deprecated CamelBehaviour class (which can still be used for legacy compatibility)
+* and significantly improves on its flexibility. Additional implementations can be created that change the way in which Activiti
+* interacts with Camel per your specific needs.
+* 
+* Three out-of-the-box implementations of CamelBehavior are provided:
+*   (1) CamelBehaviorDefaultImpl: Works just like CamelBehaviour does; copies variables into and out of Camel as or from properties.
+*   (2) CamelBehaviorBodyAsMapImpl: Works by copying variables into and out of Camel using a Map<String,Object> object in the body.
+*   (3) CamelBehaviorCamelBodyImpl: Works by copying a single variable value into Camel as a String body and copying the Camel
+*      body into that same Activiti variable. The variable in Activiti must be named "camelBody".
+* 
+* The chosen implementation should be set within your ProcessEngineConfiguration. To specify the implementation using Spring, include
+* the following line in your configuration file as part of the properties for "org.activiti.spring.SpringProcessEngineConfiguration":
+* 
+*   <property name="camelBehaviorClass" value="org.activiti.camel.impl.CamelBehaviorCamelBodyImpl"/>
+* 
+* Note also that the manner in which variables are copied to Activiti from Camel has changed. It will always copy Camel
+* properties to the Activiti variable set; they can safely be ignored, of course, if not required. It will conditionally
+* copy the Camel body to the "camelBody" variable if it is of type java.lang.String, OR it will copy the Camel body to
+* individual variables within Activiti if it is of type Map<String,Object>.
+* 
+* @author Ryan Johnston (@rjfsu), Tijs Rademakers
+* @version 5.12
+*/
+public abstract class CamelBehavior extends BpmnActivityBehavior implements ActivityBehavior {
 
   private static final long serialVersionUID = 1L;
   protected Expression camelContext;
+  protected CamelContext camelContextObj;
+  protected SpringProcessEngineConfiguration springConfiguration;
+  
+  protected abstract void modifyActivitiComponent(ActivitiComponent component);
+  
+  protected abstract void copyVariables(Map<String, Object> variables, Exchange exchange, ActivitiEndpoint endpoint);
 
   public void execute(ActivityExecution execution) throws Exception {
-    ProcessEngineConfiguration engineConfiguration = Context.getProcessEngineConfiguration();
-    if (engineConfiguration instanceof SpringProcessEngineConfiguration == false) {
-      throw new ActivitiException("Expecting a Spring process engine configuration for the Activiti Camel module");
-    }
+    setAppropriateCamelContext(execution);
+    //Retrieve the ActivitiComponent object.
+    ActivitiComponent component = camelContextObj.getComponent("activiti", ActivitiComponent.class);
+    modifyActivitiComponent(component);
     
-    SpringProcessEngineConfiguration springConfiguration = (SpringProcessEngineConfiguration) engineConfiguration;
-    String camelContextValue = getStringFromField(camelContext, execution);
-    if (StringUtils.isEmpty(camelContextValue)) {
-      camelContextValue = springConfiguration.getDefaultCamelContext();
-    }
-    
-    ActivitiEndpoint endpoint = createEndpoint(execution, springConfiguration, camelContextValue);
-    Exchange exchange = createExchange(execution, endpoint, springConfiguration, camelContextValue);
+    ActivitiEndpoint endpoint = createEndpoint(execution);
+    Exchange exchange = createExchange(execution, endpoint);
     endpoint.process(exchange);
     execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
     performDefaultOutgoingBehavior(execution);
-    
   }
 
-
-  private ActivitiEndpoint createEndpoint(ActivityExecution execution, SpringProcessEngineConfiguration springConfiguration, String camelContext) {
+  protected ActivitiEndpoint createEndpoint(ActivityExecution execution) {
     String uri = "activiti://" + getProcessDefinitionKey(execution) + ":" + execution.getActivity().getId();
-    return getEndpoint(getContext(springConfiguration, camelContext), uri);
+    return getEndpoint(uri);
   }
 
-  private ActivitiEndpoint getEndpoint(CamelContext ctx, String key) {
-    for (Endpoint e : ctx.getEndpoints()) {
+  protected ActivitiEndpoint getEndpoint(String key) {
+    for (Endpoint e : camelContextObj.getEndpoints()) {
       if (e.getEndpointKey().equals(key) && (e instanceof ActivitiEndpoint)) {
         return (ActivitiEndpoint) e;
       }
@@ -71,35 +93,70 @@ public class CamelBehavior extends BpmnActivityBehavior implements ActivityBehav
     throw new RuntimeException("Activiti endpoint not defined for " + key);    
   }
 
-  private CamelContext getContext(SpringProcessEngineConfiguration springConfiguration, String camelContext) {
-    Object ctx = springConfiguration.getApplicationContext().getBean(camelContext);
-    if (ctx == null || ctx instanceof CamelContext == false) {
-      throw new RuntimeException("Could not find camel context " + camelContext);
-    }
-    return (CamelContext) ctx;
-  }
-
-
-  private Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint,
-      SpringProcessEngineConfiguration springConfiguration, String camelContext) {
-    
-    Exchange ex = new DefaultExchange(getContext(springConfiguration, camelContext));
+  protected Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
+    Exchange ex = new DefaultExchange(camelContextObj);
     ex.setProperty(ActivitiProducer.PROCESS_ID_PROPERTY, activityExecution.getProcessInstanceId());
     Map<String, Object> variables = activityExecution.getVariables();
-    if (endpoint.isCopyVariablesToProperties()) {
-      for (Map.Entry<String, Object> var : variables.entrySet()) {
-        ex.setProperty(var.getKey(), var.getValue());
-      }
-    }
-    if (endpoint.isCopyVariablesToBody()) {
-      ex.getIn().setBody(new HashMap<String,Object>(variables));
-    }
+    copyVariables(variables, ex, endpoint);
     return ex;
   }
+  
+  protected void copyVariablesToProperties(Map<String, Object> variables, Exchange exchange) {
+    for (Map.Entry<String, Object> var : variables.entrySet()) {
+      exchange.setProperty(var.getKey(), var.getValue());
+    }
+  }
+  
+  protected void copyVariablesToBodyAsMap(Map<String, Object> variables, Exchange exchange) {
+    exchange.getIn().setBody(new HashMap<String,Object>(variables));
+  }
+  
+  protected void copyVariablesToBody(Map<String, Object> variables, Exchange exchange) {
+    Object camelBody = variables.get("camelBody");
+    if(camelBody != null) {
+      exchange.getIn().setBody(camelBody);
+    }
+  }
 
-  private String getProcessDefinitionKey(ActivityExecution execution) {
+  protected String getProcessDefinitionKey(ActivityExecution execution) {
     String id = execution.getActivity().getProcessDefinition().getId();
     return id.substring(0, id.indexOf(":"));
+  }
+  
+  protected void setAppropriateCamelContext(ActivityExecution execution) {
+    //Check to see if the springConfiguration has been set. If not, set it.
+    if (springConfiguration == null) {
+      //Get the ProcessEngineConfiguration object.
+      ProcessEngineConfiguration engineConfiguration = Context.getProcessEngineConfiguration();
+          
+      //Convert it to a SpringProcessEngineConfiguration. If this doesn't work, throw a RuntimeException.
+      // (ActivitiException extends RuntimeException.)
+      try {
+        springConfiguration = (SpringProcessEngineConfiguration) engineConfiguration;
+      } catch (Exception e) {
+        throw new ActivitiException("Expecting a SpringProcessEngineConfiguration for the Activiti Camel module.", e);
+      }
+    }
+          
+    //Get the appropriate String representation of the CamelContext object from ActivityExecution (if available).
+    String camelContextValue = getStringFromField(camelContext, execution);
+          
+    //If the String representation of the CamelContext object from ActivityExecution is empty, use the default.
+    if (StringUtils.isEmpty(camelContextValue) && camelContextObj != null) {
+      //No processing required. No custom CamelContext & the default is already set.
+    }
+    else {
+      if (StringUtils.isEmpty(camelContextValue) && camelContextObj == null) {
+        camelContextValue = springConfiguration.getDefaultCamelContext();
+      }
+      
+      //Get the CamelContext object and set the super's member variable.
+      Object ctx = springConfiguration.getApplicationContext().getBean(camelContextValue);
+      if (ctx == null || ctx instanceof CamelContext == false) {
+        throw new ActivitiException("Could not find CamelContext named " + camelContextValue + ".");
+      }
+      camelContextObj = (CamelContext)ctx;
+    }
   }
   
   protected String getStringFromField(Expression expression, DelegateExecution execution) {

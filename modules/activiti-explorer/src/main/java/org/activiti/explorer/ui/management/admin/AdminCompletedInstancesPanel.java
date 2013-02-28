@@ -152,6 +152,10 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
 	      
 	      } else {
 	      	ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
+	      	if (definition == null) {
+            // this process has a missing definition - skip
+            continue;
+          }
 	      	managementDefinition = new ManagementProcessDefinition();
 	      	managementDefinition.processDefinition = definition;
 	      	managementDefinition.runningInstances = new ArrayList<HistoricProcessInstance>();

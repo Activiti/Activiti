@@ -198,8 +198,25 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
  
   protected ActivityBehavior createCamelActivityBehavior(Task task, List<FieldExtension> fieldExtensions, BpmnModel bpmnModel) {
     try {
-     
-      Class< ? > theClass = Class.forName("org.activiti.camel.CamelBehavior");
+      Class< ? > theClass = null;
+      FieldExtension behaviorExtension = null;
+      for (FieldExtension fieldExtension : fieldExtensions) {
+        if ("camelBehaviorClass".equals(fieldExtension.getFieldName()) && StringUtils.isNotEmpty(fieldExtension.getStringValue())) {
+          theClass = Class.forName(fieldExtension.getStringValue());
+          behaviorExtension = fieldExtension;
+          break;
+        }
+      }
+      
+      if (behaviorExtension != null) {
+        fieldExtensions.remove(behaviorExtension);
+      }
+      
+      if (theClass == null) {
+        // Default Camel behavior class
+        theClass = Class.forName("org.activiti.camel.impl.CamelBehaviorDefaultImpl");
+      }
+      
       List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
       return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
      
