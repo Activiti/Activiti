@@ -2,7 +2,7 @@ package org.activiti.cdi.test.impl.util;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import javax.enterprise.inject.Alternative;
 import javax.inject.Named;
@@ -73,7 +73,7 @@ public class ProgrammaticBeanLookupTest {
 	public void testLookupBean() {
 		deployer.deploy("normal");
 		Object lookup = ProgrammaticBeanLookup.lookup("testOnly");
-		assertThat(lookup.getClass(), is(TestBean.class.getClass()));
+		assertTrue(lookup.getClass().isAssignableFrom(TestBean.class));
 		deployer.undeploy("normal");
 	}
 
