@@ -244,6 +244,11 @@ public class DefaultViewManager implements ViewManager, Serializable {
     switchView(new SavedReportsPage(), ViewManager.MAIN_NAVIGATION_REPORT, ReportsMenuBar.ENTRY_SAVED_REPORTS);
   }
   
+  @Override
+  public void showSavedReportPage(String modelId) {
+    switchView(new SavedReportsPage(modelId), ViewManager.MAIN_NAVIGATION_REPORT, ReportsMenuBar.ENTRY_SAVED_REPORTS);
+  }
+  
   // Management
   
   public void showDatabasePage() {

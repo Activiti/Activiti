@@ -41,8 +41,8 @@ public  class SavedReportListItem extends PropertysetItem implements Comparable<
   }
   
   public int compareTo(SavedReportListItem other) {
-     Date createTime = (Date) getItemProperty("createTime"); 
-     Date otherCreateTime = (Date) other.getItemProperty("createTime");
+     Date createTime = (Date) getItemProperty("createTime").getValue(); 
+     Date otherCreateTime = (Date) other.getItemProperty("createTime").getValue();
      
      return createTime.compareTo(otherCreateTime);
   }

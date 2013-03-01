@@ -34,7 +34,7 @@ public class SavedReportNavigator implements Navigator {
     String modelId = uriFragment.getUriPart(1);
     
     if(modelId != null) {
-      ExplorerApp.get().getViewManager().showSavedReportPage();
+      ExplorerApp.get().getViewManager().showSavedReportPage(modelId);
     } else {
       ExplorerApp.get().getViewManager().showSavedReportPage();
     }

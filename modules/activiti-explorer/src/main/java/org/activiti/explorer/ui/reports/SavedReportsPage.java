@@ -35,11 +35,20 @@ public class SavedReportsPage extends AbstractTablePage {
 
   private static final long serialVersionUID = -5259331126409002997L;
   
+  protected String reportId;
   protected Table reportTable;
   protected LazyLoadingQuery reportListQuery;
   protected LazyLoadingContainer reportListContainer;
   
   
+  public SavedReportsPage(String reportId) {
+    this.reportId = reportId;
+  }
+  
+  public SavedReportsPage() {
+    this(null);
+  }
+
   protected Table createList() {
     reportTable = new Table();
     reportListQuery = new SavedReportsListQuery();
@@ -83,6 +92,17 @@ public class SavedReportsPage extends AbstractTablePage {
 
   protected ToolBar createMenuBar() {
     return new ReportsMenuBar();
+  }
+  
+  @Override
+  protected void initUi() {
+    super.initUi();
+    
+    if(reportId != null) {
+      selectElement(reportListContainer.getIndexForObjectId(reportId));
+    } else {
+      selectElement(0);
+    }
   }
 
 }
