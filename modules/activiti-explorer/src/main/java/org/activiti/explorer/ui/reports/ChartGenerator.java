@@ -34,15 +34,16 @@ import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 public class ChartGenerator {
   
   public static final String CHART_TYPE_BAR_CHART = "barChart";
+  public static final String CHART_TYPE_PIE_CHART = "pieChart";
 
-  public static DCharts generateChart(byte[] reportData) {
+  public static ChartComponent generateChart(byte[] reportData) {
     
     // Convert json to pojo
     JsonNode jsonNode = convert(reportData);
-    String type = jsonNode.get("type").getTextValue();
     JsonNode dataNode = jsonNode.get("data");
     
     // Retrieve data
+    String description = jsonNode.get("description").getTextValue();
     String[] names = new String[dataNode.size()];
     Number[] values = new Number[dataNode.size()];
     
@@ -55,18 +56,35 @@ public class ChartGenerator {
       index++;
     }
     
-    
     // Create chart
+    String type = jsonNode.get("type").getTextValue();
+    DCharts chart = null;
     if (CHART_TYPE_BAR_CHART.equals(type)) {
+      
       DataSeries dataSeries = new DataSeries().add((Object[]) values);
       SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
       Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY).setTicks(new Ticks().add((Object[]) names)));
       Highlighter highlighter = new Highlighter().setShow(false);
       Options options = new Options().setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter);
-      DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
-      return chart;
+      options.setAnimate(true);
+      options.setAnimateReplot(true);
+      chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
+      
+    } else if(CHART_TYPE_PIE_CHART.equals(type)) {
+      
+      DataSeries dataSeries = new DataSeries().newSeries();
+      for (int i=0; i<names.length; i++) {
+        dataSeries.add(names[i], values[i]);
+      }
+      SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.PIE);
+      Options options = new Options().setSeriesDefaults(seriesDefaults);
+      options.setAnimate(true);
+      options.setAnimateReplot(true);
+      chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
     }
-    return null;
+    
+    
+    return new ChartComponent(description, chart);
   }
   
   protected static JsonNode convert(byte[] jsonBytes) {
@@ -77,5 +95,7 @@ public class ChartGenerator {
       throw new ActivitiException("Report dataset contains invalid json", e);
     }
   }
+  
+  
   
 }

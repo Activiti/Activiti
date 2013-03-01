@@ -283,6 +283,10 @@ public interface Messages {
   // Reporting menu
   String REPORTING_MENU_RUN_REPORTS = "reporting.menu.run.reports";
   String REPORTING_MENU_SAVED_REPORTS = "reporting.menu.saved.reports";
+  String REPORTING_SAVE_POPUP_CAPTION = "reporting.save.popup.caption";
+  String REPORTING_SAVE_POPUP_NAME = "reporting.save.popup.name";
+  String REPORTING_SAVE_POPUP_NAME_EXISTS = "reporting.save.popup.name.exists";
+  String REPORTING_SAVE_POPUP_NAME_TOO_LONG = "reporting.save.popup..name.too.long";
   
   // Management menu
   String MGMT_MENU_DATABASE = "management.menu.database";

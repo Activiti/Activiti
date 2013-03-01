@@ -25,6 +25,7 @@ import com.vaadin.ui.Field;
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class EnumFormPropertyRenderer extends AbstractFormPropertyRenderer {
 
@@ -39,17 +40,30 @@ public class EnumFormPropertyRenderer extends AbstractFormPropertyRenderer {
     comboBox.setRequired(formProperty.isRequired());
     comboBox.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
     comboBox.setEnabled(formProperty.isWritable());
+    comboBox.setNullSelectionAllowed(false);
 
+    Object firstItemId = null;
     Map<String, String> values = (Map<String, String>) formProperty.getType().getInformation("values");
     if (values != null) {
       for (Entry<String, String> enumEntry : values.entrySet()) {
         // Add value and label (if any)
         comboBox.addItem(enumEntry.getKey());
+        
+        if (firstItemId == null) {
+          firstItemId = enumEntry.getKey(); // select first element
+        }
+        
         if (enumEntry.getValue() != null) {
           comboBox.setItemCaption(enumEntry.getKey(), enumEntry.getValue());
         }
       }
     }
+    
+    // Select first element
+    if (firstItemId != null) {
+      comboBox.select(firstItemId);
+    }
+    
     return comboBox;
   }
 }
