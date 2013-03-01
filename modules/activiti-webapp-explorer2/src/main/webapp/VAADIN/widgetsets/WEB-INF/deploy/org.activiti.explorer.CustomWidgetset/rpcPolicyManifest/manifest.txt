@@ -1,0 +1,2 @@
+# Module org.activiti.explorer.CustomWidgetset
+# RPC service class, partial path of RPC policy file
