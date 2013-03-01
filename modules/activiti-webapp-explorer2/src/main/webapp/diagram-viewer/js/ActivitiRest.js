@@ -19,7 +19,7 @@ var ActivitiRest = {
 		}).done(function(data, textStatus) {
 			//console.log("ajax done");
 		}).fail(function(jqXHR, textStatus, error){
-			console.error('Get diagram layout['+processDefinitionKey+'] failure: ', textStatus, 'error: ', error, jqXHR);
+			//console.error('Get diagram layout['+processDefinitionKey+'] failure: ', textStatus, 'error: ', error, jqXHR);
 		});
 	},
 	
@@ -43,7 +43,7 @@ var ActivitiRest = {
 		}).done(function(data, textStatus) {
 			//console.log("ajax done");
 		}).fail(function(jqXHR, textStatus, error){
-			console.log('Get diagram layout['+processDefinitionId+'] failure: ', textStatus, jqXHR);
+			//console.log('Get diagram layout['+processDefinitionId+'] failure: ', textStatus, jqXHR);
 		});
 	},
 	
@@ -68,7 +68,7 @@ var ActivitiRest = {
 		}).done(function(data, textStatus) {
 			//console.log("ajax done");
 		}).fail(function(jqXHR, textStatus, error){
-			console.log('Get HighLights['+processInstanceId+'] failure: ', textStatus, jqXHR);
+			//console.log('Get HighLights['+processInstanceId+'] failure: ', textStatus, jqXHR);
 		});
 	},
 };

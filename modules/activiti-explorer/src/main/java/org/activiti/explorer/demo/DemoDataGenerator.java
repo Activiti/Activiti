@@ -184,7 +184,7 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
     deploymentList = repositoryService.createDeploymentQuery().deploymentName(reportDeploymentName).list();
     if (deploymentList == null || deploymentList.size() == 0) {
       repositoryService.createDeployment()
-        .name(deploymentName)
+        .name(reportDeploymentName)
         .addClasspathResource("org/activiti/explorer/demo/process/reports/taskDurationForProcessDefinition.bpmn20.xml")
         .deploy();
     }

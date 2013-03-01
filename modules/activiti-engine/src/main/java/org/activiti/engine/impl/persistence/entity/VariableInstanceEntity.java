@@ -103,6 +103,9 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     if (textValue != null) {
       persistentState.put("textValue", textValue);
     }
+    if (textValue2 != null) {
+      persistentState.put("textValue2", textValue2);
+    }
     if (byteArrayValueId != null) {
       persistentState.put("byteArrayValueId", byteArrayValueId);
     }
