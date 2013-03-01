@@ -89,6 +89,8 @@ public interface ViewManager {
   
   void showRunReportPage();
   
+  void showSavedReportPage();
+  
   // Management
   
   void showDatabasePage();

@@ -288,6 +288,7 @@ public interface Messages {
   String REPORTING_SAVE_POPUP_NAME_EMPTY = "reporting.save.popup.name.empty";
   String REPORTING_SAVE_POPUP_NAME_EXISTS = "reporting.save.popup.name.exists";
   String REPORTING_SAVE_POPUP_NAME_TOO_LONG = "reporting.save.popup..name.too.long";
+  String REPORTING_CREATE_TIME = "reporting.report.created";
   
   // Management menu
   String MGMT_MENU_DATABASE = "management.menu.database";
