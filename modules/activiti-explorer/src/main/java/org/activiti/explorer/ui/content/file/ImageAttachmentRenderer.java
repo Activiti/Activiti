@@ -69,7 +69,7 @@ public class ImageAttachmentRenderer extends GenericAttachmentRenderer {
     
     String mimeType = extractMineType(attachment.getType());
     
-    InputStream imageStream = ImageUtil.smallify(taskService.getAttachmentContent(attachment.getId()), mimeType, 900, 550);
+    InputStream imageStream = ImageUtil.resizeImage(taskService.getAttachmentContent(attachment.getId()), mimeType, 900, 550);
     Resource resource = new StreamResource(new InputStreamStreamSource(imageStream),
             attachment.getName() + extractExtention(attachment.getType()),ExplorerApp.get());
     Embedded image = new Embedded(null, resource);
