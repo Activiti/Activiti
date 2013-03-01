@@ -44,6 +44,11 @@ public class Constants {
   // Default diagram image extension, when name cannot be deducted from resource name
  public static final String DEFAULT_DIAGRAM_IMAGE_EXTENSION = "png";
  
+ // Task priority values
+ public static final int TASK_PRIORITY_LOW = 0; 
+ public static final int TASK_PRIORITY_MEDIUM = 50; 
+ public static final int TASK_PRIORITY_HIGH = 100; 
+ 
  // MIMETYPES
  public static final String MIMETYPE_BPM = "image/bpm";
  public static final String MIMETYPE_GIF = "image/gif";
