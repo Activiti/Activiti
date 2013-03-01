@@ -48,14 +48,14 @@ $(document).ready(function(){
   var processDefinitionId = query_string["processDefinitionId"];
   var processInstanceId = query_string["processInstanceId"];
   
-  console.log("Initialize progress bar");
+  //console.log("Initialize progress bar");
   
   pb1 = new $.ProgressBar({
     boundingBox: '#pb1',
     label: 'Progressbar!',
     on: {
       complete: function() {
-        console.log("Progress Bar COMPLETE");
+        //console.log("Progress Bar COMPLETE");
         this.set('label', 'complete!');
         if (processInstanceId) {
           ProcessDiagramGenerator.drawHighLights(processInstanceId);
@@ -67,7 +67,7 @@ $(document).ready(function(){
     },
     value: 0
   });
-  console.log("Progress bar inited");
+  //console.log("Progress bar inited");
   
   ProcessDiagramGenerator.options = {
     /*
@@ -77,7 +77,7 @@ $(document).ready(function(){
     */
     diagramBreadCrumbsId: "diagramBreadCrumbs",
     diagramHolderId: "diagramHolder",
-    diagramInfoId: "diagramInfo",
+    diagramInfoId: "diagramInfo"
   };
   
   var baseUrl = window.document.location.protocol + "//" + window.document.location.host + "/";
@@ -87,7 +87,7 @@ $(document).ready(function(){
   ActivitiRest.options = {
     processInstanceHighLightsUrl: baseUrl + "/service/process-instance/{processInstanceId}/highlights?callback=?",
     processDefinitionUrl: baseUrl + "/service/process-definition/{processDefinitionId}/diagram-layout?callback=?",
-    processDefinitionByKeyUrl: baseUrl + "/service/process-definition/{processDefinitionKey}/diagram-layout?callback=?",
+    processDefinitionByKeyUrl: baseUrl + "/service/process-definition/{processDefinitionKey}/diagram-layout?callback=?"
   };
   
   if (processDefinitionId) {
@@ -96,21 +96,6 @@ $(document).ready(function(){
   } else {
     alert("processDefinitionId parameter is required");
   }
-  
-  /*
-  // Draw all diagrams from list
-  for (var i in diagrams) {
-    var processDefinitionId = diagrams[i];
-    console.log("diagramKey: " + processDefinitionId);
-    
-    //pb1.set('value', 0);
-    
-    setTimeout(function(processDefinitionId) {
-      ProcessDiagramGenerator.drawDiagram(processDefinitionId);
-    }(processDefinitionId));
-  }
-  */
-
 });
 
 

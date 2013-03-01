@@ -37,36 +37,8 @@ public class IdentityInfoEntityManager extends AbstractManager {
 
   public void deleteIdentityInfo(IdentityInfoEntity identityInfo) {
     getDbSqlSession().delete(identityInfo);
-    if (IdentityInfoEntity.TYPE_USERACCOUNT.equals(identityInfo.getType())) {
-      for (IdentityInfoEntity identityInfoDetail: findIdentityInfoDetails(identityInfo.getId())) {
-        getDbSqlSession().delete(identityInfoDetail);
-      }
-    }
   }
-
-  public IdentityInfoEntity findUserAccountByUserIdAndKey(String userId, String userPassword, String key) {
-    IdentityInfoEntity identityInfoEntity = findUserInfoByUserIdAndKey(userId, key);
-    if (identityInfoEntity==null) {
-      return null;
-    }
-    
-    Map<String,String> details = new HashMap<String, String>();
-    String identityInfoId = identityInfoEntity.getId();
-    List<IdentityInfoEntity> identityInfoDetails = findIdentityInfoDetails(identityInfoId);
-    for (IdentityInfoEntity identityInfoDetail: identityInfoDetails) {
-      details.put(identityInfoDetail.getKey(), identityInfoDetail.getValue());
-    }
-    identityInfoEntity.setDetails(details);
-      
-    if (identityInfoEntity.getPasswordBytes()!=null) {
-      String password = decryptPassword(identityInfoEntity.getPasswordBytes(), userPassword);
-      identityInfoEntity.setPassword(password);
-    }
-    
-    return identityInfoEntity;
-  }
-
-  @SuppressWarnings("unchecked")
+  
   protected List<IdentityInfoEntity> findIdentityInfoDetails(String identityInfoId) {
     return Context
       .getCommandContext()
