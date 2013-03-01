@@ -11,6 +11,10 @@
         <startEvent id="startevent1" name="Start">
           <extensionElements>
             <activiti:formProperty id="processDefinition" name="Select process definition" type="processDefinition" required="true" />
+            <activiti:formProperty id="chartType" name="Chart type" type="enum" required="true">
+                <activiti:value id="pieChart" name="Pie chart" />
+                <activiti:value id="barChart" name="Bar chart" />
+            </activiti:formProperty>
           </extensionElements>
         </startEvent>
         <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="generateDataset" />
@@ -27,13 +31,13 @@
                var result = ReportingUtil.executeSelectSqlQuery("select NAME_, avg(DURATION_) from ACT_HI_TASKINST where PROC_DEF_ID_ = '" + processDefinition.getId() + "' and END_TIME_ is not null group by NAME_");
             
                var reportData = {};
-               reportData.type = "barChart";
+               reportData.type = String(execution.getVariable("chartType"));
                reportData.description = "Average task duration for process definition '" + processDefinition.getName() + "' (version " + processDefinition.getVersion() + ")";
                reportData.data = {};
             
                while (result.next()) { // process results one row at a time
                  var name = result.getString(1);
-                 var val = result.getLong(2);
+                 var val = result.getLong(2) / 1000;
                  reportData.data[name] = val;
                }
                

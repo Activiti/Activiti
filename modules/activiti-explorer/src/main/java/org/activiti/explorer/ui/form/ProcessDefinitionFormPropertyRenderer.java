@@ -54,6 +54,12 @@ public class ProcessDefinitionFormPropertyRenderer extends AbstractFormPropertyR
       comboBox.setItemCaption(processDefinition.getId(), name);
     }
     
+    // Select first
+    if (processDefinitions.size() > 0) {
+      comboBox.setNullSelectionAllowed(false);
+      comboBox.select(processDefinitions.get(0).getId());
+    }
+    
     return comboBox;
   }
 
