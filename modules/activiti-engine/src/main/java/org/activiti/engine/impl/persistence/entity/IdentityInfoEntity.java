@@ -19,17 +19,15 @@ import java.util.Map;
 
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.identity.Account;
 
 
 /**
  * @author Tom Baeyens
  */
-public class IdentityInfoEntity implements PersistentObject, HasRevision, Account, Serializable {
+public class IdentityInfoEntity implements PersistentObject, HasRevision, Serializable {
   
   private static final long serialVersionUID = 1L;
   
-  public static final String TYPE_USERACCOUNT = "account";
   public static final String TYPE_USERINFO = "userinfo";
   
   protected String id;
