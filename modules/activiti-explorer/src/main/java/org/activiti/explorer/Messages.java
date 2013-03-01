@@ -285,6 +285,7 @@ public interface Messages {
   String REPORTING_MENU_SAVED_REPORTS = "reporting.menu.saved.reports";
   String REPORTING_SAVE_POPUP_CAPTION = "reporting.save.popup.caption";
   String REPORTING_SAVE_POPUP_NAME = "reporting.save.popup.name";
+  String REPORTING_SAVE_POPUP_NAME_EMPTY = "reporting.save.popup.name.empty";
   String REPORTING_SAVE_POPUP_NAME_EXISTS = "reporting.save.popup.name.exists";
   String REPORTING_SAVE_POPUP_NAME_TOO_LONG = "reporting.save.popup..name.too.long";
   

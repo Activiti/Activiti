@@ -21,10 +21,12 @@ import org.dussan.vaadin.dcharts.DCharts;
 import org.dussan.vaadin.dcharts.base.elements.XYaxis;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.data.Ticks;
+import org.dussan.vaadin.dcharts.metadata.LegendPlacements;
 import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
 import org.dussan.vaadin.dcharts.options.Axes;
 import org.dussan.vaadin.dcharts.options.Highlighter;
+import org.dussan.vaadin.dcharts.options.Legend;
 import org.dussan.vaadin.dcharts.options.Options;
 import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 
@@ -65,9 +67,11 @@ public class ChartGenerator {
       SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
       Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY).setTicks(new Ticks().add((Object[]) names)));
       Highlighter highlighter = new Highlighter().setShow(false);
+      
       Options options = new Options().setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter);
       options.setAnimate(true);
       options.setAnimateReplot(true);
+      
       chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
       
     } else if(CHART_TYPE_PIE_CHART.equals(type)) {
@@ -77,12 +81,19 @@ public class ChartGenerator {
         dataSeries.add(names[i], values[i]);
       }
       SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.PIE);
+      
       Options options = new Options().setSeriesDefaults(seriesDefaults);
       options.setAnimate(true);
       options.setAnimateReplot(true);
+      
+      Legend legend = new Legend().setShow(true).setPlacement(LegendPlacements.INSIDE);
+      options.setLegend(legend);
+      
+      Highlighter highlighter = new Highlighter().setShow(true);
+      options.setHighlighter(highlighter);
+      
       chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
     }
-    
     
     return new ChartComponent(description, chart);
   }
