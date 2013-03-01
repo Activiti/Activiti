@@ -32,11 +32,14 @@ import org.dussan.vaadin.dcharts.options.SeriesDefaults;
  * @author Joram Barrez
  */
 public class ChartGenerator {
+  
+  public static final String CHART_TYPE_BAR_CHART = "barChart";
 
   public static DCharts generateChart(byte[] reportData) {
     
     // Convert json to pojo
     JsonNode jsonNode = convert(reportData);
+    String type = jsonNode.get("type").getTextValue();
     JsonNode dataNode = jsonNode.get("data");
     
     // Retrieve data
@@ -52,14 +55,18 @@ public class ChartGenerator {
       index++;
     }
     
+    
     // Create chart
-    DataSeries dataSeries = new DataSeries().add((Object[]) values);
-    SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
-    Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY).setTicks(new Ticks().add((Object[]) names)));
-    Highlighter highlighter = new Highlighter().setShow(false);
-    Options options = new Options().setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter);
-    DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
-    return chart;
+    if (CHART_TYPE_BAR_CHART.equals(type)) {
+      DataSeries dataSeries = new DataSeries().add((Object[]) values);
+      SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
+      Axes axes = new Axes().addAxis(new XYaxis().setRenderer(AxisRenderers.CATEGORY).setTicks(new Ticks().add((Object[]) names)));
+      Highlighter highlighter = new Highlighter().setShow(false);
+      Options options = new Options().setSeriesDefaults(seriesDefaults).setAxes(axes).setHighlighter(highlighter);
+      DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
+      return chart;
+    }
+    return null;
   }
   
   protected static JsonNode convert(byte[] jsonBytes) {
