@@ -18,7 +18,7 @@
                importPackage(java.lang);
                importPackage(org.activiti.explorer.reporting);
                
-               var result = ReportingUtil.executeSelectSqlQuery("SELECT PROC_DEF_ID_, count(*) FROM ACT_HI_PROCINST group by PROC_DEF_ID_");
+               var result = ReportingUtil.executeSelectSqlQuery("SELECT PD.NAME_, PD.VERSION_ , count(*) FROM ACT_HI_PROCINST PI inner join ACT_RE_PROCDEF PD on PI.PROC_DEF_ID_ = PD.ID_ group by PROC_DEF_ID_");
             
                var reportData = {};
                reportData.type = "pieChart";
@@ -27,8 +27,9 @@
             
                while (result.next()) { // process results one row at a time
                  var name = result.getString(1);
-                 var val = result.getLong(2);
-                 reportData.data[name] = val;
+                 var version = result.getLong(2)
+                 var count = result.getLong(2);
+                 reportData.data[name + " (v" + version + ")"] = count;
                }
                
                // Limitation! Cannot store / retrieve native json variables over multiple steps! TODO: discuss! 

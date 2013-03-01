@@ -19,10 +19,12 @@ import org.activiti.explorer.navigation.ActiveProcessDefinitionNavigator;
 import org.activiti.explorer.navigation.SuspendedProcessDefinitionNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractTablePage;
+import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.management.processdefinition.SuspendedProcessDefinitionDetailPanel;
 import org.activiti.explorer.ui.management.processdefinition.SuspendedProcessDefinitionListQuery;
 import org.activiti.explorer.ui.management.processdefinition.SuspendedProcessDefinitionPage;
+import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -49,6 +51,9 @@ public class RunReportsPage extends AbstractTablePage {
     reportTable.setContainerDataSource(reportListContainer);
     
     // Column headers
+    reportTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.REPORT_22));
+    reportTable.setColumnWidth("icon", 22);
+    
     reportTable.addContainerProperty("name", String.class, null);
     reportTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
             
