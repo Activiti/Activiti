@@ -56,7 +56,7 @@ public class ReportsMenuBar extends ToolBar {
   protected void addSavedReportsToolbarEntry() {
     addToolbarEntry(ENTRY_SAVED_REPORTS, i18nManager.getMessage(Messages.REPORTING_MENU_SAVED_REPORTS), new ToolbarCommand() {
       public void toolBarItemSelected() {
-        viewManager.showRunReportPage();
+        viewManager.showSavedReportPage();
       }
     });
   }

@@ -44,6 +44,7 @@ import org.activiti.explorer.ui.process.simple.editor.SimpleTableEditor;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
 import org.activiti.explorer.ui.reports.ReportsMenuBar;
 import org.activiti.explorer.ui.reports.RunReportsPage;
+import org.activiti.explorer.ui.reports.SavedReportsPage;
 import org.activiti.explorer.ui.task.ArchivedPage;
 import org.activiti.explorer.ui.task.InboxPage;
 import org.activiti.explorer.ui.task.InvolvedPage;
@@ -237,6 +238,15 @@ public class DefaultViewManager implements ViewManager, Serializable {
   
   public void showRunReportPage() {
     switchView(new RunReportsPage(), ViewManager.MAIN_NAVIGATION_REPORT, ReportsMenuBar.ENTRY_RUN_REPORTS);
+  }
+
+  public void showSavedReportPage() {
+    switchView(new SavedReportsPage(), ViewManager.MAIN_NAVIGATION_REPORT, ReportsMenuBar.ENTRY_SAVED_REPORTS);
+  }
+  
+  @Override
+  public void showSavedReportPage(String modelId) {
+    switchView(new SavedReportsPage(modelId), ViewManager.MAIN_NAVIGATION_REPORT, ReportsMenuBar.ENTRY_SAVED_REPORTS);
   }
   
   // Management

@@ -93,5 +93,6 @@ public class Images {
   
   // Reports
   public static final Resource REPORT_50 = new ThemeResource("img/report-50.png");
+  public static final Resource REPORT_22 = new ThemeResource("img/report-22.png");
   
 }

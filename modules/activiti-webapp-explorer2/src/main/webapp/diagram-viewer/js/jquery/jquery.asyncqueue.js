@@ -61,7 +61,7 @@
 			// TODO: add callback for queue[i] complete
 			
 			var obj = arguments[0];
-			if (obj && Array.isArray(obj)) {
+			if (obj && Object.prototype.toString.call(obj) === "[object Array]") {
 				var fn = arguments[1];
 				var timeOut = (typeof(arguments[2]) != "undefined")? arguments[2] : defaultTimeOut;
 				if (typeof(fn) == "function") {

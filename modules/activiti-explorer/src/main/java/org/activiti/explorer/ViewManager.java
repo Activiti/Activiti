@@ -89,6 +89,10 @@ public interface ViewManager {
   
   void showRunReportPage();
   
+  void showSavedReportPage();
+  
+  void showSavedReportPage(String modelId);
+  
   // Management
   
   void showDatabasePage();
@@ -130,5 +134,5 @@ public interface ViewManager {
   // Profile
   
   void showProfilePopup(String userId);
-  
+
 }
