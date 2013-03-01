@@ -282,7 +282,24 @@
   </sql>
 
   <select id="selectHistoricTaskInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+    	${limitBefore}
+    </if>
     ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+    	${limitAfter}
+    </if>
+  </select>
+  
+  <select id="selectHistoricTaskInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+  		${limitBefore}
+  		select RES.* , row_number() over (ORDER BY #{orderBy}) rnk FROM ( 
+  	</if>
+  	${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+  		${limitAfter}
+  	</if>
   </select>
 
   <select id="selectHistoricTaskInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
