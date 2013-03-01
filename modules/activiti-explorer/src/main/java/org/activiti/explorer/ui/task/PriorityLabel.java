@@ -13,6 +13,7 @@
 package org.activiti.explorer.ui.task;
 
 import org.activiti.engine.task.Task;
+import org.activiti.explorer.Constants;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
@@ -47,13 +48,13 @@ public class PriorityLabel extends Label {
   public void setValue(Object newValue) {
     if (newValue instanceof Integer) {
       priority = (Integer) newValue;
-      if (priority < Task.PRIORITY_NORMAL) {
+      if (priority < Constants.TASK_PRIORITY_MEDIUM) {
         super.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_LOW));
         addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_LOW);
-      } else if (priority == Task.PRIORITY_NORMAL) {
+      } else if (priority == Constants.TASK_PRIORITY_MEDIUM) {
         super.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM));
         addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_MEDIUM);
-      } else if (priority > Task.PRIORITY_NORMAL) {
+      } else if (priority > Constants.TASK_PRIORITY_MEDIUM) {
         super.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_HIGH));
         addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_HIGH);
       }

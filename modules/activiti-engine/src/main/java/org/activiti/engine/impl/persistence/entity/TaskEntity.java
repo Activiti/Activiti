@@ -64,7 +64,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   protected String name;
   protected String description;
-  protected int priority = Task.PRIORITY_NORMAL;
+  protected int priority = DEFAULT_PRIORITY;
   protected Date createTime; // The time when the task has been created
   protected Date dueDate;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
