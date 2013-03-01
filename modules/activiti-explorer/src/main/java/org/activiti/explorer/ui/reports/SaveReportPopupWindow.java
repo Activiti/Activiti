@@ -20,6 +20,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.custom.PopupWindow;
+import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -105,18 +106,31 @@ public class SaveReportPopupWindow extends PopupWindow {
           }
         }
         
-        // Re-run reports to store the data for good now (the previous process instance was deleted)
-        if (originalFormProperties != null) {
-          startProcessInstanceWithFormProperties(reportName);
+        if (error != null) {
+          
+          setHeight(185, UNITS_PIXELS);
+          layout.addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+          
+          Label errorLabel = new Label(error);
+          errorLabel.addStyleName(ExplorerLayout.STYLE_ERROR);
+          layout.addComponent(errorLabel);
+          
         } else {
-          startProcessInstance(reportName);
-        }
         
-        // Remove the popup
-        if (componentToDisableOnClose != null) {
-          componentToDisableOnClose.setEnabled(false);
+          // Re-run reports to store the data for good now (the previous process instance was deleted)
+          if (originalFormProperties != null) {
+            startProcessInstanceWithFormProperties(reportName);
+          } else {
+            startProcessInstance(reportName);
+          }
+          
+          // Remove the popup
+          if (componentToDisableOnClose != null) {
+            componentToDisableOnClose.setEnabled(false);
+          }
+          close();
+          
         }
-        close();
       }
       
     });

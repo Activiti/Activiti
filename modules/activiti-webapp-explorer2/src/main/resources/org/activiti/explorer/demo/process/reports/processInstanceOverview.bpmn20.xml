@@ -6,17 +6,9 @@
     expressionLanguage="http://www.w3.org/1999/XPath" 
     targetNamespace="activiti-report">
 
-    <process id="task-duration-report" name="Task duration report" isExecutable="true">
+    <process id="process-instance-overview-report" name="Process Instance Overview" isExecutable="true">
     
-        <startEvent id="startevent1" name="Start">
-          <extensionElements>
-            <activiti:formProperty id="processDefinition" name="Select process definition" type="processDefinition" required="true" />
-            <activiti:formProperty id="chartType" name="Chart type" type="enum" required="true">
-                <activiti:value id="pieChart" name="Pie chart" />
-                <activiti:value id="barChart" name="Bar chart" />
-            </activiti:formProperty>
-          </extensionElements>
-        </startEvent>
+        <startEvent id="startevent1" name="Start" />
         <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="generateDataset" />
         
         <scriptTask id="generateDataset" name="Execute script" scriptFormat="JavaScript" activiti:autoStoreVariables="false">
@@ -26,18 +18,16 @@
                importPackage(java.lang);
                importPackage(org.activiti.explorer.reporting);
                
-               var processDefinition = execution.getVariable("processDefinition");
-               
-               var result = ReportingUtil.executeSelectSqlQuery("select NAME_, avg(DURATION_) from ACT_HI_TASKINST where PROC_DEF_ID_ = '" + processDefinition.getId() + "' and END_TIME_ is not null group by NAME_");
+               var result = ReportingUtil.executeSelectSqlQuery("SELECT PROC_DEF_ID_, count(*) FROM ACT_HI_PROCINST group by PROC_DEF_ID_");
             
                var reportData = {};
-               reportData.type = String(execution.getVariable("chartType"));
-               reportData.description = "Average task duration (in seconds) for process definition '" + processDefinition.getName() + "' (version " + processDefinition.getVersion() + ")";
+               reportData.type = "pieChart";
+               reportData.description = "Process instance overview (" + new java.util.Date() + ")";
                reportData.data = {};
             
                while (result.next()) { // process results one row at a time
                  var name = result.getString(1);
-                 var val = result.getLong(2) / 1000;
+                 var val = result.getLong(2);
                  reportData.data[name] = val;
                }
                

@@ -25,24 +25,41 @@ import com.vaadin.ui.themes.Reindeer;
 public class ChartComponent extends VerticalLayout {
   
   private static final long serialVersionUID = 1L;
+  
+  public ChartComponent(String description, String errorMessage) {
+    this(description, null, errorMessage);
+  }
 
   public ChartComponent(String description, DCharts dCharts) {
-    
+    this(description, dCharts, null);
+  }
+  
+  public ChartComponent(String description, DCharts dCharts, String errorMessage) {
     addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
     addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
-    
+
     // Description
-    Label label = new Label(description);
-    label.addStyleName(Reindeer.LABEL_H2);
-    addComponent(label);
-    
-    addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+    if (description != null) {
+      Label label = new Label(description);
+      label.addStyleName(Reindeer.LABEL_H2);
+      addComponent(label);
+      
+      addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+    }
     
     // Chart
-    dCharts.setWidth(600, UNITS_PIXELS);
-    dCharts.setHeight(500, UNITS_PIXELS);
-    addComponent(dCharts);
-    dCharts.show();
+    if (dCharts != null) {
+      dCharts.setWidth(600, UNITS_PIXELS);
+      dCharts.setHeight(500, UNITS_PIXELS);
+      addComponent(dCharts);
+      dCharts.show();
+    }
+    
+    // Error message
+    if (errorMessage != null) {
+      Label errorLabel = new Label(errorMessage);
+      addComponent(errorLabel);
+    }
   }
 
 }

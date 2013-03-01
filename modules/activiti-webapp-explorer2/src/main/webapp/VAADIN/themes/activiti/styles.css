@@ -42,6 +42,12 @@ body {
   resize: none;
 }
 
+.error {
+    background: url("img/warning.png") no-repeat scroll 0 0 transparent;
+    color: red;
+    padding-left: 20px;
+}
+
 /* -------------
    Popup windows
    ------------- */

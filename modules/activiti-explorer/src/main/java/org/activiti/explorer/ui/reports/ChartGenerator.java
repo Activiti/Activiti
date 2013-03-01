@@ -15,6 +15,8 @@ package org.activiti.explorer.ui.reports;
 import java.util.Iterator;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.Messages;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.dussan.vaadin.dcharts.DCharts;
@@ -58,7 +60,16 @@ public class ChartGenerator {
       index++;
     }
     
-    // Create chart
+    // Generate chart (or 'no data' message)
+    if (names.length > 0) {
+      DCharts chart = createChart(jsonNode, names, values);
+      return new ChartComponent(description, chart);
+    } else {
+      return new ChartComponent(description, ExplorerApp.get().getI18nManager().getMessage(Messages.REPORTING_ERROR_NOT_ENOUGH_DATA));
+    }
+  }
+
+  protected static DCharts createChart(JsonNode jsonNode, String[] names, Number[] values) {
     String type = jsonNode.get("type").getTextValue();
     DCharts chart = null;
     if (CHART_TYPE_BAR_CHART.equals(type)) {
@@ -94,8 +105,7 @@ public class ChartGenerator {
       
       chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
     }
-    
-    return new ChartComponent(description, chart);
+    return chart;
   }
   
   protected static JsonNode convert(byte[] jsonBytes) {
