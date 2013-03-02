@@ -35,12 +35,14 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
   private static final long serialVersionUID = 1L;
 
   private static enum ResultType {
-    LIST, SINGLE_RESULT, COUNT
+    LIST, LIST_PAGE, SINGLE_RESULT, COUNT
   }
 
   protected transient CommandExecutor commandExecutor;
   protected transient CommandContext commandContext;
 
+  protected int maxResults = Integer.MAX_VALUE;
+  protected int firstResult = 0;
   protected ResultType resultType;
 
   private Map<String, Object> parameters = new HashMap<String, Object>();
@@ -88,6 +90,17 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
     }
     return executeList(Context.getCommandContext(), getParameterMap(), 0, Integer.MAX_VALUE);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<U> listPage(int firstResult, int maxResults) {
+    this.firstResult =firstResult;
+    this.maxResults = maxResults;
+    this.resultType = ResultType.LIST_PAGE;
+    if (commandExecutor!=null) {
+      return (List<U>) commandExecutor.execute(this);
+    }
+    return executeList(Context.getCommandContext(), getParameterMap(), firstResult, maxResults);
+  }
 
   public long count() {
     this.resultType = ResultType.COUNT;
@@ -100,6 +113,21 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
   public Object execute(CommandContext commandContext) {
     if (resultType == ResultType.LIST) {
       return executeList(commandContext, getParameterMap(), 0, Integer.MAX_VALUE);
+    } else if (resultType == ResultType.LIST_PAGE) {
+      Map<String, Object> parameterMap = getParameterMap();
+      parameterMap.put("resultType", "LIST_PAGE");
+      parameterMap.put("firstResult", firstResult);
+      parameterMap.put("maxResults", maxResults);
+      
+      int firstRow = firstResult + 1;
+      parameterMap.put("firstRow", firstRow);
+      int lastRow = 0;
+      if(maxResults == Integer.MAX_VALUE) {
+        lastRow = maxResults;
+      }
+      lastRow = firstResult + maxResults + 1;
+      parameterMap.put("lastRow", lastRow);
+      return executeList(commandContext, parameterMap, firstResult, maxResults);
     } else if (resultType == ResultType.SINGLE_RESULT) {
       return executeSingleResult(commandContext);
     } else {
