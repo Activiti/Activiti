@@ -13,9 +13,13 @@
 
 package org.activiti.rest.api.task;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.query.QueryProperty;
@@ -24,6 +28,8 @@ import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.api.identity.GroupInfo;
+import org.activiti.rest.api.identity.UserGroupsPaginateList;
 import org.restlet.resource.Get;
 
 /**
@@ -52,6 +58,8 @@ public class TasksResource extends SecuredResource {
     String involvedTaskUserId = getQuery().getValues("involved");
     String candidateTaskUserId = getQuery().getValues("candidate");
     String candidateGroupId = getQuery().getValues("candidate-group");
+    String candidateGroupIds = getQuery().getValues("candidate-groups");
+    String candidateGroupUserId = getQuery().getValues("candidate-group-user-id");
     
     String strPriority = getQuery().getValues("priority");
     String strMinPriority = getQuery().getValues("minPriority");
@@ -72,10 +80,30 @@ public class TasksResource extends SecuredResource {
       taskQuery.taskCandidateUser(candidateTaskUserId);
     } else if (candidateGroupId != null) {
       taskQuery.taskCandidateGroup(candidateGroupId);
-    } else {
+    }else if (candidateGroupIds != null){
+    	taskQuery.taskCandidateGroupIn(Arrays.asList(candidateGroupIds.split("\\|")));
+    }else if (candidateGroupUserId != null){
+    	DataResponse userGroupsDataResponse = new UserGroupsPaginateList().paginateList(
+    	        getQuery(), ActivitiUtil.getIdentityService().createGroupQuery()
+    	            .groupMember(candidateGroupUserId), "id", properties);
+    	ArrayList<GroupInfo> userGroupsInfo = (userGroupsDataResponse.getData() instanceof ArrayList<?>) ? (ArrayList<GroupInfo>)userGroupsDataResponse.getData() : null;
+    	
+    	if(userGroupsInfo != null && userGroupsInfo.size() > 0){
+	    	List<String> candidateGroups = new ArrayList<String>();
+	    	for(GroupInfo groupInfo : userGroupsInfo){
+	    		candidateGroups.add(groupInfo.getId());
+	    	}
+	    	
+	    	taskQuery.taskCandidateGroupIn(candidateGroups);
+    	}
+    	else
+    	{
+    		throw new ActivitiException("User Id " + candidateGroupUserId + " does not exist, or there are no groups associated with it.");
+    	}
+    }else {
       throw new ActivitiIllegalArgumentException("Tasks must be filtered with 'assignee', 'owner', 'involved', 'candidate' or 'candidate-group'");
     }
-    
+        
     if (strPriority != null) {
       taskQuery.taskPriority(RequestUtil.parseToInteger(strPriority));
     } else if (strMinPriority != null) {
