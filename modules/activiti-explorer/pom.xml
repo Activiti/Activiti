@@ -73,7 +73,6 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
-      <scope>compile</scope>
     </dependency>
 
     <!-- Database -->
