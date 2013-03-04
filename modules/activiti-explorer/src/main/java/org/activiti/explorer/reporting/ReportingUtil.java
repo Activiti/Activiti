@@ -21,6 +21,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -28,11 +30,13 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class ReportingUtil {
   
+  
   public static Connection getCurrentDatabaseConnection() {
     return Context.getCommandContext().getDbSqlSession().getSqlSession().getConnection();
   }
   
   public static ResultSet executeSelectSqlQuery(String sql) throws Exception {
+    
     Connection connection = getCurrentDatabaseConnection();
     Statement select = connection.createStatement();
     return select.executeQuery(sql);

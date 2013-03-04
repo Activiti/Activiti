@@ -73,6 +73,7 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
+      <scope>compile</scope>
     </dependency>
 
     <!-- Database -->
@@ -132,6 +133,7 @@
         <groupId>org.vaadin.addons</groupId>
         <artifactId>dcharts-widget</artifactId>
         <version>0.10.0</version>
+        <scope>compile</scope>
      </dependency>
 
   </dependencies>

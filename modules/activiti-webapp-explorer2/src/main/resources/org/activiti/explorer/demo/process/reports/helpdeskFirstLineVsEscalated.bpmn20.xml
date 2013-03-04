@@ -6,7 +6,7 @@
     expressionLanguage="http://www.w3.org/1999/XPath" 
     targetNamespace="activiti-report">
 
-    <process id="process-instance-overview-report" name="Process Instance Overview" isExecutable="true">
+    <process id="helpdesk-firstline-vs-escalated-report" name="Helpdesk process: firstline vs escalated" isExecutable="true">
     
         <startEvent id="startevent1" name="Start" />
         <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="generateDataset" />
@@ -18,34 +18,28 @@
                importPackage(java.lang);
                importPackage(org.activiti.explorer.reporting);
                
-               var result = ReportingUtil.executeSelectSqlQuery("SELECT PD.NAME_, PD.VERSION_ , count(*) FROM ACT_HI_PROCINST PI inner join ACT_RE_PROCDEF PD on PI.PROC_DEF_ID_ = PD.ID_ group by PROC_DEF_ID_");
-            
+               var escalatedResult = ReportingUtil.executeSelectSqlQuery("SELECT count(*) FROM ACT_HI_ACTINST where END_TIME_ is not null and ACT_ID_ = 'handleEscalation' and PROC_DEF_ID_ like 'escalationExample%'");
+               escalatedResult.next();
+               var escalatedCount = escalatedResult.getLong(1);
+               
+               var firstLineResult = ReportingUtil.executeSelectSqlQuery("SELECT count(*) FROM ACT_HI_PROCINST where END_TIME_ is not null and PROC_DEF_ID_ like 'escalationExample%'");
+               firstLineResult.next();
+               var firstLineCount = firstLineResult.getLong(1) - escalatedCount;
+               
                var reportData = {};
+	           
+	           var dataset = {};
+               dataset.description = "Helpdesk process: issues solved in first line vs escalation needed";
+               dataset.type = "pieChart";
                reportData.datasets = [];
                
-               var dataset = {};
-               dataset.type = "pieChart";
-               dataset.description = "Process instance overview (" + new java.util.Date() + ")";
-               dataset.data = {};
-            
-               while (result.next()) { // process results one row at a time
-                 var name = result.getString(1);
-                 var version = result.getLong(2)
-                 var count = result.getLong(3);
-                 dataset.data[name + " (v" + version + ")"] = count;
-               }
+               
+               if (escalatedCount > 0 || firstLineCount > 0) {
+                   dataset.data = {"First line solved" : firstLineCount, "Escalation needed" : escalatedCount};
+               } 
+
                reportData.datasets.push(dataset);
                
-               
-               // We also include a list view of the same data
-               var dataset2 = {};
-               dataset2.type="list";
-               dataset2.description = "List overview of process instances";
-               dataset2.data = dataset.data;
-               reportData.datasets.push(dataset2);
-               
-               
-               // We want to store the results as bytes as the string size is limited in the variables table
                execution.setVariable("reportData", new java.lang.String(JSON.stringify(reportData)).getBytes("UTF-8"));
           ]]></script>
         </scriptTask>
