@@ -21,18 +21,29 @@
                var result = ReportingUtil.executeSelectSqlQuery("SELECT PD.NAME_, PD.VERSION_ , count(*) FROM ACT_HI_PROCINST PI inner join ACT_RE_PROCDEF PD on PI.PROC_DEF_ID_ = PD.ID_ group by PROC_DEF_ID_");
             
                var reportData = {};
-               reportData.type = "pieChart";
-               reportData.description = "Process instance overview (" + new java.util.Date() + ")";
-               reportData.data = {};
+               reportData.datasets = [];
+               
+               var dataset = {};
+               dataset.type = "pieChart";
+               dataset.description = "Process instance overview (" + new java.util.Date() + ")";
+               dataset.data = {};
             
                while (result.next()) { // process results one row at a time
                  var name = result.getString(1);
                  var version = result.getLong(2)
-                 var count = result.getLong(2);
-                 reportData.data[name + " (v" + version + ")"] = count;
+                 var count = result.getLong(3);
+                 dataset.data[name + " (v" + version + ")"] = count;
                }
+               reportData.datasets.push(dataset);
                
-               // Limitation! Cannot store / retrieve native json variables over multiple steps! TODO: discuss! 
+               
+               // We also include a list view of the same data
+               var dataset2 = {};
+               dataset2.type="list";
+               dataset2.description = "List overview of process instances";
+               dataset2.data = dataset.data;
+               reportData.datasets.push(dataset2);
+               
                
                // We want to store the results as bytes as the string size is limited in the variables table
                execution.setVariable("reportData", new java.lang.String(JSON.stringify(reportData)).getBytes("UTF-8"));

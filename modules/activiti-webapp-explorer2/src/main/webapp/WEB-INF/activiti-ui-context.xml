@@ -38,6 +38,7 @@
         <bean class="org.activiti.explorer.ui.form.UserFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.BooleanFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.ProcessDefinitionFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.MonthFormPropertyRenderer" />
       </list>
     </property>
   </bean>
