@@ -52,6 +52,7 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
   protected boolean createDemoUsersAndGroups;
   protected boolean createDemoProcessDefinitions;
   protected boolean createDemoModels;
+  protected boolean generateReportData;
   
   public void init() {
     this.identityService = processEngine.getIdentityService();
@@ -85,6 +86,10 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
 
   public void setCreateDemoModels(boolean createDemoModels) {
     this.createDemoModels = createDemoModels;
+  }
+  
+  public void setGenerateReportData(boolean generateReportData) {
+    this.generateReportData = generateReportData;
   }
 
   protected void initDemoGroups() {
@@ -197,24 +202,26 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
     }
     
     // Generate some data for the 'employee productivity' report
-    Date now = new Date();
-    ClockUtil.setCurrentTime(now);
-    for (int i=0; i<100; i++) {
-      processEngine.getRuntimeService().startProcessInstanceByKey("escalationExample");
-    }
-    
-    Random random = new Random();
-    for (Task task : processEngine.getTaskService().createTaskQuery().list()) {
-      processEngine.getTaskService().complete(task.getId());
-
-     if (random.nextBoolean()) {
-       now = new Date(now.getTime() + ((24 * 60 * 60 * 1000) + (60 * 60 * 1000)));
-       ClockUtil.setCurrentTime(now);
-     }
+    if (generateReportData) {
+      Date now = new Date();
+      ClockUtil.setCurrentTime(now);
+      for (int i=0; i<100; i++) {
+        processEngine.getRuntimeService().startProcessInstanceByKey("escalationExample");
+      }
       
+      Random random = new Random();
+      for (Task task : processEngine.getTaskService().createTaskQuery().list()) {
+        processEngine.getTaskService().complete(task.getId());
+  
+       if (random.nextBoolean()) {
+         now = new Date(now.getTime() + ((24 * 60 * 60 * 1000) + (60 * 60 * 1000)));
+         ClockUtil.setCurrentTime(now);
+       }
+        
+      }
+      
+      ClockUtil.reset();
     }
-    
-    ClockUtil.reset();
     
   }
   
