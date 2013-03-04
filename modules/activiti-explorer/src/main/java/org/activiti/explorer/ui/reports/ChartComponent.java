@@ -54,8 +54,9 @@ public class ChartComponent extends VerticalLayout {
     if (chart != null) {
       if (chart instanceof DCharts) {
         // DCharts doesn't know how to size itself
-        chart.setWidth(500, UNITS_PIXELS);
+        chart.setWidth(600, UNITS_PIXELS);
         chart.setHeight(450, UNITS_PIXELS);
+        ((DCharts) chart).show();
       }
       addComponent(chart);
     }

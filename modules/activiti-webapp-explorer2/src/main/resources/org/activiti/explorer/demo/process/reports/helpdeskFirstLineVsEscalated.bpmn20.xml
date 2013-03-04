@@ -27,17 +27,16 @@
                var firstLineCount = firstLineResult.getLong(1) - escalatedCount;
                
                var reportData = {};
+	           
+	           var dataset = {};
+               dataset.description = "Helpdesk process: issues solved in first line vs escalation needed";
+               dataset.type = "pieChart";
                reportData.datasets = [];
                
-               var dataset = {};
                
                if (escalatedCount > 0 || firstLineCount > 0) {
-                   dataset.type = "pieChart";
-                   dataset.description = "Helpdesk process: issues solved in first line vs escalation needed";
                    dataset.data = {"First line solved" : firstLineCount, "Escalation needed" : escalatedCount};
-               } else {
-                   reportData.data = {};    
-               }
+               } 
 
                reportData.datasets.push(dataset);
                

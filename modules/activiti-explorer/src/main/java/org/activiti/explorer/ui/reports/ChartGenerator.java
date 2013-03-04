@@ -43,7 +43,6 @@ import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Joram Barrez
@@ -85,26 +84,38 @@ public class ChartGenerator {
       while (dataIterator.hasNext()) {
         
         JsonNode datasetNode = dataIterator.next();
-        String description = datasetNode.get("description").getTextValue();
-        JsonNode dataNode = datasetNode.get("data");
-        String[] names = new String[dataNode.size()];
-        Number[] values = new Number[dataNode.size()];
         
-        int index = 0;
-        Iterator<String> fieldIterator = dataNode.getFieldNames();
-        while(fieldIterator.hasNext()) {
-          String field = fieldIterator.next();
-          names[index] = field;
-          values[index] = dataNode.get(field).getNumberValue();
-          index++;
+        JsonNode descriptionNode = datasetNode.get("description");
+        String description = null;
+        if (descriptionNode != null) {
+          description = descriptionNode.getTextValue();
         }
+        JsonNode dataNode = datasetNode.get("data");
         
-        // Generate chart (or 'no data' message)
-        if (names.length > 0) {
-          Component chart = createChart(datasetNode, names, values);
-          chartComponent.addChart(description, chart, null);
-        } else {
+        if (dataNode == null || dataNode.size() == 0) {
           chartComponent.addChart(description, null, ExplorerApp.get().getI18nManager().getMessage(Messages.REPORTING_ERROR_NOT_ENOUGH_DATA));
+        } else {
+        
+          String[] names = new String[dataNode.size()];
+          Number[] values = new Number[dataNode.size()];
+          
+          int index = 0;
+          Iterator<String> fieldIterator = dataNode.getFieldNames();
+          while(fieldIterator.hasNext()) {
+            String field = fieldIterator.next();
+            names[index] = field;
+            values[index] = dataNode.get(field).getNumberValue();
+            index++;
+          }
+          
+          // Generate chart (or 'no data' message)
+          if (names.length > 0) {
+            Component chart = createChart(datasetNode, names, values);
+            chartComponent.addChart(description, chart, null);
+          } else {
+            chartComponent.addChart(description, null, ExplorerApp.get().getI18nManager().getMessage(Messages.REPORTING_ERROR_NOT_ENOUGH_DATA));
+          }
+          
         }
         
       }
