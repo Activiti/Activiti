@@ -328,13 +328,7 @@
   </sql>  
 
   <select id="selectTaskByNativeQuery" parameterType="java.util.Map" resultMap="taskResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-  		${limitBefore}
-  	</if>
     ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-  		${limitAfter}
-  	</if>
   </select>
 
   <select id="selectTaskCountByNativeQuery" parameterType="java.util.Map" resultType="long">
