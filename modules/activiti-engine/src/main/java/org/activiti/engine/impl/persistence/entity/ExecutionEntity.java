@@ -448,6 +448,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         // Some recyclable executions are inactivated (joined executions)
         // Others are already ended (end activities)
         if (!prunedExecution.isEnded()) {
+        	prunedExecution.end();
           log.debug("pruning execution {}", prunedExecution);
           prunedExecution.remove();
         }
