@@ -145,7 +145,7 @@
         contain all the Activiti jars (and the source jars). The dependencies are not shipped this way.
         The required dependencies of the Activiti engine are (generated using <literal>mvn dependency:tree</literal>):
        <programlisting>
-org.activiti:activiti-engine:jar:5.12-SNAPSHOT
+org.activiti:activiti-engine:jar:5.12
 +- org.apache.commons:commons-email:jar:1.2:compile
 |  +- javax.mail:mail:jar:1.4.1:compile
 |  \- javax.activation:activation:jar:1.1:compile
