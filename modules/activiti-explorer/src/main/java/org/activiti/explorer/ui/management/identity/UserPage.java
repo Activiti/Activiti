@@ -65,7 +65,7 @@ public class UserPage extends ManagementPage {
     userTable = new Table();
     
     userListQuery = new UserListQuery();
-    userListContainer = new LazyLoadingContainer(userListQuery, 20);
+    userListContainer = new LazyLoadingContainer(userListQuery, 30);
     userTable.setContainerDataSource(userListContainer);
     
     // Column headers
