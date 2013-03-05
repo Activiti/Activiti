@@ -41,7 +41,7 @@ public class ImageUtil {
    * If the image is smaller then the given maximum width or height, the image
    * will be proportionally resized.
    */
-  public static InputStream smallify(InputStream imageInputStream, String mimeType, int maxWidth, int maxHeight) {
+  public static InputStream resizeImage(InputStream imageInputStream, String mimeType, int maxWidth, int maxHeight) {
     try {
       BufferedImage image = ImageIO.read(imageInputStream);
       

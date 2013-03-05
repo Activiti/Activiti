@@ -21,9 +21,24 @@ import java.util.Date;
  * @author Joram Barrez
  */
 public interface Task {
+
+  /**
+   * Default value used for priority when a new {@link Task} is created.
+   */
+  int DEFAULT_PRIORITY = 50;
   
+  /**
+   * @deprecated Will be removed in 5.13
+   */
   int PRIORITY_MINIUM = 0; 
+  /**
+   * @deprecated Will be removed in 5.13
+   */
   int PRIORITY_NORMAL = 50;
+  
+  /**
+   * @deprecated Will be removed in 5.13
+   */
   int PRIORITY_MAXIMUM = 100;
 	
   /** DB id of the task. */

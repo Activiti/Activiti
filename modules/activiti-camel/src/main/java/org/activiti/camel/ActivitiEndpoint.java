@@ -17,17 +17,27 @@ import org.activiti.engine.RuntimeService;
 import org.apache.camel.*;
 import org.apache.camel.impl.DefaultEndpoint;
 
+/**
+ * This class has been modified to be consistent with the changes to CamelBehavior and its implementations. The set of changes
+ * significantly increases the flexibility of our Camel integration, as you can either choose one of three "out-of-the-box" modes,
+ * or you can choose to create your own. Please reference the comments for the "CamelBehavior" class for more information on the 
+ * out-of-the-box implementation class options.  
+ * 
+ * @author Ryan Johnston (@rjfsu), Tijs Rademakers
+ */
 public class ActivitiEndpoint extends DefaultEndpoint {
 
   private RuntimeService runtimeService;
 
   private ActivitiConsumer activitiConsumer;
 
-  private boolean copyVariablesToProperties = true;
+  private boolean copyVariablesToProperties;
 
-  private boolean copyVariablesToBody = false;
+  private boolean copyVariablesToBodyAsMap;
 
-  private boolean copyVariablesFromProperties = false;
+  private boolean copyCamelBodyToBody;
+  
+  private boolean copyVariablesFromProperties;
 
   public ActivitiEndpoint(String uri, CamelContext camelContext, RuntimeService runtimeService) {
     super();
@@ -48,9 +58,7 @@ public class ActivitiEndpoint extends DefaultEndpoint {
       throw new RuntimeException("Activiti consumer not defined for " + getEndpointUri());
     }
     activitiConsumer.getProcessor().process(ex);
-
   }
-
 
   public Producer createProducer() throws Exception {
     return new ActivitiProducer(this, runtimeService);
@@ -72,14 +80,22 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     this.copyVariablesToProperties = copyVariablesToProperties;
   }
 
-  public boolean isCopyVariablesToBody() {
-    return copyVariablesToBody;
+  public boolean isCopyCamelBodyToBody() {
+    return copyCamelBodyToBody;
   }
 
-  public void setCopyVariablesToBody(boolean copyVariablesToBody) {
-    this.copyVariablesToBody = copyVariablesToBody;
+  public void setCopyCamelBodyToBody(boolean copyCamelBodyToBody) {
+    this.copyCamelBodyToBody = copyCamelBodyToBody;
   }
 
+  public boolean isCopyVariablesToBodyAsMap() {
+    return copyVariablesToBodyAsMap;
+  }
+
+  public void setCopyVariablesToBodyAsMap(boolean copyVariablesToBodyAsMap) {
+    this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
+  }
+  
   public boolean isCopyVariablesFromProperties() {
     return copyVariablesFromProperties;
   }

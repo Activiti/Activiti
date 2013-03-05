@@ -165,9 +165,17 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   
   protected List<ProcessInstance> fetchProcessInstancesPage(CommandContext commandContext, 
           ProcessDefinition processDefinition, int currentPageStartIndex) {
-    return new ProcessInstanceQueryImpl(commandContext)
-      .processDefinitionId(processDefinition.getId())
-      .listPage(currentPageStartIndex, Context.getProcessEngineConfiguration().getBatchSizeProcessInstances());
+      if(SuspensionState.ACTIVE.equals(getProcessDefinitionSuspensionState())){
+  	      return new ProcessInstanceQueryImpl(commandContext)
+		      .processDefinitionId(processDefinition.getId())
+		      .suspended()
+		      .listPage(currentPageStartIndex, Context.getProcessEngineConfiguration().getBatchSizeProcessInstances());
+	    }else{
+		      return new ProcessInstanceQueryImpl(commandContext)
+	        .processDefinitionId(processDefinition.getId())
+	        .active()
+	        .listPage(currentPageStartIndex, Context.getProcessEngineConfiguration().getBatchSizeProcessInstances());
+	     }
   }
   
   

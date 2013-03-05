@@ -13,11 +13,8 @@
 
 package org.activiti.engine.test.api.identity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -25,7 +22,6 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.identity.Account;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
@@ -45,69 +41,6 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     
     identityService.deleteUserInfo("testuser", "myinfo");
     assertNull(identityService.getUserInfo("testuser", "myinfo"));
-    
-    identityService.deleteUser(user.getId());
-  }
-  
-  public void testUserAccount() {
-    User user = identityService.newUser("testuser");
-    identityService.saveUser(user);
-    
-    identityService.setUserAccount("testuser", "123", "google", "mygoogleusername", "mygooglepwd", null);
-    Account googleAccount = identityService.getUserAccount("testuser", "123", "google");
-    assertEquals("google", googleAccount.getName());
-    assertEquals("mygoogleusername", googleAccount.getUsername());
-    assertEquals("mygooglepwd", googleAccount.getPassword());
-    
-    identityService.setUserAccount("testuser", "123", "google", "mygoogleusername2", "mygooglepwd2", null);
-    googleAccount = identityService.getUserAccount("testuser", "123", "google");
-    assertEquals("google", googleAccount.getName());
-    assertEquals("mygoogleusername2", googleAccount.getUsername());
-    assertEquals("mygooglepwd2", googleAccount.getPassword());
-
-    identityService.setUserAccount("testuser", "123", "alfresco", "myalfrescousername", "myalfrescopwd", null);
-    identityService.setUserInfo("testuser", "myinfo", "myvalue");
-    identityService.setUserInfo("testuser", "myinfo2", "myvalue2");
-
-    List<String> expectedUserAccountNames = new ArrayList<String>();
-    expectedUserAccountNames.add("google");
-    expectedUserAccountNames.add("alfresco");
-    List<String> userAccountNames = identityService.getUserAccountNames("testuser");
-    assertListElementsMatch(expectedUserAccountNames, userAccountNames);
-    
-    identityService.deleteUserAccount("testuser", "google");
-    
-    expectedUserAccountNames.remove("google");
-    
-    userAccountNames = identityService.getUserAccountNames("testuser");
-    assertListElementsMatch(expectedUserAccountNames, userAccountNames);
-    
-    identityService.deleteUser(user.getId());
-  }
-  
-  private void assertListElementsMatch(List<String> list1, List<String> list2) {
-    if(list1 != null) {
-      assertNotNull(list2);
-      assertEquals(list1.size(), list2.size());
-      for (String value : list1) {
-        assertTrue(list2.contains(value));
-      }
-    } else {
-      assertNull(list2);
-    }
-    
-  }
-
-  public void testUserAccountDetails() {
-    User user = identityService.newUser("testuser");
-    identityService.saveUser(user);
-    
-    Map<String, String> accountDetails = new HashMap<String, String>();
-    accountDetails.put("server", "localhost");
-    accountDetails.put("port", "35");
-    identityService.setUserAccount("testuser", "123", "google", "mygoogleusername", "mygooglepwd", accountDetails);
-    Account googleAccount = identityService.getUserAccount("testuser", "123", "google");
-    assertEquals(accountDetails, googleAccount.getDetails());
     
     identityService.deleteUser(user.getId());
   }

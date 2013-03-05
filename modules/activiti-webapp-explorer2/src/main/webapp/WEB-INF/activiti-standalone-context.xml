@@ -41,7 +41,9 @@
   	<property name="jobExecutorActivate" value="true" />
     <property name="customFormTypes">
       <list>
-        <bean class="org.activiti.explorer.form.UserFormType"/>   
+        <bean class="org.activiti.explorer.form.UserFormType"/>
+        <bean class="org.activiti.explorer.form.ProcessDefinitionFormType"/> 
+        <bean class="org.activiti.explorer.form.MonthFormType"/>   
       </list>
     </property>
   </bean>

@@ -15,7 +15,9 @@ package org.activiti.explorer.demo;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.IdentityService;
@@ -24,9 +26,11 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
+import org.activiti.engine.task.Task;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -48,6 +52,7 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
   protected boolean createDemoUsersAndGroups;
   protected boolean createDemoProcessDefinitions;
   protected boolean createDemoModels;
+  protected boolean generateReportData;
   
   public void init() {
     this.identityService = processEngine.getIdentityService();
@@ -81,6 +86,10 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
 
   public void setCreateDemoModels(boolean createDemoModels) {
     this.createDemoModels = createDemoModels;
+  }
+  
+  public void setGenerateReportData(boolean generateReportData) {
+    this.generateReportData = generateReportData;
   }
 
   protected void initDemoGroups() {
@@ -162,21 +171,58 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
   
   protected void initProcessDefinitions() {
     
-    List<Deployment> deploymentList = repositoryService.createDeploymentQuery().deploymentName("Demo processes").list();
+    String deploymentName = "Demo processes";
+    List<Deployment> deploymentList = repositoryService.createDeploymentQuery().deploymentName(deploymentName).list();
     
     if (deploymentList == null || deploymentList.size() == 0) {
       repositoryService.createDeployment()
-        .name("Demo processes")
+        .name(deploymentName)
         .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.bpmn20.xml")
         .addClasspathResource("org/activiti/explorer/demo/process/VacationRequest.bpmn20.xml")
         .addClasspathResource("org/activiti/explorer/demo/process/VacationRequest.png")
         .addClasspathResource("org/activiti/explorer/demo/process/FixSystemFailureProcess.bpmn20.xml")
         .addClasspathResource("org/activiti/explorer/demo/process/FixSystemFailureProcess.png")
+        .addClasspathResource("org/activiti/explorer/demo/process/simple-approval.bpmn20.xml")
         .addClasspathResource("org/activiti/explorer/demo/process/Helpdesk.bpmn20.xml")
         .addClasspathResource("org/activiti/explorer/demo/process/Helpdesk.png")
         .addClasspathResource("org/activiti/explorer/demo/process/reviewSalesLead.bpmn20.xml")
         .deploy();
     }
+    
+    String reportDeploymentName = "Demo reports";
+    deploymentList = repositoryService.createDeploymentQuery().deploymentName(reportDeploymentName).list();
+    if (deploymentList == null || deploymentList.size() == 0) {
+      repositoryService.createDeployment()
+        .name(reportDeploymentName)
+        .addClasspathResource("org/activiti/explorer/demo/process/reports/taskDurationForProcessDefinition.bpmn20.xml")
+        .addClasspathResource("org/activiti/explorer/demo/process/reports/processInstanceOverview.bpmn20.xml")
+        .addClasspathResource("org/activiti/explorer/demo/process/reports/helpdeskFirstLineVsEscalated.bpmn20.xml")
+        .addClasspathResource("org/activiti/explorer/demo/process/reports/employeeProductivity.bpmn20.xml")
+        .deploy();
+    }
+    
+    // Generate some data for the 'employee productivity' report
+    if (generateReportData) {
+      Date now = new Date();
+      ClockUtil.setCurrentTime(now);
+      for (int i=0; i<100; i++) {
+        processEngine.getRuntimeService().startProcessInstanceByKey("escalationExample");
+      }
+      
+      Random random = new Random();
+      for (Task task : processEngine.getTaskService().createTaskQuery().list()) {
+        processEngine.getTaskService().complete(task.getId());
+  
+       if (random.nextBoolean()) {
+         now = new Date(now.getTime() + ((24 * 60 * 60 * 1000) + (60 * 60 * 1000)));
+         ClockUtil.setCurrentTime(now);
+       }
+        
+      }
+      
+      ClockUtil.reset();
+    }
+    
   }
   
   protected void initModelData() {

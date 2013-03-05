@@ -64,7 +64,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   protected String name;
   protected String description;
-  protected int priority = Task.PRIORITY_NORMAL;
+  protected int priority = DEFAULT_PRIORITY;
   protected Date createTime; // The time when the task has been created
   protected Date dueDate;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
@@ -275,7 +275,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if (userId != null && processInstanceId != null) {
       getProcessInstance().involveUser(userId, IdentityLinkType.PARTICIPANT);
     }
-    
     return identityLinkEntity;
   }
   
@@ -652,7 +651,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
           .getCommandContext()
           .getExecutionEntityManager()
           .findExecutionById(processInstanceId);
-    }
+    } 
     return processInstance;
   }
   public void setProcessInstance(ExecutionEntity processInstance) {

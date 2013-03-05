@@ -44,7 +44,12 @@ public class IdentityLinkEntityManager extends AbstractManager {
   public List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(String processDefinitionId) {
     return getDbSqlSession().selectList("selectIdentityLinksByProcessDefinition", processDefinitionId);
   }
-
+  
+  @SuppressWarnings("unchecked")
+  public List<IdentityLinkEntity> findIdentityLinks() {
+    return getDbSqlSession().selectList("selectIdentityLinks");
+  }
+  
   @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(String taskId, String userId, String groupId, String type) {
     Map<String, String> parameters = new HashMap<String, String>();
@@ -72,7 +77,10 @@ public class IdentityLinkEntityManager extends AbstractManager {
   }
 
   public void deleteIdentityLinksByProcInstance(String processInstanceId) {
-    getDbSqlSession().delete("deleteIdentityLinksByProcInstance", processInstanceId);
+    List<IdentityLinkEntity> identityLinks = findIdentityLinksByProcessInstanceId(processInstanceId);
+    for (IdentityLinkEntity identityLink: identityLinks) {
+      deleteIdentityLink(identityLink);
+    }
   }
   
   public void deleteIdentityLinksByProcDef(String processDefId) {

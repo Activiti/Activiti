@@ -47,7 +47,6 @@ public class SimpleProcessTest extends SpringActivitiTestCase {
 
     String instanceId = (String) tpl.requestBody("direct:start", Collections.singletonMap("var1", "ala"));
 
-
     tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
 
     assertProcessEnded(instanceId);
@@ -66,7 +65,6 @@ public class SimpleProcessTest extends SpringActivitiTestCase {
     ProducerTemplate tpl = ctx.createProducerTemplate();
     MockEndpoint me = (MockEndpoint) ctx.getEndpoint("mock:service1");
     me.expectedBodiesReceived("ala");
-
 
     tpl.sendBodyAndProperty("direct:start", Collections.singletonMap("var1", "ala"), ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
 

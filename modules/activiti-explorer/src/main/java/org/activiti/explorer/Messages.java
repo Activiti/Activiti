@@ -280,6 +280,17 @@ public interface Messages {
   String PROCESS_DELETE_POPUP_MESSAGE = "process.delete.popup.message";
   String PROCESS_DELETE_POPUP_DELETE_BUTTON = "process.delete.popup.delete.button";
   
+  // Reporting menu
+  String REPORTING_MENU_RUN_REPORTS = "reporting.menu.run.reports";
+  String REPORTING_MENU_SAVED_REPORTS = "reporting.menu.saved.reports";
+  String REPORTING_SAVE_POPUP_CAPTION = "reporting.save.popup.caption";
+  String REPORTING_ERROR_NOT_ENOUGH_DATA = "reporting.error.not.enough.data";
+  String REPORTING_SAVE_POPUP_NAME = "reporting.save.popup.name";
+  String REPORTING_SAVE_POPUP_NAME_EMPTY = "reporting.save.popup.name.empty";
+  String REPORTING_SAVE_POPUP_NAME_EXISTS = "reporting.save.popup.name.exists";
+  String REPORTING_SAVE_POPUP_NAME_TOO_LONG = "reporting.save.popup.name.too.long";
+  String REPORTING_CREATE_TIME = "reporting.report.created";
+  
   // Management menu
   String MGMT_MENU_DATABASE = "management.menu.database";
   String MGMT_MENU_DEPLOYMENTS = "management.menu.deployments";
@@ -465,5 +476,7 @@ public interface Messages {
   String TIME_UNIT_YEAR = "time.unit.year";
   String TIME_UNIT_YEARS = "time.unit.years";
   String TIME_UNIT_JUST_NOW = "time.unit.just.now";
+  
+  String MONTH_PREFIX = "month.";
 
 }

@@ -51,7 +51,7 @@
           </setBody>
         </route>
         <route id="incomingRoute2">
-          <from uri="activiti:camelProcess:serviceTask2?copyVariablesToBody=true" />
+          <from uri="activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true" />
           <to uri="mock:service2" />
         </route>
         <route id="startRoute">

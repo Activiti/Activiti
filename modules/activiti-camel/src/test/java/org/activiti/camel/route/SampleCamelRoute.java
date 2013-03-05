@@ -24,7 +24,7 @@ public class SampleCamelRoute extends RouteBuilder {
         .to("mock:service1").setProperty("var2").constant("var2")
         .setBody().properties();
 
-      from("activiti:camelProcess:serviceTask2?copyVariablesToBody=true")
+      from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true")
         .to("mock:service2");
 
 

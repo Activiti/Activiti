@@ -85,6 +85,14 @@ public interface ViewManager {
   
   void showSimpleTableProcessEditor(String modelId, WorkflowDefinition workflowDefinition);
   
+  // Reports
+  
+  void showRunReportPage();
+  
+  void showSavedReportPage();
+  
+  void showSavedReportPage(String modelId);
+  
   // Management
   
   void showDatabasePage();
@@ -126,5 +134,5 @@ public interface ViewManager {
   // Profile
   
   void showProfilePopup(String userId);
-  
+
 }
