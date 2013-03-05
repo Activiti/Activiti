@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="HelloCamel" name="Hello Camel">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <serviceTask id="serviceTask1" name="Camel" activiti:type="camel">
+      <extensionElements>
+        <activiti:field name="camelBehaviorClass" stringValue="org.activiti.camel.impl.CamelBehaviorCamelBodyImpl" />
+      </extensionElements>
+    </serviceTask>
+    <userTask id="userTask1" name="Hello Task" activiti:assignee="kermit"></userTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow2" name="" sourceRef="serviceTask1" targetRef="userTask1"></sequenceFlow>
+    <sequenceFlow id="flow3" name="" sourceRef="userTask1" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow4" name="" sourceRef="startevent1" targetRef="serviceTask1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_HelloCamel">
+    <bpmndi:BPMNPlane bpmnElement="HelloCamel" id="BPMNPlane_HelloCamel">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35" width="35" x="60" y="170"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="serviceTask1" id="BPMNShape_serviceTask1">
+        <omgdc:Bounds height="55" width="105" x="180" y="160"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="55" width="105" x="380" y="160"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35" width="35" x="580" y="170"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="285" y="187"></omgdi:waypoint>
+        <omgdi:waypoint x="380" y="187"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="485" y="187"></omgdi:waypoint>
+        <omgdi:waypoint x="580" y="187"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="95" y="187"></omgdi:waypoint>
+        <omgdi:waypoint x="180" y="187"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

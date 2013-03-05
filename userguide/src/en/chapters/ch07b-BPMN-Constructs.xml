@@ -4210,11 +4210,12 @@ public class AsyncCamelRoute extends RouteBuilder {
 }</programlisting>
           Note the from endpoint definition &quot;activiti:asyncCamelProcess:serviceTaskAsync1&quot; where activiti relates to the Activiti Camel component. asyncCamelProcess refers to the process definition
           key of the process definition. And serviceTaskAsync1 relates to the identifier of the Camel task. The process variables can be copied to the body or the properties of the Camel payload.
-          In this example the variables are copied as message properties. copyVariablesToBody will copy the variables to the body of the Camel message.
+          In this example the variables are copied as message properties (the default). copyVariablesToBodyAsMap=true will copy the variables to the body of the Camel message in a Map instance. 
+          copyCamelBodyToBody=true will copy the camelBody process variable to the body of the Camel message
           In this example you can also see that a Camel message can be sent to a receive task of an Activiti process instance. In this example a bit of additional Camel logic is used to send the Camel message
           to the receive task that's defined in the message header destination property. But eventually the message will be sent to the receive1 or receive2 receive tasks.
-          By default the message body of the Camel message is expected as a Map and all Map entries will be copied to the Activiti execution. When defining the copyVariablesToProperties=true option the message properties are
-          copied to the Activiti execution.
+          By default the message body of the Camel message is expected as a Map (all Map entries will be copied to the Activiti execution) or as a String that will be copied to the camelBody process variable. 
+          When defining the copyVariablesToProperties=true option the message properties are copied to the Activiti execution.
         </para>
         
         <para>
@@ -4229,6 +4230,19 @@ public class AsyncCamelRoute extends RouteBuilder {
 &lt;serviceTask id="serviceTask1" activiti:type="camel"&gt;
   &lt;extensionElements&gt;
     &lt;activiti:field name="camelContext" stringValue="customCamelContext" /&gt;
+  &lt;/extensionElements&gt;
+&lt;/serviceTask&gt;</programlisting>
+        </para>
+        
+        <para>
+          You can also override the default Camel behavior class (org.activiti.camel.impl.CamelBehaviorDefaultImpl). This can be handy to customize the Camel logic or to change the default behavior of copying the process
+          variables to something else. The Activiti Camel module provide two additional Camel behavior classes, CamelBehaviorBodyAsMapImpl and CamelBehaviorCamelBodyImpl. CamelBehaviorBodyAsMapImpl copies the process variables
+          to a Map instance in the Camel message body by default (remember that you can override this on the endpoint using for example copyVariablesToProperties=true). CamelBehaviorCamelBodyImpl expects a camelBody process variable
+          and copies it to the Camel message body. The default Camel behavior class can be overriden by using the following field definition:
+          <programlisting>
+&lt;serviceTask id="serviceTask1" activiti:type="camel"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:field name="camelBehaviorClass" stringValue="org.activiti.camel.impl.CamelBehaviorCamelBodyImpl" /&gt;
   &lt;/extensionElements&gt;
 &lt;/serviceTask&gt;</programlisting>
         </para>

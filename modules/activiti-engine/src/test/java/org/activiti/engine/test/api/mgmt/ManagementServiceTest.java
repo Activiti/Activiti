@@ -15,8 +15,6 @@ package org.activiti.engine.test.api.mgmt;
 
 import java.util.Date;
 
-import junit.framework.Assert;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -99,13 +97,13 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     .processInstanceId(processInstance.getId())
     .singleResult();
     
-    Assert.assertNotNull(timerJob);
-    Assert.assertNotNull(timerJob.getExceptionMessage());
+    assertNotNull(timerJob);
+    assertNotNull(timerJob.getExceptionMessage());
     assertTextPresent("This is an exception thrown from scriptTask", timerJob.getExceptionMessage());
     
     // Get the full stacktrace using the managementService
     String exceptionStack = managementService.getJobExceptionStacktrace(timerJob.getId());
-    Assert.assertNotNull(exceptionStack);
+    assertNotNull(exceptionStack);
     assertTextPresent("This is an exception thrown from scriptTask", exceptionStack);    
   }
   

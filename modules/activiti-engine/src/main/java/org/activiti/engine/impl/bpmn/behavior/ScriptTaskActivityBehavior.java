@@ -20,6 +20,8 @@ import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -32,6 +34,8 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
 public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
   
   private static final long serialVersionUID = 1L;
+  
+  private static final Logger LOGGER = LoggerFactory.getLogger(ScriptTaskActivityBehavior.class);
   
   protected String script;
   protected String language;
@@ -63,6 +67,9 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
       }
 
     } catch (ActivitiException e) {
+      
+      LOGGER.warn("Exception while executing " + execution.getActivity().getId() + " : " + e.getMessage());
+      
       noErrors = false;
       if (e.getCause() instanceof ScriptException
           && e.getCause().getCause() instanceof ScriptException

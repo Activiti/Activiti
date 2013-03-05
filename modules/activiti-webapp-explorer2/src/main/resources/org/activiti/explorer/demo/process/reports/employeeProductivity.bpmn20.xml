@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+    expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="activiti-report">
+
+    <process id="employee-productivity-report" name="Employee productivity"
+        isExecutable="true">
+
+        <startEvent id="startevent1" name="Start">
+            <extensionElements>
+                <activiti:formProperty id="employee" name="Employee"
+                    type="user" required="true" />
+                <activiti:formProperty id="month" name="Month"
+                    type="month" required="true" />
+            </extensionElements>
+        </startEvent>
+        <sequenceFlow id="flow1" sourceRef="startevent1"
+            targetRef="generateDataset" />
+
+        <scriptTask id="generateDataset" name="Execute script"
+            scriptFormat="JavaScript" activiti:autoStoreVariables="false">
+            <script><![CDATA[
+          
+               importPackage(java.sql);
+               importPackage(java.lang);
+               importPackage(java.util);
+               importPackage(org.activiti.explorer.reporting);
+               
+               var month = execution.getVariable("month");
+               var employee = execution.getVariable("employee");
+               
+               // Fetch first and last day
+               var firstDay, lastDay;
+               var minMaxResult = ReportingUtil.executeSelectSqlQuery("SELECT MIN(END_TIME_), MAX(END_TIME_) FROM ACT_HI_TASKINST where END_TIME_ is not null and month(END_TIME_) = " + (month + 1)  + " and ASSIGNEE_ = '" + employee + "'");
+               
+               var hasResults = minMaxResult.next();
+               if (hasResults) {
+
+                 var minDate = minMaxResult.getTimestamp(1);
+                 var maxDate = minMaxResult.getTimestamp(2);
+                 
+                 if (minDate != null && maxDate != null) {
+                 
+                    var cal = Calendar.getInstance();
+                     cal.setTime(minDate);
+                     firstDay = cal.get(Calendar.DAY_OF_MONTH);
+                 
+                     cal.setTime(maxDate);
+                     lastDay = cal.get(Calendar.DAY_OF_MONTH);
+                 }
+               } 
+               
+              var counts = {};
+              for (var i=firstDay; i<=lastDay; i++) {
+                counts[i + ""] = 0;
+              }
+              
+              var reportData = {};
+              reportData.datasets = [];
+               
+              if (firstDay != null && lastDay != null && firstDay != lastDay) {
+               
+                // Fetch counts for day
+                var result = ReportingUtil.executeSelectSqlQuery("SELECT END_TIME_ FROM ACT_HI_TASKINST where END_TIME_ is not null and month(END_TIME_) = " + (month + 1) + " and ASSIGNEE_ = '" + employee + "'");
+                while (result.next()) { // process results one row at a time
+                  var timestamp = result.getTimestamp(1);
+                 
+                   var cal = Calendar.getInstance();
+                   cal.setTime(timestamp);
+                   var day = cal.get(Calendar.DAY_OF_MONTH);
+                 
+                   var previousCount = counts[day + ""];
+                   counts[day + ""] = previousCount + 1;
+                }
+               
+                // Create data set
+                var dataset = {};
+                dataset.type = "lineChart";
+                dataset.description = "Daily productivity overview for " + employee;
+                dataset.xaxis = "Day of month";
+                dataset.yaxis = "Number of completed tasks";
+                dataset.data = counts;
+                
+                reportData.datasets.push(dataset);
+                
+                execution.setVariable("reportData", new java.lang.String(JSON.stringify(reportData)).getBytes("UTF-8"));
+                
+               } else if (firstDay != null && lastDay != null && firstDay == lastDay) {
+               
+                 // Fetch counts for hours
+                 var result = ReportingUtil.executeSelectSqlQuery("SELECT END_TIME_ FROM ACT_HI_TASKINST where END_TIME_ is not null and month(END_TIME_) = " + (month + 1) + " and ASSIGNEE_ = '" + employee + "'");
+                 while (result.next()) { // process results one row at a time
+                   var timestamp = result.getTimestamp(1);
+                 
+                   var cal = Calendar.getInstance();
+                   cal.setTime(timestamp);
+                   var hour = cal.get(Calendar.HOUR_OF_DAY);
+                 
+                   var previousCount = counts[hour + ""];
+                   counts[hour + ""] = previousCount + 1;
+                }
+               
+                // Create data set
+                var dataset = {};
+                dataset.type = "lineChart";
+                dataset.description = "Hourly productivity overview for " + employee;
+                dataset.xaxis = "Hour of day";
+                dataset.yaxis = "Number of completed tasks";
+                dataset.data = counts;
+                
+                reportData.datasets.push(dataset);
+                
+                execution.setVariable("reportData", new java.lang.String(JSON.stringify(reportData)).getBytes("UTF-8"));
+               
+               } else {
+                 reportData.data = {};
+                 execution.setVariable("reportData", new java.lang.String(JSON.stringify(reportData)).getBytes("UTF-8"));
+               }
+           
+          ]]></script>
+        </scriptTask>
+        <sequenceFlow id="flow3" sourceRef="generateDataset"
+            targetRef="theEnd" />
+
+        <endEvent id="theEnd" />
+
+    </process>
+
+</definitions>

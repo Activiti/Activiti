@@ -95,6 +95,10 @@ public class MainMenuBar extends HorizontalLayout {
     Button processButton = addMenuButton(ViewManager.MAIN_NAVIGATION_PROCESS, i18nManager.getMessage(Messages.MAIN_MENU_PROCESS), Images.MAIN_MENU_PROCESS, false, 80);
     processButton.addListener(new ShowProcessDefinitionsClickListener());
     menuItemButtons.put(ViewManager.MAIN_NAVIGATION_PROCESS, processButton);
+    
+    Button reportingButton = addMenuButton(ViewManager.MAIN_NAVIGATION_REPORT, i18nManager.getMessage(Messages.MAIN_MENU_REPORTS), Images.MAIN_MENU_REPORTS, false, 80);
+    reportingButton.addListener(new ShowReportsClickListener());
+    menuItemButtons.put(ViewManager.MAIN_NAVIGATION_REPORT, reportingButton);
 
     if (ExplorerApp.get().getLoggedInUser().isAdmin()) {
       Button manageButton = addMenuButton(ViewManager.MAIN_NAVIGATION_MANAGE, i18nManager.getMessage(Messages.MAIN_MENU_MANAGEMENT), Images.MAIN_MENU_MANAGE, false, 90);
@@ -195,6 +199,12 @@ public class MainMenuBar extends HorizontalLayout {
   private class ShowProcessDefinitionsClickListener implements ClickListener {
     public void buttonClick(ClickEvent event) {
       ExplorerApp.get().getViewManager().showDeployedProcessDefinitionPage();
+    }
+  }
+  
+  private class ShowReportsClickListener implements ClickListener {
+    public void buttonClick(ClickEvent event) {
+      ExplorerApp.get().getViewManager().showRunReportPage();
     }
   }
   

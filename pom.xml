@@ -8,8 +8,9 @@
   <artifactId>activiti-root</artifactId>
 
   <packaging>pom</packaging>
-  <version>5.12-SNAPSHOT</version>
+  <version>5.12</version>
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>3.1.2.RELEASE</spring.framework.version>
     <mule.version>3.3.0</mule.version>
     <cxf.version>2.6.1</cxf.version>
@@ -66,7 +67,7 @@
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.3.168</version>
+        <version>1.3.170</version>
       </dependency>
       <dependency>
         <groupId>commons-dbcp</groupId>
@@ -150,7 +151,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.8.1</version>
+        <version>4.11</version>
       </dependency>
       <dependency>
         <groupId>mysql</groupId>
@@ -513,6 +514,12 @@
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-user</artifactId>
+        <version>2.3.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-servlet</artifactId>
         <version>2.3.0</version>
       </dependency>
       <!-- Camel integration -->

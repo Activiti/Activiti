@@ -155,6 +155,10 @@ public class FormPropertiesForm extends VerticalLayout {
     });
   }
   
+  public void hideCancelButton() {
+    cancelFormButton.setVisible(false);
+  }
+  
   protected void addEmptySpace(ComponentContainer container) {
     Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
     emptySpace.setSizeUndefined();

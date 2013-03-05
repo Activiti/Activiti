@@ -42,16 +42,6 @@ public class SetUserInfoCmd implements Command<Object>, Serializable {
     this.value = value;
   }
 
-  public SetUserInfoCmd(String userId, String userPassword, String accountName, String accountUsername, String accountPassword, Map<String, String> accountDetails) {
-    this.userId = userId;
-    this.userPassword = userPassword;
-    this.type = IdentityInfoEntity.TYPE_USERACCOUNT;
-    this.key = accountName;
-    this.value = accountUsername;
-    this.accountPassword = accountPassword;
-    this.accountDetails = accountDetails;
-  }
-
   public Object execute(CommandContext commandContext) {
     commandContext
       .getIdentityInfoEntityManager()

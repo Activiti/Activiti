@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.task;
 import java.util.Arrays;
 
 import org.activiti.engine.task.Task;
+import org.activiti.explorer.Constants;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 
@@ -52,11 +53,11 @@ public class PriorityComboBox extends ComboBox {
   public int getPriority() {
     String value = getValue().toString();
     if (i18nManager.getMessage(Messages.TASK_PRIORITY_LOW).equals(value)) {
-      return Task.PRIORITY_MINIUM;
+      return Constants.TASK_PRIORITY_LOW;
     } else if (i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM).equals(value)) {
-      return Task.PRIORITY_NORMAL;
+      return Constants.TASK_PRIORITY_MEDIUM;
     } else {
-      return Task.PRIORITY_MAXIMUM;
+      return Constants.TASK_PRIORITY_HIGH;
     }
   }
 

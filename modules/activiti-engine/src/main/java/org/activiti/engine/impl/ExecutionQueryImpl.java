@@ -46,6 +46,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected SuspensionState suspensionState;
   protected String businessKey;
   protected boolean isActive;
+  protected String involvedUser;
   
   
   public ExecutionQueryImpl() {
@@ -206,9 +207,6 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
   }  
-  public String getInvolvedUser() {
-    return null;
-  }
   public SuspensionState getSuspensionState() {
     return suspensionState;
   }  
@@ -225,6 +223,12 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   }
   public boolean isActive() {
     return isActive;
+  }
+  public String getInvolvedUser() {
+    return involvedUser;
+  }
+  public void setInvolvedUser(String involvedUser) {
+    this.involvedUser = involvedUser;
   }
   
 }

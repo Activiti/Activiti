@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.12-SNAPSHOT', 1);
+values ('schema.version', '5.12', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.12-SNAPSHOT)', 1);
+values ('schema.history', 'create(5.12)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -129,7 +129,7 @@ create table ACT_RU_IDENTITYLINK (
     TYPE_ nvarchar(255),
     USER_ID_ nvarchar(255),
     TASK_ID_ nvarchar(64),
-    PROC_INST_ID_ varchar(64),
+    PROC_INST_ID_ nvarchar(64),
     PROC_DEF_ID_ nvarchar(64),
     primary key (ID_)
 );
@@ -205,6 +205,11 @@ alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_ATHRZ_PROCEDEF
     foreign key (PROC_DEF_ID_) 
     references ACT_RE_PROCDEF (ID_);
+    
+alter table ACT_RU_IDENTITYLINK
+    add constraint ACT_FK_IDL_PROCINST
+    foreign key (PROC_INST_ID_) 
+    references ACT_RU_EXECUTION (ID_);       
     
 alter table ACT_RU_TASK
     add constraint ACT_FK_TASK_EXE
