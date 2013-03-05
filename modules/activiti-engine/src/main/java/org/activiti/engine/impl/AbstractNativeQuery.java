@@ -23,6 +23,8 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.query.NativeQuery;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Abstract superclass for all native query types.
@@ -118,7 +120,11 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
       parameterMap.put("resultType", "LIST_PAGE");
       parameterMap.put("firstResult", firstResult);
       parameterMap.put("maxResults", maxResults);
-      parameterMap.put("orderBy", "RES.ID_ asc");
+      if (StringUtils.isNotBlank(ObjectUtils.toString(parameterMap.get("orderBy")))) {
+        parameterMap.put("orderBy", "RES." + parameterMap.get("orderBy"));
+      } else {
+        parameterMap.put("orderBy", "RES.ID_ asc");
+      }
       
       int firstRow = firstResult + 1;
       parameterMap.put("firstRow", firstRow);
