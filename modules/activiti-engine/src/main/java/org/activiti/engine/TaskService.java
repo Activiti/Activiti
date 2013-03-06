@@ -14,6 +14,7 @@ package org.activiti.engine;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -268,7 +269,16 @@ public interface TaskService {
    * @throws ActivitiException when the task doesn't exist.
    */
   void setPriority(String taskId, int priority);
-  
+
+  /**
+   * Changes the due date of the task
+   *
+   * @param taskId id of the task, cannot be null.
+   * @param dueDate the new due date for the task
+   * @throws ActivitiException when the task doesn't exist.
+   */
+  void setDueDate(String taskId, Date dueDate);
+
   /**
    * Returns a new {@link TaskQuery} that can be used to dynamically query tasks.
    */
