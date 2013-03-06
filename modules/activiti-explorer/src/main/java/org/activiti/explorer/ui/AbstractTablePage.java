@@ -71,6 +71,8 @@ public abstract class AbstractTablePage extends AbstractPage {
       }
       table.setCurrentPageFirstItemIndex(pageIndex);
       selectElement(selectedIndex);
+    } else {
+      table.setCurrentPageFirstItemIndex(0);
     }
   }
   
