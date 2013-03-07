@@ -28,6 +28,7 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.engine.repository.Deployment;
 
 
@@ -69,7 +70,7 @@ public class EventJavaTest extends PluggableActivitiTestCase {
     byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
     
     XMLInputFactory xif = XMLInputFactory.newInstance();
-    new BpmnXMLConverter().validateModel(xif.createXMLStreamReader(new ByteArrayInputStream(xml)));
+    new BpmnXMLConverter().validateModel(new InputStreamSource(new ByteArrayInputStream(xml)));
     
     Deployment deployment = repositoryService.createDeployment().name("test").addString("test.bpmn20.xml", new String(xml)).deploy();
     repositoryService.deleteDeployment(deployment.getId());
