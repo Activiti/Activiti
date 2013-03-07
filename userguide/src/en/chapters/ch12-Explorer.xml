@@ -303,11 +303,11 @@
             <listitem>
                 <para><emphasis role="bold">type</emphasis>Each dataset has a type. This type will be used
                 to determine how the data will be rendered. Currently supported values are:
-                <emphasis role="bold">pieChart, lineChart, barChart and list</emphasis></para>.
+                <emphasis role="bold">pieChart, lineChart, barChart and list.</emphasis></para>
             </listitem>
             <listitem>
                 <para><emphasis role="bold">description</emphasis>: each chart can have an optional description
-                that will be shown in the report</para>.
+                that will be shown in the report.</para>
             </listitem>
             <listitem>
                 <para><emphasis role="bold">x- and yaxis</emphasis>: only usable for type <emphasis>lineChart</emphasis>.
@@ -331,6 +331,16 @@
             contains only a script task (besides start and end) that generates the json dataset using javascript. Altough all of the 
             examples in Explorer use scripting, this can very well be done using Java service tasks. The end result of
             running the process should just be the <emphasis>reportData</emphasis> variable that contains the data.
+        </para>
+        
+        <para>
+            <emphasis role="bold">Important note:</emphasis> The following example only works on JDK 7+.
+            The reason for this is that the javascript engine (<emphasis>Rhino</emphasis>) that is shipped
+            with older JDK versions isn't advanced enough to cope with some constructs needed to write
+            scripts like the one below. See below for a JDK 6+ compliant example.
+        </para>
+        
+        <para>
             <programlisting>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;definitions xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
@@ -381,6 +391,9 @@
 
 &lt;/definitions&gt;            
             </programlisting>
+       </para>
+       
+       <para>    
             Besides the typical XML linea at the top of the process xml, the main difference is that the 
             <emphasis>targetNamespace</emphasis> is set to <emphasis role="bold">activiti-report</emphasis>,
             adding the category with the same name to the deployed process definition.
@@ -400,6 +413,61 @@
             This string then needs to be stored as a byte array variable. The reason for this is technical:
             a byte array is unlimited in size while the string is not. That is why the javascript string
             must be converted to a Java string which has the capability to get the byte representation.
+        </para>
+        
+        <para>
+            The same process which is compatible with JDK 6 (and higher) looks a bit different. The native
+            json capabilities cannot be used, hence some helper classes (<emphasis>ReportData</emphasis> and <emphasis>Dataset</emphasis>)
+            are provided:
+            <programlisting>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;definitions xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:activiti=&quot;http://activiti.org/bpmn&quot;
+    xmlns:bpmndi=&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot; xmlns:omgdc=&quot;http://www.omg.org/spec/DD/20100524/DC&quot;
+    xmlns:omgdi=&quot;http://www.omg.org/spec/DD/20100524/DI&quot; typeLanguage=&quot;http://www.w3.org/2001/XMLSchema&quot;
+    expressionLanguage=&quot;http://www.w3.org/1999/XPath&quot; 
+    targetNamespace=&quot;activiti-report&quot;&gt;
+
+    &lt;process id=&quot;process-instance-overview-report&quot; name=&quot;Process Instance Overview&quot; isExecutable=&quot;true&quot;&gt;
+    
+        &lt;startEvent id=&quot;startevent1&quot; name=&quot;Start&quot; /&gt;
+        &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;startevent1&quot; targetRef=&quot;generateDataset&quot; /&gt;
+        
+        &lt;scriptTask id=&quot;generateDataset&quot; name=&quot;Execute script&quot; scriptFormat=&quot;js&quot; activiti:autoStoreVariables=&quot;false&quot;&gt;
+          &lt;script&gt;&lt;![CDATA[
+          
+               importPackage(java.sql);
+               importPackage(java.lang);
+               importPackage(org.activiti.explorer.reporting);
+               
+               var result = ReportingUtil.executeSelectSqlQuery(&quot;SELECT PD.NAME_, PD.VERSION_ , count(*) FROM ACT_HI_PROCINST PI inner join ACT_RE_PROCDEF PD on PI.PROC_DEF_ID_ = PD.ID_ group by PROC_DEF_ID_&quot;);
+
+<emphasis role="bold">            
+               var reportData = new ReportData;
+               var dataset = reportData.newDataset();
+               dataset.type = &quot;pieChart&quot;;
+               dataset.description = &quot;Process instance overview (&quot; + new java.util.Date() + &quot;)&quot;
+</emphasis>               
+               
+               while (result.next()) { // process results one row at a time
+                 var name = result.getString(1);
+                 var version = result.getLong(2);
+                 var count = result.getLong(3);
+                 <emphasis role="bold">dataset.add(name + &quot; (v&quot; + version + &quot;)&quot;, count);</emphasis>
+               }
+               
+               execution.setVariable(&quot;reportData&quot;, reportData.toBytes());
+               
+          ]]&gt;&lt;/script&gt;
+        &lt;/scriptTask&gt;
+        &lt;sequenceFlow id=&quot;flow3&quot; sourceRef=&quot;generateDataset&quot; targetRef=&quot;theEnd&quot; /&gt;
+        
+        &lt;endEvent id=&quot;theEnd&quot; /&gt;
+        
+    &lt;/process&gt;
+
+&lt;/definitions&gt;            
+            </programlisting>
         </para>
     
     </section>
