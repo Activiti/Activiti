@@ -175,6 +175,12 @@
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-modeler</artifactId>
+			<exclusions>
+			 <exclusion>
+			     <groupId>xalan</groupId>
+			     <artifactId>xalan</artifactId>
+			 </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
@@ -207,19 +213,19 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-    
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-    </dependency>
+		
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+        </dependency>
 		
 		<!-- Vaadin addons -->
 		<!-- Must be defined both in activiti-explorer and activiti-webapp-explorer, as otherwise the gwt compiler won't find it -->
  		<dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>dcharts-widget</artifactId>
-      <version>0.10.0</version>
-    </dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>dcharts-widget</artifactId>
+            <version>0.10.0</version>
+        </dependency>
 
 	</dependencies>
 
