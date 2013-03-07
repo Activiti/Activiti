@@ -71,7 +71,7 @@ public abstract class ProcessInstancePage extends AbstractTablePage {
     });
     
     this.lazyLoadingQuery = createLazyLoadingQuery();
-    this.processInstanceListContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
+    this.processInstanceListContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
     processInstanceTable.setContainerDataSource(processInstanceListContainer);
     
     // Create column header
