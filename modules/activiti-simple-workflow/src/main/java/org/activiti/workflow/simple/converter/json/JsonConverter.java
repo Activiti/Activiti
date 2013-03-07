@@ -49,7 +49,7 @@ public class JsonConverter {
   public static final String HUMAN_STEP_NAME = "name";
   public static final String HUMAN_STEP_DESCRIPTION = "description";
   public static final String HUMAN_STEP_ASSIGNEE = "assignee";
-  public static final String HUMAN_STEP_ASSIGNEE_TYPE = "type";
+  public static final String HUMAN_STEP_ASSIGNEE_TYPE = "assignee-type";
   public static final String HUMAN_STEP_ASSIGNEE_TYPE_USER = "user";
   public static final String HUMAN_STEP_ASSIGNEE_USER = "user";
   public static final String HUMAN_STEP_ASSIGNEE_TYPE_USERS = "users";
@@ -334,15 +334,22 @@ public class JsonConverter {
     
     // Assignee
     if (humanStepDefinition.getAssignee() != null) {
-      humanStepNode.put(HUMAN_STEP_ASSIGNEE, humanStepDefinition.getAssignee());
+      ObjectNode assigneeNode = objectMapper.createObjectNode();
+      assigneeNode.put(HUMAN_STEP_ASSIGNEE_USER, humanStepDefinition.getAssignee());
+      assigneeNode.put(HUMAN_STEP_ASSIGNEE_TYPE, HUMAN_STEP_ASSIGNEE_TYPE_USER);
+      humanStepNode.put(HUMAN_STEP_ASSIGNEE, assigneeNode);
     }
     
     // Candidate groups
     if (humanStepDefinition.getCandidateGroups() != null && humanStepDefinition.getCandidateGroups().size() > 0) {
+      ObjectNode assigneeNode = objectMapper.createObjectNode();
       ArrayNode groups = humanStepNode.putArray(HUMAN_STEP_GROUPS);
       for (String group : humanStepDefinition.getCandidateGroups()) {
         groups.add(group);
       }
+      assigneeNode.put(HUMAN_STEP_ASSIGNEE_GROUPS, groups);
+      assigneeNode.put(HUMAN_STEP_ASSIGNEE_TYPE, HUMAN_STEP_ASSIGNEE_TYPE_GROUPS);
+      humanStepNode.put(HUMAN_STEP_ASSIGNEE, assigneeNode);
     }
     
     // Form
