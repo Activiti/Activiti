@@ -17,7 +17,7 @@ package org.activiti.workflow.simple.converter.step;
  */
 public interface DefaultFormPropertyTypes {
 
-  String TEXT = "string";
+  String TEXT = "text";
   
   String NUMBER = "number";
   
