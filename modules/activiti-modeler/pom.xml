@@ -84,10 +84,29 @@
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>batik-transcoder</artifactId>
+       <!-- Need to exclude this old version of xml-apis, as it causes exceptions on older JDK versions -->
+      <exclusions>
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+        	<artifactId>xalan</artifactId>
+        	<groupId>xalan</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>batik-bridge</artifactId>
+      <!-- Need to exclude this old version of xalan, as it causes exceptions on older JDK versions -->
+
+      <exclusions>
+      	<exclusion>
+      		<artifactId>xalan</artifactId>
+      		<groupId>xalan</groupId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
