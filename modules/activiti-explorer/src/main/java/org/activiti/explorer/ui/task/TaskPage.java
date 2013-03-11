@@ -93,7 +93,7 @@ public abstract class TaskPage extends AbstractTablePage {
     taskTable.addListener(getListSelectionListener());
     
     this.lazyLoadingQuery = createLazyLoadingQuery();
-    this.taskListContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
+    this.taskListContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
     taskTable.setContainerDataSource(taskListContainer);
     
     // Create column header

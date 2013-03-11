@@ -73,7 +73,7 @@ public class GroupPage extends ManagementPage {
     groupTable.setSizeFull();
     
     groupListQuery = new GroupListQuery();
-    groupListContainer = new LazyLoadingContainer(groupListQuery, 20);
+    groupListContainer = new LazyLoadingContainer(groupListQuery, 30);
     groupTable.setContainerDataSource(groupListContainer);
     
     // Column headers

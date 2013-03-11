@@ -72,6 +72,7 @@ public class SaveReportPopupWindow extends PopupWindow {
     fieldLayout.addComponent(new Label(i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_NAME)));
     nameField = new TextField();
     nameField.setWidth(250, UNITS_PIXELS);
+    nameField.focus();
     fieldLayout.addComponent(nameField);
   }
 

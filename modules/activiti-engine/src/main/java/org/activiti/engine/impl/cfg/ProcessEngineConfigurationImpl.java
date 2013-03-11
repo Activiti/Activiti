@@ -337,6 +337,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected String databaseTablePrefix = "";
   
   /**
+   * Set this to true if you want to have extra checks on the BPMN xml that is parsed.
+   * See http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/
+   * 
+   * Unfortuantely, this feature is not available on some platforms (JDK 6, JBoss),
+   * hence the reason why it is disabled by default. If your platform allows 
+   * the use of StaxSource during XML parsing, do enable it.
+   */
+  protected boolean enableSafeBpmnXml = false;
+  
+  /**
    * The following settings will determine the amount of entities loaded at once when the engine 
    * needs to load multiple entities (eg. when suspending a process definition with all its process instances).
    * 
@@ -1929,6 +1939,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public void setKnowledgeBaseCache(DeploymentCache<Object> knowledgeBaseCache) {
     this.knowledgeBaseCache = knowledgeBaseCache;
+  }
+
+  public boolean isEnableSafeBpmnXml() {
+    return enableSafeBpmnXml;
+  }
+
+  public void setEnableSafeBpmnXml(boolean enableSafeBpmnXml) {
+    this.enableSafeBpmnXml = enableSafeBpmnXml;
   }
   
 }
