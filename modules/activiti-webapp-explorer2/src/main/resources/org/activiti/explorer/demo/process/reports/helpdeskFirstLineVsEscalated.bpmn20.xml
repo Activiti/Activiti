@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+    expressionLanguage="http://www.w3.org/1999/XPath" 
+    targetNamespace="activiti-report">
+
+    <process id="helpdesk-firstline-vs-escalated-report" name="Helpdesk process: firstline vs escalated" isExecutable="true">
+    
+        <startEvent id="startevent1" name="Start" />
+        <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="generateDataset" />
+        
+        <scriptTask id="generateDataset" name="Execute script" scriptFormat="js" activiti:autoStoreVariables="false">
+          <script><![CDATA[
+          
+               importPackage(java.sql);
+               importPackage(java.lang);
+               importPackage(org.activiti.explorer.reporting);
+               
+               var escalatedResult = ReportingUtil.executeSelectSqlQuery("SELECT count(*) FROM ACT_HI_ACTINST where END_TIME_ is not null and ACT_ID_ = 'handleEscalation' and PROC_DEF_ID_ like 'escalationExample%'");
+               escalatedResult.next();
+               var escalatedCount = escalatedResult.getLong(1);
+               
+               var firstLineResult = ReportingUtil.executeSelectSqlQuery("SELECT count(*) FROM ACT_HI_PROCINST where END_TIME_ is not null and PROC_DEF_ID_ like 'escalationExample%'");
+               firstLineResult.next();
+               var firstLineCount = firstLineResult.getLong(1) - escalatedCount;
+               
+               /* JDK 7 only 
+               var reportData = {};
+               
+               var dataset = {};
+               dataset.description = "Helpdesk process: issues solved in first line vs escalation needed";
+               dataset.type = "pieChart";
+               reportData.datasets = [];
+               
+               
+               if (escalatedCount > 0 || firstLineCount > 0) {
+                   dataset.data = {"First line solved" : firstLineCount, "Escalation needed" : escalatedCount};
+               } 
+
+               reportData.datasets.push(dataset);
+               
+               execution.setVariable("reportData", new java.lang.String(JSON.stringify(reportData)).getBytes("UTF-8"));
+               */
+               
+               /* JDK 6+ */
+               
+               var reportData = new ReportData();
+               var dataset = reportData.newDataset();
+               dataset.description = "Helpdesk process: issues solved in first line vs escalation needed";
+               dataset.type = "pieChart";
+               
+               if (escalatedCount > 0 || firstLineCount > 0) {
+                 dataset.add("First line solved", firstLineCount);
+                 dataset.add("Escalation needed", escalatedCount);
+               } 
+               
+               execution.setVariable("reportData", reportData.toBytes());
+               
+          ]]></script>
+        </scriptTask>
+        <sequenceFlow id="flow3" sourceRef="generateDataset" targetRef="theEnd" />
+        
+        <endEvent id="theEnd" />
+        
+    </process>
+
+</definitions>
