@@ -352,7 +352,7 @@ public class GroupDetailPanel extends DetailPanel implements MemberShipChangeLis
       membersTable.setSelectable(false);
       membersTable.setSortDisabled(false);
       
-      LazyLoadingContainer container = new LazyLoadingContainer(query, 10);
+      LazyLoadingContainer container = new LazyLoadingContainer(query, 30);
       membersTable.setContainerDataSource(container);
       
       membersTable.addContainerProperty("id", Button.class, null);

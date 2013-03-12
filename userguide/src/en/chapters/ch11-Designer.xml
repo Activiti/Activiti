@@ -568,14 +568,17 @@
       </section>
       <section>
         <title>Adding shapes to the palette</title>
-        <para>With your project set up, you can now easily add shapes to the palette. Each shape you
+        <para>
+          With your project set up, you can now easily add shapes to the palette. Each shape you
           wish to add is represented by a class in your JAR. Take note that these classes are not
           the classes that will be used by the Activiti engine during runtime. In your extension you
           describe the properties that can be set in Activiti Designer for each shape. From these
-          shapes, your refer to the runtime class that should be used by the engine. This class
-          should implement <literal>JavaDelegate</literal> as for any ServiceTask in Activiti. 
+          shapes, you can also define the runtime characteristics that should be used by the engine 
+          when a process instance reaches the node in the process. The runtime characteristics can use any 
+          of the options that Activiti supports for regular <literal>ServiceTask</literal>s. 
           See <link linkend="eclipseDesignerConfiguringRuntime">this section</link> for more 
-          details.</para>
+          details.
+        </para>
         <para>A shape's class is a simple Java class, to which a number of annotations are added.
           The class should implement the <literal>CustomServiceTask</literal> interface, but you
           shouldn't implement this interface yourself. Extend the
@@ -627,7 +630,7 @@ private String accountNumber;</programlisting>
  * @version 1
  * @since 1.0.0
  */
-@Runtime(delegationClass = "org.acme.runtime.AcmeMoneyJavaDelegation")
+@Runtime(javaDelegateClass = "org.acme.runtime.AcmeMoneyJavaDelegation")
 @Help(displayHelpShort = "Creates a new account", displayHelpLong = "Creates a new account using the account number specified")
 public class AcmeMoneyTask extends AbstractCustomServiceTask {
 
@@ -708,34 +711,66 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
       		</para>
       		
       		<para>
-      			There is a special annotation for specifying the class to be executed for your <literal>CustomServiceTask</literal>, 
+      			There is a special annotation for specifying the runtime characteristics of your <literal>CustomServiceTask</literal>, 
       			the <literal>@Runtime</literal> annotation. Here's an example of how to use it:
       		</para>
       		
-      		<programlisting>@Runtime(delegationClass = "org.acme.runtime.AcmeMoneyJavaDelegation")</programlisting>
-      		
-        	<para>
-        		The <literal>delegationClass</literal>
-          		attribute you provide should contain the canonical name of the runtime class. This is a class that implements 
-          		Activiti's <literal>JavaDelegate</literal> interface. You should implement this class in the same manner as any  
-          		other <literal>JavaDelegate</literal>. Documentation for this is provided in the <link linkend="bpmnJavaServiceTaskImplementation">userguide here</link>. 
-          	</para>
+      		<programlisting>@Runtime(javaDelegateClass = "org.acme.runtime.AcmeMoneyJavaDelegation")</programlisting>
+
+          <para>
+            Your <literal>CustomServiceTask</literal> will result in a normal <literal>ServiceTask</literal> in the BPMN output 
+            of processes modelled with it. Activiti enables <link linkend="bpmnJavaServiceTask">several ways</link> to define the runtime characteristics of <literal>ServiceTask</literal>s. Therefore, the <literal>@Runtime</literal> annotation can take one of three attributes, which match directly to the options 
+            Activiti provides, like this:
+            <itemizedlist>
+              <listitem>
+                <para>
+                  <literal>javaDelegateClass</literal> maps to <literal>activiti:class</literal> in the BPMN output. Specify the fully qualified classname of a class that implements <literal>JavaDelegate</literal>. 
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <literal>expression</literal> maps to <literal>activiti:expression</literal> in the BPMN output. Specify an expression to a method to be executed, such as a method in a Spring Bean. You should <emphasis>not</emphasis> specify any <literal>@Property</literal> 
+                  annotations on fields when using this option. For more information, see below.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <literal>javaDelegateExpression</literal> maps to <literal>activiti:delegateExpression</literal> in the BPMN output. Specify an expression to  a class that implements <literal>JavaDelegate</literal>.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
           	
           	<para>
-          		The user's property values will be injected into the <literal>delegationClass</literal> runtime class 
+          		The user's property values will be injected into the runtime class 
           		if you provide members in the class for Activiti to inject into. The names should match the names of the members 
           		in your <literal>CustomServiceTask</literal>. For more information, consult <link linkend="serviceTaskFieldInjection">this part</link> 
           		of the userguide. Note that since version 5.11.0 of the Designer you can use the <literal>Expression</literal> interface for dynamic field values.
               This means that the value of the property in the Activiti Designer must contain an expression and this expression will then be injected
               into an <literal>Expression</literal> property in the <literal>JavaDelegate</literal> implementation class.
           	</para>
-          	
-          	<para>
-          		Note that the runtime class shouldn't be in your extension JAR, as it's dependent on the Activiti
-          		libraries. Activiti needs to be able to find it at runtime, so it needs to be on the Activiti engine's 
-          		classpath.
-          	</para>
-          	
+
+            <note>
+              <para>
+                You can use <literal>@Property</literal> annotations on members of your <literal>CustomServiceTask</literal>, but this will not work if you use <literal>@Runtime</literal>'s <literal>expression</literal> attribute. The reason for this is that the 
+                expression you specify will be attempted to be resolved to a <emphasis>method</emphasis> by Activiti, not to a class. Therefore, no injection into 
+                a class will be performed. Any members marked with <literal>@Property</literal> will be ignored by Designer if you use <literal>expression</literal> in your <literal>@Runtime</literal> annotation. Designer will not render them as editable fields in the node's property pane and will produce no output 
+                for the properties in the process' BPMN.
+              </para>      
+            </note>
+
+            <note>
+              <para>
+                Note that the runtime class shouldn't be in your extension JAR, as it's dependent on the Activiti
+                libraries. Activiti needs to be able to find it at runtime, so it needs to be on the Activiti engine's 
+                classpath.
+              </para>
+            </note>
+
+            <para>
+              The examples project in Designer's source tree contains examples of the different options for configuring <literal>@Runtime</literal>. Take a look in the money-tasks project for some starting points. The examples refer to delegate class examples that are in the money-delegates project.
+            </para>
+          
         </section>
       </section>
       <section id="eclipseDesignerPropertyTypes">

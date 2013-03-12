@@ -28,11 +28,13 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class ReportingUtil {
   
+  
   public static Connection getCurrentDatabaseConnection() {
     return Context.getCommandContext().getDbSqlSession().getSqlSession().getConnection();
   }
   
   public static ResultSet executeSelectSqlQuery(String sql) throws Exception {
+    
     Connection connection = getCurrentDatabaseConnection();
     Statement select = connection.createStatement();
     return select.executeQuery(sql);

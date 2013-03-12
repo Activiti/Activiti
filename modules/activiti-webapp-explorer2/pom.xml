@@ -11,7 +11,7 @@
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-root</artifactId>
 		<relativePath>../..</relativePath>
-		<version>5.12-SNAPSHOT</version>
+		<version>5.13-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -132,7 +132,7 @@
 						<executions>
 							<execution>
 								<goals>
-								     <goal>resources</goal>
+						      <goal>resources</goal>
 									<goal>compile</goal>
 								</goals>
 							</execution>
@@ -141,7 +141,7 @@
 					<plugin>
 						<groupId>com.vaadin</groupId>
 						<artifactId>vaadin-maven-plugin</artifactId>
-						<version>1.0.1</version>
+						<version>1.0.2</version>
 						<executions>
 							<execution>
 							    <phase>prepare-package</phase>
@@ -175,6 +175,12 @@
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-modeler</artifactId>
+			<exclusions>
+			 <exclusion>
+			     <groupId>xalan</groupId>
+			     <artifactId>xalan</artifactId>
+			 </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
@@ -207,6 +213,11 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+        </dependency>
 		
 		<!-- Vaadin addons -->
 		<!-- Must be defined both in activiti-explorer and activiti-webapp-explorer, as otherwise the gwt compiler won't find it -->

@@ -118,4 +118,34 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
         
 	</section>
 	
+	<section id="advanced.safe.bpmn.xml">
+	
+	   <title>Enable safe BPMN 2.0 xml</title>
+	   
+	   <para>
+	     In most cases the BPMN 2.0 processes that are being deployed to the Activiti engine are under tight control
+	     of eg. the development team. However, in some use cases it might be desirable to upload arbitrary BPMN 2.0 xml
+	     to the engine. In that case, take into consideration that a user with bad intentions can bring the server 
+	     down as described <ulink url="http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/">here</ulink>.
+	   </para>
+	   
+	   <para>
+	     To avoid the attacks described in the link above, a property <emphasis>enableSafeBpmnXml</emphasis> can be set on the process 
+	     engine configuration:
+	     <programlisting>&lt;property name=&quot;enableSafeBpmnXml&quot; value=&quot;true&quot;/&gt;</programlisting>
+	   </para>
+	   
+	   <para>
+	       <emphasis role="bold">By default this feature is disabled!</emphasis> The reason for this is that it relies on 
+	       the availability of the <ulink url="http://download.java.net/jdk7/archive/b123/docs/api/javax/xml/transform/stax/StAXSource.html">StaxSource</ulink>
+	       class. Unfortunately, on some platforms (eg. JDK 6, JBoss, etc.) this class is unavailable (due to older xml parser implementation)
+	       and thus the safe BPMN 2.0 xml feature cannot be enabled. 
+	   </para>
+	   
+	   <para>    
+	       If the platform on which Activti runs does support it, do enable this feature. 
+	   </para>
+	
+	</section>
+	
 </chapter>

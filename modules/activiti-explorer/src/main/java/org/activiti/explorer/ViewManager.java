@@ -89,9 +89,11 @@ public interface ViewManager {
   
   void showRunReportPage();
   
+  void showRunReportPage(String reportId);
+  
   void showSavedReportPage();
   
-  void showSavedReportPage(String modelId);
+  void showSavedReportPage(String reportId);
   
   // Management
   

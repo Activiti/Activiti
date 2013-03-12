@@ -476,5 +476,7 @@ public interface Messages {
   String TIME_UNIT_YEAR = "time.unit.year";
   String TIME_UNIT_YEARS = "time.unit.years";
   String TIME_UNIT_JUST_NOW = "time.unit.just.now";
+  
+  String MONTH_PREFIX = "month.";
 
 }
