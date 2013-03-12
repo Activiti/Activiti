@@ -51,7 +51,6 @@ import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
 import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -168,13 +167,7 @@ public class BpmnParse implements BpmnXMLConstants {
   public BpmnParse execute() {
     try {
       BpmnXMLConverter converter = new BpmnXMLConverter();
-      
-      boolean enableSafeBpmnXml = false;
-      if (Context.getProcessEngineConfiguration() != null) {
-        enableSafeBpmnXml = Context.getProcessEngineConfiguration().isEnableSafeBpmnXml();
-      }
-      
-      bpmnModel = converter.convertToBpmnModel(streamSource, true, enableSafeBpmnXml);
+      bpmnModel = converter.convertToBpmnModel(streamSource, true);
       
       createImports();
       createItemDefinitions();

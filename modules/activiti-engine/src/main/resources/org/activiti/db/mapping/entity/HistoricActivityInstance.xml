@@ -143,7 +143,13 @@
   </sql>
   
   <select id="selectHistoricActivityInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicActivityInstanceResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+    	${limitBefore}
+    </if>
     ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+    	${limitAfter}
+    </if>
   </select>
 
   <select id="selectHistoricActivityInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">

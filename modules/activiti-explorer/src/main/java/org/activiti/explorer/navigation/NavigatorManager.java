@@ -69,7 +69,6 @@ public class NavigatorManager implements InitializingBean, Serializable {
     addNavigator(new AdministrationNavigator());
     addNavigator(new MyProcessesNavigator());
     addNavigator(new SavedReportNavigator());
-    addNavigator(new ReportNavigator());
   }
 
 }

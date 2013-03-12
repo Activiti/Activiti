@@ -67,7 +67,7 @@ public class DeploymentPage extends ManagementPage {
     final Table deploymentTable = new Table();
     
     LazyLoadingQuery deploymentListQuery = new DeploymentListQuery(deploymentFilter);
-    deploymentListContainer = new LazyLoadingContainer(deploymentListQuery, 30);
+    deploymentListContainer = new LazyLoadingContainer(deploymentListQuery, 10);
     deploymentTable.setContainerDataSource(deploymentListContainer);
             
     // Listener to change right panel when clicked on a deployment

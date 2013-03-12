@@ -22,19 +22,6 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
  */
 public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
   
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    
-    processEngineConfiguration.setEnableSafeBpmnXml(true); // Needs to be enabled to test this
-  }
-  
-  @Override
-  protected void tearDown() throws Exception {
-    processEngineConfiguration.setEnableSafeBpmnXml(false); // set back to default
-    super.tearDown();
-  }
-  
   public void testDeployNonSchemaConformantXml() {
     try {
       repositoryService.createDeployment()
@@ -43,7 +30,6 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
         .getId();
       fail();
     } catch (ActivitiException e) {
-      e.printStackTrace();
       assertTextPresent("Could not validate XML with BPMN 2.0 XSD", e.getCause().getMessage());
     }
     
@@ -57,7 +43,6 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
             .getId();
       fail();
     } catch (ActivitiException e) {
-      e.printStackTrace();
       assertTextPresent("Could not validate XML with BPMN 2.0 XSD", e.getCause().getMessage());
     }
   }

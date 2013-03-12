@@ -389,7 +389,7 @@ public class UserDetailPanel extends DetailPanel implements MemberShipChangeList
       groupTable.setWidth(100, UNITS_PERCENTAGE);
       groupLayout.addComponent(groupTable);
       
-      groupContainer = new LazyLoadingContainer(groupsForUserQuery, 30);
+      groupContainer = new LazyLoadingContainer(groupsForUserQuery, 10);
       groupTable.setContainerDataSource(groupContainer);
       
       groupTable.addContainerProperty("id", Button.class, null);

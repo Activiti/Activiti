@@ -85,7 +85,7 @@ public class DatabaseDetailPanel extends DetailPanel {
   
   protected void addTableData() {
     LazyLoadingQuery lazyLoadingQuery = new TableDataQuery(tableName, managementService);
-    LazyLoadingContainer lazyLoadingContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
+    LazyLoadingContainer lazyLoadingContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
     
     if (lazyLoadingContainer.size() > 0) {
       

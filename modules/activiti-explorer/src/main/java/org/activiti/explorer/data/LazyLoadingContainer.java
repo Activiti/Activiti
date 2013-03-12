@@ -54,7 +54,7 @@ public class LazyLoadingContainer implements Container.Indexed, Container.Sortab
   }
   
   public LazyLoadingContainer(LazyLoadingQuery lazyLoadingQuery) {
-    this(lazyLoadingQuery, 30);
+    this(lazyLoadingQuery, 15);
   }
   
   public boolean addContainerProperty(Object propertyId, Class< ? > type, Object defaultValue) throws UnsupportedOperationException {

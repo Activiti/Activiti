@@ -15,11 +15,7 @@ package org.activiti.explorer.demo;
 
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.IdentityService;
@@ -28,13 +24,9 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
-import org.activiti.engine.runtime.Job;
-import org.activiti.engine.task.Task;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -56,32 +48,22 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
   protected boolean createDemoUsersAndGroups;
   protected boolean createDemoProcessDefinitions;
   protected boolean createDemoModels;
-  protected boolean generateReportData;
   
   public void init() {
     this.identityService = processEngine.getIdentityService();
     this.repositoryService = processEngine.getRepositoryService();
     
     if (createDemoUsersAndGroups) {
-      LOGGER.info("Initializing demo groups");
       initDemoGroups();
-      LOGGER.info("Initializing demo users");
       initDemoUsers();
     }
     
     if (createDemoProcessDefinitions) {
-      LOGGER.info("Initializing demo process definitions");
       initProcessDefinitions();
     }
     
     if (createDemoModels) {
-      LOGGER.info("Initializing demo models");
       initModelData();
-    }
-    
-    if (generateReportData) {
-      LOGGER.info("Initializing demo report data");
-      generateReportData();
     }
   }
   
@@ -99,10 +81,6 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
 
   public void setCreateDemoModels(boolean createDemoModels) {
     this.createDemoModels = createDemoModels;
-  }
-  
-  public void setGenerateReportData(boolean generateReportData) {
-    this.generateReportData = generateReportData;
   }
 
   protected void initDemoGroups() {
@@ -209,87 +187,7 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
         .name(reportDeploymentName)
         .addClasspathResource("org/activiti/explorer/demo/process/reports/taskDurationForProcessDefinition.bpmn20.xml")
         .addClasspathResource("org/activiti/explorer/demo/process/reports/processInstanceOverview.bpmn20.xml")
-        .addClasspathResource("org/activiti/explorer/demo/process/reports/helpdeskFirstLineVsEscalated.bpmn20.xml")
-        .addClasspathResource("org/activiti/explorer/demo/process/reports/employeeProductivity.bpmn20.xml")
         .deploy();
-    }
-    
-  }
-
-  protected void generateReportData() {
-    if (generateReportData) {
-      
-      // Report data is generated in background thread
-      
-      Thread thread = new Thread(new Runnable() {
-        
-        public void run() {
-          
-          // We need to temporarily disable the job executor or it would interfere with the process execution
-          ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getJobExecutor().shutdown();
-          
-          Random random = new Random();
-          
-          Date now = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
-          ClockUtil.setCurrentTime(now);
-          
-          for (int i=0; i<50; i++) {
-            
-            if (random.nextBoolean()) {
-              processEngine.getRuntimeService().startProcessInstanceByKey("fixSystemFailure");
-            }
-            
-            if (random.nextBoolean()) {
-              processEngine.getIdentityService().setAuthenticatedUserId("kermit");
-              Map<String, Object> variables = new HashMap<String, Object>();
-              variables.put("customerName", "testCustomer");
-              variables.put("details", "Looks very interesting!");
-              variables.put("notEnoughInformation", false);
-              processEngine.getRuntimeService().startProcessInstanceByKey("reviewSaledLead", variables);
-            }
-            
-            if (random.nextBoolean()) {
-              processEngine.getRuntimeService().startProcessInstanceByKey("escalationExample");
-            }
-            
-            if (random.nextInt(100) < 20) {
-              now = new Date(now.getTime() - ((24 * 60 * 60 * 1000) - (60 * 60 * 1000)));
-              ClockUtil.setCurrentTime(now);
-            }
-          }
-          
-          List<Job> jobs = processEngine.getManagementService().createJobQuery().list();
-          for (int i=0; i<jobs.size()/2; i++) {
-            ClockUtil.setCurrentTime(jobs.get(i).getDuedate());
-            processEngine.getManagementService().executeJob(jobs.get(i).getId());
-          }
-          
-          List<Task> tasks = processEngine.getTaskService().createTaskQuery().list();
-          while (tasks.size() > 0) {
-            for (Task task : tasks) {
-              
-              if (task.getAssignee() == null) {
-                String assignee = random.nextBoolean() ? "kermit" : "fozzie";
-                processEngine.getTaskService().claim(task.getId(), assignee);
-              }
-              
-              ClockUtil.setCurrentTime(new Date(task.getCreateTime().getTime() + random.nextInt(60 * 60 * 1000)));
-              
-              processEngine.getTaskService().complete(task.getId());
-            }
-            
-            tasks = processEngine.getTaskService().createTaskQuery().list();
-          }
-          
-          ClockUtil.reset();
-          
-          ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getJobExecutor().start();
-          LOGGER.info("Demo report data generated");
-        }
-        
-      });
-      thread.start();
-      
     }
   }
   

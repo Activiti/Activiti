@@ -76,7 +76,7 @@ public class GroupSelectionPopupWindow extends PopupWindow {
     addComponent(groupTable);
     
     GroupSelectionQuery query = new GroupSelectionQuery(identityService, userId);
-    LazyLoadingContainer container = new LazyLoadingContainer(query, 30);
+    LazyLoadingContainer container = new LazyLoadingContainer(query, 10);
     groupTable.setContainerDataSource(container);
     
     groupTable.addContainerProperty("id", String.class, null);

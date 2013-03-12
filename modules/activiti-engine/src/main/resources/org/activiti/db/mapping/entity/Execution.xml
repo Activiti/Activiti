@@ -275,7 +275,13 @@
   </select>
   
   <select id="selectExecutionByNativeQuery" parameterType="java.util.Map" resultMap="executionResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+  		${limitBefore}
+  	</if>
     ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+    	${limitAfter}
+    </if>
   </select>
 
   <select id="selectExecutionCountByNativeQuery" parameterType="java.util.Map" resultType="long">

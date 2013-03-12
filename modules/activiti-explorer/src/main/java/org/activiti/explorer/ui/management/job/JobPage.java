@@ -65,7 +65,7 @@ public class JobPage extends ManagementPage {
     final Table jobTable = new Table();
     
     LazyLoadingQuery jobListQuery = new JobListQuery();
-    jobListContainer = new LazyLoadingContainer(jobListQuery, 30);
+    jobListContainer = new LazyLoadingContainer(jobListQuery, 10);
     jobTable.setContainerDataSource(jobListContainer);
             
     // Listener to change right panel when clicked on a deployment

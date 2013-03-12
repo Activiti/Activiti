@@ -15,11 +15,15 @@ package org.activiti.explorer.ui.reports;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.navigation.ReportNavigator;
+import org.activiti.explorer.navigation.ActiveProcessDefinitionNavigator;
+import org.activiti.explorer.navigation.SuspendedProcessDefinitionNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.ToolBar;
+import org.activiti.explorer.ui.management.processdefinition.SuspendedProcessDefinitionDetailPanel;
+import org.activiti.explorer.ui.management.processdefinition.SuspendedProcessDefinitionListQuery;
+import org.activiti.explorer.ui.management.processdefinition.SuspendedProcessDefinitionPage;
 import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 
 import com.vaadin.data.Item;
@@ -35,19 +39,9 @@ public class RunReportsPage extends AbstractTablePage {
 
   private static final long serialVersionUID = -5259331126409002997L;
   
-  protected String reportId;
-  
   protected Table reportTable;
   protected LazyLoadingQuery reportListQuery;
   protected LazyLoadingContainer reportListContainer;
-  
-  public RunReportsPage(String reportId) {
-    this.reportId = reportId;
-  }
-  
-  public RunReportsPage() {
-    this(null);
-  }
   
   
   protected Table createList() {
@@ -75,13 +69,13 @@ public class RunReportsPage extends AbstractTablePage {
           setDetailComponent(new ReportDetailPanel(processDefinitionId, RunReportsPage.this));
           
           // Update URL
-          ExplorerApp.get().setCurrentUriFragment(
-                  new UriFragment(ReportNavigator.REPORT_URI_PART, processDefinitionId));
+//          ExplorerApp.get().setCurrentUriFragment(
+//                  new UriFragment(ActiveProcessDefinitionNavigator.ACTIVE_PROC_DEF_URI_PART, processDefinitionId));
           
         } else {
           // Nothing selected
           setDetailComponent(null);
-          ExplorerApp.get().setCurrentUriFragment(new UriFragment(ReportNavigator.REPORT_URI_PART));
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(ActiveProcessDefinitionNavigator.ACTIVE_PROC_DEF_URI_PART));
         }
       }
       
@@ -93,16 +87,5 @@ public class RunReportsPage extends AbstractTablePage {
   protected ToolBar createMenuBar() {
     return new ReportsMenuBar();
   }
-  
-  @Override
-  protected void initUi() {
-    super.initUi();
-    
-    if(reportId != null) {
-      selectElement(reportListContainer.getIndexForObjectId(reportId));
-    } else {
-      selectElement(0);
-    }
-  }
-  
+
 }

@@ -20,7 +20,6 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
@@ -59,7 +58,6 @@ public class SavedReportsListQuery extends AbstractLazyLoadingQuery {
     // using variables to find all completed reports. This is more robust and performant
     return historyService.createHistoricProcessInstanceQuery()
            .finished()
-           .startedBy(Authentication.getAuthenticatedUserId())
            .variableValueNotEquals("reportData", null);
   }
 

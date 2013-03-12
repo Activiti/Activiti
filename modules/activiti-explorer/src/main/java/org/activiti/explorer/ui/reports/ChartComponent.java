@@ -14,30 +14,27 @@ package org.activiti.explorer.ui.reports;
 
 import org.dussan.vaadin.dcharts.DCharts;
 
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+
 
 /**
  * @author Joram Barrez
  */
 public class ChartComponent extends VerticalLayout {
-
+  
   private static final long serialVersionUID = 1L;
-
-  public ChartComponent(String title) {
-
-    if (title != null) {
-      Label label = new Label(title);
-      label.addStyleName(Reindeer.LABEL_H2);
-      addComponent(label);
-    }
-
+  
+  public ChartComponent(String description, String errorMessage) {
+    this(description, null, errorMessage);
   }
 
-  public void addChart(String description, Component chart, String errorMessage) {
-
+  public ChartComponent(String description, DCharts dCharts) {
+    this(description, dCharts, null);
+  }
+  
+  public ChartComponent(String description, DCharts dCharts, String errorMessage) {
     addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
     addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
 
@@ -46,21 +43,18 @@ public class ChartComponent extends VerticalLayout {
       Label label = new Label(description);
       label.addStyleName(Reindeer.LABEL_H2);
       addComponent(label);
-
+      
       addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
     }
-
+    
     // Chart
-    if (chart != null) {
-      if (chart instanceof DCharts) {
-        // DCharts doesn't know how to size itself
-        chart.setWidth(600, UNITS_PIXELS);
-        chart.setHeight(450, UNITS_PIXELS);
-        ((DCharts) chart).show();
-      }
-      addComponent(chart);
+    if (dCharts != null) {
+      dCharts.setWidth(600, UNITS_PIXELS);
+      dCharts.setHeight(500, UNITS_PIXELS);
+      addComponent(dCharts);
+      dCharts.show();
     }
-
+    
     // Error message
     if (errorMessage != null) {
       Label errorLabel = new Label(errorMessage);
