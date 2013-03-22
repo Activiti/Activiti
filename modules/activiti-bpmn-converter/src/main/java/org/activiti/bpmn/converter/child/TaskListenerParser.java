@@ -31,6 +31,8 @@ public class TaskListenerParser extends ActivitiListenerParser {
     
     super.parseChildElement(xtr, parentElement, model);
     
-    ((UserTask) parentElement).getTaskListeners().add(listener);
+    if (parentElement instanceof UserTask) {
+      ((UserTask) parentElement).getTaskListeners().add(listener);
+    }
   }
 }
