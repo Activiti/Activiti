@@ -851,6 +851,11 @@
       <!-- Profile used by the start-explorer.sh script to build the Explorer webapp and all its dependencies -->
       <id>buildRestappDependencies</id>
       <modules>
+        <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-engine</module>
+        <module>modules/activiti-spring</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-rest</module>
       </modules>

@@ -70,7 +70,7 @@ public class BPMNDIExport implements BpmnXMLConstants {
     
     for (String elementId : model.getFlowLocationMap().keySet()) {
       
-      if (model.getFlowElement(elementId) != null) {
+      if (model.getFlowElement(elementId) != null || model.getArtifact(elementId) != null) {
       
         xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_EDGE, BPMNDI_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_DI_BPMNELEMENT, elementId);
