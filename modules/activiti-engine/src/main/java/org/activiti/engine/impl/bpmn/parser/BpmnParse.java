@@ -22,12 +22,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
-import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -78,6 +80,7 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
+@Getter @Setter
 public class BpmnParse implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnParse.class);
@@ -590,118 +593,6 @@ public class BpmnParse implements BpmnXMLConstants {
 
   public void addOperation(OperationImplementation operationImplementation) {
     this.operationImplementations.put(operationImplementation.getId(), operationImplementation);
-  }
-
-  /*
-   * ------------------- GETTERS AND SETTERS -------------------
-   */
-
-  public List<ProcessDefinitionEntity> getProcessDefinitions() {
-    return processDefinitions;
-  }
-
-  public String getTargetNamespace() {
-    return targetNamespace;
-  }
-
-  public BpmnParseHandlers getBpmnParserHandlers() {
-    return bpmnParserHandlers;
-  }
-
-  public void setBpmnParserHandlers(BpmnParseHandlers bpmnParserHandlers) {
-    this.bpmnParserHandlers = bpmnParserHandlers;
-  }
-
-  public DeploymentEntity getDeployment() {
-    return deployment;
-  }
-
-  public void setDeployment(DeploymentEntity deployment) {
-    this.deployment = deployment;
-  }
-
-  public BpmnModel getBpmnModel() {
-    return bpmnModel;
-  }
-
-  public void setBpmnModel(BpmnModel bpmnModel) {
-    this.bpmnModel = bpmnModel;
-  }
-
-  public ActivityBehaviorFactory getActivityBehaviorFactory() {
-    return activityBehaviorFactory;
-  }
-
-  public void setActivityBehaviorFactory(ActivityBehaviorFactory activityBehaviorFactory) {
-    this.activityBehaviorFactory = activityBehaviorFactory;
-  }
-
-  public ListenerFactory getListenerFactory() {
-    return listenerFactory;
-  }
-
-  public void setListenerFactory(ListenerFactory listenerFactory) {
-    this.listenerFactory = listenerFactory;
-  }
-
-  public ExpressionManager getExpressionManager() {
-    return expressionManager;
-  }
-
-  public void setExpressionManager(ExpressionManager expressionManager) {
-    this.expressionManager = expressionManager;
-  }
-
-  public Map<String, TransitionImpl> getSequenceFlows() {
-    return sequenceFlows;
-  }
-
-  public Map<String, MessageDefinition> getMessages() {
-    return messages;
-  }
-
-  public Map<String, BpmnInterfaceImplementation> getInterfaceImplementations() {
-    return interfaceImplementations;
-  }
-
-  public Map<String, ItemDefinition> getItemDefinitions() {
-    return itemDefinitions;
-  }
-
-  public Map<String, XMLImporter> getImporters() {
-    return importers;
-  }
-
-  public Map<String, Operation> getOperations() {
-    return operations;
-  }
-
-  public void setOperations(Map<String, Operation> operations) {
-    this.operations = operations;
-  }
-
-  public ProcessDefinitionEntity getCurrentProcessDefinition() {
-    return currentProcessDefinition;
-  }
-
-  public void setCurrentProcessDefinition(ProcessDefinitionEntity currentProcessDefinition) {
-    this.currentProcessDefinition = currentProcessDefinition;
-  }
-
-  public FlowElement getCurrentFlowElement() {
-    return currentFlowElement;
-  }
-
-  public void setCurrentFlowElement(FlowElement currentFlowElement) {
-    this.currentFlowElement = currentFlowElement;
-  }
-
-  public ActivityImpl getCurrentActivity() {
-    return currentActivity;
-  }
-
-  public void setCurrentActivity(ActivityImpl currentActivity) {
-    this.currentActivity = currentActivity;
   }
 
   public void setCurrentSubProcess(SubProcess subProcess) {
