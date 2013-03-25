@@ -142,13 +142,13 @@
         and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and RES.NAME_ like #{nameLike}
+        and RES.NAME_ like #{nameLike} escape '\'
       </if>
       <if test="description != null">
         and RES.DESCRIPTION_ = #{description}
       </if>
       <if test="descriptionLike != null">
-        and RES.DESCRIPTION_ like #{descriptionLike}
+        and RES.DESCRIPTION_ like #{descriptionLike} escape '\'
       </if>
       <if test="priority != null">
         and RES.PRIORITY_ = #{priority}
@@ -196,7 +196,7 @@
         and RES.TASK_DEF_KEY_ = #{key}
       </if>
       <if test="keyLike != null">
-        and RES.TASK_DEF_KEY_ like #{keyLike}
+        and RES.TASK_DEF_KEY_ like #{keyLike} escape '\'
       </if>
       <if test="processDefinitionId != null">
         and RES.PROC_DEF_ID_ = #{processDefinitionId}
@@ -272,6 +272,9 @@
               <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>          
           #{var.textValue}
+          <if test="var.operator.equals('LIKE')">
+            escape '\'
+          </if>
         </if>
         <if test="var.textValue2 != null">
           and A${index}.TEXT2_ 
@@ -280,6 +283,9 @@
             <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>          
           #{var.textValue2}
+          <if test="var.operator.equals('LIKE')">
+            escape '\'
+          </if>
         </if>
         <if test="var.longValue != null">
           and A${index}.LONG_

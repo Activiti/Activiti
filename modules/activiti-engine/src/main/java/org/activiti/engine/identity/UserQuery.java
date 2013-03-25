@@ -30,7 +30,10 @@ public interface UserQuery extends Query<UserQuery, User> {
   UserQuery userFirstName(String firstName);
   
   /** Only select {@link User}s where the first name matches the given parameter.
-   * The syntax is that of SQL, eg. %activivi%.
+   * The syntax is that of SQL, eg. %activivi%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   UserQuery userFirstNameLike(String firstNameLike);
   
@@ -38,7 +41,10 @@ public interface UserQuery extends Query<UserQuery, User> {
   UserQuery userLastName(String lastName);
   
   /** Only select {@link User}s where the last name matches the given parameter.
-   * The syntax is that of SQL, eg. %activivi%.
+   * The syntax is that of SQL, eg. %activivi%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   UserQuery userLastNameLike(String lastNameLike);
   
@@ -46,7 +52,10 @@ public interface UserQuery extends Query<UserQuery, User> {
   UserQuery userEmail(String email);
   
   /** Only select {@link User}s where the email matches the given parameter.
-   * The syntax is that of SQL, eg. %activivi%.
+   * The syntax is that of SQL, eg. %activivi%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   UserQuery userEmailLike(String emailLike);
   

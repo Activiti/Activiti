@@ -59,7 +59,10 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   /** 
    * Only select historic task instances with a task name like the given value.
    * This is the last name given to the task.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   HistoricTaskInstanceQuery taskNameLike(String taskNameLike);
   
@@ -72,7 +75,10 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   /** 
    * Only select historic task instances with a task description like the given value.
    * This is the last description given to the task.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   HistoricTaskInstanceQuery taskDescriptionLike(String taskDescriptionLike);
   
@@ -87,7 +93,10 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   
   /** 
    * Only select historic task instances with a task description like the given value.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   HistoricTaskInstanceQuery taskDeleteReasonLike(String taskDeleteReasonLike);
   
@@ -99,7 +108,10 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   /** 
    * Only select historic task instances which were last assigned to an assignee like
    * the given value.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   HistoricTaskInstanceQuery taskAssigneeLike(String taskAssigneeLike);
   
@@ -110,7 +122,10 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   
   /** 
    * Only select historic task instances which have an owner like the one specified.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   HistoricTaskInstanceQuery taskOwnerLike(String taskOwnerLike);
   

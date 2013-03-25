@@ -83,19 +83,19 @@
         and RES.FIRST_ = #{firstName}
       </if>
       <if test="firstNameLike != null">
-        and RES.FIRST_ like #{firstNameLike}
+        and RES.FIRST_ like #{firstNameLike} escape '\'
       </if>
       <if test="lastName != null">
         and RES.LAST_ = #{lastName}
       </if>
       <if test="lastNameLike != null">
-        and RES.LAST_ like #{lastNameLike}
+        and RES.LAST_ like #{lastNameLike} escape '\'
       </if>
       <if test="email != null">
         and RES.EMAIL_ = #{email}
       </if>
       <if test="emailLike != null">
-        and RES.EMAIL_ like #{emailLike}
+        and RES.EMAIL_ like #{emailLike} escape '\'
       </if>
       <if test="groupId != null">
         and G.ID_ = #{groupId}

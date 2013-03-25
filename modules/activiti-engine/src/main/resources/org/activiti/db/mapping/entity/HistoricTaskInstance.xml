@@ -171,7 +171,7 @@
         and RES.NAME_ = #{taskName}
       </if>
       <if test="taskNameLike != null">
-        and RES.NAME_ like #{taskNameLike}
+        and RES.NAME_ like #{taskNameLike} escape '\'
       </if>
       <if test="taskParentTaskId != null">
         and RES.PARENT_TASK_ID_ = #{taskParentTaskId}
@@ -180,25 +180,25 @@
         and RES.DESCRIPTION_ = #{taskDescription}
       </if>
       <if test="taskDescriptionLike != null">
-        and RES.DESCRIPTION_ like #{taskDescriptionLike}
+        and RES.DESCRIPTION_ like #{taskDescriptionLike} escape '\'
       </if>
       <if test="taskDeleteReason != null">
         and RES.DELETE_REASON_ = #{taskDeleteReason}
       </if>
       <if test="taskDeleteReasonLike != null">
-        and RES.DELETE_REASON_ like #{taskDeleteReasonLike}
+        and RES.DELETE_REASON_ like #{taskDeleteReasonLike} escape '\'
       </if>
       <if test="taskOwner != null">
         and RES.OWNER_ = #{taskOwner}
       </if>
       <if test="taskOwnerLike != null">
-        and RES.OWNER_ like #{taskOwnerLike}
+        and RES.OWNER_ like #{taskOwnerLike} escape '\'
       </if>
       <if test="taskAssignee != null">
         and RES.ASSIGNEE_ = #{taskAssignee}
       </if>
       <if test="taskAssigneeLike != null">
-        and RES.ASSIGNEE_ like #{taskAssigneeLike}
+        and RES.ASSIGNEE_ like #{taskAssigneeLike} escape '\'
       </if>
       <if test="taskPriority != null">
         and RES.PRIORITY_ = #{taskPriority}

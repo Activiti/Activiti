@@ -31,7 +31,10 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   
   /**
    * Only select models where the category matches the given parameter.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%
+   * The syntax that should be used is the same as in SQL, eg. %activiti%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   ModelQuery modelCategoryLike(String modelCategoryLike);
 
@@ -43,7 +46,10 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   
   /**
    * Only select models where the name matches the given parameter.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%
+   * The syntax that should be used is the same as in SQL, eg. %activiti%<. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   ModelQuery modelNameLike(String modelNameLike);
   

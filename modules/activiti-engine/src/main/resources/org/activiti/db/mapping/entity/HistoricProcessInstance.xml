@@ -134,7 +134,7 @@
         and RES.PROC_DEF_ID_ = #{processDefinitionId}
       </if>
       <if test="processDefinitionKey != null">
-        and RES.PROC_DEF_ID_ like #{processDefinitionIdLike}
+        and RES.PROC_DEF_ID_ like #{processDefinitionIdLike} escape '\'
       </if>
       <if test="businessKey != null">
         and RES.BUSINESS_KEY_ = #{businessKey}
@@ -154,7 +154,7 @@
       </if>
       <if test="processKeyNotIn != null">
         <foreach collection="processKeyNotIn" index="index" item="procDefKey">
-        and DEF.KEY_ not like #{procDefKey}
+        and DEF.KEY_ not like #{procDefKey} escape '\'
       </foreach>
       </if>
       
@@ -212,6 +212,9 @@
             <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>
           #{queryVariableValue.textValue}
+          <if test="queryVariableValue.operator.equals('LIKE')">
+            escape '\'
+          </if>
         </if>
         <if test="queryVariableValue.textValue2 != null">
         and A${index}.TEXT2_
@@ -220,6 +223,9 @@
           <otherwise><include refid="executionVariableOperator" /></otherwise>
         </choose>
           #{queryVariableValue.textValue2}
+          <if test="queryVariableValue.operator.equals('LIKE')">
+            escape '\'
+          </if>
         </if>
         <if test="queryVariableValue.longValue != null">
         and A${index}.LONG_

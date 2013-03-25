@@ -37,14 +37,20 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery taskName(String name);
   
   /** Only select tasks with a name matching the parameter.
-   *  The syntax is that of SQL: for example usage: nameLike(%activiti%)*/
+   *  The syntax is that of SQL: for example usage: nameLike(%activiti%). In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.*/
   TaskQuery taskNameLike(String nameLike);
   
   /** Only select tasks with the given description. */
   TaskQuery taskDescription(String description);
   
   /** Only select tasks with a description matching the parameter .
-   *  The syntax is that of SQL: for example usage: descriptionLike(%activiti%)*/
+   *  The syntax is that of SQL: for example usage: descriptionLike(%activiti%). In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.*/
   TaskQuery taskDescriptionLike(String descriptionLike);
   
   /** Only select tasks with the given priority. */
@@ -121,7 +127,10 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   
   /** 
    * Only select tasks with a taskDefinitionKey that match the given parameter.
-   *  The syntax is that of SQL: for example usage: taskDefinitionKeyLike("%activiti%").
+   * The syntax is that of SQL: for example usage: taskDefinitionKeyLike("%activiti%"). 
+   * In case you want to use the '%' as a literal character to match instead of using 
+   * it as a wildcard, you should escape the '%' character by prefixing it with a 
+   * backslash-character (\) in the search-string.
    * The task definition key is the id of the userTask:
    * &lt;userTask id="xxx" .../&gt;
    **/

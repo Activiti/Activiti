@@ -35,7 +35,10 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
   
   /**
    * Only select process definitions where the category matches the given parameter.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%
+   * The syntax that should be used is the same as in SQL, eg. %activiti%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   ProcessDefinitionQuery processDefinitionCategoryLike(String processDefinitionCategoryLike);
 
@@ -48,7 +51,10 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
   
   /**
    * Only select process definitions where the name matches the given parameter.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%
+   * The syntax that should be used is the same as in SQL, eg. %activiti%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   ProcessDefinitionQuery processDefinitionNameLike(String processDefinitionNameLike);
 
@@ -65,7 +71,10 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
 
   /**
    * Only select process definitions where the key matches the given parameter.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%
+   * The syntax that should be used is the same as in SQL, eg. %activiti%. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string.
    */
   ProcessDefinitionQuery processDefinitionKeyLike(String processDefinitionKeyLike);
   
@@ -91,7 +100,10 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
   /** Only select process definition with the given resource name. */
   ProcessDefinitionQuery processDefinitionResourceName(String resourceName);
 
-  /** Only select process definition with a resource name like the given . */
+  /** Only select process definition with a resource name like the given. In case you want
+   * to use the '%' as a literal character to match instead of using it as a wildcard, you
+   * should escape the '%' character by prefixing it with a backslash-character (\) in the
+   * search-string. */
   ProcessDefinitionQuery processDefinitionResourceNameLike(String resourceNameLike);
   
   /**

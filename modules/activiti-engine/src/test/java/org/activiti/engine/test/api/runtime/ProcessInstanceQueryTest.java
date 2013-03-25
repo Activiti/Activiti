@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -334,6 +335,27 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance3.getId(), "test");
+  }
+  
+  /**
+   * ACT-1484: Ability to use the wildcard-character as actual character to search on by escaping it with a backslash.
+   */
+  @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testQueryVariableValueLikeEscape() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", Collections.singletonMap("stringVar", (Object)"first%second"));
+    
+    vars = new HashMap<String, Object>();
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", Collections.singletonMap("stringVar", (Object)"firstsecond"));
+    
+    // When querying
+    ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueLike("stringVar", "first\\%se%").singleResult();
+    assertNotNull(result);
+    assertEquals(processInstance1.getId(), result.getId());
+    
+    
+    
+    
   }
   
   @Deployment(resources={
