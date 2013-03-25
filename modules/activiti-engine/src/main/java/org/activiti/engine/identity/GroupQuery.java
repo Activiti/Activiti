@@ -30,10 +30,7 @@ public interface GroupQuery extends Query<GroupQuery, Group> {
   GroupQuery groupName(String groupName);
   
   /** Only select {@link Group}s where the name matches the given parameter.
-   *  The syntax to use is that of SQL, eg. %activiti%. In case you want
-   * to use the '%' as a literal character to match instead of using it as a wildcard, you
-   * should escape the '%' character by prefixing it with a backslash-character (\) in the
-   * search-string. */
+   *  The syntax to use is that of SQL, eg. %activiti%. */
   GroupQuery groupNameLike(String groupNameLike);
   
   /** Only select {@link Group}s which have the given type. */

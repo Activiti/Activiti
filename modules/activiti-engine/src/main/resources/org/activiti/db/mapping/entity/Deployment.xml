@@ -53,7 +53,7 @@
         and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and RES.NAME_ like #{nameLike} escape '\'
+        and RES.NAME_ like #{nameLike}
       </if>
       <if test="category != null">
         and RES.CATEGORY_ = #{category}

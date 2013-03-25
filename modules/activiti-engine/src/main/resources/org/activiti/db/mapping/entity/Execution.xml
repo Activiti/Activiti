@@ -215,9 +215,6 @@
 	        <otherwise><include refid="executionVariableOperator" /></otherwise>
 	      </choose>
   	      #{queryVariableValue.textValue}
-          <if test="queryVariableValue.operator.equals('LIKE')">
-            escape '\'
-          </if>
       	</if>
       	<if test="queryVariableValue.textValue2 != null">
 	      and A${index}.TEXT2_
@@ -226,9 +223,6 @@
 	        <otherwise><include refid="executionVariableOperator" /></otherwise>
 	      </choose>
 	        #{queryVariableValue.textValue2}
-            <if test="queryVariableValue.operator.equals('LIKE')">
-              escape '\'
-            </if>
       	</if>
       	<if test="queryVariableValue.longValue != null">
 	      and A${index}.LONG_

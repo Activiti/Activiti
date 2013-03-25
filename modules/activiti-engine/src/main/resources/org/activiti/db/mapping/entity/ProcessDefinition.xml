@@ -87,7 +87,7 @@
         and RES.CATEGORY_ = #{category}
       </if>
       <if test="categoryLike != null">
-        and RES.CATEGORY_ like #{categoryLike} escape '\'
+        and RES.CATEGORY_ like #{categoryLike}
       </if>
       <if test="categoryNotEquals != null">
         and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )
@@ -96,19 +96,19 @@
         and RES.NAME_ = #{name}
       </if>
       <if test="nameLike != null">
-        and RES.NAME_ like #{nameLike} escape '\'
+        and RES.NAME_ like #{nameLike}
       </if>
       <if test="key != null">
         and RES.KEY_ = #{key}
       </if>
       <if test="keyLike != null">
-        and RES.KEY_ like #{keyLike} escape '\'
+        and RES.KEY_ like #{keyLike}
       </if>
       <if test="resourceName != null">
         and RES.RESOURCE_NAME_ = #{resourceName}
       </if>
       <if test="resourceNameLike != null">
-        and RES.RESOURCE_NAME_ like #{resourceNameLike} escape '\'
+        and RES.RESOURCE_NAME_ like #{resourceNameLike}
       </if>
       <if test="version != null">
         and RES.VERSION_ = #{version}

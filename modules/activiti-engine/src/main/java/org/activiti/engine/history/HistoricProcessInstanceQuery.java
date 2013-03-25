@@ -136,11 +136,8 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * variables only.
    * @param name cannot be null.
    * @param value cannot be null. The string can include the
-   * wildcard character '%' to express like-strategy: starts with
-   * (string%), ends with (%string) or contains (%string%). In case you want
-   * to use the '%' as a literal character to match instead of using it as a wildcard, you
-   * should escape the '%' character by prefixing it with a backslash-character (\) in the
-   * search-string. */
+   *          wildcard character '%' to express like-strategy: starts with
+   *          (string%), ends with (%string) or contains (%string%). */
   HistoricProcessInstanceQuery variableValueLike(String name, String value);
 
   /** Only select historic process instances that were started before the given date. */
