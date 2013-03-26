@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
 
 
@@ -77,9 +78,20 @@ public class IdentityLinkEntityManager extends AbstractManager {
   }
 
   public void deleteIdentityLinksByProcInstance(String processInstanceId) {
+    
+    // Identity links from db
     List<IdentityLinkEntity> identityLinks = findIdentityLinksByProcessInstanceId(processInstanceId);
+    // Delete
     for (IdentityLinkEntity identityLink: identityLinks) {
       deleteIdentityLink(identityLink);
+    }
+    
+    // Identity links from cache
+    List<IdentityLinkEntity> identityLinksFromCache = Context.getCommandContext().getDbSqlSession().findInCache(IdentityLinkEntity.class);
+    for (IdentityLinkEntity identityLinkEntity : identityLinksFromCache) {
+      if (processInstanceId.equals(identityLinkEntity.getProcessInstanceId())) {
+        deleteIdentityLink(identityLinkEntity);
+      }
     }
   }
   
