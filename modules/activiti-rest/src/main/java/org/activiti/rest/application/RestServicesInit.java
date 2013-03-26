@@ -37,6 +37,7 @@ import org.activiti.rest.api.repository.DeploymentDeleteResource;
 import org.activiti.rest.api.repository.DeploymentUploadResource;
 import org.activiti.rest.api.repository.DeploymentsDeleteResource;
 import org.activiti.rest.api.repository.DeploymentsResource;
+import org.activiti.rest.api.repository.SimpleWorkflowResource;
 import org.activiti.rest.api.task.TaskAddResource;
 import org.activiti.rest.api.task.TaskAttachmentAddResource;
 import org.activiti.rest.api.task.TaskAttachmentResource;
@@ -111,5 +112,8 @@ public class RestServicesInit {
     router.attach("/management/tables", TablesResource.class);
     router.attach("/management/table/{tableName}", TableResource.class);
     router.attach("/management/table/{tableName}/data", TableDataResource.class);
+    
+    router.attach("/simple-workflow", SimpleWorkflowResource.class);
+    
   }
 }
