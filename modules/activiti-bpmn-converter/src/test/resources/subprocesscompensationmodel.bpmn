@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+			 xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+			 xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+			 xmlns:tns="http://sourceforge.net/bpmn/definitions/_1364255807632"
+			 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 expressionLanguage="http://www.w3.org/1999/XPath" id="_1364255807632" name=""
+			 targetNamespace="http://sourceforge.net/bpmn/definitions/_1364255807632"
+			 typeLanguage="http://www.w3.org/2001/XMLSchema"
+			 xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+	<process id="PROCESS_1" isClosed="false" isExecutable="true" processType="None">
+		<startEvent id="start1" isInterrupting="true" name="Start Event" parallelMultiple="false">
+			<outgoing>_4</outgoing>
+		</startEvent>
+		<scriptTask completionQuantity="1" id="scriptTask1" isForCompensation="false" name="Script Task"
+					scriptFormat="groovy" startQuantity="1">
+			<incoming>_4</incoming>
+			<outgoing>_6</outgoing>
+		</scriptTask>
+		<sequenceFlow id="_4" sourceRef="start1" targetRef="scriptTask1"/>
+		<endEvent id="_5" name="End Event">
+			<incoming>_6</incoming>
+		</endEvent>
+		<sequenceFlow id="_6" sourceRef="scriptTask1" targetRef="_5"/>
+		<subProcess completionQuantity="1" id="subprocess1" isForCompensation="true" name="Sub-Process"
+					startQuantity="1" triggeredByEvent="false">
+			<startEvent id="_8" isInterrupting="true" name="Start Event" parallelMultiple="false">
+				<outgoing>_10</outgoing>
+			</startEvent>
+			<scriptTask completionQuantity="1" id="_9" isForCompensation="false" name="Script Task"
+						scriptFormat="groovy" startQuantity="1">
+				<incoming>_10</incoming>
+				<outgoing>_12</outgoing>
+			</scriptTask>
+			<sequenceFlow id="_10" sourceRef="_8" targetRef="_9"/>
+			<endEvent id="_11" name="End Event">
+				<incoming>_12</incoming>
+			</endEvent>
+			<sequenceFlow id="_12" sourceRef="_9" targetRef="_11"/>
+		</subProcess>
+		<boundaryEvent attachedToRef="scriptTask1" cancelActivity="true" id="boundaryEvent1" name="Boundary Event"
+					   parallelMultiple="false">
+			<compensateEventDefinition id="_13_ED_1" waitForCompletion="true"/>
+		</boundaryEvent>
+		<association associationDirection="One" id="_14" sourceRef="boundaryEvent1" targetRef="subprocess1"/>
+	</process>
+</definitions>
