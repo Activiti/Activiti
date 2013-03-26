@@ -351,6 +351,9 @@ public interface TaskService {
 
   /** Add a comment to a task and/or process instance. */
   void addComment(String taskId, String processInstanceId, String message);
+  
+  /** Removes all comments from the provided task and/or process instance*/
+  void deleteComments(String taskId, String processInstanceId);
 
   /** The comments related to the given task. */
   List<Comment> getTaskComments(String taskId);

@@ -146,20 +146,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       assertEquals("look at this \n       isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg kajsh dfuieqpgkja rzvkfnjviuqerhogiuvysbegkjz lkhf ais liasduh flaisduh ajiasudh vaisudhv nsfd", comment.getFullMessage());
       assertNotNull(comment.getTime());
 
-      taskService.addComment(taskId, "pid", "one");
-      taskService.addComment(taskId, "pid", "two");
-      
-      Set<String> expectedComments = new HashSet<String>();
-      expectedComments.add("one");
-      expectedComments.add("two");
-      
-      Set<String> comments = new HashSet<String>();
-      for (Comment cmt: taskService.getProcessInstanceComments("pid")) {
-        comments.add(cmt.getFullMessage());
-      }
-      
-      assertEquals(expectedComments, comments);
-
       // Finally, delete task
       taskService.deleteTask(taskId, true);
     }
@@ -219,7 +205,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testRap() {
+  public void testMultipleProcessesStarted() {
     
     // Start a few  process instances
     for (int i=0; i<20; i++) {
