@@ -10,7 +10,7 @@
     
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScriptTask" />
     
-    <scriptTask id="theScriptTask" name="Execute script" scriptFormat="groovy">
+    <scriptTask id="theScriptTask" name="Execute script" scriptFormat="groovy" activiti:autoStoreVariables="true">
       <script>
         sum = 0
         for ( i in inputArray ) {
