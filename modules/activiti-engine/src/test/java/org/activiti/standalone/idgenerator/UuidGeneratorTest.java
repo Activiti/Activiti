@@ -34,9 +34,7 @@ public class UuidGeneratorTest extends ResourceActivitiTestCase {
   @Deployment
   public void testUuidGeneratorUsage() {
     
-    ExecutorService executorService = Executors.newFixedThreadPool(5);
-    
-    final AtomicInteger nrOfFailed = new AtomicInteger(0);
+    ExecutorService executorService = Executors.newFixedThreadPool(2);
     
     // Start processes
     for (int i=0; i<30; i++) {
@@ -46,14 +44,10 @@ public class UuidGeneratorTest extends ResourceActivitiTestCase {
             runtimeService.startProcessInstanceByKey("simpleProcess");
           } catch (Exception e) {
             e.printStackTrace();
-            nrOfFailed.addAndGet(1);
+            fail();
           }
         }
       });
-    }
-    
-    if (nrOfFailed.get() > 0) {
-      fail();
     }
     
     // Complete tasks
