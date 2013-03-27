@@ -879,6 +879,46 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
   }
 
+  public void testSetDueDate() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+
+    //Set the due date to a non-null value
+    Date now = new Date();
+    taskService.setDueDate(task.getId(), now);
+
+    // Fetch task to check if the due date was persisted
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertEquals(now, task.getDueDate());
+
+    //Set the due date to null
+    taskService.setDueDate(task.getId(), null);
+
+    // Re-fetch the task to make sure the due date was set to null
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertNull(task.getDueDate());
+
+    taskService.deleteTask(task.getId(), true);
+  }
+
+  public void testSetDueDateUnexistingTaskId() {
+    try {
+      taskService.setDueDate("unexistingtask", new Date());
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+        assertTextPresent("Cannot find task with id unexistingtask", ae.getMessage());
+    }
+  }
+
+  public void testSetDueDateNullTaskId() {
+    try {
+      taskService.setDueDate(null, new Date());
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("taskId is null", ae.getMessage());
+    }
+  }
+
   /**
    * @see http://jira.codehaus.org/browse/ACT-1059
    */
