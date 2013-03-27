@@ -148,6 +148,16 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
 &lt;/property&gt;
 </programlisting>	       
 	   </para>
+	   
+	   <para>
+	       The use of the UUID id generator depends on the following extra dependency:
+	       <programlisting>
+ &lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.uuid&lt;/groupId&gt;
+    &lt;artifactId&gt;java-uuid-generator&lt;/artifactId&gt;
+    &lt;version&gt;3.1.3&lt;/version&gt;
+&lt;/dependency&gt;</programlisting>
+	   </para>
 	
 	</section>
 	
