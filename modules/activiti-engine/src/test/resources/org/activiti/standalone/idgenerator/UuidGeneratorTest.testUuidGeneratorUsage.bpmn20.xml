@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+	<process id="simpleProcess">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1" />
+
+		<task id="task1" />
+		<sequenceFlow id="flow2" sourceRef="task1" targetRef="task2" />
+
+		<task id="task2" />
+		<sequenceFlow id="flow3" sourceRef="task2" targetRef="task3" />
+
+		<task id="task3" />
+		<sequenceFlow id="flow4" sourceRef="task3" targetRef="task4" />
+
+		<userTask id="task4" />
+		<sequenceFlow id="flow5" sourceRef="task4" targetRef="task5" />
+
+		<task id="task5" />
+		<sequenceFlow id="flow6" sourceRef="task5" targetRef="task6" />
+
+		<task id="task6" />
+		<sequenceFlow id="flow7" sourceRef="task6" targetRef="task7" />
+
+		<userTask id="task7" />
+		<sequenceFlow id="flow8" sourceRef="task7" targetRef="task8" />
+
+		<task id="task8" />
+		<sequenceFlow id="flow9" sourceRef="task8" targetRef="task9" />
+
+		<userTask id="task9" />
+		<sequenceFlow id="flow10" sourceRef="task9" targetRef="task10" />
+
+		<task id="task10" />
+		<sequenceFlow id="flow11" sourceRef="task10" targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>
