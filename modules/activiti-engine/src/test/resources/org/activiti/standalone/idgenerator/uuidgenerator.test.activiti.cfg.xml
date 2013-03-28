@@ -6,6 +6,8 @@
 
 	<bean id="processEngineConfiguration"
 		class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+		
+		<property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000;MVCC=TRUE" />
 
 		<property name="databaseSchemaUpdate" value="true" />
 		

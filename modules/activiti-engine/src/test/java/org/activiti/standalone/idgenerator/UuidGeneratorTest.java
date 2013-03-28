@@ -34,10 +34,10 @@ public class UuidGeneratorTest extends ResourceActivitiTestCase {
   @Deployment
   public void testUuidGeneratorUsage() {
     
-    ExecutorService executorService = Executors.newFixedThreadPool(2);
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
     
     // Start processes
-    for (int i=0; i<30; i++) {
+    for (int i=0; i<50; i++) {
       executorService.execute(new Runnable() {
         public void run() {
           try {
@@ -84,7 +84,7 @@ public class UuidGeneratorTest extends ResourceActivitiTestCase {
       fail();
     }
     
-    assertEquals(30, historyService.createHistoricProcessInstanceQuery().count());
+    assertEquals(50, historyService.createHistoricProcessInstanceQuery().count());
   }
   
 }
