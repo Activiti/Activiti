@@ -257,6 +257,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // DEPLOYERS ////////////////////////////////////////////////////////////////
 
+  protected BpmnDeployer bpmnDeployer;
+  protected BpmnParser bpmnParser;
   protected List<Deployer> customPreDeployers;
   protected List<Deployer> customPostDeployers;
   protected List<Deployer> deployers;
@@ -751,7 +753,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Collection< ? extends Deployer> getDefaultDeployers() {
     List<Deployer> defaultDeployers = new ArrayList<Deployer>();
 
-    BpmnDeployer bpmnDeployer = new BpmnDeployer();
+    if (bpmnDeployer == null) {
+      bpmnDeployer = new BpmnDeployer();
+    }
+      
     bpmnDeployer.setExpressionManager(expressionManager);
     bpmnDeployer.setIdGenerator(idGenerator);
     
@@ -771,7 +776,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       listenerFactory = defaultListenerFactory;
     }
     
-    BpmnParser bpmnParser = new BpmnParser();
+    if (bpmnParser == null) {
+      bpmnParser = new BpmnParser();
+    }
+    
     bpmnParser.setExpressionManager(expressionManager);
     bpmnParser.setBpmnParseFactory(bpmnParseFactory);
     bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
@@ -1279,6 +1287,22 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public BpmnDeployer getBpmnDeployer() {
+    return bpmnDeployer;
+  }
+
+  public void setBpmnDeployer(BpmnDeployer bpmnDeployer) {
+    this.bpmnDeployer = bpmnDeployer;
+  }
+  
+  public BpmnParser getBpmnParser() {
+    return bpmnParser;
+  }
+  
+  public void setBpmnParser(BpmnParser bpmnParser) {
+    this.bpmnParser = bpmnParser;
+  }
+
   public List<Deployer> getDeployers() {
     return deployers;
   }
