@@ -13,6 +13,7 @@
 
 package org.activiti.rest.api;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Map;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.application.ActivitiRestApplication;
 import org.codehaus.jackson.JsonNode;
+import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
 
@@ -92,5 +94,20 @@ public class SecuredResource extends ServerResource {
       }
     }
     return variables;
+  }
+  
+  /**
+   * Create a full URL to a rest-resource.
+   * 
+   * @param urlFragments fragments of the URL, relative to the base of the rest-application.
+   * @param arguments arguments to replace the placeholders in the urlFragments, using the {@link MessageFormat}
+   * conventions (eg. <code>{0}</code> is replaced by first argument value).
+   */
+  public String createFullResourceUrl(String[] urlFragments, Object ... arguments) {
+    Reference url = getRequest().getRootRef().clone();
+    for(String urlFragment : urlFragments) {
+      url.addSegment(MessageFormat.format(urlFragment, arguments));
+    }
+    return url.toString();
   }
 }

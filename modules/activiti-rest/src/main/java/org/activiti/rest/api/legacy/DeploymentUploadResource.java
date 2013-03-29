@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.repository;
+package org.activiti.rest.api.legacy;
 
 import java.util.List;
 import java.util.zip.ZipInputStream;
@@ -24,6 +24,7 @@ import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.restlet.data.Status;
 import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Post;
@@ -31,10 +32,13 @@ import org.restlet.resource.Post;
 /**
  * @author Tijs Rademakers
  */
+@Deprecated
 public class DeploymentUploadResource extends SecuredResource {
   
+  protected static final String DEPRECATED_API_DEPLOYMENT_SEGMENT = "deployment";
+  
   @Post
-  public DeploymentResponse uploadDeployment(Representation entity) {
+  public LegacyDeploymentResponse uploadDeployment(Representation entity) {
     try {
       if(authenticate(SecuredResource.ADMIN) == false) return null;
       
@@ -59,7 +63,9 @@ public class DeploymentUploadResource extends SecuredResource {
       }
       deploymentBuilder.name(fileName);
       Deployment deployment = deploymentBuilder.deploy();
-      return new DeploymentResponse(deployment);
+      
+      setStatus(Status.SUCCESS_OK);
+      return new LegacyDeploymentResponse(deployment);
       
     } catch (Exception e) {
       if(e instanceof ActivitiException) {

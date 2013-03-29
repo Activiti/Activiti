@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.repository;
+package org.activiti.rest.api.legacy;
 
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RequestUtil;
@@ -23,6 +23,7 @@ import org.restlet.resource.Delete;
 /**
  * @author Tijs Rademakers
  */
+@Deprecated
 public class DeploymentDeleteResource extends SecuredResource {
   
   @Delete
