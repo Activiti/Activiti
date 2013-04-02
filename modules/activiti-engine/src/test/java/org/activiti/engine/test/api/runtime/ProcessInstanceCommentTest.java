@@ -15,6 +15,7 @@ package org.activiti.engine.test.api.runtime;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
@@ -28,23 +29,25 @@ public class ProcessInstanceCommentTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testAddCommentToProcessInstance() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcessInstanceComment");
-    
-    taskService.addComment(null, processInstance.getId(), "Hello World");
-    
-    List<Comment> comments = taskService.getProcessInstanceComments(processInstance.getId());
-    assertEquals(1, comments.size());
-    
-    // Suspend process instance
-    runtimeService.suspendProcessInstanceById(processInstance.getId());
-    try {
-       taskService.addComment(null, processInstance.getId(), "Hello World 2");
-    } catch (ActivitiException e) {
-      assertTextPresent("Cannot add a comment to a suspended execution", e.getMessage());
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcessInstanceComment");
+      
+      taskService.addComment(null, processInstance.getId(), "Hello World");
+      
+      List<Comment> comments = taskService.getProcessInstanceComments(processInstance.getId());
+      assertEquals(1, comments.size());
+      
+      // Suspend process instance
+      runtimeService.suspendProcessInstanceById(processInstance.getId());
+      try {
+        taskService.addComment(null, processInstance.getId(), "Hello World 2");
+      } catch (ActivitiException e) {
+        assertTextPresent("Cannot add a comment to a suspended execution", e.getMessage());
+      }
+      
+      // Delete comments again
+      taskService.deleteComments(null, processInstance.getId());
     }
-    
-    // Delete comments again
-    taskService.deleteComments(null, processInstance.getId());
   }
 
 }
