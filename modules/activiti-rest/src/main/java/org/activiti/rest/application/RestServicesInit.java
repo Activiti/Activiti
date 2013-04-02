@@ -13,6 +13,8 @@ import org.activiti.rest.api.identity.UserGroupsResource;
 import org.activiti.rest.api.identity.UserPictureResource;
 import org.activiti.rest.api.identity.UserResource;
 import org.activiti.rest.api.identity.UserSearchResource;
+import org.activiti.rest.api.legacy.DeploymentArtifactResource;
+import org.activiti.rest.api.legacy.DeploymentArtifactsResource;
 import org.activiti.rest.api.legacy.DeploymentDeleteResource;
 import org.activiti.rest.api.legacy.DeploymentUploadResource;
 import org.activiti.rest.api.legacy.DeploymentsDeleteResource;
@@ -35,10 +37,11 @@ import org.activiti.rest.api.process.ProcessInstanceTaskResource;
 import org.activiti.rest.api.process.ProcessInstancesResource;
 import org.activiti.rest.api.process.SignalEventSubscriptionResource;
 import org.activiti.rest.api.process.StartProcessInstanceResource;
-import org.activiti.rest.api.repository.DeploymentArtifactResource;
-import org.activiti.rest.api.repository.DeploymentArtifactsResource;
 import org.activiti.rest.api.repository.DeploymentCollectionResource;
 import org.activiti.rest.api.repository.DeploymentResource;
+import org.activiti.rest.api.repository.DeploymentResourceCollectionResource;
+import org.activiti.rest.api.repository.DeploymentResourceDataResource;
+import org.activiti.rest.api.repository.DeploymentResourceResource;
 import org.activiti.rest.api.repository.SimpleWorkflowResource;
 import org.activiti.rest.api.task.TaskAddResource;
 import org.activiti.rest.api.task.TaskAttachmentAddResource;
@@ -60,6 +63,9 @@ public class RestServicesInit {
     // New REST-urls
     router.attach("/repository/deployments", DeploymentCollectionResource.class);
     router.attach("/repository/deployments/{deploymentId}", DeploymentResource.class);
+    router.attach("/repository/deployments/{deploymentId}/resources", DeploymentResourceCollectionResource.class);
+    router.attach("/repository/deployments/{deploymentId}/resources/{resourceId}", DeploymentResourceResource.class);
+    router.attach("/repository/deployments/{deploymentId}/resourcedata/{resourceId}", DeploymentResourceDataResource.class);
     
     // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);

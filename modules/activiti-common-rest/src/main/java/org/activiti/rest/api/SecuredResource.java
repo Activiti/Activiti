@@ -13,6 +13,8 @@
 
 package org.activiti.rest.api;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,6 +38,36 @@ public class SecuredResource extends ServerResource {
   protected static final String ADMIN = "admin";
   
   protected String loggedInUser;
+  
+  /**
+   * Create a full URL to a rest-resource.
+   * 
+   * @param urlFragments fragments of the URL, relative to the base of the rest-application.
+   * @param arguments arguments to replace the placeholders in the urlFragments, using the {@link MessageFormat}
+   * conventions (eg. <code>{0}</code> is replaced by first argument value).
+   */
+  public String createFullResourceUrl(String[] urlFragments, Object ... arguments) {
+    Reference url = getRequest().getRootRef().clone();
+    for(String urlFragment : urlFragments) {
+      url.addSegment(MessageFormat.format(urlFragment, arguments));
+    }
+    return url.toString();
+  }
+  
+  /**
+   * Get a request attribute value, decoded. 
+   */
+  protected String getAttribute(String name) {
+    String value = (String) getRequest().getAttributes().get(name);
+    if(value != null) {
+      try {
+        return URLDecoder.decode(value, "UTF-8");
+      } catch (UnsupportedEncodingException uee) {
+        throw new IllegalStateException("JVM does not support UTF-8 encoding.", uee);
+      }
+    }
+    return null;
+  }
   
   protected boolean authenticate() {
     return authenticate(null);
@@ -94,20 +126,5 @@ public class SecuredResource extends ServerResource {
       }
     }
     return variables;
-  }
-  
-  /**
-   * Create a full URL to a rest-resource.
-   * 
-   * @param urlFragments fragments of the URL, relative to the base of the rest-application.
-   * @param arguments arguments to replace the placeholders in the urlFragments, using the {@link MessageFormat}
-   * conventions (eg. <code>{0}</code> is replaced by first argument value).
-   */
-  public String createFullResourceUrl(String[] urlFragments, Object ... arguments) {
-    Reference url = getRequest().getRootRef().clone();
-    for(String urlFragment : urlFragments) {
-      url.addSegment(MessageFormat.format(urlFragment, arguments));
-    }
-    return url.toString();
   }
 }

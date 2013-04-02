@@ -2,6 +2,8 @@ package org.activiti.rest.api.legacy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -27,7 +29,9 @@ import org.restlet.resource.ResourceException;
  * POST /deployment, 
  * DELETE /deployment/{deploymentId}, 
  * GET /deployments, 
- * POST /deployments/delete
+ * POST /deployments/delete,
+ * GET /deployment/{deploymentId}/resources,
+ * GET /deployment/{deploymentId}/resources/{resourceName}
  * 
  * @author Frederik Heremans
  */
@@ -275,24 +279,94 @@ public class LegacyDeploymentResourseTest extends BaseRestTestCase {
       * Test deleting multiple deployments.
       * POST deployments/delete
       */
-      public void testDeleteMultipleDeploymentsUnexisting() throws Exception {
+    public void testDeleteMultipleDeploymentsUnexisting() throws Exception {
+      try {
+        ClientResource client = getAuthenticatedClient("deployments/delete");
+        
+        ObjectNode requestNode = objectMapper.createObjectNode();
+        ArrayNode deploymentIds = objectMapper.createArrayNode();
+        deploymentIds.add("unexisting");
+        requestNode.put("deploymentIds", deploymentIds);
+        
         try {
-          ClientResource client = getAuthenticatedClient("deployments/delete");
+          client.post(requestNode);
+          fail("Exception expected");
+        } catch(ResourceException expected) {
           
-          ObjectNode requestNode = objectMapper.createObjectNode();
-          ArrayNode deploymentIds = objectMapper.createArrayNode();
-          deploymentIds.add("unexisting");
-          requestNode.put("deploymentIds", deploymentIds);
+          assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+          assertEquals("Could not find a deployment with id 'unexisting'.", expected.getStatus().getDescription());
+        }
+        
+        
+      } finally {
+        // Always cleanup any created deployments, even if the test failed
+        List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
+        for(Deployment deployment : deployments) {
+          repositoryService.deleteDeployment(deployment.getId(), true);
+        }
+      }
+    }
+    
+    /**
+     * Test get all resources in a deployment.
+     * GET /deployment/{deploymentId}/resources
+     */
+     public void testGetDeploymentResources() throws Exception {
+       try {
+         Deployment deployment = repositoryService.createDeployment().name("Deployment 1")
+             .addClasspathResource("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml")
+             .addInputStream("test.png", new ByteArrayInputStream("test-content".getBytes()))
+             .deploy();
+         
+         ClientResource client = getAuthenticatedClient("deployment/" + deployment.getId() + "/resources");
+         
+         Representation response = client.get();
+         assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+         
+         JsonNode resourcesNode = objectMapper.readTree(response.getStream()).get("resources");
+         assertEquals(2L, resourcesNode.size());
+         
+         List<String> resources = new ArrayList<String>();
+         for(int i=0; i < resourcesNode.size(); i++) {
+           resources.add(resourcesNode.get(i).getTextValue());
+         }
+         assertTrue(resources.contains("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"));
+         assertTrue(resources.contains("test.png"));
+         
+       } finally {
+         // Always cleanup any created deployments, even if the test failed
+         List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
+         for(Deployment deployment : deployments) {
+           repositoryService.deleteDeployment(deployment.getId(), true);
+         }
+       }
+     }
+     
+     /**
+      * Test get all resources in a deployment.
+      * GET /deployment/{deploymentId}/resources/{resourceName}
+      */
+      public void testGetDeploymentResource() throws Exception {
+        try {
+          Deployment deployment = repositoryService.createDeployment().name("Deployment 1")
+              .addClasspathResource("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml")
+              .addInputStream("test.png", new ByteArrayInputStream("test-content".getBytes()))
+              .deploy();
           
-          try {
-            client.post(requestNode);
-            fail("Exception expected");
-          } catch(ResourceException expected) {
-            
-            assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-            assertEquals("Could not find a deployment with id 'unexisting'.", expected.getStatus().getDescription());
-          }
+          ClientResource client = getAuthenticatedClient("deployment/" + deployment.getId() + "/resource/org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml");
           
+          Representation response = client.get();
+          assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+          
+          // Read returned and original content
+          ByteArrayOutputStream responseContent = new ByteArrayOutputStream();
+          IOUtils.copy(response.getStream(), responseContent);
+          ByteArrayOutputStream requestContent = new ByteArrayOutputStream();
+          IOUtils.copy(ReflectUtil.getResourceAsStream("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"), requestContent);
+          
+          // Compare response with content that is deployed
+          assertTrue("Returned content doesn't match deployed content",
+                  Arrays.equals(requestContent.toByteArray(), responseContent.toByteArray()));
           
         } finally {
           // Always cleanup any created deployments, even if the test failed

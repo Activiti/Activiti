@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.repository;
+package org.activiti.rest.api.legacy;
 
 import java.util.List;
 
@@ -28,6 +28,7 @@ import org.restlet.resource.Get;
 /**
  * @author Tijs Rademakers
  */
+@Deprecated
 public class DeploymentArtifactsResource extends SecuredResource {
   
   @Get

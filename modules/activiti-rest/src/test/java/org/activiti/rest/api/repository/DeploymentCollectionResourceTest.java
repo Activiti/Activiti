@@ -125,36 +125,4 @@ public class DeploymentCollectionResourceTest extends BaseRestTestCase {
       }
     }
   }
-  
-//  /**
-//   * Test deleting deployments.
-//   * DELETE repository/deployments
-//   */
-//   public void testDeleteDeployment() throws Exception {
-//     
-//     try {
-//       repositoryService.createDeployment().name("Deployment 1")
-//           .addClasspathResource("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml")
-//           .deploy();
-//       repositoryService.createDeployment().name("Deployment 2")
-//               .addClasspathResource("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml")
-//               .deploy();
-//       
-//       assertEquals(2L, repositoryService.createDeploymentQuery().count());
-//       
-//       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
-//       client.delete();
-//       
-//       assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-//       assertEquals(0L, repositoryService.createDeploymentQuery().count());
-//       
-//     } finally {
-//       // Always cleanup any created deployments, even if the test failed
-//       List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
-//       for(Deployment deployment : deployments) {
-//         repositoryService.deleteDeployment(deployment.getId(), true);
-//       }
-//     }
-//   }
- 
 }

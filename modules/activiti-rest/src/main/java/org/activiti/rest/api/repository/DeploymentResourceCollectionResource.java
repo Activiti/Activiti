@@ -13,56 +13,50 @@
 
 package org.activiti.rest.api.repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.RestUrls;
 import org.activiti.rest.api.SecuredResource;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+
 
 /**
  * @author Frederik Heremans
  */
-public class DeploymentResource extends SecuredResource {
-  
-  @Get
-  public DeploymentResponse getDeployment() {
-    if(authenticate() == false) return null;
+public class DeploymentResourceCollectionResource extends SecuredResource {
 
+  @Get
+  public List<DeploymentResourceResponse> getDeploymentResources() {
+ if(authenticate() == false) return null;
+    
     String deploymentId = getAttribute("deploymentId");
+    
     if(deploymentId == null) {
-      throw new ActivitiIllegalArgumentException("The deploymentId cannot be null");
+      throw new ActivitiIllegalArgumentException("No deployment id provided");
     }
     
-    Deployment deployment = ActivitiUtil.getRepositoryService().createDeploymentQuery()
-            .deploymentId(deploymentId)
-            .singleResult();
-    
+    // Check if deployment exists
+    Deployment deployment = ActivitiUtil.getRepositoryService().createDeploymentQuery().deploymentId(deploymentId).singleResult();
     if(deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
     }
     
-    DeploymentResponse response = new DeploymentResponse(deployment, createFullResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId));
-    return response;
-  }
-  
-  @Delete
-  public void deleteDeployment() {
-    if(authenticate() == false) return;
+    List<String> resourceList = ActivitiUtil.getRepositoryService().getDeploymentResourceNames(deploymentId);
     
-    String deploymentId = getAttribute("deploymentId");
-    
-    Boolean cascade = RequestUtil.getBoolean(getQuery(), "cascade", false);
-    if (cascade) {
-      ActivitiUtil.getRepositoryService().deleteDeployment(deploymentId, true);
+    // Add additional metadata to the artifact-strings before returning
+    List<DeploymentResourceResponse> resposeList = new ArrayList<DeploymentResourceResponse>();
+    String resourceUrl = null;
+    String resourceContentUrl = null;
+    for(String resource : resourceList) {
+      resourceUrl = createFullResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, deploymentId, resource);
+      resourceContentUrl = createFullResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deploymentId, resource);
+      resposeList.add(new DeploymentResourceResponse(resource, resourceUrl, resourceContentUrl));
     }
-    else {
-      ActivitiUtil.getRepositoryService().deleteDeployment(deploymentId);
-    }
-    getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
+    return resposeList;
   }
 }

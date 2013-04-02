@@ -27,10 +27,9 @@ public final class RestUrls {
    */
   public static final String SEGMENT_REPOSITORY_RESOURCES = "repository";
   
-  /**
-   * Segment for deployment resources: <i>deployment</i>
-   */
   public static final String SEGMENT_DEPLOYMENT_RESOURCE = "deployments";
+  public static final String SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE = "resources";
+  public static final String SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE_CONTENT = "resourcedata";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -41,6 +40,24 @@ public final class RestUrls {
    * URL template for a single deployment: <i>repository/deployments/{0:deploymentId}</i>
    */
   public static final String[] URL_DEPLOYMENT = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_DEPLOYMENT_RESOURCE, "{0}"};
+  
+  /**
+   * URL template listing deployment resources: <i>repository/deployments/{0:deploymentId}/resources/{1}:resourceId</i>
+   */
+  public static final String[] URL_DEPLOYMENT_RESOURCES = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_DEPLOYMENT_RESOURCE, 
+    "{0}", SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE};
+  
+  /**
+   * URL template for a single deployment resource: <i>repository/deployments/{0:deploymentId}/resources/{1}:resourceId</i>
+   */
+  public static final String[] URL_DEPLOYMENT_RESOURCE = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_DEPLOYMENT_RESOURCE, 
+    "{0}", SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE, "{1}"};
+  
+  /**
+   * URL template for a single deployment resource content: <i>repository/deployments/{0:deploymentId}/resourcedata/{1}:resourceId</i>
+   */
+  public static final String[] URL_DEPLOYMENT_RESOURCE_CONTENT = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_DEPLOYMENT_RESOURCE, 
+    "{0}", SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE_CONTENT, "{1}"};
   
   
   /**
