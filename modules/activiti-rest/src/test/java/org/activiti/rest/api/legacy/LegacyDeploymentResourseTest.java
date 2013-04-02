@@ -1,33 +1,41 @@
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.HttpMultipartRepresentation;
-import org.activiti.rest.api.RestUrls;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
 /**
- * Test for all REST-operations related to single a Deployment resource.
+ * Test for all <b>Legacy</b> REST-operations related to Deployments:
+ *  
+ * POST /deployment, 
+ * DELETE /deployment/{deploymentId}, 
+ * GET /deployments, 
+ * POST /deployments/delete
  * 
  * @author Frederik Heremans
  */
-public class DeploymentResourceTest extends BaseRestTestCase {
+public class LegacyDeploymentResourseTest extends BaseRestTestCase {
 
   /**
    * Test deploying singe bpmn-file.
-   * POST repository/deployments
+   * POST deployment
    */
   public void testPostNewDeploymentBPMNFile() throws Exception {
     try {
@@ -35,11 +43,11 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       Representation uploadRepresentation = new HttpMultipartRepresentation("oneTaskProcess.bpmn20.xml",
               ReflectUtil.getResourceAsStream("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"));
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
+      ClientResource client = getAuthenticatedClient("deployment");
       Representation response = client.post(uploadRepresentation);
       
       // Check "CREATED" status
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
       
       // Check deployment
       JsonNode responseNode = objectMapper.readTree(response.getStream());
@@ -48,16 +56,12 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       String name = responseNode.get("name").getTextValue();
       String category = responseNode.get("category").getTextValue();
       String deployTime = responseNode.get("deploymentTime").getTextValue();
-      String url = responseNode.get("url").getTextValue();
       
       assertNotNull(deploymentId);
       assertEquals(1L, repositoryService.createDeploymentQuery().deploymentId(deploymentId).count());
       
       assertNotNull(name);
       assertEquals("oneTaskProcess.bpmn20.xml", name);
-      
-      assertNotNull(url);
-      assertTrue(url.endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT,deploymentId)));
       
       // No deployment-category should have been set
       assertNull(category);
@@ -68,7 +72,6 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       assertEquals(1L, resources.size());
       assertEquals("oneTaskProcess.bpmn20.xml", resources.get(0));
       assertEquals(1L, repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).count());
-      
       
     } finally {
       // Always cleanup any created deployments, even if the test failed
@@ -81,7 +84,7 @@ public class DeploymentResourceTest extends BaseRestTestCase {
   
   /**
    * Test deploying bar-file.
-   * POST repository/deployments
+   * POST deployment
    */
   public void testPostNewDeploymentBarFile() throws Exception {
     try {
@@ -103,11 +106,11 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       // Upload a bar-file using multipart-data
       Representation uploadRepresentation = new HttpMultipartRepresentation("test-deployment.bar",
               new ByteArrayInputStream(zipOutput.toByteArray()));
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
+      ClientResource client = getAuthenticatedClient("deployment");
       Representation response = client.post(uploadRepresentation);
       
       // Check "CREATED" status
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
       
       // Check deployment
       JsonNode responseNode = objectMapper.readTree(response.getStream());
@@ -116,16 +119,12 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       String name = responseNode.get("name").getTextValue();
       String category = responseNode.get("category").getTextValue();
       String deployTime = responseNode.get("deploymentTime").getTextValue();
-      String url = responseNode.get("url").getTextValue();
       
       assertNotNull(deploymentId);
       assertEquals(1L, repositoryService.createDeploymentQuery().deploymentId(deploymentId).count());
       
       assertNotNull(name);
       assertEquals("test-deployment.bar", name);
-      
-      assertNotNull(url);
-      assertTrue(url.endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT,deploymentId)));
       
       // No deployment-category should have been set
       assertNull(category);
@@ -146,14 +145,14 @@ public class DeploymentResourceTest extends BaseRestTestCase {
   
   /**
    * Test deploying an invalid file.
-   * POST repository/deployments
+   * POST deployment
    */
   public void testPostNewDeploymentInvalidFile() throws Exception {
       // Upload a valid BPMN-file using multipart-data
       Representation uploadRepresentation = new HttpMultipartRepresentation("oneTaskProcess.invalidfile",
               ReflectUtil.getResourceAsStream("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"));
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
+      ClientResource client = getAuthenticatedClient("deployment");
       try {
         client.post(uploadRepresentation);
         fail("400 expected, but was: " + client.getResponse().getStatus());
@@ -164,59 +163,8 @@ public class DeploymentResourceTest extends BaseRestTestCase {
   }
   
   /**
-  * Test getting a single deployment.
-  * GET repository/deployments/{deploymentId}
-  */
-  @org.activiti.engine.test.Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
-  public void testGetDeployment() throws Exception {
-    Deployment existingDeployment = repositoryService.createDeploymentQuery().singleResult();
-     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, existingDeployment.getId()));
-    Representation response = client.get();
-    
-    // Check "OK" status
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
-     
-    String deploymentId = responseNode.get("id").getTextValue();
-    String name = responseNode.get("name").getTextValue();
-    String category = responseNode.get("category").getTextValue();
-    String deployTime = responseNode.get("deploymentTime").getTextValue();
-    String url = responseNode.get("url").getTextValue();
-    
-    assertNotNull(deploymentId);
-    assertEquals(existingDeployment.getId(), deploymentId);
-    
-    assertNotNull(name);
-    assertEquals(existingDeployment.getName(), name);
-    
-    assertEquals(existingDeployment.getCategory(), category);
-    
-    assertNotNull(deployTime);
-    
-    assertNotNull(url);
-    assertTrue(url.endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT,deploymentId)));
-  }
-  
-  /**
-   * Test getting an unexisting deployment.
-   * GET repository/deployments/{deploymentId}
-   */
-   public void testGetUnexistingDeployment() throws Exception {
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, "unexisting"));
-     try {
-       client.get();
-       fail("404 expected, but was: " + client.getResponse().getStatus());
-     } catch(ResourceException expected) {
-       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-       assertEquals("Could not find a deployment with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-     }
-   }
-  
-  /**
    * Test deleting a single deployment.
-   * DELETE repository/deployments/{deploymentId}
+   * DELETE deployment/{deploymentId}
    */
    @org.activiti.engine.test.Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
    public void testDeleteDeployment() throws Exception {
@@ -224,28 +172,134 @@ public class DeploymentResourceTest extends BaseRestTestCase {
      assertNotNull(existingDeployment);
      
      // Delete the deployment
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, existingDeployment.getId()));
-     client.delete();
+     ClientResource client = getAuthenticatedClient("deployment/" + existingDeployment.getId());
+     Representation response = client.delete();
      
      // Check status
-     assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+     
+     // Check "success" response body
+     JsonNode responseNode = objectMapper.readTree(response.getStream());
+     assertEquals(Boolean.TRUE.booleanValue(), responseNode.get("success").asBoolean());
      
      existingDeployment = repositoryService.createDeploymentQuery().singleResult();
      assertNull(existingDeployment);
    }
    
    /**
-    * Test deleting an unexisting deployment.
-    * GET repository/deployments/{deploymentId}
+    * Test getting deployments.
+    * GET deployments
     */
-    public void testDeleteUnexistingDeployment() throws Exception {
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, "unexisting"));
+    public void testGetDeployments() throws Exception {
+      
       try {
-        client.delete();
-        fail("404 expected, but was: " + client.getResponse().getStatus());
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-        assertEquals("Could not find a deployment with id 'unexisting'.", client.getResponse().getStatus().getDescription());
+        // Alter time to ensure different deployTimes
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DAY_OF_MONTH, -1);
+        ClockUtil.setCurrentTime(yesterday.getTime());
+        
+        Deployment firstDeployment = repositoryService.createDeployment().name("Deployment 1")
+            .category("DEF")
+            .addClasspathResource("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml")
+            .deploy();
+        
+        ClockUtil.setCurrentTime(Calendar.getInstance().getTime());
+        Deployment secondDeployment = repositoryService.createDeployment().name("Deployment 2")
+                .category("ABC")
+                .addClasspathResource("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml")
+                .deploy();
+        
+        ClientResource client = getAuthenticatedClient("deployments?sort=name&order=asc");
+        Representation response = client.get();
+        
+        assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+        JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+        assertEquals(2L, dataNode.size());
+               
+        assertEquals(firstDeployment.getId(), dataNode.get(0).get("id").getTextValue());
+        assertEquals(secondDeployment.getId(), dataNode.get(1).get("id").getTextValue());
+        
+      } finally {
+        // Always cleanup any created deployments, even if the test failed
+        List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
+        for(Deployment deployment : deployments) {
+          repositoryService.deleteDeployment(deployment.getId(), true);
+        }
       }
     }
+    
+    /**
+     * Test deleting multiple deployments.
+     * POST deployments/delete
+     */
+     public void testDeleteMultipleDeployments() throws Exception {
+       try {
+         Deployment firstDeployment = repositoryService.createDeployment().name("Deployment 1")
+             .category("DEF")
+             .addClasspathResource("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml")
+             .deploy();
+         
+         Deployment secondDeployment = repositoryService.createDeployment().name("Deployment 2")
+                 .category("ABC")
+                 .addClasspathResource("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml")
+                 .deploy();
+         
+         ClientResource client = getAuthenticatedClient("deployments/delete");
+         
+         ObjectNode requestNode = objectMapper.createObjectNode();
+         ArrayNode deploymentIds = objectMapper.createArrayNode();
+         deploymentIds.add(firstDeployment.getId());
+         deploymentIds.add(secondDeployment.getId());
+         requestNode.put("deploymentIds", deploymentIds);
+         
+         Representation response = client.post(requestNode);
+         assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+         
+         // Check "success" response body
+         JsonNode responseNode = objectMapper.readTree(response.getStream());
+         assertEquals(Boolean.TRUE.booleanValue(), responseNode.get("success").asBoolean());
+         
+         // Check if both deployments are deleted
+         assertEquals(0L, repositoryService.createDeploymentQuery().count());
+         
+       } finally {
+         // Always cleanup any created deployments, even if the test failed
+         List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
+         for(Deployment deployment : deployments) {
+           repositoryService.deleteDeployment(deployment.getId(), true);
+         }
+       }
+     }
+     
+     /**
+      * Test deleting multiple deployments.
+      * POST deployments/delete
+      */
+      public void testDeleteMultipleDeploymentsUnexisting() throws Exception {
+        try {
+          ClientResource client = getAuthenticatedClient("deployments/delete");
+          
+          ObjectNode requestNode = objectMapper.createObjectNode();
+          ArrayNode deploymentIds = objectMapper.createArrayNode();
+          deploymentIds.add("unexisting");
+          requestNode.put("deploymentIds", deploymentIds);
+          
+          try {
+            client.post(requestNode);
+            fail("Exception expected");
+          } catch(ResourceException expected) {
+            
+            assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+            assertEquals("Could not find a deployment with id 'unexisting'.", expected.getStatus().getDescription());
+          }
+          
+          
+        } finally {
+          // Always cleanup any created deployments, even if the test failed
+          List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
+          for(Deployment deployment : deployments) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+          }
+        }
+      }
 }

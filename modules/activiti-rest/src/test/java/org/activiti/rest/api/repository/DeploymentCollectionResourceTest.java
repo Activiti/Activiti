@@ -1,4 +1,4 @@
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.repository;
 
 import java.util.Calendar;
 import java.util.List;
@@ -23,7 +23,7 @@ public class DeploymentCollectionResourceTest extends BaseRestTestCase {
   * Test getting deployments.
   * GET repository/deployments
   */
-  public void testGetDeployment() throws Exception {
+  public void testGetDeployments() throws Exception {
     
     try {
       // Alter time to ensure different deployTimes
