@@ -20,8 +20,9 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.RestUrls;
+import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.resource.Get;
 
 
@@ -50,12 +51,9 @@ public class DeploymentResourceCollectionResource extends SecuredResource {
     
     // Add additional metadata to the artifact-strings before returning
     List<DeploymentResourceResponse> resposeList = new ArrayList<DeploymentResourceResponse>();
-    String resourceUrl = null;
-    String resourceContentUrl = null;
-    for(String resource : resourceList) {
-      resourceUrl = createFullResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, deploymentId, resource);
-      resourceContentUrl = createFullResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deploymentId, resource);
-      resposeList.add(new DeploymentResourceResponse(resource, resourceUrl, resourceContentUrl));
+    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
+    for(String resourceId : resourceList) {
+      resposeList.add(responseFactory.createDeploymentResourceResponse(this, deploymentId, resourceId));
     }
     return resposeList;
   }

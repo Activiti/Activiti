@@ -14,6 +14,8 @@
 package org.activiti.rest.application;
 
 import org.activiti.rest.api.DefaultResource;
+import org.activiti.rest.api.DefaultRestResponseFactory;
+import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.filter.JsonpFilter;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
@@ -21,10 +23,13 @@ import org.restlet.routing.Router;
  * @author Tijs Rademakers
  */
 public class ActivitiRestServicesApplication extends ActivitiRestApplication {
+
+  protected RestResponseFactory restResponseFactory;
   
   public ActivitiRestServicesApplication() {
     super();
   }
+  
   /**
    * Creates a root Restlet that will receive all incoming calls.
    */
@@ -42,5 +47,17 @@ public class ActivitiRestServicesApplication extends ActivitiRestApplication {
     authenticator.setNext(jsonpFilter);
     
     return authenticator;
+  }
+  
+  
+  public void setRestResponseFactory(RestResponseFactory restResponseFactory) {
+    this.restResponseFactory = restResponseFactory;
+  }
+  
+  public RestResponseFactory getRestResponseFactory() {
+    if(restResponseFactory == null) {
+      restResponseFactory = new DefaultRestResponseFactory();
+    }
+    return restResponseFactory;
   }
 }

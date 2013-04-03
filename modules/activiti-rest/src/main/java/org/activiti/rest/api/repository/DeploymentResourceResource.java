@@ -19,8 +19,8 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.RestUrls;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.resource.Get;
 
 
@@ -52,9 +52,8 @@ public class DeploymentResourceResource extends SecuredResource {
 
     if(resourceList.contains(resourceId)) {
       // Build resource representation
-      String resourceUrl = createFullResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, deploymentId, resourceId);
-      String resourceContentUrl = createFullResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deploymentId, resourceId);
-      return new DeploymentResourceResponse(resourceId, resourceUrl, resourceContentUrl);
+           return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+                   .createDeploymentResourceResponse(this, deploymentId, resourceId);
     } else {
       // Resource not found in deployment
       throw new ActivitiObjectNotFoundException("Could not find a resource with id '" + resourceId

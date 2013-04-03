@@ -27,10 +27,11 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
-import org.activiti.rest.api.RestUrls;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.Representation;
@@ -87,6 +88,10 @@ public class DeploymentCollectionResource extends SecuredResource {
   public DeploymentResponse uploadDeployment(Representation entity) {
     try {
       if(authenticate() == false) return null;
+
+      if(entity == null || entity.getMediaType() == null || !MediaType.MULTIPART_FORM_DATA.isCompatible(entity.getMediaType())) {
+        throw new ActivitiIllegalArgumentException("The request should be of type" + MediaType.MULTIPART_FORM_DATA  +".");
+      }
       
       RestletFileUpload upload = new RestletFileUpload(new DiskFileItemFactory());
       List<FileItem> items = upload.parseRepresentation(entity);
@@ -96,6 +101,10 @@ public class DeploymentCollectionResource extends SecuredResource {
         if(fileItem.getName() != null) {
           uploadItem = fileItem;
         }
+      }
+      
+      if(uploadItem == null) {
+        throw new ActivitiIllegalArgumentException("No file content was found in request body.");
       }
       
       DeploymentBuilder deploymentBuilder = ActivitiUtil.getRepositoryService().createDeployment();
@@ -112,9 +121,8 @@ public class DeploymentCollectionResource extends SecuredResource {
       
       setStatus(Status.SUCCESS_CREATED);
       
-      DeploymentResponse response = new DeploymentResponse(deployment, 
-              createFullResourceUrl(RestUrls.URL_DEPLOYMENT, deployment.getId()));
-      return response;
+      return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+              .createDeploymentResponse(this, deployment);
       
     } catch (Exception e) {
       if(e instanceof ActivitiException) {

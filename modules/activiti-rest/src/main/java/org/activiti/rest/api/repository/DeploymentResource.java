@@ -18,8 +18,8 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RequestUtil;
-import org.activiti.rest.api.RestUrls;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -45,9 +45,8 @@ public class DeploymentResource extends SecuredResource {
     if(deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
     }
-    
-    DeploymentResponse response = new DeploymentResponse(deployment, createFullResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId));
-    return response;
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+      .createDeploymentResponse(this, deployment);
   }
   
   @Delete

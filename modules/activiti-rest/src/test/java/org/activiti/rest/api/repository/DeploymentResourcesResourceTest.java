@@ -57,6 +57,8 @@ public class DeploymentResourcesResourceTest extends BaseRestTestCase {
               RestUrls.URL_DEPLOYMENT_RESOURCE, deployment.getId(), "test.txt")));
       assertTrue(txtNode.get("contentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deployment.getId(), "test.txt")));
+      assertTrue(txtNode.get("mediaType").isNull());
+      assertEquals("resource", txtNode.get("type").getTextValue());
       
     } finally {
       // Always cleanup any created deployments, even if the test failed

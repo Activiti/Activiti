@@ -24,6 +24,7 @@ import java.util.Map;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.application.ActivitiRestApplication;
 import org.codehaus.jackson.JsonNode;
+import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
@@ -52,6 +53,22 @@ public class SecuredResource extends ServerResource {
       url.addSegment(MessageFormat.format(urlFragment, arguments));
     }
     return url.toString();
+  }
+  
+  /**
+   * @return the {@link MediaType} resolved from the given resource-name. Returns null if the type cannot
+   * be resolved based on the given name.
+   */
+  public MediaType resolveMediaType(String resourceName) {
+    return ((ActivitiRestApplication)getApplication()).getMediaTypeResolver().resolveMediaType(resourceName);
+  }
+  
+  /**
+   * @return the Restlet Application, casted to the given type.
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends ActivitiRestApplication> T getApplication(Class<T> applicationClass) {
+    return (T) getApplication();
   }
   
   /**
@@ -103,6 +120,7 @@ public class SecuredResource extends ServerResource {
     }
   }
   
+  @SuppressWarnings("deprecation")
   protected Map<String, Object> retrieveVariables(JsonNode jsonNode) {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (jsonNode != null) {
@@ -121,6 +139,8 @@ public class SecuredResource extends ServerResource {
         } else if (valueNode.isTextual()) {
           variables.put(name, valueNode.getTextValue());
         } else {
+          // Not using asText() due to the fact we expect a null-value to be returned rather than en emtpy string
+          // when node is not a simple value-node
           variables.put(name, valueNode.getValueAsText());
         }
       }

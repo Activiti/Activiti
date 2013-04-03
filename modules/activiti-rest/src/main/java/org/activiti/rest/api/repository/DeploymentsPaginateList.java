@@ -18,8 +18,9 @@ import java.util.List;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.api.AbstractPaginateList;
-import org.activiti.rest.api.RestUrls;
+import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 
 /**
  * @author Tijs Rademakers
@@ -36,10 +37,9 @@ public class DeploymentsPaginateList extends AbstractPaginateList {
   @Override
   protected List processList(List list) {
     List<DeploymentResponse> responseList = new ArrayList<DeploymentResponse>();
-    
+    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     for (Object deployment : list) {
-      responseList.add(new DeploymentResponse((Deployment) deployment,
-              resource.createFullResourceUrl(RestUrls.URL_DEPLOYMENT, ((Deployment)deployment).getId())));
+      responseList.add(restResponseFactory.createDeploymentResponse(resource, (Deployment) deployment));
     }
     return responseList;
   }
