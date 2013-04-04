@@ -46,7 +46,7 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  */
 public class MultiInstanceTest extends PluggableActivitiTestCase {
-  
+    
   @Deployment(resources = {"org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml"})
   public void testSequentialUserTasks() {
     String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks", 
@@ -684,53 +684,20 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     HashMap<String, Object> subVariables = new HashMap<String, Object>();
     subVariables.put("x", "y");
 
-    completeTaskWithAct1591InMind(task1, subVariables);
-    completeTaskWithAct1591InMind(task2, subVariables);
+    taskService.complete(task1.getId(), subVariables);
+    taskService.complete(task2.getId(), subVariables);
 
     Task task3 = taskService.createTaskQuery().processDefinitionKey("midProcess").singleResult();
     assertNotNull(task3);
-    completeTaskWithAct1591InMind(task3 , null);
+    taskService.complete(task3.getId() , null);
 
     Task task4 = taskService.createTaskQuery().processDefinitionKey("parentProcess").singleResult();
     assertNotNull(task4);
-    completeTaskWithAct1591InMind(task4, null);
+    taskService.complete(task4.getId(), null);
 
     assertProcessEnded(procId);
   }
   
-  protected void completeTaskWithAct1591InMind(Task task, Map<String, Object> subVariables) {
-
-    try {
-      if (subVariables != null) {
-        taskService.complete(task.getId(), subVariables);
-      } else {
-        taskService.complete(task.getId());
-      }
-    } catch (Exception e) {
-      // See http://jira.codehaus.org/browse/ACT-1591
-      
-      // We need to manually delete the IdentityLinks
-      CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
-      commandExecutor.execute(new Command<Object>() {
-        public Object execute(CommandContext commandContext) {
-          
-          IdentityLinkEntityManager identityLinkEntityManager = Context.getCommandContext().getIdentityLinkEntityManager();
-          List<IdentityLinkEntity> identityLinks = identityLinkEntityManager.findIdentityLinks();
-          for (IdentityLinkEntity identityLink : identityLinks) {
-            identityLinkEntityManager.delete(identityLink);
-          }
-          
-          return null;
-        }
-      });
-      
-      if (subVariables != null) {
-        taskService.complete(task.getId(), subVariables);
-      } else {
-        taskService.complete(task.getId());
-      }
-    }
-  }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithTimer.bpmn20.xml",
       "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })

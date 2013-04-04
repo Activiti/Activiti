@@ -8,7 +8,7 @@
   <artifactId>activiti-root</artifactId>
 
   <packaging>pom</packaging>
-  <version>5.12</version>
+  <version>5.13-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>3.1.2.RELEASE</spring.framework.version>
@@ -538,7 +538,7 @@
       <dependency>
         <groupId>com.fasterxml.uuid</groupId>
         <artifactId>java-uuid-generator</artifactId>
-        <version>3.1.2</version>
+        <version>3.1.3</version>
       </dependency>
       <dependency>
         <groupId>com.microsoft.sqlserver</groupId>
@@ -851,6 +851,11 @@
       <!-- Profile used by the start-explorer.sh script to build the Explorer webapp and all its dependencies -->
       <id>buildRestappDependencies</id>
       <modules>
+        <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-engine</module>
+        <module>modules/activiti-spring</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-rest</module>
       </modules>

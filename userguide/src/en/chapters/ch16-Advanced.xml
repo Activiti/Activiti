@@ -118,4 +118,77 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
         
 	</section>
 	
+	<section id="advanced.uuid.generator">
+	
+	   <title>UUID id generator for high concurrency</title>
+	   
+	   <para>
+	       In some (very) high concurrency load cases, the default id generator may cause exceptions due to not being able
+	       to fetch new id blocks quickly enough. Every process engine has one id generator. The default id generator reserves
+	       a block of id's in the database, such that no other engine will be able to use id's from the same block. During 
+	       engine operations, when the default id generator notices that the id block is used up, a new transaction is started
+	       to fetch a new block. In (very) limited use cases this can cause problems when there is a real high load. For 
+	       most use cases the default id generator is more than sufficient. The default <literal>org.activiti.engine.impl.db.DbIdGenerator</literal>
+	       also has a property <literal>idBlockSize</literal> which can be configured to set the size of the reserved block of id's
+	       and to tweak the behavior of the id fetching. 
+	   </para>
+	   
+	   <para>
+	       The alternative to the default id generator is the <literal>org.activiti.engine.impl.persistence.StrongUuidGenerator</literal>,
+	       which generates a unique <ulink url="http://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</ulink> locally and uses that
+	       as identifier for all entities. Since the UUID is generated without the need for database access, it copes better with very high concurrency use cases.
+	       Do note that performance may differ from the default id generator (both positive and negative) depending on the machine.
+	   </para>
+	   
+	   <para>
+	       The UUID generator can be configured in the activiti configuration as follows:
+<programlisting>
+&lt;property name=&quot;idGenerator&quot;&gt;
+    &lt;bean class=&quot;org.activiti.engine.impl.persistence.StrongUuidGenerator&quot; /&gt;
+&lt;/property&gt;
+</programlisting>	       
+	   </para>
+	   
+	   <para>
+	       The use of the UUID id generator depends on the following extra dependency:
+	       <programlisting>
+ &lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.uuid&lt;/groupId&gt;
+    &lt;artifactId&gt;java-uuid-generator&lt;/artifactId&gt;
+    &lt;version&gt;3.1.3&lt;/version&gt;
+&lt;/dependency&gt;</programlisting>
+	   </para>
+	
+	</section>
+	
+	<section id="advanced.safe.bpmn.xml">
+	
+	   <title>Enable safe BPMN 2.0 xml</title>
+	   
+	   <para>
+	     In most cases the BPMN 2.0 processes that are being deployed to the Activiti engine are under tight control
+	     of eg. the development team. However, in some use cases it might be desirable to upload arbitrary BPMN 2.0 xml
+	     to the engine. In that case, take into consideration that a user with bad intentions can bring the server 
+	     down as described <ulink url="http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/">here</ulink>.
+	   </para>
+	   
+	   <para>
+	     To avoid the attacks described in the link above, a property <emphasis>enableSafeBpmnXml</emphasis> can be set on the process 
+	     engine configuration:
+	     <programlisting>&lt;property name=&quot;enableSafeBpmnXml&quot; value=&quot;true&quot;/&gt;</programlisting>
+	   </para>
+	   
+	   <para>
+	       <emphasis role="bold">By default this feature is disabled!</emphasis> The reason for this is that it relies on 
+	       the availability of the <ulink url="http://download.java.net/jdk7/archive/b123/docs/api/javax/xml/transform/stax/StAXSource.html">StaxSource</ulink>
+	       class. Unfortunately, on some platforms (eg. JDK 6, JBoss, etc.) this class is unavailable (due to older xml parser implementation)
+	       and thus the safe BPMN 2.0 xml feature cannot be enabled. 
+	   </para>
+	   
+	   <para>    
+	       If the platform on which Activti runs does support it, do enable this feature. 
+	   </para>
+	
+	</section>
+	
 </chapter>

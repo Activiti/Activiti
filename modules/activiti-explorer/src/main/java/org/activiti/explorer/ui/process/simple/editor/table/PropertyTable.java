@@ -20,7 +20,6 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.process.simple.editor.listener.AddPropertyClickListener;
 import org.activiti.explorer.ui.process.simple.editor.listener.DeletePropertyClickListener;
 
-
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -87,10 +86,7 @@ public class PropertyTable extends Table {
     newItem.getItemProperty(ID_PROPERTY_NAME).setValue(propertyName == null ? DEFAULT_PROPERTY_NAME : propertyName);
 
     // type
-    ComboBox typeComboBox = new ComboBox("", Arrays.asList(
-            i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_TYPE_TEXT),
-            i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_TYPE_NUMBER),
-            i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_TYPE_DATE)));
+    ComboBox typeComboBox = new ComboBox("", Arrays.asList("text", "number", "date"));
     typeComboBox.setNullSelectionAllowed(false);
     if (propertyType == null) {
       typeComboBox.setValue(typeComboBox.getItemIds().iterator().next());

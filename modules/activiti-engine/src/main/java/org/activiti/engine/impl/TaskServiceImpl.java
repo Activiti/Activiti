@@ -15,11 +15,11 @@ package org.activiti.engine.impl;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cmd.AddCommentCmd;
@@ -47,6 +47,7 @@ import org.activiti.engine.impl.cmd.RemoveTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.ResolveTaskCmd;
 import org.activiti.engine.impl.cmd.SaveAttachmentCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
+import org.activiti.engine.impl.cmd.SetTaskDueDateCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -177,6 +178,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public void setPriority(String taskId, int priority) {
     commandExecutor.execute(new SetTaskPriorityCmd(taskId, priority) );
+  }
+
+  public void setDueDate(String taskId, Date dueDate) {
+    commandExecutor.execute(new SetTaskDueDateCmd(taskId, dueDate) );
   }
   
   public TaskQuery createTaskQuery() {
