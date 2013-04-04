@@ -397,7 +397,7 @@
   &lt;packaging>jar&lt;/packaging>
   &lt;name>Acme Corporation Money Tasks&lt;/name>
 ...
-&lt;/pom></programlisting>
+&lt;/project></programlisting>
         </para>
         <para>As you can see, this is just a basic pom.xml file that defines a
             <literal>groupId</literal>, <literal>artifactId</literal> and <literal>version</literal>
