@@ -3088,7 +3088,7 @@ public class FakeLdapService {
 		    
 		    <para>
 <programlisting>
-&lt;scriptTask id=&quot;scrip&quot;" scriptFormat=&quot;JavaScript&quot; activiti:autoStoreVariables=&quot;false&quot;>
+&lt;scriptTask id=&quot;script&quot; scriptFormat=&quot;JavaScript&quot; activiti:autoStoreVariables=&quot;false&quot;>
 </programlisting>
               The default of this parameter is <literal>false</literal>, meaning that if the parameter is omitted
               from the script task definition, all the declared variables will only exist during the duration of the script.
