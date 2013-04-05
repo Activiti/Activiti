@@ -13,12 +13,13 @@ import org.activiti.rest.api.identity.UserGroupsResource;
 import org.activiti.rest.api.identity.UserPictureResource;
 import org.activiti.rest.api.identity.UserResource;
 import org.activiti.rest.api.identity.UserSearchResource;
-import org.activiti.rest.api.legacy.DeploymentArtifactResource;
-import org.activiti.rest.api.legacy.DeploymentArtifactsResource;
-import org.activiti.rest.api.legacy.DeploymentDeleteResource;
-import org.activiti.rest.api.legacy.DeploymentUploadResource;
-import org.activiti.rest.api.legacy.DeploymentsDeleteResource;
-import org.activiti.rest.api.legacy.DeploymentsResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentArtifactResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentArtifactsResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentDeleteResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentUploadResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentsDeleteResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentsResource;
+import org.activiti.rest.api.legacy.process.ProcessDefinitionsResource;
 import org.activiti.rest.api.management.JobExecuteResource;
 import org.activiti.rest.api.management.JobResource;
 import org.activiti.rest.api.management.JobsExecuteResource;
@@ -29,7 +30,6 @@ import org.activiti.rest.api.management.TablesResource;
 import org.activiti.rest.api.process.ProcessDefinitionDiagramResource;
 import org.activiti.rest.api.process.ProcessDefinitionFormResource;
 import org.activiti.rest.api.process.ProcessDefinitionPropertiesResource;
-import org.activiti.rest.api.process.ProcessDefinitionsResource;
 import org.activiti.rest.api.process.ProcessInstanceDiagramResource;
 import org.activiti.rest.api.process.ProcessInstanceResource;
 import org.activiti.rest.api.process.ProcessInstanceSignalExecutionResource;
@@ -42,6 +42,8 @@ import org.activiti.rest.api.repository.DeploymentResource;
 import org.activiti.rest.api.repository.DeploymentResourceCollectionResource;
 import org.activiti.rest.api.repository.DeploymentResourceDataResource;
 import org.activiti.rest.api.repository.DeploymentResourceResource;
+import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
+import org.activiti.rest.api.repository.ProcessDefinitionResource;
 import org.activiti.rest.api.repository.SimpleWorkflowResource;
 import org.activiti.rest.api.task.TaskAddResource;
 import org.activiti.rest.api.task.TaskAttachmentAddResource;
@@ -66,6 +68,9 @@ public class RestServicesInit {
     router.attach("/repository/deployments/{deploymentId}/resources", DeploymentResourceCollectionResource.class);
     router.attach("/repository/deployments/{deploymentId}/resources/{resourceId}", DeploymentResourceResource.class);
     router.attach("/repository/deployments/{deploymentId}/resourcedata/{resourceId}", DeploymentResourceDataResource.class);
+    
+    router.attach("/repository/process-definitions", ProcessDefinitionCollectionResource.class);
+    router.attach("/repository/process-definitions/{processDefinitionId}", ProcessDefinitionResource.class);
     
     // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);

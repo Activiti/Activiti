@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.process;
+package org.activiti.rest.api.legacy.process;
 
 import java.io.Serializable;
 
@@ -20,7 +20,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 /**
  * @author Tijs Rademakers
  */
-public class ProcessDefinitionResponse implements Serializable {
+public class LegacyProcessDefinitionResponse implements Serializable {
   
   private static final long serialVersionUID = 1L;
   
@@ -35,7 +35,7 @@ public class ProcessDefinitionResponse implements Serializable {
   boolean isGraphicNotationDefined;
   String category;
 
-  public ProcessDefinitionResponse(ProcessDefinitionEntity processDefinition) {
+  public LegacyProcessDefinitionResponse(ProcessDefinitionEntity processDefinition) {
     this.setId(processDefinition.getId());
     this.setKey(processDefinition.getKey());
     this.setName(processDefinition.getName());

@@ -31,6 +31,7 @@ import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.ext.fileupload.RestletFileUpload;
@@ -60,23 +61,19 @@ public class DeploymentCollectionResource extends SecuredResource {
     
     DeploymentQuery deploymentQuery = ActivitiUtil.getRepositoryService().createDeploymentQuery();
     
+    Form query = getQuery();
     // Apply filters
-    String name = getQuery().getFirstValue("deploymentName");
-    String nameLike = getQuery().getFirstValue("deploymentNameLike");
-    String category = getQuery().getFirstValue("deploymentCategory");
-    String categoryNotEquals = getQuery().getFirstValue("deploymentCategoryNotEquals");
-    
-    if(name != null) {
-      deploymentQuery.deploymentName(name);
+    if(getQuery().getNames().contains("name")) {
+      deploymentQuery.deploymentName(getQueryParameter("name", query));
     }
-    if(nameLike != null) {
-      deploymentQuery.deploymentNameLike(nameLike);
+    if(getQuery().getNames().contains("nameLike")) {
+      deploymentQuery.deploymentNameLike(getQueryParameter("nameLike", query));
     }
-    if(category != null) {
-      deploymentQuery.deploymentCategory(category);
+    if(getQuery().getNames().contains("category")) {
+      deploymentQuery.deploymentCategory(getQueryParameter("category", query));
     }
-    if(categoryNotEquals != null) {
-      deploymentQuery.deploymentCategoryNotEquals(categoryNotEquals);
+    if(getQuery().getNames().contains("categoryNotEquals")) {
+      deploymentQuery.deploymentCategoryNotEquals(getQueryParameter("categoryNotEquals", query));
     }
 
     DataResponse response = new DeploymentsPaginateList(this).paginateList(getQuery(), 

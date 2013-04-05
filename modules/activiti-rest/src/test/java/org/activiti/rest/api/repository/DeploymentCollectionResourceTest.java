@@ -8,6 +8,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
+import org.restlet.Client;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -42,58 +43,35 @@ public class DeploymentCollectionResourceTest extends BaseRestTestCase {
               .addClasspathResource("org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml")
               .deploy();
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
-      Representation response = client.get();
-      
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
-      assertEquals(2L, dataNode.size());
+      String baseUrl = RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION);
+      assertResultsPresentInDataResponse(baseUrl, firstDeployment.getId(), secondDeployment.getId());
       
       // Check name filtering
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION) + "?deploymentName=Deployment 1");
-      response = client.get();
-      
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      dataNode = objectMapper.readTree(response.getStream()).get("data");
-      assertEquals(1L, dataNode.size());
-      assertEquals(firstDeployment.getId(), dataNode.get(0).get("id").getTextValue());
+      String url = baseUrl + "?name=Deployment 1";
+      assertResultsPresentInDataResponse(url, firstDeployment.getId());
       
       // Check name-like filtering
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION) + "?deploymentNameLike=%25ment 2");
-      response = client.get();
-      
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      dataNode = objectMapper.readTree(response.getStream()).get("data");
-      assertEquals(1L, dataNode.size());
-      assertEquals(secondDeployment.getId(), dataNode.get(0).get("id").getTextValue());
+      url = baseUrl + "?nameLike=" + encode("%ment 2");
+      assertResultsPresentInDataResponse(url, secondDeployment.getId());
       
       // Check category filtering
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION) + "?deploymentCategory=DEF");
-      response = client.get();
-      
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      dataNode = objectMapper.readTree(response.getStream()).get("data");
-      assertEquals(1L, dataNode.size());
-      assertEquals(firstDeployment.getId(), dataNode.get(0).get("id").getTextValue());
+      url = baseUrl +"?category=DEF";
+      assertResultsPresentInDataResponse(url, firstDeployment.getId());
       
       // Check category-not-equals filtering
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION) + "?deploymentCategoryNotEquals=DEF");
-      response = client.get();
-      
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      dataNode = objectMapper.readTree(response.getStream()).get("data");
-      assertEquals(1L, dataNode.size());
-      assertEquals(secondDeployment.getId(), dataNode.get(0).get("id").getTextValue());
+      url = baseUrl +"?categoryNotEquals=DEF";
+      assertResultsPresentInDataResponse(url, secondDeployment.getId());
       
       // Check ordering by name
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION)
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION)
               + "?sort=name&order=asc");
-      response = client.get();
+      Representation response = client.get();
       
-      dataNode = objectMapper.readTree(response.getStream()).get("data");
+      JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
       assertEquals(2L, dataNode.size());
       assertEquals(firstDeployment.getId(), dataNode.get(0).get("id").getTextValue());
       assertEquals(secondDeployment.getId(), dataNode.get(1).get("id").getTextValue());
+      client.release();
       
       // Check ordering by deploy time
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION)
@@ -104,6 +82,7 @@ public class DeploymentCollectionResourceTest extends BaseRestTestCase {
       assertEquals(2L, dataNode.size());
       assertEquals(firstDeployment.getId(), dataNode.get(0).get("id").getTextValue());
       assertEquals(secondDeployment.getId(), dataNode.get(1).get("id").getTextValue());
+      client.release();
       
       // Check paging
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION)

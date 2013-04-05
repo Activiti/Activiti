@@ -16,6 +16,10 @@
             <table>
               <title>URL query parameters</title>
               <tgroup cols='3'>
+                <colspec colname="c1"/>
+                <colspec colname="c2"/>
+                <colspec colname="c3"/>
+                <colspec colname="c4"/>
                 <thead>
                   <row>
                     <entry>Parameter</entry>
@@ -26,52 +30,37 @@
                 </thead>
                 <tbody>
                   <row>
-                    <entry>deploymentName</entry>
+                    <entry>name</entry>
                     <entry>No</entry>
                     <entry>String</entry>
                     <entry>Only return deployments with the given name.</entry>
                   </row>
                   <row>
-                    <entry>deploymentNameLike</entry>
+                    <entry>nameLike</entry>
                     <entry>No</entry>
                     <entry>String</entry>
                     <entry>Only return deployments with a name like the given name.</entry>
                   </row>
                   <row>
-                    <entry>deploymentCategory</entry>
+                    <entry>category</entry>
                     <entry>No</entry>
                     <entry>String</entry>
                     <entry>Only return deployments with the given category.</entry>
                   </row>
                   <row>
-                    <entry>deploymentCategoryNotEquals</entry>
+                    <entry>categoryNotEquals</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return deployments wich don't have the given category.</entry>
-                  </row>
-                  <row>
-                    <entry>start</entry>
-                    <entry>No</entry>
-                    <entry>Number</entry>
-                    <entry>The result index to start from.</entry>
-                  </row>
-                  <row>
-                    <entry>size</entry>
-                    <entry>No</entry>
-                    <entry>Number</entry>
-                    <entry>The size of the resultset, starting from the start index (if defined).</entry>
-                  </row>
-                  <row>
-                    <entry>order</entry>
-                    <entry>No</entry>
-                    <entry>'asc' (default) or 'desc'</entry>
-                    <entry>Direction of the sort, to be used toghether with the sort.</entry>
+                    <entry>Only return deployments which don't have the given category.</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
                     <entry>No</entry>
                     <entry>'id' (default), 'name' or 'deploytime'</entry>
-                    <entry>Property to sort on, to be used toghether with the sort.</entry>
+                    <entry>Property to sort on, to be used toghether with the 'order'.</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -528,6 +517,270 @@
       allowing browsers to dowload the file instead of displaying it.
     </para>
   </section>  
+ </section>
+ <section>
+  <title>Process Definitions</title>
+  
+   <section>
+      <title>List of process definitions</title>
+        <para>
+          <programlisting>GET repository/process-definitions</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>version</entry>
+                    <entry>No</entry>
+                    <entry>integer</entry>
+                    <entry>Only return process definitions with the given version.</entry>
+                  </row>
+                  <row>
+                    <entry>name</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>nameLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with a name like the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>key</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with the given key.</entry>
+                  </row>
+                  <row>
+                    <entry>keyLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with a name like the given key.</entry>
+                  </row>
+                  <row>
+                    <entry>resourceName</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with the given resource name.</entry>
+                  </row>
+                  <row>
+                    <entry>resourceNameLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with a name like the given resource name.</entry>
+                  </row>
+                  <row>
+                    <entry>category</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with the given category.</entry>
+                  </row>
+                  <row>
+                    <entry>categoryLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with a category like the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>categoryNotEquals</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions which don't have the given category.</entry>
+                  </row>
+                  <row>
+                    <entry>deploymentId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions which are part of a deployment with the given id.</entry>
+                  </row>
+                  <row>
+                    <entry>startableByUser</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions which can be started by the given user.</entry>
+                  </row>
+                  <row>
+                    <entry>latest</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Only return the latest process definition versions. Can only be used toghether with 'key' and 'keyLike' parameters, using any other parameter will result in a 400-response.</entry>
+                  </row>
+                  <row>
+                    <entry>suspended</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns process definitions which are suspended. If <literal>false</literal>, only active process definitions (which are not suspended) are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>No</entry>
+                    <entry>'name' (default), 'id', 'key', 'category', 'deploymentId' and 'version'</entry>
+                    <entry>Property to sort on, to be used toghether with the 'order'.</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates request was successful and the process-definitions are returned</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates an parameter was passed in the wrong format or that 'latest' is used with other parameters other than 'key' and 'keyLike'. The status-message contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "data": [
+    { 
+      "id" : "oneTaskProcess:1:4",
+      "url" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "version" : 1,
+      "key" : "oneTaskProcess",
+      "category" : "Examples",
+      "suspended" : false,
+      "name" : "The One Task Process",
+      "description" : "This is a process for testing purposes",
+      "deployment" : "http://localhost:8081/repository/deployments/2",
+      "graphicalNotationDefined" : true,
+      "resource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.xml",
+      "diagramResource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.png",
+      "startFormDefined" : false
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      <itemizedlist>
+          <listitem>
+            <para><literal>graphicalNotationDefined</literal>: Indicates the process definition contains graphical information (BPMN DI).</para>
+          </listitem>
+          <listitem>
+            <para><literal>resource</literal>: Contains the actual deployed BPMN 2.0 xml.</para>
+          </listitem>
+          <listitem>
+            <para><literal>diagramResource</literal>: Contains a graphical representation of the process, null when no diagram is available.</para>
+          </listitem>
+      </itemizedlist>
+    </para>
+    </section>
+   <section>
+      <title>Get a single process definition</title>
+        <para>
+          <programlisting>GET repository/process-definitions/{processDefinitionId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processDefinitionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process definition to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process definition was found and returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process definition was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "id" : "oneTaskProcess:1:4",
+  "url" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+  "version" : 1,
+  "key" : "oneTaskProcess",
+  "category" : "Examples",
+  "suspended" : false,
+  "name" : "The One Task Process",
+  "description" : "This is a process for testing purposes",
+  "deployment" : "http://localhost:8081/repository/deployments/2",
+  "graphicalNotationDefined" : true,
+  "resource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.xml",
+  "diagramResource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.png",
+  "startFormDefined" : false
+}</programlisting>
+      <itemizedlist>
+          <listitem>
+            <para><literal>graphicalNotationDefined</literal>: Indicates the process definition contains graphical information (BPMN DI).</para>
+          </listitem>
+          <listitem>
+            <para><literal>resource</literal>: Contains the actual deployed BPMN 2.0 xml.</para>
+          </listitem>
+          <listitem>
+            <para><literal>diagramResource</literal>: Contains a graphical representation of the process, null when no diagram is available.</para>
+          </listitem>
+      </itemizedlist>
+    </para>
+    </section>
  </section>
  
  

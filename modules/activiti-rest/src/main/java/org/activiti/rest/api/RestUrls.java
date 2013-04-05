@@ -28,6 +28,7 @@ public final class RestUrls {
   public static final String SEGMENT_REPOSITORY_RESOURCES = "repository";
   
   public static final String SEGMENT_DEPLOYMENT_RESOURCE = "deployments";
+  public static final String SEGMENT_PROCESS_DEFINITION_RESOURCE = "process-definitions";
   public static final String SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE = "resources";
   public static final String SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE_CONTENT = "resourcedata";
   
@@ -69,5 +70,14 @@ public final class RestUrls {
     return MessageFormat.format(StringUtils.join(segments, '/'), arguments);
   }
   
+  /**
+   * URL template for the process definition collection: <i>repository/process-definitions</i>
+   */
+  public static final String[] URL_PROCESS_DEFINITION_COLLECTION = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE};
+  
+  /**
+   * URL template for a single process definition: <i>repository/process-definitions/{0:processDefinitionId}</i>
+   */
+  public static final String[] URL_PROCESS_DEFINITION = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}"};
   
 }

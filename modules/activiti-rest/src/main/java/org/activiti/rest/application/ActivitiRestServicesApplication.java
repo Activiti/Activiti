@@ -14,7 +14,7 @@
 package org.activiti.rest.application;
 
 import org.activiti.rest.api.DefaultResource;
-import org.activiti.rest.api.DefaultRestResponseFactory;
+import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.filter.JsonpFilter;
 import org.restlet.Restlet;
@@ -56,7 +56,7 @@ public class ActivitiRestServicesApplication extends ActivitiRestApplication {
   
   public RestResponseFactory getRestResponseFactory() {
     if(restResponseFactory == null) {
-      restResponseFactory = new DefaultRestResponseFactory();
+      restResponseFactory = new RestResponseFactory();
     }
     return restResponseFactory;
   }

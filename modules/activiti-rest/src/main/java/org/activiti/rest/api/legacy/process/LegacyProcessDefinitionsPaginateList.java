@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.process;
+package org.activiti.rest.api.legacy.process;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +25,14 @@ import org.activiti.rest.api.ActivitiUtil;
 /**
  * @author Tijs Rademakers
  */
-public class ProcessDefinitionsPaginateList extends AbstractPaginateList {
+public class LegacyProcessDefinitionsPaginateList extends AbstractPaginateList {
 
   @SuppressWarnings("rawtypes")
   @Override
   protected List processList(List list) {
-    List<ProcessDefinitionResponse> responseProcessDefinitions = new ArrayList<ProcessDefinitionResponse>();
+    List<LegacyProcessDefinitionResponse> responseProcessDefinitions = new ArrayList<LegacyProcessDefinitionResponse>();
     for (Object definition : list) {
-      ProcessDefinitionResponse processDefinition = new ProcessDefinitionResponse((ProcessDefinitionEntity) definition);
+      LegacyProcessDefinitionResponse processDefinition = new LegacyProcessDefinitionResponse((ProcessDefinitionEntity) definition);
       StartFormData startFormData = ActivitiUtil.getFormService().getStartFormData(((ProcessDefinitionEntity) definition).getId());
       if (startFormData != null) {
         processDefinition.setStartFormResourceKey(startFormData.getFormKey());

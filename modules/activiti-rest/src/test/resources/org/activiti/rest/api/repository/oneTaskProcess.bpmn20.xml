@@ -2,10 +2,10 @@
 <definitions
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
-  targetNamespace="Examples">
+  targetNamespace="OneTaskCategory">
 
   <process id="oneTaskProcess" name="The One Task Process">
-    <documentation>This is a process for testing purposes</documentation>
+    <documentation>One task process description</documentation>
   
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
