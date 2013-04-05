@@ -74,4 +74,8 @@ public class DeploymentUploadResource extends SecuredResource {
       throw new ActivitiException(e.getMessage(), e);
     }
   }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
+  }
 }

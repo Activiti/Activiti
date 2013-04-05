@@ -21,6 +21,7 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 
 /**
@@ -44,5 +45,9 @@ public class DeploymentsResource extends SecuredResource {
     DataResponse response = new LegacyDeploymentsPaginateList().paginateList(getQuery(), 
         ActivitiUtil.getRepositoryService().createDeploymentQuery(), "id", properties);
     return response;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

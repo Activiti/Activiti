@@ -19,6 +19,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.data.MediaType;
+import org.restlet.data.Status;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
 
@@ -60,5 +61,9 @@ public class DeploymentArtifactResource extends SecuredResource {
     
     InputRepresentation output = new InputRepresentation(resourceStream, mediaType);
     return output;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

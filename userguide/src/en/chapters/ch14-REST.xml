@@ -4,7 +4,153 @@
 <chapter>
 
   <title>REST API</title>
-
+  <section>
+    <title>General Activiti REST principles</title>
+    <section>
+      <title>Installation and Authentication</title>
+      
+      <para>Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. By default the Activiti Engine will connect to a standalone H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).</para>
+      <para>All REST-resources (except for the Login-resource) require a valid Activiti-user to be authenticated. Basic HTTP access authentication is used, so you should always include a <literal>Authorization: Basic ...==</literal> HTTP-header when performing requests or include the username and password in the request-url (eg. <literal>http://username:password@localhost...</literal>).
+      </para>
+      <para><emphasis role="bold">It's recommended to use Basic in combination with HTTPS.</emphasis></para>
+    </section>
+    
+     <section>
+      <title>Methods and return-codes</title>
+      <table>
+        <title>HTTP-methods and corresponding operations</title>
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry>Method</entry>
+              <entry>Operations</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><literal>GET</literal></entry>
+              <entry>Get a single resource or get a collection of resources.</entry>
+            </row>
+            <row>
+              <entry><literal>POST</literal></entry>
+              <entry>Create a new resource.</entry>
+            </row>
+            <row>
+              <entry><literal>PUT</literal></entry>
+              <entry>Update properties of an existing resource. Also used for invoking actions on an existing resource.</entry>
+            </row>
+            <row>
+              <entry><literal>DELETE</literal></entry>
+              <entry>Delete an existing resource.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>     
+      <table>
+        <title>HTTP-methods response codes</title>
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry>Response</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><literal>200 - Ok</literal></entry>
+              <entry>The operation was successful and a response has been returned (<literal>GET</literal> and <literal>PUT</literal> requests).</entry>
+            </row>
+            <row>
+              <entry><literal>201 - Created</literal></entry>
+              <entry>The operation was successful and the entity has been created and is returned in the response-body (<literal>POST</literal> request).</entry>
+            </row>
+            <row>
+              <entry><literal>204 - No content</literal></entry>
+              <entry>The operation was successful and entity has been deleted and therefor there is no response-body returned (<literal>DELETE</literal> request).</entry>
+            </row>
+            <row>
+              <entry><literal>401 - Unauthorized</literal></entry>
+              <entry>The operation failed. The operation requires an Authentication header to be set. If this was present in the request, the supplied credentials are not valid or the user is not authorized to perform this operation.</entry>
+            </row>
+            <row>
+              <entry><literal>404 - Not found</literal></entry>
+              <entry>The operation failed.The requested resource was not found.</entry>
+            </row>
+            <row>
+              <entry><literal>405 - Method not allowed</literal></entry>
+              <entry>The operation failed. The used method is not allowed for this resource. Eg. trying to update (PUT) a deployment-resource will result in a <literal>405</literal> status.</entry>
+            </row>
+            <row>
+              <entry><literal>409 - Conflict</literal></entry>
+              <entry>The operation failed. The operation causes an update of a resource that has been updated by another operation, which makes the update no longer valid.</entry>
+            </row>
+            <row>
+              <entry><literal>500 - Internal server error</literal></entry>
+              <entry>The operation failed. An unexpected exception occured while executing the operation. The response-body contains details about the error.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>     
+        <para>
+        The media-type of the HTTP-responses is always <literal>application/json</literal> unless binary content is requested (eg. deployment resource data), the media-type of the content is used. 
+        </para> 
+    </section>
+    <section>
+      <title>Request parameters</title>
+      <section>
+        <title>URL fragments</title>
+        <para>
+            Parameters that are part of the url (eg. the deploymentId parameter in <literal>http://host/actviti-rest/service/repository/deployments/{deploymentId}</literal>)
+            need to be properly escaped (see <ulink url="https://en.wikipedia.org/wiki/Percent-encoding">URL-encoding or Percent-encoding</ulink>) in case the segment contains special characters. Most
+            frameworks have this functionality built in, but it should be taken into account. Especially for segments that can contains forward-slashes (eg. deployment resource), this is required.
+        </para>
+      </section>
+      
+      <section>
+        <title>URL query parameters</title>
+        <para>
+            Parameters added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?name=Deployment</literal>) can have the folowing types and are
+            mentioned in the corresponding REST-API documentation:
+            
+            <table>
+              <title>URL query parameter types</title>
+              <tgroup cols="2">
+                <thead>
+                  <row>
+                    <entry>Type</entry>
+                    <entry>Format</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>String</entry>
+                    <entry>Plain text parameters. Can contain any valid characters that are allowed in URL's.</entry>
+                  </row>
+                  <row>
+                    <entry>Integer</entry>
+                    <entry>Parameter representing an integer value. Can only contain numeric non-decmimal values, between -2.147.483.648 and 2.147.483.647.</entry>
+                  </row>
+                  <row>
+                    <entry>Long</entry>
+                    <entry>Parameter representing a long value. Can only contain numeric non-decmimal values, between -9.223.372.036.854.775.808 and 9.223.372.036.854.775.807.</entry>
+                  </row>
+                  <row>
+                    <entry>Boolean</entry>
+                    <entry>Parameter representing a boolean value. Can be eiter <literal>true</literal> or <literal>false</literal>. All other values other than these two, will cause a '<literal>405 - Bad request</literal>' response.</entry>
+                  </row>
+                  <row>
+                    <entry>Date</entry>
+                    <entry>Parameter representing a date value. Use the ISO-8601 date-format (see <ulink url="http://en.wikipedia.org/wiki/ISO_8601">ISO-8601 on wikipedia</ulink>) using both time and date-components (eg. <literal>2013-04-03T23:45Z</literal>).</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+        </para>
+      </section>
+      
+    </section>
+      
+  </section>
   <section>
     <title>Deployment</title>
      <section>

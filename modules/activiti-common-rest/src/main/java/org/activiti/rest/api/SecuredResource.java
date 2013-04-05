@@ -147,7 +147,7 @@ public class SecuredResource extends ServerResource {
     loggedInUser = ((ActivitiRestApplication) getApplication()).authenticate(getRequest(), getResponse());
     if(loggedInUser == null) {
       // Not authenticated
-      setStatus(Status.CLIENT_ERROR_FORBIDDEN, "Authentication is required");
+      setStatus(getAuthenticationFailureStatus(), "Authentication is required");
       return false;
     
     } else if(group == null) {
@@ -167,7 +167,7 @@ public class SecuredResource extends ServerResource {
         }
       }
       if(allowed == false) {
-        setStatus(Status.CLIENT_ERROR_FORBIDDEN, "User is not part of the group " + group);
+        setStatus(getAuthenticationFailureStatus(), "User is not part of the group " + group);
       }
       return allowed;
     }
@@ -199,5 +199,9 @@ public class SecuredResource extends ServerResource {
       }
     }
     return variables;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_UNAUTHORIZED;
   }
 }
