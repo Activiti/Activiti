@@ -39,7 +39,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 		<property name="databaseSchemaUpdate" value="true" />
 		<property name="mailServerHost" value="localhost" />
 		<property name="mailServerPort" value="5025" />
-		<property name="jobExecutorActivate" value="true" />
+		<property name="jobExecutorActivate" value="false" />
 	</bean>
 
 	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
