@@ -733,9 +733,9 @@
       <modules>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-common-rest</module>
-        <module>activiti-bpmn-model</module>
-        <module>activiti-bpmn-converter</module>
-        <module>activiti-bpmn-layout</module>
+        <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
