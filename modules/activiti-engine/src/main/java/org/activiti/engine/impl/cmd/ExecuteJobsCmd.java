@@ -44,6 +44,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
   }
 
   public Object execute(CommandContext commandContext) {
+    
     if(jobId == null) {
       throw new ActivitiIllegalArgumentException("jobId is null");
     }
@@ -51,6 +52,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     if (log.isDebugEnabled()) {
       log.debug("Executing job {}", jobId);
     }
+    
     JobEntity job = commandContext
       .getJobEntityManager()
       .findJobById(jobId);
@@ -64,7 +66,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       jobExecutorContext.setCurrentJob(job);
     }
     
-    try { 
+    try {
       job.execute(commandContext);
     } catch (RuntimeException exception) {
       // When transaction is rolled back, decrement retries
