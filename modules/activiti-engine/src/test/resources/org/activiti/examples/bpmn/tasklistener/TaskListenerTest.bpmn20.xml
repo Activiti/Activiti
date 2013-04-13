@@ -29,34 +29,4 @@
     <sequenceFlow id="flow3" sourceRef="task2" targetRef="theEnd"></sequenceFlow>
     <endEvent id="theEnd"></endEvent>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_taskListenerProcess">
-    <bpmndi:BPMNPlane bpmnElement="taskListenerProcess" id="BPMNPlane_taskListenerProcess">
-      <bpmndi:BPMNShape bpmnElement="task1" id="BPMNShape_task1">
-        <omgdc:Bounds height="60.0" width="100.0" x="140.0" y="170.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="task2" id="BPMNShape_task2">
-        <omgdc:Bounds height="60.0" width="100.0" x="315.0" y="170.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="theEnd" id="BPMNShape_theEnd">
-        <omgdc:Bounds height="35.0" width="35.0" x="460.0" y="182.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="theStart" id="BPMNShape_theStart">
-        <omgdc:Bounds height="35.0" width="35.0" x="40.0" y="182.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
-        <omgdi:waypoint x="415.0" y="200.0"></omgdi:waypoint>
-        <omgdi:waypoint x="460.0" y="199.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="240.0" y="200.0"></omgdi:waypoint>
-        <omgdi:waypoint x="256.0" y="200.0"></omgdi:waypoint>
-        <omgdi:waypoint x="315.0" y="200.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="75.0" y="199.0"></omgdi:waypoint>
-        <omgdi:waypoint x="91.0" y="199.0"></omgdi:waypoint>
-        <omgdi:waypoint x="140.0" y="200.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
 </definitions>

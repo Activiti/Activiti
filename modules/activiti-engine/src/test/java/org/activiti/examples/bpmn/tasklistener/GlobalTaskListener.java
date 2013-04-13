@@ -9,10 +9,17 @@ public class GlobalTaskListener implements TaskListener{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private int initExecuteCount = 0 ; 
 
 	@Override
 	public void notify(DelegateTask delegateTask) {
-		System.out.println( "this is global listener : " + delegateTask.getName() +" , "+ delegateTask.getEventName() );
+		Object count = delegateTask.getVariable("executeCount") ;
+		if( count != null ) {
+			initExecuteCount = (Integer)count ;
+			initExecuteCount ++ ;
+		}
+		delegateTask.setVariable("executeCount", initExecuteCount) ;
 	}
 
 }

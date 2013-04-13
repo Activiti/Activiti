@@ -557,9 +557,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   
   private void executeGlobalListener( String taskEventName ) {
-	  ProcessEngineConfigurationImpl configurationImpl = Context.getProcessEngineConfiguration() ; 
-	  if( configurationImpl.isEnableGlobalListener()){
-		  executeListener(taskEventName , configurationImpl.getGlobalTaskListener());
+	  TaskListener taskListener = Context.getProcessEngineConfiguration().getGlobalTaskListener() ; 
+	  if( taskListener != null ){
+		  executeListener(taskEventName , taskListener);
 	  }
   }
   
