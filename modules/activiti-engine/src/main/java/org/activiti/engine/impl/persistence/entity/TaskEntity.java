@@ -27,6 +27,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.HasRevision;
@@ -522,20 +523,44 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       List<TaskListener> taskEventListeners = getTaskDefinition().getTaskListener(taskEventName);
       if (taskEventListeners != null) {
         for (TaskListener taskListener : taskEventListeners) {
-          ExecutionEntity execution = getExecution();
-          if (execution != null) {
-            setEventName(taskEventName);
-          }
-          try {
-            Context.getProcessEngineConfiguration()
-              .getDelegateInterceptor()
-              .handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask)this));
-          }catch (Exception e) {
-            throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
-          }
+//          ExecutionEntity execution = getExecution();
+//          if (execution != null) {
+//            setEventName(taskEventName);
+//          }
+//          try {
+//            Context.getProcessEngineConfiguration()
+//              .getDelegateInterceptor()
+//              .handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask)this));
+//          }catch (Exception e) {
+//            throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
+//          }
+        	executeListener(taskEventName, taskListener) ;
         }
       }
     }
+    executeGlobalListener(taskEventName) ;
+    
+  }
+  
+  protected void executeListener ( String taskEventName , TaskListener taskListener) {
+	  ExecutionEntity execution = getExecution();
+      if (execution != null) {
+        setEventName(taskEventName);
+      }
+      try {
+        Context.getProcessEngineConfiguration()
+          .getDelegateInterceptor()
+          .handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask)this));
+      }catch (Exception e) {
+        throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
+      }
+  }
+  
+  private void executeGlobalListener( String taskEventName ) {
+	  TaskListener taskListener = Context.getProcessEngineConfiguration().getGlobalTaskListener() ; 
+	  if( taskListener != null ){
+		  executeListener(taskEventName , taskListener);
+	  }
   }
   
   @Override
