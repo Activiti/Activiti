@@ -1,45 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions id="taskListenerExample" 
-  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
-	targetNamespace="Examples">
-	
-	<process id="taskListenerProcess" name="Task  Listener Example">
-	
-		<startEvent id="theStart" />
-		
-		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1" />
-
-		<userTask id="task1" name="Schedule meeting" >
-		  <documentation>
-		    Schedule a meeting with management.
-		  </documentation>
-		  <extensionElements>
-		    <activiti:taskListener event="create" class="org.activiti.examples.bpmn.tasklistener.TaskCreateListener" />
-		    <activiti:taskListener event="complete" class="org.activiti.examples.bpmn.tasklistener.TaskCompleteListener">
-		      <activiti:field name="greeter" stringValue="The Process" />
-              <activiti:field name="shortName" expression="${'Activiti'.substring(0,3)}" />
-		    </activiti:taskListener>
-            <activiti:taskListener event="assignment" class="org.activiti.examples.bpmn.tasklistener.TaskAssignmentListener" />
-            <activiti:taskListener event="all" class="org.activiti.examples.bpmn.tasklistener.TaskAllEventsListener" />
-		  </extensionElements>
-		</userTask>
-		
-		<sequenceFlow id="flow2" sourceRef="task1" targetRef="task2" />
-		
-		<userTask id="task2" name="Write meeting notes" >
-      <documentation>
-        Write meeting notes after meeting with management.
-      </documentation>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="Examples">
+  <process id="taskListenerProcess" name="Task  Listener Example" isExecutable="true">
+    <startEvent id="theStart"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1"></sequenceFlow>
+    <userTask id="task1" name="Schedule meeting">
+      <documentation>Schedule a meeting with management.</documentation>
       <extensionElements>
-        <activiti:taskListener event="create" expression="${execution.setVariable('greeting2', task.name)}" />
+        <activiti:taskListener event="create" class="org.activiti.examples.bpmn.tasklistener.TaskCreateListener"></activiti:taskListener>
+        <activiti:taskListener event="complete" class="org.activiti.examples.bpmn.tasklistener.TaskCompleteListener">
+          <activiti:field name="greeter">
+            <activiti:string>The Process</activiti:string>
+          </activiti:field>
+          <activiti:field name="shortName">
+            <activiti:expression>${'Activiti'.substring(0,3)}</activiti:expression>
+          </activiti:field>
+        </activiti:taskListener>
+        <activiti:taskListener event="assignment" class="org.activiti.examples.bpmn.tasklistener.TaskAssignmentListener"></activiti:taskListener>
+        <activiti:taskListener event="all" class="org.activiti.examples.bpmn.tasklistener.TaskAllEventsListener"></activiti:taskListener>
       </extensionElements>
     </userTask>
-    
-    <sequenceFlow id="flow3" sourceRef="task2" targetRef="theEnd" />
-		
-		<endEvent id="theEnd" />
-		
-	</process>
-
+    <sequenceFlow id="flow2" sourceRef="task1" targetRef="task2"></sequenceFlow>
+    <userTask id="task2" name="Write meeting notes">
+      <documentation>Write meeting notes after meeting with management.</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${execution.setVariable('greeting2', task.name)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow3" sourceRef="task2" targetRef="theEnd"></sequenceFlow>
+    <endEvent id="theEnd"></endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_taskListenerProcess">
+    <bpmndi:BPMNPlane bpmnElement="taskListenerProcess" id="BPMNPlane_taskListenerProcess">
+      <bpmndi:BPMNShape bpmnElement="task1" id="BPMNShape_task1">
+        <omgdc:Bounds height="60.0" width="100.0" x="140.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task2" id="BPMNShape_task2">
+        <omgdc:Bounds height="60.0" width="100.0" x="315.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="theEnd" id="BPMNShape_theEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="460.0" y="182.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="theStart" id="BPMNShape_theStart">
+        <omgdc:Bounds height="35.0" width="35.0" x="40.0" y="182.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="415.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="460.0" y="199.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="240.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="256.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="315.0" y="200.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="75.0" y="199.0"></omgdi:waypoint>
+        <omgdi:waypoint x="91.0" y="199.0"></omgdi:waypoint>
+        <omgdi:waypoint x="140.0" y="200.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 </definitions>

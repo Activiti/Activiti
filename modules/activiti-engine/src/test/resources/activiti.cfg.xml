@@ -21,6 +21,13 @@
     <!-- mail server configurations -->
     <property name="mailServerPort" value="5025" />
     <property name="history" value="full" />
+    
+    <property name="enableGlobalListener" value="true"></property>
+    
+    <property name="globalTaskListener" >
+    	<bean class="org.activiti.examples.bpmn.tasklistener.GlobalTaskListener" />
+    </property>
+    
   </bean>
 
 </beans>

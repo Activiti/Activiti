@@ -39,6 +39,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.impl.FormServiceImpl;
 import org.activiti.engine.impl.HistoryServiceImpl;
@@ -366,6 +367,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected String databaseSchema = null;
   
   protected boolean isCreateDiagramOnDeploy = true;
+  
+  protected boolean enableGlobalListener = false ;
+  
+  protected TaskListener globalTaskListener ;
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
@@ -1972,5 +1977,22 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setEnableSafeBpmnXml(boolean enableSafeBpmnXml) {
     this.enableSafeBpmnXml = enableSafeBpmnXml;
   }
+  
+  public boolean isEnableGlobalListener() {
+	return enableGlobalListener;
+  }
+		
+  public void setEnableGlobalListener(boolean enableGlobalListener) {
+	this.enableGlobalListener = enableGlobalListener;
+  }
+
+  public TaskListener getGlobalTaskListener() {
+	return globalTaskListener;
+  }
+
+  public void setGlobalTaskListener(TaskListener globalTaskListener) {
+	this.globalTaskListener = globalTaskListener;
+  }
+  
   
 }
