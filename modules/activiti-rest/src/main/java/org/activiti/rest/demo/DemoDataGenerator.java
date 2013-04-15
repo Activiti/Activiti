@@ -39,7 +39,6 @@ public class DemoDataGenerator {
   protected transient RepositoryService repositoryService;
   
   protected boolean createDemoUsersAndGroups;
-  protected boolean createDemoProcessDefinitions;
   
   public void init() {
     this.identityService = processEngine.getIdentityService();
@@ -60,10 +59,6 @@ public class DemoDataGenerator {
   
   public void setCreateDemoUsersAndGroups(boolean createDemoUsersAndGroups) {
     this.createDemoUsersAndGroups = createDemoUsersAndGroups;
-  }
-
-  public void setCreateDemoProcessDefinitions(boolean createDemoProcessDefinitions) {
-    this.createDemoProcessDefinitions = createDemoProcessDefinitions;
   }
 
   protected void initDemoGroups() {
