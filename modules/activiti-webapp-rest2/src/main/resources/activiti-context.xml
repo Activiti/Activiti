@@ -10,7 +10,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 		init-method="init">
 		<property name="processEngine" ref="processEngine" />
 		<property name="createDemoUsersAndGroups" value="true" />
-		<property name="createDemoProcessDefinitions" value="true" />
 	</bean>
 
 	<bean id="dbProperties"
