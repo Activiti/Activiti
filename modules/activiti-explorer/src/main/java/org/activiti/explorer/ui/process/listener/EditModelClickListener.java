@@ -93,6 +93,11 @@ public class EditModelClickListener implements ClickListener {
             
             RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
             model.setCategory(null);
+            
+            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectNode metaInfoJson = objectMapper.createObjectNode();
+            metaInfoJson.put("name", model.getName());
+            model.setMetaInfo(metaInfoJson.toString());
             repositoryService.saveModel(model);
             
             BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
