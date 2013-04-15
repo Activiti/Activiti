@@ -80,7 +80,7 @@ public class DefaultJobExecutor extends JobExecutor {
   public void executeJobs(List<String> jobIds) {
     try {
       threadPoolExecutor.execute(new ExecuteJobsRunnable(this, jobIds));
-    }catch (RejectedExecutionException e) {
+    } catch (RejectedExecutionException e) {
       rejectedJobsHandler.jobsRejected(this, jobIds);
     }
   }
