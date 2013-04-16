@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.repository;
+package org.activiti.rest.api.legacy.deployment;
 
 import java.io.InputStream;
 
@@ -19,12 +19,14 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.data.MediaType;
+import org.restlet.data.Status;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
 
 /**
  * @author Tijs Rademakers
  */
+@Deprecated
 public class DeploymentArtifactResource extends SecuredResource {
   
   @Get
@@ -59,5 +61,9 @@ public class DeploymentArtifactResource extends SecuredResource {
     
     InputRepresentation output = new InputRepresentation(resourceStream, mediaType);
     return output;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

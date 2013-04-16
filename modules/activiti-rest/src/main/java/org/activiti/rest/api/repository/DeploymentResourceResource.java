@@ -16,47 +16,48 @@ package org.activiti.rest.api.repository;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.SecuredResource;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.resource.Get;
 
+
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
-public class DeploymentArtifactsResource extends SecuredResource {
-  
+public class DeploymentResourceResource extends SecuredResource {
+
   @Get
-  public ObjectNode getDeploymentArtifacts() {
-    if(authenticate() == false) return null;
+  public DeploymentResourceResponse getDeploymentResource() {
+ if(authenticate() == false) return null;
     
-    String deploymentId = (String) getRequest().getAttributes().get("deploymentId");
-    
+    String deploymentId = getAttribute("deploymentId");
     if(deploymentId == null) {
       throw new ActivitiIllegalArgumentException("No deployment id provided");
     }
-
-    Deployment deployment = ActivitiUtil.getRepositoryService().createDeploymentQuery().deploymentId(deploymentId).singleResult();
-    List<String> resourceList = ActivitiUtil.getRepositoryService().getDeploymentResourceNames(deploymentId);
-
-    ObjectNode responseJSON = new ObjectMapper().createObjectNode();
-    responseJSON.put("id", deployment.getId());
-    responseJSON.put("name", deployment.getName());
-    responseJSON.put("deploymentTime", RequestUtil.dateToString(deployment.getDeploymentTime()));
-    responseJSON.put("category", deployment.getCategory());
-    
-    ArrayNode resourceArray = new ObjectMapper().createArrayNode();
-    
-    for (String resourceName : resourceList) {
-      resourceArray.add(resourceName);
+    String resourceId = getAttribute("resourceId");
+    if(resourceId == null) {
+      throw new ActivitiIllegalArgumentException("No resource id provided");
     }
     
-    responseJSON.put("resources", resourceArray);
+    // Check if deployment exists
+    Deployment deployment = ActivitiUtil.getRepositoryService().createDeploymentQuery().deploymentId(deploymentId).singleResult();
+    if(deployment == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
+    }
     
-    return responseJSON;
+    List<String> resourceList = ActivitiUtil.getRepositoryService().getDeploymentResourceNames(deploymentId);
+
+    if(resourceList.contains(resourceId)) {
+      // Build resource representation
+           return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+                   .createDeploymentResourceResponse(this, deploymentId, resourceId);
+    } else {
+      // Resource not found in deployment
+      throw new ActivitiObjectNotFoundException("Could not find a resource with id '" + resourceId
+              + "' in deployment '" + deploymentId + "'.", String.class);
+    }
   }
 }

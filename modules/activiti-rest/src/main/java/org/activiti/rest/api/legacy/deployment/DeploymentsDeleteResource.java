@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.repository;
+package org.activiti.rest.api.legacy.deployment;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.rest.api.ActivitiUtil;
@@ -21,12 +21,14 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Post;
 
 /**
  * @author Tijs Rademakers
  */
+@Deprecated
 public class DeploymentsDeleteResource extends SecuredResource {
   
   @Post
@@ -54,5 +56,9 @@ public class DeploymentsDeleteResource extends SecuredResource {
       }
       throw new ActivitiException("Failed to delete deployments", e);
     }
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

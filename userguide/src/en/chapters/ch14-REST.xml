@@ -4,10 +4,1025 @@
 <chapter>
 
   <title>REST API</title>
+  <section>
+    <title>General Activiti REST principles</title>
+    <section>
+      <title>Installation and Authentication</title>
+      
+      <para>Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. By default the Activiti Engine will connect to a standalone H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).</para>
+      <para>All REST-resources (except for the Login-resource) require a valid Activiti-user to be authenticated. Basic HTTP access authentication is used, so you should always include a <literal>Authorization: Basic ...==</literal> HTTP-header when performing requests or include the username and password in the request-url (eg. <literal>http://username:password@localhost...</literal>).
+      </para>
+      <para><emphasis role="bold">It's recommended to use Basic in combination with HTTPS.</emphasis></para>
+    </section>
+    
+     <section>
+      <title>Methods and return-codes</title>
+      <table>
+        <title>HTTP-methods and corresponding operations</title>
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry>Method</entry>
+              <entry>Operations</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><literal>GET</literal></entry>
+              <entry>Get a single resource or get a collection of resources.</entry>
+            </row>
+            <row>
+              <entry><literal>POST</literal></entry>
+              <entry>Create a new resource.</entry>
+            </row>
+            <row>
+              <entry><literal>PUT</literal></entry>
+              <entry>Update properties of an existing resource. Also used for invoking actions on an existing resource.</entry>
+            </row>
+            <row>
+              <entry><literal>DELETE</literal></entry>
+              <entry>Delete an existing resource.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>     
+      <table>
+        <title>HTTP-methods response codes</title>
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry>Response</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><literal>200 - Ok</literal></entry>
+              <entry>The operation was successful and a response has been returned (<literal>GET</literal> and <literal>PUT</literal> requests).</entry>
+            </row>
+            <row>
+              <entry><literal>201 - Created</literal></entry>
+              <entry>The operation was successful and the entity has been created and is returned in the response-body (<literal>POST</literal> request).</entry>
+            </row>
+            <row>
+              <entry><literal>204 - No content</literal></entry>
+              <entry>The operation was successful and entity has been deleted and therefor there is no response-body returned (<literal>DELETE</literal> request).</entry>
+            </row>
+            <row>
+              <entry><literal>401 - Unauthorized</literal></entry>
+              <entry>The operation failed. The operation requires an Authentication header to be set. If this was present in the request, the supplied credentials are not valid or the user is not authorized to perform this operation.</entry>
+            </row>
+            <row>
+              <entry><literal>404 - Not found</literal></entry>
+              <entry>The operation failed.The requested resource was not found.</entry>
+            </row>
+            <row>
+              <entry><literal>405 - Method not allowed</literal></entry>
+              <entry>The operation failed. The used method is not allowed for this resource. Eg. trying to update (PUT) a deployment-resource will result in a <literal>405</literal> status.</entry>
+            </row>
+            <row>
+              <entry><literal>409 - Conflict</literal></entry>
+              <entry>The operation failed. The operation causes an update of a resource that has been updated by another operation, which makes the update no longer valid.</entry>
+            </row>
+            <row>
+              <entry><literal>500 - Internal server error</literal></entry>
+              <entry>The operation failed. An unexpected exception occured while executing the operation. The response-body contains details about the error.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>     
+        <para>
+        The media-type of the HTTP-responses is always <literal>application/json</literal> unless binary content is requested (eg. deployment resource data), the media-type of the content is used. 
+        </para> 
+    </section>
+    <section>
+      <title>Request parameters</title>
+      <section>
+        <title>URL fragments</title>
+        <para>
+            Parameters that are part of the url (eg. the deploymentId parameter in <literal>http://host/actviti-rest/service/repository/deployments/{deploymentId}</literal>)
+            need to be properly escaped (see <ulink url="https://en.wikipedia.org/wiki/Percent-encoding">URL-encoding or Percent-encoding</ulink>) in case the segment contains special characters. Most
+            frameworks have this functionality built in, but it should be taken into account. Especially for segments that can contains forward-slashes (eg. deployment resource), this is required.
+        </para>
+      </section>
+      
+      <section>
+        <title>URL query parameters</title>
+        <para>
+            Parameters added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?name=Deployment</literal>) can have the folowing types and are
+            mentioned in the corresponding REST-API documentation:
+            
+            <table>
+              <title>URL query parameter types</title>
+              <tgroup cols="2">
+                <thead>
+                  <row>
+                    <entry>Type</entry>
+                    <entry>Format</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>String</entry>
+                    <entry>Plain text parameters. Can contain any valid characters that are allowed in URL's.</entry>
+                  </row>
+                  <row>
+                    <entry>Integer</entry>
+                    <entry>Parameter representing an integer value. Can only contain numeric non-decmimal values, between -2.147.483.648 and 2.147.483.647.</entry>
+                  </row>
+                  <row>
+                    <entry>Long</entry>
+                    <entry>Parameter representing a long value. Can only contain numeric non-decmimal values, between -9.223.372.036.854.775.808 and 9.223.372.036.854.775.807.</entry>
+                  </row>
+                  <row>
+                    <entry>Boolean</entry>
+                    <entry>Parameter representing a boolean value. Can be eiter <literal>true</literal> or <literal>false</literal>. All other values other than these two, will cause a '<literal>405 - Bad request</literal>' response.</entry>
+                  </row>
+                  <row>
+                    <entry>Date</entry>
+                    <entry>Parameter representing a date value. Use the ISO-8601 date-format (see <ulink url="http://en.wikipedia.org/wiki/ISO_8601">ISO-8601 on wikipedia</ulink>) using both time and date-components (eg. <literal>2013-04-03T23:45Z</literal>).</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+        </para>
+      </section>
+      
+    </section>
+      
+  </section>
+  <section>
+    <title>Deployment</title>
+     <section>
+      <title>List of Deployments</title>
+        <para>
+          <programlisting>GET repository/deployments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL query parameters</title>
+              <tgroup cols='3'>
+                <colspec colname="c1"/>
+                <colspec colname="c2"/>
+                <colspec colname="c3"/>
+                <colspec colname="c4"/>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>name</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return deployments with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>nameLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return deployments with a name like the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>category</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return deployments with the given category.</entry>
+                  </row>
+                  <row>
+                    <entry>categoryNotEquals</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return deployments which don't have the given category.</entry>
+                  </row>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>No</entry>
+                    <entry>'id' (default), 'name' or 'deploytime'</entry>
+                    <entry>Property to sort on, to be used toghether with the 'order'.</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the request was successful.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "data": [
+    {
+      "id": "10",
+      "name": "activiti-examples.bar",
+      "deploymentTime": "2010-10-13T14:54:26.750+02:00",
+      "category": "examples",
+      "url": "http://localhost:8081/service/repository/deployments/10"
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+    </para>
+    </section>
+    
+    <section>
+      <title>Get a single deployment</title>
+        <para>
+          <programlisting>GET repository/deployments/{deploymentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>deploymentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the deployment to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the deployment was found and returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested deployment was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "id": "10",
+  "name": "activiti-examples.bar",
+  "deploymentTime": "2010-10-13T14:54:26.750+02:00",
+  "category": "examples",
+  "url": "http://localhost:8081/service/repository/deployments/10"
+}</programlisting>
+    </para>
+    </section>
+    
+    <section>
+      <title>Create a new deployment</title>
+        <para>
+          <programlisting>POST repository/deployments</programlisting>
+        </para>
+        <para>
+          <emphasis role="bold">Request body:</emphasis>
+        </para>
+        <para>The request should body should contain data of type <emphasis>multipart/form-data</emphasis>. There should be only exactly file in the request, any additional files will be ignored.</para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the deployment was created.</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates there was no content present in the request body or the content mime-type is not supported for deployment. The status-description contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "id": "10",
+  "name": "activiti-examples.bar",
+  "deploymentTime": "2010-10-13T14:54:26.750+02:00",
+  "category": null,
+  "url": "http://localhost:8081/service/repository/deployments/10"
+}</programlisting>
+    </para>
+  </section>
+      <section>
+      <title>Delete a deployment</title>
+        <para>
+          <programlisting>DELETE repository/deployments/{deploymentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>deploymentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the deployment to delete.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the deployment was found and has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested deployment was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>List resources in a deployment</title>
+        <para>
+          <programlisting>GET repository/deployments/{deploymentId}/resources</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>deploymentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the deployment to get the resources for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the deployment was found and the resource list has been returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested deployment was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  {
+    "id": "diagrams/my-process.bpmn20.xml",
+    "url": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resources/diagrams%2Fmy-process.bpmn20.xml",
+    "dataUrl": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resourcedata/diagrams%2Fmy-process.bpmn20.xml",
+    "mediaType": "text/xml",
+    "type": "processDefinition"
+  },
+  {
+    "id": "image.png",
+    "url": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resources/image.png",
+    "dataUrl": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resourcedata/image.png",
+    "mediaType": "image/png",
+    "type": "resource"
+  }
+]</programlisting>
 
+       <itemizedlist>
+        <listitem>
+          <para><literal>mediaType</literal>: Contains the media-type the resource has. This is resolved using a (pluggable) <literal>MediaTypeResolver</literal> and contains, by default, a limited number of mime-type mappings.</para>
+        </listitem>
+         <listitem>
+          <para><literal>type</literal>: Type of resource, possible values:</para>
+           <itemizedlist>
+            <listitem>
+              <para><literal>resource</literal>: Plain old resource.</para>
+            </listitem>
+             <listitem>
+              <para><literal>processDefinition</literal>: Resource that contains one or more process-definitions. This resource is picked up by the deployer.</para>
+            </listitem>
+             <listitem>
+              <para><literal>processImage</literal>: Resource that represents a deployed process definition's graphical layout.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      <emphasis>The dataUrl property in the resulting json for a single resource contains the actual URL to use for retreiving the binary resource.</emphasis>
+    </para>
+  </section>
+  <section>
+      <title>Get a single deployment resource</title>
+        <para>
+          <programlisting>GET repository/deployments/{deploymentId}/resources/{resourceId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>deploymentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the deployment the requested resource is part of.</entry>
+                  </row>
+                   <row>
+                    <entry>resourceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the resource to get. <emphasis role="bold">Make sure you URL-encode the resourceId in case it contains forward slashes. Eg: use 'diagrams%2Fmy-process.bpmn20.xml' instead of 'diagrams/Fmy-process.bpmn20.xml'.</emphasis></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates both deployment and resource have been found and the resource has been returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "id": "diagrams/my-process.bpmn20.xml",
+  "url": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resources/diagrams%2Fmy-process.bpmn20.xml",
+  "dataUrl": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resourcedata/diagrams%2Fmy-process.bpmn20.xml",
+  "mediaType": "text/xml",
+  "type": "processDefinition"
+}</programlisting>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>mediaType</literal>: Contains the media-type the resource has. This is resolved using a (pluggable) <literal>MediaTypeResolver</literal> and contains, by default, a limited number of mime-type mappings.</para>
+        </listitem>
+         <listitem>
+          <para><literal>type</literal>: Type of resource, possible values:</para>
+           <itemizedlist>
+            <listitem>
+              <para><literal>resource</literal>: Plain old resource.</para>
+            </listitem>
+             <listitem>
+              <para><literal>processDefinition</literal>: Resource that contains one or more process-definitions. This resource is picked up by the deployer.</para>
+            </listitem>
+             <listitem>
+              <para><literal>processImage</literal>: Resource that represents a deployed process definition's graphical layout.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+    </para>
+  </section>  
+  
+   <section>
+      <title>Get a deployment resource content</title>
+        <para>
+          <programlisting>GET repository/deployments/{deploymentId}/resourcedata/{resourceId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>deploymentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the deployment the requested resource is part of.</entry>
+                  </row>
+                   <row>
+                    <entry>resourceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the resource to get the data for. <emphasis role="bold">Make sure you URL-encode the resourceId in case it contains forward slashes. Eg: use 'diagrams%2Fmy-process.bpmn20.xml' instead of 'diagrams/Fmy-process.bpmn20.xml'.</emphasis></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates both deployment and resource have been found and the resource data has been returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+    </para>
+    <para>
+      The response body will contain the binary resource-content for the requested resource. The response content-type will be the same as the type returned in the resources 'mimeType' property. Also, a content-disposition header is set,
+      allowing browsers to dowload the file instead of displaying it.
+    </para>
+  </section>  
+ </section>
+ <section>
+  <title>Process Definitions</title>
+  
+   <section>
+      <title>List of process definitions</title>
+        <para>
+          <programlisting>GET repository/process-definitions</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>version</entry>
+                    <entry>No</entry>
+                    <entry>integer</entry>
+                    <entry>Only return process definitions with the given version.</entry>
+                  </row>
+                  <row>
+                    <entry>name</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>nameLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with a name like the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>key</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with the given key.</entry>
+                  </row>
+                  <row>
+                    <entry>keyLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with a name like the given key.</entry>
+                  </row>
+                  <row>
+                    <entry>resourceName</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with the given resource name.</entry>
+                  </row>
+                  <row>
+                    <entry>resourceNameLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with a name like the given resource name.</entry>
+                  </row>
+                  <row>
+                    <entry>category</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with the given category.</entry>
+                  </row>
+                  <row>
+                    <entry>categoryLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions with a category like the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>categoryNotEquals</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions which don't have the given category.</entry>
+                  </row>
+                  <row>
+                    <entry>deploymentId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions which are part of a deployment with the given id.</entry>
+                  </row>
+                  <row>
+                    <entry>startableByUser</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process definitions which can be started by the given user.</entry>
+                  </row>
+                  <row>
+                    <entry>latest</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Only return the latest process definition versions. Can only be used toghether with 'key' and 'keyLike' parameters, using any other parameter will result in a 400-response.</entry>
+                  </row>
+                  <row>
+                    <entry>suspended</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns process definitions which are suspended. If <literal>false</literal>, only active process definitions (which are not suspended) are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>No</entry>
+                    <entry>'name' (default), 'id', 'key', 'category', 'deploymentId' and 'version'</entry>
+                    <entry>Property to sort on, to be used toghether with the 'order'.</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates request was successful and the process-definitions are returned</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates an parameter was passed in the wrong format or that 'latest' is used with other parameters other than 'key' and 'keyLike'. The status-message contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "data": [
+    { 
+      "id" : "oneTaskProcess:1:4",
+      "url" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "version" : 1,
+      "key" : "oneTaskProcess",
+      "category" : "Examples",
+      "suspended" : false,
+      "name" : "The One Task Process",
+      "description" : "This is a process for testing purposes",
+      "deployment" : "http://localhost:8081/repository/deployments/2",
+      "graphicalNotationDefined" : true,
+      "resource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.xml",
+      "diagramResource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.png",
+      "startFormDefined" : false
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      <itemizedlist>
+          <listitem>
+            <para><literal>graphicalNotationDefined</literal>: Indicates the process definition contains graphical information (BPMN DI).</para>
+          </listitem>
+          <listitem>
+            <para><literal>resource</literal>: Contains the actual deployed BPMN 2.0 xml.</para>
+          </listitem>
+          <listitem>
+            <para><literal>diagramResource</literal>: Contains a graphical representation of the process, null when no diagram is available.</para>
+          </listitem>
+      </itemizedlist>
+    </para>
+    </section>
+   <section>
+      <title>Get a single process definition</title>
+        <para>
+          <programlisting>GET repository/process-definitions/{processDefinitionId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processDefinitionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process definition to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process definition was found and returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process definition was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "id" : "oneTaskProcess:1:4",
+  "url" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+  "version" : 1,
+  "key" : "oneTaskProcess",
+  "category" : "Examples",
+  "suspended" : false,
+  "name" : "The One Task Process",
+  "description" : "This is a process for testing purposes",
+  "deployment" : "http://localhost:8081/repository/deployments/2",
+  "graphicalNotationDefined" : true,
+  "resource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.xml",
+  "diagramResource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.png",
+  "startFormDefined" : false
+}</programlisting>
+      <itemizedlist>
+          <listitem>
+            <para><literal>graphicalNotationDefined</literal>: Indicates the process definition contains graphical information (BPMN DI).</para>
+          </listitem>
+          <listitem>
+            <para><literal>resource</literal>: Contains the actual deployed BPMN 2.0 xml.</para>
+          </listitem>
+          <listitem>
+            <para><literal>diagramResource</literal>: Contains a graphical representation of the process, null when no diagram is available.</para>
+          </listitem>
+      </itemizedlist>
+    </para>
+    </section>
+ 
+  <section>
+      <title>Suspend a single process definition</title>
+        <para>
+          <programlisting>PUT repository/process-definitions/{processDefinitionId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "suspend"
+}</programlisting>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process was suspended.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process definition was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the requested process definition is already suspended.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>repository/process-definitions/{processDefinitionId}</literal>.
+      </para>
+ </section>
+   <section>
+      <title>Activate a single process definition</title>
+        <para>
+          <programlisting>PUT repository/process-definitions/{processDefinitionId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "activate"
+}</programlisting>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process was activated.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process definition was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the requested process definition is already active.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>repository/process-definitions/{processDefinitionId}</literal>.
+      </para>
+ </section>
+ 
+ </section>
+  
+
+
+<!-- Legacy -->
   <section>
 
-    <title>General Usage</title>
+    <title>Legacy REST - General Usage</title>
 
     <para>
       Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat.

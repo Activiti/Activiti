@@ -11,35 +11,26 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.repository;
+package org.activiti.rest.api.legacy.deployment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.api.AbstractPaginateList;
-import org.activiti.rest.api.RestResponseFactory;
-import org.activiti.rest.api.SecuredResource;
-import org.activiti.rest.application.ActivitiRestServicesApplication;
 
 /**
  * @author Tijs Rademakers
  */
-public class DeploymentsPaginateList extends AbstractPaginateList {
+@Deprecated
+public class LegacyDeploymentsPaginateList extends AbstractPaginateList {
 
-  private SecuredResource resource;
-  
-  public DeploymentsPaginateList(SecuredResource resource) {
-    this.resource = resource;
-  }
-  
   @SuppressWarnings("rawtypes")
   @Override
   protected List processList(List list) {
-    List<DeploymentResponse> responseList = new ArrayList<DeploymentResponse>();
-    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
+    List<LegacyDeploymentResponse> responseList = new ArrayList<LegacyDeploymentResponse>();
     for (Object deployment : list) {
-      responseList.add(restResponseFactory.createDeploymentResponse(resource, (Deployment) deployment));
+      responseList.add(new LegacyDeploymentResponse((Deployment) deployment));
     }
     return responseList;
   }

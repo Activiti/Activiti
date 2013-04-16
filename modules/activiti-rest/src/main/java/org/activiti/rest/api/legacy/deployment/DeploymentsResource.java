@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.repository;
+package org.activiti.rest.api.legacy.deployment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,11 +21,13 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 
 /**
  * @author Tijs Rademakers
  */
+@Deprecated
 public class DeploymentsResource extends SecuredResource {
   
   Map<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
@@ -40,8 +42,12 @@ public class DeploymentsResource extends SecuredResource {
   public DataResponse getDeployments() {
     if(authenticate() == false) return null;
     
-    DataResponse response = new DeploymentsPaginateList().paginateList(getQuery(), 
+    DataResponse response = new LegacyDeploymentsPaginateList().paginateList(getQuery(), 
         ActivitiUtil.getRepositoryService().createDeploymentQuery(), "id", properties);
     return response;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }
