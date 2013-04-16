@@ -13,11 +13,12 @@
 
 package org.activiti.rest.api.repository;
 
+import java.util.Date;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.RestActionRequest;
 import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
@@ -41,7 +42,7 @@ public class ProcessDefinitionResource extends SecuredResource {
   }
   
   @Put
-  public ProcessDefinitionResponse executeProcessDefinitionAction(RestActionRequest actionRequest) {
+  public ProcessDefinitionResponse executeProcessDefinitionAction(ProcessDefinitionActionRequest actionRequest) {
     if(authenticate() == false) return null;
     
     if(actionRequest == null) {
@@ -52,20 +53,20 @@ public class ProcessDefinitionResource extends SecuredResource {
     
     if(actionRequest.getAction() != null) {
       if("suspend".equals(actionRequest.getAction())) {
-        return suspendProcessDefinition(processDefinition);
+        return suspendProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
       } else if("activate".equals(actionRequest.getAction())) {
-        return activateProcessDefinition(processDefinition);
+        return activateProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
       }
     }
     
     throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "', use 'suspend' or 'activate'.");
   }
   
-  protected ProcessDefinitionResponse activateProcessDefinition(ProcessDefinition processDefinition) {
+  protected ProcessDefinitionResponse activateProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
     if(!processDefinition.isSuspended()) {
       throw new ResourceException(Status.CLIENT_ERROR_CONFLICT, "Process definition with id '" + processDefinition.getId() + "'is already active");
     }
-    ActivitiUtil.getRepositoryService().activateProcessDefinitionById(processDefinition.getId());
+    ActivitiUtil.getRepositoryService().activateProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
    
     ProcessDefinitionResponse response =  getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
             .createProcessDefinitionResponse(this, processDefinition);
@@ -75,11 +76,11 @@ public class ProcessDefinitionResource extends SecuredResource {
     return response;
   }
 
-  protected ProcessDefinitionResponse suspendProcessDefinition(ProcessDefinition processDefinition) {
+  protected ProcessDefinitionResponse suspendProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
     if(processDefinition.isSuspended()) {
       throw new ResourceException(Status.CLIENT_ERROR_CONFLICT, "Process definition with id '" + processDefinition.getId() + "'is already suspended");
     }
-    ActivitiUtil.getRepositoryService().suspendProcessDefinitionById(processDefinition.getId());
+    ActivitiUtil.getRepositoryService().suspendProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
     
     ProcessDefinitionResponse response =  getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
             .createProcessDefinitionResponse(this, processDefinition);
