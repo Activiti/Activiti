@@ -937,8 +937,39 @@
          <emphasis role="bold">Body JSON:</emphasis>
            <programlisting>
 { 
-  "action" : "suspend"
+  "action" : "suspend",
+  "includeProcessInstances" : "false",
+  "date" : "2013-04-15T00:42:12Z"
 }</programlisting>
+        <table id="processDefinitionActionBodyParameters">
+              <title>JSON Body parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Required</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>action</entry>
+                    <entry>Action to perform. Either <literal>activate</literal> or <literal>suspend</literal>.</entry>
+                    <entry>Yes</entry>
+                  </row>
+                  <row>
+                    <entry>includeProcessInstances</entry>
+                    <entry>Wether or not to suspend/activate running process-instances for this process-definition. If omitted, the process-instances are left in the state they are.</entry>
+                    <entry>No</entry>
+                  </row>
+                  <row>
+                    <entry>date</entry>
+                    <entry>Date (ISO-8601) when the suspension/activation should be executed. If omitted, the suspend/activation is effective immediatly.</entry>
+                    <entry>No</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
         </para>
         <para>
           <table>
@@ -980,8 +1011,12 @@
          <emphasis role="bold">Body JSON:</emphasis>
            <programlisting>
 { 
-  "action" : "activate"
+  "action" : "activate",
+  "includeProcessInstances" : "true",
+  "date" : "2013-04-15T00:42:12Z"
 }</programlisting>
+
+        See suspend process definition <link linkend="processDefinitionActionBodyParameters">JSON Body parameters</link>.
         </para>
         <para>
           <table>

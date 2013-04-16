@@ -11,22 +11,31 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api;
+package org.activiti.rest.api.repository;
+
+import java.util.Date;
+
+import org.activiti.rest.api.RestActionRequest;
+
 
 /**
- * Generic class that represents an action to be performed on a resource. Should be subclasses
- * if additional action-parameters are required. 
- * 
  * @author Frederik Heremans
  */
-public class RestActionRequest {
+public class ProcessDefinitionActionRequest extends RestActionRequest {
 
-  private String action;
+  private boolean includeProcessInstances = false;
+  private Date date;
   
-  public void setAction(String action) {
-    this.action = action;
+  public void setIncludeProcessInstances(boolean includeProcessInstances) {
+    this.includeProcessInstances = includeProcessInstances;
   }
-  public String getAction() {
-    return action;
+  public boolean isIncludeProcessInstances() {
+    return includeProcessInstances;
+  }
+  public void setDate(Date date) {
+    this.date = date;
+  }
+  public Date getDate() {
+    return date;
   }
 }

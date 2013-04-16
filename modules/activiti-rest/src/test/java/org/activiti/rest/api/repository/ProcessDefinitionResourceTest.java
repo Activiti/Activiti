@@ -1,13 +1,17 @@
 package org.activiti.rest.api.repository;
 
 import java.net.URLDecoder;
+import java.util.Calendar;
 
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -126,6 +130,49 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
     }
     
     /**
+     * Test suspending a process definition on a certain date.
+     * POST repository/process-definitions/{processDefinitionId}
+     */
+     @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+     public void testSuspendProcessDefinitionDelayed() throws Exception {
+       ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+       assertFalse(processDefinition.isSuspended());
+       
+       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+       ObjectNode requestNode = objectMapper.createObjectNode();
+       
+       Calendar cal = Calendar.getInstance();
+       cal.add(Calendar.HOUR, 2);
+       
+       // Format the date using ISO date format
+       DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
+       String dateString = formatter.print(cal.getTimeInMillis());
+       
+       requestNode.put("action", "suspend");
+       requestNode.put("date", dateString);
+       
+       Representation response = client.put(requestNode);
+       
+       // Check "OK" status
+       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+       JsonNode responseNode = objectMapper.readTree(response.getStream());
+       assertTrue(responseNode.get("suspended").getBooleanValue());
+       
+       // Check if process-definition is not yet suspended
+       processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+       assertFalse(processDefinition.isSuspended());
+       
+       // Force suspension by altering time
+       cal.add(Calendar.HOUR, 1);
+       ClockUtil.setCurrentTime(cal.getTime());
+       waitForJobExecutorToProcessAllJobs(5000, 100);
+       
+       // Check if process-definition is suspended
+       processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+       assertTrue(processDefinition.isSuspended());
+     }
+    
+    /**
      * Test suspending already suspended process definition.
      * POST repository/process-definitions/{processDefinitionId}
      */
@@ -177,6 +224,52 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
        processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
        assertFalse(processDefinition.isSuspended());
      }
+     
+     /**
+      * Test activating a suspended process definition delayed.
+      * POST repository/process-definitions/{processDefinitionId}
+      */
+      @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+      public void testActivateProcessDefinitionDelayed() throws Exception {
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+        
+        processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        assertTrue(processDefinition.isSuspended());
+        
+        ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+        ObjectNode requestNode = objectMapper.createObjectNode();
+        
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.HOUR, 2);
+        
+        // Format the date using ISO date format
+        DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
+        String dateString = formatter.print(cal.getTimeInMillis());
+        
+        requestNode.put("action", "activate");
+        requestNode.put("date", dateString);
+        
+        Representation response = client.put(requestNode);
+        
+        // Check "OK" status
+        assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+        JsonNode responseNode = objectMapper.readTree(response.getStream());
+        assertFalse(responseNode.get("suspended").getBooleanValue());
+        
+        // Check if process-definition is not yet active
+        processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        assertTrue(processDefinition.isSuspended());
+        
+        // Force activation by altering time
+        cal.add(Calendar.HOUR, 1);
+        ClockUtil.setCurrentTime(cal.getTime());
+        waitForJobExecutorToProcessAllJobs(5000, 100);
+        
+        // Check if process-definition is activated
+        processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        assertFalse(processDefinition.isSuspended());
+      }
      
      /**
       * Test activating already active process definition.
