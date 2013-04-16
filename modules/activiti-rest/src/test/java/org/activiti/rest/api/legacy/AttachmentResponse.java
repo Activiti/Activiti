@@ -23,7 +23,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.task;
+package org.activiti.rest.api.legacy;
 
 import org.activiti.engine.task.Attachment;
 

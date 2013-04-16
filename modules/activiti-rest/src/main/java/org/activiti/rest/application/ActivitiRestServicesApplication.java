@@ -13,11 +13,16 @@
 
 package org.activiti.rest.application;
 
+import java.util.List;
+
 import org.activiti.rest.api.DefaultResource;
 import org.activiti.rest.api.RestResponseFactory;
-import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.filter.JsonpFilter;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.restlet.Restlet;
+import org.restlet.engine.Engine;
+import org.restlet.engine.converter.ConverterHelper;
+import org.restlet.ext.jackson.JacksonConverter;
 import org.restlet.routing.Router;
 /**
  * @author Tijs Rademakers
@@ -38,14 +43,21 @@ public class ActivitiRestServicesApplication extends ActivitiRestApplication {
     initializeAuthentication();
     
     Router router = new Router(getContext());
-    
     router.attachDefault(DefaultResource.class);
     RestServicesInit.attachResources(router);
     
     JsonpFilter jsonpFilter = new JsonpFilter(getContext());
     jsonpFilter.setNext(router);
     authenticator.setNext(jsonpFilter);
-    
+
+    // Get hold of JSONConverter and enable ISO-date format by default
+    List<ConverterHelper> registeredConverters = Engine.getInstance().getRegisteredConverters();
+    for(ConverterHelper helper : registeredConverters) {
+      if(helper instanceof JacksonConverter) {
+        JacksonConverter jacksonConverter = (JacksonConverter) helper;
+        jacksonConverter.getObjectMapper().configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
+      }
+    }
     return authenticator;
   }
   

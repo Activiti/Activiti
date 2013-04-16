@@ -32,6 +32,11 @@ public final class RestUrls {
   public static final String SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE = "resources";
   public static final String SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE_CONTENT = "resourcedata";
   
+  public static final String SEGMENT_RUNTIME_RESOURCES = "runtime";
+  public static final String SEGMENT_TASK_RESOURCE = "tasks";
+  public static final String SEGMENT_EXECUTION_RESOURCE = "executions";
+  public static final String SEGMENT_PROCESS_INSTANCE_RESOURCE = "process-instances";
+  
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
    */
@@ -79,5 +84,36 @@ public final class RestUrls {
    * URL template for a single process definition: <i>repository/process-definitions/{0:processDefinitionId}</i>
    */
   public static final String[] URL_PROCESS_DEFINITION = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}"};
+  
+  
+  /**
+   * URL template for task collection: <i>runtime/tasks/{0:taskId}</i>
+   */
+  public static final String[] URL_TASK_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE};
+  
+  /**
+   * URL template for a single task: <i>runtime/tasks/{0:taskId}</i>
+   */
+  public static final String[] URL_TASK = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for execution collection: <i>runtime/executions/{0:executionId}</i>
+   */
+  public static final String[] URL_EXECUTION_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE};
+  
+  /**
+   * URL template for a single execution: <i>runtime/executions/{0:executionId}</i>
+   */
+  public static final String[] URL_EXECUTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for process instance collection: <i>runtime/process-instances/{0:processInstanceId}</i>
+   */
+  public static final String[] URL_PROCESS_INSTANCE_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for a single process instance: <i>runtime/process-instances/{0:processInstanceId}</i>
+   */
+  public static final String[] URL_PROCESS_INSTANCE = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}"};
   
 }

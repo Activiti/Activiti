@@ -19,7 +19,7 @@ import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
 /**
- * Test for all REST-operations related to single a Deployment resource.
+ * Test for all REST-operations related to a single Deployment resource.
  * 
  * @author Frederik Heremans
  */

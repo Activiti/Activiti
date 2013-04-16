@@ -11,13 +11,14 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.task;
+package org.activiti.rest.api.legacy;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.api.legacy.task.LegacyTaskResponse;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.restlet.representation.Representation;
@@ -29,7 +30,7 @@ import org.restlet.resource.Put;
 public class TaskAddResource extends SecuredResource {
   
   @Put
-  public TaskResponse addTask(Representation entity) {
+  public LegacyTaskResponse addTask(Representation entity) {
     try {
       if(authenticate() == false) return null;
       
@@ -81,7 +82,7 @@ public class TaskAddResource extends SecuredResource {
       }
       newTask.setParentTaskId(parentTaskId);
       ActivitiUtil.getTaskService().saveTask(newTask);
-      TaskResponse response = new TaskResponse(newTask);
+      LegacyTaskResponse response = new LegacyTaskResponse(newTask);
       return response;
       
     } catch (Exception e) {

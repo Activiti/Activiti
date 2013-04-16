@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,8 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.restlet.Component;
 import org.restlet.data.ChallengeScheme;
@@ -355,5 +358,18 @@ public class BaseRestTestCase extends PvmTestCase {
     assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
     
     client.release();
+  }
+  
+  /**
+   * Extract a date from the given string. Assertion fails when invalid date has been provided.
+   */
+  protected Date getDateFromISOString(String isoString) {
+    DateTimeFormatter dateFormat = ISODateTimeFormat.dateTime();
+    try {
+      return dateFormat.parseDateTime(isoString).toDate();
+    } catch(IllegalArgumentException iae) {
+      fail("Illegal date provided: "+ isoString);
+      return null;
+    }
   }
 }

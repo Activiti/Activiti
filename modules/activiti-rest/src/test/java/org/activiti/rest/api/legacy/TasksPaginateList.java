@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.task;
+package org.activiti.rest.api.legacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.AbstractPaginateList;
 import org.activiti.rest.api.ActivitiUtil;
+import org.activiti.rest.api.legacy.task.LegacyTaskResponse;
 
 /**
  * @author Tijs Rademakers
@@ -29,9 +30,9 @@ public class TasksPaginateList extends AbstractPaginateList {
   @SuppressWarnings("rawtypes")
   @Override
   protected List processList(List list) {
-    List<TaskResponse> responseList = new ArrayList<TaskResponse>();
+    List<LegacyTaskResponse> responseList = new ArrayList<LegacyTaskResponse>();
     for (Object task : list) {
-      TaskResponse taskResponse = new TaskResponse((Task) task);
+      LegacyTaskResponse taskResponse = new LegacyTaskResponse((Task) task);
       TaskFormData taskFormData = ActivitiUtil.getFormService().getTaskFormData(taskResponse.getId());
       if(taskFormData != null) {
         taskResponse.setFormResourceKey(taskFormData.getFormKey());     
