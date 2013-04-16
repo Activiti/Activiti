@@ -1,4 +1,4 @@
-package org.activiti.rest.api.task;
+package org.activiti.rest.api.legacy;
 
 import java.util.List;
 

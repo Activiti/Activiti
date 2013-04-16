@@ -17,10 +17,12 @@ import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Task;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
-import org.activiti.rest.api.repository.ProcessDefinitionResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.api.repository.DeploymentResponse;
+import org.activiti.rest.api.repository.ProcessDefinitionResponse;
+import org.activiti.rest.api.task.TaskResponse;
 import org.restlet.data.MediaType;
 
 
@@ -30,6 +32,27 @@ import org.restlet.data.MediaType;
  * @author Frederik Heremans
  */
 public class RestResponseFactory {
+  
+  public TaskResponse createTaskReponse(SecuredResource resourceContext, Task task) {
+    TaskResponse response = new TaskResponse(task);
+    response.setUrl(resourceContext.createFullResourceUrl(RestUrls.URL_TASK, task.getId()));
+
+    // Add references to other resources, if needed
+    if(task.getParentTaskId() != null) {
+      response.setParentTask(resourceContext.createFullResourceUrl(RestUrls.URL_TASK, task.getParentTaskId()));
+    }
+    if(task.getProcessDefinitionId() != null) {
+      response.setProcessDefinition(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, task.getProcessDefinitionId()));
+    }
+    if(task.getExecutionId() != null) {
+      response.setExecution(resourceContext.createFullResourceUrl(RestUrls.URL_EXECUTION, task.getExecutionId()));
+    }
+    if(task.getProcessInstanceId() != null) {
+      response.setProcessInstance(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, task.getProcessInstanceId()));
+    }
+    
+    return response;
+  }
   
   public DeploymentResponse createDeploymentResponse(SecuredResource resourceContext, Deployment deployment) {
     return new DeploymentResponse(deployment, resourceContext.createFullResourceUrl(RestUrls.URL_DEPLOYMENT, deployment.getId()));
