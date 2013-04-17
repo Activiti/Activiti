@@ -75,7 +75,6 @@ public class RestServicesInit {
     
     router.attach("/runtime/tasks/{taskId}", TaskResource.class);
     
-    
     // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);
     

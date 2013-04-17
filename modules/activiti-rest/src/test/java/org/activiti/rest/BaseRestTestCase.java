@@ -372,4 +372,8 @@ public class BaseRestTestCase extends PvmTestCase {
       return null;
     }
   }
+  
+  protected String getISODateString(Date time) {
+    return ISODateTimeFormat.dateTime().print(time.getTime());
+  }
 }

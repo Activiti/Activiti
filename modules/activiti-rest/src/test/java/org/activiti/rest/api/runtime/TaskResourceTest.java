@@ -16,6 +16,7 @@ package org.activiti.rest.api.runtime;
 import java.util.Calendar;
 import java.util.List;
 
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -25,8 +26,11 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+import org.restlet.resource.ResourceException;
 
 
 /**
@@ -54,6 +58,7 @@ public class TaskResourceTest extends BaseRestTestCase {
 
     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
     Representation response = client.get();
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     
     // Check resulting task
     JsonNode responseNode = objectMapper.readTree(response.getStream());
@@ -103,6 +108,7 @@ public class TaskResourceTest extends BaseRestTestCase {
 
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
       Representation response = client.get();
+      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
       
       // Check resulting task
       JsonNode responseNode = objectMapper.readTree(response.getStream());
@@ -127,11 +133,223 @@ public class TaskResourceTest extends BaseRestTestCase {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
       for(Task task : tasks) {
-        taskService.deleteTask(task.getId());
-        if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-          historyService.deleteHistoricTaskInstance(task.getId());
-        }
+        taskService.deleteTask(task.getId(), true);
       }
+    }
+  }
+  
+  /**
+   * Test updating a single task.
+   * PUT runtime/tasks/{taskId}
+   */
+  public void testUpdateTask() throws Exception {
+    try {
+      Calendar now = Calendar.getInstance();
+      Task parentTask = taskService.newTask();
+      taskService.saveTask(parentTask);
+      
+      Task task = taskService.newTask();
+      task.setParentTaskId(parentTask.getId());
+      task.setName("Task name");
+      task.setDescription("Description");
+      task.setAssignee("kermit");
+      task.setDelegationState(DelegationState.RESOLVED);
+      task.setDescription("Description");
+      task.setDueDate(now.getTime());
+      task.setOwner("owner");
+      task.setPriority(20);
+      taskService.saveTask(task);
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      
+      // Execute the request with an empty request JSON-object
+      client.put(requestNode);
+      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      
+      task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+      assertEquals("Task name", task.getName());
+      assertEquals("Description", task.getDescription());
+      assertEquals("kermit", task.getAssignee());
+      assertEquals("owner", task.getOwner());
+      assertEquals(20, task.getPriority());
+      assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+      assertEquals(now.getTime(), task.getDueDate());
+      assertEquals(parentTask.getId(), task.getParentTaskId());
+      
+      
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for(Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+    }
+  }
+  
+  /**
+   * Test updating a single task without passing in any value, no values should be altered.
+   * PUT runtime/tasks/{taskId}
+   */
+  public void testUpdateTaskNoOverrides() throws Exception {
+    try {
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      
+      Task parentTask = taskService.newTask();
+      taskService.saveTask(parentTask);
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      
+      Calendar dueDate = Calendar.getInstance();
+      String dueDateString = getISODateString(dueDate.getTime());
+      
+      requestNode.put("name", "New task name");
+      requestNode.put("description", "New task description");
+      requestNode.put("assignee", "assignee");
+      requestNode.put("owner", "owner");
+      requestNode.put("priority", 20);
+      requestNode.put("delegationState", "resolved");
+      requestNode.put("dueDate", dueDateString);
+      requestNode.put("parentTaskId", parentTask.getId());
+      
+      // Execute the request
+      client.put(requestNode);
+      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      
+      
+      task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+      assertEquals("New task name", task.getName());
+      assertEquals("New task description", task.getDescription());
+      assertEquals("assignee", task.getAssignee());
+      assertEquals("owner", task.getOwner());
+      assertEquals(20, task.getPriority());
+      assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+      assertEquals(dueDate.getTime(), task.getDueDate());
+      assertEquals(parentTask.getId(), task.getParentTaskId());
+      
+      
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for(Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+    }
+  }
+  
+  /**
+   * Test updating an unexisting task.
+   * PUT runtime/tasks/{taskId}
+   */
+  public void testUpdateUnexistingTask() throws Exception {
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, "unexistingtask"));
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    
+    // Execute the request with an empty request JSON-object
+    try {
+      client.put(requestNode);
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+      assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
+    }
+  }
+  
+  /**
+   * Test deleting a single task.
+   * DELETE runtime/tasks/{taskId}
+   */
+  public void testDeleteTask() throws Exception {
+    try {
+      
+      // 1. Simple delete
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      String taskId = task.getId();
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      
+      // Execute the request
+      client.delete();
+      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+      
+      task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+      assertNull(task);
+      
+      if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+        // Check that the historic task has not been deleted
+        assertNotNull(historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult());
+      }
+      
+      // 2. Cascade delete
+      task = taskService.newTask();
+      taskService.saveTask(task);
+      taskId = task.getId();
+      
+      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId) + "?cascadeHistory=true");
+      
+      // Execute the request
+      client.delete();
+      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+      
+      task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+      assertNull(task);
+      
+      if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+        // Check that the historic task has been deleted
+        assertNull(historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult());
+      }
+      
+      // 3. Delete with reason
+      task = taskService.newTask();
+      taskService.saveTask(task);
+      taskId = task.getId();
+      
+      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId) + "?deleteReason=fortestingpurposes");
+      
+      // Execute the request
+      client.delete();
+      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+      
+      task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+      assertNull(task);
+      
+      if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+        // Check that the historic task has been deleted and delete-reason has been set
+        HistoricTaskInstance instance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult(); 
+        assertNotNull(instance);
+        assertEquals("fortestingpurposes", instance.getDeleteReason());
+      }
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for(Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+      
+      // Clean historic tasks with no runtime-counterpart
+      List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().list();
+      for(HistoricTaskInstance task : historicTasks) {
+        historyService.deleteHistoricTaskInstance(task.getId());
+      }
+    }
+  }
+  
+  /**
+   * Test updating an unexisting task.
+   * PUT runtime/tasks/{taskId}
+   */
+  public void testDeleteUnexistingTask() throws Exception {
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, "unexistingtask"));
+    
+    try {
+      client.delete();
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+      assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
     }
   }
 }
