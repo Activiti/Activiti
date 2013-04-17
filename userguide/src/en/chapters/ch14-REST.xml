@@ -89,6 +89,10 @@
               <entry>The operation failed. The operation causes an update of a resource that has been updated by another operation, which makes the update no longer valid.</entry>
             </row>
             <row>
+              <entry><literal>415 - Unsupported Media Type</literal></entry>
+              <entry>The operation failed. The request body contains an unsupported media type. Also occurs when the request-body JSON contains an unknown attribute or value that doesn't have the right format/type to be accepted.</entry>
+            </row>
+            <row>
               <entry><literal>500 - Internal server error</literal></entry>
               <entry>The operation failed. An unexpected exception occured while executing the operation. The response-body contains details about the error.</entry>
             </row>
