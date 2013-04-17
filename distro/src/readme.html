@@ -34,6 +34,23 @@
     <a href="http://activiti.org/community.html">Activiti Community page</a>
 
   <h1>Activiti Release Notes</h1>
+  
+   <h3>Release Notes - Activiti - Version 5.12.1-kft</h3>
+   
+   <h4>Important upgrade notes when using script tasks and auto storage of variables</h4>
+   
+   <p>
+    Due to recent changes to the JDK (removing Serializable from sun.org.mozilla.javascript.internal.Undefined), the auto storing of variables is not possible anymore
+    with the built-in Javascript scriping engine. See <a href="http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/">this link</a>
+    for more information. Each script variable that needs to be stored as process variable needs to be explicitely 
+    stored by calling <i>execution.setVariable("variableName", variableValue)</i>. 
+   </p>
+   
+   <p>
+    For backwards compatibility reasons, the old behavior can still be used by setting the <i>autoStoreVariables</i> property
+    on a <i>scriptTask</i> to true. As written in the linked articale from above, this might not work when using a recent JDK version
+    and the built-in Javascript scripting engine.
+   </p>
 
   <h3>Release Notes - Activiti - Version 5.12</h3>
   

@@ -26,6 +26,8 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.Event;
+import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -51,6 +53,7 @@ import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
 import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -167,7 +170,13 @@ public class BpmnParse implements BpmnXMLConstants {
   public BpmnParse execute() {
     try {
       BpmnXMLConverter converter = new BpmnXMLConverter();
-      bpmnModel = converter.convertToBpmnModel(streamSource, false);
+      
+      boolean enableSafeBpmnXml = false;
+      if (Context.getProcessEngineConfiguration() != null) {
+        enableSafeBpmnXml = Context.getProcessEngineConfiguration().isEnableSafeBpmnXml();
+      }
+      
+      bpmnModel = converter.convertToBpmnModel(streamSource, true, enableSafeBpmnXml);
       
       createImports();
       createItemDefinitions();
@@ -362,24 +371,33 @@ public class BpmnParse implements BpmnXMLConstants {
     // Parsing the elements is done in a strict order of types,
     // as otherwise certain information might not be available when parsing a
     // certain type.
-
+    
     // Using lists as we want to keep the order in which they are defined
     List<SequenceFlow> sequenceFlowToParse = new ArrayList<SequenceFlow>();
     List<BoundaryEvent> boundaryEventsToParse = new ArrayList<BoundaryEvent>();
+    
+    // Flow elements that depend on other elements are parse after the first run-through
+    List<FlowElement> defferedFlowElementsToParse = new ArrayList<FlowElement>();
 
     // Activities are parsed first
     for (FlowElement flowElement : flowElements) {
 
-      // Sequence flow are also flow elements, but are only parsed once every
-      // activity is found
+      // Sequence flow are also flow elements, but are only parsed once everyactivity is found
       if (flowElement instanceof SequenceFlow) {
         sequenceFlowToParse.add((SequenceFlow) flowElement);
       } else if (flowElement instanceof BoundaryEvent) {
         boundaryEventsToParse.add((BoundaryEvent) flowElement);
+      } else if (flowElement instanceof Event) {
+        defferedFlowElementsToParse.add(flowElement);
       } else {
         bpmnParserHandlers.parseElement(this, flowElement);
       }
 
+    }
+    
+    // Deferred elements
+    for (FlowElement flowElement : defferedFlowElementsToParse) {
+      bpmnParserHandlers.parseElement(this, flowElement);
     }
 
     // Boundary events are parsed after all the regular activities are parsed

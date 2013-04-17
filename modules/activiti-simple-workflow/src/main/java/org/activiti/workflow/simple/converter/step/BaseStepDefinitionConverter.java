@@ -123,11 +123,11 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
       formProperty.setRequired(propertyDefinition.isRequired());
       
       String type = null;
-      if (DefaultFormPropertyTypes.NUMBER.equals(propertyDefinition.getType())) {
+      if (DefaultFormPropertyTypes.NUMBER.equalsIgnoreCase(propertyDefinition.getType())) {
         type = "long";
-      } else if (DefaultFormPropertyTypes.DATE.equals(propertyDefinition.getType())) {
+      } else if (DefaultFormPropertyTypes.DATE.equalsIgnoreCase(propertyDefinition.getType())) {
         type = "date";
-      } else if (DefaultFormPropertyTypes.LIST.equals(propertyDefinition.getType())) {
+      } else if (DefaultFormPropertyTypes.LIST.equalsIgnoreCase(propertyDefinition.getType())) {
         
         type = "enum";
         
@@ -141,8 +141,8 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
             formValues.add(formValue);
           }
         }
-      } else if (DefaultFormPropertyTypes.TEXT.equals(propertyDefinition.getType())){
-        type = "text";
+      } else if (DefaultFormPropertyTypes.TEXT.equalsIgnoreCase(propertyDefinition.getType())){
+        type = "string";
       } else {
         type = propertyDefinition.getType(); // just copy whatever the user provided
       }

@@ -6,7 +6,7 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.12', 1);
+values ('schema.version', '5.12T', 1);
 
 insert into ACT_GE_PROPERTY
 values ('schema.history', 'create(5.12)', 1);

@@ -229,14 +229,24 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
           DownloadStream ds = null;
           try {
             
-            BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
             JsonNode editorNode = new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
-            BpmnModel bpmnModel = jsonConverter.convertToBpmnModel(editorNode);
-            BpmnXMLConverter xmlConverter = new BpmnXMLConverter();
-            byte[] bpmnBytes = xmlConverter.convertToXML(bpmnModel);
-            
+            byte[] bpmnBytes = null;
+            String filename = null;
+            if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(modelData.getCategory())) {
+              JsonConverter jsonConverter = new JsonConverter();
+              WorkflowDefinition workflowDefinition = jsonConverter.convertFromJson(editorNode);
+              filename = workflowDefinition.getName();
+              WorkflowDefinitionConversion conversion = 
+                      ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
+              bpmnBytes = conversion.getbpm20Xml().getBytes("utf-8");
+            } else {
+              BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
+              BpmnModel model = jsonConverter.convertToBpmnModel(editorNode);
+              filename = model.getMainProcess().getId() + ".bpmn20.xml";
+              bpmnBytes = new BpmnXMLConverter().convertToXML(model);
+            }
+           
             ByteArrayInputStream in = new ByteArrayInputStream(bpmnBytes);
-            String filename = bpmnModel.getMainProcess().getId() + ".bpmn20.xml";
             ds = new DownloadStream(in, "application/xml", filename);
             // Need a file download POPUP
             ds.setParameter("Content-Disposition", "attachment; filename=" + filename);
@@ -256,7 +266,6 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
       
       ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
       byte[] bpmnBytes = null;
-      
       if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(modelData.getCategory())) {
         JsonConverter jsonConverter = new JsonConverter();
         WorkflowDefinition workflowDefinition = jsonConverter.convertFromJson(modelNode);

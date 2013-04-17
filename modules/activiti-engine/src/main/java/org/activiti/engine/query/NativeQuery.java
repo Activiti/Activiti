@@ -51,4 +51,7 @@ public interface NativeQuery<T extends NativeQuery< ? , ? >, U extends Object> {
 
   /** Executes the query and get a list of entities as the result. */
   List<U> list();
+  
+  /** Executes the query and get a list of entities as the result. */
+  List<U> listPage(int firstResult, int maxResults);
 }

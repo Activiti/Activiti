@@ -371,7 +371,7 @@
       <section>
         <title>Extension setup (Eclipse/Maven)</title>
         <para>Download and extract <ulink url="http://www.eclipse.org/downloads">Eclipse</ulink>
-          (Galileo or Helios should both work) and a recent version (3.x) of <ulink
+          (most recent versions should work) and a recent version (3.x) of <ulink
             url="http://maven.apache.org/download.html">Apache Maven</ulink>. If you use a 2.x
           version of Maven, you will run into problems when building your project, so make sure your
           version is up to date. We assume you are familiar with using basic features and the Java
@@ -397,7 +397,7 @@
   &lt;packaging>jar&lt;/packaging>
   &lt;name>Acme Corporation Money Tasks&lt;/name>
 ...
-&lt;/pom></programlisting>
+&lt;/project></programlisting>
         </para>
         <para>As you can see, this is just a basic pom.xml file that defines a
             <literal>groupId</literal>, <literal>artifactId</literal> and <literal>version</literal>
@@ -408,9 +408,9 @@
         <para>
           <programlisting>&lt;dependencies&gt;
   &lt;dependency&gt;
-    &lt;groupId&gt;org.activiti&lt;/groupId&gt;
-    &lt;artifactId&gt;activiti-designer-integration&lt;/artifactId&gt;
-    &lt;version&gt;5.7&lt;/version&gt; &lt;!-- Current Activiti Designer Version --&gt;
+    &lt;groupId&gt;org.activiti.designer&lt;/groupId&gt;
+    &lt;artifactId&gt;org.activiti.designer.integration&lt;/artifactId&gt;
+    &lt;version&gt;5.12.0&lt;/version&gt; &lt;!-- Use the current Activiti Designer version --&gt;
     &lt;scope&gt;compile&lt;/scope&gt;
   &lt;/dependency&gt;
 &lt;/dependencies&gt;
@@ -418,7 +418,7 @@
 &lt;repositories&gt;
   &lt;repository&gt;
       &lt;id&gt;Activiti&lt;/id&gt;
-      &lt;url&gt;https://maven.alfresco.com/nexus/content/repositories/activiti/&lt;/url&gt;
+      &lt;url&gt;https://maven.alfresco.com/nexus/content/groups/public/&lt;/url&gt;
    &lt;/repository&gt;
 &lt;/repositories&gt;</programlisting>
         </para>
@@ -688,6 +688,14 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
                 fileref="images/designer.palette.add.money.properties.required.png"/>
             </imageobject>
           </mediaobject>
+        </para>
+        <para>
+        	Users can enter static text or use expressions that use process variables in the property fields when creating diagrams 
+        	(e.g. &quot;This little piggy went to ${piggyLocation}&quot;). Generally, 
+        	this applies to text fields where users are free to enter any text. If you expect users to want to use expressions and you apply runtime behavior 
+        	to your <literal>CustomServiceTask</literal> (using <literal>@Runtime</literal>), make sure to use <literal>Expression</literal> fields in the 
+        	delegate class so the expressions are correctly resolved at runtime. More information on runtime behavior can be found in  
+        	<link linkend="eclipseDesignerConfiguringRuntime">this section</link>.
         </para>
         <para>The help for fields is offered by the buttons to the right of each property. Clicking
           on the button shows a popup as displayed below.</para>

@@ -39,6 +39,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.impl.FormServiceImpl;
 import org.activiti.engine.impl.HistoryServiceImpl;
@@ -257,6 +258,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // DEPLOYERS ////////////////////////////////////////////////////////////////
 
+  protected BpmnDeployer bpmnDeployer;
+  protected BpmnParser bpmnParser;
   protected List<Deployer> customPreDeployers;
   protected List<Deployer> customPostDeployers;
   protected List<Deployer> deployers;
@@ -337,6 +340,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected String databaseTablePrefix = "";
   
   /**
+   * Set this to true if you want to have extra checks on the BPMN xml that is parsed.
+   * See http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/
+   * 
+   * Unfortuantely, this feature is not available on some platforms (JDK 6, JBoss),
+   * hence the reason why it is disabled by default. If your platform allows 
+   * the use of StaxSource during XML parsing, do enable it.
+   */
+  protected boolean enableSafeBpmnXml = false;
+  
+  /**
    * The following settings will determine the amount of entities loaded at once when the engine 
    * needs to load multiple entities (eg. when suspending a process definition with all its process instances).
    * 
@@ -354,6 +367,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected String databaseSchema = null;
   
   protected boolean isCreateDiagramOnDeploy = true;
+  
+  protected TaskListener globalTaskListener ;
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
@@ -741,7 +756,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Collection< ? extends Deployer> getDefaultDeployers() {
     List<Deployer> defaultDeployers = new ArrayList<Deployer>();
 
-    BpmnDeployer bpmnDeployer = new BpmnDeployer();
+    if (bpmnDeployer == null) {
+      bpmnDeployer = new BpmnDeployer();
+    }
+      
     bpmnDeployer.setExpressionManager(expressionManager);
     bpmnDeployer.setIdGenerator(idGenerator);
     
@@ -761,7 +779,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       listenerFactory = defaultListenerFactory;
     }
     
-    BpmnParser bpmnParser = new BpmnParser();
+    if (bpmnParser == null) {
+      bpmnParser = new BpmnParser();
+    }
+    
     bpmnParser.setExpressionManager(expressionManager);
     bpmnParser.setBpmnParseFactory(bpmnParseFactory);
     bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
@@ -1269,6 +1290,22 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public BpmnDeployer getBpmnDeployer() {
+    return bpmnDeployer;
+  }
+
+  public void setBpmnDeployer(BpmnDeployer bpmnDeployer) {
+    this.bpmnDeployer = bpmnDeployer;
+  }
+  
+  public BpmnParser getBpmnParser() {
+    return bpmnParser;
+  }
+  
+  public void setBpmnParser(BpmnParser bpmnParser) {
+    this.bpmnParser = bpmnParser;
+  }
+
   public List<Deployer> getDeployers() {
     return deployers;
   }
@@ -1930,5 +1967,22 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setKnowledgeBaseCache(DeploymentCache<Object> knowledgeBaseCache) {
     this.knowledgeBaseCache = knowledgeBaseCache;
   }
+
+  public boolean isEnableSafeBpmnXml() {
+    return enableSafeBpmnXml;
+  }
+
+  public void setEnableSafeBpmnXml(boolean enableSafeBpmnXml) {
+    this.enableSafeBpmnXml = enableSafeBpmnXml;
+  }
+  
+  public TaskListener getGlobalTaskListener() {
+	return globalTaskListener;
+  }
+
+  public void setGlobalTaskListener(TaskListener globalTaskListener) {
+	this.globalTaskListener = globalTaskListener;
+  }
+  
   
 }

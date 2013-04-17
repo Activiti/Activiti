@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.stax.StAXSource;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -76,6 +77,7 @@ import org.activiti.bpmn.model.SubProcess;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 /**
  * @author Tijs Rademakers
@@ -154,7 +156,21 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     this.startEventFormTypes = startEventFormTypes;
   }
   
-  public void validateModel(XMLStreamReader xtr) throws Exception {
+  public void validateModel(InputStreamProvider inputStreamProvider) throws Exception {
+    Schema schema = createSchema();
+    
+    Validator validator = schema.newValidator();
+    validator.validate(new StreamSource(inputStreamProvider.getInputStream()));
+  }
+  
+  public void validateModel(XMLStreamReader xmlStreamReader) throws Exception {
+    Schema schema = createSchema();
+    
+    Validator validator = schema.newValidator();
+    validator.validate(new StAXSource(xmlStreamReader));
+  }
+
+  protected Schema createSchema() throws SAXException {
     SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
     Schema schema = null;
     if (classloader != null) {
@@ -168,12 +184,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     if (schema == null) {
       throw new XMLException("BPMN XSD could not be found");
     }
-    
-    Validator validator = schema.newValidator();
-    validator.validate(new StAXSource(xtr));
+    return schema;
   }
   
-  public BpmnModel convertToBpmnModel(InputStreamProvider inputStreamProvider, boolean validateSchema) {
+  public BpmnModel convertToBpmnModel(InputStreamProvider inputStreamProvider, boolean validateSchema, boolean enableSafeBpmnXml) {
     XMLInputFactory xif = XMLInputFactory.newInstance();
 
     if (xif.isPropertySupported(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES)) {
@@ -195,7 +209,12 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
   
       try {
         if (validateSchema) {
-          validateModel(xtr);
+          
+          if (!enableSafeBpmnXml) {
+            validateModel(inputStreamProvider);
+          } else {
+            validateModel(xtr);
+          }
   
           // The input stream is closed after schema validation
           in = new InputStreamReader(inputStreamProvider.getInputStream(), "UTF-8");
