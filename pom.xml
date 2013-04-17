@@ -8,7 +8,7 @@
   <artifactId>activiti-root</artifactId>
 
   <packaging>pom</packaging>
-  <version>5.12.1</version>
+  <version>5.12.20130417</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>3.1.2.RELEASE</spring.framework.version>
@@ -552,6 +552,7 @@
     <module>modules/activiti-bpmn-model</module>
     <module>modules/activiti-bpmn-converter</module>
     <module>modules/activiti-engine</module>
+    <module>modules/activiti-cdi</module>
   </modules>
 
   <repositories>
@@ -650,6 +651,21 @@
             <activiti.osgi.version.clean>${project.version}</activiti.osgi.version.clean>
           </versions>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <configuration>
+          <attach>true</attach>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <pluginManagement>
@@ -888,13 +904,13 @@
   
   <distributionManagement>
     <snapshotRepository>
-      <id>alfresco.snapshot.repo</id>
-      <url>https://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-      <uniqueVersion>false</uniqueVersion>
+      <id>nexus-snapshots</id>
+      <url>http://42.121.98.68:8080/nexus/content/repositories/snapshots/</url>
+      <uniqueVersion>true</uniqueVersion>
     </snapshotRepository>
     <repository>
-      <id>alfresco.release.repo</id>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+      <id>nexus-releases</id>
+      <url>http://42.121.98.68:8080/nexus/content/repositories/releases/</url>
     </repository>
   </distributionManagement>
 
