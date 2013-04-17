@@ -167,7 +167,7 @@ public class BpmnParse implements BpmnXMLConstants {
   public BpmnParse execute() {
     try {
       BpmnXMLConverter converter = new BpmnXMLConverter();
-      bpmnModel = converter.convertToBpmnModel(streamSource, true);
+      bpmnModel = converter.convertToBpmnModel(streamSource, false);
       
       createImports();
       createItemDefinitions();
