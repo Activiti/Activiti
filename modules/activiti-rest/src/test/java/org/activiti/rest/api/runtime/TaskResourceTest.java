@@ -138,11 +138,12 @@ public class TaskResourceTest extends BaseRestTestCase {
     }
   }
   
+ 
   /**
-   * Test updating a single task.
+   * Test updating a single task without passing in any value, no values should be altered.
    * PUT runtime/tasks/{taskId}
    */
-  public void testUpdateTask() throws Exception {
+  public void testUpdateTaskNoOverrides() throws Exception {
     try {
       Calendar now = Calendar.getInstance();
       Task parentTask = taskService.newTask();
@@ -188,10 +189,10 @@ public class TaskResourceTest extends BaseRestTestCase {
   }
   
   /**
-   * Test updating a single task without passing in any value, no values should be altered.
+   * Test updating a single task.
    * PUT runtime/tasks/{taskId}
    */
-  public void testUpdateTaskNoOverrides() throws Exception {
+  public void testUpdateTask() throws Exception {
     try {
       Task task = taskService.newTask();
       taskService.saveTask(task);
@@ -350,6 +351,27 @@ public class TaskResourceTest extends BaseRestTestCase {
     } catch(ResourceException expected) {
       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
       assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
+    }
+  }
+  
+  /**
+   * Test updating a task that is part of a process.
+   * PUT runtime/tasks/{taskId}
+   */
+  @Deployment
+  public void testDeleteTaskInProcess() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
+    
+    try {
+      client.delete();
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_FORBIDDEN, expected.getStatus());
+      assertEquals("Cannot delete a task that is part of a process-instance.", expected.getStatus().getDescription());
     }
   }
 }

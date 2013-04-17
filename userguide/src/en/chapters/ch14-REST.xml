@@ -73,6 +73,10 @@
               <entry>The operation failed. The operation requires an Authentication header to be set. If this was present in the request, the supplied credentials are not valid or the user is not authorized to perform this operation.</entry>
             </row>
             <row>
+              <entry><literal>403 - Forbidden</literal></entry>
+              <entry>The operation is forbidden and should not be re-attempted. This does not imply an issue with authentication not authorization, it's an operation that is not allowed. Example: deleting a task that is part of a running process is not allowed and will never be allowed, regardless of the user or process/task state.</entry>
+            </row>
+            <row>
               <entry><literal>404 - Not found</literal></entry>
               <entry>The operation failed.The requested resource was not found.</entry>
             </row>
@@ -1051,8 +1055,209 @@
  </section>
  
  </section>
+ 
+  <section>
+  <title>Tasks</title>
   
-
+      <section>
+      <title>Get a single task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "assignee" : "kermit",
+  "createTime" : "2013-04-17T10:17:43.902+0000",
+  "delegationState" : "pending",
+  "description" : "Task description",
+  "dueDate" : "2013-04-17T10:17:43.902+0000",
+  "execution" : "http://localhost:8182/runtime/executions/5",
+  "id" : "8",
+  "name" : "My task",
+  "owner" : "owner",
+  "parentTask" : "http://localhost:8182/runtime/tasks/9",
+  "priority" : 50,
+  "processDefinition" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+  "processInstance" : "http://localhost:8182/runtime/process-instances/5",
+  "suspended" : false,
+  "taskDefinitionKey" : "theTask",
+  "url" : "http://localhost:8182/runtime/tasks/8"
+}</programlisting>
+      <itemizedlist>
+          <listitem>
+            <para><literal>delegationState</literal>: Delegation-state of the task, can be <literal>null</literal>, <literal>"pending"</literal> or <literal>"resolved".</literal></para>
+          </listitem>
+      </itemizedlist>
+    </para>
+    </section>
+ 
+  <section>
+      <title>Update a task</title>
+        <para>
+          <programlisting>PUT runtime/tasks/{taskId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{ "assignee" : "assignee",
+  "delegationState" : "resolved",
+  "description" : "New task description",
+  "dueDate" : "2013-04-17T13:06:02.438+02:00",
+  "name" : "New task name",
+  "owner" : "owner",
+  "parentTaskId" : "3",
+  "priority" : 20
+}</programlisting>
+      All request values are optional. For example, you can only include the 'assignee' attribute in the request body JSON-object, only updating the assignee of the task, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the task-value will be updated to null. Example: <literal>{"dueDate" : null}</literal> will clear the duedate of the task).
+       </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was updated.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the requested task was updated simultaneously.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>runtime/tasks/{taskId}</literal>.
+      </para>
+  </section>
+      <section>
+      <title>Delete a task</title>
+        <para>
+          <programlisting>DELETE runtime/tasks/{taskId}?cascadeHistory={cascadeHistory}&amp;deleteReason={deleteReason}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>deploymentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to delete.</entry>
+                  </row>
+                  <row>
+                    <entry>cascadeHistory</entry>
+                    <entry>False</entry>
+                    <entry>Boolean</entry>
+                    <entry>Whether or not to delete the HistoricTask instance when deleting the task (if applicable). If not provided, this value defaults to false.</entry>
+                  </row>
+                  <row>
+                    <entry>deleteReason</entry>
+                    <entry>False</entry>
+                    <entry>String</entry>
+                    <entry>Reason why the task is deleted. This value is ignored when <literal>cascadeHistory</literal> is true.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the task was found and has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                  <row>
+                    <entry>403</entry>
+                    <entry>Indicates the requested task cannot be deleted because it's part of a workflow.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+ </section>
 
 <!-- Legacy -->
   <section>
