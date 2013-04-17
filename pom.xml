@@ -705,6 +705,7 @@
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
+        <module>modules/activiti-webapp-angular</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
@@ -796,6 +797,7 @@
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-webapp-explorer2</module>
+        <module>modules/activiti-webapp-angular</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-camel</module>	      
@@ -852,7 +854,7 @@
         </build>
     </profile>
     <profile>
-      <!-- Profile used by the start-explorer.sh script to build the Explorer webapp and all its dependencies -->
+      <!-- Profile used by the start-rest.sh script to build the Explorer webapp and all its dependencies -->
       <id>buildRestappDependencies</id>
       <modules>
         <module>modules/activiti-bpmn-model</module>
