@@ -25,6 +25,7 @@ import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Put;
+import org.restlet.resource.ResourceException;
 
 /**
  * @author Frederik Heremans
@@ -107,6 +108,11 @@ public class TaskResource extends SecuredResource {
     String deleteReason = getQueryParameter("deleteReason", query);
     
     Task taskToDelete = getTaskFromRequest();
+    if(taskToDelete.getExecutionId() != null) {
+      // Can't delete a task that is part of a process instance
+      throw new ResourceException(new Status(Status.CLIENT_ERROR_FORBIDDEN.getCode(), 
+              "Cannot delete a task that is part of a process-instance.", null, null));
+    }
     
     if(cascadeHistory != null) {
       // Ignore delete-reason since the task-history (where the reason is recorded) will be deleted anyway 
@@ -115,7 +121,6 @@ public class TaskResource extends SecuredResource {
       // Delete with delete-reason
       ActivitiUtil.getTaskService().deleteTask(taskToDelete.getId(), deleteReason);
     }
-    
     getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
   }
   
