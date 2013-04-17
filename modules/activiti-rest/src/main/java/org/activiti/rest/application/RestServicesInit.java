@@ -13,6 +13,13 @@ import org.activiti.rest.api.identity.UserGroupsResource;
 import org.activiti.rest.api.identity.UserPictureResource;
 import org.activiti.rest.api.identity.UserResource;
 import org.activiti.rest.api.identity.UserSearchResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentArtifactResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentArtifactsResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentDeleteResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentUploadResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentsDeleteResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentsResource;
+import org.activiti.rest.api.legacy.process.ProcessDefinitionsResource;
 import org.activiti.rest.api.management.JobExecuteResource;
 import org.activiti.rest.api.management.JobResource;
 import org.activiti.rest.api.management.JobsExecuteResource;
@@ -23,7 +30,6 @@ import org.activiti.rest.api.management.TablesResource;
 import org.activiti.rest.api.process.ProcessDefinitionDiagramResource;
 import org.activiti.rest.api.process.ProcessDefinitionFormResource;
 import org.activiti.rest.api.process.ProcessDefinitionPropertiesResource;
-import org.activiti.rest.api.process.ProcessDefinitionsResource;
 import org.activiti.rest.api.process.ProcessInstanceDiagramResource;
 import org.activiti.rest.api.process.ProcessInstanceResource;
 import org.activiti.rest.api.process.ProcessInstanceSignalExecutionResource;
@@ -31,12 +37,13 @@ import org.activiti.rest.api.process.ProcessInstanceTaskResource;
 import org.activiti.rest.api.process.ProcessInstancesResource;
 import org.activiti.rest.api.process.SignalEventSubscriptionResource;
 import org.activiti.rest.api.process.StartProcessInstanceResource;
-import org.activiti.rest.api.repository.DeploymentArtifactResource;
-import org.activiti.rest.api.repository.DeploymentArtifactsResource;
-import org.activiti.rest.api.repository.DeploymentDeleteResource;
-import org.activiti.rest.api.repository.DeploymentUploadResource;
-import org.activiti.rest.api.repository.DeploymentsDeleteResource;
-import org.activiti.rest.api.repository.DeploymentsResource;
+import org.activiti.rest.api.repository.DeploymentCollectionResource;
+import org.activiti.rest.api.repository.DeploymentResource;
+import org.activiti.rest.api.repository.DeploymentResourceCollectionResource;
+import org.activiti.rest.api.repository.DeploymentResourceDataResource;
+import org.activiti.rest.api.repository.DeploymentResourceResource;
+import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
+import org.activiti.rest.api.repository.ProcessDefinitionResource;
 import org.activiti.rest.api.repository.SimpleWorkflowResource;
 import org.activiti.rest.api.task.TaskAddResource;
 import org.activiti.rest.api.task.TaskAttachmentAddResource;
@@ -50,9 +57,22 @@ import org.activiti.rest.api.task.TasksResource;
 import org.activiti.rest.api.task.TasksSummaryResource;
 import org.restlet.routing.Router;
 
+@SuppressWarnings("deprecation")
 public class RestServicesInit {
 
   public static void attachResources(Router router) {
+    
+    // New REST-urls
+    router.attach("/repository/deployments", DeploymentCollectionResource.class);
+    router.attach("/repository/deployments/{deploymentId}", DeploymentResource.class);
+    router.attach("/repository/deployments/{deploymentId}/resources", DeploymentResourceCollectionResource.class);
+    router.attach("/repository/deployments/{deploymentId}/resources/{resourceId}", DeploymentResourceResource.class);
+    router.attach("/repository/deployments/{deploymentId}/resourcedata/{resourceId}", DeploymentResourceDataResource.class);
+    
+    router.attach("/repository/process-definitions", ProcessDefinitionCollectionResource.class);
+    router.attach("/repository/process-definitions/{processDefinitionId}", ProcessDefinitionResource.class);
+    
+    // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);
     
     router.attach("/login", LoginResource.class);
@@ -116,4 +136,5 @@ public class RestServicesInit {
     router.attach("/simple-workflow", SimpleWorkflowResource.class);
     
   }
+  
 }

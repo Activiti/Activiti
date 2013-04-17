@@ -13,14 +13,21 @@
 
 package org.activiti.rest.api;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.application.ActivitiRestApplication;
 import org.codehaus.jackson.JsonNode;
+import org.restlet.data.Form;
+import org.restlet.data.MediaType;
+import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
 
@@ -35,6 +42,103 @@ public class SecuredResource extends ServerResource {
   
   protected String loggedInUser;
   
+  /**
+   * Create a full URL to a rest-resource.
+   * 
+   * @param urlFragments fragments of the URL, relative to the base of the rest-application.
+   * @param arguments arguments to replace the placeholders in the urlFragments, using the {@link MessageFormat}
+   * conventions (eg. <code>{0}</code> is replaced by first argument value).
+   */
+  public String createFullResourceUrl(String[] urlFragments, Object ... arguments) {
+    Reference url = getRequest().getRootRef().clone();
+    for(String urlFragment : urlFragments) {
+      url.addSegment(MessageFormat.format(urlFragment, arguments));
+    }
+    return url.toString();
+  }
+  
+  /**
+   * @return the {@link MediaType} resolved from the given resource-name. Returns null if the type cannot
+   * be resolved based on the given name.
+   */
+  public MediaType resolveMediaType(String resourceName) {
+    return ((ActivitiRestApplication)getApplication()).getMediaTypeResolver().resolveMediaType(resourceName);
+  }
+  
+  /**
+   * @return the Restlet Application, casted to the given type.
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends ActivitiRestApplication> T getApplication(Class<T> applicationClass) {
+    return (T) getApplication();
+  }
+  
+  /**
+   * Get a request attribute value, decoded. 
+   */
+  protected String getAttribute(String name) {
+    return decode((String) getRequest().getAttributes().get(name));
+  }
+  
+  /**
+   * @return the value for the given query-parameter name. 
+   * Returns null, if the query-parameter was not set.
+   */
+  protected String getQueryParameter(String name, Form query) {
+    return query.getFirstValue(name);
+  }
+  
+  /**
+   * @return the value for the given query-parameter name, as an integer value. 
+   * Returns null, if the query-parameter was not set.
+   * 
+   * @throws ActivitiIllegalArgumentException when the query parameter is set but has cannot be converted to an integer
+   */
+  protected Integer getQueryParameterAsInt(String name, Form query) {
+    Integer result = null;
+    String stringValue = getQueryParameter(name, query);
+    if(stringValue != null) {
+      try {
+        result = Integer.parseInt(stringValue);
+      } catch(NumberFormatException nfe) {
+        throw new ActivitiIllegalArgumentException("The given value for query-parameter '" + name + "' is not an integer: " + stringValue);
+      }
+    }
+    return result;
+  }
+  
+  /**
+   * @return the value for the given query-parameter name, as an boolean value. 
+   * Returns null, if the query-parameter was not set.
+   * 
+   * @throws ActivitiIllegalArgumentException when the query parameter is set but has cannot be converted to a boolean
+   */
+  protected Boolean getQueryParameterAsBoolean(String name, Form query) {
+    String stringValue = getQueryParameter(name, query);
+    if(stringValue != null) {
+      if(Boolean.TRUE.toString().equals(stringValue.toLowerCase())) {
+        return Boolean.TRUE;
+      } else if(Boolean.FALSE.toString().equals(stringValue.toLowerCase())) {
+        return Boolean.FALSE;
+      } else {
+        throw new ActivitiIllegalArgumentException("The given value for query-parameter '" + name + "' should be one fo 'true' or 'false', instead of: " + stringValue);
+      }
+    }
+    
+    return null;
+  }
+  
+  protected String decode(String string) {
+    if(string != null) {
+      try {
+        return URLDecoder.decode(string, "UTF-8");
+      } catch (UnsupportedEncodingException uee) {
+        throw new IllegalStateException("JVM does not support UTF-8 encoding.", uee);
+      }
+    }
+    return null;
+  }
+  
   protected boolean authenticate() {
     return authenticate(null);
   }
@@ -43,7 +147,7 @@ public class SecuredResource extends ServerResource {
     loggedInUser = ((ActivitiRestApplication) getApplication()).authenticate(getRequest(), getResponse());
     if(loggedInUser == null) {
       // Not authenticated
-      setStatus(Status.CLIENT_ERROR_FORBIDDEN, "Authentication is required");
+      setStatus(getAuthenticationFailureStatus(), "Authentication is required");
       return false;
     
     } else if(group == null) {
@@ -63,12 +167,13 @@ public class SecuredResource extends ServerResource {
         }
       }
       if(allowed == false) {
-        setStatus(Status.CLIENT_ERROR_FORBIDDEN, "User is not part of the group " + group);
+        setStatus(getAuthenticationFailureStatus(), "User is not part of the group " + group);
       }
       return allowed;
     }
   }
   
+  @SuppressWarnings("deprecation")
   protected Map<String, Object> retrieveVariables(JsonNode jsonNode) {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (jsonNode != null) {
@@ -87,10 +192,16 @@ public class SecuredResource extends ServerResource {
         } else if (valueNode.isTextual()) {
           variables.put(name, valueNode.getTextValue());
         } else {
+          // Not using asText() due to the fact we expect a null-value to be returned rather than en emtpy string
+          // when node is not a simple value-node
           variables.put(name, valueNode.getValueAsText());
         }
       }
     }
     return variables;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_UNAUTHORIZED;
   }
 }

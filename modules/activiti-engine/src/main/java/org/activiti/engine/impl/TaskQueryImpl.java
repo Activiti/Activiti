@@ -387,7 +387,9 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
 
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
-      return Collections.singletonList(candidateGroup);
+      List<String> candidateGroupList = new java.util.ArrayList<String>(1);
+      candidateGroupList.add(candidateGroup);
+      return candidateGroupList;
     } else if (candidateUser != null) {
       return getGroupsForCandidateUser(candidateUser);
     } else if(candidateGroups != null) {
