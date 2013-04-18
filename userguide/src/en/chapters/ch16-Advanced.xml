@@ -88,6 +88,13 @@ public class TestBPMNParseHandler extends AbstractBpmnParseHandler&lt;Process&gt
 	   </para>
 	   
 	   <para>
+	       <emphasis role="bold">Important note:</emphasis> when writing custom parse handler, do not use any of the internal 
+	       classes that are used to parse the BPMN 2.0 constructs. This will cause difficult to find bugs. The safe way to implement
+	       a custom handler is to implement the <emphasis>BpmnParseHandler</emphasis> interface or extends the internal abstract class
+	       <emphasis>org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler</emphasis>.
+	   </para>
+	   
+	   <para>
          It is possible (but less common) to replace the default <literal>BpmnParseHandler</literal> instances
          that are responsible for the parsing of the BPMN 2.0 elements to the internal Activiti model.
          This can be done by following snippet of logic:
