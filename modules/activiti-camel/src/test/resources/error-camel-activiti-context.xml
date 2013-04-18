@@ -35,13 +35,18 @@
     </bean>
 
     <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
+    
+    <bean id="outbound" class="org.activiti.camel.route.OutboundErrorRoute"/>
+    <bean id="inbound" class="org.activiti.camel.route.InboundErrorRoute"/>
+  
+    <bean id="brokenService" class="org.activiti.camel.util.BrokenService"/>
+    
+    <bean id="dummyDelegate" class="org.activiti.camel.util.DummyJavaDelegate"/>
+    <bean id="dummyListener" class="org.activiti.camel.util.DummyExecutionListener"/>
 
-    <camelContext id="customCamelContext" xmlns="http://camel.apache.org/schema/spring">
-        <packageScan>
-            <package>org.activiti.camel.route</package>
-        </packageScan>
+    <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
+        <routeBuilder ref="outbound"/>
+        <routeBuilder ref="inbound"/>
     </camelContext>
-
-    <bean id="sleepBean" class="org.activiti.camel.util.SleepBean"/>
 
 </beans>
