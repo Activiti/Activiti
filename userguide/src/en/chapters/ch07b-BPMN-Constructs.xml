@@ -910,8 +910,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		      When process execution arrives in an <emphasis role="bold">error end event</emphasis>, 
 		      the current path of execution is ended and an error is thrown. This error
 		      can <link linkend="bpmnBoundaryErrorEvent">caught by a matching intermediate boundary error event</link>.
-		      In case no matching boundary error event is found, the execution semantics default to the 
-		      <link linkend="bpmnNoneEndEvent">none end event</link> semantics.
+		      In case no matching boundary error event is found, an exception will be thrown.
 		    </para>
 		  	  
 		  </section>
