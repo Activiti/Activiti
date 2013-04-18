@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.util.ISO8601Utils;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
@@ -374,6 +375,6 @@ public class BaseRestTestCase extends PvmTestCase {
   }
   
   protected String getISODateString(Date time) {
-    return ISODateTimeFormat.dateTime().print(time.getTime());
+    return ISO8601Utils.format(time, true);
   }
 }

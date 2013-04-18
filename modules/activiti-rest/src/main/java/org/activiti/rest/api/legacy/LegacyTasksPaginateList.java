@@ -25,7 +25,7 @@ import org.activiti.rest.api.legacy.task.LegacyTaskResponse;
 /**
  * @author Tijs Rademakers
  */
-public class TasksPaginateList extends AbstractPaginateList {
+public class LegacyTasksPaginateList extends AbstractPaginateList {
 
   @SuppressWarnings("rawtypes")
   @Override

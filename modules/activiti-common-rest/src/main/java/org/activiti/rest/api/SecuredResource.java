@@ -16,6 +16,8 @@ package org.activiti.rest.api;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +27,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.application.ActivitiRestApplication;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.util.ISO8601DateFormat;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
@@ -39,7 +42,7 @@ public class SecuredResource extends ServerResource {
 
   protected static final String USER = "user";
   protected static final String ADMIN = "admin";
-  
+  protected ISO8601DateFormat isoFormatter = new ISO8601DateFormat();
   protected String loggedInUser;
   
   /**
@@ -126,6 +129,25 @@ public class SecuredResource extends ServerResource {
     }
     
     return null;
+  }
+  
+  /**
+   * @return the value for the given query-parameter name, as a date value. 
+   * Returns null, if the query-parameter was not set.
+   * 
+   * @throws ActivitiIllegalArgumentException when the query parameter is set but has cannot be converted to a date
+   */
+  protected Date getQueryParameterAsDate(String name, Form query) {
+    Date result = null;
+    String stringValue = getQueryParameter(name, query);
+    if(stringValue != null) {
+      try {
+        result = isoFormatter.parse(stringValue);
+      } catch (ParseException e) {
+        throw new ActivitiIllegalArgumentException("The given value for query-parameter '" + name + "' is not a valid date: " + stringValue, e);
+      }
+    }
+    return result;
   }
   
   protected String decode(String string) {
