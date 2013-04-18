@@ -1,4 +1,4 @@
-package org.activiti.camel;
+package org.activiti.camel.util;
 
 import org.apache.camel.Exchange;
 
