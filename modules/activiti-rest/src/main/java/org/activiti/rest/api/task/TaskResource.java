@@ -13,148 +13,147 @@
 
 package org.activiti.rest.api.task;
 
-import java.util.List;
-
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.task.Attachment;
-import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.SecuredResource;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.restlet.representation.Representation;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
+import org.restlet.data.Form;
+import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
-import org.restlet.resource.Post;
+import org.restlet.resource.Put;
+import org.restlet.resource.ResourceException;
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
 public class TaskResource extends SecuredResource {
-  
+
   @Get
   public TaskResponse getTask() {
-    if(authenticate() == false) return null;
-    String taskId = (String) getRequest().getAttributes().get("taskId");
-    Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
-    
-    if(task == null) {
-      throw new ActivitiObjectNotFoundException("Task not found for id " + taskId, Task.class);
-    }
-    
-    TaskResponse response = new TaskResponse(task);
-    
-    TaskFormData taskFormData = ActivitiUtil.getFormService().getTaskFormData(taskId);
-    if(taskFormData != null) {
-      response.setFormResourceKey(taskFormData.getFormKey());     
-    }
-    
-    List<Task> subTaskList = ActivitiUtil.getTaskService().getSubTasks(task.getId());
-    if(subTaskList != null) {
-      for (Task subTask : subTaskList) {
-        SubTaskResponse subTaskResponse = new SubTaskResponse(subTask);
-        response.addSubTask(subTaskResponse);
-      }
-    }
-    
-    List<IdentityLink> linkList = ActivitiUtil.getTaskService().getIdentityLinksForTask(task.getId());
-    if(linkList != null) {
-      for (IdentityLink identityLink : linkList) {
-        IdentityLinkResponse linkResponse = new IdentityLinkResponse(identityLink);
-        response.addIdentityLink(linkResponse);
-      }
-    }
-    
-    List<Attachment> attachmentList = null;
-    if(task.getProcessInstanceId() != null && task.getProcessInstanceId().length() > 0) {
-      attachmentList = ActivitiUtil.getTaskService().getProcessInstanceAttachments(task.getProcessInstanceId());
-    } else {
-      attachmentList = ActivitiUtil.getTaskService().getTaskAttachments(task.getId());
-    }
-    
-    if(attachmentList != null) {
-      for (Attachment attachment : attachmentList) {
-        AttachmentResponse attachmentResponse = new AttachmentResponse(attachment);
-        response.addAttachment(attachmentResponse);
-      }
-    }
-    
-    return response;
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createTaskReponse(this, getTaskFromRequest());
   }
   
-  @Post
-  public TaskResponse updateTask(Representation entity) {
-    if(authenticate() == false) return null;
-    String taskId = (String) getRequest().getAttributes().get("taskId");
-    
-    Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
-    
-    if(task == null) {
-      throw new ActivitiObjectNotFoundException("Task not found for id " + taskId, Task.class);
+//  TODO: move to collection-resource
+//  @Post
+//  public TaskResponse createTask(TaskRequest taskRequest) {
+//    Task task = ActivitiUtil.getTaskService().newTask();
+//
+//    // Populate the task
+//    task.setName(taskRequest.getName());
+//    task.setAssignee(taskRequest.getAssignee());
+//    task.setDescription(taskRequest.getDescription());
+//    task.setDueDate(taskRequest.getDueDate());
+//    task.setOwner(taskRequest.getOwner());
+//    task.setParentTaskId(taskRequest.getParentTaskId());
+//    task.setPriority(taskRequest.getPriority());
+//
+//    DelegationState delegationState = getDelegationState(taskRequest.getDelegationState());
+//    task.setDelegationState(delegationState);
+//    
+//    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+//            .createTaskReponse(this, task);
+//  }
+  
+  
+  @Put
+  public TaskResponse updateTask(TaskRequest taskRequest) {
+    Task task = getTaskFromRequest();
+
+    // Populate the task properties based on the request
+    if(taskRequest.isNameSet()) {
+      task.setName(taskRequest.getName());
     }
-    
-    try {
-      String taskParams = entity.getText();
-      JsonNode taskJSON = new ObjectMapper().readTree(taskParams);
-      
-      String description = null;
-      if(taskJSON.path("description") != null && taskJSON.path("description").getTextValue() != null) {
-        description = taskJSON.path("description").getTextValue();
-        task.setDescription(description);
-      }
-      
-      String assignee = null;
-      if(taskJSON.path("assignee") != null && taskJSON.path("assignee").getTextValue() != null) {
-        assignee = taskJSON.path("assignee").getTextValue();
-        task.setAssignee(assignee);
-      }
-      
-      String owner = null;
-      if(taskJSON.path("owner") != null && taskJSON.path("owner").getTextValue() != null) {
-        owner = taskJSON.path("owner").getTextValue();
-        task.setOwner(owner);
-      }
-      
-      String priority = null;
-      if(taskJSON.path("priority") != null && taskJSON.path("priority").getTextValue() != null) {
-        priority = taskJSON.path("priority").getTextValue();
-        task.setPriority(RequestUtil.parseToInteger(priority));
-      }
-      
-      String dueDate = null;
-      if(taskJSON.path("dueDate") != null && taskJSON.path("dueDate").getTextValue() != null) {
-        dueDate = taskJSON.path("dueDate").getTextValue();
-        task.setDueDate(RequestUtil.parseToDate(dueDate));
-      }
-      
-      ActivitiUtil.getTaskService().saveTask(task);
-      
-      TaskResponse response = new TaskResponse(task);
-      return response;
-      
-    } catch (Exception e) {
-      if(e instanceof ActivitiException) {
-        throw (ActivitiException) e;
-      }
-      throw new ActivitiException("Failed to update task " + taskId, e);
+    if(taskRequest.isAssigneeSet()) {
+      task.setAssignee(taskRequest.getAssignee());
     }
+    if(taskRequest.isDescriptionSet()) {
+      task.setDescription(taskRequest.getDescription());
+    }
+    if(taskRequest.isDuedateSet()) {
+      task.setDueDate(taskRequest.getDueDate());
+    }
+    if(taskRequest.isOwnerSet()) {
+      task.setOwner(taskRequest.getOwner());
+    }
+    if(taskRequest.isParentTaskIdSet()) {
+      task.setParentTaskId(taskRequest.getParentTaskId());
+    }
+    if(taskRequest.isPrioritySet()) {
+      task.setPriority(taskRequest.getPriority());
+    }
+
+    if(taskRequest.isDelegationStateSet()) {
+      DelegationState delegationState = getDelegationState(taskRequest.getDelegationState());
+      task.setDelegationState(delegationState);
+    }
+
+    // Save the task and fetch agian, it's possible that an assignment-listener has updated
+    // fields after it was saved so we can't use the in-memory task
+    ActivitiUtil.getTaskService().saveTask(task);
+    task = ActivitiUtil.getTaskService().createTaskQuery().taskId(task.getId()).singleResult();
+    
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createTaskReponse(this, task);
   }
   
   @Delete
-  public void deleteTask(Representation entity) {
-    if(authenticate() == false) return;
-    String taskId = (String) getRequest().getAttributes().get("taskId");
+  public void deleteTask() {
+    Form query = getQuery();
+    Boolean cascadeHistory = getQueryParameterAsBoolean("cascadeHistory", query);
+    String deleteReason = getQueryParameter("deleteReason", query);
     
-    Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
-    
-    if(task == null) {
-      throw new ActivitiObjectNotFoundException("Task not found for id " + taskId, Task.class);
+    Task taskToDelete = getTaskFromRequest();
+    if(taskToDelete.getExecutionId() != null) {
+      // Can't delete a task that is part of a process instance
+      throw new ResourceException(new Status(Status.CLIENT_ERROR_FORBIDDEN.getCode(), 
+              "Cannot delete a task that is part of a process-instance.", null, null));
     }
     
-    ActivitiUtil.getTaskService().deleteTask(taskId);
+    if(cascadeHistory != null) {
+      // Ignore delete-reason since the task-history (where the reason is recorded) will be deleted anyway 
+      ActivitiUtil.getTaskService().deleteTask(taskToDelete.getId(), cascadeHistory);
+    } else {
+      // Delete with delete-reason
+      ActivitiUtil.getTaskService().deleteTask(taskToDelete.getId(), deleteReason);
+    }
+    getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
   }
+  
+
+  /**
+   * Get valid task from request. Throws exception if task doen't exist or if task id is not provided.
+   */
+  protected Task getTaskFromRequest() {
+    String taskId = getAttribute("taskId");
+
+    if (taskId == null) {
+      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
+    }
+
+    Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
+    if (task == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
+    }
+    return task;
+  }
+
+  protected DelegationState getDelegationState(String delegationState) {
+    DelegationState state = null;
+    if(delegationState != null) {
+      if(DelegationState.RESOLVED.name().toLowerCase().equals(delegationState)) {
+        return DelegationState.RESOLVED;
+      } else if(DelegationState.PENDING.name().toLowerCase().equals(delegationState)) {
+        return DelegationState.PENDING;
+      } else {
+        throw new ActivitiIllegalArgumentException("Illegal value for delegationState: " + delegationState);
+      }
+    }
+    return state;
+  }
+
 }

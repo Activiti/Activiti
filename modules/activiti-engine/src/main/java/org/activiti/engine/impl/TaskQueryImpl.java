@@ -13,11 +13,9 @@
 package org.activiti.engine.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.context.Context;
@@ -387,7 +385,9 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
 
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
-      return Collections.singletonList(candidateGroup);
+      List<String> candidateGroupList = new java.util.ArrayList<String>(1);
+      candidateGroupList.add(candidateGroup);
+      return candidateGroupList;
     } else if (candidateUser != null) {
       return getGroupsForCandidateUser(candidateUser);
     } else if(candidateGroups != null) {

@@ -1,3 +1,5 @@
+package org.activiti.rest.api.repository;
+
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -11,13 +13,12 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.repository;
-
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.api.RequestUtil;
 
 /**
  * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
 public class DeploymentResponse {
 
@@ -25,12 +26,14 @@ public class DeploymentResponse {
   String name;
   String deploymentTime;
   String category;
+  String url;
   
-  public DeploymentResponse(Deployment deployment) {
+  public DeploymentResponse(Deployment deployment, String url) {
     setId(deployment.getId());
     setName(deployment.getName());
     setDeploymentTime(RequestUtil.dateToString(deployment.getDeploymentTime()));
     setCategory(deployment.getCategory());
+    setUrl(url);
   }
   
   public String getId() {
@@ -56,5 +59,11 @@ public class DeploymentResponse {
   }
   public void setCategory(String category) {
     this.category = category;
+  }
+  public void setUrl(String url) {
+    this.url = url;
+  }
+  public String getUrl() {
+    return url;
   }
 }

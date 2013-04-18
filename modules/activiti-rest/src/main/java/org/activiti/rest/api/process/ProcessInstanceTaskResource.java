@@ -23,7 +23,7 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
-import org.activiti.rest.api.task.TasksPaginateList;
+import org.activiti.rest.api.legacy.TasksPaginateList;
 import org.restlet.resource.Get;
 
 public class ProcessInstanceTaskResource extends SecuredResource {
