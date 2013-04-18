@@ -75,6 +75,7 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
     ActivitiEndpoint endpoint = createEndpoint(execution);
     Exchange exchange = createExchange(execution, endpoint);
     endpoint.process(exchange);
+    handleCamelException(exchange);
     execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
     performDefaultOutgoingBehavior(execution);
   }
@@ -99,6 +100,14 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
     Map<String, Object> variables = activityExecution.getVariables();
     copyVariables(variables, ex, endpoint);
     return ex;
+  }
+  
+  protected void handleCamelException(Exchange exchange) {
+    Exception camelException = exchange.getException();
+    boolean notHandledByCamel = exchange.isFailed() && camelException != null;
+    if (notHandledByCamel) {
+      throw new ActivitiException("Unhandled exception on camel route", camelException);
+    }
   }
   
   protected void copyVariablesToProperties(Map<String, Object> variables, Exchange exchange) {
