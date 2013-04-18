@@ -17,6 +17,7 @@ else
     cd $TOMCAT_HOME
     rm -rf conf/tomcat-users.xml
     cp $ORIGINAL_FOLDER/tomcat-users.xml conf/
+    rm -r webapps/activiti*    
     cd bin
 	chmod +x *.sh
     ./catalina.sh run
