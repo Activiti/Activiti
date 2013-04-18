@@ -55,6 +55,7 @@ import org.activiti.rest.api.repository.DeploymentResourceResource;
 import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionResource;
 import org.activiti.rest.api.repository.SimpleWorkflowResource;
+import org.activiti.rest.api.task.TaskCollectionResource;
 import org.activiti.rest.api.task.TaskResource;
 import org.restlet.routing.Router;
 
@@ -74,6 +75,7 @@ public class RestServicesInit {
     router.attach("/repository/process-definitions/{processDefinitionId}", ProcessDefinitionResource.class);
     
     router.attach("/runtime/tasks/{taskId}", TaskResource.class);
+    router.attach("/runtime/tasks", TaskCollectionResource.class);
     
     // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);
