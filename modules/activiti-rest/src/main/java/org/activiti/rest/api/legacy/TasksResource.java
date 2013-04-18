@@ -92,7 +92,7 @@ public class TasksResource extends SecuredResource {
       taskQuery.dueBefore(RequestUtil.parseToDate(strMaxDueDate));
     }
     
-    DataResponse dataResponse = new TasksPaginateList().paginateList(getQuery(), taskQuery, "id", properties);
+    DataResponse dataResponse = new LegacyTasksPaginateList().paginateList(getQuery(), taskQuery, "id", properties);
     return dataResponse;
   }
 }

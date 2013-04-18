@@ -23,7 +23,7 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
-import org.activiti.rest.api.legacy.TasksPaginateList;
+import org.activiti.rest.api.legacy.LegacyTasksPaginateList;
 import org.restlet.resource.Get;
 
 public class ProcessInstanceTaskResource extends SecuredResource {
@@ -54,7 +54,7 @@ public class ProcessInstanceTaskResource extends SecuredResource {
 		TaskQuery taskQuery = ActivitiUtil.getTaskService().createTaskQuery().processInstanceId(processInstanceId);
 
 		// Return also processDefinitionName for each task
-		DataResponse dataResponse = new TasksPaginateList().paginateList(getQuery(), taskQuery, "id", properties);
+		DataResponse dataResponse = new LegacyTasksPaginateList().paginateList(getQuery(), taskQuery, "id", properties);
 		return dataResponse;
 	}
 }
