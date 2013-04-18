@@ -36,8 +36,8 @@
 
     <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
     
-    <bean id="outbound" class="org.activiti.camel.route.OutboundErrorRoute"/>
-    <bean id="inbound" class="org.activiti.camel.route.InboundErrorRoute"/>
+    <bean id="outbound" class="org.activiti.camel.error.route.OutboundErrorRoute"/>
+    <bean id="inbound" class="org.activiti.camel.error.route.InboundErrorRoute"/>
   
     <bean id="brokenService" class="org.activiti.camel.util.BrokenService"/>
     

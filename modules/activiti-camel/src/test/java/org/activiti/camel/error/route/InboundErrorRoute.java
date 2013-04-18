@@ -1,4 +1,4 @@
-package org.activiti.camel.route;
+package org.activiti.camel.error.route;
 
 import org.activiti.camel.util.TimeConsumingService;
 import org.apache.camel.LoggingLevel;
