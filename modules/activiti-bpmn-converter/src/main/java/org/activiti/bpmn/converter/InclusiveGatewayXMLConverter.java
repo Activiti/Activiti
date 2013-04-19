@@ -41,6 +41,7 @@ public class InclusiveGatewayXMLConverter extends BaseBpmnXMLConverter {
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     InclusiveGateway gateway = new InclusiveGateway();
     BpmnXMLUtil.addXMLLocation(gateway, xtr);
+    parseChildElements(getXMLElementName(), gateway, xtr);
     return gateway;
   }
 
