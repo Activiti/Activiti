@@ -1,1 +1,56 @@
-/* Will be compiled down to a single stylesheet with your sass files */
+.general-header {
+    margin: 0;
+    background-color: #444444;
+}
+
+.nav.general-header {
+    margin: 0;
+}
+
+.general-header a {
+    margin-left: 30px;
+    padding-left: 0;
+    color: #ffffff;
+}
+
+.nav-pills > .active > a, .nav-pills > .active > a:hover, .nav-pills > .active > a:focus {
+    background-color: #444444;
+    color: #4474BD;
+}
+
+.panel-header {
+    background-color: lightgrey;
+    height: 40px;
+}
+
+.task-panel {
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.09);
+    -moz-box-shadow: 0 0 20px rgba(0,0,0,0.09);
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.task {
+    cursor: pointer;
+    height: 20px;
+    line-height: 20px;
+    padding: 10px;
+}
+
+.task:hover {
+    background-color: #C3D9FF;
+}
+
+#task-search {
+    margin: 5px 0 0 10px;
+}
+
+#task-paging {
+
+    width: 50px;
+}

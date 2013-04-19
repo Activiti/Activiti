@@ -1,0 +1,28 @@
+<div class="task-panel">
+
+    <div class="panel-header">
+
+        <!-- Search box -->
+        <input id="task-search" type="text" placeholder="Search..."
+               class="input-small search-query" ng-model="searchQuery" ui-keyup="{'enter':'search()'}">
+
+        <!-- Paging dropdown -->
+        <select id="task-paging" ng-model="pageSize">
+            <option>5</option>
+            <option>10</option>
+            <option>25</option>
+            <option>50</option>
+            <option>100</option>
+        </select>
+
+    </div>
+
+    <div id="tasks">
+        <img src="img/loading.gif" ng-show="loadingTasks">
+
+        <div ng-repeat="task in tasks" ng-hide="loadingTasks" class="task">
+            {{task.name}}
+        </div>
+    </div>
+
+</div>
