@@ -14,6 +14,10 @@
 package org.activiti.rest.api.task;
 
 import java.util.Date;
+import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonTypeInfo;
+import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 
 
 /**
@@ -48,6 +52,8 @@ public class TaskQueryRequest {
   private Date dueBefore;
   private Date dueAfter;
   private Boolean active;
+  
+  private List<QueryVariable> taskVariables;
   
   public String getName() {
     return name;
@@ -263,5 +269,14 @@ public class TaskQueryRequest {
   
   public void setActive(Boolean active) {
     this.active = active;
+  }
+  
+  @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)
+  public List<QueryVariable> getTaskVariables() {
+    return taskVariables;
+  }
+  
+  public void setTaskVariables(List<QueryVariable> taskVariables) {
+    this.taskVariables = taskVariables;
   }
 }

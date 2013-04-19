@@ -14,6 +14,7 @@
 package org.activiti.rest.api.task;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.TaskQueryProperty;
@@ -24,6 +25,7 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.api.task.QueryVariable.QueryVariableOperation;
 import org.restlet.data.Form;
 
 
@@ -181,6 +183,68 @@ public class TaskBasedResource extends SecuredResource {
       }
     }
     
+    if(request.getTaskVariables() != null) {
+      processTaskvariables(taskQuery, request.getTaskVariables());
+    }
+    
     return new TaskPaginateList(this).paginateList(query, taskQuery, "id", properties);
+  }
+  
+  protected void processTaskvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
+    
+    for(QueryVariable variable : variables) {
+      if(variable.getVariableOperation() == null) {
+        throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+      }
+      if(variable.getValue() == null) {
+        throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+      }
+      
+      boolean nameLess = variable.getName() == null;
+      
+      Object actualValue = variable.getValue();
+      if(variable.getType() != null) {
+        // Perform explicit conversion instead of using raw value from request
+        // TODO: use pluggable variable-creator based on objects and type
+      }
+      
+      // A value-only query is only possible using equals-operator
+      if(nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
+        throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
+      }
+      
+      switch(variable.getVariableOperation()) {
+      
+      case EQUALS:
+        if(nameLess) {
+          taskQuery.taskVariableValueEquals(actualValue);
+        } else {
+          taskQuery.taskVariableValueEquals(variable.getName(), actualValue);
+        }
+        break;
+        
+      case EQUALS_IGNORE_CASE:
+        if(actualValue instanceof String) {
+          taskQuery.taskVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+        }
+        break;
+        
+      case NOT_EQUALS:
+        taskQuery.taskVariableValueNotEquals(variable.getName(), actualValue);
+        break;
+        
+      case NOT_EQUALS_IGNORE_CASE:
+        if(actualValue instanceof String) {
+          taskQuery.taskVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+        }
+        break;
+      default:
+        throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+      }
+    }
   }
 }

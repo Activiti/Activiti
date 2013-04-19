@@ -14,6 +14,7 @@
 package org.activiti.rest.api.runtime;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.impl.util.ClockUtil;
@@ -24,7 +25,10 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Status;
+import org.restlet.resource.ResourceException;
 
 
 /**
@@ -228,6 +232,120 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
           taskService.deleteTask(task.getId(), true);
         }
       }
+    }
+  }
+  
+  /**
+   * Test querying tasks using task and process variables. GET runtime/tasks
+   */
+  @Deployment
+  public void testQueryTasksWithVariables() throws Exception {
+
+    // Task we're interested in
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task processTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    
+    HashMap<String, Object> variables = new HashMap<String, Object>();
+    variables.put("stringVar", "Abcdef");
+    variables.put("intVar", 12345);
+    variables.put("booleanVar", true);
+    taskService.setVariablesLocal(processTask.getId(), variables);
+    
+    // Additional tasks to confirm it's filtered out
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    ArrayNode variableArray = objectMapper.createArrayNode();
+    ObjectNode variableNode = objectMapper.createObjectNode();
+    variableArray.add(variableNode);
+    requestNode.put("taskVariables", variableArray);
+
+    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_QUERY);
+    
+    // String equals
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "Abcdef");
+    variableNode.put("operation", "equals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+
+    // Integer equals
+    variableNode.removeAll();
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 12345);
+    variableNode.put("operation", "equals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // Boolean equals
+    variableNode.removeAll();
+    variableNode.put("name", "booleanVar");
+    variableNode.put("value", true);
+    variableNode.put("operation", "equals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // String not equals
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "ghijkl");
+    variableNode.put("operation", "notEquals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+
+    // Integer not equals
+    variableNode.removeAll();
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 45678);
+    variableNode.put("operation", "notEquals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // Boolean not equals
+    variableNode.removeAll();
+    variableNode.put("name", "booleanVar");
+    variableNode.put("value", false);
+    variableNode.put("operation", "notEquals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // String equals ignore case
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "abCDEF");
+    variableNode.put("operation", "equalsIgnoreCase");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // String not equals ignore case
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "HIJKLm");
+    variableNode.put("operation", "notEqualsIgnoreCase");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // String equals without value
+    variableNode.removeAll();
+    variableNode.put("value", "Abcdef");
+    variableNode.put("operation", "equals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // Any other operation but equals without value
+    variableNode.removeAll();
+    variableNode.put("value", "abcdef");
+    variableNode.put("operation", "notEquals");
+    try {
+      assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+      assertEquals("Value-only query (without a variable-name) is only supported when using 'equals' operation.", expected.getStatus().getDescription());
+    }
+    
+    // Illegal (but existing) operation
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "abcdef");
+    variableNode.put("operation", "operationX");
+    try {
+      assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+      assertEquals("Unsupported variable query operation: operationX", expected.getStatus().getDescription());
     }
   }
 }
