@@ -26,13 +26,14 @@ public final class RestUrls {
    * Base segment for all repository-related resources: <i>repository</i>
    */
   public static final String SEGMENT_REPOSITORY_RESOURCES = "repository";
+  public static final String SEGMENT_RUNTIME_RESOURCES = "runtime";
+  public static final String SEGMENT_QUERY_RESOURCES = "query";
   
   public static final String SEGMENT_DEPLOYMENT_RESOURCE = "deployments";
   public static final String SEGMENT_PROCESS_DEFINITION_RESOURCE = "process-definitions";
   public static final String SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE = "resources";
   public static final String SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE_CONTENT = "resourcedata";
   
-  public static final String SEGMENT_RUNTIME_RESOURCES = "runtime";
   public static final String SEGMENT_TASK_RESOURCE = "tasks";
   public static final String SEGMENT_EXECUTION_RESOURCE = "executions";
   public static final String SEGMENT_PROCESS_INSTANCE_RESOURCE = "process-instances";
@@ -90,6 +91,11 @@ public final class RestUrls {
    * URL template for task collection: <i>runtime/tasks/{0:taskId}</i>
    */
   public static final String[] URL_TASK_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE};
+  
+  /**
+   * URL template for task query: <i>query/tasks</i>
+   */
+  public static final String[] URL_TASK_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_TASK_RESOURCE};
   
   /**
    * URL template for a single task: <i>runtime/tasks/{0:taskId}</i>
