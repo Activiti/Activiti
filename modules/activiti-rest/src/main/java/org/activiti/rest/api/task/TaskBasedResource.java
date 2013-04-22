@@ -184,13 +184,17 @@ public class TaskBasedResource extends SecuredResource {
     }
     
     if(request.getTaskVariables() != null) {
-      processTaskvariables(taskQuery, request.getTaskVariables());
+      addTaskvariables(taskQuery, request.getTaskVariables());
+    }
+    
+    if(request.getProcessVariables() != null) {
+      addProcessvariables(taskQuery, request.getProcessVariables());
     }
     
     return new TaskPaginateList(this).paginateList(query, taskQuery, "id", properties);
   }
   
-  protected void processTaskvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
+  protected void addTaskvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
     
     for(QueryVariable variable : variables) {
       if(variable.getVariableOperation() == null) {
@@ -238,6 +242,64 @@ public class TaskBasedResource extends SecuredResource {
       case NOT_EQUALS_IGNORE_CASE:
         if(actualValue instanceof String) {
           taskQuery.taskVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+        }
+        break;
+      default:
+        throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+      }
+    }
+  }
+  
+protected void addProcessvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
+    
+    for(QueryVariable variable : variables) {
+      if(variable.getVariableOperation() == null) {
+        throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+      }
+      if(variable.getValue() == null) {
+        throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+      }
+      
+      boolean nameLess = variable.getName() == null;
+      
+      Object actualValue = variable.getValue();
+      if(variable.getType() != null) {
+        // Perform explicit conversion instead of using raw value from request
+        // TODO: use pluggable variable-creator based on objects and type
+      }
+      
+      // A value-only query is only possible using equals-operator
+      if(nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
+        throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
+      }
+      
+      switch(variable.getVariableOperation()) {
+      
+      case EQUALS:
+        if(nameLess) {
+          taskQuery.processVariableValueEquals(actualValue);
+        } else {
+          taskQuery.processVariableValueEquals(variable.getName(), actualValue);
+        }
+        break;
+        
+      case EQUALS_IGNORE_CASE:
+        if(actualValue instanceof String) {
+          taskQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+        }
+        break;
+        
+      case NOT_EQUALS:
+        taskQuery.processVariableValueNotEquals(variable.getName(), actualValue);
+        break;
+        
+      case NOT_EQUALS_IGNORE_CASE:
+        if(actualValue instanceof String) {
+          taskQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
         } else {
           throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
         }
