@@ -4,10 +4,11 @@
 
         <!-- Search box -->
         <input id="task-search" type="text" placeholder="Search..."
-               class="input-small search-query" ng-model="searchQuery" ui-keyup="{'enter':'search()'}">
+               class="input-small search-query" ng-model="searchQuery"
+               ui-keyup="{'enter':'search()'}">
 
         <!-- Paging dropdown -->
-        <select id="task-paging" ng-model="pageSize">
+        <select id="task-paging" ng-model="pageSize" ng-change="search()">
             <option>5</option>
             <option>10</option>
             <option>25</option>
@@ -23,6 +24,12 @@
         <div ng-repeat="task in tasks" ng-hide="loadingTasks" class="task">
             {{task.name}}
         </div>
+
+    </div>
+
+    <div ng-show="numberOfPages && numberOfPages > 0">
+        <pagination boundary-links="true" num-pages="numberOfPages" current-page="currentPage"
+                    max-size="5" class="pagination-centered" on-select-page="switchPage(page)"></pagination>
     </div>
 
 </div>

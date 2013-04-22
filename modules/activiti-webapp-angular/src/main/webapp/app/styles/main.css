@@ -32,7 +32,17 @@
     -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.09);
     -moz-box-shadow: 0 0 20px rgba(0,0,0,0.09);
     margin-top: 20px;
+    max-width: 500px;
+    min-height: 600px;
+    max-height: 600px;
     overflow: hidden;
+}
+
+#tasks {
+    border-bottom: 1px solid lightgrey;
+    overflow: auto;
+    max-height: 490px;
+    min-height: 490px;
 }
 
 .task {
@@ -47,10 +57,10 @@
 }
 
 #task-search {
-    margin: 5px 0 0 10px;
+    margin-left: 10px;
 }
 
 #task-paging {
-
-    width: 50px;
+    margin-top: 5px;
+    width: 60px;
 }
