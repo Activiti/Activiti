@@ -30,6 +30,8 @@ public class TaskCollectionResource extends TaskBasedResource {
 
   @Post
   public TaskResponse createTask(TaskRequest taskRequest) {
+    if(!authenticate()) { return null; }
+    
     if(taskRequest == null) {
       throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(),
               "A request body was expected when creating the task.", null, null));
@@ -48,6 +50,8 @@ public class TaskCollectionResource extends TaskBasedResource {
   
   @Get
   public DataResponse getTasks() {
+    if(!authenticate()) { return null; }
+    
     // Create a Task query request
     TaskQueryRequest request = new TaskQueryRequest();
     Form query = getQuery();

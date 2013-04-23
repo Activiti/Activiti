@@ -32,12 +32,15 @@ public class TaskResource extends TaskBasedResource {
 
   @Get
   public TaskResponse getTask() {
+    if(!authenticate()) { return null; }
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
             .createTaskReponse(this, getTaskFromRequest());
   }
   
   @Put
   public TaskResponse updateTask(TaskRequest taskRequest) {
+    if(!authenticate()) { return null; }
+    
     if(taskRequest == null) {
       throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(),
               "A request body was expected when updating the task.", null, null));
@@ -59,6 +62,8 @@ public class TaskResource extends TaskBasedResource {
   
   @Delete
   public void deleteTask() {
+    if(!authenticate()) { return; }
+    
     Form query = getQuery();
     Boolean cascadeHistory = getQueryParameterAsBoolean("cascadeHistory", query);
     String deleteReason = getQueryParameter("deleteReason", query);
