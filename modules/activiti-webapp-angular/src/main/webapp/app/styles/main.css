@@ -23,6 +23,13 @@
     height: 40px;
 }
 
+.panel-header-text {
+    color: #7c8280;
+    font-size: smaller;
+    display: inline-block;
+    padding: 2px;
+}
+
 .task-panel {
     border: 1px solid lightgrey;
     border-radius: 10px;
@@ -41,26 +48,61 @@
 #tasks {
     border-bottom: 1px solid lightgrey;
     overflow: auto;
-    max-height: 490px;
-    min-height: 490px;
+    max-height: 460px;
+    min-height: 460px;
 }
 
 .task {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
     cursor: pointer;
-    height: 20px;
-    line-height: 20px;
+    height: 30px;
+    line-height: 30px;
     padding: 10px;
 }
 
 .task:hover {
-    background-color: #C3D9FF;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid lightgrey;
+    border-top: 1px solid lightgrey;
 }
 
 #task-search {
+    float: left;
     margin-left: 10px;
+    margin-top: 5px;
 }
 
 #task-paging {
-    margin-top: 5px;
+    float:right;
+    height: 24px;
+    margin: 7px 15px 0 0;
     width: 60px;
 }
+
+.task-counts {
+    background-color: #F0F0F0;
+    border-bottom: 1px solid lightgrey;
+    color: dimgray;
+    font-size: smaller;
+    text-align: center;
+}
+
+#task-pagination li {
+    cursor: pointer;
+}
+
+#panel-header-section-group {
+    background:url('../img/vertical-separator.png') no-repeat center left;
+    display: inline-block;
+    float: right;
+    margin-right: 10px;
+    padding-left: 10px;
+}
+
+#task-group-select {
+    height: 24px;
+    margin-top: 7px;
+    width: 130px;
+}
+

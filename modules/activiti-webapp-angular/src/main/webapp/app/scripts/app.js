@@ -1,6 +1,12 @@
 'use strict';
 
 angular.module('activitiApp', ['ui', 'filters', 'ui.bootstrap'])
+
+    // Temporary until we have a login page: always log in with kermit:kermit
+    .config(['$httpProvider', function ($httpProvider) {
+        $httpProvider.defaults.headers.common['Authorization'] = 'Basic a2VybWl0Omtlcm1pdA==';
+    }])
+
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/', {

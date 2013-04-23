@@ -7,8 +7,12 @@ angular.module('activitiApp')
         $scope.loadingTasks = true;
         $scope.pageSize = 10;
         $scope.currentPage = 1;
+        var noGroupId = '_activiti_invalid_group';
+        var noGroupElement = { 'name' : '', 'id' : noGroupId};
 
-        /* Fetch tasks async when controller instantiates */
+        /*
+         * Fetch tasks async when controller instantiates
+         */
         $http.get('http://localhost:8080/activiti-webapp-rest2/service/runtime/tasks').
             success(function (data, status, headers, config) {
                 showTasks(data);
@@ -18,17 +22,48 @@ angular.module('activitiApp')
                 $scope.loadingTasks = false;
             });
 
-        /* Task searching */
+        // TODO: extract this in separate logic later!
+        // TODO: remove hardcoded kermit dependency
+        /*
+         * Fetch user async when controller instantiates
+         */
+        $http.get('http://localhost:8080/activiti-webapp-rest2/service/user/kermit/groups').
+            success(function (data, status, headers, config) {
+                var groups = [];
+                groups.push(noGroupElement);
+                for (var i=0; i<data.data.length; i++) {
+                    if (data.data[i].type == 'assignment') {
+                        groups.push(data.data[i]);
+                    }
+                }
+
+                if (groups.length > 0) {
+                    $scope.groups = groups;
+                    $scope.candidateGroup = groups[0];
+                }
+
+            }).
+            error(function (data, status, headers, config) {
+                console.log('Couldn\'t fetch user groups : ' + status);
+            });
+
+        /*
+         * Task searching
+         */
         $scope.search = function () {
             executeSearch();
         };
 
-        /* Task pagination */
+        /*
+         * Task pagination
+         */
         $scope.switchPage = function (page) {
             executeSearch(page);
         };
 
-        /** Builds the URL */
+        /**
+         * Builds the URL
+         */
         var createUrl = function (page) {
             var url = encodeURI("http://localhost:8080/activiti-webapp-rest2/service/runtime/tasks?size=" + $scope.pageSize);
 
@@ -44,12 +79,19 @@ angular.module('activitiApp')
                 url = url + "&start=0";
             }
 
+            // Group
+            if ($scope.candidateGroup && $scope.candidateGroup.id != noGroupId) {
+                url = url + "&candidateGroup=" + $scope.candidateGroup.id;
+            }
+
             url = encodeURI(url);
             console.log("Calling URL " + url);
             return url;
         };
 
-        /* Execute the async search */
+        /*
+         * Execute the async search
+         */
         var executeSearch = function (page) {
             $scope.loadingTasks = true;
             $http.get(createUrl(page)).
@@ -60,24 +102,28 @@ angular.module('activitiApp')
                     console.log('Couldn\'t fetch tasks : ' + status);
                     $scope.loadingTasks = false;
                 });
-        }
+        };
 
-        /* Show the results from a rest call on the screen */
+        /*
+         * Show the results from a rest call on the screen
+         */
         var showTasks = function (data) {
 
             // Task data
             $scope.tasks = data.data;
             $scope.loadingTasks = false;
 
-            // Pagination
+
             var total = data.total;
             var pageSize = $scope.pageSize;
+            var realSize = data.size;
             var start = data.start;
 
             console.log("Total = " + total);
             console.log("size = " + pageSize);
             console.log("Start = " + start);
 
+            // Pagination
             if (total > pageSize) {
 
                 $scope.numberOfPages = Math.floor(total / pageSize);
@@ -93,6 +139,15 @@ angular.module('activitiApp')
                 $scope.numberOfPages = -1;
                 $scope.currentPage = -1;
 
+            }
+
+            // Description above tasks
+            if (total > 0) {
+                $scope.indexOfFirstTask = start + 1;
+                $scope.indexOfLastTask = start + realSize;
+                $scope.totalNumberOfTasks = total;
+            } else {
+                $scope.totalNumberOfTasks = 0;
             }
 
             console.log("Current page is " + $scope.currentPage);
