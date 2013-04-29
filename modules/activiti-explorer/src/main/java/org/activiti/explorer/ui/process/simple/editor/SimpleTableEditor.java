@@ -27,7 +27,6 @@ import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
-import org.activiti.explorer.ui.process.simple.editor.listener.AddTaskClickListener;
 import org.activiti.explorer.ui.process.simple.editor.table.TaskTable;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.json.JsonConverter;

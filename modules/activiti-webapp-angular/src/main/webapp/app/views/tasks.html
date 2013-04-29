@@ -33,6 +33,8 @@
 
         <div ng-repeat="task in tasks" ng-hide="loadingTasks" class="task">
             {{task.name}}
+            <button class="btn btn-success task-claim-button" type="button"
+                    ng-click="claimTask(task)" ng-show="isUnclaimedTask()" >Claim</button>
         </div>
 
     </div>

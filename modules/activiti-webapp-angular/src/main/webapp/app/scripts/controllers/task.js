@@ -64,28 +64,28 @@ angular.module('activitiApp')
         /**
          * Builds the URL
          */
-        var createUrl = function (page) {
-            var url = encodeURI("http://localhost:8080/activiti-webapp-rest2/service/runtime/tasks?size=" + $scope.pageSize);
+        var createSearchUrl = function (page) {
+            var url = encodeURI('http://localhost:8080/activiti-webapp-rest2/service/runtime/tasks?size=' + $scope.pageSize);
 
             // name
             if ($scope.searchQuery && $scope.searchQuery.length > 0) {
-                url = url + "&nameLike=%" + $scope.searchQuery + "%";
+                url = url + '&nameLike=%' + $scope.searchQuery + '%';
             }
 
             // pagination
             if (page) {
-                url = url + "&start=" + ((page - 1) * $scope.pageSize);
+                url = url + '&start=' + ((page - 1) * $scope.pageSize);
             } else {
-                url = url + "&start=0";
+                url = url + '&start=0';
             }
 
             // Group
             if ($scope.candidateGroup && $scope.candidateGroup.id != noGroupId) {
-                url = url + "&candidateGroup=" + $scope.candidateGroup.id;
+                url = url + '&candidateGroup=' + $scope.candidateGroup.id;
             }
 
             url = encodeURI(url);
-            console.log("Calling URL " + url);
+            console.log('Calling URL ' + url);
             return url;
         };
 
@@ -94,7 +94,7 @@ angular.module('activitiApp')
          */
         var executeSearch = function (page) {
             $scope.loadingTasks = true;
-            $http.get(createUrl(page)).
+            $http.get(createSearchUrl(page)).
                 success(function (data, status, headers, config) {
                     showTasks(data);
                 }).
@@ -113,15 +113,14 @@ angular.module('activitiApp')
             $scope.tasks = data.data;
             $scope.loadingTasks = false;
 
-
             var total = data.total;
             var pageSize = $scope.pageSize;
             var realSize = data.size;
             var start = data.start;
 
-            console.log("Total = " + total);
-            console.log("size = " + pageSize);
-            console.log("Start = " + start);
+            console.log('Total = ' + total);
+            console.log('size = ' + pageSize);
+            console.log('Start = ' + start);
 
             // Pagination
             if (total > pageSize) {
@@ -130,7 +129,7 @@ angular.module('activitiApp')
                 if (total % pageSize > 0) {
                     $scope.numberOfPages = $scope.numberOfPages + 1;
                 }
-                console.log("nrOfPages = " + $scope.numberOfPages);
+                console.log('nrOfPages = ' + $scope.numberOfPages);
 
                 $scope.currentPage = (Math.floor(start / pageSize)) + 1; // +1 for normal people numbering
 
@@ -150,9 +149,34 @@ angular.module('activitiApp')
                 $scope.totalNumberOfTasks = 0;
             }
 
-            console.log("Current page is " + $scope.currentPage);
+            console.log('Current page is ' + $scope.currentPage);
 
         };
+
+        /**
+         * Used to determine whether to show the claim button or not
+         */
+        $scope.isUnclaimedTask = function() {
+          return $scope.candidateGroup && $scope.candidateGroup.id != noGroupId;
+        };
+
+        /**
+         * Claim a task
+         */
+        $scope.claimTask = function(task) {
+            $scope.loadingTasks = true;
+
+            $http.put('http://localhost:8080/activiti-webapp-rest2/service/task/' + task.id + "/claim").
+                success(function (data, status, headers, config) {
+                    // After a successful claim, simply refresh the task list with the current search params
+                    executeSearch();
+                }).
+                error(function (data, status, headers, config) {
+                    console.log('Couldn\'t claim task : ' + status);
+                });
+
+            $scope.loadingTasks = false;
+        }
 
     })
 ;
