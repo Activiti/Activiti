@@ -173,13 +173,13 @@ public class TaskBasedResource extends SecuredResource {
       taskQuery.taskDefinitionKey(request.getTaskDefinitionKey());
     }
     taskQuery.taskDefinitionKeyLike(request.getTaskDefinitionKeyLike());
-    if(request.getTaskDefinitionKey() != null) {
+    if(request.getDueDate() != null) {
       taskQuery.dueDate(request.getDueDate());
     }
-    if(request.getTaskDefinitionKey() != null) {
+    if(request.getDueBefore() != null) {
       taskQuery.dueBefore(request.getDueBefore());
     }
-    if(request.getTaskDefinitionKey() != null) {
+    if(request.getDueAfter() != null) {
       taskQuery.dueAfter(request.getDueAfter());
     }
     
