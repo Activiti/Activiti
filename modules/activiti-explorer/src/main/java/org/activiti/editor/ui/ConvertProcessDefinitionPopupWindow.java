@@ -144,6 +144,7 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
               modelObjectNode.put(MODEL_REVISION, 1);
               modelObjectNode.put(MODEL_DESCRIPTION, processDefinition.getDescription());
               modelData.setMetaInfo(modelObjectNode.toString());
+              modelData.setName(processDefinition.getName());
               
               repositoryService.saveModel(modelData);
               
