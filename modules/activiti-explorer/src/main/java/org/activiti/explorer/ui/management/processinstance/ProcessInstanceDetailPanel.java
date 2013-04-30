@@ -193,8 +193,8 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
             imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
             imagePanel.setWidth(100, UNITS_PERCENTAGE);
             imagePanel.setHeight(100, UNITS_PERCENTAGE);
-          
-            URL url = new URL(ExplorerApp.get().getURL().toString().replace("/ui", "") + 
+            URL explorerURL = ExplorerApp.get().getURL();
+            URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(), explorerURL.getPath().replace("/ui", "") +
                 "diagram-viewer/index.html?processDefinitionId=" + processDefinition.getId() + "&processInstanceId=" + processInstance.getId());
             Embedded browserPanel = new Embedded("", new ExternalResource(url));
             browserPanel.setType(Embedded.TYPE_BROWSER);
