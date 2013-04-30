@@ -169,11 +169,19 @@ public class TaskBasedResource extends SecuredResource {
       }
     }
 
-    taskQuery.taskDefinitionKey(request.getTaskDefinitionKey());
+    if(request.getTaskDefinitionKey() != null) {
+      taskQuery.taskDefinitionKey(request.getTaskDefinitionKey());
+    }
     taskQuery.taskDefinitionKeyLike(request.getTaskDefinitionKeyLike());
-    taskQuery.dueDate(request.getDueDate());
-    taskQuery.dueBefore(request.getDueBefore());
-    taskQuery.dueAfter(request.getDueAfter());
+    if(request.getTaskDefinitionKey() != null) {
+      taskQuery.dueDate(request.getDueDate());
+    }
+    if(request.getTaskDefinitionKey() != null) {
+      taskQuery.dueBefore(request.getDueBefore());
+    }
+    if(request.getTaskDefinitionKey() != null) {
+      taskQuery.dueAfter(request.getDueAfter());
+    }
     
     if(request.getActive() != null) {
       if(request.getActive().booleanValue()) {
