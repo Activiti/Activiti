@@ -545,6 +545,12 @@
         <artifactId>sqljdbc4</artifactId>
         <version>4.0</version>
       </dependency>
+	  <dependency>
+		<groupId>org.projectlombok</groupId>
+		<artifactId>lombok</artifactId>
+		<version>0.11.6</version>
+		<scope>provided</scope>
+	  </dependency>
     </dependencies>
   </dependencyManagement>
 
