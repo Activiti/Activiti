@@ -15,6 +15,8 @@ package org.activiti.editor.ui;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import java.net.URL;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
@@ -152,8 +154,11 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
               
               close();
               ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
-              ExplorerApp.get().getMainWindow().open(new ExternalResource(
-                  ExplorerApp.get().getURL().toString().replace("/ui", "") + "service/editor?id=" + modelData.getId()));
+
+	          URL explorerURL = ExplorerApp.get().getURL();
+	          URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(),
+			          explorerURL.getPath().replace("/ui", "") + "service/editor?id=" + modelData.getId());
+              ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
             }
           }
           

@@ -1,6 +1,8 @@
 package org.activiti.explorer.ui.process.listener;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.editor.ui.SelectEditorComponent;
@@ -48,7 +50,12 @@ public class EditModelClickListener implements ClickListener {
     if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(model.getCategory())) {
       showSelectEditorPopupWindow();
     } else {
-      showModeler();
+	    try {
+		    showModeler();
+	    } catch (MalformedURLException e) {
+		    e.printStackTrace();
+		    ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_EDITOR_LOADING_ERROR, e);
+	    }
     }
   }
 
@@ -126,9 +133,11 @@ public class EditModelClickListener implements ClickListener {
     ExplorerApp.get().getViewManager().showPopupWindow(selectEditorPopupWindow);
   }
   
-  protected void showModeler() {
-    ExplorerApp.get().getMainWindow().open(new ExternalResource(
-            ExplorerApp.get().getURL().toString().replace("/ui", "") + "service/editor?id=" + model.getId()));
+  protected void showModeler() throws MalformedURLException {
+	  URL explorerURL = ExplorerApp.get().getURL();
+	  URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(),
+			  explorerURL.getPath().replace("/ui", "") + "service/editor?id=" + model.getId());
+    ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
   }
   
 }
