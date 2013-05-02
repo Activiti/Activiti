@@ -41,6 +41,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
+import java.net.URL;
+
 
 /**
  * @author Tijs Rademakers
@@ -157,8 +159,10 @@ public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonCon
             close();
             
             ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
-            ExplorerApp.get().getMainWindow().open(new ExternalResource(
-                ExplorerApp.get().getURL().toString().replace("/ui", "") + "service/editor?id=" + modelData.getId()));
+	          URL explorerURL = ExplorerApp.get().getURL();
+	          URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(),
+					          explorerURL.getPath().replace("/ui", "") + "service/editor?id=" + modelData.getId());
+            ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
             
           } catch(Exception e) {
             notificationManager.showErrorNotification("error", e);

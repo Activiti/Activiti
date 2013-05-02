@@ -1,0 +1,56 @@
+<div class="task-panel">
+
+    <div class="panel-header">
+
+        <!-- Search box -->
+        <input id="task-search" type="text" placeholder="Search..."
+               class="input-small search-query" ng-model="searchQuery"
+               ui-keyup="{'enter':'search()'}">
+
+        <!-- Paging dropdown -->
+        <select id="task-paging" ng-model="pageSize" ng-change="search()">
+            <option>5</option>
+            <option>10</option>
+            <option>25</option>
+            <option>50</option>
+            <option>100</option>
+        </select>
+
+        <!-- Group selection -->
+        <div id="panel-header-section-group">
+            <span class="panel-header-text">Group:</span>
+            <select id="task-group-select" ng-model="candidateGroup" ng-options="group.name for group in groups"
+                    ng-change="search()" ng-show="groups != undefined">
+            </select>
+        </div>
+
+    </div>
+
+    <div style="clear: both;"></div>
+
+    <div id="tasks">
+        <img src="img/loading.gif" ng-show="loadingTasks">
+
+        <div ng-repeat="task in tasks" ng-hide="loadingTasks" class="task">
+            {{task.name}}
+            <button class="btn btn-success task-claim-button" type="button"
+                    ng-click="claimTask(task)" ng-show="isUnclaimedTask()" >Claim</button>
+        </div>
+
+    </div>
+
+    <div class="task-counts">
+            <span ng-show="totalNumberOfTasks > 0">
+                Showing {{indexOfFirstTask}}-{{indexOfLastTask}} of {{totalNumberOfTasks}} tasks
+            </span>
+            <span ng-show="totalNumberOfTasks == 0">
+                No tasks found
+            </span>
+    </div>
+
+    <div id="task-pagination" ng-show="numberOfPages && numberOfPages > 0">
+        <pagination boundary-links="true" num-pages="numberOfPages" current-page="currentPage"
+                    max-size="5" class="pagination-centered" on-select-page="switchPage(page)"></pagination>
+    </div>
+
+</div>

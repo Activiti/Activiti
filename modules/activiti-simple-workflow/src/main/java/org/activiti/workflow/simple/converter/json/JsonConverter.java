@@ -23,6 +23,7 @@ import org.activiti.workflow.simple.definition.FormDefinition;
 import org.activiti.workflow.simple.definition.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
+import org.activiti.workflow.simple.definition.ScriptStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinitionContainer;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
@@ -64,6 +65,11 @@ public class JsonConverter {
   public static final String FEEDBACK_STEP_INITIATOR = "initiator";
   public static final String FEEDBACK_STEP_FEEDBACK_PROVIDERS = "feedback-providers";
   
+  public static final String STEP_TYPE_SCRIPT = "script-step";
+  public static final String SCRIPT_STEP_NAME = "name";
+  public static final String SCRIPT_STEP_DESCRIPTION = "description";
+  public static final String SCRIPT_STEP_SCRIPT = "script";
+  
   public static final String FORM = "form";
   public static final String FORM_PROPERTY_NAME = "name";
   public static final String FORM_PROPERTY_TYPE = "type";
@@ -101,6 +107,8 @@ public class JsonConverter {
         stepDefinitionContainerToAddTo.addStep(convertToHumanStepDefinition(stepJsonNode));
       } else if (STEP_TYPE_FEEDBACK_STEP.equals(type)){
         stepDefinitionContainerToAddTo.addStep(convertToFeedbackStepDefinition(stepJsonNode));
+      }  else if (STEP_TYPE_SCRIPT.equals(type)) {
+        stepDefinitionContainerToAddTo.addStep(convertToScriptStepDefinition(stepJsonNode));
       }
     }
   }
@@ -180,6 +188,21 @@ public class JsonConverter {
     feedbackStepDefinition.setFormDefinitionForFeedbackProviders(convertToFormDefinition(formPropertyArray)); 
     
     return feedbackStepDefinition;
+  }
+  
+  protected ScriptStepDefinition convertToScriptStepDefinition(JsonNode scriptStepNode) {
+    ScriptStepDefinition scriptStepDefinition = new ScriptStepDefinition();
+    
+    // Name
+    scriptStepDefinition.setName(getStringFieldValue(scriptStepNode, SCRIPT_STEP_NAME, false));
+    
+    // Description
+    scriptStepDefinition.setDescription(getStringFieldValue(scriptStepNode, SCRIPT_STEP_DESCRIPTION, false));
+    
+    // Script
+    scriptStepDefinition.setScript(getStringFieldValue(scriptStepNode, SCRIPT_STEP_SCRIPT, true));
+    
+    return scriptStepDefinition;
   }
   
   protected FormDefinition convertToFormDefinition(ArrayNode formPropertyArray) {
@@ -309,6 +332,8 @@ public class JsonConverter {
       return convertToJson(objectMapper, (HumanStepDefinition) stepDefinition);
     } else if (stepDefinition instanceof FeedbackStepDefinition) {
       return convertToJson(objectMapper, (FeedbackStepDefinition) stepDefinition);
+    } else if (stepDefinition instanceof ScriptStepDefinition) {
+      return convertToJson(objectMapper, (ScriptStepDefinition) stepDefinition);
     } else {
       throw new ActivitiException("Unknown step definition type " + stepDefinition.getClass().getName() + ": cannot complete json conversion");
     }
@@ -362,6 +387,7 @@ public class JsonConverter {
   
   protected JsonNode convertToJson(ObjectMapper objectMapper, FeedbackStepDefinition feedbackStepDefinition) {
     ObjectNode feedbackStepNode = objectMapper.createObjectNode();
+    feedbackStepNode.put(STEP_TYPE, STEP_TYPE_FEEDBACK_STEP);
     feedbackStepNode.put(FEEDBACK_STEP_INITIATOR, feedbackStepDefinition.getFeedbackInitiator());
     
     // Feedback providers
@@ -378,6 +404,20 @@ public class JsonConverter {
     }
     
     return feedbackStepNode;
+  }
+  
+  protected JsonNode convertToJson(ObjectMapper objectMapper, ScriptStepDefinition scriptStepDefinition) {
+    ObjectNode scriptStepNode = objectMapper.createObjectNode();
+    scriptStepNode.put(STEP_TYPE, STEP_TYPE_SCRIPT);
+    scriptStepNode.put(SCRIPT_STEP_NAME, scriptStepDefinition.getName());
+    
+    if (scriptStepDefinition.getDescription() != null) {
+      scriptStepNode.put(SCRIPT_STEP_DESCRIPTION, scriptStepDefinition.getDescription());
+    }
+    
+    scriptStepNode.put(SCRIPT_STEP_SCRIPT, scriptStepDefinition.getScript());
+    
+    return scriptStepNode;
   }
   
   protected ArrayNode convertFormToJson(ObjectMapper objectMapper, FormDefinition formDefinition) {

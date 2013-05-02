@@ -45,6 +45,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.util.ISO8601Utils;
+import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
@@ -334,7 +335,7 @@ public class BaseRestTestCase extends PvmTestCase {
   }
   
   /**
-   * Checks if the returned "data" array (child-node or root-json node returned by invoking the given url) 
+   * Checks if the returned "data" array (child-node of root-json node returned by invoking a GET on the given url) 
    * contains entries with the given ID's.
    */
   protected void assertResultsPresentInDataResponse(String url, String... expectedResourceIds) throws JsonProcessingException, IOException {
@@ -343,6 +344,34 @@ public class BaseRestTestCase extends PvmTestCase {
     // Do the actual call
     ClientResource client = getAuthenticatedClient(url);
     Representation response = client.get();
+    
+    // Check status and size
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    assertEquals(numberOfResultsExpected, dataNode.size());
+
+    // Check presence of ID's
+    List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
+    Iterator<JsonNode> it = dataNode.iterator();
+    while(it.hasNext()) {
+      String id = it.next().get("id").getTextValue();
+      toBeFound.remove(id);
+    }
+    assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
+    
+    client.release();
+  }
+  
+  /**
+   * Checks if the returned "data" array (child-node of root-json node returned by invoking a POST on the given url) 
+   * contains entries with the given ID's.
+   */
+  protected void assertResultsPresentInDataResponse(String url, ObjectNode body, String... expectedResourceIds) throws JsonProcessingException, IOException {
+    int numberOfResultsExpected = expectedResourceIds.length;
+    
+    // Do the actual call
+    ClientResource client = getAuthenticatedClient(url);
+    Representation response = client.post(body);
     
     // Check status and size
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());

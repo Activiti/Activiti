@@ -10,17 +10,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.converter;
+package org.activiti.workflow.simple.definition;
 
 
-public interface ConversionConstants {
+/**
+ * @author Joram Barrez
+ */
+public class ScriptStepDefinition extends AbstractNamedStepDefinition {
+
+  private static final long serialVersionUID = 1L;
   
-  String DEFAULT_SEQUENCEFLOW_PREFIX = "sequenceFlow";
-  
-  String USER_TASK_ID_PREFIX = "userTask";
-  String GATEWAY_ID_PREFIX = "gateway";
-  String EVENT_ID_PREFIX = "event";
-  String BOUNDARY_ID_PREFIX = "boundaryEvent";
-  String SCRIPT_TASK_ID_PREFIX = "scriptTask";
+  protected String script;
+  protected String scriptLanguage;
 
+  public String getScript() {
+    return script;
+  }
+
+  public void setScript(String script) {
+    this.script = script;
+  }
+
+  public String getScriptLanguage() {
+    return scriptLanguage;
+  }
+
+  public void setScriptLanguage(String scriptLanguage) {
+    this.scriptLanguage = scriptLanguage;
+  }
+  
 }

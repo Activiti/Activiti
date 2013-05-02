@@ -22,6 +22,7 @@ import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConvers
 import org.activiti.workflow.simple.converter.step.FeedbackStepDefinitionConverter;
 import org.activiti.workflow.simple.converter.step.HumanStepDefinitionConverter;
 import org.activiti.workflow.simple.converter.step.ParallelStepsDefinitionConverter;
+import org.activiti.workflow.simple.converter.step.ScriptStepDefinitionConverter;
 import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
@@ -57,6 +58,7 @@ public class WorkflowDefinitionConversionFactory implements Serializable {
     converters.add(new ParallelStepsDefinitionConverter());
     converters.add(new HumanStepDefinitionConverter());
     converters.add(new FeedbackStepDefinitionConverter());
+    converters.add(new ScriptStepDefinitionConverter());
     setDefaultStepDefinitionConverters(converters);
   }
   

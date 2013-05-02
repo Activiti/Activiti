@@ -10,17 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.converter;
+
+package org.activiti.rest.api.task;
+
+import org.activiti.rest.api.DataResponse;
+import org.restlet.resource.Post;
 
 
-public interface ConversionConstants {
-  
-  String DEFAULT_SEQUENCEFLOW_PREFIX = "sequenceFlow";
-  
-  String USER_TASK_ID_PREFIX = "userTask";
-  String GATEWAY_ID_PREFIX = "gateway";
-  String EVENT_ID_PREFIX = "event";
-  String BOUNDARY_ID_PREFIX = "boundaryEvent";
-  String SCRIPT_TASK_ID_PREFIX = "scriptTask";
+/**
+ * @author Frederik Heremans
+ */
+public class TaskQueryResource extends TaskBasedResource {
 
+  @Post
+  public DataResponse getQueryResult(TaskQueryRequest request) {
+    return getTasksFromQueryRequest(request);
+  }
 }
