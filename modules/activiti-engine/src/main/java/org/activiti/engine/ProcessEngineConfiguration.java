@@ -117,6 +117,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean jdbcPingEnabled = false;
   protected String jdbcPingQuery = null;
   protected int jdbcPingConnectionNotUsedFor;
+  protected int jdbcDefaultTransactionIsolationLevel;
   protected DataSource dataSource;
   protected boolean transactionsExternallyManaged = false;
   
@@ -435,6 +436,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   public ProcessEngineConfiguration setJdbcPingConnectionNotUsedFor(int jdbcPingNotUsedFor) {
     this.jdbcPingConnectionNotUsedFor = jdbcPingNotUsedFor;
+    return this;
+  }
+
+  public int getJdbcDefaultTransactionIsolationLevel() {
+    return jdbcDefaultTransactionIsolationLevel;
+  }
+
+  public ProcessEngineConfiguration setJdbcDefaultTransactionIsolationLevel(int jdbcDefaultTransactionIsolationLevel) {
+    this.jdbcDefaultTransactionIsolationLevel = jdbcDefaultTransactionIsolationLevel;
     return this;
   }
 
