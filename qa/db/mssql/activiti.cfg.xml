@@ -13,7 +13,7 @@
     <property name="jdbcDefaultTransactionIsolationLevel" value="4096" />
     
     <!-- Database configurations -->
-    <property name="databaseSchemaUpdate" value="drop-create" />
+    <property name="databaseSchemaUpdate" value="false" />
     
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />
