@@ -2433,6 +2433,40 @@
          </itemizedlist>
         </section>
 
+        <section>
+            <title>Trigger a signal for a specific process instance</title>
+            <para>
+            Sends a signal to a specific process instance, causing any subscribing signal event to fire. Additional variables may be passed in the body. If you don't want to set any variables, you may leave the body empty.
+            </para>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  <emphasis role="bold">Request:</emphasis>
+                  <literal>POST /process-instance/{processInstanceId}/event/{signalName}</literal>
+                  <programlisting>
+{
+  "variable1":"value",
+  "variable2":"value"
+}</programlisting>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">API:</emphasis>
+                  <literal>runtimeService.signalEventReceived(signalName, execution.getId()[, variables]);</literal>
+                </para>
+              </listitem>
+              <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "success": true
+}</programlisting>
+            </para>
+          </listitem>
+         </itemizedlist>
+        </section>
 
     </section>
 
