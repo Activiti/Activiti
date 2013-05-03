@@ -391,19 +391,6 @@
                   </tasks>
                 </configuration>
               </execution>
-              <execution>
-                <id>database-test-drop-schema</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="dropping schema in ${databasemssql}" />
-                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
-                  </tasks>
-                </configuration>
-              </execution>
             </executions>
           </plugin>
         </plugins>
