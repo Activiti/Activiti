@@ -51,7 +51,8 @@ public class SetRandomVariablesTaskListener implements TaskListener {
     case 2:
       return "Activiti is a light-weight workflow and Business Process Management (BPM) Platform";
     default:
-      return "Some bytearray".getBytes();
+      return new Random().nextBoolean();
+      // return "Some bytearray".getBytes();
     }
   }
 
