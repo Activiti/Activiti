@@ -71,21 +71,28 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
   }
   
   protected void retryStartProcess(String runningUser) {
-    int retries = 3;
+    int retries = 5;
+    int timeout = 200;
     boolean success = false;
     while(retries > 0 && !success) {
       try {
         runtimeService.startProcessInstanceByKey("concurrentProcess", Collections.singletonMap("assignee", (Object)runningUser));
         success = true;
       } catch(PersistenceException pe) {
-        log.debug("Retrying process start: " + pe.getMessage());
         retries = retries - 1;
+        log.debug("Retrying process start: " + pe.getMessage());
+        try {
+          Thread.sleep(timeout);
+        } catch (InterruptedException ignore) {
+        }
+        timeout = timeout + 200;
       }
     }
   }
   
   protected void retryFinishTask(String taskId) {
-    int retries = 3;
+    int retries = 5;
+    int timeout = 200;
     boolean success = false;
     while(retries > 0 && !success) {
       try {
@@ -94,6 +101,11 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
       } catch(PersistenceException pe) {
         retries = retries - 1;
         log.debug("Retrying task completion: " + pe.getMessage());
+        try {
+          Thread.sleep(timeout);
+        } catch (InterruptedException ignore) {
+        }
+        timeout = timeout + 200;
       }
     }
   }
