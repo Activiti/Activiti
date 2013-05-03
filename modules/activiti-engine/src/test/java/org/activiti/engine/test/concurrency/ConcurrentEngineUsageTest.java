@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
 
   private static Logger log = LoggerFactory.getLogger(ConcurrentEngineUsageTest.class);
+  private static final int MAX_RETRIES = 5;
   
   @Deployment
   public void testConcurrentUsage() throws Exception {
@@ -71,7 +72,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
   }
   
   protected void retryStartProcess(String runningUser) {
-    int retries = 5;
+    int retries = MAX_RETRIES;
     int timeout = 200;
     boolean success = false;
     while(retries > 0 && !success) {
@@ -80,7 +81,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         success = true;
       } catch(PersistenceException pe) {
         retries = retries - 1;
-        log.debug("Retrying process start: " + pe.getMessage());
+        log.debug("Retrying process start - " + (MAX_RETRIES - retries));
         try {
           Thread.sleep(timeout);
         } catch (InterruptedException ignore) {
@@ -88,10 +89,13 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         timeout = timeout + 200;
       }
     }
+    if(success == false) {
+      log.debug("Retrying process start FAILED " + MAX_RETRIES + " times");
+    }
   }
   
   protected void retryFinishTask(String taskId) {
-    int retries = 5;
+    int retries = MAX_RETRIES;
     int timeout = 200;
     boolean success = false;
     while(retries > 0 && !success) {
@@ -100,13 +104,17 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         success = true;
       } catch(PersistenceException pe) {
         retries = retries - 1;
-        log.debug("Retrying task completion: " + pe.getMessage());
+        log.debug("Retrying task completion - " + (MAX_RETRIES - retries));
         try {
           Thread.sleep(timeout);
         } catch (InterruptedException ignore) {
         }
         timeout = timeout + 200;
       }
+    }
+    
+    if(success == false) {
+      log.debug("Retrying task completion FAILED " + MAX_RETRIES + " times");
     }
   }
   
