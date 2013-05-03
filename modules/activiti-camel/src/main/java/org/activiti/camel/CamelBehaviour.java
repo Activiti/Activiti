@@ -17,7 +17,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.behavior.BpmnActivityBehavior;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.apache.camel.CamelContext;
@@ -86,9 +89,12 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
   }
 
   private String getProcessName(ActivityExecution execution) {
-    String id = execution.getActivity().getProcessDefinition().getId();
-    return id.substring(0, id.indexOf(":"));
+    PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
+    if (processDefinition instanceof ProcessDefinitionEntity) {
+      return ((ProcessDefinitionEntity) processDefinition).getKey();
+    }
 
+    throw new ActivitiException("Unknown implementation of PvmProcessDefinition: " + processDefinition);
   }
 
 }

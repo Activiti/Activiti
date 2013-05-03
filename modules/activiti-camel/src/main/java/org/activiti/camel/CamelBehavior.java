@@ -22,6 +22,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.BpmnActivityBehavior;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.spring.SpringProcessEngineConfiguration;
@@ -128,8 +130,12 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
   }
 
   protected String getProcessDefinitionKey(ActivityExecution execution) {
-    String id = execution.getActivity().getProcessDefinition().getId();
-    return id.substring(0, id.indexOf(":"));
+    PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
+    if (processDefinition instanceof ProcessDefinitionEntity) {
+      return ((ProcessDefinitionEntity) processDefinition).getKey();
+    }
+
+    throw new ActivitiException("Unknown implementation of PvmProcessDefinition: " + processDefinition);
   }
   
   protected void setAppropriateCamelContext(ActivityExecution execution) {
