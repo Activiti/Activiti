@@ -143,6 +143,32 @@ public class BpmnModel {
 	  return foundFlowElement;
 	}
 	
+	/** Returns process, owned specific element
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Process getProcessForFlowElement(String id) {
+	  // try to find in process itself	
+	  for (Process process : processes) {
+	    if (process.getFlowElement(id) != null) {
+	    	return process;
+	    }
+	  }
+	  
+	  // try to find in subprocesses
+     for (Process process : processes) {
+       for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
+	     if (getFlowElementInSubProcess(id, (SubProcess) flowElement) != null) {
+		     return process;
+		 }
+	   }
+	 }
+	
+     return null; 
+	}
+	
+	
 	protected FlowElement getFlowElementInSubProcess(String id, SubProcess subProcess) {
 	  FlowElement foundFlowElement = subProcess.getFlowElement(id);
     if (foundFlowElement == null) {

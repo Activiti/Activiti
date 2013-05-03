@@ -191,6 +191,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         
         ArrayNode laneShapesArrayNode = objectMapper.createArrayNode();
         poolNode.put(EDITOR_CHILD_SHAPES, laneShapesArrayNode);
+        // outgoing is required by oryx
+        poolNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
         
         Process process = model.getProcess(pool.getId());
         if (process != null) {
@@ -209,6 +211,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             
             ArrayNode elementShapesArrayNode = objectMapper.createArrayNode();
             laneNode.put(EDITOR_CHILD_SHAPES, elementShapesArrayNode);
+            // outgoing is required by oryx
+            laneNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
             
             for (FlowElement flowElement : process.getFlowElements()) {
               if (lane.getFlowReferences().contains(flowElement.getId())) {
@@ -223,6 +227,25 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                 }
               }
             }
+          }
+          
+          // sequence flows are stored outside lanes (in the process) - lets read them
+          for (FlowElement flowElement : process.getFlowElements()) {
+        	  GraphicInfo poolGraphicInfo = model.getGraphicInfo(pool.getId());
+        	  
+        	  if (flowElement instanceof SequenceFlow) {
+        		  Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
+                  if (converter != null) {
+                    try {
+                      converter.newInstance().convertToJson(flowElement, this, model, shapesArrayNode, 
+                    		  poolGraphicInfo.getX(), poolGraphicInfo.getY());
+                    } catch (Exception e) {
+                      LOGGER.error("Error converting {}", flowElement, e);
+                    }
+                  } 
+        	  }
+        	  
+        	  
           }
         }
         
@@ -311,6 +334,38 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       }
       
       processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
+    } else {
+      // sequence flow in case we are using pools still stored on top-level
+      // so, we should process them
+      for (JsonNode shapeNode : shapesArrayNode) {
+          String stencilId = BpmnJsonConverterUtil.getStencilId(shapeNode);
+    	  if (STENCIL_SEQUENCE_FLOW.equals(stencilId)) {
+    		  Class<? extends BaseBpmnJsonConverter> converterClass = convertersToBpmnMap.get(BpmnJsonConverterUtil.getStencilId(shapeNode));
+    	      if (converterClass != null) {
+    	        try {
+    	        	// convert sequenceFlow Element
+    	        	BaseBpmnJsonConverter converter = converterClass.newInstance();
+    	            FlowElement flowElement = converter.convertJsonToElement(shapeNode, modelNode, shapeMap);
+    	            flowElement.setId(BpmnJsonConverterUtil.getElementId(shapeNode));
+    	            flowElement.setName(converter.getPropertyValueAsString(PROPERTY_NAME, shapeNode));
+    	            flowElement.setDocumentation(converter.getPropertyValueAsString(PROPERTY_DOCUMENTATION, shapeNode));
+
+    	            // in case we are using pools, sequence flows placed into diagram, 
+    	            // so, we should attach them to same process as source of sequence used.
+    	            SequenceFlow sequenceFlow = (SequenceFlow)flowElement;
+    	            Process sourceProcess = bpmnModel.getProcessForFlowElement(sequenceFlow.getSourceRef());
+    	            if (sourceProcess != null) {
+    	            	sourceProcess.addFlowElement(flowElement);
+    	            } else {
+    	            	LOGGER.warn("Cannot find parent process for element " + sequenceFlow.getSourceRef());
+    	            }
+    	            
+    	        } catch (Exception e) {
+    	          LOGGER.error("Error converting {}", BpmnJsonConverterUtil.getStencilId(shapeNode), e);
+    	        }
+    	      }
+    	  }
+      }
     }
     
     // sequence flows are now all on root level
