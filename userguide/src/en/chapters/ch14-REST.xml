@@ -1596,7 +1596,8 @@
         <para>
          <emphasis role="bold">Body JSON:</emphasis>
            <programlisting>
-{ "assignee" : "assignee",
+{ 
+  "assignee" : "assignee",
   "delegationState" : "resolved",
   "description" : "New task description",
   "dueDate" : "2013-04-17T13:06:02.438+02:00",
@@ -1629,6 +1630,82 @@
                   <row>
                     <entry>409</entry>
                     <entry>Indicates the requested task was updated simultaneously.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>runtime/tasks/{taskId}</literal>.
+      </para>
+  </section>
+   <section>
+      <title>Task actions</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Complete a task - Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "complete",
+  "assignee" : "userWhoCompletes",
+  "variables" : ...
+}</programlisting>
+       Completes the task. An optional assignee can be supplied in order to have the task assigned to the given user before completing. TODO: variables
+       </para>
+       <para>
+         <emphasis role="bold">Claim a task - Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "claim",
+  "assignee" : "userWhoClaims"
+}</programlisting>
+      Claims the task by the given assignee. The assignee is required.
+       </para>
+       <para>
+         <emphasis role="bold">Delegate a task - Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "delegate",
+  "assignee" : "userToDelegateTo"
+}</programlisting>
+      Delegates the task to the given assignee. The assignee is required.
+       </para>
+       <para>
+         <emphasis role="bold">Resolve a task - Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "resolve"
+}</programlisting>
+Resolves the task delegation. The task is assigned back to the task owner (if any).
+       </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the action was executed.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>When the body contains an invalid value or when the assignee is missing when the action requires it.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the action cannot be performed due to a conflict. Either the task was updates simultaneously or the task was claimend by another user, in case of the '<literal>claim</literal>' action.</entry>
                   </row>
                 </tbody>
              </tgroup>
