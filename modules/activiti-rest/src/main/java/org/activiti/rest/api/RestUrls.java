@@ -37,6 +37,8 @@ public final class RestUrls {
   public static final String SEGMENT_TASK_RESOURCE = "tasks";
   public static final String SEGMENT_EXECUTION_RESOURCE = "executions";
   public static final String SEGMENT_PROCESS_INSTANCE_RESOURCE = "process-instances";
+  public static final String SEGMENT_VARIABLES = "variables";
+  public static final String SEGMENT_VARIABLE_DATA = "data";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -66,16 +68,6 @@ public final class RestUrls {
   public static final String[] URL_DEPLOYMENT_RESOURCE_CONTENT = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_DEPLOYMENT_RESOURCE, 
     "{0}", SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE_CONTENT, "{1}"};
   
-  
-  /**
-   * Creates an url based on the passed fragments and replaces any placeholders with the given arguments. The
-   * placeholders are folowing the {@link MessageFormat} convention 
-   * (eg. {0} is replaced by first argument value).
-   */
-  public static final String createRelativeResourceUrl(String[] segments, Object...arguments) {
-    return MessageFormat.format(StringUtils.join(segments, '/'), arguments);
-  }
-  
   /**
    * URL template for the process definition collection: <i>repository/process-definitions</i>
    */
@@ -103,6 +95,21 @@ public final class RestUrls {
   public static final String[] URL_TASK = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}"};
   
   /**
+   * URL template for a task's variables: <i>runtime/tasks/{0:taskId}/variables</i>
+   */
+  public static final String[] URL_TASK_VARIABLES_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_VARIABLES};
+  
+  /**
+   * URL template for a single task variable: <i>runtime/tasks/{0:taskId}/variables/{1:variableName}</i>
+   */
+  public static final String[] URL_TASK_VARIABLE = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}"};
+  
+  /**
+   * URL template for a single task variable content: <i>runtime/tasks/{0:taskId}/variables/{1:variableName}/variabledata</i>
+   */
+  public static final String[] URL_TASK_VARIABLE_DATA = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
+  
+  /**
    * URL template for execution collection: <i>runtime/executions/{0:executionId}</i>
    */
   public static final String[] URL_EXECUTION_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE};
@@ -122,4 +129,13 @@ public final class RestUrls {
    */
   public static final String[] URL_PROCESS_INSTANCE = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}"};
   
+  
+  /**
+   * Creates an url based on the passed fragments and replaces any placeholders with the given arguments. The
+   * placeholders are folowing the {@link MessageFormat} convention 
+   * (eg. {0} is replaced by first argument value).
+   */
+  public static final String createRelativeResourceUrl(String[] segments, Object...arguments) {
+    return MessageFormat.format(StringUtils.join(segments, '/'), arguments);
+  }
 }

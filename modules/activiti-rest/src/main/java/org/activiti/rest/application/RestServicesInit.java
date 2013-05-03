@@ -58,6 +58,7 @@ import org.activiti.rest.api.repository.SimpleWorkflowResource;
 import org.activiti.rest.api.task.TaskCollectionResource;
 import org.activiti.rest.api.task.TaskQueryResource;
 import org.activiti.rest.api.task.TaskResource;
+import org.activiti.rest.api.task.TaskVariableCollectionResource;
 import org.restlet.routing.Router;
 
 @SuppressWarnings("deprecation")
@@ -76,6 +77,7 @@ public class RestServicesInit {
     router.attach("/repository/process-definitions/{processDefinitionId}", ProcessDefinitionResource.class);
     
     router.attach("/runtime/tasks/{taskId}", TaskResource.class);
+    router.attach("/runtime/tasks/{taskId}/variables", TaskVariableCollectionResource.class);
     router.attach("/runtime/tasks", TaskCollectionResource.class);
     router.attach("/query/tasks", TaskQueryResource.class);
     

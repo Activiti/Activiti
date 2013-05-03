@@ -260,7 +260,7 @@ public class TaskBasedResource extends SecuredResource {
     }
   }
   
-protected void addProcessvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
+  protected void addProcessvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
     
     for(QueryVariable variable : variables) {
       if(variable.getVariableOperation() == null) {

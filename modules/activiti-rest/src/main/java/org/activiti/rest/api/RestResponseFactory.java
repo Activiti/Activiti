@@ -13,11 +13,26 @@
 
 package org.activiti.rest.api;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
+import org.activiti.rest.api.engine.variable.BooleanRestVariableConverter;
+import org.activiti.rest.api.engine.variable.DateRestVariableConverter;
+import org.activiti.rest.api.engine.variable.DoubleRestVariableConverter;
+import org.activiti.rest.api.engine.variable.IntegerRestVariableConverter;
+import org.activiti.rest.api.engine.variable.LongRestVariableConverter;
+import org.activiti.rest.api.engine.variable.RestVariable;
+import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
+import org.activiti.rest.api.engine.variable.RestVariableConverter;
+import org.activiti.rest.api.engine.variable.ShortRestVariableConverter;
+import org.activiti.rest.api.engine.variable.StringRestVariableConverter;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.api.repository.DeploymentResponse;
@@ -32,6 +47,15 @@ import org.restlet.data.MediaType;
  * @author Frederik Heremans
  */
 public class RestResponseFactory {
+
+  protected static final String BYTE_ARRAY_VARIABLE_TYPE = "binary";
+  protected static final String SERIALIZABLE_VARIABLE_TYPE = "serializable";
+  
+  private List<RestVariableConverter> variableConverters = new ArrayList<RestVariableConverter>();
+  
+  public RestResponseFactory() {
+    initializeVariableConverters();
+  }
   
   public TaskResponse createTaskReponse(SecuredResource resourceContext, Task task) {
     TaskResponse response = new TaskResponse(task);
@@ -105,5 +129,61 @@ public class RestResponseFactory {
               processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName()));
     }
     return response;
+  }
+  
+  public List<RestVariable> createRestVariables(SecuredResource securedResource, Map<String, Object> variables, String taskId, String executionId, RestVariableScope scope) {
+   List<RestVariable> result = new ArrayList<RestVariable>();
+   
+   RestVariable restVar = null;
+   for(Entry<String, Object> pair : variables.entrySet()) {
+     RestVariableConverter converter = null;
+     restVar = new RestVariable();
+     restVar.setVariableScope(scope);
+     restVar.setName(pair.getKey());
+     result.add(restVar);
+     
+     if(pair.getValue() != null) {
+       // Try converting the value
+       for(RestVariableConverter c : variableConverters) {
+         if(pair.getValue().getClass().isAssignableFrom(c.getVariableType())) {
+           converter = c;
+           break;
+         }
+       }
+       
+       if(converter != null) {
+         converter.convertVariableValue(pair.getValue(), restVar);
+         restVar.setType(converter.getRestTypeName());
+       } else {
+         // Revert to default conversion, which is the serializable/byte-array form
+         if(pair.getValue() instanceof Byte[] || pair.getValue() instanceof byte[]) {
+           restVar.setType(BYTE_ARRAY_VARIABLE_TYPE);
+         } else {
+           restVar.setType(SERIALIZABLE_VARIABLE_TYPE);
+         }
+         
+         if(taskId != null) {
+           restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, pair.getKey()));
+         }
+         // TODO: execution variables
+       }
+     }
+   }
+   
+   return result;
+  }
+  
+  /**
+   * Called once when the converters need to be initialized. Override of custom conversion
+   * needs to be done between java and rest.
+   */
+  protected void initializeVariableConverters() {
+    variableConverters.add(new StringRestVariableConverter());
+    variableConverters.add(new IntegerRestVariableConverter());
+    variableConverters.add(new LongRestVariableConverter());
+    variableConverters.add(new ShortRestVariableConverter());
+    variableConverters.add(new DoubleRestVariableConverter());
+    variableConverters.add(new BooleanRestVariableConverter());
+    variableConverters.add(new DateRestVariableConverter());
   }
 }
