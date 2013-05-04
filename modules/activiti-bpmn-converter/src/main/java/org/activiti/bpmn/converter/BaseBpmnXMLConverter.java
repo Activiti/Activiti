@@ -52,6 +52,7 @@ import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.MessageFlow;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
@@ -152,11 +153,15 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         }
       }
       
-      if (activeSubProcessList.size() > 0) {
-        activeSubProcessList.get(activeSubProcessList.size() - 1).addFlowElement(currentFlowElement);
+      if (currentFlowElement instanceof MessageFlow) {
+    	  model.getMessageFlows().add((MessageFlow)currentFlowElement);
       } else {
-        this.activeProcess.addFlowElement(currentFlowElement);
-      }
+	      if (activeSubProcessList.size() > 0) {
+	        activeSubProcessList.get(activeSubProcessList.size() - 1).addFlowElement(currentFlowElement);
+	      } else {
+	        this.activeProcess.addFlowElement(currentFlowElement);
+	      }
+      }      
     }
   }
   

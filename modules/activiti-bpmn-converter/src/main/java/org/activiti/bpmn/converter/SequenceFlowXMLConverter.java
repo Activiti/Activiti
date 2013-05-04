@@ -17,6 +17,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.ConnectionFlow;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.apache.commons.lang.StringUtils;
 
@@ -40,7 +41,7 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
   
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
-    SequenceFlow sequenceFlow = new SequenceFlow();
+    ConnectionFlow sequenceFlow = new SequenceFlow();
     BpmnXMLUtil.addXMLLocation(sequenceFlow, xtr);
     sequenceFlow.setSourceRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SOURCE_REF));
     sequenceFlow.setTargetRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF));
@@ -53,7 +54,7 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
 
   @Override
   protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
-    SequenceFlow sequenceFlow = (SequenceFlow) element;
+    ConnectionFlow sequenceFlow = (ConnectionFlow) element;
     writeDefaultAttribute(ATTRIBUTE_FLOW_SOURCE_REF, sequenceFlow.getSourceRef(), xtw);
     writeDefaultAttribute(ATTRIBUTE_FLOW_TARGET_REF, sequenceFlow.getTargetRef(), xtw);
   }

@@ -9,6 +9,7 @@ import java.util.List;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ConnectionFlow;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.ImplementationType;
@@ -97,7 +98,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     flowElement = model.getMainProcess().getFlowElement("flow1");
     assertTrue(flowElement instanceof SequenceFlow);
     
-    SequenceFlow flow  = (SequenceFlow) flowElement;
+    ConnectionFlow flow  = (ConnectionFlow) flowElement;
     assertEquals("flow1", flow.getId());
     assertNotNull(flow.getSourceRef());
     assertNotNull(flow.getTargetRef());

@@ -122,6 +122,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     
     // connectors
     addConverter(SequenceFlowXMLConverter.getXMLType(), SequenceFlowXMLConverter.getBpmnElementType(), SequenceFlowXMLConverter.class);
+    addConverter(MessageFlowXMLConverter.getXMLType(), MessageFlowXMLConverter.getBpmnElementType(), MessageFlowXMLConverter.class);
     
     // catch, throw and boundary event
     addConverter(CatchEventXMLConverter.getXMLType(), CatchEventXMLConverter.getBpmnElementType(), CatchEventXMLConverter.class);
@@ -354,6 +355,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 					
 				  new ExecutionListenerParser().parseChildElement(xtr, activeProcess, model);
 
+				} else if (ELEMENT_MESSAGE_FLOW.equals(xtr.getLocalName())) {
+					Class<? extends BaseBpmnXMLConverter> converterClass = convertersToBpmnMap.get(xtr.getLocalName());
+					BaseBpmnXMLConverter converter = converterClass.newInstance();
+					converter.convertToBpmnModel(xtr, model, activeProcess, activeSubProcessList);
 				} else {
 
 					if (activeSubProcessList.size() > 0 && ELEMENT_EXECUTION_LISTENER.equalsIgnoreCase(xtr.getLocalName())) {

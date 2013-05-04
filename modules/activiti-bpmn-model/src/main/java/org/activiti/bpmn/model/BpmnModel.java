@@ -44,6 +44,9 @@ public class BpmnModel {
 	protected List<Problem> problems = new ArrayList<Problem>();
 	protected List<Warning> warnings = new ArrayList<Warning>();
 	protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
+	
+	protected List<MessageFlow> messageFlows = new ArrayList<MessageFlow>();
+	
 	protected String targetNamespace;
 	protected int nextFlowIdCounter = 1;
 
@@ -325,6 +328,10 @@ public class BpmnModel {
   
   public boolean containsMessageId(String messageId) {
     return messageMap.containsKey(messageId);
+  }
+  
+  public List<MessageFlow> getMessageFlows() {
+	  return messageFlows;
   }
   
   public Map<String, String> getErrors() {
