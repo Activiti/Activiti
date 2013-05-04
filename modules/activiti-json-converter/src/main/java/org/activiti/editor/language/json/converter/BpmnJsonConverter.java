@@ -393,7 +393,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     }
     
     // Add flows to map for later processing
-    Map<String, SequenceFlow> flowSourceMap = new HashMap<String, SequenceFlow>();
+    Map<String, List<SequenceFlow>> flowSourceMap = new HashMap<String, List<SequenceFlow>>();
     Map<String, SequenceFlow> flowTargetMap = new HashMap<String, SequenceFlow>();
     for (Process process : bpmnModel.getProcesses()) {
       addAllSequenceFlows(process.getFlowElements(), flowSourceMap, flowTargetMap);
@@ -434,12 +434,17 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   }
   
   private void addAllSequenceFlows(Collection<FlowElement> flowElementList,
-      Map<String, SequenceFlow> flowSourceMap, Map<String, SequenceFlow> flowTargetMap) {
+      Map<String, List<SequenceFlow>> flowSourceMap, Map<String, SequenceFlow> flowTargetMap) {
     
     for (FlowElement flowElement : flowElementList) {
       if (flowElement instanceof SequenceFlow) {
         SequenceFlow flow = (SequenceFlow) flowElement;
-        flowSourceMap.put(flow.getSourceRef(), flow);
+        
+        if (!flowSourceMap.containsKey(flow.getSourceRef())) {
+        	flowSourceMap.put(flow.getSourceRef(), new ArrayList<SequenceFlow>());
+        }
+        flowSourceMap.get(flow.getSourceRef()).add(flow);
+        
         flowTargetMap.put(flow.getTargetRef(), flow);
       } else if (flowElement instanceof SubProcess) {
         SubProcess subProcess = (SubProcess) flowElement;
@@ -449,13 +454,13 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   }
   
   private void postProcessElements(Process process, Collection<FlowElement> flowElementList,
-      Map<String, SequenceFlow> flowSourceMap, Map<String, SequenceFlow> flowTargetMap) {
+      Map<String, List<SequenceFlow>> flowSourceMap, Map<String, SequenceFlow> flowTargetMap) {
     
     for (FlowElement flowElement : flowElementList) {
       
       if (flowElement instanceof FlowNode) {
         if (flowSourceMap.containsKey(flowElement.getId())) {
-          ((FlowNode) flowElement).getOutgoingFlows().add(flowSourceMap.get(flowElement.getId()));
+          ((FlowNode) flowElement).getOutgoingFlows().addAll(flowSourceMap.get(flowElement.getId()));
         }
         if (flowTargetMap.containsKey(flowElement.getId())) {
           ((FlowNode) flowElement).getIncomingFlows().add(flowTargetMap.get(flowElement.getId()));
