@@ -199,41 +199,75 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         
         Process process = model.getProcess(pool.getId());
         if (process != null) {
-          for (Lane lane : process.getLanes()) {
-            GraphicInfo laneGraphicInfo = model.getGraphicInfo(lane.getId());
-            
-            double laneX = laneGraphicInfo.getX() - graphicInfo.getX();
-            double laneY = laneGraphicInfo.getY() - graphicInfo.getY();
-            
-            ObjectNode laneNode = BpmnJsonConverterUtil.createChildShape(lane.getId(), STENCIL_LANE, 
-            		laneX + laneGraphicInfo.getWidth(), laneY + laneGraphicInfo.getHeight(), 
-            		laneX, laneY);
-            laneShapesArrayNode.add(laneNode);
-            ObjectNode lanePropertiesNode = objectMapper.createObjectNode();
-            lanePropertiesNode.put(PROPERTY_OVERRIDE_ID, lane.getId());
-            if (StringUtils.isNotEmpty(lane.getName())) {
-              lanePropertiesNode.put(PROPERTY_NAME, lane.getName());
-            }
-            laneNode.put(EDITOR_SHAPE_PROPERTIES, lanePropertiesNode);
-            
-            ArrayNode elementShapesArrayNode = objectMapper.createArrayNode();
-            laneNode.put(EDITOR_CHILD_SHAPES, elementShapesArrayNode);
-            // outgoing is required by oryx
-            laneNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
-            
-            for (FlowElement flowElement : process.getFlowElements()) {
-              if (lane.getFlowReferences().contains(flowElement.getId())) {
-                Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
-                if (converter != null) {
-                  try {
-                    converter.newInstance().convertToJson(flowElement, this, model, elementShapesArrayNode, 
-                        laneGraphicInfo.getX(), laneGraphicInfo.getY());
-                  } catch (Exception e) {
-                    LOGGER.error("Error converting {}", flowElement, e);
-                  }
-                }
-              }
-            }
+          if (process.getLanes().size() == 0) {
+              // it may happens process inside pool has no lanes.
+        	  // in this case we should add one
+        	  
+        	  String laneId = "lane_" + process.getId();
+        	  ObjectNode laneNode = BpmnJsonConverterUtil.createChildShape(laneId, STENCIL_LANE, 
+        			  graphicInfo.getX() + graphicInfo.getWidth(), graphicInfo.getY() + graphicInfo.getHeight(), 
+        			  graphicInfo.getX(), graphicInfo.getY());
+        	  
+        	  	laneShapesArrayNode.add(laneNode);
+	            ObjectNode lanePropertiesNode = objectMapper.createObjectNode();
+	            lanePropertiesNode.put(PROPERTY_OVERRIDE_ID, laneId);
+	            laneNode.put(EDITOR_SHAPE_PROPERTIES, lanePropertiesNode);
+	            
+	            ArrayNode elementShapesArrayNode = objectMapper.createArrayNode();
+	            laneNode.put(EDITOR_CHILD_SHAPES, elementShapesArrayNode);
+	            // outgoing is required by oryx
+	            laneNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
+	            
+	            for (FlowElement flowElement : process.getFlowElements()) {
+	              
+	                Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
+	                if (converter != null) {
+	                  try {
+	                    converter.newInstance().convertToJson(flowElement, this, model, elementShapesArrayNode, 
+	                        graphicInfo.getX(), graphicInfo.getY());
+	                  } catch (Exception e) {
+	                    LOGGER.error("Error converting {}", flowElement, e);
+	                  }
+	                }
+	              
+	            }
+          } else {
+	          for (Lane lane : process.getLanes()) {
+	            GraphicInfo laneGraphicInfo = model.getGraphicInfo(lane.getId());
+	            
+	            double laneX = laneGraphicInfo.getX() - graphicInfo.getX();
+	            double laneY = laneGraphicInfo.getY() - graphicInfo.getY();
+	            
+	            ObjectNode laneNode = BpmnJsonConverterUtil.createChildShape(lane.getId(), STENCIL_LANE, 
+	            		laneX + laneGraphicInfo.getWidth(), laneY + laneGraphicInfo.getHeight(), 
+	            		laneX, laneY);
+	            laneShapesArrayNode.add(laneNode);
+	            ObjectNode lanePropertiesNode = objectMapper.createObjectNode();
+	            lanePropertiesNode.put(PROPERTY_OVERRIDE_ID, lane.getId());
+	            if (StringUtils.isNotEmpty(lane.getName())) {
+	              lanePropertiesNode.put(PROPERTY_NAME, lane.getName());
+	            }
+	            laneNode.put(EDITOR_SHAPE_PROPERTIES, lanePropertiesNode);
+	            
+	            ArrayNode elementShapesArrayNode = objectMapper.createArrayNode();
+	            laneNode.put(EDITOR_CHILD_SHAPES, elementShapesArrayNode);
+	            // outgoing is required by oryx
+	            laneNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
+	            
+	            for (FlowElement flowElement : process.getFlowElements()) {
+	              if (lane.getFlowReferences().contains(flowElement.getId())) {
+	                Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
+	                if (converter != null) {
+	                  try {
+	                    converter.newInstance().convertToJson(flowElement, this, model, elementShapesArrayNode, 
+	                        laneGraphicInfo.getX(), laneGraphicInfo.getY());
+	                  } catch (Exception e) {
+	                    LOGGER.error("Error converting {}", flowElement, e);
+	                  }
+	                }
+	              }
+	            }
+	          }
           }
           
           // sequence flows are stored outside lanes (in the process) - lets read them
