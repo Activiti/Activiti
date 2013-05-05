@@ -418,9 +418,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if (assignee==null && this.assignee==null) {
       return;
     }
-//    if (assignee!=null && assignee.equals(this.assignee)) {
-//      return;
-//    }
     this.assignee = assignee;
 
     CommandContext commandContext = Context.getCommandContext();

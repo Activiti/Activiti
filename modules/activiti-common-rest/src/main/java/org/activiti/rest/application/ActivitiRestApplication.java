@@ -29,10 +29,23 @@ public abstract class ActivitiRestApplication extends Application {
   
   protected ChallengeAuthenticator authenticator;
   protected ActivitiStatusService activitiStatusService;
+  protected MediaTypeResolver mediaTypeResolver;
 
-  
   public ActivitiRestApplication() {
     activitiStatusService = new ActivitiStatusService();
+  }
+  
+  public MediaTypeResolver getMediaTypeResolver() {
+    if(mediaTypeResolver == null) {
+      // Revert to default implementation when no custom resolver has been set
+      mediaTypeResolver = new DefaultMediaTypeResolver();
+    }
+    
+    return mediaTypeResolver;
+  }
+
+  public void setMediaTypeResolver(MediaTypeResolver mediaTypeResolver) {
+    this.mediaTypeResolver = mediaTypeResolver;
   }
   
   public void initializeAuthentication() {

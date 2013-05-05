@@ -21,5 +21,6 @@ public interface ConversionConstants {
   String GATEWAY_ID_PREFIX = "gateway";
   String EVENT_ID_PREFIX = "event";
   String BOUNDARY_ID_PREFIX = "boundaryEvent";
+  String SCRIPT_TASK_ID_PREFIX = "scriptTask";
 
 }

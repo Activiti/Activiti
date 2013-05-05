@@ -29,6 +29,7 @@ public class ActivitiServletContextListener implements ServletContextListener {
   protected static final Logger LOGGER = LoggerFactory.getLogger(ActivitiServletContextListener.class);
 
   public void contextInitialized(ServletContextEvent event) {
+    LOGGER.info("Booting Activiti Process Engine");
     ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
     if (processEngine == null) {
       LOGGER.error("Could not start the Activiti Engine");
@@ -36,6 +37,7 @@ public class ActivitiServletContextListener implements ServletContextListener {
   }
 
   public void contextDestroyed(ServletContextEvent event) {
+    LOGGER.info("Destroying Activiti Process Engine");
     ProcessEngines.destroy();
   }
 }

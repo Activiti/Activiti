@@ -35,10 +35,11 @@
     <userTask id="task1" />
     <sequenceFlow id="flow3" sourceRef="task1" targetRef="script2" />
 
-    <scriptTask id="script2" scriptFormat="JavaScript" activiti:autoStoreVariables="true">
+    <scriptTask id="script2" scriptFormat="JavaScript">
       <script><![CDATA[
         
         var sum = a + b;           
+        execution.setVariable("sum", sum);
             
         ]]></script>
     </scriptTask>

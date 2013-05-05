@@ -38,6 +38,12 @@ public interface Execution {
    */
   boolean isEnded();
   
+  /**
+   * Returns the id of the activity where the execution currently is at.
+   * Returns null if the execution is not a 'leaf' execution (eg concurrent parent).
+   */
+  String getActivityId();
+  
   /** Id of the root of the execution tree representing the process instance.
    * It is the same as {@link #getId()} if this execution is the process instance. */ 
   String getProcessInstanceId();

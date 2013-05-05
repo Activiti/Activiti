@@ -30,7 +30,7 @@ create table ACT_ID_INFO (
     TYPE_ nvarchar(64),
     KEY_ nvarchar(255),
     VALUE_ nvarchar(255),
-    PASSWORD_ image,
+    PASSWORD_ varbinary(max),
     PARENT_ID_ nvarchar(255),
     primary key (ID_)
 );

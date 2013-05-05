@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.12</version>
+    <version>5.13-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -36,6 +36,11 @@
       <artifactId>activiti-common-rest</artifactId>
     </dependency>
     
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-simple-workflow</artifactId>
+    </dependency>
+    
     <!-- Logging, using Log4j as SLF4J implementation -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -59,6 +64,12 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
       <scope>test</scope>
     </dependency>
 

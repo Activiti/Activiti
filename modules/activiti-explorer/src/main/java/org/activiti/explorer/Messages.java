@@ -350,6 +350,11 @@ public interface Messages {
   
   String MODEL_ACTION = "model.action";
   
+  String MODEL_DEPLOY_POPUP_CAPTION = "model.deploy.popup.caption";
+  String MODEL_DEPLOY_NAME = "model.deploy.name";
+  String MODEL_DEPLOY_GENERATE_REPORTS = "model.deploy.generate.reports";
+  String MODEL_DEPLOY_BUTTON_DEPLOY = "model.deploy.button.deploy";
+  
   // Database page
   String DATABASE_NO_ROWS = "database.no.rows";
   

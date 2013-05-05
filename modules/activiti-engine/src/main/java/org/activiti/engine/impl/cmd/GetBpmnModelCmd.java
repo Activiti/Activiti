@@ -69,7 +69,7 @@ public class GetBpmnModelCmd implements Command<BpmnModel>, Serializable {
     
     // Convert the bpmn 2.0 xml to a bpmn model
     BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
-    return bpmnXMLConverter.convertToBpmnModel(new BytesStreamSource(resource.getBytes()), false); // no need to validate schema, it was already validated on deploy
+    return bpmnXMLConverter.convertToBpmnModel(new BytesStreamSource(resource.getBytes()), false, false); // no need to validate schema, it was already validated on deploy
   }
 
 }

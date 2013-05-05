@@ -35,13 +35,13 @@
     </bean>
 
     <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
-
+    
     <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
         <packageScan>
             <package>org.activiti.camel.route</package>
         </packageScan>
     </camelContext>
 
-    <bean id="sleepBean" class="org.activiti.camel.SleepBean"/>
+    <bean id="sleepBean" class="org.activiti.camel.util.SleepBean"/>
 
 </beans>

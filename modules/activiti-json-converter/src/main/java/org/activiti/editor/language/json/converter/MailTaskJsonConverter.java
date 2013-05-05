@@ -75,7 +75,7 @@ public class MailTaskJsonConverter extends BaseBpmnJsonConverter {
       } else {
         field.setStringValue(value);
       }
+      task.getFieldExtensions().add(field);
     }
-    task.getFieldExtensions().add(field);
   }
 }

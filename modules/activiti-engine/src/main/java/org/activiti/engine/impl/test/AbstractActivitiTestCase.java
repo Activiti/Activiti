@@ -66,6 +66,14 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   protected IdentityService identityService;
   protected ManagementService managementService;
   
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    
+    // Always reset authenticated user to avoid any mistakes
+    identityService.setAuthenticatedUserId(null);
+  }
+  
   protected abstract void initializeProcessEngine();
   
   // Default: do nothing

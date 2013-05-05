@@ -1,6 +1,12 @@
 package org.activiti.rest;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -34,11 +40,20 @@ import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.util.ISO8601Utils;
+import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.restlet.Component;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Protocol;
+import org.restlet.data.Status;
+import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,6 +219,17 @@ public class BaseRestTestCase extends PvmTestCase {
       log.info("database was clean");
     }
   }
+  
+  protected String encode(String string) {
+    if(string != null) {
+      try {
+        return URLEncoder.encode(string, "UTF-8");
+      } catch (UnsupportedEncodingException uee) {
+        throw new IllegalStateException("JVM does not support UTF-8 encoding.", uee);
+      }
+    }
+    return null;
+  }
 
 
   protected void initializeServices() {
@@ -306,5 +332,78 @@ public class BaseRestTestCase extends PvmTestCase {
       timeLimitExceeded = true;
       thread.interrupt();
     }
+  }
+  
+  /**
+   * Checks if the returned "data" array (child-node of root-json node returned by invoking a GET on the given url) 
+   * contains entries with the given ID's.
+   */
+  protected void assertResultsPresentInDataResponse(String url, String... expectedResourceIds) throws JsonProcessingException, IOException {
+    int numberOfResultsExpected = expectedResourceIds.length;
+    
+    // Do the actual call
+    ClientResource client = getAuthenticatedClient(url);
+    Representation response = client.get();
+    
+    // Check status and size
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    assertEquals(numberOfResultsExpected, dataNode.size());
+
+    // Check presence of ID's
+    List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
+    Iterator<JsonNode> it = dataNode.iterator();
+    while(it.hasNext()) {
+      String id = it.next().get("id").getTextValue();
+      toBeFound.remove(id);
+    }
+    assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
+    
+    client.release();
+  }
+  
+  /**
+   * Checks if the returned "data" array (child-node of root-json node returned by invoking a POST on the given url) 
+   * contains entries with the given ID's.
+   */
+  protected void assertResultsPresentInDataResponse(String url, ObjectNode body, String... expectedResourceIds) throws JsonProcessingException, IOException {
+    int numberOfResultsExpected = expectedResourceIds.length;
+    
+    // Do the actual call
+    ClientResource client = getAuthenticatedClient(url);
+    Representation response = client.post(body);
+    
+    // Check status and size
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    assertEquals(numberOfResultsExpected, dataNode.size());
+
+    // Check presence of ID's
+    List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
+    Iterator<JsonNode> it = dataNode.iterator();
+    while(it.hasNext()) {
+      String id = it.next().get("id").getTextValue();
+      toBeFound.remove(id);
+    }
+    assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
+    
+    client.release();
+  }
+  
+  /**
+   * Extract a date from the given string. Assertion fails when invalid date has been provided.
+   */
+  protected Date getDateFromISOString(String isoString) {
+    DateTimeFormatter dateFormat = ISODateTimeFormat.dateTime();
+    try {
+      return dateFormat.parseDateTime(isoString).toDate();
+    } catch(IllegalArgumentException iae) {
+      fail("Illegal date provided: "+ isoString);
+      return null;
+    }
+  }
+  
+  protected String getISODateString(Date time) {
+    return ISO8601Utils.format(time, true);
   }
 }

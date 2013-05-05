@@ -29,6 +29,10 @@ public class ScriptTaskParseHandler extends AbstractActivityBpmnParseHandler<Scr
   }
   
   protected void executeParse(BpmnParse bpmnParse, ScriptTask scriptTask) {
+
+    if (scriptTask.getScript() == null) {
+      bpmnParse.getBpmnModel().addProblem("No script provided for scriptTask. ", scriptTask);
+    }
     
     ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, scriptTask, BpmnXMLConstants.ELEMENT_TASK_SCRIPT);
     
@@ -36,6 +40,7 @@ public class ScriptTaskParseHandler extends AbstractActivityBpmnParseHandler<Scr
     activity.setExclusive(!scriptTask.isNotExclusive());
 
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
+    
   }
 
 }
