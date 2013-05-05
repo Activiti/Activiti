@@ -207,8 +207,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         	  
         	  String laneId = "lane_" + process.getId();
         	  ObjectNode laneNode = BpmnJsonConverterUtil.createChildShape(laneId, STENCIL_LANE, 
-        			  graphicInfo.getX() + graphicInfo.getWidth(), graphicInfo.getY() + graphicInfo.getHeight(), 
-        			  graphicInfo.getX(), graphicInfo.getY());
+        			  graphicInfo.getWidth(), graphicInfo.getHeight(), 
+        			  0, 0);
         	  
         	  	laneShapesArrayNode.add(laneNode);
 	            ObjectNode lanePropertiesNode = objectMapper.createObjectNode();
@@ -221,15 +221,17 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
 	            laneNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
 	            
 	            for (FlowElement flowElement : process.getFlowElements()) {
-	              
-	                Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
-	                if (converter != null) {
-	                  try {
-	                    converter.newInstance().convertToJson(flowElement, this, model, elementShapesArrayNode, 
-	                        graphicInfo.getX(), graphicInfo.getY());
-	                  } catch (Exception e) {
-	                    LOGGER.error("Error converting {}", flowElement, e);
-	                  }
+	            	// filter out sequenceFlows, since they will be stored separatelly under the whole Diagram
+	                if (!(flowElement instanceof SequenceFlow)) {
+		                Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
+		                if (converter != null) {
+		                  try {
+		                    converter.newInstance().convertToJson(flowElement, this, model, elementShapesArrayNode, 
+		                        graphicInfo.getX(), graphicInfo.getY());
+		                  } catch (Exception e) {
+		                    LOGGER.error("Error converting {}", flowElement, e);
+		                  }
+		                }
 	                }
 	              
 	            }

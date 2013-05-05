@@ -17,7 +17,6 @@ import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
@@ -27,7 +26,7 @@ import org.codehaus.jackson.node.ObjectNode;
 /**
  * @author Tijs Rademakers
  */
-public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
+public class SequenceFlowJsonConverter extends BaseFlowBpmnJsonConverter {
 
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
       Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -55,27 +54,9 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
     
     SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
     ObjectNode flowNode = BpmnJsonConverterUtil.createChildShape(sequenceFlow.getId(), STENCIL_SEQUENCE_FLOW, 172, 212, 128, 212);
-    ArrayNode dockersArrayNode = objectMapper.createArrayNode();
-    ObjectNode dockNode = objectMapper.createObjectNode();
-    dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sequenceFlow.getSourceRef()).getWidth() / 2.0);
-    dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sequenceFlow.getSourceRef()).getHeight() / 2.0);
-    dockersArrayNode.add(dockNode);
     
-    if (model.getFlowLocationGraphicInfo(sequenceFlow.getId()).size() > 2) {
-      for (int i = 1; i < model.getFlowLocationGraphicInfo(sequenceFlow.getId()).size() - 1; i++) {
-        GraphicInfo graphicInfo =  model.getFlowLocationGraphicInfo(sequenceFlow.getId()).get(i);
-        dockNode = objectMapper.createObjectNode();
-        dockNode.put(EDITOR_BOUNDS_X, graphicInfo.getX());
-        dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.getY());
-        dockersArrayNode.add(dockNode);
-      }
-    }
-    
-    dockNode = objectMapper.createObjectNode();
-    dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sequenceFlow.getTargetRef()).getWidth() / 2.0);
-    dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sequenceFlow.getTargetRef()).getHeight() / 2.0);
-    dockersArrayNode.add(dockNode);
-    flowNode.put("dockers", dockersArrayNode);
+    getFlowGraphicInfo(sequenceFlow, flowNode, model, subProcessX, subProcessY);
+
     ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
     outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(sequenceFlow.getTargetRef()));
     flowNode.put("outgoing", outgoingArrayNode);
