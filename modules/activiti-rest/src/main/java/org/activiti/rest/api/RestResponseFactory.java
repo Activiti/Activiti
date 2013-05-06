@@ -48,8 +48,8 @@ import org.restlet.data.MediaType;
  */
 public class RestResponseFactory {
 
-  protected static final String BYTE_ARRAY_VARIABLE_TYPE = "binary";
-  protected static final String SERIALIZABLE_VARIABLE_TYPE = "serializable";
+  public static final String BYTE_ARRAY_VARIABLE_TYPE = "binary";
+  public static final String SERIALIZABLE_VARIABLE_TYPE = "serializable";
   
   private List<RestVariableConverter> variableConverters = new ArrayList<RestVariableConverter>();
   
@@ -135,13 +135,13 @@ public class RestResponseFactory {
    List<RestVariable> result = new ArrayList<RestVariable>();
    
    for(Entry<String, Object> pair : variables.entrySet()) {
-     result.add(createRestVariable(securedResource, pair.getKey(), pair.getValue(), scope, taskId, executionId));
+     result.add(createRestVariable(securedResource, pair.getKey(), pair.getValue(), scope, taskId, executionId, false));
    }
    
    return result;
   }
   
-  public RestVariable createRestVariable(SecuredResource securedResource, String name, Object value, RestVariableScope scope, String taskId, String executionId) {
+  public RestVariable createRestVariable(SecuredResource securedResource, String name, Object value, RestVariableScope scope, String taskId, String executionId, boolean includeBinaryValue) {
     RestVariableConverter converter = null;
     RestVariable restVar = new RestVariable();
     restVar.setVariableScope(scope);
@@ -165,6 +165,10 @@ public class RestResponseFactory {
           restVar.setType(BYTE_ARRAY_VARIABLE_TYPE);
         } else {
           restVar.setType(SERIALIZABLE_VARIABLE_TYPE);
+        }
+        
+        if(includeBinaryValue) {
+          restVar.setValue(value);
         }
         
         if(taskId != null) {

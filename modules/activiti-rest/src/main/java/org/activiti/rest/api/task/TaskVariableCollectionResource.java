@@ -36,6 +36,9 @@ public class TaskVariableCollectionResource extends SecuredResource {
 
   @Get
   public List<RestVariable> getVariables() {
+    if (authenticate() == false)
+      return null;
+    
     List<RestVariable> result = new ArrayList<RestVariable>();
     Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
     

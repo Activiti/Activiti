@@ -59,6 +59,7 @@ import org.activiti.rest.api.task.TaskCollectionResource;
 import org.activiti.rest.api.task.TaskQueryResource;
 import org.activiti.rest.api.task.TaskResource;
 import org.activiti.rest.api.task.TaskVariableCollectionResource;
+import org.activiti.rest.api.task.TaskVariableDataResource;
 import org.activiti.rest.api.task.TaskVariableResource;
 import org.restlet.routing.Router;
 
@@ -80,6 +81,7 @@ public class RestServicesInit {
     router.attach("/runtime/tasks/{taskId}", TaskResource.class);
     router.attach("/runtime/tasks/{taskId}/variables", TaskVariableCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}/variables/{variableName}", TaskVariableResource.class);
+    router.attach("/runtime/tasks/{taskId}/variables/{variableName}/data", TaskVariableDataResource.class);
     router.attach("/runtime/tasks", TaskCollectionResource.class);
     router.attach("/query/tasks", TaskQueryResource.class);
     

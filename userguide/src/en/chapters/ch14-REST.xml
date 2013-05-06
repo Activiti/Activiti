@@ -2055,6 +2055,75 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
     </para>
   </section>
   
+  <section>
+      <title>Get the binary data for a variable</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/variables/{variableName}/data?scope={scope}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get a variable data for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to get data for. Only variables of type <literal>binary</literal> and <literal>serializable</literal> can be used. If any other type of variable is used, a <literal>404</literal> is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>scope</entry>
+                    <entry>False</entry>
+                    <entry>String</entry>
+                    <entry>Scope of variable to be returned. When '<literal>local</literal>', only task-local variable value is returned. When '<literal>global</literal>', only variable value from the task's parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the requested variables are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name (in the given scope) or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Success response body:</emphasis>
+      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is returned. 
+    </para>
+  </section>
+  
  </section>
 
 <!-- Legacy -->

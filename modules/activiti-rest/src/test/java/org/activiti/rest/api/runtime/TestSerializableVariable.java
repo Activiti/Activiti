@@ -11,22 +11,26 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.task;
+package org.activiti.rest.api.runtime;
 
-import org.activiti.rest.api.engine.variable.RestVariable;
-import org.restlet.resource.Get;
+import java.io.Serializable;
 
 
 /**
+ * Serializable for testing purposes.
+ * 
  * @author Frederik Heremans
  */
-public class TaskVariableResource extends BaseTaskVariableResource {
+public class TestSerializableVariable implements Serializable {
 
-  @Get
-  public RestVariable getVariable() {
-    if (authenticate() == false)
-      return null;
-    
-    return getVariableFromRequest(false);
+  private static final long serialVersionUID = 1L;
+  
+  private String someField;
+  
+  public String getSomeField() {
+    return someField;
+  }
+  public void setSomeField(String someField) {
+    this.someField = someField;
   }
 }
