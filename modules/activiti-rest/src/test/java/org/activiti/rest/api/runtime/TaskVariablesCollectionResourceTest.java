@@ -129,8 +129,5 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
       }
     }
     assertTrue(foundOverlapping);
-    
-    
   }
-  
 }

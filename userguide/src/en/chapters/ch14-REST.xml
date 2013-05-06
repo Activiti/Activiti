@@ -254,20 +254,28 @@
                     <entry>Value is threaded as and converted to a <literal>java.lang.String</literal>.</entry>
                   </row>
                   <row>
-                    <entry>long</entry>
-                    <entry>Value is threaded as and converted to a <literal>java.lang.Long</literal>.</entry>
+                    <entry>short</entry>
+                    <entry>Value is threaded as and converted to a <literal>java.lang.Integer</literal>.</entry>
                   </row>
                   <row>
                     <entry>integer</entry>
                     <entry>Value is threaded as and converted to a <literal>java.lang.Integer</literal>.</entry>
                   </row>
                   <row>
+                    <entry>long</entry>
+                    <entry>Value is threaded as and converted to a <literal>java.lang.Long</literal>.</entry>
+                  </row>
+                  <row>
                     <entry>double</entry>
                     <entry>Value is threaded as and converted to a <literal>java.lang.Double</literal>.</entry>
                   </row>
                   <row>
+                    <entry>boolean</entry>
+                    <entry>Value is threaded as and converted to a <literal>java.lang.Boolean</literal>.</entry>
+                  </row>
+                  <row>
                     <entry>date</entry>
-                    <entry>Value is threaded as and converted to a <literal>java.util.Date</literal>. The JSON string will be converted using ISO-8601 date format.</entry>
+                    <entry>Value is treated as and converted to a <literal>java.util.Date</literal>. The JSON string will be converted using ISO-8601 date format.</entry>
                   </row>
                 </tbody>
               </tgroup>
@@ -275,6 +283,111 @@
         </para>
       </section>
       
+       <section id="restVariables">
+        <title>Variable representation</title>
+        <para>
+          When working with variables (execution/procees and task), the REST-api uses some common principles and JSON-format for both reading and writing. The JSON representation of a variable looks like this:
+           <programlisting>
+{ 
+  "name" : "variableName",
+  "value" : "variableValue",
+  "valueUrl" : "http://...",
+  "scope" : "local",
+  "type" : "string"
+}</programlisting>
+          
+           <table>
+              <title>Variable JSON attributes</title>
+              <tgroup cols="2">
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>name</entry>
+                    <entry>Yes</entry>
+                    <entry>Name of the variable.</entry>
+                  </row>
+                  <row>
+                    <entry>value</entry>
+                    <entry>No</entry>
+                    <entry>Value of the variable. When writing a variable and <literal>value</literal> is omitted, <literal>null</literal> will be used as value.</entry>
+                  </row>
+                  <row>
+                    <entry>valueUrl</entry>
+                    <entry>No</entry>
+                    <entry>When reading a variable of type <literal>binary</literal> or <literal>serializable</literal>, this attribute will point to the URL where the raw binary data can be fetched from.</entry>
+                  </row>
+                  <row>
+                    <entry>scope</entry>
+                    <entry>No</entry>
+                    <entry>Scope of the variable. If '<literal>local</literal>', the variable is explicitally defined on the resource it's requested from. When '<literal>global</literal>', the variable is defined on the parent (or any parent in the parent-tree) of the resource it's requested from. When writing a variable and the scope is omitted, <literal>global</literal> is assumed.</entry>
+                  </row>
+                  <row>
+                    <entry>type</entry>
+                    <entry>No</entry>
+                    <entry>Type of the variable. See table below for additional information on types. When writing a variable and this value is omitted, the type will be deducted from the raw JSON-attribute request type and is limited to either <literal>string</literal>, <literal>double</literal>, <literal>integer</literal> and <literal>boolean</literal>. It's advised to always include a type to make sure no wrong assumption about the type can be done.</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+            <table>
+              <title>Variable Types</title>
+              <tgroup cols="2">
+                <thead>
+                  <row>
+                    <entry>Type name</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>string</entry>
+                    <entry>Value is threaded as a <literal>java.lang.String</literal>. Raw JSON-text value is used when writing a variable.</entry>
+                  </row>
+                  <row>
+                    <entry>integer</entry>
+                    <entry>Value is threaded as a <literal>java.lang.Integer</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                  </row>
+                  <row>
+                    <entry>short</entry>
+                    <entry>Value is threaded as a <literal>java.lang.Short</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                  </row>
+                  <row>
+                    <entry>long</entry>
+                    <entry>Value is threaded as a <literal>java.lang.Long</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                  </row>
+                  <row>
+                    <entry>double</entry>
+                    <entry>Value is threaded as a <literal>java.lang.Double</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                  </row>
+                  <row>
+                    <entry>boolean</entry>
+                    <entry>Value is threaded as a <literal>java.lang.Boolean</literal>. When writing, JSON boolean value is used for conversion.</entry>
+                  </row>
+                  <row>
+                    <entry>date</entry>
+                    <entry>Value is treated as a <literal>java.util.Date</literal>. When writing, the JSON text will be converted using ISO-8601 date format.</entry>
+                  </row>
+                  <row>
+                    <entry>binary</entry>
+                    <entry>Binary variable, threated as an array of bytes. The <literal>value</literal> attribute is null, the <literal>valueUrl</literal> contains an URL pointing to the raw binary stream.</entry>
+                  </row>
+                  <row>
+                    <entry>serializable</entry>
+                    <entry>Serialized representation of a Serializable Java-object. As with the <literal>binary</literal> type, the <literal>value</literal> attribute is null, the <literal>valueUrl</literal> contains an URL pointing to the raw binary stream. All serializable variables (which are not of any of the above types) will be exposed as a variable of this type.</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+            It's possible to support additional variable-types with a custom JSON representation (either simple value or complex/nested JSON object). By extending the <literal>initializeVariableConverters()</literal> method on <literal>org.activiti.rest.api.RestResponseFactory</literal>,
+            you can add additional <literal>org.activiti.rest.api.engine.variable.RestVariableConverter</literal> classes to support converting your POJO's to a format suitable for transerring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
+        </para>
+       </section>
     </section>
       
   </section>
@@ -1734,7 +1847,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                 </thead>
                 <tbody>
                   <row>
-                    <entry>deploymentId</entry>
+                    <entry>taskId</entry>
                     <entry>Yes</entry>
                     <entry>String</entry>
                     <entry>The id of the task to delete.</entry>
@@ -1783,6 +1896,89 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
           </table>
         </para>
   </section>
+  
+   <section>
+      <title>Get task variables</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/variables?scope={scope}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to delete.</entry>
+                  </row>
+                  <row>
+                    <entry>scope</entry>
+                    <entry>False</entry>
+                    <entry>String</entry>
+                    <entry>Scope of variables to be returned. When '<literal>local</literal>', only task-local variables are returned. When '<literal>global</literal>', only variables from the task's parent execution-hierarchy are returned. When the parameter is omitted, both local and global variables are returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the requested variables are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "name" : "doubleTaskVar",
+    "scope" : "local",
+    "type" : "double",
+    "value" : 99.99
+  },
+  {
+    "name" : "stringProcVar",
+    "scope" : "global",
+    "type" : "string",
+    "value" : "This is a ProcVariable"
+  },
+  
+  ...
+  
+]</programlisting>
+
+      The variables are returned as a JSON array. Full response description can be found in the general <link linkend="restVariables">REST-variables section</link>. 
+    </para>
+  </section>
+  
  </section>
 
 <!-- Legacy -->

@@ -134,43 +134,46 @@ public class RestResponseFactory {
   public List<RestVariable> createRestVariables(SecuredResource securedResource, Map<String, Object> variables, String taskId, String executionId, RestVariableScope scope) {
    List<RestVariable> result = new ArrayList<RestVariable>();
    
-   RestVariable restVar = null;
    for(Entry<String, Object> pair : variables.entrySet()) {
-     RestVariableConverter converter = null;
-     restVar = new RestVariable();
-     restVar.setVariableScope(scope);
-     restVar.setName(pair.getKey());
-     result.add(restVar);
-     
-     if(pair.getValue() != null) {
-       // Try converting the value
-       for(RestVariableConverter c : variableConverters) {
-         if(pair.getValue().getClass().isAssignableFrom(c.getVariableType())) {
-           converter = c;
-           break;
-         }
-       }
-       
-       if(converter != null) {
-         converter.convertVariableValue(pair.getValue(), restVar);
-         restVar.setType(converter.getRestTypeName());
-       } else {
-         // Revert to default conversion, which is the serializable/byte-array form
-         if(pair.getValue() instanceof Byte[] || pair.getValue() instanceof byte[]) {
-           restVar.setType(BYTE_ARRAY_VARIABLE_TYPE);
-         } else {
-           restVar.setType(SERIALIZABLE_VARIABLE_TYPE);
-         }
-         
-         if(taskId != null) {
-           restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, pair.getKey()));
-         }
-         // TODO: execution variables
-       }
-     }
+     result.add(createRestVariable(securedResource, pair.getKey(), pair.getValue(), scope, taskId, executionId));
    }
    
    return result;
+  }
+  
+  public RestVariable createRestVariable(SecuredResource securedResource, String name, Object value, RestVariableScope scope, String taskId, String executionId) {
+    RestVariableConverter converter = null;
+    RestVariable restVar = new RestVariable();
+    restVar.setVariableScope(scope);
+    restVar.setName(name);
+    
+    if(value != null) {
+      // Try converting the value
+      for(RestVariableConverter c : variableConverters) {
+        if(value.getClass().isAssignableFrom(c.getVariableType())) {
+          converter = c;
+          break;
+        }
+      }
+      
+      if(converter != null) {
+        converter.convertVariableValue(value, restVar);
+        restVar.setType(converter.getRestTypeName());
+      } else {
+        // Revert to default conversion, which is the serializable/byte-array form
+        if(value instanceof Byte[] || value instanceof byte[]) {
+          restVar.setType(BYTE_ARRAY_VARIABLE_TYPE);
+        } else {
+          restVar.setType(SERIALIZABLE_VARIABLE_TYPE);
+        }
+        
+        if(taskId != null) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
+        }
+        // TODO: execution variables
+      }
+    }
+    return restVar;
   }
   
   /**
