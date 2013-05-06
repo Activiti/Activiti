@@ -22,17 +22,19 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.api.engine.variable.RestVariable;
 import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
+import org.restlet.resource.Post;
+import org.restlet.resource.ResourceException;
 
 
 /**
  * @author Frederik Heremans
  */
-public class TaskVariableCollectionResource extends SecuredResource {
+public class TaskVariableCollectionResource extends BaseTaskVariableResource {
 
   @Get
   public List<RestVariable> getVariables() {
@@ -102,6 +104,53 @@ public class TaskVariableCollectionResource extends SecuredResource {
       throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
     }
     return task;
+  }
+  
+  @Post
+  public RestVariable createVariable(RestVariable restVariable) {
+    if (authenticate() == false)
+      return null;
+    
+    // TODO: check if request is multipart-form
+    if(restVariable.getName() == null) {
+      throw new ActivitiIllegalArgumentException("Variable name is required");
+    }
+    String taskId = getAttribute("taskId");
+    if(taskId == null) {
+      throw new ActivitiIllegalArgumentException("TaskId is required");
+    }
+
+    // Figure out scope, revert to local is omitted
+    RestVariableScope scope = restVariable.getVariableScope();
+    if(scope == null) {
+      scope = RestVariableScope.LOCAL;
+    }
+    
+    // POST can only be done on new variables. Existing variables should be updated using PUT
+    if(hasVariableOnScope(taskId, restVariable.getName(), scope)) {
+      throw new ResourceException(new Status(Status.CLIENT_ERROR_CONFLICT.getCode(), "Variable '" + restVariable.getName() + "' is already present on task '" + taskId + "'.", null, null));
+    }
+    
+    Object actualVariableValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .getVariableValue(restVariable);
+    
+    if(scope == RestVariableScope.LOCAL) {
+      ActivitiUtil.getTaskService().setVariableLocal(taskId, restVariable.getName(), actualVariableValue);
+    } else {
+      Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
+      if(task.getExecutionId() != null) {
+        // Explicitly set on execution, setting non-local variable on task will override local-variable if exists
+        ActivitiUtil.getRuntimeService().setVariable(task.getExecutionId(), restVariable.getName(), actualVariableValue);
+      } else {
+        // Standalone task, no global variables possible
+        throw new ActivitiIllegalArgumentException("Cannot set global variable '" + restVariable.getName() + "' on task '" + taskId +"', task is not part of process.");
+      }
+    }
+
+    // Return created-status and variable representation
+    setStatus(Status.SUCCESS_CREATED);
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+             .createRestVariable(this, restVariable.getName(), actualVariableValue, scope, taskId, null, false);
   }
   
 }

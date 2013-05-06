@@ -283,7 +283,7 @@
         </para>
       </section>
       
-       <section id="restVariables">
+      <section id="restVariables">
         <title>Variable representation</title>
         <para>
           When working with variables (execution/procees and task), the REST-api uses some common principles and JSON-format for both reading and writing. The JSON representation of a variable looks like this:
@@ -2120,8 +2120,94 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
        <emphasis role="bold">Success response body:</emphasis>
-      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is returned. 
+      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
     </para>
+  </section>
+  
+  <section>
+      <title>Create a new variable on a task</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}/variables</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to create the new variable for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body for creating simple (non-binary) variables:</emphasis>
+            <programlisting>
+{ 
+  "name" : "myTaskVariable",
+  "scope" : "local",
+  "type" : "string",
+  "value" : "Hello my friend"
+}</programlisting>
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable</para>
+          </listitem>
+          <listitem>
+            <para><literal>scope</literal>: Scope of variable that is created. If omitted, <literal>local</literal> is assumed.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is created. If omitted, reverts to raw JSON-value type (string, boolean, integer or double).</para>
+          </listitem>
+          <listitem>
+            <para><literal>value</literal>: Variable value.</para>
+          </listitem>
+      </itemizedlist>
+      More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>.
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the variable was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of the variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the task already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
   </section>
   
  </section>

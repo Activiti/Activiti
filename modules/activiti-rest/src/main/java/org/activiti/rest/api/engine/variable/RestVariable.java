@@ -33,7 +33,7 @@ public class RestVariable {
 
   private String name;
   private String type;
-  private RestVariableScope variableScope = RestVariableScope.GLOBAL;
+  private RestVariableScope variableScope;
   private Object value;
   private String valueUrl;
   
@@ -56,9 +56,6 @@ public class RestVariable {
   }
   public void setVariableScope(RestVariableScope variableScope) {
     this.variableScope = variableScope;
-    if(variableScope == null) {
-      variableScope = RestVariableScope.GLOBAL;
-    }
   }
   public Object getValue() {
     return value;

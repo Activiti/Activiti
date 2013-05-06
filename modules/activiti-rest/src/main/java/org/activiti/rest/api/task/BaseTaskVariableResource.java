@@ -75,9 +75,27 @@ public class BaseTaskVariableResource extends SecuredResource {
     }
     
     if(!variableFound) {
-      throw new ActivitiObjectNotFoundException("Task '" + taskId + "' doesn't have a variable with name: '" + variableName + "'.", VariableInstanceEntity.class);
+        throw new ActivitiObjectNotFoundException("Task '" + taskId + "' doesn't have a variable with name: '" + variableName + "'.", VariableInstanceEntity.class);
+    } else {
+      return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+              .createRestVariable(this, variableName, value, variableScope, taskId, null, includeBinary);
     }
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-      .createRestVariable(this, variableName, value, variableScope, taskId, null, includeBinary);
+  }
+  
+  protected boolean hasVariableOnScope(String taskId, String variableName, RestVariableScope scope) {
+    boolean variableFound = false;
+      
+    if(scope == RestVariableScope.GLOBAL) {
+      Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
+      if(task.getExecutionId() != null && ActivitiUtil.getRuntimeService().hasVariable(task.getExecutionId(), variableName)) {
+        variableFound = true;
+      }
+      
+    } else if(scope == RestVariableScope.LOCAL) {
+      if(ActivitiUtil.getTaskService().hasVariableLocal(taskId, variableName)) {
+        variableFound = true;
+      }
+    }
+    return variableFound;
   }
 }

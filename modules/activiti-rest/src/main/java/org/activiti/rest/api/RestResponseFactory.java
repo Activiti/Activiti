@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
@@ -180,6 +181,30 @@ public class RestResponseFactory {
     return restVar;
   }
   
+  public Object getVariableValue(RestVariable restVariable) {
+    Object value = null;
+    
+    if(restVariable.getType() != null) {
+      // Try locating a converter if the type has been specified
+      RestVariableConverter converter = null;
+      for(RestVariableConverter conv : variableConverters) {
+        if(conv.getRestTypeName().equals(restVariable.getType())) {
+          converter = conv;
+          break;
+        }
+      }
+      if(converter == null) {
+        throw new ActivitiIllegalArgumentException("Variable '" + restVariable.getName() + "' has unsupported type: '" + restVariable.getType() + "'.");
+      }
+      value = converter.getVariableValue(restVariable);
+      
+    } else {
+      // Revert to type determined by REST-to-Java mapping when no explicit type has been provided
+      value = restVariable.getValue();
+    }
+    return value;
+  }
+  
   /**
    * Called once when the converters need to be initialized. Override of custom conversion
    * needs to be done between java and rest.
@@ -193,4 +218,5 @@ public class RestResponseFactory {
     variableConverters.add(new BooleanRestVariableConverter());
     variableConverters.add(new DateRestVariableConverter());
   }
+
 }

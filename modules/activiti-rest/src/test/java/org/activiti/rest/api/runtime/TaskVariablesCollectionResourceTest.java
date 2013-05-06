@@ -15,6 +15,7 @@ package org.activiti.rest.api.runtime;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.runtime.ProcessInstance;
@@ -23,9 +24,11 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+import org.restlet.resource.ResourceException;
 
 
 /**
@@ -129,5 +132,213 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
       }
     }
     assertTrue(foundOverlapping);
+  }
+  
+  /**
+   * Test creating a single task variable.
+   * POST runtime/tasks/{taskId}/variables
+   */
+  @Deployment
+  public void testCreateSingleTaskVariable() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("name", "myVariable");
+    requestNode.put("value", "simple string value");
+    requestNode.put("scope", "local");
+    requestNode.put("type", "string");
+            
+    // Create a new local variable
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    Representation response = client.post(requestNode);
+    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals("myVariable", responseNode.get("name").asText());
+    assertEquals("simple string value", responseNode.get("value").asText());
+    assertEquals("local", responseNode.get("scope").asText());
+    assertEquals("string", responseNode.get("type").asText());
+    assertNull(responseNode.get("valueUrl"));
+    
+    assertTrue(taskService.hasVariableLocal(task.getId(), "myVariable"));
+    assertEquals("simple string value", taskService.getVariableLocal(task.getId(), "myVariable"));
+    response.release();
+    
+    // Create a new global variable
+    requestNode.put("name", "myVariable");
+    requestNode.put("value", "Another simple string value");
+    requestNode.put("scope", "global");
+    requestNode.put("type", "string");
+    
+    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    response = client.post(requestNode);
+    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    
+    responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals("myVariable", responseNode.get("name").asText());
+    assertEquals("Another simple string value", responseNode.get("value").asText());
+    assertEquals("global", responseNode.get("scope").asText());
+    assertEquals("string", responseNode.get("type").asText());
+    assertNull(responseNode.get("valueUrl"));
+    
+    assertTrue(runtimeService.hasVariable(task.getExecutionId(), "myVariable"));
+    assertEquals("Another simple string value", runtimeService.getVariableLocal(task.getExecutionId(), "myVariable"));
+    
+            
+    // Create a new scope-less variable, which defaults to local variables
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("name", "scopelessVariable");
+    requestNode.put("value", "simple string value");
+    requestNode.put("type", "string");
+    
+    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    response = client.post(requestNode);
+    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    
+    responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals("scopelessVariable", responseNode.get("name").asText());
+    assertEquals("simple string value", responseNode.get("value").asText());
+    assertEquals("local", responseNode.get("scope").asText());
+    assertEquals("string", responseNode.get("type").asText());
+    assertNull(responseNode.get("valueUrl"));
+    
+    assertTrue(taskService.hasVariableLocal(task.getId(), "scopelessVariable"));
+    assertEquals("simple string value", taskService.getVariableLocal(task.getId(), "scopelessVariable"));
+    response.release();
+  }
+  
+  
+  /**
+   * Test creating a single task variable, testing edge case exceptions. 
+   * POST runtime/tasks/{taskId}/variables
+   */
+  public void testCreateSingleTaskVariableEdgeCases() throws Exception {
+    try {
+      // Test adding variable to unexisting task
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      requestNode.put("name", "existingVariable");
+      requestNode.put("value", "simple string value");
+      requestNode.put("scope", "local");
+      requestNode.put("type", "string");
+
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, "unexisting"));
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch (ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+        assertEquals("task unexisting doesn't exist", expected.getStatus().getDescription());
+      }
+
+      // Test trying to create already existing variable
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      taskService.setVariable(task.getId(), "existingVariable", "Value 1");
+      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch (ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
+        assertEquals("Variable 'existingVariable' is already present on task '" + task.getId() + "'.", expected.getStatus().getDescription());
+      }
+
+      // Test setting global variable on standalone task
+      requestNode.put("name", "myVariable");
+      requestNode.put("value", "simple string value");
+      requestNode.put("scope", "global");
+      requestNode.put("type", "string");
+
+      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch (ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+        assertEquals("Cannot set global variable 'myVariable' on task '" + task.getId() + "', task is not part of process.", expected.getStatus()
+                .getDescription());
+      }
+
+      // Test creating nameless variable
+      requestNode = objectMapper.createObjectNode();
+      requestNode.put("value", "simple string value");
+
+      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch (ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+        assertEquals("Variable name is required", expected.getStatus().getDescription());
+      }
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for (Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+    }
+  }
+  
+  /**
+   * Test creating a single task variable, testing default types when omitted. 
+   * POST runtime/tasks/{taskId}/variables
+   */
+  public void testCreateSingleTaskVariableDefaultTypes() throws Exception {
+    try {
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      
+      // String type detection
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      requestNode.put("name", "stringVar");
+      requestNode.put("value", "String value");
+      requestNode.put("scope", "local");
+      client.post(requestNode);
+      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      assertEquals("String value", taskService.getVariable(task.getId(), "stringVar"));
+      client.release();
+      
+      // Integer type detection
+      requestNode.put("name", "integerVar");
+      requestNode.put("value", 123);
+      requestNode.put("scope", "local");
+      client.post(requestNode);
+      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      assertEquals(123, taskService.getVariable(task.getId(), "integerVar"));
+      client.release();
+      
+      // Double type detection
+      requestNode.put("name", "doubleVar");
+      requestNode.put("value", 123.456);
+      requestNode.put("scope", "local");
+      client.post(requestNode);
+      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      assertEquals(123.456, taskService.getVariable(task.getId(), "doubleVar"));
+      client.release();
+      
+      // Boolean type detection
+      requestNode.put("name", "booleanVar");
+      requestNode.put("value", Boolean.TRUE);
+      requestNode.put("scope", "local");
+      client.post(requestNode);
+      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      assertEquals(Boolean.TRUE, taskService.getVariable(task.getId(), "booleanVar"));
+      client.release();
+      
+      
+      
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for (Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+    }
   }
 }
