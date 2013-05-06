@@ -22,6 +22,7 @@ import org.restlet.data.Form;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
 
@@ -60,6 +61,31 @@ public class TaskResource extends TaskBasedResource {
             .createTaskReponse(this, task);
   }
   
+  @Post
+  public void executeTaskAction(TaskActionRequest actionRequest) {
+    if (!authenticate()) {
+      return;
+    }
+
+    if (actionRequest == null) {
+      throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(), "A request body was expected when executing a task action.",
+              null, null));
+    }
+
+    Task task = getTaskFromRequest();
+    if (TaskActionRequest.ACTION_COMPLETE.equals(actionRequest.getAction())) {
+      completeTask(task, actionRequest);
+    } else if (TaskActionRequest.ACTION_CLAIM.equals(actionRequest.getAction())) {
+      claimTask(task, actionRequest);
+    } else if (TaskActionRequest.ACTION_DELEGATE.equals(actionRequest.getAction())) {
+      delegateTask(task, actionRequest);
+    } else if (TaskActionRequest.ACTION_RESOLVE.equals(actionRequest.getAction())) {
+      resolveTask(task, actionRequest);
+    } else {
+      throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
+    }
+  }
+
   @Delete
   public void deleteTask() {
     if(!authenticate()) { return; }
@@ -101,5 +127,33 @@ public class TaskResource extends TaskBasedResource {
       throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
     }
     return task;
+  }
+  
+  protected void completeTask(Task task, TaskActionRequest actionRequest) {
+    // TODO: take into account variables
+    if(actionRequest.getAssignee() != null) {
+      ActivitiUtil.getTaskService().setAssignee(task.getId(), actionRequest.getAssignee());
+    }
+    ActivitiUtil.getTaskService().complete(task.getId());
+  }
+
+  protected void resolveTask(Task task, TaskActionRequest actionRequest) {
+    ActivitiUtil.getTaskService().resolveTask(task.getId());
+  }
+
+  protected void delegateTask(Task task, TaskActionRequest actionRequest) {
+    if(actionRequest.getAssignee() == null) {
+      throw new ActivitiIllegalArgumentException("An assignee is required when delegating a task.");
+    }
+    ActivitiUtil.getTaskService().delegateTask(task.getId(), actionRequest.getAssignee());
+  }
+
+  protected void claimTask(Task task, TaskActionRequest actionRequest) {
+    if(actionRequest.getAssignee() == null) {
+      throw new ActivitiIllegalArgumentException("An assignee is required when claiming a task.");
+    }
+    // In case the task is already claimed, a ActivitiTaskAlreadyClaimedException is thown and converted to
+    // a CONFLICT response by the StatusService
+    ActivitiUtil.getTaskService().claim(task.getId(), actionRequest.getAssignee());
   }
 }

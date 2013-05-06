@@ -536,7 +536,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             pooledDataSource.setPoolPingQuery(jdbcPingQuery);
           }
           pooledDataSource.setPoolPingConnectionsNotUsedFor(jdbcPingConnectionNotUsedFor);
-        }        
+        }
+        if (jdbcDefaultTransactionIsolationLevel > 0) {
+          pooledDataSource.setDefaultTransactionIsolationLevel(jdbcDefaultTransactionIsolationLevel);
+        }
         dataSource = pooledDataSource;
       }
       

@@ -17,6 +17,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -57,7 +58,7 @@ public class ActivitiStatusService extends StatusService {
     } else if(throwable instanceof ActivitiIllegalArgumentException) {
       // 400 - Bad Request
       status = new Status(Status.CLIENT_ERROR_BAD_REQUEST.getCode(), throwable.getMessage(), null, null);
-    } else if (throwable instanceof ActivitiOptimisticLockingException) {
+    } else if (throwable instanceof ActivitiOptimisticLockingException || throwable instanceof ActivitiTaskAlreadyClaimedException) {
       // 409 - Conflict
       status = new Status(Status.CLIENT_ERROR_CONFLICT.getCode(), throwable.getMessage(), null, null);
     }  else if (throwable instanceof ResourceException) {
