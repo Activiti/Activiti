@@ -1898,7 +1898,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
   </section>
   
    <section>
-      <title>Get task variables</title>
+      <title>Get all variables for a single task</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/variables?scope={scope}</programlisting>
         </para>
@@ -1919,7 +1919,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                     <entry>taskId</entry>
                     <entry>Yes</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to delete.</entry>
+                    <entry>The id of the task to get variables for.</entry>
                   </row>
                   <row>
                     <entry>scope</entry>
@@ -1976,6 +1976,82 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
 ]</programlisting>
 
       The variables are returned as a JSON array. Full response description can be found in the general <link linkend="restVariables">REST-variables section</link>. 
+    </para>
+  </section>
+  
+   <section>
+      <title>Get a single variable for a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/variables/{variableName}?scope={scope}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get a variable for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to get.</entry>
+                  </row>
+                  <row>
+                    <entry>scope</entry>
+                    <entry>False</entry>
+                    <entry>String</entry>
+                    <entry>Scope of variable to be returned. When '<literal>local</literal>', only task-local variable value is returned. When '<literal>global</literal>', only variable value from the task's parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the requested variables are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name (in the given scope). Status message provides additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "myTaskVariable",
+  "scope" : "local",
+  "type" : "string",
+  "value" : "Hello my friend"
+}</programlisting>
+      Full response body description can be found in the general <link linkend="restVariables">REST-variables section</link>. 
     </para>
   </section>
   

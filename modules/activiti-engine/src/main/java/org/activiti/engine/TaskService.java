@@ -315,9 +315,15 @@ public interface TaskService {
 
   /** get a variables and search in the task scope and if available also the execution scopes. */
   Object getVariable(String taskId, String variableName);
+  
+  /** checks whether or not the task has a variable defined with the given name, in the task scope and if available also the execution scopes. */
+  boolean hasVariable(String taskId, String variableName);
 
-  /** get a variables and only search in the task scope.  */
+  /** checks whether or not the task has a variable defined with the given name. */
   Object getVariableLocal(String taskId, String variableName);
+  
+  /** checks whether or not the task has a variable defined with the given name, local task scope only. */
+  boolean hasVariableLocal(String taskId, String variableName);
 
   /** get all variables and search in the task scope and if available also the execution scopes. 
    * If you have many variables and you only need a few, consider using {@link #getVariables(String, Collection)} 
