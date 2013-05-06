@@ -40,7 +40,7 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
    * GET runtime/tasks/{taskId}/variables
    */
   @Deployment
-  public void testGetTaskvariables() throws Exception {
+  public void testGetTaskVariables() throws Exception {
    
     Calendar cal = Calendar.getInstance();
     
