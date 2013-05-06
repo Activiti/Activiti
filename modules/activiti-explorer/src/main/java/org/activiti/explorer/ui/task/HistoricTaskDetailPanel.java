@@ -342,6 +342,11 @@ public class HistoricTaskDetailPanel extends DetailPanel {
   }
 
   protected void populateRelatedContent(Table table, List<Attachment> attachments) {
+    
+    if (attachments.size() > 0) {
+      table.setVisible(true);
+    }
+    
     for (Attachment attachment : attachments) {
       AttachmentRenderer renderer = attachmentRendererManager.getRenderer(attachment);
       Item attachmentItem = table.addItem(attachment.getId());
