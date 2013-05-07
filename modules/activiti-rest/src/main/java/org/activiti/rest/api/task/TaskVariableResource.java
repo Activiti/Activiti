@@ -56,7 +56,7 @@ public class TaskVariableResource extends BaseTaskVariableResource {
     
     Task task = getTaskFromRequest();
     RestVariable result = null;
-    if(MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {
+    if(representation.getMediaType() != null && MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {
       result = setBinaryVariable(representation, task, false);
       
       if(!result.getName().equals(variableName)) {
@@ -65,7 +65,9 @@ public class TaskVariableResource extends BaseTaskVariableResource {
     } else {
       try {
         RestVariable restVariable = getConverterService().toObject(representation, RestVariable.class, this);
-        
+        if(restVariable == null) {
+          throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(), "Invalid body was supplied", null, null));
+        }
         if(!restVariable.getName().equals(variableName)) {
           throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
         }

@@ -15,6 +15,7 @@ package org.activiti.rest.api.task;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
+import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
@@ -94,6 +96,15 @@ public class TaskVariableCollectionResource extends BaseTaskVariableResource {
     }
     setStatus(Status.SUCCESS_CREATED);
     return result;
+  }
+  
+  @Delete
+  public void deleteAllLocalTaskVariables() {
+    Task task = getTaskFromRequest();
+    Collection<String> currentVariables = ActivitiUtil.getTaskService().getVariablesLocal(task.getId()).keySet();
+    ActivitiUtil.getTaskService().removeVariablesLocal(task.getId(), currentVariables);
+    
+    setStatus(Status.SUCCESS_NO_CONTENT);
   }
   
   protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap) {

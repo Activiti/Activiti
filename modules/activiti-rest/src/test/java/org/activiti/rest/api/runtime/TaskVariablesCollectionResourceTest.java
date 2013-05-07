@@ -572,4 +572,33 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
       }
     }
   }
+  
+  /**
+   * Test deleting all local task variables.
+   * DELETE runtime/tasks/{taskId}/variables
+   */
+  @Deployment
+  public void testDeleteAllLocalVariables() throws Exception {
+    // Start process with all types of variables
+    Map<String, Object> processVariables = new HashMap<String, Object>();
+    processVariables.put("var1", "This is a ProcVariable");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
+    
+    // Set local task variables
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Map<String, Object> taskVariables = new HashMap<String, Object>();
+    taskVariables.put("var1", "This is a TaskVariable");
+    taskVariables.put("var2", 123);
+    taskService.setVariablesLocal(task.getId(), taskVariables);
+    assertEquals(2, taskService.getVariablesLocal(task.getId()).size());
+
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    Representation response = client.delete();
+    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+    assertEquals(0, response.getSize());
+    
+    // Check if local variables are gone and global remain unchanged
+    assertEquals(0, taskService.getVariablesLocal(task.getId()).size());
+    assertEquals(1, taskService.getVariables(task.getId()).size());
+  }
 }
