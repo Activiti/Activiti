@@ -2125,7 +2125,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
   </section>
   
   <section>
-      <title>Create a new variable on a task</title>
+      <title>Create new variables on a task</title>
         <para>
           <programlisting>POST runtime/tasks/{taskId}/variables</programlisting>
         </para>
@@ -2155,12 +2155,18 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
          <para>
        <emphasis role="bold">Request body for creating simple (non-binary) variables:</emphasis>
             <programlisting>
-{ 
-  "name" : "myTaskVariable",
-  "scope" : "local",
-  "type" : "string",
-  "value" : "Hello my friend"
-}</programlisting>
+[
+  { 
+    "name" : "myTaskVariable",
+    "scope" : "local",
+    "type" : "string",
+    "value" : "Hello my friend"
+  },
+  {
+    ...
+  }
+]</programlisting>
+The request body should be an array containing one or more JSON-objects representing the variables that should be created.
       <itemizedlist>
           <listitem>
             <para><literal>name</literal>: Required name of the variable</para>
@@ -2180,12 +2186,17 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         <para>
         <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
-  "name" : "myTaskVariable",
-  "scope" : "local",
-  "type" : "string",
-  "value" : "Hello my friend"
-}</programlisting>
+[
+  { 
+    "name" : "myTaskVariable",
+    "scope" : "local",
+    "type" : "string",
+    "value" : "Hello my friend"
+  },
+  {
+    ...
+  }
+]</programlisting>
           <table>
               <title>Response codes</title>
               <tgroup cols='2'>
@@ -2198,11 +2209,11 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the variable was created and the result is returned.</entry>
+                    <entry>Indicates the variables were created and the result is returned.</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of the variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                    <entry>Indicates the name of a variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal> or an empty array of variables was included in the request or request did not contain an array of variables. Status message provides additional information.</entry>
                   </row>
                   <row>
                     <entry>404</entry>

@@ -44,7 +44,7 @@ public class DateRestVariableConverter implements RestVariableConverter {
         throw new ActivitiIllegalArgumentException("Converter can only convert string to date");
       }
       try {
-        result.setValue(isoFormatter.parse((String) result.getValue()));
+        return isoFormatter.parse((String) result.getValue());
       } catch (ParseException e) {
         throw new ActivitiIllegalArgumentException("The given variable value is not a date: '" + result.getValue() + "'", e);
       }

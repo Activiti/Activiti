@@ -29,6 +29,7 @@ import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.HttpMultipartRepresentation;
 import org.activiti.rest.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -148,18 +149,19 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     
-    ObjectNode requestNode = objectMapper.createObjectNode();
-    requestNode.put("name", "myVariable");
-    requestNode.put("value", "simple string value");
-    requestNode.put("scope", "local");
-    requestNode.put("type", "string");
+    ArrayNode requestNode = objectMapper.createArrayNode();
+    ObjectNode variableNode = requestNode.addObject();
+    variableNode.put("name", "myVariable");
+    variableNode.put("value", "simple string value");
+    variableNode.put("scope", "local");
+    variableNode.put("type", "string");
             
     // Create a new local variable
     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
     Representation response = client.post(requestNode);
     assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
     
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getStream()).get(0);
     assertNotNull(responseNode);
     assertEquals("myVariable", responseNode.get("name").asText());
     assertEquals("simple string value", responseNode.get("value").asText());
@@ -172,16 +174,16 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
     response.release();
     
     // Create a new global variable
-    requestNode.put("name", "myVariable");
-    requestNode.put("value", "Another simple string value");
-    requestNode.put("scope", "global");
-    requestNode.put("type", "string");
+    variableNode.put("name", "myVariable");
+    variableNode.put("value", "Another simple string value");
+    variableNode.put("scope", "global");
+    variableNode.put("type", "string");
     
     client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
     response = client.post(requestNode);
     assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
     
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getStream()).get(0);
     assertNotNull(responseNode);
     assertEquals("myVariable", responseNode.get("name").asText());
     assertEquals("Another simple string value", responseNode.get("value").asText());
@@ -194,16 +196,16 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
     
             
     // Create a new scope-less variable, which defaults to local variables
-    requestNode = objectMapper.createObjectNode();
-    requestNode.put("name", "scopelessVariable");
-    requestNode.put("value", "simple string value");
-    requestNode.put("type", "string");
+    variableNode.removeAll();
+    variableNode.put("name", "scopelessVariable");
+    variableNode.put("value", "simple string value");
+    variableNode.put("type", "string");
     
     client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
     response = client.post(requestNode);
     assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
     
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getStream()).get(0);
     assertNotNull(responseNode);
     assertEquals("scopelessVariable", responseNode.get("name").asText());
     assertEquals("simple string value", responseNode.get("value").asText());
@@ -332,11 +334,12 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
   public void testCreateSingleTaskVariableEdgeCases() throws Exception {
     try {
       // Test adding variable to unexisting task
-      ObjectNode requestNode = objectMapper.createObjectNode();
-      requestNode.put("name", "existingVariable");
-      requestNode.put("value", "simple string value");
-      requestNode.put("scope", "local");
-      requestNode.put("type", "string");
+      ArrayNode requestNode = objectMapper.createArrayNode();
+      ObjectNode variableNode = requestNode.addObject();
+      variableNode.put("name", "existingVariable");
+      variableNode.put("value", "simple string value");
+      variableNode.put("scope", "local");
+      variableNode.put("type", "string");
 
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, "unexisting"));
       try {
@@ -361,10 +364,10 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
       }
 
       // Test setting global variable on standalone task
-      requestNode.put("name", "myVariable");
-      requestNode.put("value", "simple string value");
-      requestNode.put("scope", "global");
-      requestNode.put("type", "string");
+      variableNode.put("name", "myVariable");
+      variableNode.put("value", "simple string value");
+      variableNode.put("scope", "global");
+      variableNode.put("type", "string");
 
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       try {
@@ -377,8 +380,8 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
       }
 
       // Test creating nameless variable
-      requestNode = objectMapper.createObjectNode();
-      requestNode.put("value", "simple string value");
+      variableNode.removeAll();
+      variableNode.put("value", "simple string value");
 
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       try {
@@ -387,6 +390,27 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
       } catch (ResourceException expected) {
         assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
         assertEquals("Variable name is required", expected.getStatus().getDescription());
+      }
+      
+      // Test passing in empty array
+      requestNode.removeAll();
+      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch (ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+        assertEquals("Request didn't cantain a list of variables to create.", expected.getStatus().getDescription());
+      }
+      
+      // Test passing in object instead of array
+      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      try {
+        client.post(objectMapper.createObjectNode());
+        fail("Exception expected");
+      } catch (ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+        assertEquals("Request didn't cantain a list of variables to create.", expected.getStatus().getDescription());
       }
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -408,42 +432,136 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       
       // String type detection
-      ObjectNode requestNode = objectMapper.createObjectNode();
-      requestNode.put("name", "stringVar");
-      requestNode.put("value", "String value");
-      requestNode.put("scope", "local");
+      ArrayNode requestNode = objectMapper.createArrayNode();
+      ObjectNode varNode = requestNode.addObject();
+      varNode.put("name", "stringVar");
+      varNode.put("value", "String value");
+      varNode.put("scope", "local");
       client.post(requestNode);
       assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
       assertEquals("String value", taskService.getVariable(task.getId(), "stringVar"));
       client.release();
       
       // Integer type detection
-      requestNode.put("name", "integerVar");
-      requestNode.put("value", 123);
-      requestNode.put("scope", "local");
+      varNode.put("name", "integerVar");
+      varNode.put("value", 123);
+      varNode.put("scope", "local");
       client.post(requestNode);
       assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
       assertEquals(123, taskService.getVariable(task.getId(), "integerVar"));
       client.release();
       
       // Double type detection
-      requestNode.put("name", "doubleVar");
-      requestNode.put("value", 123.456);
-      requestNode.put("scope", "local");
+      varNode.put("name", "doubleVar");
+      varNode.put("value", 123.456);
+      varNode.put("scope", "local");
       client.post(requestNode);
       assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
       assertEquals(123.456, taskService.getVariable(task.getId(), "doubleVar"));
       client.release();
       
       // Boolean type detection
-      requestNode.put("name", "booleanVar");
-      requestNode.put("value", Boolean.TRUE);
-      requestNode.put("scope", "local");
+      varNode.put("name", "booleanVar");
+      varNode.put("value", Boolean.TRUE);
+      varNode.put("scope", "local");
       client.post(requestNode);
       assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
       assertEquals(Boolean.TRUE, taskService.getVariable(task.getId(), "booleanVar"));
       client.release();
       
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for (Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+    }
+  }
+  
+  /**
+   * Test creating a multipe task variable in a single call.
+   * POST runtime/tasks/{taskId}/variables
+   */
+  public void testCreateMultipleTaskVariables() throws Exception {
+    try {
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      
+      ArrayNode requestNode = objectMapper.createArrayNode();
+      
+      // String variable
+      ObjectNode stringVarNode = requestNode.addObject();
+      stringVarNode.put("name", "stringVariable");
+      stringVarNode.put("value", "simple string value");
+      stringVarNode.put("scope", "local");
+      stringVarNode.put("type", "string");
+      
+      // Integer
+      ObjectNode integerVarNode = requestNode.addObject();
+      integerVarNode.put("name", "integerVariable");
+      integerVarNode.put("value", 1234);
+      integerVarNode.put("scope", "local");
+      integerVarNode.put("type", "integer");
+      
+      // Short
+      ObjectNode shortVarNode = requestNode.addObject();
+      shortVarNode.put("name", "shortVariable");
+      shortVarNode.put("value", 123);
+      shortVarNode.put("scope", "local");
+      shortVarNode.put("type", "short");
+      
+      // Long
+      ObjectNode longVarNode = requestNode.addObject();
+      longVarNode.put("name", "longVariable");
+      longVarNode.put("value", 4567890L);
+      longVarNode.put("scope", "local");
+      longVarNode.put("type", "long");
+      
+      // Double
+      ObjectNode doubleVarNode = requestNode.addObject();
+      doubleVarNode.put("name", "doubleVariable");
+      doubleVarNode.put("value", 123.456);
+      doubleVarNode.put("scope", "local");
+      doubleVarNode.put("type", "double");
+      
+      // Boolean
+      ObjectNode booleanVarNode = requestNode.addObject();
+      booleanVarNode.put("name", "booleanVariable");
+      booleanVarNode.put("value", Boolean.TRUE);
+      booleanVarNode.put("scope", "local");
+      booleanVarNode.put("type", "boolean");
+      
+      // Date
+      Calendar varCal = Calendar.getInstance();
+      String isoString = getISODateString(varCal.getTime());
+      
+      ObjectNode dateVarNode = requestNode.addObject();
+      dateVarNode.put("name", "dateVariable");
+      dateVarNode.put("value", isoString);
+      dateVarNode.put("scope", "local");
+      dateVarNode.put("type", "date");
+              
+      // Create local variables with a single request
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      Representation response = client.post(requestNode);
+      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      
+      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      assertNotNull(responseNode);
+      assertTrue(responseNode.isArray());
+      assertEquals(7, responseNode.size());
+      
+      // Check if engine has correct variables set
+      Map<String, Object> taskVariables = taskService.getVariablesLocal(task.getId());
+      assertEquals(7, taskVariables.size());
+      
+      assertEquals("simple string value", taskVariables.get("stringVariable"));
+      assertEquals(1234, taskVariables.get("integerVariable"));
+      assertEquals((short)123, taskVariables.get("shortVariable"));
+      assertEquals(4567890L, taskVariables.get("longVariable"));
+      assertEquals(123.456, taskVariables.get("doubleVariable"));
+      assertEquals(Boolean.TRUE, taskVariables.get("booleanVariable"));
+      assertEquals(varCal.getTime(), taskVariables.get("dateVariable"));
       
       
     } finally {

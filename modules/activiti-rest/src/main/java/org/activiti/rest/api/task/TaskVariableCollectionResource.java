@@ -74,22 +74,34 @@ public class TaskVariableCollectionResource extends BaseTaskVariableResource {
   }
   
   @Post
-  public RestVariable createTaskVariable(Representation representation) {
+  public Object createTaskVariable(Representation representation) {
     if (authenticate() == false)
       return null;
     
     Task task = getTaskFromRequest();
-    
+    Object result = null;
     if(MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {
-      return createBinaryVariable(representation, task);
+      result = createBinaryVariable(representation, task);
     } else {
+      // Since we accept both an array of RestVariables and a single RestVariable, we need to inspect the
+      // body before passing on to the converterService
       try {
-        RestVariable restVar = getConverterService().toObject(representation, RestVariable.class, this);
-        return createSimpleVariable(restVar, task);
+        List<RestVariable> variables = new ArrayList<RestVariable>();
+        result = variables;
+        
+        RestVariable[] restVariables = getConverterService().toObject(representation, RestVariable[].class, this);
+        if(restVariables == null || restVariables.length == 0) {
+          throw new ActivitiIllegalArgumentException("Request didn't cantain a list of variables to create.");
+        }
+        for(RestVariable var : restVariables) {
+          variables.add(createSimpleVariable(var, task));
+        }
       } catch (IOException ioe) {
         throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, ioe);
       }
     }
+    setStatus(Status.SUCCESS_CREATED);
+    return result;
   }
   
   protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap) {
@@ -167,8 +179,6 @@ public class TaskVariableCollectionResource extends BaseTaskVariableResource {
         stream.close();
       }
       
-      // Set creates status and return new variable
-      setStatus(Status.SUCCESS_CREATED);
       return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
                 .createBinaryRestVariable(this, variableName, scope, variableType, task.getId(), null);
       
@@ -198,8 +208,6 @@ public class TaskVariableCollectionResource extends BaseTaskVariableResource {
     setVariable(task, restVariable.getName(), actualVariableValue, scope);
     
 
-    // Return created-status and variable representation
-    setStatus(Status.SUCCESS_CREATED);
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
              .createRestVariable(this, restVariable.getName(), actualVariableValue, scope, task.getId(), null, false);
   }
