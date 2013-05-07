@@ -2316,6 +2316,255 @@ The request body should be an array containing one or more JSON-objects represen
           </table>
         </para>
   </section>
+   <section>
+      <title>Update an existing variable on a task</title>
+        <para>
+          <programlisting>PUT runtime/tasks/{taskId}/variables/{variableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to update the variable for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to update.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body for updating simple (non-binary) variables:</emphasis>
+            <programlisting>
+{ 
+  "name" : "myTaskVariable",
+  "scope" : "local",
+  "type" : "string",
+  "value" : "Hello my friend"
+}</programlisting>
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable</para>
+          </listitem>
+          <listitem>
+            <para><literal>scope</literal>: Scope of variable that is updated. If omitted, <literal>local</literal> is assumed.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is updated. If omitted, reverts to raw JSON-value type (string, boolean, integer or double).</para>
+          </listitem>
+          <listitem>
+            <para><literal>value</literal>: Variable value.</para>
+          </listitem>
+      </itemizedlist>
+      More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>.
+        </para>
+        <para>
+        <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "myTaskVariable",
+  "scope" : "local",
+  "type" : "string",
+  "value" : "Hello my friend"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the variables was updated and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of a variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name in the given scope. Status message contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Updating a binary variable on a task</title>
+        <para>
+          <programlisting>PUT runtime/tasks/{taskId}/variables/{variableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to update the variable for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to update.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable.</para>
+          </listitem>
+          <listitem>
+            <para><literal>scope</literal>: Scope of variable that is updated. If omitted, <literal>local</literal> is assumed.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is updated. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+          </listitem>
+      </itemizedlist>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "binaryVariable",
+  "scope" : "local",
+  "type" : "binary",
+  "value" : null,
+  "valueUrl" : "http://.../runtime/tasks/123/variables/binaryVariable/data"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the variable was updated and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of the variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the variable to update doesn't exist for the given task in the given scope.</entry>
+                  </row>
+                  <row>
+                    <entry>415</entry>
+                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefor cannot be deserialized.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Delete a variable on a task</title>
+        <para>
+          <programlisting>DELETE runtime/tasks/{taskId}/variables/{variableName}?scope={scope}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task the variable to delete belongs to.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to delete.</entry>
+                  </row>
+                  <row>
+                    <entry>scope</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Scope of variable to delete in. Can be either <literal>local</literal> or <literal>global</literal>. If omitted, <literal>local</literal> is assumed.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the task variable was found and has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name. Status message contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
   
  </section>
 
