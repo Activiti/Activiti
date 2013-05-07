@@ -82,20 +82,36 @@ public class BaseTaskVariableResource extends SecuredResource {
     }
   }
   
-  protected boolean hasVariableOnScope(String taskId, String variableName, RestVariableScope scope) {
+  protected boolean hasVariableOnScope(Task task, String variableName, RestVariableScope scope) {
     boolean variableFound = false;
       
     if(scope == RestVariableScope.GLOBAL) {
-      Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
       if(task.getExecutionId() != null && ActivitiUtil.getRuntimeService().hasVariable(task.getExecutionId(), variableName)) {
         variableFound = true;
       }
       
     } else if(scope == RestVariableScope.LOCAL) {
-      if(ActivitiUtil.getTaskService().hasVariableLocal(taskId, variableName)) {
+      if(ActivitiUtil.getTaskService().hasVariableLocal(task.getId(), variableName)) {
         variableFound = true;
       }
     }
     return variableFound;
+  }
+  
+  /**
+   * Get valid task from request. Throws exception if task doen't exist or if task id is not provided.
+   */
+  protected Task getTaskFromRequest() {
+    String taskId = getAttribute("taskId");
+    
+    if (taskId == null) {
+      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
+    }
+    
+    Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
+    if (task == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
+    }
+    return task;
   }
 }

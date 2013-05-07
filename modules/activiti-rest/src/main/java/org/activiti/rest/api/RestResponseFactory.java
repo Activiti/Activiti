@@ -181,6 +181,20 @@ public class RestResponseFactory {
     return restVar;
   }
   
+  public RestVariable createBinaryRestVariable(SecuredResource securedResource, String name, RestVariableScope scope, String type, String taskId, String executionId) {
+    RestVariable restVar = new RestVariable();
+    restVar.setVariableScope(scope);
+    restVar.setName(name);
+    restVar.setType(type);
+    restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
+    
+    if(taskId != null) {
+      restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
+    }
+    
+    return restVar;
+  }
+  
   public Object getVariableValue(RestVariable restVariable) {
     Object value = null;
     

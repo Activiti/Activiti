@@ -2178,6 +2178,14 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
       More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>.
         </para>
         <para>
+        <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "myTaskVariable",
+  "scope" : "local",
+  "type" : "string",
+  "value" : "Hello my friend"
+}</programlisting>
           <table>
               <title>Response codes</title>
               <tgroup cols='2'>
@@ -2203,6 +2211,94 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                   <row>
                     <entry>409</entry>
                     <entry>Indicates the task already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+   <section>
+      <title>Create a new binary variable on a task</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}/variables</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to create the new variable for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable.</para>
+          </listitem>
+          <listitem>
+            <para><literal>scope</literal>: Scope of variable that is created. If omitted, <literal>local</literal> is assumed.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+          </listitem>
+      </itemizedlist>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "binaryVariable",
+  "scope" : "local",
+  "type" : "binary",
+  "value" : null,
+  "valueUrl" : "http://.../runtime/tasks/123/variables/binaryVariable/data"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the variable was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of the variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the task already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                  </row>
+                  <row>
+                    <entry>415</entry>
+                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefor cannot be deserialized.</entry>
                   </row>
                 </tbody>
              </tgroup>

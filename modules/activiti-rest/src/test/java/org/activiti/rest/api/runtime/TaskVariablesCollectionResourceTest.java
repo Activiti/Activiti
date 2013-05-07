@@ -13,6 +13,10 @@
 
 package org.activiti.rest.api.runtime;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +26,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
+import org.activiti.rest.HttpMultipartRepresentation;
 import org.activiti.rest.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -211,6 +216,114 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
     response.release();
   }
   
+  /**
+   * Test creating a single task variable using a binary stream.
+   * POST runtime/tasks/{taskId}/variables
+   */
+  public void testCreateSingleBinaryTaskVariable() throws Exception {
+    try {
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      
+      InputStream binaryContent = new ByteArrayInputStream("This is binary content".getBytes()); 
+      
+      // Add name, type and scope
+      Map<String, String> additionalFields = new HashMap<String, String>();
+      additionalFields.put("name", "binaryVariable");
+      additionalFields.put("type", "binary");
+      additionalFields.put("scope", "local");
+      
+      // Upload a valid BPMN-file using multipart-data
+      Representation uploadRepresentation = new HttpMultipartRepresentation("value",
+              binaryContent, additionalFields);
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      Representation response = client.post(uploadRepresentation);
+      
+      // Check "CREATED" status
+      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      
+      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      assertNotNull(responseNode);
+      assertEquals("binaryVariable", responseNode.get("name").asText());
+      assertTrue(responseNode.get("value").isNull());
+      assertEquals("local", responseNode.get("scope").asText());
+      assertEquals("binary", responseNode.get("type").asText());
+      assertNotNull(responseNode.get("valueUrl").isNull());
+      assertTrue(responseNode.get("valueUrl").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, task.getId(), "binaryVariable")));
+      
+      // Check actual value of variable in engine
+      Object variableValue = taskService.getVariableLocal(task.getId(), "binaryVariable");
+      assertNotNull(variableValue);
+      assertTrue(variableValue instanceof byte[]);
+      assertEquals("This is binary content", new String((byte[])variableValue));
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for (Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+    }
+  }
+  
+  /**
+   * Test creating a single task variable using a binary stream.
+   * POST runtime/tasks/{taskId}/variables
+   */
+  public void testCreateSingleSerializableTaskVariable() throws Exception {
+    try {
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      TestSerializableVariable serializable = new TestSerializableVariable();
+      serializable.setSomeField("some value");
+      
+      // Serialize object to readable stream for representation
+      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+      ObjectOutputStream output = new ObjectOutputStream(buffer);
+      output.writeObject(serializable);
+      output.close();
+      
+      InputStream binaryContent = new ByteArrayInputStream(buffer.toByteArray()); 
+      
+      // Add name, type and scope
+      Map<String, String> additionalFields = new HashMap<String, String>();
+      additionalFields.put("name", "serializableVariable");
+      additionalFields.put("type", "serializable");
+      additionalFields.put("scope", "local");
+      
+      // Upload a valid BPMN-file using multipart-data
+      Representation uploadRepresentation = new HttpMultipartRepresentation("value",
+              binaryContent, additionalFields);
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      Representation response = client.post(uploadRepresentation);
+      
+      // Check "CREATED" status
+      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      
+      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      assertNotNull(responseNode);
+      assertEquals("serializableVariable", responseNode.get("name").asText());
+      assertTrue(responseNode.get("value").isNull());
+      assertEquals("local", responseNode.get("scope").asText());
+      assertEquals("serializable", responseNode.get("type").asText());
+      assertNotNull(responseNode.get("valueUrl").isNull());
+      assertTrue(responseNode.get("valueUrl").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, task.getId(), "serializableVariable")));
+      
+      // Check actual value of variable in engine
+      Object variableValue = taskService.getVariableLocal(task.getId(), "serializableVariable");
+      assertNotNull(variableValue);
+      assertTrue(variableValue instanceof TestSerializableVariable);
+      assertEquals("some value", ((TestSerializableVariable)variableValue).getSomeField());
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for (Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+    }
+  }
+  
   
   /**
    * Test creating a single task variable, testing edge case exceptions. 
@@ -231,7 +344,7 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
         fail("Exception expected");
       } catch (ResourceException expected) {
         assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("task unexisting doesn't exist", expected.getStatus().getDescription());
+        assertEquals("Could not find a task with id 'unexisting'.", expected.getStatus().getDescription());
       }
 
       // Test trying to create already existing variable
