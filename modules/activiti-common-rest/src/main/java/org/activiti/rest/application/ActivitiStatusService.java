@@ -18,10 +18,13 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
+import org.activiti.rest.api.RestError;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Status;
+import org.restlet.ext.jackson.JacksonRepresentation;
+import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.service.StatusService;
 
@@ -33,6 +36,22 @@ import org.restlet.service.StatusService;
  * @author Frederik Heremans
  */
 public class ActivitiStatusService extends StatusService {
+
+  /**
+   * Overriding this method to return a JSON-object representing the error that occurred instead of
+   * the default HTML body Restlet provides.
+   */
+  @Override
+  public Representation getRepresentation(Status status, Request request, Response response) {
+    if(status != null && status.isError()) {
+      RestError error = new RestError();
+      error.setStatusCode(status.getCode());
+      error.setErrorMessage(status.getName());
+      return new JacksonRepresentation<RestError>(error);
+    } else {
+      return super.getRepresentation(status, request, response);
+    }
+  }
   
   @Override
   public Status getStatus(Throwable throwable, Request request, Response response) {

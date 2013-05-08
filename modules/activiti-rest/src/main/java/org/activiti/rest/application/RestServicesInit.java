@@ -56,6 +56,7 @@ import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionResource;
 import org.activiti.rest.api.repository.SimpleWorkflowResource;
 import org.activiti.rest.api.task.TaskCollectionResource;
+import org.activiti.rest.api.task.TaskIdentityLinkCollectionResource;
 import org.activiti.rest.api.task.TaskQueryResource;
 import org.activiti.rest.api.task.TaskResource;
 import org.activiti.rest.api.task.TaskVariableCollectionResource;
@@ -78,11 +79,13 @@ public class RestServicesInit {
     router.attach("/repository/process-definitions", ProcessDefinitionCollectionResource.class);
     router.attach("/repository/process-definitions/{processDefinitionId}", ProcessDefinitionResource.class);
     
+    router.attach("/runtime/tasks", TaskCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}", TaskResource.class);
     router.attach("/runtime/tasks/{taskId}/variables", TaskVariableCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}/variables/{variableName}", TaskVariableResource.class);
     router.attach("/runtime/tasks/{taskId}/variables/{variableName}/data", TaskVariableDataResource.class);
-    router.attach("/runtime/tasks", TaskCollectionResource.class);
+    router.attach("/runtime/tasks/{taskId}/identitylinks", TaskIdentityLinkCollectionResource.class);
+    
     router.attach("/query/tasks", TaskQueryResource.class);
     
     // Old rest-urls

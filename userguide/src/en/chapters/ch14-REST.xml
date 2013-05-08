@@ -104,6 +104,15 @@
         </para> 
     </section>
     <section>
+      <title>Error response body</title>
+      <para>When an error occurs (both client and server, 4XX and 5XX status-codes) the response body contains an object describing the error that occurred. An example for a 404-status when a task is not found:</para>
+                  <programlisting>
+{
+  "statusCode" : 404,
+  "errorMessage" : "Could not find a task with id '444'."
+}</programlisting>
+    </section>
+    <section>
       <title>Request parameters</title>
       <section>
         <title>URL fragments</title>
