@@ -1,4 +1,5 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
+/* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
@@ -23,6 +24,7 @@ import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.engine.variable.BooleanRestVariableConverter;
 import org.activiti.rest.api.engine.variable.DateRestVariableConverter;
@@ -34,6 +36,7 @@ import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.api.engine.variable.StringRestVariableConverter;
+import org.activiti.rest.api.identity.RestIdentityLink;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.api.repository.DeploymentResponse;
@@ -218,6 +221,27 @@ public class RestResponseFactory {
     }
     return value;
   }
+  
+  public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, IdentityLink link) {
+    return createRestIdentityLink(securedResource, link.getType(), link.getUserId(), link.getGroupId(), link.getTaskId());
+  }
+  
+  public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, String type, String userId, String groupId, String taskId) {
+    RestIdentityLink result = new RestIdentityLink();
+    result.setUser(userId);
+    result.setGroup(groupId);
+    result.setType(type);
+    
+    String family = null;
+    if(userId != null) {
+      family = RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS;
+    } else {
+      family = RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS;
+    }
+    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, taskId, family, (userId != null ? userId : groupId), type));
+    return result;
+  }
+  
   
   /**
    * Called once when the converters need to be initialized. Override of custom conversion

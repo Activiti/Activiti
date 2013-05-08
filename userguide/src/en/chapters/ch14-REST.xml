@@ -2626,6 +2626,241 @@ The request body should be an array containing one or more JSON-objects represen
           </table>
         </para>
   </section>
+  <section>
+      <title>Get all identity links for a single task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/identitylinks</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the identity links for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the requested idenity links are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "userId" : "kermit",
+    "groupId" : null,
+    "type" : "candidate",
+    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/users/kermit/candidate"
+  },
+  {
+    "userId" : null,
+    "groupId" : "sales",
+    "type" : "candidate",
+    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/groups/sales/candidate"
+  },
+  
+  ...
+]</programlisting>
+    </para>
+  </section>
+  
+   <section>
+      <title>Get all identitylinks for a task for either groups or users</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/identitylinks/users
+GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
+        </para>
+        <para>
+        Returns only identity links targetting either users or groups. Response body and status-codes are exactly the same as when getting the full list of identity links for a task.
+        </para>
+  </section>
+  <section>
+  <title>Get a single identity link on a task</title>
+      <para>
+        <programlisting>GET runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>taskId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the task .</entry>
+                </row>
+                <row>
+                  <entry>family</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>Either <literal>groups</literal> or <literal>users</literal>, depending on what kind of identity is targetted.</entry>
+                </row>
+                <row>
+                  <entry>identityId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the identity.</entry>
+                </row>
+                <row>
+                  <entry>type</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The type of identity link.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates the task and identity link was found and returned.</entry>
+                </row>
+                 <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested task was not found or the task doesn't have the requested identityLink. The status contains additional information about this error.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "userId" : null,
+  "groupId" : "sales",
+  "type" : "candidate",
+  "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/groups/sales/candidate"
+}</programlisting>
+    </para>
+    </section>
+    
+    
+     <section>
+      <title>Delete a single identity link on a task</title>
+         <para>
+        <programlisting>DELETE runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>taskId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the task.</entry>
+                </row>
+                <row>
+                  <entry>family</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>Either <literal>groups</literal> or <literal>users</literal>, depending on what kind of identity is targetted.</entry>
+                </row>
+                <row>
+                  <entry>identityId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the identity.</entry>
+                </row>
+                <row>
+                  <entry>type</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The type of identity link.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the task and identity link were found and the link has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have the requested identityLink. The status contains additional information about this error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
   
  </section>
 

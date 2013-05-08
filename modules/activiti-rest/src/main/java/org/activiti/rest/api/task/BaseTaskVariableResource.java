@@ -24,7 +24,6 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestResponseFactory;
-import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.api.engine.variable.RestVariable;
 import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
@@ -41,8 +40,7 @@ import org.restlet.resource.ResourceException;
 /**
  * @author Frederik Heremans
  */
-public class BaseTaskVariableResource extends SecuredResource {
-  
+public class BaseTaskVariableResource extends TaskBasedResource {
   
   public RestVariable getVariableFromRequest(boolean includeBinary) {
     String taskId = getAttribute("taskId");
@@ -110,23 +108,6 @@ public class BaseTaskVariableResource extends SecuredResource {
       }
     }
     return variableFound;
-  }
-  
-  /**
-   * Get valid task from request. Throws exception if task doen't exist or if task id is not provided.
-   */
-  protected Task getTaskFromRequest() {
-    String taskId = getAttribute("taskId");
-    
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
-    }
-    
-    Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
-    if (task == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
-    }
-    return task;
   }
   
   protected RestVariable setBinaryVariable(Representation representation, Task task, boolean isNew) {
