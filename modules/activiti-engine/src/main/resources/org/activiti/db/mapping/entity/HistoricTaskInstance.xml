@@ -227,8 +227,8 @@
       <if test="dueAfter != null">
         and RES.DUE_DATE_ &gt; #{dueAfter}
       </if>
-      <if test="startDate != null">
-        and RES.START_TIME_ = #{startDate}
+      <if test="creationDate != null">
+        and RES.START_TIME_ = #{creationDate}
       </if>
       <foreach collection="variables" index="index" item="var">
         and exists (

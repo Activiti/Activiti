@@ -223,8 +223,8 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDueAfter(anHourLater.getTime()).count());
     
     // Start date
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskStartDate(start.getTime()).count());
-    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskStartDate(anHourAgo.getTime()).count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskCreatedOn(start.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskCreatedOn(anHourAgo.getTime()).count());
     
     // Finished and Unfinished - Add anther other instance that has a running task (unfinished)
     runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");

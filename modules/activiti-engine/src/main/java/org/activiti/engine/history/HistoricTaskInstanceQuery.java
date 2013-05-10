@@ -179,9 +179,9 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   HistoricTaskInstanceQuery taskDueAfter(Date dueDate);
   
   /**
-   * Only select select historic task instances wich are started on the given date
+   * Only select select historic task instances which are created on the given date
    */
-  HistoricTaskInstanceQuery taskStartDate(Date startDate);
+  HistoricTaskInstanceQuery taskCreatedOn(Date startDate);
   
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskId();

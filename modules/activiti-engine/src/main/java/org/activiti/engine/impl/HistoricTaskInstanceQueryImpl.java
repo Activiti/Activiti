@@ -59,7 +59,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected Date dueDate;
   protected Date dueAfter;
   protected Date dueBefore;
-  protected Date startDate;
+  protected Date creationDate;
 
   public HistoricTaskInstanceQueryImpl() {
   }
@@ -238,8 +238,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     return this;
   }
   
-  public HistoricTaskInstanceQuery taskStartDate(Date startDate) {
-    this.startDate = startDate;
+  public HistoricTaskInstanceQuery taskCreatedOn(Date creationDate) {
+    this.creationDate = creationDate;
     return this;
   }
 
@@ -393,7 +393,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   public String getTaskParentTaskId() {
     return taskParentTaskId;
   }
-  public Date getStartDate() {
-    return startDate;
+  public Date getCreationDate() {
+    return creationDate;
   }
 }
