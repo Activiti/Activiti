@@ -37,6 +37,9 @@ public class TaskIdentityLinkFamilyResource extends TaskBasedResource {
 
   @Get
   public List<RestIdentityLink> getIdentityLinksForFamily() {
+    if(!authenticate())
+      return null;
+    
     Task task = getTaskFromRequest();
 
     // Extract and validate identity link from URL

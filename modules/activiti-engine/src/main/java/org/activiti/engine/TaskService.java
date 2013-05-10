@@ -366,10 +366,21 @@ public interface TaskService {
   void removeVariablesLocal(String taskId, Collection<String> variableNames);
 
   /** Add a comment to a task and/or process instance. */
-  void addComment(String taskId, String processInstanceId, String message);
+  Comment addComment(String taskId, String processInstanceId, String message);
+  
+  /** 
+   * Returns an individual comment with the given id. Returns null if no comment exists with the given id.
+   */
+  Comment getComment(String commentId);
   
   /** Removes all comments from the provided task and/or process instance*/
   void deleteComments(String taskId, String processInstanceId);
+  
+  /** 
+   * Removes an individual comment with the given id.
+   * @throws ActivitiObjectNotFoundException when no comment exists with the given id. 
+   */
+  void deleteComment(String commentId);
 
   /** The comments related to the given task. */
   List<Comment> getTaskComments(String taskId);

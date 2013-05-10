@@ -24,6 +24,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 
@@ -31,7 +32,7 @@ import org.activiti.engine.task.Task;
 /**
  * @author Tom Baeyens
  */
-public class AddCommentCmd implements Command<Object>{
+public class AddCommentCmd implements Command<Comment>{
 
   protected String taskId;
   protected String processInstanceId;
@@ -43,7 +44,7 @@ public class AddCommentCmd implements Command<Object>{
     this.message = message;
   }
   
-  public Object execute(CommandContext commandContext) {
+  public Comment execute(CommandContext commandContext) {
     
     // Validate task
     if (taskId != null) {
@@ -91,7 +92,7 @@ public class AddCommentCmd implements Command<Object>{
       .getCommentEntityManager()
       .insert(comment);
     
-    return null;
+    return comment;
   }
   
   protected String getSuspendedTaskException() {

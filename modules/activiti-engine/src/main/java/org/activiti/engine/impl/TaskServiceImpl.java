@@ -34,6 +34,7 @@ import org.activiti.engine.impl.cmd.DeleteIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
 import org.activiti.engine.impl.cmd.GetAttachmentCmd;
 import org.activiti.engine.impl.cmd.GetAttachmentContentCmd;
+import org.activiti.engine.impl.cmd.GetCommentCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
@@ -271,8 +272,13 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, true));
   }
 
-  public void addComment(String taskId, String processInstance, String message) {
-    commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
+  public Comment addComment(String taskId, String processInstance, String message) {
+    return commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
+  }
+  
+  @Override
+  public Comment getComment(String commentId) {
+    return commandExecutor.execute(new GetCommentCmd(commentId));
   }
 
   public List<Comment> getTaskComments(String taskId) {
@@ -304,7 +310,12 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public void deleteComments(String taskId, String processInstanceId) {
-    commandExecutor.execute(new DeleteCommentCmd(taskId, processInstanceId));
+    commandExecutor.execute(new DeleteCommentCmd(taskId, processInstanceId, null));
+  }
+  
+  @Override
+  public void deleteComment(String commentId) {
+    commandExecutor.execute(new DeleteCommentCmd(null, null, commentId));
   }
 
   public Attachment getAttachment(String attachmentId) {

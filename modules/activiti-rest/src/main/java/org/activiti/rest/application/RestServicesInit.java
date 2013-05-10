@@ -56,6 +56,8 @@ import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionResource;
 import org.activiti.rest.api.repository.SimpleWorkflowResource;
 import org.activiti.rest.api.task.TaskCollectionResource;
+import org.activiti.rest.api.task.TaskCommentCollectionResource;
+import org.activiti.rest.api.task.TaskCommentResource;
 import org.activiti.rest.api.task.TaskIdentityLinkCollectionResource;
 import org.activiti.rest.api.task.TaskIdentityLinkFamilyResource;
 import org.activiti.rest.api.task.TaskIdentityLinkResource;
@@ -89,6 +91,8 @@ public class RestServicesInit {
     router.attach("/runtime/tasks/{taskId}/identitylinks", TaskIdentityLinkCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}/identitylinks/{family}", TaskIdentityLinkFamilyResource.class);
     router.attach("/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", TaskIdentityLinkResource.class);
+    router.attach("/runtime/tasks/{taskId}/comments", TaskCommentCollectionResource.class);
+    router.attach("/runtime/tasks/{taskId}/comments/{commentId}", TaskCommentResource.class);
     
     router.attach("/query/tasks", TaskQueryResource.class);
     

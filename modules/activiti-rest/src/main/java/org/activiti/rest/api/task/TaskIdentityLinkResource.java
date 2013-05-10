@@ -35,6 +35,9 @@ public class TaskIdentityLinkResource extends TaskBasedResource {
 
   @Get
   public RestIdentityLink getIdentityLink() {
+    if(!authenticate())
+      return null;
+    
     Task task = getTaskFromRequest();
 
     // Extract and validate identity link from URL
@@ -50,6 +53,9 @@ public class TaskIdentityLinkResource extends TaskBasedResource {
   
   @Delete
   public void deleteIdentityLink() {
+    if(!authenticate())
+      return;
+    
     Task task = getTaskFromRequest();
 
     // Extract and validate identity link from URL

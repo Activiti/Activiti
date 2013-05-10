@@ -1,5 +1,4 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
-/* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
@@ -24,8 +23,10 @@ import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
+import org.activiti.rest.api.engine.RestComment;
 import org.activiti.rest.api.engine.variable.BooleanRestVariableConverter;
 import org.activiti.rest.api.engine.variable.DateRestVariableConverter;
 import org.activiti.rest.api.engine.variable.DoubleRestVariableConverter;
@@ -242,6 +243,25 @@ public class RestResponseFactory {
     return result;
   }
   
+  public RestComment createRestComment(SecuredResource securedResource, Comment comment) {
+    return createRestComment(securedResource, comment.getTaskId(), comment.getProcessInstanceId(), comment.getUserId(), comment.getFullMessage(), comment.getId());
+  }
+  
+  public RestComment createRestComment(SecuredResource securedResource, String taskId, String processInstanceId, String author,
+          String message, String commentId) {
+    RestComment result = new RestComment();
+    result.setAuthor(author);
+    result.setMessage(message);
+    result.setId(commentId);
+    
+    if(taskId != null) {
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_COMMENT, taskId, commentId));
+    } else if(processInstanceId != null) {
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COMMENT, processInstanceId, commentId));
+    }
+    return result;
+  }
+  
   
   /**
    * Called once when the converters need to be initialized. Override of custom conversion
@@ -256,5 +276,6 @@ public class RestResponseFactory {
     variableConverters.add(new BooleanRestVariableConverter());
     variableConverters.add(new DateRestVariableConverter());
   }
+
 
 }

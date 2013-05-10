@@ -39,6 +39,7 @@ public final class RestUrls {
   public static final String SEGMENT_PROCESS_INSTANCE_RESOURCE = "process-instances";
   public static final String SEGMENT_VARIABLES = "variables";
   public static final String SEGMENT_IDENTITYLINKS = "identitylinks";
+  public static final String SEGMENT_COMMENTS = "comments";
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_GROUPS = "groups";
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_USERS = "users";
   public static final String SEGMENT_VARIABLE_DATA = "data";
@@ -113,14 +114,24 @@ public final class RestUrls {
   public static final String[] URL_TASK_VARIABLE_DATA = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
   
   /**
-   * URL template for a task's variables: <i>runtime/tasks/{0:taskId}/identitylinks</i>
+   * URL template for a task's identity links: <i>runtime/tasks/{0:taskId}/identitylinks</i>
    */
   public static final String[] URL_TASK_IDENTITYLINKS_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_IDENTITYLINKS};
   
   /**
-   * URL template for a task's variables: <i>runtime/tasks/{0:taskId}/identitylinks/{1:family}/{2:identityId}/{3:type}</i>
+   * URL template for an identitylink on a task: <i>runtime/tasks/{0:taskId}/identitylinks/{1:family}/{2:identityId}/{3:type}</i>
    */
   public static final String[] URL_TASK_IDENTITYLINK = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_IDENTITYLINKS, "{1}", "{2}", "{3}"};
+  
+  /**
+   * URL template for a task's identity links: <i>runtime/tasks/{0:taskId}/comments</i>
+   */
+  public static final String[] URL_TASK_COMMENT_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_COMMENTS};
+  
+  /**
+   * URL template for an identitylink on a task: <i>runtime/tasks/{0:taskId}/comments/{1:commentId}</i>
+   */
+  public static final String[] URL_TASK_COMMENT = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_COMMENTS, "{1}"};
   
   /**
    * URL template for execution collection: <i>runtime/executions/{0:executionId}</i>
@@ -141,6 +152,11 @@ public final class RestUrls {
    * URL template for a single process instance: <i>runtime/process-instances/{0:processInstanceId}</i>
    */
   public static final String[] URL_PROCESS_INSTANCE = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for a comment on a process instance: <i>runtime/process-instances/{0:processInstanceId}/comments/{1:commentId}</i>
+   */
+  public static final String[] URL_PROCESS_INSTANCE_COMMENT = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_COMMENTS, "{1}"};
   
   
   /**
