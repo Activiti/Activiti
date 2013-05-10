@@ -139,7 +139,7 @@
   
   <sql id="selectHistoricTaskInstancesByQueryCriteriaSql">
     from ${prefix}ACT_HI_TASKINST RES
-    <if test="processFinished || processUnfinished">
+    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null">
       inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
     </if>
     <if test="processDefinitionKey != null || processDefinitionName != null">
@@ -160,6 +160,9 @@
       </if>
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="processInstanceBusinessKey != null">
+        and HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}
       </if>
       <if test="taskDefinitionKey != null">
         and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
@@ -223,6 +226,9 @@
       </if>
       <if test="dueAfter != null">
         and RES.DUE_DATE_ &gt; #{dueAfter}
+      </if>
+      <if test="startDate != null">
+        and RES.START_TIME_ = #{startDate}
       </if>
       <foreach collection="variables" index="index" item="var">
         and exists (

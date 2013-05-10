@@ -23,6 +23,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -109,8 +110,13 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testHistoricTaskInstanceQuery() throws Exception {
+    Calendar start = Calendar.getInstance();
+    start.set(Calendar.MILLISECOND, 0);
+    ClockUtil.setCurrentTime(start.getTime());
+    
     // First instance is finished
-    ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
+    ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest", "myBusinessKey");
+    ClockUtil.setCurrentTime(null);
     
     // Set priority to non-default value
     Task task = taskService.createTaskQuery().processInstanceId(finishedInstance.getId()).singleResult();
@@ -152,6 +158,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     // Process instance id
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(finishedInstance.getId()).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().processInstanceId("unexistingid").count());
+    
+    // Process instance business key
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKey("myBusinessKey").count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKey("unexistingKey").count());
     
     // Process definition id
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().processDefinitionId(finishedInstance.getProcessDefinitionId()).count());
@@ -211,6 +221,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     // Due date after
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDueAfter(anHourAgo.getTime()).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDueAfter(anHourLater.getTime()).count());
+    
+    // Start date
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskStartDate(start.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskStartDate(anHourAgo.getTime()).count());
     
     // Finished and Unfinished - Add anther other instance that has a running task (unfinished)
     runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
