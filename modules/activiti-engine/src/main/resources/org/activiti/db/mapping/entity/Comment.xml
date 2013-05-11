@@ -88,6 +88,17 @@
   
   <!-- COMMENT SELECT -->
 
+  <select id="selectComment" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where ID_ = #{parameter,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectComment_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where ID_ = #{parameter,jdbcType=VARCHAR}
+  </select>
   <select id="selectCommentsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
     select * 
     from ${prefix}ACT_HI_COMMENT 
@@ -95,7 +106,7 @@
       and TYPE_ = 'comment'
     order by TIME_ desc
   </select>
-
+  
   <select id="selectCommentsByTaskId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
     select * 
     from ${prefix}ACT_HI_COMMENT 

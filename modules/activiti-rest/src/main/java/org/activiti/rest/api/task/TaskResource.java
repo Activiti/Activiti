@@ -110,25 +110,7 @@ public class TaskResource extends TaskBasedResource {
     }
     getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
   }
-  
 
-  /**
-   * Get valid task from request. Throws exception if task doen't exist or if task id is not provided.
-   */
-  protected Task getTaskFromRequest() {
-    String taskId = getAttribute("taskId");
-
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
-    }
-
-    Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
-    if (task == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
-    }
-    return task;
-  }
-  
   protected void completeTask(Task task, TaskActionRequest actionRequest) {
     // TODO: take into account variables
     if(actionRequest.getAssignee() != null) {

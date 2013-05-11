@@ -13,11 +13,31 @@
 
 package org.activiti.rest.api;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
+import org.activiti.rest.api.engine.RestComment;
+import org.activiti.rest.api.engine.variable.BooleanRestVariableConverter;
+import org.activiti.rest.api.engine.variable.DateRestVariableConverter;
+import org.activiti.rest.api.engine.variable.DoubleRestVariableConverter;
+import org.activiti.rest.api.engine.variable.IntegerRestVariableConverter;
+import org.activiti.rest.api.engine.variable.LongRestVariableConverter;
+import org.activiti.rest.api.engine.variable.RestVariable;
+import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
+import org.activiti.rest.api.engine.variable.RestVariableConverter;
+import org.activiti.rest.api.engine.variable.ShortRestVariableConverter;
+import org.activiti.rest.api.engine.variable.StringRestVariableConverter;
+import org.activiti.rest.api.identity.RestIdentityLink;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.api.repository.DeploymentResponse;
@@ -32,6 +52,15 @@ import org.restlet.data.MediaType;
  * @author Frederik Heremans
  */
 public class RestResponseFactory {
+
+  public static final String BYTE_ARRAY_VARIABLE_TYPE = "binary";
+  public static final String SERIALIZABLE_VARIABLE_TYPE = "serializable";
+  
+  private List<RestVariableConverter> variableConverters = new ArrayList<RestVariableConverter>();
+  
+  public RestResponseFactory() {
+    initializeVariableConverters();
+  }
   
   public TaskResponse createTaskReponse(SecuredResource resourceContext, Task task) {
     TaskResponse response = new TaskResponse(task);
@@ -106,4 +135,147 @@ public class RestResponseFactory {
     }
     return response;
   }
+  
+  public List<RestVariable> createRestVariables(SecuredResource securedResource, Map<String, Object> variables, String taskId, String executionId, RestVariableScope scope) {
+   List<RestVariable> result = new ArrayList<RestVariable>();
+   
+   for(Entry<String, Object> pair : variables.entrySet()) {
+     result.add(createRestVariable(securedResource, pair.getKey(), pair.getValue(), scope, taskId, executionId, false));
+   }
+   
+   return result;
+  }
+  
+  public RestVariable createRestVariable(SecuredResource securedResource, String name, Object value, RestVariableScope scope, String taskId, String executionId, boolean includeBinaryValue) {
+    RestVariableConverter converter = null;
+    RestVariable restVar = new RestVariable();
+    restVar.setVariableScope(scope);
+    restVar.setName(name);
+    
+    if(value != null) {
+      // Try converting the value
+      for(RestVariableConverter c : variableConverters) {
+        if(value.getClass().isAssignableFrom(c.getVariableType())) {
+          converter = c;
+          break;
+        }
+      }
+      
+      if(converter != null) {
+        converter.convertVariableValue(value, restVar);
+        restVar.setType(converter.getRestTypeName());
+      } else {
+        // Revert to default conversion, which is the serializable/byte-array form
+        if(value instanceof Byte[] || value instanceof byte[]) {
+          restVar.setType(BYTE_ARRAY_VARIABLE_TYPE);
+        } else {
+          restVar.setType(SERIALIZABLE_VARIABLE_TYPE);
+        }
+        
+        if(includeBinaryValue) {
+          restVar.setValue(value);
+        }
+        
+        if(taskId != null) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
+        }
+        // TODO: execution variables
+      }
+    }
+    return restVar;
+  }
+  
+  public RestVariable createBinaryRestVariable(SecuredResource securedResource, String name, RestVariableScope scope, String type, String taskId, String executionId) {
+    RestVariable restVar = new RestVariable();
+    restVar.setVariableScope(scope);
+    restVar.setName(name);
+    restVar.setType(type);
+    restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
+    
+    if(taskId != null) {
+      restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
+    }
+    
+    return restVar;
+  }
+  
+  public Object getVariableValue(RestVariable restVariable) {
+    Object value = null;
+    
+    if(restVariable.getType() != null) {
+      // Try locating a converter if the type has been specified
+      RestVariableConverter converter = null;
+      for(RestVariableConverter conv : variableConverters) {
+        if(conv.getRestTypeName().equals(restVariable.getType())) {
+          converter = conv;
+          break;
+        }
+      }
+      if(converter == null) {
+        throw new ActivitiIllegalArgumentException("Variable '" + restVariable.getName() + "' has unsupported type: '" + restVariable.getType() + "'.");
+      }
+      value = converter.getVariableValue(restVariable);
+      
+    } else {
+      // Revert to type determined by REST-to-Java mapping when no explicit type has been provided
+      value = restVariable.getValue();
+    }
+    return value;
+  }
+  
+  public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, IdentityLink link) {
+    return createRestIdentityLink(securedResource, link.getType(), link.getUserId(), link.getGroupId(), link.getTaskId());
+  }
+  
+  public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, String type, String userId, String groupId, String taskId) {
+    RestIdentityLink result = new RestIdentityLink();
+    result.setUser(userId);
+    result.setGroup(groupId);
+    result.setType(type);
+    
+    String family = null;
+    if(userId != null) {
+      family = RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS;
+    } else {
+      family = RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS;
+    }
+    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, taskId, family, (userId != null ? userId : groupId), type));
+    return result;
+  }
+  
+  public RestComment createRestComment(SecuredResource securedResource, Comment comment) {
+    return createRestComment(securedResource, comment.getTaskId(), comment.getProcessInstanceId(), comment.getUserId(), comment.getFullMessage(), comment.getId());
+  }
+  
+  public RestComment createRestComment(SecuredResource securedResource, String taskId, String processInstanceId, String author,
+          String message, String commentId) {
+    RestComment result = new RestComment();
+    result.setAuthor(author);
+    result.setMessage(message);
+    result.setId(commentId);
+    
+    if(taskId != null) {
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_COMMENT, taskId, commentId));
+    } else if(processInstanceId != null) {
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COMMENT, processInstanceId, commentId));
+    }
+    return result;
+  }
+  
+  
+  /**
+   * Called once when the converters need to be initialized. Override of custom conversion
+   * needs to be done between java and rest.
+   */
+  protected void initializeVariableConverters() {
+    variableConverters.add(new StringRestVariableConverter());
+    variableConverters.add(new IntegerRestVariableConverter());
+    variableConverters.add(new LongRestVariableConverter());
+    variableConverters.add(new ShortRestVariableConverter());
+    variableConverters.add(new DoubleRestVariableConverter());
+    variableConverters.add(new BooleanRestVariableConverter());
+    variableConverters.add(new DateRestVariableConverter());
+  }
+
+
 }

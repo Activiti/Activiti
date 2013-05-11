@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.DelegationState;
@@ -260,7 +261,7 @@ public class TaskBasedResource extends SecuredResource {
     }
   }
   
-protected void addProcessvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
+  protected void addProcessvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
     
     for(QueryVariable variable : variables) {
       if(variable.getVariableOperation() == null) {
@@ -316,5 +317,22 @@ protected void addProcessvariables(TaskQuery taskQuery, List<QueryVariable> vari
         throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
     }
+  }
+  
+  /**
+   * Get valid task from request. Throws exception if task doen't exist or if task id is not provided.
+   */
+  protected Task getTaskFromRequest() {
+    String taskId = getAttribute("taskId");
+    
+    if (taskId == null) {
+      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
+    }
+    
+    Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
+    if (task == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
+    }
+    return task;
   }
 }
