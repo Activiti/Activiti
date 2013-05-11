@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.apache.commons.lang.StringUtils;
@@ -41,7 +42,12 @@ public class TaskOperationResource extends SecuredResource {
     String operation = (String) getRequest().getAttributes().get("operation");
       
     if ("claim".equals(operation)) {
-      ActivitiUtil.getTaskService().claim(taskId, loggedInUser);
+      try {
+        ActivitiUtil.getTaskService().claim(taskId, loggedInUser);
+      } catch(ActivitiTaskAlreadyClaimedException atece) {
+        // Explicitally throw an exception that is not the ActivitiTaskAlreadyClaimedException, as this causes a 409 instead of a 500
+        throw new IllegalStateException(atece);
+      }
     } else if ("unclaim".equals(operation)) {
       ActivitiUtil.getTaskService().claim(taskId, null);
     } else if ("complete".equals(operation)) {

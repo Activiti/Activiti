@@ -22,6 +22,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
@@ -161,6 +162,13 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
               .singleResult();
       
       assertEquals(deleteReason, historicTaskInstance.getDeleteReason());
+      
+      HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .singleResult();
+      
+      assertNotNull(historicInstance);
+      assertEquals(deleteReason, historicInstance.getDeleteReason());
     }    
   }
   
@@ -173,6 +181,15 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     // Deleting without a reason should be possible
     runtimeService.deleteProcessInstance(processInstance.getId(), null);
     assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    
+  if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+        HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
+            .processInstanceId(processInstance.getId())
+            .singleResult();
+        
+        assertNotNull(historicInstance);
+        assertNull(historicInstance.getDeleteReason());
+      }    
   }
   
   public void testDeleteProcessInstanceUnexistingId() {

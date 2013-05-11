@@ -34,6 +34,7 @@ import org.activiti.engine.impl.cmd.DeleteIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
 import org.activiti.engine.impl.cmd.GetAttachmentCmd;
 import org.activiti.engine.impl.cmd.GetAttachmentContentCmd;
+import org.activiti.engine.impl.cmd.GetCommentCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
@@ -43,6 +44,7 @@ import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskEventsCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
+import org.activiti.engine.impl.cmd.HasTaskVariableCmd;
 import org.activiti.engine.impl.cmd.RemoveTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.ResolveTaskCmd;
 import org.activiti.engine.impl.cmd.SaveAttachmentCmd;
@@ -196,24 +198,32 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new GetTaskVariablesCmd(executionId, null, false));
   }
 
-  public Map<String, Object> getVariablesLocal(String taskId) {
-    return commandExecutor.execute(new GetTaskVariablesCmd(taskId, null, true));
+  public Map<String, Object> getVariablesLocal(String executionId) {
+    return commandExecutor.execute(new GetTaskVariablesCmd(executionId, null, true));
   }
 
   public Map<String, Object> getVariables(String executionId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetTaskVariablesCmd(executionId, variableNames, false));
   }
 
-  public Map<String, Object> getVariablesLocal(String taskId, Collection<String> variableNames) {
-    return commandExecutor.execute(new GetTaskVariablesCmd(taskId, variableNames, true));
+  public Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames) {
+    return commandExecutor.execute(new GetTaskVariablesCmd(executionId, variableNames, true));
   }
 
   public Object getVariable(String executionId, String variableName) {
     return commandExecutor.execute(new GetTaskVariableCmd(executionId, variableName, false));
   }
   
-  public Object getVariableLocal(String taskId, String variableName) {
-    return commandExecutor.execute(new GetTaskVariableCmd(taskId, variableName, true));
+  public boolean hasVariable(String taskId, String variableName) {
+    return commandExecutor.execute(new HasTaskVariableCmd(taskId, variableName, false));
+  }
+  
+  public Object getVariableLocal(String executionId, String variableName) {
+    return commandExecutor.execute(new GetTaskVariableCmd(executionId, variableName, true));
+  }
+  
+  public boolean hasVariableLocal(String taskId, String variableName) {
+    return commandExecutor.execute(new HasTaskVariableCmd(taskId, variableName, true));
   }
   
   public void setVariable(String executionId, String variableName, Object value) {
@@ -225,21 +235,21 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, false));
   }
   
-  public void setVariableLocal(String taskId, String variableName, Object value) {
+  public void setVariableLocal(String executionId, String variableName, Object value) {
     if(variableName == null) {
       throw new ActivitiIllegalArgumentException("variableName is null");
     }
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put(variableName, value);
-    commandExecutor.execute(new SetTaskVariablesCmd(taskId, variables, true));
+    commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, true));
   }
 
   public void setVariables(String executionId, Map<String, ? extends Object> variables) {
     commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, false));
   }
 
-  public void setVariablesLocal(String taskId, Map<String, ? extends Object> variables) {
-    commandExecutor.execute(new SetTaskVariablesCmd(taskId, variables, true));
+  public void setVariablesLocal(String executionId, Map<String, ? extends Object> variables) {
+    commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, true));
   }
 
   public void removeVariable(String taskId, String variableName) {
@@ -262,8 +272,13 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, true));
   }
 
-  public void addComment(String taskId, String processInstance, String message) {
-    commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
+  public Comment addComment(String taskId, String processInstance, String message) {
+    return commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
+  }
+  
+  @Override
+  public Comment getComment(String commentId) {
+    return commandExecutor.execute(new GetCommentCmd(commentId));
   }
 
   public List<Comment> getTaskComments(String taskId) {
@@ -295,7 +310,12 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public void deleteComments(String taskId, String processInstanceId) {
-    commandExecutor.execute(new DeleteCommentCmd(taskId, processInstanceId));
+    commandExecutor.execute(new DeleteCommentCmd(taskId, processInstanceId, null));
+  }
+  
+  @Override
+  public void deleteComment(String commentId) {
+    commandExecutor.execute(new DeleteCommentCmd(null, null, commentId));
   }
 
   public Attachment getAttachment(String attachmentId) {

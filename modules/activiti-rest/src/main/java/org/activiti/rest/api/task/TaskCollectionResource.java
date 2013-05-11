@@ -13,13 +13,7 @@
 
 package org.activiti.rest.api.task;
 
-import java.util.HashMap;
-
-import org.activiti.engine.impl.TaskQueryProperty;
-import org.activiti.engine.query.QueryProperty;
-import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
@@ -34,22 +28,10 @@ import org.restlet.resource.ResourceException;
  */
 public class TaskCollectionResource extends TaskBasedResource {
 
-  private static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
-  
-  static {
-    properties.put("id", TaskQueryProperty.TASK_ID);
-    properties.put("name", TaskQueryProperty.NAME);
-    properties.put("description", TaskQueryProperty.DESCRIPTION);
-    properties.put("dueDate", TaskQueryProperty.DUE_DATE);
-    properties.put("createTime", TaskQueryProperty.CREATE_TIME);
-    properties.put("priority", TaskQueryProperty.PRIORITY);
-    properties.put("executionId", TaskQueryProperty.EXECUTION_ID);
-    properties.put("processInstanceId", TaskQueryProperty.PROCESS_INSTANCE_ID);
-  }
-  
-  
   @Post
   public TaskResponse createTask(TaskRequest taskRequest) {
+    if(!authenticate()) { return null; }
+    
     if(taskRequest == null) {
       throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(),
               "A request body was expected when creating the task.", null, null));
@@ -68,136 +50,121 @@ public class TaskCollectionResource extends TaskBasedResource {
   
   @Get
   public DataResponse getTasks() {
-    TaskQuery taskQuery = ActivitiUtil.getTaskService().createTaskQuery();
+    if(!authenticate()) { return null; }
+    
+    // Create a Task query request
+    TaskQueryRequest request = new TaskQueryRequest();
     Form query = getQuery();
     
     // Populate filter-parameters
     if(query.getNames().contains("name")) {
-      taskQuery.taskName(getQueryParameter("name", query));
+      request.setName(getQueryParameter("name", query));
     }
     
     if(query.getNames().contains("nameLike")) {
-      taskQuery.taskNameLike(getQueryParameter("nameLike", query));
+      request.setNameLike(getQueryParameter("nameLike", query));
     }
     
     if(query.getNames().contains("description")) {
-      taskQuery.taskDescription(getQueryParameter("description", query));
+      request.setDescription(getQueryParameter("description", query));
     }
     
     if(query.getNames().contains("descriptionLike")) {
-      taskQuery.taskDescriptionLike(getQueryParameter("descriptionLike", query));
+      request.setDescriptionLike(getQueryParameter("descriptionLike", query));
     }
     
     if(query.getNames().contains("priority")) {
-      taskQuery.taskPriority(getQueryParameterAsInt("priority", query));
+      request.setPriority(getQueryParameterAsInt("priority", query));
     }
     
     if(query.getNames().contains("minimumPriority")) {
-      taskQuery.taskMinPriority(getQueryParameterAsInt("minimumPriority", query));
+      request.setMinimumPriority(getQueryParameterAsInt("minimumPriority", query));
     }
     
     if(query.getNames().contains("maximumPriority")) {
-      taskQuery.taskMaxPriority(getQueryParameterAsInt("maximumPriority", query));
+      request.setMaximumPriority(getQueryParameterAsInt("maximumPriority", query));
     }
     
     if(query.getNames().contains("assignee")) {
-      taskQuery.taskAssignee(getQueryParameter("assignee", query));
+      request.setAssignee(getQueryParameter("assignee", query));
     }
     
     if(query.getNames().contains("owner")) {
-      taskQuery.taskOwner(getQueryParameter("owner", query));
+      request.setOwner(getQueryParameter("owner", query));
     }
     
     if(query.getNames().contains("unassigned")) {
-      Boolean unassigned = getQueryParameterAsBoolean("unassigned", query);
-      if(unassigned != null && unassigned) {
-        taskQuery.taskUnassigned();
-      }
+      request.setUnassigned(getQueryParameterAsBoolean("unassigned", query));
     }
     
     if(query.getNames().contains("delegationState")) {
-      String delegationStateString = getQueryParameter("delegationState", query);
-      DelegationState state = getDelegationState(delegationStateString);
-      if(state != null) {
-        taskQuery.taskDelegationState(state);
-      }
+      request.setDelegationState(getQueryParameter("delegationState", query));
     }
     
     if(query.getNames().contains("candidateUser")) {
-      taskQuery.taskCandidateUser(getQueryParameter("candidateUser", query));
+      request.setCandidateUser(getQueryParameter("candidateUser", query));
     }
     
     if(query.getNames().contains("involvedUser")) {
-      taskQuery.taskInvolvedUser(getQueryParameter("involvedUser", query));
+      request.setInvolvedUser(getQueryParameter("involvedUser", query));
     }
     
     if(query.getNames().contains("candidateGroup")) {
-      taskQuery.taskCandidateGroup(getQueryParameter("candidateGroup", query));
+      request.setCandidateGroup(getQueryParameter("candidateGroup", query));
     }
     
     if(query.getNames().contains("processInstanceId")) {
-      taskQuery.processInstanceId(getQueryParameter("processInstanceId", query));
+      request.setProcessInstanceId(getQueryParameter("processInstanceId", query));
     }
     
     if(query.getNames().contains("processInstanceBusinessKey")) {
-      taskQuery.processInstanceBusinessKey(getQueryParameter("processInstanceBusinessKey", query));
+      request.setProcessInstanceBusinessKey(getQueryParameter("processInstanceBusinessKey", query));
     }
     
     if(query.getNames().contains("executionId")) {
-      taskQuery.executionId(getQueryParameter("executionId", query));
+      request.setExecutionId(getQueryParameter("executionId", query));
     }
     
     if(query.getNames().contains("createdOn")) {
-      taskQuery.taskCreatedOn(getQueryParameterAsDate("createdOn", query));
+      request.setCreatedOn(getQueryParameterAsDate("createdOn", query));
     }
     
     if(query.getNames().contains("createdBefore")) {
-      taskQuery.taskCreatedBefore(getQueryParameterAsDate("createdBefore", query));
+      request.setCreatedBefore(getQueryParameterAsDate("createdBefore", query));
     }
     
     if(query.getNames().contains("createdAfter")) {
-      taskQuery.taskCreatedAfter(getQueryParameterAsDate("createdAfter", query));
+      request.setCreatedAfter(getQueryParameterAsDate("createdAfter", query));
     }
     
     if(query.getNames().contains("excludeSubTasks")) {
-      Boolean excludeSubTasks = getQueryParameterAsBoolean("excludeSubTasks", query);
-      if(excludeSubTasks != null && excludeSubTasks) {
-        taskQuery.excludeSubtasks();
-      }
+      request.setExcludeSubTasks(getQueryParameterAsBoolean("excludeSubTasks", query));
     }
     
     if(query.getNames().contains("taskDefinitionKey")) {
-      taskQuery.taskDefinitionKey(getQueryParameter("taskDefinitionKey", query));
+      request.setTaskDefinitionKey(getQueryParameter("taskDefinitionKey", query));
     }
     
     if(query.getNames().contains("taskDefinitionKeyLike")) {
-      taskQuery.taskDefinitionKeyLike(getQueryParameter("taskDefinitionKeyLike", query));
+      request.setTaskDefinitionKeyLike(getQueryParameter("taskDefinitionKeyLike", query));
     }
     
     if(query.getNames().contains("dueDate")) {
-      taskQuery.dueDate(getQueryParameterAsDate("dueDate", query));
+      request.setDueDate(getQueryParameterAsDate("dueDate", query));
     }
     
     if(query.getNames().contains("dueBefore")) {
-      taskQuery.dueBefore(getQueryParameterAsDate("dueBefore", query));
+      request.setDueBefore(getQueryParameterAsDate("dueBefore", query));
     }
     
     if(query.getNames().contains("dueAfter")) {
-      taskQuery.dueAfter(getQueryParameterAsDate("dueAfter", query));
+      request.setDueAfter(getQueryParameterAsDate("dueAfter", query));
     }
     
     if(query.getNames().contains("active")) {
-      Boolean active = getQueryParameterAsBoolean("active", query);
-      if(active != null) {
-        if(active) {
-          taskQuery.active();
-        } else {
-          taskQuery.suspended();
-        }
-      }
+      request.setActive(getQueryParameterAsBoolean("active", query));
     }
     
-    // TODO: populate query based on variable-values  
-    return new TaskPaginateList(this).paginateList(query, taskQuery, "id", properties);
+    return getTasksFromQueryRequest(request);
   }
 }

@@ -134,11 +134,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   
   public HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId) {
-	 this.superProcessInstanceId = superProcessInstanceId;
-	 return this;
+   this.superProcessInstanceId = superProcessInstanceId;
+   return this;
   }
   
-	public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
+  public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
     return orderBy(HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
   }
   

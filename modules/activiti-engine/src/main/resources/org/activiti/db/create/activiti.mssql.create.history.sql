@@ -98,7 +98,7 @@ create table ACT_HI_COMMENT (
     PROC_INST_ID_ nvarchar(64),
     ACTION_ nvarchar(255),
     MESSAGE_ nvarchar(4000),
-    FULL_MSG_ image,
+    FULL_MSG_ varbinary(max),
     primary key (ID_)
 );
 

@@ -52,14 +52,14 @@ public class ProcessDefinitionResource extends SecuredResource {
     ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
     
     if(actionRequest.getAction() != null) {
-      if("suspend".equals(actionRequest.getAction())) {
+      if(ProcessDefinitionActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
         return suspendProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
-      } else if("activate".equals(actionRequest.getAction())) {
+      } else if(ProcessDefinitionActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
         return activateProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
       }
     }
     
-    throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "', use 'suspend' or 'activate'.");
+    throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
   }
   
   protected ProcessDefinitionResponse activateProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {

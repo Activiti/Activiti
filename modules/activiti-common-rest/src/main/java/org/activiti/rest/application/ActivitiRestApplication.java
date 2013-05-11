@@ -33,6 +33,7 @@ public abstract class ActivitiRestApplication extends Application {
 
   public ActivitiRestApplication() {
     activitiStatusService = new ActivitiStatusService();
+    setStatusService(activitiStatusService);
   }
   
   public MediaTypeResolver getMediaTypeResolver() {
@@ -78,10 +79,5 @@ public abstract class ActivitiRestApplication extends Application {
       return null;
     }
     return request.getClientInfo().getUser().getIdentifier();
-  }
-  
-  @Override
-  public StatusService getStatusService() {
-    return activitiStatusService;
   }
 }

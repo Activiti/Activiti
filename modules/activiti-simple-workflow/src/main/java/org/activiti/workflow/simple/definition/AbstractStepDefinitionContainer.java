@@ -22,6 +22,8 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public abstract class AbstractStepDefinitionContainer<T> implements StepDefinitionContainer<T> {
   
+  private static final long serialVersionUID = 1L;
+  
   protected List<StepDefinition> steps;
   
   public AbstractStepDefinitionContainer() {
@@ -102,6 +104,22 @@ public abstract class AbstractStepDefinitionContainer<T> implements StepDefiniti
     }
     
     addStep(feedbackStepDefinition);
+    
+    return (T) this;
+  }
+  
+  // Script step
+  
+  public T addScriptStep(String script) {
+    return addScriptStep(null, script);
+  }
+  
+  public T addScriptStep(String name, String script) {
+    ScriptStepDefinition scriptStepDefinition = new ScriptStepDefinition();
+    scriptStepDefinition.setName(name);
+    scriptStepDefinition.setScript(script);
+    
+    addStep(scriptStepDefinition);
     
     return (T) this;
   }

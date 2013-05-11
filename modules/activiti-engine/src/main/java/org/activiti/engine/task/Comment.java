@@ -25,6 +25,9 @@ import org.activiti.engine.TaskService;
  */
 public interface Comment {
 
+  /** unique identifier for this comment */
+  String getId();
+  
   /** reference to the user that made the comment */ 
   String getUserId();
 
