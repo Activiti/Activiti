@@ -275,6 +275,11 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   @Override
   public String toString() {
-    return "VariableInstanceEntity[id=" + id + ", name=" + name + ", type=" + (type != null ? type.getTypeName() : "null") + "]";
+    return "VariableInstanceEntity[" + 
+        "id=" + id + 
+        ", byteArrayValueId=" + byteArrayValueId +  
+        ", name=" + name + 
+        ", type=" + (type != null ? type.getTypeName() : "null") + 
+        "]";
   }
 }
