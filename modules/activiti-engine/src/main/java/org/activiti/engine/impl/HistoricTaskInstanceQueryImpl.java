@@ -50,6 +50,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected String taskAssignee;
   protected String taskAssigneeLike;
   protected String taskDefinitionKey;
+  protected String involvedUser;
   protected Integer taskPriority;
   protected boolean finished;
   protected boolean unfinished;
@@ -242,6 +243,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     this.creationDate = creationDate;
     return this;
   }
+  
+  @Override
+  public HistoricTaskInstanceQuery taskInvolvedUser(String involvedUser) {
+    this.involvedUser = involvedUser;
+    return this;
+  }
 
   // ordering /////////////////////////////////////////////////////////////////
 
@@ -395,5 +402,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   }
   public Date getCreationDate() {
     return creationDate;
+  }
+  public String getInvolvedUser() {
+    return involvedUser;
   }
 }

@@ -19,8 +19,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -118,7 +118,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     
     ClockUtil.setCurrentTime(startTime.getTime());
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "businessKey123");
-    
+    runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "someType");
     Calendar hourAgo = Calendar.getInstance();
     hourAgo.add(Calendar.HOUR_OF_DAY, -1);
     Calendar hourFromNow = Calendar.getInstance();
@@ -156,6 +156,10 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().finishedBefore(hourFromNow.getTime()).count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().finishedAfter(hourAgo.getTime()).count());
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishedAfter(hourFromNow.getTime()).count());
+    
+    // Check identity links
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().involvedUser("kermit").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().involvedUser("gonzo").count());
   }
   
   @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
@@ -223,6 +227,33 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
       runtimeService.deleteProcessInstance(pi.getId(), deleteReason);
       HistoricProcessInstance hpi = historyService.createHistoricProcessInstanceQuery().processInstanceId(pi.getId()).singleResult();
       assertEquals(deleteReason, hpi.getDeleteReason());
+    }
+  }
+  
+  @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+  public void testHistoricIdenityLinksOnProcessInstance() {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      ProcessInstance pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      runtimeService.addUserIdentityLink(pi.getId(), "kermit", "myType");
+      
+      // Check historic links
+      List<HistoricIdentityLink> historicLinks = historyService.getHistoricIdentityLinksForProcessInstance(pi.getId());
+      assertEquals(1, historicLinks.size());
+      
+      assertEquals("myType", historicLinks.get(0).getType());
+      assertEquals("kermit", historicLinks.get(0).getUserId());
+      assertNull(historicLinks.get(0).getGroupId());
+      assertEquals(pi.getId(), historicLinks.get(0).getProcessInstanceId());
+      
+      // When process is ended, link should remain
+      taskService.complete(taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult().getId());
+      assertNull(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult());
+      
+      assertEquals(1, historyService.getHistoricIdentityLinksForProcessInstance(pi.getId()).size());
+      
+      // When process is deleted, identitylinks shouldn't exist anymore
+      historyService.deleteHistoricProcessInstance(pi.getId());
+      assertEquals(0, historyService.getHistoricIdentityLinksForProcessInstance(pi.getId()).size());
     }
   }
 }

@@ -149,6 +149,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
@@ -686,6 +687,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricVariableInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricIdentityLinkEntityManager.class));
       addSessionFactory(new GenericManagerFactory(IdentityInfoEntityManager.class));
       addSessionFactory(new GenericManagerFactory(IdentityLinkEntityManager.class));
       addSessionFactory(new GenericManagerFactory(JobEntityManager.class));

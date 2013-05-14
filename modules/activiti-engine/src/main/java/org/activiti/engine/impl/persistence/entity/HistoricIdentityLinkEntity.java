@@ -17,15 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.task.IdentityLink;
 
 
 /**
- * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public class IdentityLinkEntity implements Serializable, IdentityLink, PersistentObject {
+public class HistoricIdentityLinkEntity implements Serializable, HistoricIdentityLink, PersistentObject {
   
   private static final long serialVersionUID = 1L;
   
@@ -41,14 +40,20 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
   
   protected String processInstanceId;
   
-  protected String processDefId;
+  public HistoricIdentityLinkEntity(IdentityLinkEntity identityLink) {
+    this.id = identityLink.getId();
+    this.groupId = identityLink.getGroupId();
+    this.processInstanceId = identityLink.getProcessInstanceId();
+    this.taskId = identityLink.getTaskId();
+    this.type = identityLink.getType();
+    this.userId = identityLink.getUserId();
+  }
   
-  protected TaskEntity task;
   
-  protected ExecutionEntity processInstance;
+  public HistoricIdentityLinkEntity() {
+    
+  }
   
-  protected ProcessDefinitionEntity processDef;
-
   public Object getPersistentState() {
     Map<String, Object> persistentState = new  HashMap<String, Object>();
     persistentState.put("id", this.id);
@@ -70,22 +75,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
       persistentState.put("processInstanceId", this.processInstanceId);
     }
     
-    if (this.processDefId != null) {
-      persistentState.put("processDefId", this.processDefId);
-    }
-    
     return persistentState;
-  }
-  
-  public void insert() {
-    Context
-      .getCommandContext()
-      .getDbSqlSession()
-      .insert(this);
-
-   
-    Context.getCommandContext().getHistoryManager()
-      .recordIdentityLinkCreated(this);
   }
   
   public boolean isUser() {
@@ -149,59 +139,4 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
-    
-  public String getProcessDefId() {
-    return processDefId;
-  }
-  
-  public void setProcessDefId(String processDefId) {
-    this.processDefId = processDefId;
-  }
-
-  public TaskEntity getTask() {
-    if ( (task==null) && (taskId!=null) ) {
-      this.task = Context
-        .getCommandContext()
-        .getTaskEntityManager()
-        .findTaskById(taskId);
-    }
-    return task;
-  }
-  
-  public void setTask(TaskEntity task) {
-    this.task = task;
-    this.taskId = task.getId();
-  }
-  
-  public ExecutionEntity getProcessInstance() {
-    if ((processInstance == null) && (processInstanceId != null)) {
-      this.processInstance = Context
-        .getCommandContext()
-        .getExecutionEntityManager()
-        .findExecutionById(processInstanceId);
-    }
-    return processInstance;
-  }
-  
-  public void setProcessInstance(ExecutionEntity processInstance) {
-    this.processInstance = processInstance;
-    this.processInstanceId = processInstance.getId();
-  }
-
-  public ProcessDefinitionEntity getProcessDef() {
-    if ((processDef == null) && (processDefId != null)) {
-      this.processDef = Context
-              .getCommandContext()
-              .getProcessDefinitionEntityManager()
-              .findProcessDefinitionById(processDefId);
-    }
-    return processDef;
-  }
-  
-  public void setProcessDef(ProcessDefinitionEntity processDef) {
-    this.processDef = processDef;
-    this.processDefId = processDef.getId();
-  }
-
-  
 }

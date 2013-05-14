@@ -269,7 +269,6 @@ public class BpmnDeployer implements Deployer {
   }
   
   private void addAuthorizationsFromIterator(Set<Expression> exprSet, ProcessDefinitionEntity processDefinition, ExprType exprType) {
-    CommandContext commandContext = Context.getCommandContext();
     if (exprSet != null) {
       Iterator<Expression> iterator = exprSet.iterator();
       while (iterator.hasNext()) {
@@ -282,7 +281,7 @@ public class BpmnDeployer implements Deployer {
           identityLink.setGroupId(expr.toString());
         }
         identityLink.setType(IdentityLinkType.CANDIDATE);
-        commandContext.getDbSqlSession().insert(identityLink);
+        identityLink.insert();
       }
     }
   }

@@ -117,6 +117,10 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    */
   HistoricTaskInstanceQuery taskOwnerLike(String taskOwnerLike);
   
+  /** Only select historic task for which there exist an {@link HistoricIdentityLink} with the given user, including tasks
+   *  which have been assigned to the given user (assignee) or owned by the given user (owner). */
+  HistoricTaskInstanceQuery taskInvolvedUser(String involvedUser);
+  
   /** 
    * Only select historic task instances with the given priority.
    */
