@@ -408,6 +408,7 @@ public class ProcessDiagramGenerator {
     // Outgoing transitions of activity
     for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
       List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(sequenceFlow.getId());
+      boolean drawedLabel = false;
       for (int i=1; i<graphicInfoList.size(); i++) {
         
         GraphicInfo graphicInfo = graphicInfoList.get(i);
@@ -422,6 +423,17 @@ public class ProcessDiagramGenerator {
         } else {
           processDiagramCanvas.drawSequenceflow((int) previousGraphicInfo.getX(), (int) previousGraphicInfo.getY(), 
                   (int) graphicInfo.getX(), (int) graphicInfo.getY(), drawConditionalIndicator, highLighted);
+          if (!drawedLabel) {
+            GraphicInfo labelGraphicInfo = bpmnModel.getLabelGraphicInfo(sequenceFlow.getId());
+            if (labelGraphicInfo != null) {
+              int middleX = (int) (((previousGraphicInfo.getX() + labelGraphicInfo.getX()) + (graphicInfo.getX()+ labelGraphicInfo.getX())) / 2);
+              int middleY = (int) (((previousGraphicInfo.getY() + labelGraphicInfo.getY()) + (graphicInfo.getY()+ labelGraphicInfo.getY())) / 2);
+              middleX += 15;
+              processDiagramCanvas.drawLabel(sequenceFlow.getName(), middleX, middleY,
+                      (int) labelGraphicInfo.getWidth(), (int) labelGraphicInfo.getHeight());
+              drawedLabel = true;
+            }
+          }
         }
       }
     }
