@@ -4180,7 +4180,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           <listitem>
             <para>
               <emphasis role="bold">Request:</emphasis>
-              <literal>POST /user</literal>
+              <literal>PUT /user</literal>
               <programlisting>
 {
   "id": "kermit",
