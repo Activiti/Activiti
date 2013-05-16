@@ -84,7 +84,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
   
   public void execute(ActivityExecution execution) throws Exception {
-    if (getLoopVariable(execution, LOOP_COUNTER) == null) {
+    if (getLocalLoopVariable(execution, LOOP_COUNTER) == null) {
       try {
         createInstances(execution);
       } catch (BpmnError error) {
@@ -226,6 +226,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       parent = parent.getParent();
     }
     return (Integer) value;
+  }
+
+  protected Integer getLocalLoopVariable(ActivityExecution execution, String variableName) {
+    return (Integer) execution.getVariableLocal(variableName);
   }
   
   /**
