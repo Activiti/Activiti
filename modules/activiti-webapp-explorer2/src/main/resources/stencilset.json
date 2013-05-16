@@ -920,7 +920,311 @@
       "popular" : false,
       "refToView" : "compensation"
     } ]
-  } ],
+  } ,
+ 		{
+ 			"name":"processid",
+ 			"properties": [
+ 				{
+ 					"id":"processid",
+ 					"type":"String",
+ 					"title":"ProcessID",
+ 					"description":"Defines the ID of the container process used in the exported BPMN 2.0 XML. The ID has to be a valid XSD:id string and identifies a process unambiguous.",
+ 					"value":"",
+ 					"optional":true,
+ 					"wraplines":false
+ 				}
+ 			]
+ 		},
+		{
+			"name" : "bgColor",
+			"properties" : [
+				{
+					"id":"bgcolor",
+					"type":"Color",
+					"title":"BackgroundColor",
+					"value":"#ffffff",
+					"description":"Change the background color for a visual differentiation.",
+					"readonly":false,
+					"optional":false,
+					"refToView": "fill_el",
+					"fill":true,
+					"stroke":false
+				}
+			]
+		},
+		{
+			"name" : "borderColor",
+			"properties" : [
+				{
+					"id":"bordercolor",
+					"type":"Color",
+					"title":"Border color",
+					"value":"#000000",
+					"description":"Change the border color for a visual differentiation.",
+					"readonly":false,
+					"optional":false,
+					"refToView":"bg_frame",
+					"fill":false,
+					"stroke":true
+				}
+			]
+	    },
+		
+		
+  		// pool property package
+  
+		{
+			"name":"process",
+			"properties":[
+				{
+					"id":"processtype",
+					"type":"Choice",
+					"title":"Processtype",
+					"value":"None",
+					"description":"The process type attribute provides additional information about the level of abstraction modeled by this process.",
+					"readonly":false,
+					"optional":false,
+					"popular" : true,
+					"items": [
+						{
+							"id":"c1",
+							"title":"None",
+							"value":"None"
+						},
+						{
+							"id":"c2",
+							"title":"Private",
+							"value":"Private"
+						},
+						{
+							"id":"c4",
+							"title":"Public",
+							"value":"Public"
+						}
+					]
+				},
+				{
+					"id":"isclosed",
+					"type":"Boolean",
+					"title":"Is closed",
+					"value":false,
+					"description":"A boolean value specifying whether interactions, such as sending and receiving messages and events, not modeled in the process can occur when the process is executed or performed. If the value is true, they may not occur. If the value is false, they may occur.",
+					"readonly":false,
+					"optional":true
+				},
+				{
+					"id":"isexecutable",
+					"type":"Boolean",
+					"title":"Is executable",
+					"value":false,
+					"description":"An optional boolean value specifying whether the process is executable.",
+					"readonly":false,
+					"optional":true
+				}
+			]
+		},
+		{
+			"name" : "participantmultiplicity",
+			"properties" : [
+				{
+					"id" : "multiinstance",
+					"type" : "Boolean",
+					"title" : "Is multi instance participant",
+					"value" : false,
+					"description" : "Is used to define the multiplicity of a participant (multi instance).",
+					"readonly" : false,
+					"optional" : true,
+					"refToView" : "multiInstance"
+				},
+				{
+					"id" : "minimum",
+					"type" : "Integer",
+					"title" : "Minimum",
+					"value" : 2,
+					"description" : "The minimum attribute defines minimum number of participants that must be involved in the collaboration.",
+					"readonly" : false,
+					"optional" : true
+				},
+				{
+					"id" : "maximum",
+					"type" : "Integer",
+					"title" : "Maximum",
+					"value" : 2,
+					"description" : "The maximum attribute defines the maximum number of participants that may be involved in the collaboration.",
+					"readonly" : false,
+					"optional" : true
+				}
+			]
+		},
+  
+  
+		{
+			"name" : "pool",
+			"properties" : [
+				{
+					"id":"boundaryvisible",
+					"type":"Boolean",
+					"title":"Boundary visible",
+					"value":true,
+					"description":"Defines if the rectangular boundary for the pool is visible.",
+					"readonly":false,
+					"optional":false,
+					"refToView": ["border", "c", "caption", "captionDisableAntialiasing"],
+					"visible":false
+				},
+				{
+					"id":"processname",
+					"type":"String",
+					"title":"Processname",
+					"value":"",
+					"description":"The name of the participants process.",
+					"readonly":false,
+					"optional":false,
+					"refToView":"",
+					"length":"30"
+				},
+				{
+					"id":"status",
+					"type":"Choice",
+					"title":"State",
+					"":"",
+					"value":"None",
+					"description":"The current state of the participants process execution.",
+					"readonly":false,
+					"optional":false,
+					"popular" : true,
+					"items": [
+						{
+							"id":"c1",
+							"title":"None",
+							"value":"None"
+						},
+						{
+							"id":"c2",
+							"title":"Ready",
+							"value":"Ready"
+						},
+						{
+							"id":"c3",
+							"title":"Active",
+							"value":"Active"
+						},
+						{
+							"id":"c4",
+							"title":"Cancelled",
+							"value":"Cancelled"
+						},
+						{
+							"id":"c5",
+							"title":"Aborting",
+							"value":"Aborting"
+						},
+						{
+							"id":"c6",
+							"title":"Aborted",
+							"value":"Aborted"
+						},
+						{
+							"id":"c7",
+							"title":"Completing",
+							"value":"Completing"
+						},
+						{
+							"id":"c8",
+							"title":"Completed",
+							"value":"Completed"
+						}
+					]
+				},
+				{
+					"id":"adhoc",
+					"type":"Boolean",
+					"title":"Ad hoc",
+					"value":false,
+					"description":"Defines whether the Pool acts like an ad-hoc subprocess.",
+					"readonly":false,
+					"optional":false
+				},
+				{
+					"id":"adhocordering",
+					"type":"Choice",
+					"title":"Ad hoc ordering",
+					"value":"Parallel",
+					"description":"This attribute defines if the activities within the subprocess can be performed in parallel or must be performed sequentially. The default is parallel.",
+					"readonly":false,
+					"optional":true,
+					"refToView":"",
+					"items": [
+						{
+							"id":"c1",
+							"title":"Sequential",
+							"value":"Sequential",
+							"refToView":""
+						},
+						{
+							"id":"c2",
+							"title":"Parallel",
+							"value":"Parallel",
+							"refToView":""
+						}
+					]
+				},
+				{
+					"id":"adhoccompletioncondition",
+					"type":"String",
+					"title":"Ad hoc completion condition",
+					"value":"",
+					"description":"This attribute defines a Boolean Expression that, when evaluated to true, cancels the remaining Activity instances and produces a token.",
+					"readonly":false,
+					"optional":true,
+					"refToView":""
+				},
+				{
+					"id":"suppressjoinfailure",
+					"type":"Boolean",
+					"title":"Suppress join failure",
+					"value":false,
+					"description":"",
+					"readonly":false,
+					"optional":false
+				},
+				{
+					"id":"enableinstancecompensation",
+					"type":"Boolean",
+					"title":"Enable boolean compensation",
+					"value":false,
+					"description":"",
+					"readonly":false,
+					"optional":false
+				},
+				{
+					"id":"processcategories",
+					"type":"String",
+					"title":"Process categories",
+					"value":"",
+					"description":"",
+					"readonly":false,
+					"optional":true,
+					"refToView":"",
+					"wrapLines":true
+				},
+				{
+					"id":"processdocumentation",
+					"type":"String",
+					"title":"Process documentation",
+					"value":"",
+					"description":"",
+					"readonly":false,
+					"optional":true,
+					"refToView":"",
+					"length":"",
+					"wrapLines":true
+				}
+			]
+		}
+  
+  
+   ],
   "stencils" : [ {
     "type" : "node",
     "id" : "BPMNDiagram",
@@ -933,7 +1237,239 @@
     "hide" : true,
     "propertyPackages" : [ "baseattributes", "diagrambase", "executionlistenersbase" ],
     "roles" : [ ]
-  }, {
+  }, 
+  
+  
+  		// Swimlanes
+		
+		{
+			"type" : 			"node",
+			"id" :				"Pool",
+			"title" :			"Pool",
+			"groups" :			["Swimlanes"],
+			"description" :		"Pools and Lanes represent responsibilities for activities in a process. A pool or a lane can be an organization, a role or a system.",
+			"view" :			"swimlane/pool.svg",
+			"icon" :			"swimlane/pool.png",
+			"propertyPackages": [
+				"elementbase", "baseattributes",
+				"pool",
+				"participantmultiplicity",
+				"process",
+				"bgColor",
+				"borderColor",
+				"processid"
+			],
+			"properties" : [
+				{
+					"id":"bordercolor",
+					"type":"Color",
+					"title":"Border color",
+					"value":"#000000",
+					"description":"Change the border color for a visual differentiation.",
+					"readonly":false,
+					"optional":false,
+					"refToView":["c", "caption", "captionDisableAntialiasing", "multiinstancepath"],
+					"fill":false,
+					"stroke":true
+				}
+			],
+			"roles" : 			[
+				"all",
+				"messageflow_start",
+				"messageflow_end",
+				"fromtoall",
+				"canContainArtifacts"				
+			],
+			"layout" : [{"type" : "layout.bpmn2_0.pool", "orientation" : "horizontal"}]
+		}
+		
+		/* not sure how to store into BPMN file
+		,
+		{
+			"type" : 			"node",
+			"id" :				"CollapsedPool",
+			"title" :			"Collapsed Pool",
+			"groups" :			["Swimlanes"],
+			"description" :		"Collapsed pools hide all internals of the contained processes ('black box').",
+			"view" :			"swimlane/collapsed.pool.svg",
+			"icon" :			"swimlane/lane.png",
+			"propertyPackages": [
+				"elementbase", "baseattributes",
+				"pool",
+				"participantmultiplicity",
+				"process",
+				"bgColor",
+				"borderColor",
+				"processid"
+			],
+			"properties" : 		[
+				{
+					"id":"bgcolor",
+					"type":"Color",
+					"title":"Background color",
+					"value":"#ffffff",
+					"description":"Change the background color for a visual differentiation.",
+					"readonly":false,
+					"optional":false,
+					"refToView":"fill_el",
+					"fill":true,
+					"stroke":false,
+					"lightness" : 0.5
+				},
+				{
+					"id":"bordercolor",
+					"type":"Color",
+					"title":"Border color",
+					"value":"#000000",
+					"description":"Change the border color for a visual differentiation.",
+					"readonly":false,
+					"optional":false,
+					"refToView":["c", "border", "multiinstancepath"],
+					"fill":false,
+					"stroke":true
+				}
+				
+			],
+			"roles" :		 	[
+				"all",
+				"messageflow_start",
+				"messageflow_end",
+				"fromtoall"				
+			]
+		} */
+		,
+		{
+			"type" : 			"node",
+			"id" :				"Lane",
+			"title" :			"Lane",
+			"groups" :			["Swimlanes"],
+			"description" :		"Pools and lanes represent responsibilities for activities in a process. A pool or a lane can be an organization, a role or a system. Lanes subdivide pools or other lanes hierarchically.",
+			"view" :			"swimlane/lane.svg",
+			"icon" :			"swimlane/lane.png",
+			"propertyPackages": [
+				"elementbase", "baseattributes",
+				"borderColor"
+			],
+			"properties" : 		[
+				{
+					"id":"parentpool",
+					"type":"String",
+					"title":"Parent pool",
+					"value":"",
+					"description":"The specified pool the lane belongs to.",
+					"readonly":false,
+					"optional":false,
+					"refToView":"",
+					"length":"30"
+				},
+				{
+					"id":"parentlane",
+					"type":"String",
+					"title":"Parent lane",
+					"value":"",
+					"description":"The specified lane the lane belongs to.",
+					"readonly":false,
+					"optional":true,
+					"refToView":"",
+					"length":"30"
+				},
+				{
+					"id":"showcaption",
+					"type":"Boolean",
+					"title":"Show caption",
+					"value":"true",
+					"description":"",
+					"readonly":true,
+					"optional":false,
+					"refToView": ["caption", "captionDisableAntialiasing", "text_name"],
+					"fill":true,
+					"visible":false,
+					"stroke":false,
+					"hidden":true
+				},
+				{
+					"id":"bgcolor",
+					"type":"Color",
+					"title":"Background color",
+					"value":"",
+					"description":"Change the background color for a visual differentiation.",
+					"readonly":false,
+					"optional":true,
+					"refToView":["fill_el"],
+					"fill":true,
+					"stroke":false,
+					"lightness": 0.5
+				},
+				{
+					"id":"bordercolor",
+					"type":"Color",
+					"title":"Border color",
+					"value":"#000000",
+					"description":"Change the border color for a visual differentiation.",
+					"readonly":false,
+					"optional":false,
+					"refToView":["border", "captionDisableAntialiasing"],
+					"fill":false,
+					"stroke":true
+				}
+				
+			],
+			"roles": 			[
+				"PoolChild",
+				"fromtoall",
+				"canContainArtifacts"				
+			]
+		}
+		/* Not sure how to store into BPMN file
+		,
+		
+		{
+            "type" :            "node",
+            "id" :              "processparticipant",
+            "title" :           "Additional Participant",
+            "groups" :          ["Swimlanes"],
+            "description" :     "An additional participant can be connected to a task or sub process. It is used to visualize additional associations of roles or individuals to the respective activity (e.g. responsibility, informed persons, etc.).",
+            "view" :            "swimlane/process.participant.svg",
+            "icon" :            "swimlane/process.participant.png",
+            "defaultAlign" :    [
+            						{"align": "northeast"}, 
+            						{"parentRole": "VerticalPool", "align": "southeast"},
+            						{"orientation": "vertical", "align": "southeast"}
+            					],
+            "propertyPackages": [
+                "elementbase", "baseattributes",
+                "flowElement",
+                "artifact",
+                "bgColor",
+				"borderColor"
+            ],
+            "properties" : [
+            	{
+					"id":"bordercolor",
+					"type":"Color",
+					"title":"Border color",
+					"value":"#000000",
+					"description":"Change the border color for a visual differentiation.",
+					"readonly":false,
+					"optional":false,
+					"refToView":["bg_frame", "bg_frame2", "circle1", "path1", "path2"],
+					"fill":false,
+					"stroke":true
+				}
+			],
+            "roles": [
+                "all",
+                "from_participant",
+                "to_participant",
+                "fromtoall",
+                "eventSubprocessElement"
+            ]
+        }
+        */
+  ,
+  
+   // Start Events
+  {
     "type" : "node",
     "id" : "StartNoneEvent",
     "title" : "Start event",
@@ -962,7 +1498,7 @@
     "icon" : "startevent/message.png",
     "groups" : [ "Start Events" ],
     "propertyPackages" : [ "elementbase", "baseattributes", "messagerefdefinition", "executionlistenersbase" ],
-    "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "all" ]
+    "roles" : [ "Startevents_all", "sequence_start", "StartEventsMorph", "messageflow_end", "all" ]
   }, {
     "type" : "node",
     "id" : "StartErrorEvent",
@@ -992,7 +1528,7 @@
     "icon" : "activity/list/type.service.png",
     "groups" : [ "Activities" ],
     "propertyPackages" : [ "elementbase", "baseattributes", "servicetaskbase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
-    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "messageflow_start", "all" ]
   }, {
     "type" : "node",
     "id" : "ScriptTask",
@@ -1022,7 +1558,7 @@
     "icon" : "activity/list/type.receive.png",
     "groups" : [ "Activities" ],
     "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
-    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "messageflow_end", "all" ]
   }, {
     "type" : "node",
     "id" : "ManualTask",
@@ -1032,7 +1568,7 @@
     "icon" : "activity/list/type.manual.png",
     "groups" : [ "Activities" ],
     "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
-    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "messageflow_start", "all" ]
   }, {
     "type" : "node",
     "id" : "MailTask",
@@ -1042,7 +1578,17 @@
     "icon" : "activity/list/type.send.png",
     "groups" : [ "Activities" ],
     "propertyPackages" : [ "elementbase", "baseattributes", "mailtaskbase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
-    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "messageflow_start", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "SendTask",
+    "title" : "Send task",
+    "description" : "A send task",
+    "view" : "activity/sendtask.svg",
+    "icon" : "activity/list/type.send.png",
+    "groups" : [ "Activities" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
+    "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "messageflow_start", "all" ]
   }, {
     "type" : "node",
     "id" : "SubProcess",
@@ -1051,7 +1597,7 @@
     "view" : "activity/subprocess.expanded.svg",
     "icon" : "activity/expanded.subprocess.png",
     "groups" : [ "Structural" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
   }, {
     "type" : "node",
@@ -1172,7 +1718,7 @@
     "icon" : "catching/message.png",
     "groups" : [ "Intermediate Catching Events" ],
     "propertyPackages" : [ "elementbase", "baseattributes", "messagerefdefinition", "executionlistenersbase" ],
-    "roles" : [ "sequence_start", "sequence_end", "CatchEventsMorph", "all" ]
+    "roles" : [ "sequence_start", "sequence_end", "CatchEventsMorph", "messageflow_end", "all" ]
   }, {
     "type" : "node",
     "id" : "ThrowNoneEvent",
@@ -1239,7 +1785,44 @@
     } ],
     "propertyPackages" : [ "elementbase", "baseattributes" ],
     "roles" : [ "ConnectingObjectsMorph", "all" ]
-  }, {
+  }, 
+  {
+			"type": "edge",
+			"id":"MessageFlow",
+			"title":"Message Flow",
+			"description":"Message flow symbolizes information flow across organizational boundaries. Message flow can be attached to pools, activities or message events. The order of message exchanges can be specified by combining message flow and sequence flow.",
+			"groups":["Connecting Objects"],
+			"view":"connector/messageflow.svg",
+			"icon":"connector/messageflow.png",
+			"keepState" : true,
+			"propertyPackages":[
+				"baseAttributes"
+			],
+			"properties" : [
+				{
+					"id":"bordercolor",
+					"type":"Color",
+					"title":"Border color",
+					"value":"#000000",
+					"description":"Change the border color for a visual differentiation.",
+					"readonly":false,
+					"optional":false,
+					"refToView":["bg_frame", "arrowhead", "arrowhead2"],
+					"fill":false,
+					"stroke":true
+				}
+			],
+			"layout" : [{"type" : "layout.bpmn2_0.messageflow"}],
+			"roles": [
+				"ConnectingObjectsMorph",
+				"MessageContainer",
+				"fromtoall"
+			]
+		}
+  ,
+  
+  
+  {
     "type" : "node",
     "id" : "TextAnnotation",
     "title" : "Text annotation",
@@ -1249,7 +1832,8 @@
     "groups" : [ "Artifacts" ],
     "propertyPackages" : [ "elementbase", "baseattributes", "textannotationbase" ],
     "roles" : [ "all" ]
-  } ],
+  }
+   ],
   "rules" : {
     "cardinalityRules" : [ {
       "role" : "Startevents_all",
@@ -1264,6 +1848,8 @@
         "maximum" : 0
       } ]
     } ],
+    
+    
     "connectionRules" : [ {
       "role" : "SequenceFlow",
       "connects" : [ {
@@ -1288,7 +1874,15 @@
         "from" : "Activity",
         "to" : [ "IntermediateEventOnActivityBoundary" ]
       } ]
-    } ],
+    }, {
+	  "role":"MessageFlow",
+	  "connects": [ {
+		"from":"messageflow_start",
+		"to":["messageflow_end"]
+	  } ]
+	} ],
+    
+    
     "containmentRules" : [ {
       "role" : "BPMNDiagram",
       "contains" : [ "all" ]
@@ -1298,7 +1892,14 @@
     }, {
       "role" : "EventSubProcess",
       "contains" : [ "sequence_start", "sequence_end", "from_task_event", "to_task_event", "TextAnnotation" ]
-    } ],
+    },{
+	  "role" : "Pool",
+	  "contains" : ["Lane"]
+	},{
+	  "role" : "Lane",
+	  "contains" : ["Lane", "sequence_start", "sequence_end", "DataObjectMorph", "TextAnnotationMorph", "from_participant", "EventSubprocess", "CollapsedEventSubprocess"]
+	} ],
+	
     "morphingRules" : [ {
       "role" : "ActivitiesMorph",
       "baseMorphs" : [ "UserTask" ],
@@ -1319,8 +1920,85 @@
       "role" : "ThrowEventsMorph",
       "baseMorphs" : [ "ThrowNoneEvent" ]
     }, {
-      "role" : "TextAnnotation",
+      "role" : "TextAnnotationMorth",
       "baseMorphs" : [ "TextAnnotation" ]
-    } ]
+    }, {
+	  "role": "DataObjectMorph",
+	  "baseMorphs": ["DataObject"]
+	} ],
+		"layoutRules" : [
+			{
+				"role": "ActivitiesMorph",
+				"outs":[{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1,"r":2,"b":1,"l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}],
+				"ins": [{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}]
+			},
+			{
+				"role": "EventActivitiesMorph",
+				"outs":[{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1,"r":2,"b":1,"l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}],
+				"ins": [{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}]
+			},
+			{
+				"role": "ChoreographyMorph",
+				"outs":[{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1,"r":2,"b":1,"l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}],
+				"ins": [{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}]
+			},
+			{
+				"role": "GatewaysMorph",
+				"outs": [{"t":2, "r":1, "b":2, "l":1},
+						 {"orientation":"vertical", "t":1, "r":2, "b":1, "l":2}
+				]
+			},
+			{
+				"role": "StartEventsMorph",
+				"outs":[{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1,"r":2,"b":1,"l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}],
+				"ins": [{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}]
+			},
+			{
+				"role": "IntermediateEventsMorph",
+				"outs":[{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1,"r":2,"b":1,"l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}],
+				"ins": [{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}]
+			},
+			{
+				"role": "EndEventsMorph",
+				"outs":[{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1,"r":2,"b":1,"l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}],
+				"ins": [{"edgeRole":"MessageFlow","t":2, "r":1, "b":2, "l":1},
+						{"t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "edgeRole":"MessageFlow", "t":1, "r":2, "b":1, "l":2},
+						{"orientation":"vertical", "t":2,"r":1,"b":2,"l":1}]
+			}
+		]
   }
 }
