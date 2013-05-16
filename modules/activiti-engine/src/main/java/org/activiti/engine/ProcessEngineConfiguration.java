@@ -129,6 +129,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String defaultCamelContext = "camelContext";
   
   protected String activityFontName = "Arial";
+  protected String labelFontName = "Arial";
   
   protected ClassLoader classLoader;
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
@@ -539,5 +540,13 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   public ProcessEngineLifecycleListener getProcessEngineLifecycleListener() {
     return processEngineLifecycleListener;
+  }
+
+  public String getLabelFontName() {
+    return labelFontName;
+  }
+
+  public void setLabelFontName(String labelFontName) {
+    this.labelFontName = labelFontName;
   }
 }
