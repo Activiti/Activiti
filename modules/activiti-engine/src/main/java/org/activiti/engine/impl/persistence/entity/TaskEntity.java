@@ -377,7 +377,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   
   public String toString() {
-    return "Task["+id+"]";
+    return "Task[id=" + id + ", name=" + name + "]";
   }
   
   // special setters //////////////////////////////////////////////////////////
