@@ -41,6 +41,7 @@ public class EventGatewayXMLConverter extends BaseBpmnXMLConverter {
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     EventGateway gateway = new EventGateway();
     BpmnXMLUtil.addXMLLocation(gateway, xtr);
+    parseChildElements(getXMLElementName(), gateway, xtr);
     return gateway;
   }
 

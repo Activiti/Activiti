@@ -116,6 +116,16 @@ create table ACT_HI_ATTACHMENT (
     primary key (ID_)
 );
 
+create table ACT_HI_IDENTITYLINK (
+    ID_ NVARCHAR2(64),
+    GROUP_ID_ NVARCHAR2(255),
+    TYPE_ NVARCHAR2(255),
+    USER_ID_ NVARCHAR2(255),
+    TASK_ID_ NVARCHAR2(64),
+    PROC_INST_ID_ NVARCHAR2(64),
+    primary key (ID_)
+);
+
 create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROCINST(END_TIME_);
 create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROCINST(BUSINESS_KEY_);
 create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACTINST(START_TIME_);
@@ -127,6 +137,9 @@ create index ACT_IDX_HI_DETAIL_NAME on ACT_HI_DETAIL(NAME_);
 create index ACT_IDX_HI_DETAIL_TASK_ID on ACT_HI_DETAIL(TASK_ID_);
 create index ACT_IDX_HI_PROCVAR_PROC_INST on ACT_HI_VARINST(PROC_INST_ID_);
 create index ACT_IDX_HI_PROCVAR_NAME_TYPE on ACT_HI_VARINST(NAME_, VAR_TYPE_);
+create index ACT_IDX_HI_IDENT_LNK_USER on ACT_HI_IDENTITYLINK(USER_ID_);
+create index ACT_IDX_HI_IDENT_LNK_TASK on ACT_HI_IDENTITYLINK(TASK_ID_);
+create index ACT_IDX_HI_IDENT_LNK_PROCINST on ACT_HI_IDENTITYLINK(PROC_INST_ID_);
 
 -- see http://stackoverflow.com/questions/675398/how-can-i-constrain-multiple-columns-to-prevent-duplicates-but-ignore-null-value
 create unique index ACT_UNIQ_HI_BUS_KEY on ACT_HI_PROCINST

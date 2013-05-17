@@ -72,6 +72,7 @@ public interface ExplorerLayout {
   static final String STYLE_ADD = "add";
   static final String STYLE_NO_LINE = "no-line";
   static final String STYLE_TEXTAREA_NO_RESIZE = "noResizeTextArea";
+  static final String STYLE_ERROR = "error";
   
   static final String STYLE_APPLICATION_LOGO = "logo";
   static final String STYLE_WORKFLOW_CONSOLE_LOGO = "workflow-console-logo";

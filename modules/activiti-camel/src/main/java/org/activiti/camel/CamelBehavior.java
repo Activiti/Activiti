@@ -22,6 +22,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.BpmnActivityBehavior;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.spring.SpringProcessEngineConfiguration;
@@ -75,6 +77,7 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
     ActivitiEndpoint endpoint = createEndpoint(execution);
     Exchange exchange = createExchange(execution, endpoint);
     endpoint.process(exchange);
+    handleCamelException(exchange);
     execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
     performDefaultOutgoingBehavior(execution);
   }
@@ -101,6 +104,14 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
     return ex;
   }
   
+  protected void handleCamelException(Exchange exchange) {
+    Exception camelException = exchange.getException();
+    boolean notHandledByCamel = exchange.isFailed() && camelException != null;
+    if (notHandledByCamel) {
+      throw new ActivitiException("Unhandled exception on camel route", camelException);
+    }
+  }
+  
   protected void copyVariablesToProperties(Map<String, Object> variables, Exchange exchange) {
     for (Map.Entry<String, Object> var : variables.entrySet()) {
       exchange.setProperty(var.getKey(), var.getValue());
@@ -119,8 +130,12 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
   }
 
   protected String getProcessDefinitionKey(ActivityExecution execution) {
-    String id = execution.getActivity().getProcessDefinition().getId();
-    return id.substring(0, id.indexOf(":"));
+    PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
+    if (processDefinition instanceof ProcessDefinitionEntity) {
+      return ((ProcessDefinitionEntity) processDefinition).getKey();
+    }
+
+    throw new ActivitiException("Unknown implementation of PvmProcessDefinition: " + processDefinition);
   }
   
   protected void setAppropriateCamelContext(ActivityExecution execution) {

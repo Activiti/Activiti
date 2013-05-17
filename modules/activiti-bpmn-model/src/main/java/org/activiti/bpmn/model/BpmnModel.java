@@ -239,6 +239,10 @@ public class BpmnModel {
 	  labelLocationMap.remove(key);
   }
 	
+	public Map<String, GraphicInfo> getLabelLocationMap() {
+    return labelLocationMap;
+  }
+	
 	public void addFlowGraphicInfoList(String key, List<GraphicInfo> graphicInfoList) {
 		flowLocationMap.put(key, graphicInfoList);
 	}

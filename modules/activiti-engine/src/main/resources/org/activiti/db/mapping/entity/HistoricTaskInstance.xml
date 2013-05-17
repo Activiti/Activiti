@@ -139,7 +139,7 @@
   
   <sql id="selectHistoricTaskInstancesByQueryCriteriaSql">
     from ${prefix}ACT_HI_TASKINST RES
-    <if test="processFinished || processUnfinished">
+    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null">
       inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
     </if>
     <if test="processDefinitionKey != null || processDefinitionName != null">
@@ -160,6 +160,9 @@
       </if>
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="processInstanceBusinessKey != null">
+        and HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}
       </if>
       <if test="taskDefinitionKey != null">
         and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
@@ -224,6 +227,16 @@
       <if test="dueAfter != null">
         and RES.DUE_DATE_ &gt; #{dueAfter}
       </if>
+      <if test="creationDate != null">
+        and RES.START_TIME_ = #{creationDate}
+      </if>
+      <if test="involvedUser != null">
+        and (
+          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
+          or RES.ASSIGNEE_ = #{involvedUser}
+          or RES.OWNER_ = #{involvedUser}
+          )
+      </if>
       <foreach collection="variables" index="index" item="var">
         and exists (
           select HD.ID_ 
@@ -269,7 +282,23 @@
   </sql>
 
   <select id="selectHistoricTaskInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+    	${limitBefore}
+    </if>
     ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+    	${limitAfter}
+    </if>
+  </select>
+  
+  <select id="selectHistoricTaskInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+        ${limitBeforeNativeQuery}
+  	</if>
+  	${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+  		${limitAfter}
+  	</if>
   </select>
 
   <select id="selectHistoricTaskInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">

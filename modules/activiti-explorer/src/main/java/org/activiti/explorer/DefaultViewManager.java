@@ -42,6 +42,9 @@ import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 import org.activiti.explorer.ui.process.ProcessMenuBar;
 import org.activiti.explorer.ui.process.simple.editor.SimpleTableEditor;
 import org.activiti.explorer.ui.profile.ProfilePopupWindow;
+import org.activiti.explorer.ui.reports.ReportsMenuBar;
+import org.activiti.explorer.ui.reports.RunReportsPage;
+import org.activiti.explorer.ui.reports.SavedReportsPage;
 import org.activiti.explorer.ui.task.ArchivedPage;
 import org.activiti.explorer.ui.task.InboxPage;
 import org.activiti.explorer.ui.task.InvolvedPage;
@@ -229,6 +232,26 @@ public class DefaultViewManager implements ViewManager, Serializable {
   
   public void showSimpleTableProcessEditor(String modelId, WorkflowDefinition workflowDefinition) {
     switchView(new SimpleTableEditor(modelId, workflowDefinition), ViewManager.MAIN_NAVIGATION_PROCESS, null);
+  }
+  
+  // Reporting
+  
+  public void showRunReportPage() {
+    switchView(new RunReportsPage(), ViewManager.MAIN_NAVIGATION_REPORT, ReportsMenuBar.ENTRY_RUN_REPORTS);
+  }
+  
+  public void showRunReportPage(String reportId) {
+    switchView(new RunReportsPage(reportId), ViewManager.MAIN_NAVIGATION_REPORT, ReportsMenuBar.ENTRY_RUN_REPORTS);
+  }
+
+
+  public void showSavedReportPage() {
+    switchView(new SavedReportsPage(), ViewManager.MAIN_NAVIGATION_REPORT, ReportsMenuBar.ENTRY_SAVED_REPORTS);
+  }
+  
+  @Override
+  public void showSavedReportPage(String reportId) {
+    switchView(new SavedReportsPage(reportId), ViewManager.MAIN_NAVIGATION_REPORT, ReportsMenuBar.ENTRY_SAVED_REPORTS);
   }
   
   // Management

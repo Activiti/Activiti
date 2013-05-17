@@ -64,7 +64,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   protected String name;
   protected String description;
-  protected int priority = Task.PRIORITY_NORMAL;
+  protected int priority = DEFAULT_PRIORITY;
   protected Date createTime; // The time when the task has been created
   protected Date dueDate;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
@@ -265,13 +265,13 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   // task assignment //////////////////////////////////////////////////////////
   
   public IdentityLinkEntity addIdentityLink(String userId, String groupId, String type) {
-    IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
+    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
     getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setTask(this);
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(type);
-    
+    identityLinkEntity.insert();
     if (userId != null && processInstanceId != null) {
       getProcessInstance().involveUser(userId, IdentityLinkType.PARTICIPANT);
     }
@@ -287,8 +287,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     for (IdentityLinkEntity identityLink: identityLinks) {
       Context
         .getCommandContext()
-        .getDbSqlSession()
-        .delete(identityLink);
+        .getIdentityLinkEntityManager()
+        .deleteIdentityLink(identityLink, true);
     }
   }
   
@@ -377,7 +377,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   
   public String toString() {
-    return "Task["+id+"]";
+    return "Task[id=" + id + ", name=" + name + "]";
   }
   
   // special setters //////////////////////////////////////////////////////////
@@ -418,9 +418,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if (assignee==null && this.assignee==null) {
       return;
     }
-//    if (assignee!=null && assignee.equals(this.assignee)) {
-//      return;
-//    }
     this.assignee = assignee;
 
     CommandContext commandContext = Context.getCommandContext();

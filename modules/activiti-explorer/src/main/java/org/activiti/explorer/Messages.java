@@ -280,6 +280,17 @@ public interface Messages {
   String PROCESS_DELETE_POPUP_MESSAGE = "process.delete.popup.message";
   String PROCESS_DELETE_POPUP_DELETE_BUTTON = "process.delete.popup.delete.button";
   
+  // Reporting menu
+  String REPORTING_MENU_RUN_REPORTS = "reporting.menu.run.reports";
+  String REPORTING_MENU_SAVED_REPORTS = "reporting.menu.saved.reports";
+  String REPORTING_SAVE_POPUP_CAPTION = "reporting.save.popup.caption";
+  String REPORTING_ERROR_NOT_ENOUGH_DATA = "reporting.error.not.enough.data";
+  String REPORTING_SAVE_POPUP_NAME = "reporting.save.popup.name";
+  String REPORTING_SAVE_POPUP_NAME_EMPTY = "reporting.save.popup.name.empty";
+  String REPORTING_SAVE_POPUP_NAME_EXISTS = "reporting.save.popup.name.exists";
+  String REPORTING_SAVE_POPUP_NAME_TOO_LONG = "reporting.save.popup.name.too.long";
+  String REPORTING_CREATE_TIME = "reporting.report.created";
+  
   // Management menu
   String MGMT_MENU_DATABASE = "management.menu.database";
   String MGMT_MENU_DEPLOYMENTS = "management.menu.deployments";
@@ -338,6 +349,11 @@ public interface Messages {
   String MODEL_IMPORT_INVALID_BPMN_EXPLANATION = "model.import.invalid.bpmn.explanation";
   
   String MODEL_ACTION = "model.action";
+  
+  String MODEL_DEPLOY_POPUP_CAPTION = "model.deploy.popup.caption";
+  String MODEL_DEPLOY_NAME = "model.deploy.name";
+  String MODEL_DEPLOY_GENERATE_REPORTS = "model.deploy.generate.reports";
+  String MODEL_DEPLOY_BUTTON_DEPLOY = "model.deploy.button.deploy";
   
   // Database page
   String DATABASE_NO_ROWS = "database.no.rows";
@@ -465,5 +481,7 @@ public interface Messages {
   String TIME_UNIT_YEAR = "time.unit.year";
   String TIME_UNIT_YEARS = "time.unit.years";
   String TIME_UNIT_JUST_NOW = "time.unit.just.now";
+  
+  String MONTH_PREFIX = "month.";
 
 }

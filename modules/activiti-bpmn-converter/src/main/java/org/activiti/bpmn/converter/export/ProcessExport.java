@@ -49,12 +49,12 @@ public class ProcessExport implements BpmnXMLConstants {
       xtw.writeEndElement();
     }
     
-    LaneExport.writeLanes(process, xtw);
-    
     boolean wroteListener = ActivitiListenerExport.writeListeners(process, false, xtw);
     if (wroteListener) {
       // closing extensions element
       xtw.writeEndElement();
     }
+    
+    LaneExport.writeLanes(process, xtw);
   }
 }

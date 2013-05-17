@@ -14,6 +14,7 @@ package org.activiti.engine;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -274,7 +275,16 @@ public interface TaskService {
    * @throws ActivitiObjectNotFoundException when the task doesn't exist.
    */
   void setPriority(String taskId, int priority);
-  
+
+  /**
+   * Changes the due date of the task
+   *
+   * @param taskId id of the task, cannot be null.
+   * @param dueDate the new due date for the task
+   * @throws ActivitiException when the task doesn't exist.
+   */
+  void setDueDate(String taskId, Date dueDate);
+
   /**
    * Returns a new {@link TaskQuery} that can be used to dynamically query tasks.
    */
@@ -305,9 +315,15 @@ public interface TaskService {
 
   /** get a variables and search in the task scope and if available also the execution scopes. */
   Object getVariable(String taskId, String variableName);
+  
+  /** checks whether or not the task has a variable defined with the given name, in the task scope and if available also the execution scopes. */
+  boolean hasVariable(String taskId, String variableName);
 
-  /** get a variables and only search in the task scope.  */
+  /** checks whether or not the task has a variable defined with the given name. */
   Object getVariableLocal(String taskId, String variableName);
+  
+  /** checks whether or not the task has a variable defined with the given name, local task scope only. */
+  boolean hasVariableLocal(String taskId, String variableName);
 
   /** get all variables and search in the task scope and if available also the execution scopes. 
    * If you have many variables and you only need a few, consider using {@link #getVariables(String, Collection)} 
@@ -350,13 +366,30 @@ public interface TaskService {
   void removeVariablesLocal(String taskId, Collection<String> variableNames);
 
   /** Add a comment to a task and/or process instance. */
-  void addComment(String taskId, String processInstanceId, String message);
+  Comment addComment(String taskId, String processInstanceId, String message);
+  
+  /** 
+   * Returns an individual comment with the given id. Returns null if no comment exists with the given id.
+   */
+  Comment getComment(String commentId);
+  
+  /** Removes all comments from the provided task and/or process instance*/
+  void deleteComments(String taskId, String processInstanceId);
+  
+  /** 
+   * Removes an individual comment with the given id.
+   * @throws ActivitiObjectNotFoundException when no comment exists with the given id. 
+   */
+  void deleteComment(String commentId);
 
   /** The comments related to the given task. */
   List<Comment> getTaskComments(String taskId);
 
   /** The all events related to the given task. */
   List<Event> getTaskEvents(String taskId);
+  
+  /** Returns an individual event with the given id. Returns null if no event exists with the given id. */
+  Event getEvent(String eventId);
 
   /** The comments related to the given process instance. */
   List<Comment> getProcessInstanceComments(String processInstanceId);

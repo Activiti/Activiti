@@ -75,11 +75,9 @@ var ProcessDiagramGenerator = {
 			var isInterrupting = activityImpl.getProperty("isInterrupting");
 			processDiagramCanvas.drawCatchingSignalEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), isInterrupting, null);
 			
-			var label = activityImpl.getProperty("name");
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+			if (label)
+			  processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// message catch
@@ -91,11 +89,9 @@ var ProcessDiagramGenerator = {
 			var isInterrupting = activityImpl.getProperty("isInterrupting");
 			processDiagramCanvas.drawCatchingMessageEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), isInterrupting, null);
 			
-			var label = activityImpl.getProperty("name");
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// multiple catch
@@ -107,11 +103,9 @@ var ProcessDiagramGenerator = {
 			var isInterrupting = activityImpl.getProperty("isInterrupting");
 			processDiagramCanvas.drawCatchingMultipleEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), isInterrupting, null);
 			
-			var label = activityImpl.getProperty("name");
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		
@@ -123,6 +117,10 @@ var ProcessDiagramGenerator = {
 			processDiagramCanvas.setConextObject(activityImpl);
 			
 			processDiagramCanvas.drawThrowingSignalEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), activityImpl.getProperty("name"));
+			
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// message throw
@@ -133,10 +131,9 @@ var ProcessDiagramGenerator = {
 			
 			processDiagramCanvas.drawThrowingMessageEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), activityImpl.getProperty("name"));
 			
-			var label = activityImpl.getProperty("name");
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// multiple throw
@@ -147,10 +144,9 @@ var ProcessDiagramGenerator = {
 			
 			processDiagramCanvas.drawThrowingMultipleEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), activityImpl.getProperty("name"));
 			
-			var label = activityImpl.getProperty("name");
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// none throw
@@ -160,6 +156,10 @@ var ProcessDiagramGenerator = {
 			processDiagramCanvas.setConextObject(activityImpl);
 			
 			processDiagramCanvas.drawThrowingNoneEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), activityImpl.getProperty("name"));
+			
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// end event
@@ -179,11 +179,9 @@ var ProcessDiagramGenerator = {
 			
 			processDiagramCanvas.drawErrorEndEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), null);
 			
-			var label = activityImpl.getProperty("name");
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// message end event
@@ -194,11 +192,9 @@ var ProcessDiagramGenerator = {
 			
 			processDiagramCanvas.drawMessageEndEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), null);
 			
-			var label = activityImpl.getProperty("name");
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// signal end event
@@ -209,11 +205,9 @@ var ProcessDiagramGenerator = {
 			
 			processDiagramCanvas.drawSignalEndEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), null);
 			
-			var label = activityImpl.getProperty("name");
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// multiple end event
@@ -224,11 +218,9 @@ var ProcessDiagramGenerator = {
 			
 			processDiagramCanvas.drawMultipleEndEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), null);
 			
-			var label = activityImpl.getProperty("name");
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// terminate end event
@@ -239,11 +231,9 @@ var ProcessDiagramGenerator = {
 			
 			processDiagramCanvas.drawTerminateEndEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
 			
-			var label = activityImpl.getProperty("name");
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// error start event
@@ -253,6 +243,10 @@ var ProcessDiagramGenerator = {
 			processDiagramCanvas.setConextObject(activityImpl);
 			
 			processDiagramCanvas.drawErrorStartEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), activityImpl.getProperty("name"));
+			
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// task
@@ -262,7 +256,7 @@ var ProcessDiagramGenerator = {
 			processDiagramCanvas.setConextObject(activityImpl);
 			
 			// TODO: 
-			console.error("task is not implemented yet");
+			//console.error("task is not implemented yet");
 			/*
 			var activityImpl = this;
 			processDiagramCanvas.drawTask(activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), thickBorder);
@@ -378,13 +372,9 @@ var ProcessDiagramGenerator = {
 			var isInterrupting = activityImpl.getProperty("isInterrupting");
 			processDiagramCanvas.drawCatchingTimerEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), isInterrupting, null);
 			
-			var label = activityImpl.getProperty("name");
-			
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
-			
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// Boundary catch error
@@ -396,12 +386,9 @@ var ProcessDiagramGenerator = {
 			var isInterrupting = activityImpl.getProperty("isInterrupting");
 			processDiagramCanvas.drawCatchingErrorEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), isInterrupting, null);
 			
-			var label = activityImpl.getProperty("name");
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
-			
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// Boundary signal event
@@ -413,11 +400,9 @@ var ProcessDiagramGenerator = {
 			var isInterrupting = activityImpl.getProperty("isInterrupting");
 			processDiagramCanvas.drawCatchingSignalEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), isInterrupting, null);
 			
-			var label = activityImpl.getProperty("name");
-			//processDiagramCanvas.drawLabel(label, activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), {wrapWidth: 80});
-			var boxX = activityImpl.getX() + .5 + activityImpl.getWidth()/2;
-			var boxY = activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING;
-			processDiagramCanvas.drawLabel(label, boxX, boxY);
+			var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+      if (label)
+        processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
 		
 		// timer catch event
@@ -464,6 +449,45 @@ var ProcessDiagramGenerator = {
 			processDiagramCanvas.setConextObject(activityImpl);
 			processDiagramCanvas.drawCollapsedCallActivity(activityImpl.getProperty("name"), activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight());
 		};
+		
+		$(document).ready(function(){
+		  // Protect right click on SVG elements (and on canvas too)
+		  document.body.oncontextmenu = function(event) {
+		    if (window.event.srcElement.tagName == "shape" || window.event.srcElement.tagName == "DIV" && window.event.srcElement.parentElement.className == "diagram") {
+
+		      // IE DIAGRAM CANVAS OR SHAPE DETECTED!
+		      return false;
+		    }
+		    return (!Object.isSVGElement(window.event.srcElement));
+		  };
+		});
+	},
+	
+	 getActivitiLabel:function(activityImpl){
+	   /*
+	     TODO: Label object should be in activityImpl and looks like:
+	     {
+	       x: 250,
+	       y: 250,
+	       width: 80,
+	       height: 30
+	     }
+	     And then:
+	     if (!activityImpl.label)
+	       return null;
+	     var label = activityImpl.label;
+	     label.text = activityImpl.name;
+	     return label;
+	   */
+
+	   // But now default label for all events is:
+	   return {
+	     text: activityImpl.getProperty("name"),
+	     x: activityImpl.getX() + .5 + activityImpl.getWidth()/2,
+	     y: activityImpl.getY() + .5 + activityImpl.getHeight() + ICON_PADDING,
+	     width: 100,
+	     height: 0
+	   };
 	},
 		
 	generateDiagram: function(processDefinitionDiagramLayout){
@@ -473,7 +497,7 @@ var ProcessDiagramGenerator = {
 		
 		if (this.getProcessDiagram(processDefinitionId) != undefined) {
 			// TODO: may be reset canvas if exists.. Or just show
-			console.log("ProcessDiagram '" + processDefinitionId + "' is already generated. Just show it.");
+			//console.log("ProcessDiagram '" + processDefinitionId + "' is already generated. Just show it.");
 			return;
 		}
 		var processDiagram = this.initProcessDiagramCanvas(processDefinitionDiagramLayout);
@@ -482,7 +506,7 @@ var ProcessDiagramGenerator = {
 		// Draw pool shape, if process is participant in collaboration
 		
 		if(processDefinitionDiagramLayout.participantProcess != undefined) {
-		  console.log("Draw pool shape");
+		  //console.log("Draw pool shape");
 		  var pProc = processDefinitionDiagramLayout.participantProcess;
 		  processDiagramCanvas.drawPoolOrLane(pProc.x, pProc.y, pProc.width, pProc.height, pProc.name);
 		}
@@ -504,7 +528,7 @@ var ProcessDiagramGenerator = {
 			cnt += sequenceFlows.length;
 		var step = (cnt>0)? 100/cnt : 0;
 		var progress = 0;
-		console.log("progress bar step: ", step);
+		//console.log("progress bar step: ", step);
 		
 		var task1 = new $.AsyncQueue();
 		
@@ -512,7 +536,7 @@ var ProcessDiagramGenerator = {
 			
 			task1.add(function (task1) {
 				if (!laneSets) laneSets = [];
-				console.log("> draw lane sets, count:", laneSets.length)
+				//console.log("> draw lane sets, count:", laneSets.length)
 			});
 			
 			for(var i in laneSets) {
@@ -523,7 +547,7 @@ var ProcessDiagramGenerator = {
 					progress += step;
 					pb1.set('value', parseInt(progress));
 					
-					console.log("--> laneId: " + lane.name + ", name: " + lane.name);
+					//console.log("--> laneId: " + lane.name + ", name: " + lane.name);
 					
 					processDiagramCanvas.drawPoolOrLane(lane.x, lane.y, lane.width, lane.height, lane.name);
 				});
@@ -533,7 +557,7 @@ var ProcessDiagramGenerator = {
 			
 			task1.add(function (task1) {
 				if (!activities) activities = [];
-				console.log("> draw activities, count:", activities.length)
+				//console.log("> draw activities, count:", activities.length)
 			});
 			
 			var activitiesLength = activities.length;
@@ -542,7 +566,7 @@ var ProcessDiagramGenerator = {
 				activitiesLength --;
 				progress += step;
 				pb1.set('value', parseInt(progress));
-				console.log(activitiesLength, "--> activityId: " + activity.getId() + ", name: " + activity.getProperty("name"));
+				//console.log(activitiesLength, "--> activityId: " + activity.getId() + ", name: " + activity.getProperty("name"));
 				ProcessDiagramGenerator.drawActivity(processDiagramCanvas, activity);
 			});
 			
@@ -550,7 +574,7 @@ var ProcessDiagramGenerator = {
 			
 			task1.add(function (task1) {
 				if (!sequenceFlows) sequenceFlows = [];
-				console.log("> draw sequence flows, count:", sequenceFlows.length)
+				//console.log("> draw sequence flows, count:", sequenceFlows.length)
 			});
 			
 			var flowsLength = sequenceFlows.length;
@@ -579,7 +603,7 @@ var ProcessDiagramGenerator = {
 				progress += step;
 				pb1.set('value', parseInt(progress));
 				
-				console.log(flowsLength, "--> flow: " + flow.flow);
+				//console.log(flowsLength, "--> flow: " + flow.flow);
 				
 				processDiagramCanvas.setConextObject(flow);
 				processDiagramCanvas.drawSequenceflow(waypoints, isConditional, isDefault, isHighLighted);
@@ -588,9 +612,9 @@ var ProcessDiagramGenerator = {
 			task1.onComplete(function(){
 				if (progress<100)
 					pb1.set('value', 100);
-				console.log("COMPLETE!!!");
+				//console.log("COMPLETE!!!");
 					
-				console.timeEnd('generateDiagram');
+				//console.timeEnd('generateDiagram');
 			});
 			
 			task1.run();
@@ -712,7 +736,7 @@ var ProcessDiagramGenerator = {
 		if (drawInstruction != null) {	
 			drawInstruction.apply({processDiagramCanvas:processDiagramCanvas, activity:activity});
 		} else {
-			console.error("no drawInstruction for " + type + ": ", activity);
+			//console.error("no drawInstruction for " + type + ": ", activity);
 		}
 		
 		// Actually draw the markers
@@ -735,13 +759,13 @@ var ProcessDiagramGenerator = {
 	
 	setHighLights: function(highLights){
 		if (highLights.processDefinitionId == undefined) {
-			console.error("Process instance " + highLights.processInstanceId + " doesn't exist");
+			//console.error("Process instance " + highLights.processInstanceId + " doesn't exist");
 			return;
 		}
 		
 		var processDiagram = this.getProcessDiagram(highLights.processDefinitionId);
 		if (processDiagram == undefined) {
-			console.error("Process diagram " + highLights.processDefinitionId + " not found");
+			//console.error("Process diagram " + highLights.processDefinitionId + " not found");
 			return;
 		}
 		
@@ -822,7 +846,7 @@ var ProcessDiagramGenerator = {
 		var processDiagram = ProcessDiagramGenerator.getProcessDiagram(processDefinitionId);
 
 		if (processDiagram != undefined && processDiagram != null) {
-			console.log("Process diagram " + processDefinitionId + " is already loaded");
+			//console.log("Process diagram " + processDefinitionId + " is already loaded");
 			//return;
 			
 			var diagram = document.getElementById(processDefinitionId);
@@ -835,7 +859,7 @@ var ProcessDiagramGenerator = {
 			return;
 		}
 
-		console.time('loadDiagram');
+		//console.time('loadDiagram');
 		
 		// Load processDefinition
 		
@@ -844,10 +868,10 @@ var ProcessDiagramGenerator = {
 	_generateDiagram: function() {
 		var processDefinitionDiagramLayout = this.processDefinitionDiagramLayout;
 		
-		console.log("process-definition-diagram-layout["+processDefinitionDiagramLayout.processDefinition.id+"]: ", processDefinitionDiagramLayout);
+		//console.log("process-definition-diagram-layout["+processDefinitionDiagramLayout.processDefinition.id+"]: ", processDefinitionDiagramLayout);
 		
-		console.timeEnd('loadDiagram');
-		console.time('generateDiagram');
+		//console.timeEnd('loadDiagram');
+		//console.time('generateDiagram');
 		
 		pb1.set('value', 0);
 		ProcessDiagramGenerator.generateDiagram(processDefinitionDiagramLayout);
@@ -862,20 +886,20 @@ var ProcessDiagramGenerator = {
 			type: 'POST',
 			dataType: 'json',
 			cache: false,
-			async: false,
+			async: false
 		}).done(function(data) { 
-			console.log("ajax returned data");
+			//console.log("ajax returned data");
 			//console.log("ajax returned data:", data);
 			processDefinition = data;
 			if (!processDefinition) {
-				console.error("Process definition '" + processDefinitionKey + "' not found");
+				//console.error("Process definition '" + processDefinitionKey + "' not found");
 			}
 		}).fail(function(jqXHR, textStatus){
-			console.error('Get diagram layout['+processDefinitionKey+'] failure: ', textStatus, jqXHR);
+			//console.error('Get diagram layout['+processDefinitionKey+'] failure: ', textStatus, jqXHR);
 		});
 		
 		if (processDefinition) {
-			console.log("Get process definition by key '" + processDefinitionKey + "': ", processDefinition.id);
+			//console.log("Get process definition by key '" + processDefinitionKey + "': ", processDefinition.id);
 			return processDefinition;
 		} else {
 			return null;
@@ -945,7 +969,7 @@ var ProcessDiagramGenerator = {
 		var li = $(this),
 			id = li.attr("id"),
 			processDefinitionId = li.attr("processDefinitionId");
-		console.warn("_breadCrumbsItemClick: ", id, ", processDefinitionId: ", processDefinitionId);
+		//console.warn("_breadCrumbsItemClick: ", id, ", processDefinitionId: ", processDefinitionId);
 		
 		var ul = ProcessDiagramGenerator.diagramBreadCrumbs.one("ul");
 		ul.find("li").removeClass("selected");
@@ -1019,6 +1043,12 @@ var ProcessDiagramGenerator = {
 		var tpl = Lang.sub(template, values);
 		//console.log("info: ", tpl);
 		diagramInfo.html(tpl);
+	},
+	
+	hideInfo: function(){
+	  var diagramInfo = $("#" + this.options.diagramInfoId);
+	  if (!diagramInfo) return;
+	  diagramInfo.html("");
 	},
 	
 	vvoid: function(){}

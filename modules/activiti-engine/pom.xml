@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.12-SNAPSHOT</version>
+    <version>5.13-SNAPSHOT</version>
   </parent>
 
   <dependencies>
@@ -350,6 +350,44 @@
                   <tasks>
                     <echo message="dropping schema in ${database}" />
                     <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>databasemssql</id>
+      <activation>
+        <property>
+          <name>databasemssql</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <!--
+              only worked with this version, there might be a bug with antrun
+              see http://jira.codehaus.org/browse/MANTRUN-109
+            -->
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="updating activiti configuration to db ${databasemssql}" />
+                    <copy file="${basedir}/../../qa/db/mssql/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${databasemssql}.properties" />
+                    </copy>
                   </tasks>
                 </configuration>
               </execution>
@@ -769,14 +807,14 @@
       <id>mssql</id>
       <activation>
         <property>
-          <name>database</name>
+          <name>databasemssql</name>
           <value>mssql</value>
         </property>
       </activation>
       <dependencies>
         <dependency>
-          <groupId>com.microsoft.sqlserver</groupId>
-          <artifactId>sqljdbc4</artifactId>
+          <groupId>net.sourceforge.jtds</groupId>
+          <artifactId>jtds</artifactId>
           <scope>test</scope>
         </dependency>
       </dependencies>

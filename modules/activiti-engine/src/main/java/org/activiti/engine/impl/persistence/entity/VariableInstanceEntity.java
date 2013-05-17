@@ -103,6 +103,9 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     if (textValue != null) {
       persistentState.put("textValue", textValue);
     }
+    if (textValue2 != null) {
+      persistentState.put("textValue2", textValue2);
+    }
     if (byteArrayValueId != null) {
       persistentState.put("byteArrayValueId", byteArrayValueId);
     }
@@ -161,7 +164,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
         .deleteByteArrayById(byteArrayValueId);
     }
     if (bytes!=null) {
-      byteArrayValue = new ByteArrayEntity(bytes);
+      byteArrayValue = new ByteArrayEntity("var-" + name, bytes);
       Context
         .getCommandContext()
         .getDbSqlSession()
@@ -268,5 +271,15 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   }
   public void setTaskId(String taskId) {
     this.taskId = taskId;
+  }
+
+  @Override
+  public String toString() {
+    return "VariableInstanceEntity[" + 
+        "id=" + id + 
+        ", byteArrayValueId=" + byteArrayValueId +  
+        ", name=" + name + 
+        ", type=" + (type != null ? type.getTypeName() : "null") + 
+        "]";
   }
 }

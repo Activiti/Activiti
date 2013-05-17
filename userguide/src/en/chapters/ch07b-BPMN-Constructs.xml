@@ -910,8 +910,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		      When process execution arrives in an <emphasis role="bold">error end event</emphasis>, 
 		      the current path of execution is ended and an error is thrown. This error
 		      can <link linkend="bpmnBoundaryErrorEvent">caught by a matching intermediate boundary error event</link>.
-		      In case no matching boundary error event is found, the execution semantics default to the 
-		      <link linkend="bpmnNoneEndEvent">none end event</link> semantics.
+		      In case no matching boundary error event is found, an exception will be thrown.
 		    </para>
 		  	  
 		  </section>
@@ -3055,6 +3054,17 @@ public class FakeLdapService {
 		      the syntax is pretty similar to that of Java.
 		    </para>
 		    
+		    <para>
+		      Do note that the Grovy scripting engine is bundled with the groovy-all jar. Before version 2.0,
+		      the scripting engine was part of the regular Groovy jar. As such, one must now add following dependency:
+		      <programlisting>
+&lt;dependency&gt;
+      &lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
+      &lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
+      &lt;version&gt;2.x.x&lt;version&gt;
+&lt;/dependency&gt;</programlisting>
+		    </para>
+		    
 		  </section>
 		  
 		  <section id="bpmnScriptTaskVariables">
@@ -3075,36 +3085,32 @@ public class FakeLdapService {
 		    </para>
 		    
 		    <para>
-		      It's also possible to set process variables in a script, simply by using an assignment
-		      statement. In the example above, the <emphasis>'sum'</emphasis> variable will be
-		      stored as a process variable after the script task has been executed. To avoid 
-		      this behavior, script-local variables can be used. In Groovy, the keyword 
-		      <emphasis>'def'</emphasis> must then be used: <emphasis>'def sum = 0'</emphasis>.
-		      In that case, no process variable will be stored.
+		      It's also possible to set process variables in a script, simply by calling 
+		      <emphasis>execution.setVariable("variableName", variableValue)</emphasis>.
+		      By default, no variables are stored automatically (<emphasis role="bold">Note: before Activiti 5.12 this was the case!</emphasis>).
+		      It is possible to automatically store any variable defined in the script
+		      (eg. <emphasis>sum</emphasis> in the example above) by setting the property
+		      <literal>autoStoreVariables</literal> on the <literal>scriptTask</literal> to <literal>true</literal>.
+		      However, <emphasis role="bold">the best practice is not to do this and use an explicit execution.setVariable() call</emphasis>,
+		      as on some recent versions of the JDK auto storing of variables does not work for some scripting languages.
+		      See <ulink url="http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/">this link</ulink> for more details.
 		    </para>
 		    
 		    <para>
-		      However, some languages (for example JavaScript) do not know such capabilities for script-local
-		      variables. Use the <literal>autoStoreVariables</literal> argument on the script task definition:
 <programlisting>
-&lt;scriptTask id=&quot;scrip&quot;" scriptFormat=&quot;JavaScript&quot; activiti:autoStoreVariables=&quot;false&quot;>
+&lt;scriptTask id=&quot;script&quot; scriptFormat=&quot;JavaScript&quot; activiti:autoStoreVariables=&quot;false&quot;>
 </programlisting>
-              The default of this parameter is <literal>true</literal>, meaning that if the parameter is omitted
-              from the script task definition, all the declared variables will be stored as process variables.
-              If set to <literal>false</literal>, any variable can be declared without it being stored
-              as process variable.
+              The default of this parameter is <literal>false</literal>, meaning that if the parameter is omitted
+              from the script task definition, all the declared variables will only exist during the duration of the script.
 		    </para>
 		    
 		    <para>
-		      An alternative is to set variables through the current execution, which is available
-		      as a reserved variable called <emphasis>'execution'</emphasis>.
+		      Example on how to set a variable in a script:
 <programlisting>
 &lt;script&gt;
     def scriptVar = &quot;test123&quot;
     execution.setVariable(&quot;myVar&quot;, scriptVar)
 &lt;/script&gt;</programlisting>
-              As of Activiti 5.12, using this approach in combination with using <literal>activiti:autoStoreVariable=&quot;false&quot;</literal>
-              is the prefered way, as it is the way of least surprises.
 		    </para>
 		    
 		    <para>

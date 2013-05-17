@@ -1,0 +1,117 @@
+.general-header {
+    margin: 0;
+    background-color: #444444;
+}
+
+.nav.general-header {
+    margin: 0;
+}
+
+.general-header a {
+    margin-left: 30px;
+    padding-left: 0;
+    color: #ffffff;
+}
+
+.nav-pills > .active > a, .nav-pills > .active > a:hover, .nav-pills > .active > a:focus {
+    background-color: #444444;
+    color: #4474BD;
+}
+
+.panel-header {
+    background-color: lightgrey;
+    height: 40px;
+}
+
+.panel-header-text {
+    color: #7c8280;
+    font-size: smaller;
+    display: inline-block;
+    padding: 2px;
+}
+
+.task-panel {
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.09);
+    -moz-box-shadow: 0 0 20px rgba(0,0,0,0.09);
+    margin-top: 20px;
+    max-width: 500px;
+    min-height: 600px;
+    max-height: 600px;
+    overflow: hidden;
+}
+
+#tasks {
+    border-bottom: 1px solid lightgrey;
+    overflow: auto;
+    max-height: 460px;
+    min-height: 460px;
+}
+
+.task {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+    height: 30px;
+    line-height: 30px;
+    padding: 10px;
+}
+
+.task:hover {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid lightgrey;
+    border-top: 1px solid lightgrey;
+}
+
+#task-search {
+    float: left;
+    margin-left: 10px;
+    margin-top: 5px;
+}
+
+#task-paging {
+    float:right;
+    height: 24px;
+    margin: 7px 15px 0 0;
+    width: 60px;
+}
+
+.task-counts {
+    background-color: #F0F0F0;
+    border-bottom: 1px solid lightgrey;
+    color: dimgray;
+    font-size: smaller;
+    text-align: center;
+}
+
+#task-pagination li {
+    cursor: pointer;
+}
+
+#panel-header-section-group {
+    background:url('../img/vertical-separator.png') no-repeat center left;
+    display: inline-block;
+    float: right;
+    margin-right: 10px;
+    padding-left: 10px;
+}
+
+#task-group-select {
+    height: 24px;
+    margin-top: 7px;
+    width: 130px;
+}
+
+.task-claim-button {
+    float: right;
+    margin-right: 10px;
+    visibility: hidden;
+}
+
+.task:hover .task-claim-button {
+    visibility: visible;
+}

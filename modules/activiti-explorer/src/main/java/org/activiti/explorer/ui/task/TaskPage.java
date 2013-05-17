@@ -93,7 +93,7 @@ public abstract class TaskPage extends AbstractTablePage {
     taskTable.addListener(getListSelectionListener());
     
     this.lazyLoadingQuery = createLazyLoadingQuery();
-    this.taskListContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
+    this.taskListContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
     taskTable.setContainerDataSource(taskListContainer);
     
     // Create column header
@@ -150,6 +150,16 @@ public abstract class TaskPage extends AbstractTablePage {
   public Component getSearchComponent() {
     return new TaskListHeader();
   } 
+  
+  @Override
+  public void refreshSelectNext() {
+    
+    // Selects new element in the table
+    super.refreshSelectNext();
+    
+    // Update the counts in the header
+    addMenuBar();
+  }
   
   protected abstract LazyLoadingQuery createLazyLoadingQuery();
   

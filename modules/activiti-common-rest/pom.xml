@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.12-SNAPSHOT</version>
+    <version>5.13-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -81,7 +81,7 @@
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
 	  </dependency>
-   
+    
   </dependencies>
   
   <profiles>

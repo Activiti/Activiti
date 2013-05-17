@@ -14,6 +14,7 @@ package org.activiti.editor.ui;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
@@ -22,9 +23,11 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
+import org.activiti.explorer.reporting.ReportingUtil;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.custom.DetailPanel;
 import org.activiti.explorer.ui.form.FormPropertiesForm;
@@ -49,6 +52,8 @@ import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.AbstractSelect.Filtering;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
@@ -108,6 +113,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     detailPanelLayout = new VerticalLayout();
     detailPanelLayout.setWidth(100, UNITS_PERCENTAGE);
     detailPanelLayout.setMargin(true);
+    detailPanelLayout.setSpacing(true);
     setDetailContainer(detailPanelLayout);
     
     // All details about the process definition
@@ -229,14 +235,24 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
           DownloadStream ds = null;
           try {
             
-            BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
             JsonNode editorNode = new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
-            BpmnModel bpmnModel = jsonConverter.convertToBpmnModel(editorNode);
-            BpmnXMLConverter xmlConverter = new BpmnXMLConverter();
-            byte[] bpmnBytes = xmlConverter.convertToXML(bpmnModel);
-            
+            byte[] bpmnBytes = null;
+            String filename = null;
+            if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(modelData.getCategory())) {
+              JsonConverter jsonConverter = new JsonConverter();
+              WorkflowDefinition workflowDefinition = jsonConverter.convertFromJson(editorNode);
+              filename = workflowDefinition.getName();
+              WorkflowDefinitionConversion conversion = 
+                      ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
+              bpmnBytes = conversion.getbpm20Xml().getBytes("utf-8");
+            } else {
+              BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
+              BpmnModel model = jsonConverter.convertToBpmnModel(editorNode);
+              filename = model.getMainProcess().getId() + ".bpmn20.xml";
+              bpmnBytes = new BpmnXMLConverter().convertToXML(model);
+            }
+           
             ByteArrayInputStream in = new ByteArrayInputStream(bpmnBytes);
-            String filename = bpmnModel.getMainProcess().getId() + ".bpmn20.xml";
             ds = new DownloadStream(in, "application/xml", filename);
             // Need a file download POPUP
             ds.setParameter("Content-Disposition", "attachment; filename=" + filename);
@@ -254,30 +270,87 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   protected void deployModel() {
     try {
       
-      ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
-      byte[] bpmnBytes = null;
+      final ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
       
       if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(modelData.getCategory())) {
-        JsonConverter jsonConverter = new JsonConverter();
-        WorkflowDefinition workflowDefinition = jsonConverter.convertFromJson(modelNode);
-        
-        WorkflowDefinitionConversion conversion = 
-                ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
-        bpmnBytes = conversion.getbpm20Xml().getBytes("utf-8");
+        deploySimpleTableEditorModel(modelNode);
       } else {
-        BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
-        bpmnBytes = new BpmnXMLConverter().convertToXML(model);
+        deployModelerModel(modelNode);
       }
-
-      String processName = modelData.getName() + ".bpmn20.xml";
-      Deployment deployment = repositoryService.createDeployment().name(modelData.getName()).addString(processName, new String(bpmnBytes)).deploy();
-
-      ExplorerApp.get().getViewManager().showDeploymentPage(deployment.getId());
 
     } catch (Exception e) {
       e.printStackTrace();
       ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_TOXML_FAILED, e);
     }
+  }
+
+  protected void deploySimpleTableEditorModel(final ObjectNode modelNode) {
+    
+    final DeployModelPopupWindow deployModelPopupWindow = new DeployModelPopupWindow(modelData);
+    
+    deployModelPopupWindow.getDeployButton().addListener(new ClickListener() {
+      
+      private static final long serialVersionUID = 1L;
+
+      public void buttonClick(ClickEvent event) {
+        
+        // Convert to simple workflow definition
+        JsonConverter jsonConverter = new JsonConverter();
+        WorkflowDefinition workflowDefinition = jsonConverter.convertFromJson(modelNode);
+
+        // Update model name
+        modelData.setName(deployModelPopupWindow.getProcessName());
+        workflowDefinition.setName(deployModelPopupWindow.getProcessName());
+        
+        WorkflowDefinitionConversion conversion = 
+                ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
+        conversion.convert();
+        
+        // Deploy to database
+        byte[] bpmnBytes = null;
+        try {
+          bpmnBytes = conversion.getbpm20Xml().getBytes("utf-8");
+          
+          String processName = modelData.getName() + ".bpmn20.xml";
+          Deployment deployment = repositoryService.createDeployment()
+                  .name(modelData.getName())
+                  .addString(processName, new String(bpmnBytes))
+                  .deploy();
+          
+          // Generate reports
+          if (deployModelPopupWindow.isGenerateReports()) {
+            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                    .deploymentId(deployment.getId()).singleResult();
+            ReportingUtil.generateTaskDurationReport(processDefinition.getId());
+          }
+
+          // Close popup and show new deployment
+          deployModelPopupWindow.closePopupWindow();
+          ExplorerApp.get().getViewManager().showDeploymentPage(deployment.getId());
+          
+        } catch (UnsupportedEncodingException e) {
+          ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_TOXML_FAILED, e);
+          deployModelPopupWindow.closePopupWindow();
+        }
+      
+      }
+      
+    });
+    
+    deployModelPopupWindow.showPopupWindow();
+  }
+  
+  protected void deployModelerModel(final ObjectNode modelNode) {
+    BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+    byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
+    
+    String processName = modelData.getName() + ".bpmn20.xml";
+    Deployment deployment = repositoryService.createDeployment()
+            .name(modelData.getName())
+            .addString(processName, new String(bpmnBytes))
+            .deploy();
+
+    ExplorerApp.get().getViewManager().showDeploymentPage(deployment.getId());
   }
 
 }

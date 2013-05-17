@@ -35,6 +35,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected String processDefinitionKey;
   protected String processDefinitionName;
   protected String processInstanceId;
+  protected String processInstanceBusinessKey;
   protected String executionId;
   protected String taskId;
   protected String taskName;
@@ -49,6 +50,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected String taskAssignee;
   protected String taskAssigneeLike;
   protected String taskDefinitionKey;
+  protected String involvedUser;
   protected Integer taskPriority;
   protected boolean finished;
   protected boolean unfinished;
@@ -58,6 +60,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected Date dueDate;
   protected Date dueAfter;
   protected Date dueBefore;
+  protected Date creationDate;
 
   public HistoricTaskInstanceQueryImpl() {
   }
@@ -87,6 +90,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
 
   public HistoricTaskInstanceQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
+    this.processInstanceBusinessKey = processInstanceBusinessKey;
     return this;
   }
 
@@ -230,6 +238,17 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     this.dueBefore = dueBefore;
     return this;
   }
+  
+  public HistoricTaskInstanceQuery taskCreatedOn(Date creationDate) {
+    this.creationDate = creationDate;
+    return this;
+  }
+  
+  @Override
+  public HistoricTaskInstanceQuery taskInvolvedUser(String involvedUser) {
+    this.involvedUser = involvedUser;
+    return this;
+  }
 
   // ordering /////////////////////////////////////////////////////////////////
 
@@ -324,6 +343,9 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+  public String getProcessInstanceBusinessKey() {
+    return processInstanceBusinessKey;
+  }
   public String getExecutionId() {
     return executionId;
   }
@@ -377,5 +399,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   }
   public String getTaskParentTaskId() {
     return taskParentTaskId;
+  }
+  public Date getCreationDate() {
+    return creationDate;
+  }
+  public String getInvolvedUser() {
+    return involvedUser;
   }
 }

@@ -34,8 +34,45 @@
     <a href="http://activiti.org/community.html">Activiti Community page</a>
 
   <h1>Activiti Release Notes</h1>
+  
+   <h3>Release Notes - Activiti - Version 5.12.1</h3>
+   
+   <h4>Highlights</h4>
+   <ul>
+    <li>Fix for ACT-1591, with referential contraint error (<a href="https://jira.codehaus.org/browse/ACT-1591">JIRA link</a>)</li>
+    <li>Resolved javascript JDK 7 issue (<a href="http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/">link to blog post</a>)</li>
+    <li>Small Explorer and Modeler bug fixes</li>
+    <li>Other small fixes</li>
+   </ul>
+   
+   <h4>Important upgrade notes when using script tasks and auto storage of variables</h4>
+   
+   <p>
+    Due to recent changes to the JDK (removing Serializable from sun.org.mozilla.javascript.internal.Undefined), the auto storing of variables is not possible anymore
+    with the built-in Javascript scriping engine. See <a href="http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/">this link</a>
+    for more information. Each script variable that needs to be stored as process variable needs to be explicitely 
+    stored by calling <i>execution.setVariable("variableName", variableValue)</i>. 
+   </p>
+   
+   <p>
+    For backwards compatibility reasons, the old behavior can still be used by setting the <i>autoStoreVariables</i> property
+    on a <i>scriptTask</i> to true. As written in the linked articale from above, this might not work when using a recent JDK version
+    and the built-in Javascript scripting engine.
+   </p>
 
   <h3>Release Notes - Activiti - Version 5.12</h3>
+  
+  <h4>Highlights</h4>
+  <ul>
+    <li>Added new javascript-based diagram viewer to Explorer (thanks to Dmitry Farafonov)</li>
+    <li>Unified the BPMN parser and model for the Engine, Modeler and Designer</li>
+    <li>Added Activiti Kickstart to the Explorer to quickly create processes without deep BPMN knowledge</li>
+    <li>Simplified and extended the Activiti Camel module (thanks to Ryan Johnston)</li>
+    <li>Added first stage of reporting functionality to the Explorer via "reporting processes"</li>
+    <li>Added auto-layout module for Kickstart and BPMN import in Modeler (TBD) and Designer</li>
+    <li>Added script task and execution listeners</li>
+    <li>Lots of bug fixes</li>
+  </ul>
   
   <h4>Important upgrade note</h4>
   
@@ -44,11 +81,171 @@
   </p>
     
   <p>  
-    Yes, we know many people relied on its capabilities, altough it was a class in an internal package. But do not worry:
+    Yes, we know many people relied on its capabilities, although it was a class in an internal package. But do not worry:
     we have introduced a replacement in the <b>api package</b> that offers similar (and even more powerful) functionality.
     The code is not backwards compatible, but the required changes should be minimal (eg the XML element is replaced by a
     Java pojo representation of the element). Read more about it in the new 'Advanced' chapter of the userguide.
   </p>
+  
+  <h4>Bug fixes and various smaller improvements</h4>
+  <p>Check out the <a href="https://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=12091&version=18879">Release notes</a> for more details</p>
+    
+<h2>        Sub-task
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1565'>ACT-1565</a>] -         activiti-bpmn-converter BaseBpmnXMLConverter ignores defaultFlow for Gateways
+</li>
+</ul>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-863'>ACT-863</a>] -         HistoricVariableUpdate#getValue() throws NPE for JPA entities
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-995'>ACT-995</a>] -         Not possible to update/overwrite a JPA entity in workflow
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1025'>ACT-1025</a>] -         Methods deleteDeployment(String deploymentId, ...) and deleteDeploymentCascade(String deploymentId, ...) do not throw an exception with passed a non-existent deployementId
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1026'>ACT-1026</a>] -         Inclusive gateway isn&#39;t properly joining sequence flows coming from call activities
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1040'>ACT-1040</a>] -         TaskManager.findTaskById does not utilize session cache
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1054'>ACT-1054</a>] -         Unable to complete user task coming from parallel gateway
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1196'>ACT-1196</a>] -         Invalid login screen localization on non-utf-8 based hosts
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1204'>ACT-1204</a>] -         InclusiveGateway with two subprocesses does not join correctly
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1317'>ACT-1317</a>] -         Wrong task event generated when setting assignee to null
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1345'>ACT-1345</a>] -         method name orderByHistoricActivityInstanceStartTime in class HistoricTaskInstanceQuery should be orderByHistoricTaskInstanceStartTime
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1372'>ACT-1372</a>] -         User Task with form: form will be not displayed if the value expression in next line used
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1377'>ACT-1377</a>] -         removeVariables() in VariableScopeImpl does not consider parent scopes
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1414'>ACT-1414</a>] -         ClassCastException when completing a referenced sub process after Boundary Event with cancelActivity = false
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1417'>ACT-1417</a>] -         Fix Explorer session serialization
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1418'>ACT-1418</a>] -         NullPointerException if throw a not catched exception/error
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1470'>ACT-1470</a>] -         Import definition type fails with CxfWSDLImporter when using complex data types
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1477'>ACT-1477</a>] -         In user guide error api for form property from history detail
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1479'>ACT-1479</a>] -         activiti-engine has invalid symbolic name
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1486'>ACT-1486</a>] -         The ability to add an attachment to a process instance is broken
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1494'>ACT-1494</a>] -         Get garbled string when render form in chines
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1499'>ACT-1499</a>] -         Form properties not initialized when null or empty
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1502'>ACT-1502</a>] -         Custom font name in the engine for diagram
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1504'>ACT-1504</a>] -         Cannot create new user and membership in JavaDelegate using identityService
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1512'>ACT-1512</a>] -         HistoricVariableUpdates no longer returned when using postgres
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1516'>ACT-1516</a>] -         BPMN Converter: Adding a listener to a script task produces erroneous XML content.
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1524'>ACT-1524</a>] -         Variable update detection does not work for byte[]
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1528'>ACT-1528</a>] -         All variables are deleted after delete a history processinstance
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1533'>ACT-1533</a>] -         Undeployment of old process versions deletes jobs for TimerStartEvents
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1540'>ACT-1540</a>] -         HistoricVariableInstance does not expose taskId, nor does HistoricVariableQuery expose querying based on taskId
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1546'>ACT-1546</a>] -         Impossible to assign default flow on exclusive gateways
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1553'>ACT-1553</a>] -         Refactor BpmnParse to use separate handlers for each bpmn element
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1555'>ACT-1555</a>] -         ProgrammaticBeanLookup doesn&#39;t regard alternatives
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1556'>ACT-1556</a>] -         BpmnDeployer creates duplicates identity links when deploying processes with initiation authorization active
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1579'>ACT-1579</a>] -         Process engine can be DoS&#39;ed when deploying unsafe XML
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1586'>ACT-1586</a>] -         ExecutionQuery returns wrong results when using multi instance on a receive task
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1596'>ACT-1596</a>] -         Not generated boundary event in diagram created by RaphaÃ«l
+</li>
+</ul>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1274'>ACT-1274</a>] -         Remove SEVERE level logging for expected exception in taskservice.claim()
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1324'>ACT-1324</a>] -         Add specific exceptions for common error scenarios (TaskNotFoundException if a task if not found etc)
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1463'>ACT-1463</a>] -         Review rest-response codes and error-body response
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1498'>ACT-1498</a>] -         IntermediateCatchEventActivitiBehaviour name does not match other ActivityBehavior&#39;s
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1505'>ACT-1505</a>] -         Should throw an exception if the picture is not generated
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1561'>ACT-1561</a>] -         Add the ability to register a TaskListener for all event types
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1568'>ACT-1568</a>] -         Query API documentation out of sync with codebase
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-432'>ACT-432</a>] -         Terminate end event
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1164'>ACT-1164</a>] -         Add possibility to hook in own implementation of BusinessRuleTask
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1493'>ACT-1493</a>] -         Make DeploymentCache pluggable and allow to set cache limit
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1511'>ACT-1511</a>] -         Extract ActivityBehavior and Task/ExecutionListener instantiation in a pluggable factory
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1518'>ACT-1518</a>] -         Add generic simple workflow creator API to activiti
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1537'>ACT-1537</a>] -         Allow to configure whether script variables are stored as process variables
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1569'>ACT-1569</a>] -         Introduce process instance scope for signal events
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1571'>ACT-1571</a>] -         Auto layout for BPMN 2.0 processes
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1572'>ACT-1572</a>] -         Designer should generate XML with delegationExpression
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1574'>ACT-1574</a>] -         Loop type for subprocess in Modeler
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1580'>ACT-1580</a>] -         Add method to retrieve BpmnModel (Pojo version of BPMN 2.0 process) to RepositoryService
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1588'>ACT-1588</a>] -         Native query support paging
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1593'>ACT-1593</a>] -         Basic reporting for Explorer
+</li>
+</ul>
+        
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1031'>ACT-1031</a>] -         Rename JobQuery methods
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1397'>ACT-1397</a>] -         Remove Account related service operations from IdentityService
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1465'>ACT-1465</a>] -         Document services in userguide
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1538'>ACT-1538</a>] -         Move BpmnParseListener to public API package
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1581'>ACT-1581</a>] -         Refactor ProcessDiagramGenerator to take BpmnModel as input instead of ProcessDefinitionEntity
+</li>
+</ul>
+        
+<h2>        Wish
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1362'>ACT-1362</a>] -         Extend JPAEntityMappings to support UUID as Id
+</li>
+</ul>
+
 
   <h3>Release Notes - Activiti - Version 5.11</h3>
 

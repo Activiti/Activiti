@@ -75,7 +75,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
       try {
         
-        BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getId());
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
         InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(bpmnModel, "png", 
                 runtimeService.getActiveActivityIds(processInstance.getId()));
               

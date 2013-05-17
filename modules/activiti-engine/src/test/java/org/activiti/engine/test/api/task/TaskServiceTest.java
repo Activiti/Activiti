@@ -18,10 +18,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -146,20 +144,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       assertEquals("look at this \n       isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg kajsh dfuieqpgkja rzvkfnjviuqerhogiuvysbegkjz lkhf ais liasduh flaisduh ajiasudh vaisudhv nsfd", comment.getFullMessage());
       assertNotNull(comment.getTime());
 
-      taskService.addComment(taskId, "pid", "one");
-      taskService.addComment(taskId, "pid", "two");
-      
-      Set<String> expectedComments = new HashSet<String>();
-      expectedComments.add("one");
-      expectedComments.add("two");
-      
-      Set<String> comments = new HashSet<String>();
-      for (Comment cmt: taskService.getProcessInstanceComments("pid")) {
-        comments.add(cmt.getFullMessage());
-      }
-      
-      assertEquals(expectedComments, comments);
-
       // Finally, delete task
       taskService.deleteTask(taskId, true);
     }
@@ -219,7 +203,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testRap() {
+  public void testMultipleProcessesStarted() {
     
     // Start a few  process instances
     for (int i=0; i<20; i++) {
@@ -889,6 +873,46 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       taskService.setPriority(null, 12345);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
+      assertTextPresent("taskId is null", ae.getMessage());
+    }
+  }
+
+  public void testSetDueDate() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+
+    //Set the due date to a non-null value
+    Date now = new Date();
+    taskService.setDueDate(task.getId(), now);
+
+    // Fetch task to check if the due date was persisted
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertNotNull(task.getDueDate());
+
+    //Set the due date to null
+    taskService.setDueDate(task.getId(), null);
+
+    // Re-fetch the task to make sure the due date was set to null
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertNull(task.getDueDate());
+
+    taskService.deleteTask(task.getId(), true);
+  }
+
+  public void testSetDueDateUnexistingTaskId() {
+    try {
+      taskService.setDueDate("unexistingtask", new Date());
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+        assertTextPresent("Cannot find task with id unexistingtask", ae.getMessage());
+    }
+  }
+
+  public void testSetDueDateNullTaskId() {
+    try {
+      taskService.setDueDate(null, new Date());
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
       assertTextPresent("taskId is null", ae.getMessage());
     }
   }

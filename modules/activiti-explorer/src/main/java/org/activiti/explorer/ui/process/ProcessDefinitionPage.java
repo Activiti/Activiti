@@ -101,7 +101,7 @@ public class ProcessDefinitionPage extends AbstractTablePage {
     
     
     LazyLoadingQuery lazyLoadingQuery = new ProcessDefinitionListQuery(repositoryService, definitionFilter);
-    this.processDefinitionContainer = new LazyLoadingContainer(lazyLoadingQuery, 10);
+    this.processDefinitionContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
     processDefinitionTable.setContainerDataSource(processDefinitionContainer);
     
     // Listener to change right panel when clicked on a task

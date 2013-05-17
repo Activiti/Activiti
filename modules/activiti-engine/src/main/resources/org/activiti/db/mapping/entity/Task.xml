@@ -115,7 +115,7 @@
   
   <sql id="selectTaskByQueryCriteriaSql">  
     from ${prefix}ACT_RU_TASK RES
-    <if test="candidateUser != null || candidateGroups != null || involvedUser != null">
+    <if test="candidateUser != null || candidateGroups != null">
       inner join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = RES.ID_
     </if>
     <foreach collection="variables" index="index" item="var">
@@ -243,7 +243,11 @@
         )
       </if>
       <if test="involvedUser != null">
-        and I.USER_ID_ = #{involvedUser}
+        and (
+          exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
+          or RES.ASSIGNEE_ = #{involvedUser}
+          or RES.OWNER_ = #{involvedUser}
+          )
       </if>
       <foreach item="var" collection="variables" index="index">
         <if test="!var.local">
@@ -328,7 +332,23 @@
   </sql>  
 
   <select id="selectTaskByNativeQuery" parameterType="java.util.Map" resultMap="taskResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+  		${limitBefore}
+  	</if>
     ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+  		${limitAfter}
+  	</if>
+  </select>
+  
+  <select id="selectTaskByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="taskResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+  		${limitBeforeNativeQuery}
+  	</if>
+  	${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+  		${limitAfter}
+  	</if>
   </select>
 
   <select id="selectTaskCountByNativeQuery" parameterType="java.util.Map" resultType="long">

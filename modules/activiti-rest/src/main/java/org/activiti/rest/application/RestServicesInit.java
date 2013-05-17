@@ -13,6 +13,23 @@ import org.activiti.rest.api.identity.UserGroupsResource;
 import org.activiti.rest.api.identity.UserPictureResource;
 import org.activiti.rest.api.identity.UserResource;
 import org.activiti.rest.api.identity.UserSearchResource;
+import org.activiti.rest.api.legacy.TaskAddResource;
+import org.activiti.rest.api.legacy.TaskAttachmentAddResource;
+import org.activiti.rest.api.legacy.TaskAttachmentResource;
+import org.activiti.rest.api.legacy.TaskFormResource;
+import org.activiti.rest.api.legacy.TaskOperationResource;
+import org.activiti.rest.api.legacy.TaskPropertiesResource;
+import org.activiti.rest.api.legacy.TaskUrlAddResource;
+import org.activiti.rest.api.legacy.TasksResource;
+import org.activiti.rest.api.legacy.TasksSummaryResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentArtifactResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentArtifactsResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentDeleteResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentUploadResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentsDeleteResource;
+import org.activiti.rest.api.legacy.deployment.DeploymentsResource;
+import org.activiti.rest.api.legacy.process.ProcessDefinitionsResource;
+import org.activiti.rest.api.legacy.task.LegacyTaskResource;
 import org.activiti.rest.api.management.JobExecuteResource;
 import org.activiti.rest.api.management.JobResource;
 import org.activiti.rest.api.management.JobsExecuteResource;
@@ -23,7 +40,6 @@ import org.activiti.rest.api.management.TablesResource;
 import org.activiti.rest.api.process.ProcessDefinitionDiagramResource;
 import org.activiti.rest.api.process.ProcessDefinitionFormResource;
 import org.activiti.rest.api.process.ProcessDefinitionPropertiesResource;
-import org.activiti.rest.api.process.ProcessDefinitionsResource;
 import org.activiti.rest.api.process.ProcessInstanceDiagramResource;
 import org.activiti.rest.api.process.ProcessInstanceResource;
 import org.activiti.rest.api.process.ProcessInstanceSignalExecutionResource;
@@ -31,27 +47,60 @@ import org.activiti.rest.api.process.ProcessInstanceTaskResource;
 import org.activiti.rest.api.process.ProcessInstancesResource;
 import org.activiti.rest.api.process.SignalEventSubscriptionResource;
 import org.activiti.rest.api.process.StartProcessInstanceResource;
-import org.activiti.rest.api.repository.DeploymentArtifactResource;
-import org.activiti.rest.api.repository.DeploymentArtifactsResource;
-import org.activiti.rest.api.repository.DeploymentDeleteResource;
-import org.activiti.rest.api.repository.DeploymentUploadResource;
-import org.activiti.rest.api.repository.DeploymentsDeleteResource;
-import org.activiti.rest.api.repository.DeploymentsResource;
-import org.activiti.rest.api.task.TaskAddResource;
-import org.activiti.rest.api.task.TaskAttachmentAddResource;
-import org.activiti.rest.api.task.TaskAttachmentResource;
-import org.activiti.rest.api.task.TaskFormResource;
-import org.activiti.rest.api.task.TaskOperationResource;
-import org.activiti.rest.api.task.TaskPropertiesResource;
+import org.activiti.rest.api.repository.DeploymentCollectionResource;
+import org.activiti.rest.api.repository.DeploymentResource;
+import org.activiti.rest.api.repository.DeploymentResourceCollectionResource;
+import org.activiti.rest.api.repository.DeploymentResourceDataResource;
+import org.activiti.rest.api.repository.DeploymentResourceResource;
+import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
+import org.activiti.rest.api.repository.ProcessDefinitionResource;
+import org.activiti.rest.api.repository.SimpleWorkflowResource;
+import org.activiti.rest.api.task.TaskCollectionResource;
+import org.activiti.rest.api.task.TaskCommentCollectionResource;
+import org.activiti.rest.api.task.TaskCommentResource;
+import org.activiti.rest.api.task.TaskEventCollectionResource;
+import org.activiti.rest.api.task.TaskEventResource;
+import org.activiti.rest.api.task.TaskIdentityLinkCollectionResource;
+import org.activiti.rest.api.task.TaskIdentityLinkFamilyResource;
+import org.activiti.rest.api.task.TaskIdentityLinkResource;
+import org.activiti.rest.api.task.TaskQueryResource;
 import org.activiti.rest.api.task.TaskResource;
-import org.activiti.rest.api.task.TaskUrlAddResource;
-import org.activiti.rest.api.task.TasksResource;
-import org.activiti.rest.api.task.TasksSummaryResource;
+import org.activiti.rest.api.task.TaskVariableCollectionResource;
+import org.activiti.rest.api.task.TaskVariableDataResource;
+import org.activiti.rest.api.task.TaskVariableResource;
 import org.restlet.routing.Router;
 
+@SuppressWarnings("deprecation")
 public class RestServicesInit {
 
   public static void attachResources(Router router) {
+    
+    // New REST-urls
+    router.attach("/repository/deployments", DeploymentCollectionResource.class);
+    router.attach("/repository/deployments/{deploymentId}", DeploymentResource.class);
+    router.attach("/repository/deployments/{deploymentId}/resources", DeploymentResourceCollectionResource.class);
+    router.attach("/repository/deployments/{deploymentId}/resources/{resourceId}", DeploymentResourceResource.class);
+    router.attach("/repository/deployments/{deploymentId}/resourcedata/{resourceId}", DeploymentResourceDataResource.class);
+    
+    router.attach("/repository/process-definitions", ProcessDefinitionCollectionResource.class);
+    router.attach("/repository/process-definitions/{processDefinitionId}", ProcessDefinitionResource.class);
+    
+    router.attach("/runtime/tasks", TaskCollectionResource.class);
+    router.attach("/runtime/tasks/{taskId}", TaskResource.class);
+    router.attach("/runtime/tasks/{taskId}/variables", TaskVariableCollectionResource.class);
+    router.attach("/runtime/tasks/{taskId}/variables/{variableName}", TaskVariableResource.class);
+    router.attach("/runtime/tasks/{taskId}/variables/{variableName}/data", TaskVariableDataResource.class);
+    router.attach("/runtime/tasks/{taskId}/identitylinks", TaskIdentityLinkCollectionResource.class);
+    router.attach("/runtime/tasks/{taskId}/identitylinks/{family}", TaskIdentityLinkFamilyResource.class);
+    router.attach("/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", TaskIdentityLinkResource.class);
+    router.attach("/runtime/tasks/{taskId}/comments", TaskCommentCollectionResource.class);
+    router.attach("/runtime/tasks/{taskId}/comments/{commentId}", TaskCommentResource.class);
+    router.attach("/runtime/tasks/{taskId}/events", TaskEventCollectionResource.class);
+    router.attach("/runtime/tasks/{taskId}/events/{eventId}", TaskEventResource.class);
+    
+    router.attach("/query/tasks", TaskQueryResource.class);
+    
+    // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);
     
     router.attach("/login", LoginResource.class);
@@ -84,7 +133,7 @@ public class RestServicesInit {
     router.attach("/tasks", TasksResource.class);
     router.attach("/tasks-summary", TasksSummaryResource.class);
     router.attach("/task", TaskAddResource.class);
-    router.attach("/task/{taskId}", TaskResource.class);
+    router.attach("/task/{taskId}", LegacyTaskResource.class);
     router.attach("/task/{taskId}/form", TaskFormResource.class);
     router.attach("/task/{taskId}/attachment", TaskAttachmentAddResource.class);
     router.attach("/task/{taskId}/url", TaskUrlAddResource.class);
@@ -111,5 +160,9 @@ public class RestServicesInit {
     router.attach("/management/tables", TablesResource.class);
     router.attach("/management/table/{tableName}", TableResource.class);
     router.attach("/management/table/{tableName}/data", TableDataResource.class);
+    
+    router.attach("/simple-workflow", SimpleWorkflowResource.class);
+    
   }
+  
 }

@@ -17,6 +17,7 @@ import groovy.lang.MissingPropertyException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -75,6 +76,16 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     // The second script, after the user task will set the variable
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
     assertEquals(42, ((Number) runtimeService.getVariable(id, "sum")).intValue());
+  }
+  
+  public void testNoScriptProvided() {
+    try {
+      repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/examples/bpmn/scripttask/ScriptTaskTest.testNoScriptProvided.bpmn20.xml")
+        .deploy();
+    } catch (ActivitiException e) {
+      assertTextPresent("No script provided", e.getMessage());
+    }
   }
   
   protected void verifyExceptionInStacktrace(Exception rootExcepton, Class expectedExceptionClass) {

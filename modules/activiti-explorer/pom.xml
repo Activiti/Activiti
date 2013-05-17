@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.12-SNAPSHOT</version>
+    <version>5.13-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -73,7 +73,6 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Database -->
@@ -126,6 +125,15 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+    
+    <!-- Vaadin add-ons -->
+    <!-- Must be defined both in activiti-explorer and activiti-webapp-explorer, as otherwise the gwt compiler won't find it -->
+    <dependency>
+        <groupId>org.vaadin.addons</groupId>
+        <artifactId>dcharts-widget</artifactId>
+        <version>0.10.0</version>
+        <scope>compile</scope>
+     </dependency>
 
   </dependencies>
   
@@ -157,6 +165,10 @@
     <repository>
       <id>buzzmedia</id>
       <url>http://maven.thebuzzmedia.com</url> <!-- ImageScalr -->
+    </repository>
+    <repository>
+        <id>vaadin-addons</id>
+        <url>http://maven.vaadin.com/vaadin-addons</url>
     </repository>
   </repositories>
 

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
 
 
@@ -26,8 +27,11 @@ import org.activiti.engine.impl.persistence.AbstractManager;
  */
 public class IdentityLinkEntityManager extends AbstractManager {
 
-  public void deleteIdentityLink(IdentityLinkEntity identityLink) {
+  public void deleteIdentityLink(IdentityLinkEntity identityLink, boolean cascadeHistory) {
     getDbSqlSession().delete(identityLink);
+    if(cascadeHistory) {
+      getHistoryManager().deleteHistoricIdentityLink(identityLink.getId());
+    }
   }
   
   @SuppressWarnings("unchecked")
@@ -72,14 +76,25 @@ public class IdentityLinkEntityManager extends AbstractManager {
   public void deleteIdentityLinksByTaskId(String taskId) {
     List<IdentityLinkEntity> identityLinks = findIdentityLinksByTaskId(taskId);
     for (IdentityLinkEntity identityLink: identityLinks) {
-      deleteIdentityLink(identityLink);
+      deleteIdentityLink(identityLink, false);
     }
   }
 
   public void deleteIdentityLinksByProcInstance(String processInstanceId) {
+    
+    // Identity links from db
     List<IdentityLinkEntity> identityLinks = findIdentityLinksByProcessInstanceId(processInstanceId);
+    // Delete
     for (IdentityLinkEntity identityLink: identityLinks) {
-      deleteIdentityLink(identityLink);
+      deleteIdentityLink(identityLink, false);
+    }
+    
+    // Identity links from cache
+    List<IdentityLinkEntity> identityLinksFromCache = Context.getCommandContext().getDbSqlSession().findInCache(IdentityLinkEntity.class);
+    for (IdentityLinkEntity identityLinkEntity : identityLinksFromCache) {
+      if (processInstanceId.equals(identityLinkEntity.getProcessInstanceId())) {
+        deleteIdentityLink(identityLinkEntity, false);
+      }
     }
   }
   

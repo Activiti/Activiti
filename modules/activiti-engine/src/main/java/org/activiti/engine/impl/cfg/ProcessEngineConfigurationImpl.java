@@ -149,6 +149,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
@@ -190,6 +191,7 @@ import org.activiti.engine.impl.variable.StringType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.parse.BpmnParseHandler;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
@@ -257,6 +259,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // DEPLOYERS ////////////////////////////////////////////////////////////////
 
+  protected BpmnDeployer bpmnDeployer;
+  protected BpmnParser bpmnParser;
   protected List<Deployer> customPreDeployers;
   protected List<Deployer> customPostDeployers;
   protected List<Deployer> deployers;
@@ -335,6 +339,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected FailedJobCommandFactory failedJobCommandFactory;
   
   protected String databaseTablePrefix = "";
+  
+  /**
+   * Set this to true if you want to have extra checks on the BPMN xml that is parsed.
+   * See http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/
+   * 
+   * Unfortuantely, this feature is not available on some platforms (JDK 6, JBoss),
+   * hence the reason why it is disabled by default. If your platform allows 
+   * the use of StaxSource during XML parsing, do enable it.
+   */
+  protected boolean enableSafeBpmnXml = false;
   
   /**
    * The following settings will determine the amount of entities loaded at once when the engine 
@@ -524,7 +538,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             pooledDataSource.setPoolPingQuery(jdbcPingQuery);
           }
           pooledDataSource.setPoolPingConnectionsNotUsedFor(jdbcPingConnectionNotUsedFor);
-        }        
+        }
+        if (jdbcDefaultTransactionIsolationLevel > 0) {
+          pooledDataSource.setDefaultTransactionIsolationLevel(jdbcDefaultTransactionIsolationLevel);
+        }
         dataSource = pooledDataSource;
       }
       
@@ -624,6 +641,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           properties.put("limitAfter" , DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));
           properties.put("limitBetween" , DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
           properties.put("orderBy" , DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
+          properties.put("limitBeforeNativeQuery" , ObjectUtils.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
         }
         XMLConfigBuilder parser = new XMLConfigBuilder(reader,"", properties);
         Configuration configuration = parser.getConfiguration();
@@ -671,6 +689,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricVariableInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricIdentityLinkEntityManager.class));
       addSessionFactory(new GenericManagerFactory(IdentityInfoEntityManager.class));
       addSessionFactory(new GenericManagerFactory(IdentityLinkEntityManager.class));
       addSessionFactory(new GenericManagerFactory(JobEntityManager.class));
@@ -741,7 +760,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Collection< ? extends Deployer> getDefaultDeployers() {
     List<Deployer> defaultDeployers = new ArrayList<Deployer>();
 
-    BpmnDeployer bpmnDeployer = new BpmnDeployer();
+    if (bpmnDeployer == null) {
+      bpmnDeployer = new BpmnDeployer();
+    }
+      
     bpmnDeployer.setExpressionManager(expressionManager);
     bpmnDeployer.setIdGenerator(idGenerator);
     
@@ -761,7 +783,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       listenerFactory = defaultListenerFactory;
     }
     
-    BpmnParser bpmnParser = new BpmnParser();
+    if (bpmnParser == null) {
+      bpmnParser = new BpmnParser();
+    }
+    
     bpmnParser.setExpressionManager(expressionManager);
     bpmnParser.setBpmnParseFactory(bpmnParseFactory);
     bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
@@ -1269,6 +1294,22 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public BpmnDeployer getBpmnDeployer() {
+    return bpmnDeployer;
+  }
+
+  public void setBpmnDeployer(BpmnDeployer bpmnDeployer) {
+    this.bpmnDeployer = bpmnDeployer;
+  }
+  
+  public BpmnParser getBpmnParser() {
+    return bpmnParser;
+  }
+  
+  public void setBpmnParser(BpmnParser bpmnParser) {
+    this.bpmnParser = bpmnParser;
+  }
+
   public List<Deployer> getDeployers() {
     return deployers;
   }
@@ -1929,6 +1970,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public void setKnowledgeBaseCache(DeploymentCache<Object> knowledgeBaseCache) {
     this.knowledgeBaseCache = knowledgeBaseCache;
+  }
+
+  public boolean isEnableSafeBpmnXml() {
+    return enableSafeBpmnXml;
+  }
+
+  public void setEnableSafeBpmnXml(boolean enableSafeBpmnXml) {
+    this.enableSafeBpmnXml = enableSafeBpmnXml;
   }
   
 }

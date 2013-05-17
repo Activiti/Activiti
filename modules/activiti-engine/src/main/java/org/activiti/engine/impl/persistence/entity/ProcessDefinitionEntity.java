@@ -115,12 +115,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   }
   
   public IdentityLinkEntity addIdentityLink(String userId, String groupId) {
-    IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
+    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
     getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setProcessDef(this);
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(IdentityLinkType.CANDIDATE);
+    identityLinkEntity.insert();
     return identityLinkEntity;
   }
   
@@ -133,8 +134,8 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     for (IdentityLinkEntity identityLink: identityLinks) {
       Context
         .getCommandContext()
-        .getDbSqlSession()
-        .delete(identityLink);
+        .getIdentityLinkEntityManager()
+        .deleteIdentityLink(identityLink, false);
     }
   }
   
