@@ -2862,7 +2862,406 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   
- </section>
+  <section>
+      <title>Create a new comment on a task</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}/comments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to create the comment for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{ 
+  "message" : "This is a comment on the task."
+}</programlisting>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "id" : "123",
+  "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+  "message" : "This is a comment on the task.",
+  "author" : "kermit"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the comment was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the comment is missing from the request.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get all comments on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/comments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the comments for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "id" : "123",
+    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+    "message" : "This is a comment on the task.",
+    "author" : "kermit"
+  },
+  { 
+    "id" : "456",
+    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/456",
+    "message" : "This is another comment on the task.",
+    "author" : "gonzo"
+  }
+]</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the comments are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get a single comment on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/comments/{commentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the comment for.</entry>
+                  </row>
+                  <row>
+                    <entry>commentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the comment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "id" : "123",
+  "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+  "message" : "This is a comment on the task.",
+  "author" : "kermit"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task and comment were found and the comment is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the tasks doesn't have a comment with the given ID.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Delete a single comment on a task</title>
+        <para>
+          <programlisting>DELETE runtime/tasks/{taskId}/comments/{commentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to delete the comment for.</entry>
+                  </row>
+                  <row>
+                    <entry>commentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the comment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>204</entry>
+                  <entry>Indicates the task and comment were found and the comment is deleted. Response body is left empty intentionally.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested task was not found or the tasks doesn't have a comment with the given ID.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+  </section>
+    <section>
+      <title>Get all events on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/events</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the events for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "action" : "AddUserLink",
+    "id" : "4",
+    "message" : [ "gonzo", "contributor" ],
+    "taskUrl" : "http://localhost:8182/runtime/tasks/2",
+    "time" : "2013-05-17T11:50:50.000+0000",
+    "url" : "http://localhost:8182/runtime/tasks/2/events/4",
+    "userId" : null
+  },
+  
+  ...
+
+]</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the events are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get a single event on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/events/{eventId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the event for.</entry>
+                  </row>
+                  <row>
+                    <entry>eventId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the event.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "action" : "AddUserLink",
+  "id" : "4",
+  "message" : [ "gonzo", "contributor" ],
+  "taskUrl" : "http://localhost:8182/runtime/tasks/2",
+  "time" : "2013-05-17T11:50:50.000+0000",
+  "url" : "http://localhost:8182/runtime/tasks/2/events/4",
+  "userId" : null
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task and event were found and the event is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the tasks doesn't have an event with the given ID.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+</section>
 
 <!-- Legacy -->
   <section>

@@ -16,54 +16,33 @@ package org.activiti.rest.api.task;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestResponseFactory;
-import org.activiti.rest.api.engine.CommentResponse;
+import org.activiti.rest.api.engine.EventResponse;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
 import org.restlet.resource.Get;
-import org.restlet.resource.Post;
 
 
 /**
  * @author Frederik Heremans
  */
-public class TaskCommentCollectionResource extends TaskBasedResource {
+public class TaskEventCollectionResource extends TaskBasedResource {
 
   @Get
-  public List<CommentResponse> getComments() {
+  public List<EventResponse> getComments() {
     if(!authenticate())
       return null;
     
-    List<CommentResponse> result = new ArrayList<CommentResponse>();
+    List<EventResponse> result = new ArrayList<EventResponse>();
     RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     Task task = getTaskFromRequest();
     
-    for(Comment comment : ActivitiUtil.getTaskService().getTaskComments(task.getId())) {
-      result.add(responseFactory.createRestComment(this, comment));
+    for(Event event : ActivitiUtil.getTaskService().getTaskEvents(task.getId())) {
+      result.add(responseFactory.createEventResponse(this, event));
     }
     
     return result;
-  }
-  
-  @Post
-  public CommentResponse createComment(CommentResponse comment) {
-    if(!authenticate())
-      return null;
-    
-    Task task = getTaskFromRequest();
-    
-    if(comment.getMessage() == null) {
-      throw new ActivitiIllegalArgumentException("Comment text is required.");
-    }
-    
-    Comment createdComment = ActivitiUtil.getTaskService().addComment(task.getId(), null, comment.getMessage());
-    setStatus(Status.SUCCESS_CREATED);
-    
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-           .createRestComment(this, createdComment);
   }
 }

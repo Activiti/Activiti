@@ -16,9 +16,10 @@ package org.activiti.rest.api.task;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.engine.CommentResponse;
+import org.activiti.rest.api.engine.EventResponse;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -28,27 +29,27 @@ import org.restlet.resource.Get;
 /**
  * @author Frederik Heremans
  */
-public class TaskCommentResource extends TaskBasedResource {
+public class TaskEventResource extends TaskBasedResource {
 
   @Get
-  public CommentResponse getComment() {
+  public EventResponse getComment() {
     if(!authenticate())
       return null;
     
     Task task = getTaskFromRequest();
     
-    String commentId = getAttribute("commentId");
-    if(commentId == null) {
-      throw new ActivitiIllegalArgumentException("CommentId is required.");
+    String eventId = getAttribute("eventId");
+    if(eventId == null) {
+      throw new ActivitiIllegalArgumentException("EventId is required.");
     }
     
-    Comment comment = ActivitiUtil.getTaskService().getComment(commentId);
-    if(comment == null) {
-      throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have a comment with id '" + commentId + "'.", Comment.class);
+    Event event = ActivitiUtil.getTaskService().getEvent(eventId);
+    if(event == null) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an event with id '" + eventId + "'.", Event.class);
     }
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestComment(this, comment);
+            .createEventResponse(this, event);
   }
   
   @Delete

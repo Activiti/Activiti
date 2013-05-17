@@ -24,9 +24,11 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.api.engine.RestComment;
+import org.activiti.rest.api.engine.CommentResponse;
+import org.activiti.rest.api.engine.EventResponse;
 import org.activiti.rest.api.engine.variable.BooleanRestVariableConverter;
 import org.activiti.rest.api.engine.variable.DateRestVariableConverter;
 import org.activiti.rest.api.engine.variable.DoubleRestVariableConverter;
@@ -243,13 +245,13 @@ public class RestResponseFactory {
     return result;
   }
   
-  public RestComment createRestComment(SecuredResource securedResource, Comment comment) {
-    return createRestComment(securedResource, comment.getTaskId(), comment.getProcessInstanceId(), comment.getUserId(), comment.getFullMessage(), comment.getId());
+  public CommentResponse createRestComment(SecuredResource securedResource, Comment comment) {
+    return createCommentResponse(securedResource, comment.getTaskId(), comment.getProcessInstanceId(), comment.getUserId(), comment.getFullMessage(), comment.getId());
   }
   
-  public RestComment createRestComment(SecuredResource securedResource, String taskId, String processInstanceId, String author,
+  public CommentResponse createCommentResponse(SecuredResource securedResource, String taskId, String processInstanceId, String author,
           String message, String commentId) {
-    RestComment result = new RestComment();
+    CommentResponse result = new CommentResponse();
     result.setAuthor(author);
     result.setMessage(message);
     result.setId(commentId);
@@ -260,6 +262,23 @@ public class RestResponseFactory {
       result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COMMENT, processInstanceId, commentId));
     }
     return result;
+  }
+  
+  public EventResponse createEventResponse(SecuredResource securedResource, Event event) {
+    EventResponse result = new EventResponse();
+    result.setAction(event.getAction());
+    result.setId(event.getId());
+    result.setMessage(event.getMessageParts());
+    result.setTime(event.getTime());
+    result.setUserId(event.getUserId());
+    
+    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_EVENT, event.getTaskId(), event.getId()));
+    result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK, event.getTaskId()));
+    
+    if(event.getProcessInstanceId() != null) {
+      result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, event.getProcessInstanceId()));
+    }
+    return result ;
   }
   
   
@@ -276,6 +295,5 @@ public class RestResponseFactory {
     variableConverters.add(new BooleanRestVariableConverter());
     variableConverters.add(new DateRestVariableConverter());
   }
-
 
 }

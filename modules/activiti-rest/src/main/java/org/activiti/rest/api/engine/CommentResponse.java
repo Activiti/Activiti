@@ -17,7 +17,7 @@ package org.activiti.rest.api.engine;
 /**
  * @author Frederik Heremans
  */
-public class RestComment {
+public class CommentResponse {
 
   private String id;
   private String url;

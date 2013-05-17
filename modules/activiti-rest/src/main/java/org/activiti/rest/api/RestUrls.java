@@ -40,6 +40,7 @@ public final class RestUrls {
   public static final String SEGMENT_VARIABLES = "variables";
   public static final String SEGMENT_IDENTITYLINKS = "identitylinks";
   public static final String SEGMENT_COMMENTS = "comments";
+  public static final String SEGMENT_EVENTS = "events";
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_GROUPS = "groups";
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_USERS = "users";
   public static final String SEGMENT_VARIABLE_DATA = "data";
@@ -129,9 +130,19 @@ public final class RestUrls {
   public static final String[] URL_TASK_COMMENT_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_COMMENTS};
   
   /**
-   * URL template for an identitylink on a task: <i>runtime/tasks/{0:taskId}/comments/{1:commentId}</i>
+   * URL template for a comment on a task: <i>runtime/tasks/{0:taskId}/comments/{1:commentId}</i>
    */
   public static final String[] URL_TASK_COMMENT = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_COMMENTS, "{1}"};
+  
+  /**
+   * URL template for an task's events: <i>runtime/tasks/{0:taskId}/events</i>
+   */
+  public static final String[] URL_TASK_EVENT_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_EVENTS};
+  
+  /**
+   * URL template for an event on a task: <i>runtime/tasks/{0:taskId}/events/{1:eventId}</i>
+   */
+  public static final String[] URL_TASK_EVENT = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_EVENTS, "{1}"};
   
   /**
    * URL template for execution collection: <i>runtime/executions/{0:executionId}</i>
