@@ -387,6 +387,9 @@ public interface TaskService {
 
   /** The all events related to the given task. */
   List<Event> getTaskEvents(String taskId);
+  
+  /** Returns an individual event with the given id. Returns null if no event exists with the given id. */
+  Event getEvent(String eventId);
 
   /** The comments related to the given process instance. */
   List<Comment> getProcessInstanceComments(String processInstanceId);
