@@ -138,6 +138,7 @@ public class TimerDeclarationImpl implements Serializable {
     timer.setDuedate(duedate);
     if (executionEntity != null) {
       timer.setExecution(executionEntity);
+      timer.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
     }
     
     if (type == TimerDeclarationType.CYCLE) {

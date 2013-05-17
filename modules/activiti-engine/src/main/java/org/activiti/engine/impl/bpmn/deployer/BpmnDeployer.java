@@ -187,6 +187,7 @@ public class BpmnDeployer implements Deployer {
     if (timerDeclarations!=null) {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
         TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
+        timer.setProcessDefinitionId(processDefinition.getId());
         Context
           .getCommandContext()
           .getJobEntityManager()
