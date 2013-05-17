@@ -3714,12 +3714,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           </itemizedlist>
       </section>
 
-      <section>
+      <section id="restStartProcessInstance">
         <title>Start Process Instance</title>
         <para>
-          Creates a process instance based on a process definition and returns details about the newly created process instance.
-          Additional variables (from a form) may be passed using the body object. In other words placing attributes
+          Creates a process instance and returns its runtime details.
+          Additional variables (i.e. from a form) may be passed using the body object. In other words: by placing attributes
           next to the "processDefinitionId" attribute.
+        </para>
+        <para>
+          You may either pass a <literal>processDefinitionId</literal>, a <literal>processDefinitionKey</literal> or a <literal>messageName</literal>. The later will start any process instance that has a start event subscribed to the given message name.
         </para>
         <para>
           Note that if a value is submitted as true (instead of "true") it will be treated as a
@@ -3741,6 +3744,8 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           <listitem>
             <para><emphasis role="bold">API:</emphasis>
               <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRuntimeService().startProcessInstanceById(processDefinitionId[, businessKey][, variables])</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRuntimeService().startProcessInstanceByKey(processDefinitionKey[, businessKey][, variables])</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRuntimeService().startProcessInstanceByMessage(messageName[, businessKey][, variables])</literal>
             </para>
           </listitem>
           <listitem>
@@ -4009,6 +4014,44 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <para>
                   <emphasis role="bold">API:</emphasis>
                   <literal>runtimeService.signalEventReceived(signalName, execution.getId()[, variables]);</literal>
+                </para>
+              </listitem>
+              <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "success": true
+}</programlisting>
+            </para>
+          </listitem>
+         </itemizedlist>
+        </section>
+
+                <section>
+            <title>Send a message to a process instance</title>
+            <para>
+              Sends a message to a specific process instance, that can be caught by an intermediate message event or the start event of an event sub-process. Please note that this will not start process instances through message start events, please see <link linkend="restStartProcessInstance">Start Process Instance</link> on how to accomplish that.
+            </para>
+            <para>
+              Additional variables may be passed in the body. If you don't need any variables, you may leave the request body empty.
+            </para>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  <emphasis role="bold">Request:</emphasis>
+                  <literal>POST /process-instance/{processInstanceId}/message/{messageName}</literal>
+                  <programlisting>
+{
+  "variable1":"value",
+  "variable2":"value"
+}</programlisting>
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">API:</emphasis>
+                  <literal>runtimeService.messageEventReceived(messageName, execution.getId()[, variables]);</literal>
                 </para>
               </listitem>
               <listitem>

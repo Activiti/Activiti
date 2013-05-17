@@ -89,4 +89,30 @@ public class StartProcessInstanceResourceTest extends BaseRestTestCase {
     instanceList = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, instanceList.size());
   }
+
+	@Deployment
+	public void testStartInstanceByMessage() throws Exception {
+		ClientResource client = getAuthenticatedClient("process-instance");
+		ObjectNode requestNode = objectMapper.createObjectNode();
+		requestNode.put("messageName", "startProcessMessage");
+		Representation response = client.post(requestNode);
+		JsonNode responseNode = objectMapper.readTree(response.getStream());
+		assertNotNull(responseNode);
+
+		String processInstanceId = responseNode.get("processInstanceId").asText();
+		assertNotNull(processInstanceId);
+
+		List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().list();
+		assertEquals(1, instanceList.size());
+		assertEquals(processInstanceId, instanceList.get(0).getProcessInstanceId());
+
+		Task task = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
+		assertNotNull(task);
+		assertEquals("WaitTask", task.getName());
+
+		taskService.complete(task.getId());
+
+		instanceList = runtimeService.createProcessInstanceQuery().list();
+		assertEquals(0, instanceList.size());
+	}
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+    <message id="messageId" name="aMessage"/>
+
+    <process id="messageEventProcessWithSubProcess" name="Message Event Handler JUnit" isExecutable="true">
+
+        <startEvent id="start" name="Start JUnit"/>
+        <sequenceFlow id="flow1" name="" sourceRef="start" targetRef="WaitTask"/>
+        <userTask id="WaitTask" activiti:assignee="kermit" />
+        <sequenceFlow id="flow2" sourceRef="WaitTask" targetRef="end"/>
+        <endEvent id="end" name="End JUnit"/>
+
+        <subProcess id="subProcess" triggeredByEvent="true">
+            <startEvent id="messageStartEvent" isInterrupting="true">
+                <messageEventDefinition messageRef="messageId"/>
+            </startEvent>
+            <sequenceFlow id="subProcessFlow1" sourceRef="messageStartEvent" targetRef="subProcessTask"/>
+            <userTask id="subProcessTask" name="subProcessTask" activiti:assignee="kermit"/>
+            <sequenceFlow id="subProcessFlow2" sourceRef="subProcessTask" targetRef="subProcessEnd"/>
+            <endEvent id="subProcessEnd"/>
+        </subProcess>
+    </process>
+</definitions>

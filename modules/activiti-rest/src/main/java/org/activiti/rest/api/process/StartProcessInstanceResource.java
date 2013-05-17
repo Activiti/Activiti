@@ -36,6 +36,7 @@ public class StartProcessInstanceResource extends SecuredResource {
       
       String startParams = entity.getText();
       JsonNode startJSON = new ObjectMapper().readTree(startParams);
+			String messageName = startJSON.path("messageName").getTextValue();
       String processDefinitionKey = startJSON.path("processDefinitionKey").getTextValue();
       String processDefinitionId = null;
       if (processDefinitionKey == null) {
@@ -50,17 +51,18 @@ public class StartProcessInstanceResource extends SecuredResource {
       Map<String, Object> variables = retrieveVariables(startJSON);
       variables.remove("processDefinitionId");
       variables.remove("processDefinitionKey");
-      variables.remove("businessKey");
-      
+	    variables.remove("messageName");
+	    variables.remove("businessKey");
+
       ProcessInstance processInstance = null;
       if (processDefinitionKey != null) {
         processInstance = ActivitiUtil.getRuntimeService().startProcessInstanceByKey(processDefinitionKey, businessKey, variables);
-      }
-      else {
+      } else if (messageName != null) {
+				processInstance = ActivitiUtil.getRuntimeService().startProcessInstanceByMessage(messageName, businessKey, variables);
+      } else {
         processInstance = ActivitiUtil.getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey, variables);
       }
-      StartProcessInstanceResponse response = new StartProcessInstanceResponse(processInstance);
-      return response;
+      return new StartProcessInstanceResponse(processInstance);
       
     } catch (Exception e) {
       if(e instanceof ActivitiException) {
