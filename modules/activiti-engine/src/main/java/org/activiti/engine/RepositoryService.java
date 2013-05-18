@@ -19,6 +19,7 @@ import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.DiagramLayout;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
+import org.activiti.engine.repository.NativeDeploymentQuery;
 import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -35,6 +36,7 @@ import java.util.List;
  * @author Falko Menge
  * @author Tijs Rademakers
  * @author Joram Barrez
+ * @author Henry Yan
  */
 public interface RepositoryService {
 
@@ -83,13 +85,17 @@ public interface RepositoryService {
   ProcessDefinitionQuery createProcessDefinitionQuery();
 
   /**
-   * Returns a new {@link org.activiti.engine.query.NativeQuery} for process
-   * definitions.
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for process definitions.
    */
   NativeProcessDefinitionQuery createNativeProcessDefinitionQuery();
   
-  /** Query process definitions. */
+  /** Query deployment. */
   DeploymentQuery createDeploymentQuery();
+
+  /**
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for deployment.
+   */
+  NativeDeploymentQuery createNativeDeploymentQuery();
   
   /**
    * Suspends the process definition with the given id. 
