@@ -20,6 +20,7 @@ import org.activiti.engine.repository.DiagramLayout;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.NativeDeploymentQuery;
+import org.activiti.engine.repository.NativeModelQuery;
 import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -281,6 +282,11 @@ public interface RepositoryService {
   
   /** Query models. */
   public ModelQuery createModelQuery();
+
+  /**
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for process definitions.
+   */
+  NativeModelQuery createNativeModelQuery();
   
   /**
    * Returns the {@link Model}

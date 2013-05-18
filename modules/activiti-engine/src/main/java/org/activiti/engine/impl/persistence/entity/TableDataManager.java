@@ -29,6 +29,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -116,6 +117,7 @@ public class TableDataManager extends AbstractManager {
     apiTypeToTableNameMap.put(ProcessDefinition.class, "ACT_RE_PROCDEF");
     apiTypeToTableNameMap.put(Deployment.class, "ACT_RE_DEPLOYMENT");    
     apiTypeToTableNameMap.put(Job.class, "ACT_RU_JOB");
+    apiTypeToTableNameMap.put(Model.class, "ACT_RE_MODEL");
     
     // history
     apiTypeToTableNameMap.put(HistoricProcessInstance.class, "ACT_HI_PROCINST");

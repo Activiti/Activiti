@@ -47,6 +47,7 @@ import org.activiti.engine.repository.DiagramLayout;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.NativeDeploymentQuery;
+import org.activiti.engine.repository.NativeModelQuery;
 import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -190,7 +191,12 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   public ModelQuery createModelQuery() {
     return new ModelQueryImpl(commandExecutor);
   }
-  
+
+  @Override
+  public NativeModelQuery createNativeModelQuery() {
+    return new NativeModelQueryImpl(commandExecutor);
+  }
+
   public Model getModel(String modelId) {
     return commandExecutor.execute(new GetModelCmd(modelId));
   }

@@ -13,12 +13,13 @@
 
 package org.activiti.engine.test.api.repository;
 
-import java.util.List;
-
+import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
+
+import java.util.List;
 
 
 /**
@@ -253,6 +254,22 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
       .asc()
       .list()
       .size());
+  }
+
+  public void testNativeQuery() {
+    assertEquals("ACT_RE_MODEL", managementService.getTableName(Model.class));
+    assertEquals("ACT_RE_MODEL", managementService.getTableName(ModelEntity.class));
+    String tableName = managementService.getTableName(Model.class);
+    String baseQuerySql = "SELECT * FROM " + tableName;
+
+    assertEquals(1, repositoryService.createNativeModelQuery().sql(baseQuerySql).list().size());
+
+    assertEquals(1, repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql + " where NAME_ = #{name}")
+        .parameter("name", "my model").list().size());
+
+    // paging
+    assertEquals(1, repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(0, 1).size());
+    assertEquals(0, repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(1, 5).size());
   }
 
 }
