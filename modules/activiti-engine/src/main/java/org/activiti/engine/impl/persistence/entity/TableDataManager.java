@@ -13,16 +13,6 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
@@ -31,6 +21,8 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -45,6 +37,16 @@ import org.activiti.engine.task.Task;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -123,7 +125,11 @@ public class TableDataManager extends AbstractManager {
     apiTypeToTableNameMap.put(HistoricFormProperty.class, "ACT_HI_DETAIL");
     apiTypeToTableNameMap.put(HistoricTaskInstance.class, "ACT_HI_TASKINST");        
     apiTypeToTableNameMap.put(HistoricVariableInstance.class, "ACT_HI_VARINST");
-    
+
+    // identity
+    apiTypeToTableNameMap.put(Group.class, "ACT_ID_GROUP");
+    apiTypeToTableNameMap.put(User.class, "ACT_ID_USER");
+
     // TODO: Identity skipped for the moment as no SQL injection is provided here
   }
 

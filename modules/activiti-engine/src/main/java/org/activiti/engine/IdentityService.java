@@ -12,13 +12,15 @@
  */
 package org.activiti.engine;
 
-import java.util.List;
-
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
+import org.activiti.engine.identity.NativeGroupQuery;
+import org.activiti.engine.identity.NativeUserQuery;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
+
+import java.util.List;
 
 
 /**
@@ -46,6 +48,11 @@ public interface IdentityService {
    * Creates a {@link UserQuery} that allows to programmatically query the users.
    */
   UserQuery createUserQuery();
+
+  /**
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for tasks.
+   */
+  NativeUserQuery createNativeUserQuery();
   
   /**
    * @param userId id of user to delete, cannot be null. When an id is passed
@@ -64,6 +71,11 @@ public interface IdentityService {
    * Creates a {@link GroupQuery} thats allows to programmatically query the groups.
    */
   GroupQuery createGroupQuery();
+
+  /**
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for tasks.
+   */
+  NativeGroupQuery createNativeGroupQuery();
   
   /**
    * Saves the group. If the group already existed, the group is updated.
