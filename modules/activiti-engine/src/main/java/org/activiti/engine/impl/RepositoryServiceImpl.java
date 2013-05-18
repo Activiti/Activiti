@@ -13,10 +13,6 @@
 
 package org.activiti.engine.impl;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
@@ -50,9 +46,14 @@ import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.DiagramLayout;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
+import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
+
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -84,6 +85,11 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public ProcessDefinitionQuery createProcessDefinitionQuery() {
     return new ProcessDefinitionQueryImpl(commandExecutor);
+  }
+
+  @Override
+  public NativeProcessDefinitionQuery createNativeProcessDefinitionQuery() {
+    return new NativeProcessDefinitionQueryImpl(commandExecutor);
   }
 
   @SuppressWarnings("unchecked")
