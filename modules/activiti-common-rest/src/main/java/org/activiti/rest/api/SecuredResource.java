@@ -145,6 +145,8 @@ public class SecuredResource extends ServerResource {
         result = isoFormatter.parse(stringValue);
       } catch (ParseException e) {
         throw new ActivitiIllegalArgumentException("The given value for query-parameter '" + name + "' is not a valid date: " + stringValue, e);
+      } catch (IllegalArgumentException e) {
+        throw new ActivitiIllegalArgumentException("The given value for query-parameter '" + name + "' is not a valid date: " + stringValue, e);
       }
     }
     return result;

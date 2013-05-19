@@ -84,6 +84,11 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
     this.revision = revision;
   }
   
+  @Override
+  public String toString() {
+    return "ByteArrayEntity[id=" + id + ", name=" + name + ", size=" + (bytes != null ? bytes.length : 0) + "]";
+  }
+
   // Wrapper for a byte array, needed to do byte array comparisons
   // See http://jira.codehaus.org/browse/ACT-1524
   public static class ByteArray {

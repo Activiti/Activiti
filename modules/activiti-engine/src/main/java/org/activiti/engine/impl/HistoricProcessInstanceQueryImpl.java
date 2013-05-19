@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -48,6 +47,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected Date finishedAfter;
   protected String processDefinitionKey;
   protected Set<String> processInstanceIds;
+  protected String involvedUser;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -134,11 +134,17 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   
   public HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId) {
-	 this.superProcessInstanceId = superProcessInstanceId;
-	 return this;
+   this.superProcessInstanceId = superProcessInstanceId;
+   return this;
   }
   
-	public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
+  @Override
+  public HistoricProcessInstanceQuery involvedUser(String userId) {
+    this.involvedUser = userId;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
     return orderBy(HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
   }
   
@@ -223,6 +229,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   public Date getFinishedBefore() {
     return finishedBefore;
+  }
+  public String getInvolvedUser() {
+    return involvedUser;
   }
  
   

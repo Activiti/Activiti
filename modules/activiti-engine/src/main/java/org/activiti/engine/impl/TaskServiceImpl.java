@@ -34,15 +34,18 @@ import org.activiti.engine.impl.cmd.DeleteIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
 import org.activiti.engine.impl.cmd.GetAttachmentCmd;
 import org.activiti.engine.impl.cmd.GetAttachmentContentCmd;
+import org.activiti.engine.impl.cmd.GetCommentCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
 import org.activiti.engine.impl.cmd.GetSubTasksCmd;
 import org.activiti.engine.impl.cmd.GetTaskAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
+import org.activiti.engine.impl.cmd.GetTaskEventCmd;
 import org.activiti.engine.impl.cmd.GetTaskEventsCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
+import org.activiti.engine.impl.cmd.HasTaskVariableCmd;
 import org.activiti.engine.impl.cmd.RemoveTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.ResolveTaskCmd;
 import org.activiti.engine.impl.cmd.SaveAttachmentCmd;
@@ -212,8 +215,16 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new GetTaskVariableCmd(executionId, variableName, false));
   }
   
+  public boolean hasVariable(String taskId, String variableName) {
+    return commandExecutor.execute(new HasTaskVariableCmd(taskId, variableName, false));
+  }
+  
   public Object getVariableLocal(String executionId, String variableName) {
     return commandExecutor.execute(new GetTaskVariableCmd(executionId, variableName, true));
+  }
+  
+  public boolean hasVariableLocal(String taskId, String variableName) {
+    return commandExecutor.execute(new HasTaskVariableCmd(taskId, variableName, true));
   }
   
   public void setVariable(String executionId, String variableName, Object value) {
@@ -262,8 +273,18 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, true));
   }
 
-  public void addComment(String taskId, String processInstance, String message) {
-    commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
+  public Comment addComment(String taskId, String processInstance, String message) {
+    return commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
+  }
+  
+  @Override
+  public Comment getComment(String commentId) {
+    return commandExecutor.execute(new GetCommentCmd(commentId));
+  }
+  
+  @Override
+  public Event getEvent(String eventId) {
+    return commandExecutor.execute(new GetTaskEventCmd(eventId));
   }
 
   public List<Comment> getTaskComments(String taskId) {
@@ -295,7 +316,12 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public void deleteComments(String taskId, String processInstanceId) {
-    commandExecutor.execute(new DeleteCommentCmd(taskId, processInstanceId));
+    commandExecutor.execute(new DeleteCommentCmd(taskId, processInstanceId, null));
+  }
+  
+  @Override
+  public void deleteComment(String commentId) {
+    commandExecutor.execute(new DeleteCommentCmd(null, null, commentId));
   }
 
   public Attachment getAttachment(String attachmentId) {

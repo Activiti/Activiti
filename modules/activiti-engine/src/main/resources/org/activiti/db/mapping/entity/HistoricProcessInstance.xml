@@ -183,6 +183,11 @@
       <if test="finished">
         and RES.END_TIME_ is not NULL
       </if>
+      <if test="involvedUser != null">
+        and (
+          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.PROC_INST_ID_ = RES.ID_)
+        )
+      </if>
       <if test="startedBy != null">
         and RES.START_USER_ID_ = #{startedBy}
       </if>
@@ -260,7 +265,23 @@
   </sql>
  
    <select id="selectHistoricProcessInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicProcessInstanceResultMap">
+   	<if test="resultType == 'LIST_PAGE'">
+   		${limitBefore}
+   	</if>
     ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+    	${limitAfter}
+    </if>
+  </select>
+  
+  <select id="selectHistoricProcessInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicProcessInstanceResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+        ${limitBeforeNativeQuery}
+  	</if>
+  	${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+  		${limitAfter}
+  	</if>
   </select>
 
   <select id="selectHistoricProcessInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">

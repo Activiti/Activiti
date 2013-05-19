@@ -149,6 +149,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
@@ -190,6 +191,7 @@ import org.activiti.engine.impl.variable.StringType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.parse.BpmnParseHandler;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
@@ -639,6 +641,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           properties.put("limitAfter" , DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));
           properties.put("limitBetween" , DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
           properties.put("orderBy" , DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
+          properties.put("limitBeforeNativeQuery" , ObjectUtils.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
         }
         XMLConfigBuilder parser = new XMLConfigBuilder(reader,"", properties);
         Configuration configuration = parser.getConfiguration();
@@ -686,6 +689,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricVariableInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricIdentityLinkEntityManager.class));
       addSessionFactory(new GenericManagerFactory(IdentityInfoEntityManager.class));
       addSessionFactory(new GenericManagerFactory(IdentityLinkEntityManager.class));
       addSessionFactory(new GenericManagerFactory(JobEntityManager.class));
