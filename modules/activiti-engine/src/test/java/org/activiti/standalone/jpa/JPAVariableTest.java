@@ -24,8 +24,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import junit.framework.Assert;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngine;
@@ -223,27 +221,27 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     
     // Read entity with @Id on field
     Object fieldAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
-    Assert.assertTrue(fieldAccessResult instanceof FieldAccessJPAEntity);
-    Assert.assertEquals(1L, ((FieldAccessJPAEntity)fieldAccessResult).getId().longValue());
-    Assert.assertEquals("value1", ((FieldAccessJPAEntity)fieldAccessResult).getValue());
+    assertTrue(fieldAccessResult instanceof FieldAccessJPAEntity);
+    assertEquals(1L, ((FieldAccessJPAEntity)fieldAccessResult).getId().longValue());
+    assertEquals("value1", ((FieldAccessJPAEntity)fieldAccessResult).getValue());
     
     // Read entity with @Id on property
     Object propertyAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityPropertyAccess");
-    Assert.assertTrue(propertyAccessResult instanceof PropertyAccessJPAEntity);
-    Assert.assertEquals(1L, ((PropertyAccessJPAEntity)propertyAccessResult).getId().longValue());
-    Assert.assertEquals("value2", ((PropertyAccessJPAEntity)propertyAccessResult).getValue());
+    assertTrue(propertyAccessResult instanceof PropertyAccessJPAEntity);
+    assertEquals(1L, ((PropertyAccessJPAEntity)propertyAccessResult).getId().longValue());
+    assertEquals("value2", ((PropertyAccessJPAEntity)propertyAccessResult).getValue());
     
     // Read entity with @Id on field of mapped superclass 
     Object subclassFieldResult = runtimeService.getVariable(processInstance.getId(), "subclassFieldAccess");
-    Assert.assertTrue(subclassFieldResult instanceof SubclassFieldAccessJPAEntity);
-    Assert.assertEquals(1L, ((SubclassFieldAccessJPAEntity)subclassFieldResult).getId().longValue());
-    Assert.assertEquals("value3", ((SubclassFieldAccessJPAEntity)subclassFieldResult).getValue());
+    assertTrue(subclassFieldResult instanceof SubclassFieldAccessJPAEntity);
+    assertEquals(1L, ((SubclassFieldAccessJPAEntity)subclassFieldResult).getId().longValue());
+    assertEquals("value3", ((SubclassFieldAccessJPAEntity)subclassFieldResult).getValue());
     
     // Read entity with @Id on property of mapped superclass 
     Object subclassPropertyResult = runtimeService.getVariable(processInstance.getId(), "subclassPropertyAccess");
-    Assert.assertTrue(subclassPropertyResult instanceof SubclassPropertyAccessJPAEntity);
-    Assert.assertEquals(1L, ((SubclassPropertyAccessJPAEntity)subclassPropertyResult).getId().longValue());
-    Assert.assertEquals("value4", ((SubclassPropertyAccessJPAEntity)subclassPropertyResult).getValue());
+    assertTrue(subclassPropertyResult instanceof SubclassPropertyAccessJPAEntity);
+    assertEquals(1L, ((SubclassPropertyAccessJPAEntity)subclassPropertyResult).getId().longValue());
+    assertEquals("value4", ((SubclassPropertyAccessJPAEntity)subclassPropertyResult).getValue());
     
     // -----------------------------------------------------------------------------
     // Test updating JPA-entity to null-value and back again
@@ -258,8 +256,8 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     runtimeService.setVariable(processInstance.getId(), "simpleEntityFieldAccess", simpleEntityFieldAccess);
     currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
     assertNotNull(currentValue);
-    Assert.assertTrue(currentValue instanceof FieldAccessJPAEntity);
-    Assert.assertEquals(1L, ((FieldAccessJPAEntity)currentValue).getId().longValue());
+    assertTrue(currentValue instanceof FieldAccessJPAEntity);
+    assertEquals(1L, ((FieldAccessJPAEntity)currentValue).getId().longValue());
     
     
     // -----------------------------------------------------------------------------
