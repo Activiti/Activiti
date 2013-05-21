@@ -30,7 +30,7 @@ import org.restlet.resource.Get;
 /**
  * @author Tijs Rademakers
  */
-public class TaskAttachmentResource extends SecuredResource {
+public class LegacyTaskAttachmentResource extends SecuredResource {
   
   @Get
   public InputRepresentation getAttachment() {

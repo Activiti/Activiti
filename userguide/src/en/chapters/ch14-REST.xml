@@ -3261,6 +3261,454 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   
+  
+    <section>
+      <title>Create a new attachment on a task, containing a link to an external resource</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}/attachments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to create the attachment for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{ 
+  "name":"Simple attachment",
+  "description":"Simple attachment description",
+  "type":"simpleType",
+  "externalUrl":"http://activiti.org"
+}</programlisting>
+Only the attachment name is required to create a new attachment.
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "id":"3",
+  "url":"http://localhost:8182/runtime/tasks/2/attachments/3",
+  "name":"Simple attachment",
+  "description":"Simple attachment description",
+  "type":"simpleType",
+  "taskUrl":"http://localhost:8182/runtime/tasks/2",
+  "processInstanceUrl":null,
+  "externalUrl":"http://activiti.org",
+  "contentUrl":null
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the attachment was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the attachment name is missing from the request.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+  <title>Create a new attachment on a task, with an attached file</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}/attachments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to create the attachment for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable.</para>
+          </listitem>
+          <listitem>
+            <para><literal>description</literal>: Description of the attachment, optional.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of attachment, optional. Supports any arbitrary string or a valid HTTP content-type.</para>
+          </listitem>
+      </itemizedlist>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+      "id":"5",
+      "url":"http://localhost:8182/runtime/tasks/2/attachments/5",
+      "name":"Binary attachment",
+      "description":"Binary attachment description",
+      "type":"binaryType",
+      "taskUrl":"http://localhost:8182/runtime/tasks/2",
+      "processInstanceUrl":null,
+      "externalUrl":null,
+      "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
+   }</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the attachment was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the attachment name is missing from the request or no file was present in the request. The error-message contains additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get all attachments on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/attachments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the attachments for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  {
+    "id":"3",
+    "url":"http://localhost:8182/runtime/tasks/2/attachments/3",
+    "name":"Simple attachment",
+    "description":"Simple attachment description",
+    "type":"simpleType",
+    "taskUrl":"http://localhost:8182/runtime/tasks/2",
+    "processInstanceUrl":null,
+    "externalUrl":"http://activiti.org",
+    "contentUrl":null
+  },
+  {
+    "id":"5",
+    "url":"http://localhost:8182/runtime/tasks/2/attachments/5",
+    "name":"Binary attachment",
+    "description":"Binary attachment description",
+    "type":"binaryType",
+    "taskUrl":"http://localhost:8182/runtime/tasks/2",
+    "processInstanceUrl":null,
+    "externalUrl":null,
+    "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
+  }
+]</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the attachments are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get a single attachment on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/attachments/{attachmentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the attachment for.</entry>
+                  </row>
+                  <row>
+                    <entry>attachmentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the attachment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+  {
+    "id":"5",
+    "url":"http://localhost:8182/runtime/tasks/2/attachments/5",
+    "name":"Binary attachment",
+    "description":"Binary attachment description",
+    "type":"binaryType",
+    "taskUrl":"http://localhost:8182/runtime/tasks/2",
+    "processInstanceUrl":null,
+    "externalUrl":null,
+    "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
+  }</programlisting>
+  <itemizedlist>
+    <listitem>
+      <para>
+        <literal>externalUrl - contentUrl:</literal>In case the attachment is a link to an external resource, the <literal>externalUrl</literal> contains the URL to the external content. If the attachment content is present in the
+        Activiti engine, the <literal>contentUrl</literal> will contain an URL where the binary content can be streamed from.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        <literal>type:</literal>Can be any arbitrary value. When a valid formatted media-type (eg. application/xml, text/plain) is included, the binary content HTTP response content-type will be set the the given value.
+      </para>
+    </listitem>
+  </itemizedlist>
+   
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task and attachment were found and the attachment is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the tasks doesn't have a attachment with the given ID.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get the content for an attachment</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/attachment/{attachmentId}/content</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get a variable data for.</entry>
+                  </row>
+                  <row>
+                    <entry>attachmentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the attachment, a <literal>404</literal> is returned when the attachment points to an external URL rather than content attached in Activiti.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task and attachment was found and the requested content is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have an attachment with the given id or the attachment doesn't have a binary stream available. Status message provides additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Success response body:</emphasis>
+      The response body contains the binary content. By default, the content-type of the response is set to <literal>application/octet-stream</literal> unless the attachment type contains a valid Content-type. 
+    </para>
+  </section>
+  <section>
+      <title>Delete a single attachment on a task</title>
+        <para>
+          <programlisting>DELETE runtime/tasks/{taskId}/attachments/{attachmentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to delete the attachment for.</entry>
+                  </row>
+                  <row>
+                    <entry>attachmentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the attachment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>204</entry>
+                  <entry>Indicates the task and attachment were found and the attachment is deleted. Response body is left empty intentionally.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested task was not found or the tasks doesn't have a attachment with the given ID.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+  </section>
 </section>
 
 <!-- Legacy -->

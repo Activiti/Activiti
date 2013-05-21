@@ -23,10 +23,12 @@ import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
+import org.activiti.rest.api.engine.AttachmentResponse;
 import org.activiti.rest.api.engine.CommentResponse;
 import org.activiti.rest.api.engine.EventResponse;
 import org.activiti.rest.api.engine.variable.BooleanRestVariableConverter;
@@ -277,6 +279,30 @@ public class RestResponseFactory {
     
     if(event.getProcessInstanceId() != null) {
       result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, event.getProcessInstanceId()));
+    }
+    return result ;
+  }
+  
+  public AttachmentResponse createAttachmentResponse(SecuredResource securedResource, Attachment attachment) {
+    AttachmentResponse result = new AttachmentResponse();
+    result.setId(attachment.getId());
+    result.setName(attachment.getName());
+    result.setDescription(attachment.getDescription());
+    result.setType(attachment.getType());
+    
+    if(attachment.getUrl() == null && attachment.getTaskId() != null) {
+      // Attachment content can be streamed
+      result.setContentUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, attachment.getTaskId(), attachment.getId()));
+    } else {
+      result.setExternalUrl(attachment.getUrl());
+    }
+    
+    if(attachment.getTaskId() != null) {
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_ATTACHMENT, attachment.getTaskId(), attachment.getId()));
+      result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK, attachment.getTaskId()));
+    }
+    if(attachment.getProcessInstanceId() != null) {
+      result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, attachment.getProcessInstanceId()));
     }
     return result ;
   }

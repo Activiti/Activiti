@@ -15,7 +15,7 @@ import org.activiti.rest.api.identity.UserResource;
 import org.activiti.rest.api.identity.UserSearchResource;
 import org.activiti.rest.api.legacy.TaskAddResource;
 import org.activiti.rest.api.legacy.TaskAttachmentAddResource;
-import org.activiti.rest.api.legacy.TaskAttachmentResource;
+import org.activiti.rest.api.legacy.LegacyTaskAttachmentResource;
 import org.activiti.rest.api.legacy.TaskFormResource;
 import org.activiti.rest.api.legacy.TaskOperationResource;
 import org.activiti.rest.api.legacy.TaskPropertiesResource;
@@ -55,6 +55,9 @@ import org.activiti.rest.api.repository.DeploymentResourceResource;
 import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionResource;
 import org.activiti.rest.api.repository.SimpleWorkflowResource;
+import org.activiti.rest.api.task.TaskAttachmentCollectionResource;
+import org.activiti.rest.api.task.TaskAttachmentContentResource;
+import org.activiti.rest.api.task.TaskAttachmentResource;
 import org.activiti.rest.api.task.TaskCollectionResource;
 import org.activiti.rest.api.task.TaskCommentCollectionResource;
 import org.activiti.rest.api.task.TaskCommentResource;
@@ -97,6 +100,9 @@ public class RestServicesInit {
     router.attach("/runtime/tasks/{taskId}/comments/{commentId}", TaskCommentResource.class);
     router.attach("/runtime/tasks/{taskId}/events", TaskEventCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}/events/{eventId}", TaskEventResource.class);
+    router.attach("/runtime/tasks/{taskId}/attachments", TaskAttachmentCollectionResource.class);
+    router.attach("/runtime/tasks/{taskId}/attachments/{attachmentId}", TaskAttachmentResource.class);
+    router.attach("/runtime/tasks/{taskId}/attachments/{attachmentId}/content", TaskAttachmentContentResource.class);
     
     router.attach("/query/tasks", TaskQueryResource.class);
     
@@ -141,7 +147,7 @@ public class RestServicesInit {
     
     router.attach("/history/{taskId}/form-properties", HistoricFormPropertiesResource.class);
     
-    router.attach("/attachment/{attachmentId}", TaskAttachmentResource.class);
+    router.attach("/attachment/{attachmentId}", LegacyTaskAttachmentResource.class);
     
     router.attach("/form/{taskId}/properties", TaskPropertiesResource.class);
     
