@@ -1,4 +1,4 @@
-package org.activiti.rest.api.process;
+package org.activiti.rest.api.legacy;
 
 import java.util.List;
 import java.util.Map;

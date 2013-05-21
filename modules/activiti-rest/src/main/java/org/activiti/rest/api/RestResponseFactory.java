@@ -23,6 +23,7 @@ import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
@@ -42,6 +43,7 @@ import org.activiti.rest.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.api.engine.variable.StringRestVariableConverter;
 import org.activiti.rest.api.identity.RestIdentityLink;
+import org.activiti.rest.api.process.ProcessInstanceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.api.repository.DeploymentResponse;
@@ -305,6 +307,17 @@ public class RestResponseFactory {
       result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, attachment.getProcessInstanceId()));
     }
     return result ;
+  }
+  
+  public ProcessInstanceResponse createProcessInstanceResponse(SecuredResource securedResource, ProcessInstance processInstance) {
+    ProcessInstanceResponse result = new ProcessInstanceResponse();
+    result.setActivityId(processInstance.getActivityId());
+    result.setBusinessKey(processInstance.getBusinessKey());
+    result.setId(processInstance.getId());
+    result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
+    result.setSuspended(processInstance.isSuspended());
+    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
+    return result;
   }
   
   
