@@ -15,10 +15,11 @@ package org.activiti.rest.api.task;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.engine.CommentResponse;
+import org.activiti.rest.api.engine.AttachmentResponse;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -28,48 +29,47 @@ import org.restlet.resource.Get;
 /**
  * @author Frederik Heremans
  */
-public class TaskCommentResource extends TaskBasedResource {
+public class TaskAttachmentResource extends TaskBasedResource {
 
   @Get
-  public CommentResponse getComment() {
+  public AttachmentResponse getAttachment() {
     if(!authenticate())
       return null;
     
     Task task = getTaskFromRequest();
     
-    String commentId = getAttribute("commentId");
-    if(commentId == null) {
-      throw new ActivitiIllegalArgumentException("CommentId is required.");
+    String attachmentId = getAttribute("attachmentId");
+    if(attachmentId == null) {
+      throw new ActivitiIllegalArgumentException("AttachmentId is required.");
     }
     
-    Comment comment = ActivitiUtil.getTaskService().getComment(commentId);
-    if(comment == null || !task.getId().equals(comment.getTaskId())) {
-      throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have a comment with id '" + commentId + "'.", Comment.class);
+    Attachment attachment = ActivitiUtil.getTaskService().getAttachment(attachmentId);
+    if(attachment == null || !task.getId().equals(attachment.getTaskId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
     }
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestComment(this, comment);
+            .createAttachmentResponse(this, attachment);
   }
   
   @Delete
-  public void deleteComment() {
+  public void delegteAttachment() {
     if(!authenticate())
       return;
     
-    // Check if task exists
     Task task = getTaskFromRequest();
     
-    String commentId = getAttribute("commentId");
-    if(commentId == null) {
-      throw new ActivitiIllegalArgumentException("CommentId is required.");
+    String attachmentId = getAttribute("attachmentId");
+    if(attachmentId == null) {
+      throw new ActivitiIllegalArgumentException("AttachmentId is required.");
     }
     
-    Comment comment = ActivitiUtil.getTaskService().getComment(commentId);
-    if(comment == null || comment.getTaskId() == null || !comment.getTaskId().equals(task.getId())) {
-      throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have a comment with id '" + commentId + "'.", Comment.class);
+    Attachment attachment = ActivitiUtil.getTaskService().getAttachment(attachmentId);
+    if(attachment == null || !task.getId().equals(attachment.getTaskId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
     }
     
-    ActivitiUtil.getTaskService().deleteComment(commentId);
+    ActivitiUtil.getTaskService().deleteAttachment(attachmentId);
     setStatus(Status.SUCCESS_NO_CONTENT);
   }
 }

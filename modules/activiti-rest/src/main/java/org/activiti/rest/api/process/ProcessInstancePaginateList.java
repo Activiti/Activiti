@@ -16,22 +16,31 @@ package org.activiti.rest.api.process;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.AbstractPaginateList;
+import org.activiti.rest.api.RestResponseFactory;
+import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
-public class ProcessInstancesPaginateList extends AbstractPaginateList {
+public class ProcessInstancePaginateList extends AbstractPaginateList {
 
+  private SecuredResource resource;
+  
+  public ProcessInstancePaginateList(SecuredResource resource) {
+    this.resource = resource;
+  }
+  
   @SuppressWarnings("rawtypes")
   @Override
   protected List processList(List list) {
-    List<ProcessInstancesResponse> processResponseList = new ArrayList<ProcessInstancesResponse>();
+    List<ProcessInstanceResponse> responseList = new ArrayList<ProcessInstanceResponse>();
+    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     for (Object instance : list) {
-      processResponseList.add(new ProcessInstancesResponse(
-          (HistoricProcessInstance) instance));
+      responseList.add(restResponseFactory.createProcessInstanceResponse(resource, (ProcessInstance) instance));
     }
-    return processResponseList;
+    return responseList;
   }
 }

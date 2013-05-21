@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.process;
+package org.activiti.rest.api.legacy.process;
 
 import java.io.Serializable;
 
@@ -21,7 +21,7 @@ import org.activiti.rest.api.RequestUtil;
 /**
  * @author Tijs Rademakers
  */
-public class ProcessInstancesResponse implements Serializable {
+public class LegacyProcessInstancesResponse implements Serializable {
   
   private static final long serialVersionUID = 1L;
   
@@ -31,7 +31,7 @@ public class ProcessInstancesResponse implements Serializable {
   String startTime;
   String startUserId;
   
-  public ProcessInstancesResponse(HistoricProcessInstance processInstance) {
+  public LegacyProcessInstancesResponse(HistoricProcessInstance processInstance) {
     this.setId(processInstance.getId());
     this.setBusinessKey(processInstance.getBusinessKey());
     this.setStartTime(RequestUtil.dateToString(processInstance.getStartTime()));

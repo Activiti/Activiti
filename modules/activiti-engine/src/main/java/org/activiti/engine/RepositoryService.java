@@ -13,19 +13,22 @@
 
 package org.activiti.engine;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.DiagramLayout;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
+import org.activiti.engine.repository.NativeDeploymentQuery;
+import org.activiti.engine.repository.NativeModelQuery;
+import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
+
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
 
 
 /** Service providing access to the repository of process definitions and deployments.
@@ -34,6 +37,7 @@ import org.activiti.engine.task.IdentityLink;
  * @author Falko Menge
  * @author Tijs Rademakers
  * @author Joram Barrez
+ * @author Henry Yan
  */
 public interface RepositoryService {
 
@@ -80,9 +84,19 @@ public interface RepositoryService {
 
   /** Query process definitions. */
   ProcessDefinitionQuery createProcessDefinitionQuery();
+
+  /**
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for process definitions.
+   */
+  NativeProcessDefinitionQuery createNativeProcessDefinitionQuery();
   
-  /** Query process definitions. */
+  /** Query deployment. */
   DeploymentQuery createDeploymentQuery();
+
+  /**
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for deployment.
+   */
+  NativeDeploymentQuery createNativeDeploymentQuery();
   
   /**
    * Suspends the process definition with the given id. 
@@ -155,9 +169,7 @@ public interface RepositoryService {
   /**
    * Activates the process definition with the given id. 
    * 
-   * @param suspendProcessInstances If true, all the process instances of the provided process definition
-   *                                will be activated too.
-   * @param activationDate The date on which the process definition will be activated. If null, the 
+   * @param activationDate The date on which the process definition will be activated. If null, the
    *                       process definition is suspended immediately. 
    *                       Note: The job executor needs to be active to use this!                                 
    *                                
@@ -177,9 +189,7 @@ public interface RepositoryService {
   /**
    * Activates the process definition with the given key (=id in the bpmn20.xml file). 
    * 
-   * @param suspendProcessInstances If true, all the process instances of the provided process definition
-   *                                will be activated too.
-   * @param activationDate The date on which the process definition will be activated. If null, the 
+   * @param activationDate The date on which the process definition will be activated. If null, the
    *                       process definition is suspended immediately. 
    *                       Note: The job executor needs to be active to use this!                                 
    *                                
@@ -272,6 +282,11 @@ public interface RepositoryService {
   
   /** Query models. */
   public ModelQuery createModelQuery();
+
+  /**
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for process definitions.
+   */
+  NativeModelQuery createNativeModelQuery();
   
   /**
    * Returns the {@link Model}

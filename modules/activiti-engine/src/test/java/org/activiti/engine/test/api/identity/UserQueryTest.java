@@ -13,13 +13,14 @@
 
 package org.activiti.engine.test.api.identity;
 
-import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+
+import java.util.List;
 
 
 /**
@@ -261,6 +262,24 @@ public class UserQueryTest extends PluggableActivitiTestCase {
       query.singleResult();
       fail();
     } catch (ActivitiException e) {}
+  }
+
+  public void testNativeQuery() {
+    assertEquals("ACT_ID_USER", managementService.getTableName(User.class));
+    assertEquals("ACT_ID_USER", managementService.getTableName(UserEntity.class));
+    String tableName = managementService.getTableName(User.class);
+    String baseQuerySql = "SELECT * FROM " + tableName;
+
+    assertEquals(3, identityService.createNativeUserQuery().sql(baseQuerySql).list().size());
+
+    assertEquals(1, identityService.createNativeUserQuery().sql(baseQuerySql + " where ID_ = #{id}")
+        .parameter("id", "kermit").list().size());
+
+    // paging
+    assertEquals(2, identityService.createNativeUserQuery().sql(baseQuerySql).listPage(0, 2).size());
+    assertEquals(2, identityService.createNativeUserQuery().sql(baseQuerySql).listPage(1, 3).size());
+    assertEquals(1, identityService.createNativeUserQuery().sql(baseQuerySql + " where ID_ = #{id}")
+        .parameter("id", "kermit").listPage(0, 1).size());
   }
   
 }
