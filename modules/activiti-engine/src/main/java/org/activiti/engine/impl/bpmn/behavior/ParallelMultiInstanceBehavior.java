@@ -37,7 +37,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
    */
    protected void createInstances(ActivityExecution execution) throws Exception {
     int nrOfInstances = resolveNrOfInstances(execution);
-    if (nrOfInstances <= 0) {
+    if (nrOfInstances < 0) {
       throw new ActivitiIllegalArgumentException("Invalid number of instances: must be positive integer value" 
               + ", but was " + nrOfInstances);
     }
