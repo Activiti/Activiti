@@ -129,4 +129,28 @@
     <include refid="selectModelsByQueryCriteriaSql"/>
   </select>
 
+  <select id="selectModelByNativeQuery" parameterType="java.util.Map" resultMap="modelResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectModelByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="modelResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectModelCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
+
 </mapper>
