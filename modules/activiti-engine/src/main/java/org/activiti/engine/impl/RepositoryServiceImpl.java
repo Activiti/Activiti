@@ -13,10 +13,6 @@
 
 package org.activiti.engine.impl;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
@@ -50,9 +46,16 @@ import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.DiagramLayout;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
+import org.activiti.engine.repository.NativeDeploymentQuery;
+import org.activiti.engine.repository.NativeModelQuery;
+import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
+
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -86,6 +89,11 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     return new ProcessDefinitionQueryImpl(commandExecutor);
   }
 
+  @Override
+  public NativeProcessDefinitionQuery createNativeProcessDefinitionQuery() {
+    return new NativeProcessDefinitionQueryImpl(commandExecutor);
+  }
+
   @SuppressWarnings("unchecked")
   public List<String> getDeploymentResourceNames(String deploymentId) {
     return commandExecutor.execute(new GetDeploymentResourceNamesCmd(deploymentId));
@@ -97,6 +105,11 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public DeploymentQuery createDeploymentQuery() {
     return new DeploymentQueryImpl(commandExecutor);
+  }
+
+  @Override
+  public NativeDeploymentQuery createNativeDeploymentQuery() {
+    return new NativeDeploymentQueryImpl(commandExecutor);
   }
 
   public ProcessDefinition getProcessDefinition(String processDefinitionId) {
@@ -178,7 +191,12 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   public ModelQuery createModelQuery() {
     return new ModelQueryImpl(commandExecutor);
   }
-  
+
+  @Override
+  public NativeModelQuery createNativeModelQuery() {
+    return new NativeModelQueryImpl(commandExecutor);
+  }
+
   public Model getModel(String modelId) {
     return commandExecutor.execute(new GetModelCmd(modelId));
   }
