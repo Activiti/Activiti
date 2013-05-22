@@ -13,12 +13,13 @@
 
 package org.activiti.rest.api.process;
 
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
-import org.activiti.rest.application.ActivitiRestServicesApplication;
+import org.activiti.rest.api.DataResponse;
+import org.restlet.data.Form;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -27,15 +28,51 @@ import org.restlet.resource.Get;
 /**
  * @author Frederik Heremans
  */
-public class ProcessInstanceResource extends SecuredResource {
+public class ProcessInstanceCollectionResource extends ProcessInstanceBasedResource {
 
   @Get
-  public ProcessInstanceResponse getProcessInstance() {
+  public DataResponse getProcessInstances() {
     if(!authenticate()) {
       return null;
     }
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createProcessInstanceResponse(this, getProcessInstanceFromRequest());
+    Form urlQuery = getQuery();
+   
+    // Populate query based on request
+    ProcessInstanceQueryRequest queryRequest = new ProcessInstanceQueryRequest();
+    
+    if(getQueryParameter("id", urlQuery) != null) {
+      queryRequest.setProcessInstanceId(getQueryParameter("id", urlQuery));
+    }
+    
+    if(getQueryParameter("processDefinitionKey", urlQuery) != null) {
+      queryRequest.setProcessDefinitionKey(getQueryParameter("processDefinitionKey", urlQuery));
+    }
+    
+    if(getQueryParameter("processDefinitionId", urlQuery) != null) {
+      queryRequest.setProcessDefinitionId(getQueryParameter("processDefinitionId", urlQuery));
+    }
+    
+    if(getQueryParameter("businessKey", urlQuery) != null) {
+      queryRequest.setProcessBusinessKey(getQueryParameter("businessKey", urlQuery));
+    }
+    
+    if(getQueryParameter("involvedUser", urlQuery) != null) {
+      queryRequest.setInvolvedUser(getQueryParameter("involvedUser", urlQuery));
+    }
+    
+    if(getQueryParameter("suspended", urlQuery) != null) {
+      queryRequest.setSuspended(getQueryParameterAsBoolean("suspended", urlQuery));
+    }
+    
+    if(getQueryParameter("superProcessInstanceId", urlQuery) != null) {
+      queryRequest.setSuperProcessInstanceId(getQueryParameter("superProcessInstanceId", urlQuery));
+    }
+    
+    if(getQueryParameter("subProcessInstanceId", urlQuery) != null) {
+      queryRequest.setSubProcessInstanceId(getQueryParameter("subProcessInstanceId", urlQuery));
+    }
+    
+    return getQueryResponse(queryRequest, urlQuery);
   }
   
   @Delete

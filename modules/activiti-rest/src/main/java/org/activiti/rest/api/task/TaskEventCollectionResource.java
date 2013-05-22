@@ -31,7 +31,7 @@ import org.restlet.resource.Get;
 public class TaskEventCollectionResource extends TaskBasedResource {
 
   @Get
-  public List<EventResponse> getComments() {
+  public List<EventResponse> getEvents() {
     if(!authenticate())
       return null;
     

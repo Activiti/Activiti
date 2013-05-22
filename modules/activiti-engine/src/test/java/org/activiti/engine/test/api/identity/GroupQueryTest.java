@@ -13,13 +13,14 @@
 
 package org.activiti.engine.test.api.identity;
 
-import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
+import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+
+import java.util.List;
 
 
 /**
@@ -234,6 +235,29 @@ public class GroupQueryTest extends PluggableActivitiTestCase {
       query.singleResult();
       fail();
     } catch (ActivitiException e) {}
+  }
+
+  public void testNativeQuery() {
+    assertEquals("ACT_ID_GROUP", managementService.getTableName(Group.class));
+    assertEquals("ACT_ID_GROUP", managementService.getTableName(GroupEntity.class));
+    String tableName = managementService.getTableName(Group.class);
+    String baseQuerySql = "SELECT * FROM " + tableName;
+
+    assertEquals(4, identityService.createNativeGroupQuery().sql(baseQuerySql).list().size());
+
+    assertEquals(1, identityService.createNativeGroupQuery().sql(baseQuerySql + " where ID_ = #{id}")
+        .parameter("id", "admin").list().size());
+
+    assertEquals(3, identityService.createNativeGroupQuery().sql("SELECT aig.* from " + tableName + " aig"
+        + " inner join ACT_ID_MEMBERSHIP aim on aig.ID_ = aim.GROUP_ID_ "
+        + " inner join ACT_ID_USER aiu on aiu.ID_ = aim.USER_ID_ where aiu.ID_ = #{id}")
+        .parameter("id", "kermit").list().size());;
+
+    // paging
+    assertEquals(2, identityService.createNativeGroupQuery().sql(baseQuerySql).listPage(0, 2).size());
+    assertEquals(3, identityService.createNativeGroupQuery().sql(baseQuerySql).listPage(1, 3).size());
+    assertEquals(1, identityService.createNativeGroupQuery().sql(baseQuerySql + " where ID_ = #{id}")
+        .parameter("id", "admin").listPage(0, 1).size());
   }
 
 }

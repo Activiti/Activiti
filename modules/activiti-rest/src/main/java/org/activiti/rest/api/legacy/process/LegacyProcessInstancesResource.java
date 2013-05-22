@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.process;
+package org.activiti.rest.api.legacy.process;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,11 +27,11 @@ import org.restlet.resource.Get;
 /**
  * @author Tijs Rademakers
  */
-public class ProcessInstancesResource extends SecuredResource {
+public class LegacyProcessInstancesResource extends SecuredResource {
   
   Map<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
   
-  public ProcessInstancesResource() {
+  public LegacyProcessInstancesResource() {
     properties.put("id", HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
     properties.put("processDefinitionId", HistoricProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
     properties.put("businessKey", HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
@@ -49,7 +49,7 @@ public class ProcessInstancesResource extends SecuredResource {
     query = processDefinitionId == null ? query : query.processDefinitionId(processDefinitionId);
     query = processInstanceKey == null ? query : query.processInstanceBusinessKey(processInstanceKey);
     
-    DataResponse response = new ProcessInstancesPaginateList().paginateList(getQuery(), query, "id", properties);
+    DataResponse response = new LegacyProcessInstancesPaginateList().paginateList(getQuery(), query, "id", properties);
     return response;
   }
 }

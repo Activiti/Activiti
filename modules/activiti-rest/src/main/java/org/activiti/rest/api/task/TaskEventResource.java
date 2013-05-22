@@ -44,7 +44,7 @@ public class TaskEventResource extends TaskBasedResource {
     }
     
     Event event = ActivitiUtil.getTaskService().getEvent(eventId);
-    if(event == null) {
+    if(event == null || !task.getId().equals(event.getTaskId())) {
       throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an event with id '" + eventId + "'.", Event.class);
     }
     

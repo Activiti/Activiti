@@ -13,9 +13,9 @@ import org.activiti.rest.api.identity.UserGroupsResource;
 import org.activiti.rest.api.identity.UserPictureResource;
 import org.activiti.rest.api.identity.UserResource;
 import org.activiti.rest.api.identity.UserSearchResource;
+import org.activiti.rest.api.legacy.LegacyTaskAttachmentResource;
 import org.activiti.rest.api.legacy.TaskAddResource;
 import org.activiti.rest.api.legacy.TaskAttachmentAddResource;
-import org.activiti.rest.api.legacy.TaskAttachmentResource;
 import org.activiti.rest.api.legacy.TaskFormResource;
 import org.activiti.rest.api.legacy.TaskOperationResource;
 import org.activiti.rest.api.legacy.TaskPropertiesResource;
@@ -28,6 +28,8 @@ import org.activiti.rest.api.legacy.deployment.DeploymentDeleteResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentUploadResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentsDeleteResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentsResource;
+import org.activiti.rest.api.legacy.process.LegacyProcessInstanceResource;
+import org.activiti.rest.api.legacy.process.LegacyProcessInstancesResource;
 import org.activiti.rest.api.legacy.process.ProcessDefinitionsResource;
 import org.activiti.rest.api.legacy.task.LegacyTaskResource;
 import org.activiti.rest.api.management.JobExecuteResource;
@@ -40,11 +42,11 @@ import org.activiti.rest.api.management.TablesResource;
 import org.activiti.rest.api.process.ProcessDefinitionDiagramResource;
 import org.activiti.rest.api.process.ProcessDefinitionFormResource;
 import org.activiti.rest.api.process.ProcessDefinitionPropertiesResource;
+import org.activiti.rest.api.process.ProcessInstanceCollectionResource;
 import org.activiti.rest.api.process.ProcessInstanceDiagramResource;
 import org.activiti.rest.api.process.ProcessInstanceResource;
 import org.activiti.rest.api.process.ProcessInstanceSignalExecutionResource;
 import org.activiti.rest.api.process.ProcessInstanceTaskResource;
-import org.activiti.rest.api.process.ProcessInstancesResource;
 import org.activiti.rest.api.process.SignalEventSubscriptionResource;
 import org.activiti.rest.api.process.StartProcessInstanceResource;
 import org.activiti.rest.api.repository.DeploymentCollectionResource;
@@ -55,6 +57,9 @@ import org.activiti.rest.api.repository.DeploymentResourceResource;
 import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionResource;
 import org.activiti.rest.api.repository.SimpleWorkflowResource;
+import org.activiti.rest.api.task.TaskAttachmentCollectionResource;
+import org.activiti.rest.api.task.TaskAttachmentContentResource;
+import org.activiti.rest.api.task.TaskAttachmentResource;
 import org.activiti.rest.api.task.TaskCollectionResource;
 import org.activiti.rest.api.task.TaskCommentCollectionResource;
 import org.activiti.rest.api.task.TaskCommentResource;
@@ -97,6 +102,12 @@ public class RestServicesInit {
     router.attach("/runtime/tasks/{taskId}/comments/{commentId}", TaskCommentResource.class);
     router.attach("/runtime/tasks/{taskId}/events", TaskEventCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}/events/{eventId}", TaskEventResource.class);
+    router.attach("/runtime/tasks/{taskId}/attachments", TaskAttachmentCollectionResource.class);
+    router.attach("/runtime/tasks/{taskId}/attachments/{attachmentId}", TaskAttachmentResource.class);
+    router.attach("/runtime/tasks/{taskId}/attachments/{attachmentId}/content", TaskAttachmentContentResource.class);
+    
+    router.attach("/runtime/process-instances/{processInstanceId}", ProcessInstanceResource.class);
+    router.attach("/runtime/process-instances", ProcessInstanceCollectionResource.class);
     
     router.attach("/query/tasks", TaskQueryResource.class);
     
@@ -119,9 +130,9 @@ public class RestServicesInit {
     router.attach("/groups", GroupSearchResource.class);
     
     router.attach("/process-definitions", ProcessDefinitionsResource.class);
-    router.attach("/process-instances", ProcessInstancesResource.class);
+    router.attach("/process-instances", LegacyProcessInstancesResource.class);
     router.attach("/process-instance", StartProcessInstanceResource.class);
-    router.attach("/process-instance/{processInstanceId}", ProcessInstanceResource.class);
+    router.attach("/process-instance/{processInstanceId}", LegacyProcessInstanceResource.class);
     router.attach("/process-instance/{processInstanceId}/diagram", ProcessInstanceDiagramResource.class);
     router.attach("/process-instance/{processInstanceId}/tasks", ProcessInstanceTaskResource.class);
     router.attach("/process-instance/{processInstanceId}/signal", ProcessInstanceSignalExecutionResource.class);
@@ -141,7 +152,7 @@ public class RestServicesInit {
     
     router.attach("/history/{taskId}/form-properties", HistoricFormPropertiesResource.class);
     
-    router.attach("/attachment/{attachmentId}", TaskAttachmentResource.class);
+    router.attach("/attachment/{attachmentId}", LegacyTaskAttachmentResource.class);
     
     router.attach("/form/{taskId}/properties", TaskPropertiesResource.class);
     
