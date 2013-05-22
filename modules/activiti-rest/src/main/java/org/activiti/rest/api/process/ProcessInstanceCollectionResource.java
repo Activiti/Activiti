@@ -14,15 +14,21 @@
 package org.activiti.rest.api.process;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
+import org.activiti.rest.api.RestResponseFactory;
+import org.activiti.rest.api.engine.variable.RestVariable;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Form;
 import org.restlet.data.Status;
-import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 
 
 /**
@@ -75,29 +81,43 @@ public class ProcessInstanceCollectionResource extends ProcessInstanceBasedResou
     return getQueryResponse(queryRequest, urlQuery);
   }
   
-  @Delete
-  public void deleteProcessInstance() {
-    if(!authenticate()) {
-      return;
-    }
-    ProcessInstance processInstance = getProcessInstanceFromRequest();
-    String deleteReason = getQueryParameter("deleteReason", getQuery());
-    
-    ActivitiUtil.getRuntimeService().deleteProcessInstance(processInstance.getId(), deleteReason);
-    setStatus(Status.SUCCESS_NO_CONTENT);
-  }
   
-  protected ProcessInstance getProcessInstanceFromRequest() {
-    String processInstanceId = getAttribute("processInstanceId");
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("The processInstanceId cannot be null");
+  @Post
+  public ProcessInstanceResponse createProcessInstance(ProcessInstanceCreateRequest request) {
+    
+    if(request.getProcessDefinitionId() == null && request.getProcessDefinitionKey() == null) {
+      throw new ActivitiIllegalArgumentException("Either processDefinitionId or processDefinitionKey is required.");
     }
     
-   ProcessInstance processInstance = ActivitiUtil.getRuntimeService().createProcessInstanceQuery()
-           .processInstanceId(processInstanceId).singleResult();
-    if (processInstance == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", ProcessInstance.class);
+    if(request.getProcessDefinitionId() != null && request.getProcessDefinitionKey() != null) {
+      throw new ActivitiIllegalArgumentException("Both processDefinitionId and processDefinitionKey are set, use only one.");
     }
-    return processInstance;
+    
+    RestResponseFactory factory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
+    
+    Map<String, Object> startVariables = null;
+    if(request.getVariables() != null) {
+      startVariables = new HashMap<String, Object>();
+      for(RestVariable variable : request.getVariables()) {
+        startVariables.put(variable.getName(), factory.getVariableValue(variable));
+      }
+    }
+    
+    // Actually start the instance based on key or id
+    try {
+      ProcessInstance instance = null;
+      if(request.getProcessDefinitionId() != null) {
+        instance = ActivitiUtil.getRuntimeService().startProcessInstanceById(
+                request.getProcessDefinitionId(), request.getBusinessKey(), startVariables);
+      } else {
+        instance = ActivitiUtil.getRuntimeService().startProcessInstanceByKey(
+                request.getProcessDefinitionKey(), request.getBusinessKey(), startVariables);
+      }
+      
+      setStatus(Status.SUCCESS_CREATED);
+      return factory.createProcessInstanceResponse(this, instance);
+    } catch(ActivitiObjectNotFoundException aonfe) {
+      throw new ActivitiIllegalArgumentException(aonfe.getMessage(), aonfe);
+    }
   }
 }

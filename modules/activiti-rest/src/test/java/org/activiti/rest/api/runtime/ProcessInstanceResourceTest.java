@@ -17,6 +17,11 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
+import org.codehaus.jackson.JsonNode;
+import org.restlet.data.Status;
+import org.restlet.representation.Representation;
+import org.restlet.resource.ClientResource;
+import org.restlet.resource.ResourceException;
 
 /**
  * Test for all REST-operations related to a single Process instance resource.
@@ -31,84 +36,63 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
   @Deployment(resources = {"org/activiti/rest/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
   public void testGetProcessInstance() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
-    String id = processInstance.getId();
-    runtimeService.addUserIdentityLink(id, "kermit", "whatever");
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
+    Representation response = client.get();
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     
-    // Test without any parameters
-    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION);
-    assertResultsPresentInDataResponse(url, id);
+    // Check resulting instance
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals(processInstance.getId(), responseNode.get("id").getTextValue());
+    assertEquals("myBusinessKey", responseNode.get("businessKey").getTextValue());
+    assertEquals("processTask", responseNode.get("activityId").getTextValue());
+    assertFalse(responseNode.get("suspended").getBooleanValue());
     
+    assertTrue(responseNode.get("url").asText().endsWith(
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
+    assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(processInstance.getProcessDefinitionId()))));
+  }
+  
+  /**
+   * Test getting an unexisting process instance.
+   */
+  public void testGetUnexistingProcessInstance() {
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, "unexistingpi"));
+    try {
+      client.get();
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+      assertEquals("Could not find a process instance with id 'unexistingpi'.", expected.getStatus().getDescription());
+    }
+  }
+  
+  /**
+   * Test deleting a single process instance.
+   */
+  @Deployment(resources = {"org/activiti/rest/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
+  public void testDeleteProcessInstance() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
+    client.delete();
+    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
     
-    // Process instance id
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?id=" + id;
-    assertResultsPresentInDataResponse(url, id);
-    
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?id=anotherId";
-    assertResultsPresentInDataResponse(url);
-    
-    // Process instance business key
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?businessKey=myBusinessKey";
-    assertResultsPresentInDataResponse(url, id);
-    
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?businessKey=anotherBusinessKey";
-    assertResultsPresentInDataResponse(url);
-    
-    // Process definition key
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?processDefinitionKey=processOne";
-    assertResultsPresentInDataResponse(url, id);
-    
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?processDefinitionKey=processTwo";
-    assertResultsPresentInDataResponse(url);
-    
-    // Process definition id
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?processDefinitionId=" + processInstance.getProcessDefinitionId();
-    assertResultsPresentInDataResponse(url, id);
-    
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?processDefinitionId=anotherId";
-    assertResultsPresentInDataResponse(url);
-    
-     // Involved user
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?involvedUser=kermit";
-    assertResultsPresentInDataResponse(url, id);
-    
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?involvedUser=gonzo";
-    assertResultsPresentInDataResponse(url);
-    
-    // Active process
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?suspended=false";
-    assertResultsPresentInDataResponse(url, id);
-    
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?suspended=true";
-    assertResultsPresentInDataResponse(url);
-    
-    // Suspended process
-    runtimeService.suspendProcessInstanceById(id);
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?suspended=true";
-    assertResultsPresentInDataResponse(url, id);
-    
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?suspended=false";
-    assertResultsPresentInDataResponse(url);
-    runtimeService.activateProcessInstanceById(id);
-    
-    // Complete first task in the process to have a subprocess created
-    taskService.complete(taskService.createTaskQuery().processInstanceId(id).singleResult().getId());
-    
-    ProcessInstance subProcess = runtimeService.createProcessInstanceQuery().superProcessInstanceId(id).singleResult();
-    assertNotNull(subProcess);
-    
-    // Super-process instance id
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?superProcessInstanceId=" + id;
-    assertResultsPresentInDataResponse(url, subProcess.getId());
-    
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?superProcessInstanceId=anotherId";
-    assertResultsPresentInDataResponse(url);
-    
-    // Sub-process instance id
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?subProcessInstanceId=" + subProcess.getId();
-    assertResultsPresentInDataResponse(url, id);
-    
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?subProcessInstanceId=anotherId";
-    assertResultsPresentInDataResponse(url);
-    
+    // Check if process-instance is gone
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+  }
+  
+  /**
+   * Test deleting an unexisting process instance.
+   */
+  public void testDeleteUnexistingProcessInstance() {
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, "unexistingpi"));
+    try {
+      client.delete();
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+      assertEquals("Could not find a process instance with id 'unexistingpi'.", expected.getStatus().getDescription());
+    }
   }
 }

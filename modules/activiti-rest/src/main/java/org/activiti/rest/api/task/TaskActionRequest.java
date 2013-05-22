@@ -14,10 +14,7 @@
 package org.activiti.rest.api.task;
 
 
-import java.util.List;
-
 import org.activiti.rest.api.RestActionRequest;
-import org.activiti.rest.api.engine.variable.RestVariable;
 
 /**
  * @author Frederik Heremans
@@ -30,18 +27,11 @@ public class TaskActionRequest extends RestActionRequest {
   public static final String ACTION_RESOLVE = "resolve";
   
   private String assignee;
-  private List<RestVariable> variables;
   
   public void setAssignee(String assignee) {
     this.assignee = assignee;
   }
   public String getAssignee() {
     return assignee;
-  }
-  public void setVariables(List<RestVariable> variables) {
-    this.variables = variables;
-  }
-  public List<RestVariable> getVariables() {
-    return variables;
   }
 }
