@@ -142,17 +142,17 @@ public class RestResponseFactory {
     return response;
   }
   
-  public List<RestVariable> createRestVariables(SecuredResource securedResource, Map<String, Object> variables, String taskId, String executionId, RestVariableScope scope) {
+  public List<RestVariable> createRestVariables(SecuredResource securedResource, Map<String, Object> variables, String taskId, String executionId, String processInstanceId, RestVariableScope scope) {
    List<RestVariable> result = new ArrayList<RestVariable>();
    
    for(Entry<String, Object> pair : variables.entrySet()) {
-     result.add(createRestVariable(securedResource, pair.getKey(), pair.getValue(), scope, taskId, executionId, false));
+     result.add(createRestVariable(securedResource, pair.getKey(), pair.getValue(), scope, taskId, executionId, processInstanceId, false));
    }
    
    return result;
   }
   
-  public RestVariable createRestVariable(SecuredResource securedResource, String name, Object value, RestVariableScope scope, String taskId, String executionId, boolean includeBinaryValue) {
+  public RestVariable createRestVariable(SecuredResource securedResource, String name, Object value, RestVariableScope scope, String taskId, String executionId, String processInstanceId, boolean includeBinaryValue) {
     RestVariableConverter converter = null;
     RestVariable restVar = new RestVariable();
     restVar.setVariableScope(scope);
@@ -185,21 +185,33 @@ public class RestResponseFactory {
         if(taskId != null) {
           restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
         }
-        // TODO: execution variables
+        
+        if(executionId != null) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, executionId, name));
+        }
+        
+        if(processInstanceId != null) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_DATA, processInstanceId, name));
+        }
       }
     }
     return restVar;
   }
   
-  public RestVariable createBinaryRestVariable(SecuredResource securedResource, String name, RestVariableScope scope, String type, String taskId, String executionId) {
+  public RestVariable createBinaryRestVariable(SecuredResource securedResource, String name, RestVariableScope scope, String type, String taskId, String executionId, String processInstanceId) {
     RestVariable restVar = new RestVariable();
     restVar.setVariableScope(scope);
     restVar.setName(name);
     restVar.setType(type);
-    restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
     
     if(taskId != null) {
       restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
+    }
+    if(executionId != null) {
+      restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, executionId, name));
+    }
+    if(processInstanceId != null) {
+      restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_DATA, processInstanceId, name));
     }
     
     return restVar;

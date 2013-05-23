@@ -112,7 +112,7 @@ public final class RestUrls {
   public static final String[] URL_TASK_VARIABLE = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}"};
   
   /**
-   * URL template for a single task variable content: <i>runtime/tasks/{0:taskId}/variables/{1:variableName}/variabledata</i>
+   * URL template for a single task variable content: <i>runtime/tasks/{0:taskId}/variables/{1:variableName}/data</i>
    */
   public static final String[] URL_TASK_VARIABLE_DATA = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
   
@@ -172,7 +172,22 @@ public final class RestUrls {
   public static final String[] URL_EXECUTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}"};
   
   /**
-   * URL template for process instance collection: <i>runtime/process-instances/{0:processInstanceId}</i>
+   * URL template for the variables for an execution: <i>runtime/executions/{0:executionId}/variables</i>
+   */
+  public static final String[] URL_EXECUTION_VARIABLE_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_VARIABLES};
+  
+  /**
+   * URL template for a single variables for an execution: <i>runtime/executions/{0:executionId}/variables/{1:variableName}</i>
+   */
+  public static final String[] URL_EXECUTION_VARIABLE = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}"};
+  
+  /**
+   * URL template for a single variables for an execution: <i>runtime/executions/{0:executionId}/variables/{1:variableName}/data</i>
+   */
+  public static final String[] URL_EXECUTION_VARIABLE_DATA = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
+  
+  /**
+   * URL template for process instance collection: <i>runtime/process-instances</i>
    */
   public static final String[] URL_PROCESS_INSTANCE_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE};
   
@@ -180,6 +195,21 @@ public final class RestUrls {
    * URL template for a single process instance: <i>runtime/process-instances/{0:processInstanceId}</i>
    */
   public static final String[] URL_PROCESS_INSTANCE = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for process instance variable collection: <i>runtime/process-instances/{0:processInstanceId}/variables</i>
+   */
+  public static final String[] URL_PROCESS_INSTANCE_VARIABLE_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_VARIABLES};
+  
+  /**
+   * URL template for a single process instance variable: <i>runtime/process-instances/{0:processInstanceId}/variables/{1:variableName}</i>
+   */
+  public static final String[] URL_PROCESS_INSTANCE_VARIABLE= {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}"};
+  
+  /**
+   * URL template for a single process instance variable data: <i>runtime/process-instances/{0:processInstanceId}/variables/{1:variableName}/data</i>
+   */
+  public static final String[] URL_PROCESS_INSTANCE_VARIABLE_DATA= {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
   
   /**
    * URL template for a comment on a process instance: <i>runtime/process-instances/{0:processInstanceId}/comments/{1:commentId}</i>

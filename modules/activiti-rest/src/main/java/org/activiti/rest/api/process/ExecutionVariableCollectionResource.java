@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.task;
+package org.activiti.rest.api.process;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.task.Task;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.engine.variable.RestVariable;
 import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
@@ -38,28 +38,29 @@ import org.restlet.resource.ResourceException;
 /**
  * @author Frederik Heremans
  */
-public class TaskVariableCollectionResource extends BaseTaskVariableResource {
+public class ExecutionVariableCollectionResource extends BaseExecutionVariableResource {
 
   @Get
   public List<RestVariable> getVariables() {
     if (authenticate() == false)
       return null;
     
+    Execution execution = getExecutionFromRequest();
+    
     List<RestVariable> result = new ArrayList<RestVariable>();
     Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
     
-    // Check if it's a valid task to get the variables for
-    Task task = getTaskFromRequest();
-    
+    // Check if it's a valid execution to get the variables for
     RestVariableScope variableScope = RestVariable.getScopeFromString(getQueryParameter("scope", getQuery()));
+    
     if(variableScope == null) {
       // Use both local and global variables
-      addLocalVariables(task, variableMap);
-      addGlobalVariables(task, variableMap);
+      addLocalVariables(execution, variableMap);
+      addGlobalVariables(execution, variableMap);
     } else if(variableScope == RestVariableScope.GLOBAL) {
-      addGlobalVariables(task, variableMap);
+      addGlobalVariables(execution, variableMap);
     } else if(variableScope == RestVariableScope.LOCAL) {
-      addLocalVariables(task, variableMap);
+      addLocalVariables(execution, variableMap);
     }
     
     // Get unique variables from map
@@ -68,14 +69,15 @@ public class TaskVariableCollectionResource extends BaseTaskVariableResource {
   }
   
   @Post
-  public Object createTaskVariable(Representation representation) {
+  public Object createExecutionVariable(Representation representation) {
     if (authenticate() == false)
       return null;
     
-    Task task = getTaskFromRequest();
+    Execution execution = getExecutionFromRequest();
+    
     Object result = null;
     if(MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {
-      result = setBinaryVariable(representation, task, true);
+      result = setBinaryVariable(representation, execution, true);
     } else {
       // Since we accept both an array of RestVariables and a single RestVariable, we need to inspect the
       // body before passing on to the converterService
@@ -88,7 +90,7 @@ public class TaskVariableCollectionResource extends BaseTaskVariableResource {
           throw new ActivitiIllegalArgumentException("Request didn't cantain a list of variables to create.");
         }
         for(RestVariable var : restVariables) {
-          variables.add(setSimpleVariable(var, task, true));
+          variables.add(setSimpleVariable(var, execution, true));
         }
       } catch (IOException ioe) {
         throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, ioe);
@@ -99,38 +101,37 @@ public class TaskVariableCollectionResource extends BaseTaskVariableResource {
   }
   
   @Delete
-  public void deleteAllLocalTaskVariables() {
-    Task task = getTaskFromRequest();
-    Collection<String> currentVariables = ActivitiUtil.getTaskService().getVariablesLocal(task.getId()).keySet();
-    ActivitiUtil.getTaskService().removeVariablesLocal(task.getId(), currentVariables);
+  public void deleteAllLocalVariables() {
+    Execution execution = getExecutionFromRequest();
+    Collection<String> currentVariables = ActivitiUtil.getRuntimeService().getVariablesLocal(execution.getId()).keySet();
+    ActivitiUtil.getRuntimeService().removeVariablesLocal(execution.getId(), currentVariables);
     
     setStatus(Status.SUCCESS_NO_CONTENT);
   }
   
-  protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap) {
-    if(task.getExecutionId() != null) {
-      Map<String, Object> rawVariables = ActivitiUtil.getRuntimeService().getVariables(task.getExecutionId());
-      List<RestVariable> globalVariables = getApplication(ActivitiRestServicesApplication.class)
-              .getRestResponseFactory().createRestVariables(this, rawVariables, task.getId(), null, null, RestVariableScope.GLOBAL);
-      
-      // Overlay global variables over local ones. In case they are present the values are not overridden, 
-      // since local variables get precedence over global ones at all times.
-      for(RestVariable var : globalVariables) {
-        if(!variableMap.containsKey(var.getName())) {
-          variableMap.put(var.getName(), var);
-        }
+  protected void addGlobalVariables(Execution execution, Map<String, RestVariable> variableMap) {
+    Map<String, Object> rawVariables = ActivitiUtil.getRuntimeService().getVariables(execution.getId());
+    List<RestVariable> globalVariables = getApplication(ActivitiRestServicesApplication.class)
+            .getRestResponseFactory().createRestVariables(this, rawVariables, null, execution.getId(), null, RestVariableScope.GLOBAL);
+    
+    // Overlay global variables over local ones. In case they are present the values are not overridden, 
+    // since local variables get precedence over global ones at all times.
+    for(RestVariable var : globalVariables) {
+      if(!variableMap.containsKey(var.getName())) {
+        variableMap.put(var.getName(), var);
       }
     }
   }
 
   
-  protected void addLocalVariables(Task task, Map<String, RestVariable> variableMap) {
-    Map<String, Object> rawVariables = ActivitiUtil.getTaskService().getVariablesLocal(task.getId());
+  protected void addLocalVariables(Execution execution, Map<String, RestVariable> variableMap) {
+    Map<String, Object> rawLocalvariables = ActivitiUtil.getRuntimeService().getVariablesLocal(execution.getId());
     List<RestVariable> localVariables = getApplication(ActivitiRestServicesApplication.class)
-            .getRestResponseFactory().createRestVariables(this, rawVariables, task.getId(), null, null, RestVariableScope.LOCAL);
+            .getRestResponseFactory().createRestVariables(this, rawLocalvariables, null, execution.getId(), null, RestVariableScope.LOCAL);
     
     for(RestVariable var : localVariables) {
       variableMap.put(var.getName(), var);
     }
   }
+  
 }

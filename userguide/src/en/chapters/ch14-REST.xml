@@ -5267,7 +5267,7 @@ Only the attachment name is required to create a new attachment.
           <listitem>
             <para>
               <emphasis role="bold">Request:</emphasis>
-              <literal>POST /group</literal>
+              <literal>PUT /group</literal>
               <programlisting>
 {
   "id": "admin",

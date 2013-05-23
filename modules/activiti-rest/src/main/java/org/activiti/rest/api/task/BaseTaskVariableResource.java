@@ -58,8 +58,8 @@ public class BaseTaskVariableResource extends TaskBasedResource {
     RestVariableScope variableScope = RestVariable.getScopeFromString(getQueryParameter("scope", getQuery()));
     if(variableScope == null) {
       // First, check local variables (which have precedence when no scope is supplied)
-      if(ActivitiUtil.getTaskService().hasVariable(taskId, variableName)) {
-        value = ActivitiUtil.getTaskService().getVariable(taskId, variableName);
+      if(ActivitiUtil.getTaskService().hasVariableLocal(taskId, variableName)) {
+        value = ActivitiUtil.getTaskService().getVariableLocal(taskId, variableName);
         variableScope = RestVariableScope.LOCAL;
         variableFound = true;
       } else {
@@ -90,7 +90,7 @@ public class BaseTaskVariableResource extends TaskBasedResource {
         throw new ActivitiObjectNotFoundException("Task '" + taskId + "' doesn't have a variable with name: '" + variableName + "'.", VariableInstanceEntity.class);
     } else {
       return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-              .createRestVariable(this, variableName, value, variableScope, taskId, null, includeBinary);
+              .createRestVariable(this, variableName, value, variableScope, taskId, null, null, includeBinary);
     }
   }
   
@@ -170,7 +170,7 @@ public class BaseTaskVariableResource extends TaskBasedResource {
       }
       
       return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-                .createBinaryRestVariable(this, variableName, scope, variableType, task.getId(), null);
+                .createBinaryRestVariable(this, variableName, scope, variableType, task.getId(), null, null);
       
     } catch(FileUploadException fue) {
       throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, fue);
@@ -199,7 +199,7 @@ public class BaseTaskVariableResource extends TaskBasedResource {
     
 
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-             .createRestVariable(this, restVariable.getName(), actualVariableValue, scope, task.getId(), null, false);
+             .createRestVariable(this, restVariable.getName(), actualVariableValue, scope, task.getId(), null, null, false);
   }
   
   protected void setVariable(Task task, String name, Object value, RestVariableScope scope, boolean isNew) {

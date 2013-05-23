@@ -171,6 +171,28 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
     assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(processInstance.getProcessDefinitionId()))));
+    runtimeService.deleteProcessInstance(processInstance.getId(), "testing");
+    
+    // Start using message
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("message", "newInvoiceMessage");
+    response = client.post(requestNode);
+    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    
+    processInstance = runtimeService.createProcessInstanceQuery().singleResult();
+    assertNotNull(processInstance);
+    
+    responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals(processInstance.getId(), responseNode.get("id").getTextValue());
+    assertTrue(responseNode.get("businessKey").isNull());
+    assertEquals("processTask", responseNode.get("activityId").getTextValue());
+    assertFalse(responseNode.get("suspended").getBooleanValue());
+    
+    assertTrue(responseNode.get("url").asText().endsWith(
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
+    assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(processInstance.getProcessDefinitionId()))));
     
     // Start using process definition id and business key
     requestNode = objectMapper.createObjectNode();
@@ -184,6 +206,7 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     assertNotNull(responseNode);
     assertEquals("myBusinessKey", responseNode.get("businessKey").getTextValue());
   }
+  
   
   /**
    * Test starting a process instance passing in variables to set.
@@ -254,7 +277,6 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     assertEquals(123.456, processVariables.get("doubleVariable"));
     assertEquals(Boolean.TRUE, processVariables.get("booleanVariable"));
     assertEquals(varCal.getTime(), processVariables.get("dateVariable"));
-    
   }
   
   /**
@@ -271,8 +293,9 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
       fail("Exception expected");
     } catch(ResourceException expected) {
       assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Either processDefinitionId or processDefinitionKey is required.", expected.getStatus().getDescription());
+      assertEquals("Either processDefinitionId, processDefinitionKey or message is required.", expected.getStatus().getDescription());
     }
+    client.release();
     
     // Try starting with both id and key
     requestNode = objectMapper.createObjectNode();
@@ -283,8 +306,22 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
       fail("Exception expected");
     } catch(ResourceException expected) {
       assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Both processDefinitionId and processDefinitionKey are set, use only one.", expected.getStatus().getDescription());
+      assertEquals("Only one of processDefinitionId, processDefinitionKey or message should be set.", expected.getStatus().getDescription());
     }
+    client.release();
+    
+    // Try starting with both message and key
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionId", "123");
+    requestNode.put("message", "456");
+    try {
+      client.post(requestNode);
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+      assertEquals("Only one of processDefinitionId, processDefinitionKey or message should be set.", expected.getStatus().getDescription());
+    }
+    client.release();
     
     // Try starting with unexisting process definition key
     requestNode = objectMapper.createObjectNode();
@@ -296,6 +333,7 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
       assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
       assertEquals("no processes deployed with key '123'", expected.getStatus().getDescription());
     }
+    client.release();
     
     // Try starting with unexisting process definition id
     requestNode = objectMapper.createObjectNode();
@@ -306,6 +344,18 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     } catch(ResourceException expected) {
       assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
       assertEquals("no deployed process definition found with id '123'", expected.getStatus().getDescription());
+    }
+    client.release();
+    
+    // Try starting with unexisting message
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("message", "unexistingmessage");
+    try {
+      client.post(requestNode);
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+      assertEquals("Cannot start process instance by message: no subscription to message with name 'unexistingmessage' found.", expected.getStatus().getDescription());
     }
   }
 }

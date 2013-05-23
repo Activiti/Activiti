@@ -47,6 +47,9 @@ import org.activiti.rest.api.process.ProcessInstanceDiagramResource;
 import org.activiti.rest.api.process.ProcessInstanceResource;
 import org.activiti.rest.api.process.ProcessInstanceSignalExecutionResource;
 import org.activiti.rest.api.process.ProcessInstanceTaskResource;
+import org.activiti.rest.api.process.ProcessInstanceVariableCollectionResource;
+import org.activiti.rest.api.process.ProcessInstanceVariableDataResource;
+import org.activiti.rest.api.process.ProcessInstanceVariableResource;
 import org.activiti.rest.api.process.SignalEventSubscriptionResource;
 import org.activiti.rest.api.process.StartProcessInstanceResource;
 import org.activiti.rest.api.repository.DeploymentCollectionResource;
@@ -108,6 +111,10 @@ public class RestServicesInit {
     
     router.attach("/runtime/process-instances/{processInstanceId}", ProcessInstanceResource.class);
     router.attach("/runtime/process-instances", ProcessInstanceCollectionResource.class);
+    router.attach("/runtime/process-instances/{processInstanceId}/variables", ProcessInstanceVariableCollectionResource.class);
+    router.attach("/runtime/process-instances/{processInstanceId}/variables/{variableName}", ProcessInstanceVariableResource.class);
+    router.attach("/runtime/process-instances/{processInstanceId}/variables/{variableName}/data", ProcessInstanceVariableDataResource.class);
+    
     
     router.attach("/query/tasks", TaskQueryResource.class);
     

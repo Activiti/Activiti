@@ -2,11 +2,19 @@
 <definitions
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
-  targetNamespace="OneTaskCategory">
+  targetNamespace="Examples"
+  xmlns:tns="Examples">
+  
+  <message id="newInvoice" name="newInvoiceMessage" />
 
   <process id="processOne" name="The One Task Process">
     <documentation>One task process description</documentation>
   
+    <startEvent id="messageStart" >
+      <messageEventDefinition messageRef="tns:newInvoice" />
+    </startEvent>
+    <sequenceFlow id="flow0" sourceRef="messageStart" targetRef="processTask" />
+    
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="processTask" />
     

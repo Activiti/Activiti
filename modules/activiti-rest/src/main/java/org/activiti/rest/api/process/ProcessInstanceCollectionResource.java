@@ -85,12 +85,16 @@ public class ProcessInstanceCollectionResource extends ProcessInstanceBasedResou
   @Post
   public ProcessInstanceResponse createProcessInstance(ProcessInstanceCreateRequest request) {
     
-    if(request.getProcessDefinitionId() == null && request.getProcessDefinitionKey() == null) {
-      throw new ActivitiIllegalArgumentException("Either processDefinitionId or processDefinitionKey is required.");
+    if(request.getProcessDefinitionId() == null && request.getProcessDefinitionKey() == null && request.getMessage() == null) {
+      throw new ActivitiIllegalArgumentException("Either processDefinitionId, processDefinitionKey or message is required.");
     }
     
-    if(request.getProcessDefinitionId() != null && request.getProcessDefinitionKey() != null) {
-      throw new ActivitiIllegalArgumentException("Both processDefinitionId and processDefinitionKey are set, use only one.");
+    int paramsSet = ((request.getProcessDefinitionId() != null) ? 1 : 0)
+            + ((request.getProcessDefinitionKey() != null) ? 1 : 0)
+            + ((request.getMessage() != null) ? 1 : 0);
+    
+    if(paramsSet > 1) {
+      throw new ActivitiIllegalArgumentException("Only one of processDefinitionId, processDefinitionKey or message should be set.");
     }
     
     RestResponseFactory factory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
@@ -109,9 +113,12 @@ public class ProcessInstanceCollectionResource extends ProcessInstanceBasedResou
       if(request.getProcessDefinitionId() != null) {
         instance = ActivitiUtil.getRuntimeService().startProcessInstanceById(
                 request.getProcessDefinitionId(), request.getBusinessKey(), startVariables);
-      } else {
+      } else if(request.getProcessDefinitionKey() != null){
         instance = ActivitiUtil.getRuntimeService().startProcessInstanceByKey(
                 request.getProcessDefinitionKey(), request.getBusinessKey(), startVariables);
+      } else {
+        instance = ActivitiUtil.getRuntimeService().startProcessInstanceByMessage(
+                request.getMessage(), request.getBusinessKey(), startVariables);
       }
       
       setStatus(Status.SUCCESS_CREATED);

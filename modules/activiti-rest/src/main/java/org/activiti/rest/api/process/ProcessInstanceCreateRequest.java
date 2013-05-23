@@ -16,7 +16,6 @@ package org.activiti.rest.api.process;
 import java.util.List;
 
 import org.activiti.rest.api.engine.variable.RestVariable;
-import org.activiti.rest.api.task.QueryVariable;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 
@@ -28,6 +27,7 @@ public class ProcessInstanceCreateRequest {
 
   private String processDefinitionId;
   private String processDefinitionKey;
+  private String message;
   private String businessKey;
   private List<RestVariable> variables;
   
@@ -53,6 +53,12 @@ public class ProcessInstanceCreateRequest {
   
   public void setBusinessKey(String businessKey) {
     this.businessKey = businessKey;
+  }
+  public String getMessage() {
+    return message;
+  }
+  public void setMessage(String message) {
+    this.message = message;
   }
   
   @JsonTypeInfo(use=Id.CLASS, defaultImpl=RestVariable.class)  
