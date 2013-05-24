@@ -192,6 +192,12 @@ public final class RestUrls {
   public static final String[] URL_PROCESS_INSTANCE_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE};
   
   /**
+   * URL template for process instance query: <i>query/process-instances</i>
+   */
+  public static final String[] URL_PROCESS_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE};
+  
+  
+  /**
    * URL template for a single process instance: <i>runtime/process-instances/{0:processInstanceId}</i>
    */
   public static final String[] URL_PROCESS_INSTANCE = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}"};
