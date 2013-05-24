@@ -21,6 +21,7 @@ import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.delegate.TaskListener;
 
 
 /** Configuration information from which a process engine can be build.
