@@ -103,6 +103,9 @@ public class ProcessInstanceCollectionResource extends ProcessInstanceBasedResou
     if(request.getVariables() != null) {
       startVariables = new HashMap<String, Object>();
       for(RestVariable variable : request.getVariables()) {
+        if(variable.getName() == null) {
+          throw new ActivitiIllegalArgumentException("Variable name is required.");
+        }
         startVariables.put(variable.getName(), factory.getVariableValue(variable));
       }
     }
