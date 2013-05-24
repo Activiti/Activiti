@@ -22,6 +22,8 @@ import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Put;
+import org.restlet.resource.ResourceException;
 
 
 /**
@@ -49,6 +51,50 @@ public class ProcessInstanceResource extends SecuredResource {
     ActivitiUtil.getRuntimeService().deleteProcessInstance(processInstance.getId(), deleteReason);
     setStatus(Status.SUCCESS_NO_CONTENT);
   }
+  
+  @Put
+  public ProcessInstanceResponse performProcessInstanceAction(ProcessInstanceActionRequest actionRequest) {
+    if(!authenticate()) {
+      return null;
+    }
+    
+    ProcessInstance processInstance = getProcessInstanceFromRequest();
+    if(ProcessInstanceActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
+      return activateProcessInstance(processInstance);
+    } else if(ProcessInstanceActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
+      return suspendProcessInstance(processInstance);
+    }
+    throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
+  }
+  
+  protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance) {
+    if(!processInstance.isSuspended()) {
+      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process instance with id '" + processInstance.getId() + "' is already active.", null, null);
+    }
+    ActivitiUtil.getRuntimeService().activateProcessInstanceById(processInstance.getId());
+   
+    ProcessInstanceResponse response =  getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createProcessInstanceResponse(this, processInstance);
+    
+    // No need to re-fetch the instance, just alter the suspended state of the result-object
+    response.setSuspended(false);
+    return response;
+  }
+
+  protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance) {
+    if(processInstance.isSuspended()) {
+      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process instance with id '" + processInstance.getId() + "' is already suspended.", null, null);
+    }
+    ActivitiUtil.getRuntimeService().suspendProcessInstanceById(processInstance.getId());
+    
+    ProcessInstanceResponse response =  getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createProcessInstanceResponse(this, processInstance);
+    
+    // No need to re-fetch the instance, just alter the suspended state of the result-object
+    response.setSuspended(true);
+    return response;
+  }
+  
   
   protected ProcessInstance getProcessInstanceFromRequest() {
     String processInstanceId = getAttribute("processInstanceId");

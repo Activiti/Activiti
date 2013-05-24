@@ -18,6 +18,7 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -93,6 +94,73 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
     } catch(ResourceException expected) {
       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
       assertEquals("Could not find a process instance with id 'unexistingpi'.", expected.getStatus().getDescription());
+    }
+  }
+  
+  /**
+   * Test suspending a single process instance.
+   */
+  @Deployment(resources = {"org/activiti/rest/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
+  public void testSuspendProcessInstance() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
+    
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("action", "suspend");
+    
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
+    Representation response = client.put(requestNode);
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+
+    // Check engine id instance is suspended
+    assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().processInstanceId(processInstance.getId()).count());
+    
+    // Check resulting instance is suspended
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals(processInstance.getId(), responseNode.get("id").getTextValue());
+    assertTrue(responseNode.get("suspended").getBooleanValue());
+    
+    // Suspending again should result in conflict
+    try {
+      client.put(requestNode);
+      fail("Expected exception");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
+      assertEquals("Process instance with id '" + processInstance.getId() + "' is already suspended.", expected.getStatus().getDescription());
+    }
+  }
+  
+  /**
+   * Test suspending a single process instance.
+   */
+  @Deployment(resources = {"org/activiti/rest/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
+  public void testActivateProcessInstance() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
+    runtimeService.suspendProcessInstanceById(processInstance.getId());
+    
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("action", "activate");
+    
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
+    Representation response = client.put(requestNode);
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+
+    // Check engine id instance is suspended
+    assertEquals(1, runtimeService.createProcessInstanceQuery().active().processInstanceId(processInstance.getId()).count());
+    
+    // Check resulting instance is suspended
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals(processInstance.getId(), responseNode.get("id").getTextValue());
+    assertFalse(responseNode.get("suspended").getBooleanValue());
+    
+    // Activating again should result in conflict
+    try {
+      client.put(requestNode);
+      fail("Expected exception");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
+      assertEquals("Process instance with id '" + processInstance.getId() + "' is already active.", expected.getStatus().getDescription());
     }
   }
 }
