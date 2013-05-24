@@ -368,8 +368,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected boolean isCreateDiagramOnDeploy = true;
   
-  protected TaskListener globalTaskListener ;
-  
   // buildProcessEngine ///////////////////////////////////////////////////////
   
   public ProcessEngine buildProcessEngine() {
@@ -1974,14 +1972,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void setEnableSafeBpmnXml(boolean enableSafeBpmnXml) {
     this.enableSafeBpmnXml = enableSafeBpmnXml;
-  }
-  
-  public TaskListener getGlobalTaskListener() {
-	return globalTaskListener;
-  }
-
-  public void setGlobalTaskListener(TaskListener globalTaskListener) {
-	this.globalTaskListener = globalTaskListener;
   }
   
   
