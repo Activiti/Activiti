@@ -131,6 +131,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   protected ClassLoader classLoader;
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
+  protected TaskListener globalTaskListener ;
 
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
@@ -529,5 +530,13 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   public ProcessEngineLifecycleListener getProcessEngineLifecycleListener() {
     return processEngineLifecycleListener;
+  }
+  
+  public TaskListener getGlobalTaskListener() {
+	return globalTaskListener;
+  }
+
+  public void setGlobalTaskListener(TaskListener globalTaskListener) {
+	this.globalTaskListener = globalTaskListener;
   }
 }
