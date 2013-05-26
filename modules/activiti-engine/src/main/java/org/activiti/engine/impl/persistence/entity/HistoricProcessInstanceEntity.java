@@ -67,32 +67,43 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   public String getEndActivityId() {
     return endActivityId;
   }
+  public void setEndActivityId(String endActivityId) {
+    this.endActivityId = endActivityId;
+  }
+
   public String getBusinessKey() {
     return businessKey;
   }
   public void setBusinessKey(String businessKey) {
     this.businessKey = businessKey;
   }
-  public void setEndActivityId(String endActivityId) {
-    this.endActivityId = endActivityId;
-  }
+  
   public String getStartUserId() {
     return startUserId;
   }
   public void setStartUserId(String startUserId) {
     this.startUserId = startUserId;
   }
+  
   public String getStartActivityId() {
     return startActivityId;
   }
   public void setStartActivityId(String startUserId) {
     this.startActivityId = startUserId;
   }
+  
   public String getSuperProcessInstanceId() {
-	return superProcessInstanceId;
+    return superProcessInstanceId;
   }
   public void setSuperProcessInstanceId(String superProcessInstanceId) {
-	this.superProcessInstanceId = superProcessInstanceId;
+    this.superProcessInstanceId = superProcessInstanceId;
+  }
+
+  // common methods  //////////////////////////////////////////////////////////
+
+  @Override
+  public String toString() {
+    return "HistoricProcessInstanceEntity[superProcessInstanceId=" + superProcessInstanceId + "]";
   }
   
 }
