@@ -13,17 +13,14 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Date;
-
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
-
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Tom Baeyens
@@ -32,8 +29,9 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
   
   private static final long serialVersionUID = 1L;
   
-  protected String name;
   protected int revision;
+
+  protected String name;
   protected VariableType variableType;
 
   protected Long longValue;
@@ -100,7 +98,11 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
   }
   
   public String getVariableTypeName() {
-    return (variableType!=null ? variableType.getTypeName() : null);
+    return (variableType != null ? variableType.getTypeName() : null);
+  }
+
+  public int getRevisionNext() {
+    return revision + 1;
   }
 
   // byte array value /////////////////////////////////////////////////////////
@@ -135,7 +137,7 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
       Context
         .getCommandContext()
         .getByteArrayEntityManager()
-       .deleteByteArrayById(this.byteArrayValueId);
+        .deleteByteArrayById(this.byteArrayValueId);
     }
     if (bytes!=null) {
       byteArrayValue = new ByteArrayEntity(bytes);
@@ -166,99 +168,91 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
   
   // getters and setters //////////////////////////////////////////////////////
   
-  public Date getTime() {
-    return time;
+  public int getRevision() {
+    return revision;
   }
-
-  public void setTime(Date time) {
-    this.time = time;
+  public void setRevision(int revision) {
+    this.revision = revision;
   }
-
+  
   public String getVariableName() {
     return name;
+  }
+  public String getName() {
+    return name;
+  }
+  public void setName(String name) {
+    this.name = name;
   }
 
   public VariableType getVariableType() {
     return variableType;
   }
-
-  public int getRevision() {
-    return revision;
+  public void setVariableType(VariableType variableType) {
+    this.variableType = variableType;
   }
 
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-  
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-  
-  public String getName() {
-    return name;
-  }
-
-  
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  
   public Long getLongValue() {
     return longValue;
   }
-
-  
   public void setLongValue(Long longValue) {
     this.longValue = longValue;
   }
 
-  
   public Double getDoubleValue() {
     return doubleValue;
   }
-
-  
   public void setDoubleValue(Double doubleValue) {
     this.doubleValue = doubleValue;
   }
 
-  
   public String getTextValue() {
     return textValue;
   }
-
-  
   public void setTextValue(String textValue) {
     this.textValue = textValue;
   }
 
-  
   public String getTextValue2() {
     return textValue2;
   }
-
-  
   public void setTextValue2(String textValue2) {
     this.textValue2 = textValue2;
   }
-
   
-  public void setByteArrayValue(ByteArrayEntity byteArrayValue) {
-    this.byteArrayValue = byteArrayValue;
-  }
-
   public Object getCachedValue() {
     return cachedValue;
   }
-
-  
   public void setCachedValue(Object cachedValue) {
     this.cachedValue = cachedValue;
   }
 
-  
-  public void setVariableType(VariableType variableType) {
-    this.variableType = variableType;
+  // misc methods /////////////////////////////////////////////////////////////
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("VariableInstanceEntity[");
+    sb.append("id=").append(id);
+    sb.append(", name=").append(name);
+    sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
+    if (longValue != null) {
+      sb.append(", longValue=").append(longValue);
+    }
+    if (doubleValue != null) {
+      sb.append(", doubleValue=").append(doubleValue);
+    }
+    if (textValue != null) {
+      sb.append(", textValue=").append(StringUtils.abbreviate(textValue, 40));
+    }
+    if (textValue2 != null) {
+      sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
+    }
+    if (byteArrayValueId != null) {
+      sb.append(", byteArrayValueId=").append(byteArrayValueId);
+    }
+    sb.append("]");
+    return sb.toString();
   }
+  
 }

@@ -23,6 +23,7 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Christian Lipphardt (camunda)
@@ -32,15 +33,15 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   private static final long serialVersionUID = 1L;
 
   protected String id;
-  protected String processInstanceId;
-  
-  protected String taskId;
-  protected String executionId;
-  
-  protected String name;
   protected int revision;
+
+  protected String name;
   protected VariableType variableType;
 
+  protected String processInstanceId;
+  protected String executionId;
+  protected String taskId;
+  
   protected Long longValue;
   protected Double doubleValue;
   protected String textValue;
@@ -66,7 +67,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     copyValue(variableInstance);
   }
   
-  public void copyValue(VariableInstanceEntity variableInstance) {
+  public final void copyValue(VariableInstanceEntity variableInstance) {
     this.textValue = variableInstance.getTextValue();
     this.textValue2 = variableInstance.getTextValue2();
     this.doubleValue = variableInstance.getDoubleValue();
@@ -168,6 +169,14 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
 
   // getters and setters //////////////////////////////////////////////////////
 
+  public String getId() {
+    return id;
+  }
+  
+  public void setId(String id) {
+    this.id = id;
+  }
+
   public String getVariableTypeName() {
     return (variableType != null ? variableType.getTypeName() : null);
   }
@@ -248,14 +257,6 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     this.processInstanceId = processInstanceId;
   }
 
-  public String getId() {
-    return id;
-  }
-  
-  public void setId(String id) {
-    this.id = id;
-  }
-
   public String getProcessInstanceId() {
     return processInstanceId;
   }
@@ -275,4 +276,33 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   public void setExecutionId(String executionId) {
     this.executionId = executionId;
   }
+
+  // common methods  //////////////////////////////////////////////////////////
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("VariableInstanceEntity[");
+    sb.append("id=").append(id);
+    sb.append(", name=").append(name);
+    sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
+    if (longValue != null) {
+      sb.append(", longValue=").append(longValue);
+    }
+    if (doubleValue != null) {
+      sb.append(", doubleValue=").append(doubleValue);
+    }
+    if (textValue != null) {
+      sb.append(", textValue=").append(StringUtils.abbreviate(textValue, 40));
+    }
+    if (textValue2 != null) {
+      sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
+    }
+    if (byteArrayValueId != null) {
+      sb.append(", byteArrayValueId=").append(byteArrayValueId);
+    }
+    sb.append("]");
+    return sb.toString();
+  }
+  
 }
