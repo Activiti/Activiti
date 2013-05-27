@@ -144,7 +144,7 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
       scriptField.setFieldName("script");
       
       StringBuilder script = new StringBuilder();
-      script.append("var feedbackProviders = new java.util.ArrayList();" + System.getProperty("line.separator"));
+      script.append("importPackage (java.util); var feedbackProviders = new ArrayList();" + System.getProperty("line.separator"));
       for (String feedbackProvider : feedbackStepDefinition.getFeedbackProviders()) {
         script.append("feedbackProviders.add('" + feedbackProvider + "');" + System.getProperty("line.separator"));
       }

@@ -36,6 +36,7 @@ import org.activiti.engine.impl.cmd.GetModelCmd;
 import org.activiti.engine.impl.cmd.GetModelEditorSourceCmd;
 import org.activiti.engine.impl.cmd.GetModelEditorSourceExtraCmd;
 import org.activiti.engine.impl.cmd.SaveModelCmd;
+import org.activiti.engine.impl.cmd.SetProcessDefinitionCategoryCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
@@ -154,6 +155,10 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   
   public void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances, Date activationDate) {
     commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, activateProcessInstances, activationDate));
+  }
+  
+  public void setProcessDefinitionCategory(String processDefinitionId, String category) {
+    commandExecutor.execute(new SetProcessDefinitionCategoryCmd(processDefinitionId, category)); 
   }
 
   public InputStream getProcessModel(String processDefinitionId) {
