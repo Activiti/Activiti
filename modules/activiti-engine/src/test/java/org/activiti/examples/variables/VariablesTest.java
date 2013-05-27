@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.variable.ValueFields;
+import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -171,4 +173,47 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
   }
 
+  @Deployment
+  public void testCustomType() {
+    processEngineConfiguration.getVariableTypes().addType(new CustomVariableType(), 0);
+    
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("test", "Hello World");
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
+    
+    variables = runtimeService.getVariables(processInstance.getId());
+    assertEquals("Hello World", variables.get("test"));
+  }
+}
+
+class CustomVariableType implements VariableType {
+
+  @Override
+  public String getTypeName() {
+    return "TestVariableType";
+  }
+
+  @Override
+  public boolean isCachable() {
+    return true;
+  }
+
+  @Override
+  public boolean isAbleToStore(Object value) {
+    return value instanceof String;
+  }
+
+  @Override
+  public void setValue(Object value, ValueFields valueFields) {
+    String str = (String) value;
+    valueFields.setBytes(str.getBytes());
+  }
+
+  @Override
+  public Object getValue(ValueFields valueFields) {
+    byte[] bytes = valueFields.getBytes();
+    return new String(bytes);
+  }
+  
 }

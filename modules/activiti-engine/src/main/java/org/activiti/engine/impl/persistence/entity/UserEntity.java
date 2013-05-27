@@ -62,43 +62,42 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
   }
   
   public Picture getPicture() {
-    if (pictureByteArrayId==null) {
+    ByteArrayEntity pictureByteArray = getPictureByteArrayEntity();
+    if (pictureByteArray == null) {
       return null;
     }
-    ByteArrayEntity pictureByteArray = getPictureByteArray();
-    Picture picture = null;
-    if (pictureByteArray != null) {
-      picture = new Picture(pictureByteArray.getBytes(), pictureByteArray.getName());
-    }
-    return picture;
+    return new Picture(pictureByteArray.getBytes(), pictureByteArray.getName());
   }
   
   public void setPicture(Picture picture) {
-    if (pictureByteArrayId!=null) {
-      Context
-        .getCommandContext()
-        .getByteArrayEntityManager()
-        .deleteByteArrayById(pictureByteArrayId);
+    if (picture == null) {
+      if (pictureByteArrayId != null) {
+        Context.getCommandContext()
+          .getByteArrayEntityManager()
+          .deleteByteArrayById(pictureByteArrayId);
+        pictureByteArrayId = null;
+        pictureByteArray = null;
+      }
     }
-    if (picture!=null) {
-      pictureByteArray = new ByteArrayEntity(picture.getMimeType(), picture.getBytes());
-      Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .insert(pictureByteArray);
-      pictureByteArrayId = pictureByteArray.getId();
-    } else {
-      pictureByteArrayId = null;
-      pictureByteArray = null;
+    else {
+      if (pictureByteArrayId == null) {
+        pictureByteArray = ByteArrayEntity.createAndInsert(picture.getMimeType(), picture.getBytes());
+        pictureByteArrayId = pictureByteArray.getId();
+      }
+      else {
+        ByteArrayEntity pictureByteArray = getPictureByteArrayEntity();
+        pictureByteArray.setName(picture.getMimeType());
+        pictureByteArray.setBytes(picture.getBytes());
+      }
     }
   }
 
-  private ByteArrayEntity getPictureByteArray() {
-    if (pictureByteArrayId!=null && pictureByteArray==null) {
+  private ByteArrayEntity getPictureByteArrayEntity() {
+    if (pictureByteArrayId != null && pictureByteArray == null) {
       pictureByteArray = Context
         .getCommandContext()
-        .getDbSqlSession()
-        .selectById(ByteArrayEntity.class, pictureByteArrayId);
+        .getByteArrayEntityManager()
+        .findById(pictureByteArrayId);
     }
     return pictureByteArray;
   }

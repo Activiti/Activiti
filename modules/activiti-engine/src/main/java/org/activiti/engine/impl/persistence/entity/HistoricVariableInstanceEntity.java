@@ -23,7 +23,6 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Christian Lipphardt (camunda)
@@ -72,17 +71,22 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     this.textValue2 = variableInstance.getTextValue2();
     this.doubleValue = variableInstance.getDoubleValue();
     this.longValue = variableInstance.getLongValue();
-    if (variableInstance.getByteArrayValueId()!=null) {
-      setByteArrayValue(variableInstance.getByteArrayValue().getBytes());
-    }
+    
+    setBytes(variableInstance.getBytes());
   }
 
   public void delete() {
-    deleteByteArrayValue();
     Context
       .getCommandContext()
       .getDbSqlSession()
       .delete(this);
+    
+    if (byteArrayValueId != null) {
+      Context
+      .getCommandContext()
+      .getByteArrayEntityManager()
+      .deleteByteArrayById(byteArrayValueId);
+    }
   }
 
   public Object getPersistentState() {
@@ -112,59 +116,56 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   // into a common class.  therefor it's duplicated in VariableInstanceEntity, 
   // HistoricVariableInstance and HistoricDetailVariableInstanceUpdateEntity 
   
+  @Override
+  public byte[] getBytes() {
+    ByteArrayEntity byteArrayValue = getByteArrayEntity();
+    return (byteArrayValue != null ? byteArrayValue.getBytes() : null);
+  }
+
+  @Override
+  public void setBytes(byte[] bytes) {
+    if (bytes == null) {
+      if (byteArrayValueId != null) {
+        Context.getCommandContext()
+          .getByteArrayEntityManager()
+          .deleteByteArrayById(byteArrayValueId);
+        byteArrayValueId = null;
+      }
+    }
+    else {
+      if (byteArrayValueId == null) {
+        byteArrayValue = ByteArrayEntity.createAndInsert("var-" + name, bytes);
+        byteArrayValueId = byteArrayValue.getId();
+      }
+      else {
+        ByteArrayEntity byteArrayValue = getByteArrayEntity();
+        byteArrayValue.setBytes(bytes);
+      }
+    }
+  }
+  
+  @Override @Deprecated
+  public ByteArrayEntity getByteArrayValue() {
+    return getByteArrayEntity();
+  }
+  
+  @Override @Deprecated
   public String getByteArrayValueId() {
     return byteArrayValueId;
   }
 
-  public void setByteArrayValueId(String byteArrayValueId) {
-    this.byteArrayValueId = byteArrayValueId;
-    this.byteArrayValue = null;
+  @Override @Deprecated
+  public void setByteArrayValue(byte[] bytes) {
+    setBytes(bytes);
   }
 
-  public ByteArrayEntity getByteArrayValue() {
-    if ((byteArrayValue == null) && (byteArrayValueId != null)) {
-      byteArrayValue = Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .selectById(ByteArrayEntity.class, byteArrayValueId);
+  private ByteArrayEntity getByteArrayEntity() {
+    if (byteArrayValueId != null && byteArrayValue == null) {
+      byteArrayValue = Context.getCommandContext()
+        .getByteArrayEntityManager()
+        .findById(byteArrayValueId);
     }
     return byteArrayValue;
-  }
-  
-  public void setByteArrayValue(byte[] bytes) {
-    ByteArrayEntity byteArrayValue = null;
-    if (this.byteArrayValueId!=null) {
-      getByteArrayValue();
-      Context
-        .getCommandContext()
-        .getByteArrayEntityManager()
-        .deleteByteArrayById(this.byteArrayValueId);
-    }
-    if (bytes!=null) {
-      byteArrayValue = new ByteArrayEntity(bytes);
-      Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .insert(byteArrayValue);
-    }
-    this.byteArrayValue = byteArrayValue;
-    if (byteArrayValue != null) {
-      this.byteArrayValueId = byteArrayValue.getId();
-    } else {
-      this.byteArrayValueId = null;
-    }
-  }
-
-  protected void deleteByteArrayValue() {
-    if (byteArrayValueId != null) {
-      // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
-      // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
-      getByteArrayValue();
-      Context
-        .getCommandContext()
-        .getByteArrayEntityManager()
-        .deleteByteArrayById(this.byteArrayValueId);
-    }
   }
 
   // getters and setters //////////////////////////////////////////////////////

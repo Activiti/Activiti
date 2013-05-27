@@ -120,50 +120,53 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
     execution.addJob(this);
   }
 
-  public String getExceptionByteArrayId() {
-    return exceptionByteArrayId;
+  public String getExceptionStacktrace() {
+    ByteArrayEntity byteArrayEntity = getExceptionByteArrayEntity();
+    if (byteArrayEntity == null) {
+      return null;
+    }
+    try {
+      return new String(byteArrayEntity.getBytes(), "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new ActivitiException("UTF-8 is not a supported encoding");
+    }
   }
   
-  public String getExceptionStacktrace() {
-    String exception = null;
-    ByteArrayEntity byteArray = getExceptionByteArray();
-    if (byteArray != null) {
-      try {
-        exception = new String(byteArray.getBytes(), "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        throw new ActivitiException("UTF-8 is not a supported encoding");
+  public void setExceptionStacktrace(String exception) {
+    byte[] bytes = getUtf8Bytes(exception);   
+
+    if (bytes == null) {
+      if (exceptionByteArrayId != null) {
+        Context.getCommandContext()
+          .getByteArrayEntityManager()
+          .deleteByteArrayById(exceptionByteArrayId);
+        exceptionByteArrayId = null;
       }
     }
-    return exception;
+    else {
+      if (exceptionByteArrayId == null) {
+        exceptionByteArray = ByteArrayEntity.createAndInsert("job.exceptionByteArray", bytes);
+        exceptionByteArrayId = exceptionByteArray.getId();
+      }
+      else {
+        ByteArrayEntity byteArrayEntity = getExceptionByteArrayEntity();
+        byteArrayEntity.setBytes(bytes);
+      }
+    }
   }
 
-  public void setExceptionStacktrace(String exception) {
-    byte[] exceptionBytes = null;
-    if (exception == null) {
-      exceptionBytes = null;      
-    } else {      
-      try {
-        exceptionBytes = exception.getBytes("UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        throw new ActivitiException("UTF-8 is not a supported encoding");
-      }
-    }   
-    
-    ByteArrayEntity byteArray = getExceptionByteArray();
-    if (byteArray == null) {
-      byteArray = new ByteArrayEntity("job.exceptionByteArray", exceptionBytes);
-      Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .insert(byteArray);
-      exceptionByteArrayId = byteArray.getId();
-      exceptionByteArray = byteArray;
-    } else {
-      byteArray.setBytes(exceptionBytes);
+  private byte[] getUtf8Bytes(String str) {
+    if (str == null) {
+      return null;
+    }
+    try {
+      return str.getBytes("UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new ActivitiException("UTF-8 is not a supported encoding");
     }
   }
   
-  private ByteArrayEntity getExceptionByteArray() {
+  private ByteArrayEntity getExceptionByteArrayEntity() {
     if (exceptionByteArrayId != null && exceptionByteArray == null) {
       exceptionByteArray = Context.getCommandContext()
         .getDbSqlSession()
