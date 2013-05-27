@@ -61,7 +61,6 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
     this.longValue = variableInstance.getLongValue();
     
     if (variableInstance.getBytes() != null) {
-
       this.byteArrayValue = ByteArrayEntity.createAndInsert("hist.var-" + name, variableInstance.getBytes());
       this.byteArrayValueId = byteArrayValue.getId();
     }
