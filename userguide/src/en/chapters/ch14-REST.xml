@@ -1771,10 +1771,9 @@
            <programlisting>
 { 
   "action" : "complete",
-  "assignee" : "userWhoCompletes",
   "variables" : ...
 }</programlisting>
-       Completes the task. An optional assignee can be supplied in order to have the task assigned to the given user before completing. TODO: variables
+       Completes the task. Optional variable array can be passed in using the <literal>variables</literal> property. More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that the variable-scope that is supplied is ignored and the variables are set on the parent-scope unless a variable exists in a local scope, which is overridden in this case. This is the same behavior as the <literal>TaskService.completeTask(taskId, variables)</literal> invocation.
        </para>
        <para>
          <emphasis role="bold">Claim a task - Body JSON:</emphasis>

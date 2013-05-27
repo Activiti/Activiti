@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.task;
+package org.activiti.rest.api.engine.variable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 
@@ -20,7 +20,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
  */
 public class QueryVariable {
 
-  
   private String name;
   private String operation;
   private Object value;

@@ -64,7 +64,7 @@ public class ProcessDefinitionResource extends SecuredResource {
   
   protected ProcessDefinitionResponse activateProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
     if(!processDefinition.isSuspended()) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT, "Process definition with id '" + processDefinition.getId() + "'is already active");
+      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process definition with id '" + processDefinition.getId() + " ' is already active", null, null);
     }
     ActivitiUtil.getRepositoryService().activateProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
    
@@ -78,7 +78,7 @@ public class ProcessDefinitionResource extends SecuredResource {
 
   protected ProcessDefinitionResponse suspendProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
     if(processDefinition.isSuspended()) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT, "Process definition with id '" + processDefinition.getId() + "'is already suspended");
+      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process definition with id '" + processDefinition.getId() + " ' is already suspended", null, null);
     }
     ActivitiUtil.getRepositoryService().suspendProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
     

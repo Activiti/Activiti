@@ -16,6 +16,7 @@ package org.activiti.rest.api.task;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.rest.api.engine.variable.QueryVariable;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 

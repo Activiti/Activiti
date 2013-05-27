@@ -26,7 +26,8 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
-import org.activiti.rest.api.task.QueryVariable.QueryVariableOperation;
+import org.activiti.rest.api.engine.variable.QueryVariable;
+import org.activiti.rest.api.engine.variable.QueryVariable.QueryVariableOperation;
 import org.restlet.data.Form;
 
 

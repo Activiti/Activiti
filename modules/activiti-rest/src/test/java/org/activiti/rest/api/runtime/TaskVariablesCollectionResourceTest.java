@@ -375,7 +375,7 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
         fail("Exception expected");
       } catch (ResourceException expected) {
         assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("Cannot set global variable 'myVariable' on task '" + task.getId() + "', task is not part of process.", expected.getStatus()
+        assertEquals("Cannot set global variables on task '" + task.getId() + "', task is not part of process.", expected.getStatus()
                 .getDescription());
       }
 

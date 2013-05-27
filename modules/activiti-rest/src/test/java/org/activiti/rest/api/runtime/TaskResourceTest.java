@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -26,6 +27,7 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -379,6 +381,7 @@ public class TaskResourceTest extends BaseRestTestCase {
    * Test completing a single task.
    * POST runtime/tasks/{taskId}
    */
+  @Deployment
   public void testCompleteTask() throws Exception {
     try {
       
@@ -396,15 +399,26 @@ public class TaskResourceTest extends BaseRestTestCase {
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
       assertNull(task);
      
-      // Test completing with an assignee
-      task = taskService.newTask();
-      taskService.saveTask(task);
+      // Test completing with variables
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
       taskId = task.getId();
       
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
-       requestNode = objectMapper.createObjectNode();
+      requestNode = objectMapper.createObjectNode();
+      ArrayNode variablesNode = objectMapper.createArrayNode();
       requestNode.put("action", "complete");
-      requestNode.put("assignee", "assigneeBeforeComplete");
+      requestNode.put("variables", variablesNode);
+      
+      ObjectNode var1 = objectMapper.createObjectNode();
+      variablesNode.add(var1);
+      var1.put("name", "var1");
+      var1.put("value", "First value");
+      ObjectNode var2 = objectMapper.createObjectNode();
+      variablesNode.add(var2);
+      var2.put("name", "var2");
+      var2.put("value", "Second value");
+      
       client.post(requestNode);
       
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -413,7 +427,23 @@ public class TaskResourceTest extends BaseRestTestCase {
       if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
         HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
         assertNotNull(historicTaskInstance);
-        assertEquals("assigneeBeforeComplete", historicTaskInstance.getAssignee());
+        List<HistoricVariableInstance> updates =  historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
+        assertNotNull(updates);
+        assertEquals(2, updates.size());
+        boolean foundFirst = false;
+        boolean foundSecond = false;
+        for(HistoricVariableInstance var : updates) {
+          if(var.getVariableName().equals("var1")) {
+            assertEquals("First value", var.getValue());
+            foundFirst = true;
+          } else if(var.getVariableName().equals("var2")) {
+            assertEquals("Second value", var.getValue());
+            foundSecond = true;
+          }
+        }
+        
+        assertTrue(foundFirst);
+        assertTrue(foundSecond);
       }
       
       

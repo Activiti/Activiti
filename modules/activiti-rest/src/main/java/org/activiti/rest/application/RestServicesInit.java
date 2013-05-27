@@ -44,6 +44,7 @@ import org.activiti.rest.api.process.ProcessDefinitionFormResource;
 import org.activiti.rest.api.process.ProcessDefinitionPropertiesResource;
 import org.activiti.rest.api.process.ProcessInstanceCollectionResource;
 import org.activiti.rest.api.process.ProcessInstanceDiagramResource;
+import org.activiti.rest.api.process.ProcessInstanceQueryResource;
 import org.activiti.rest.api.process.ProcessInstanceResource;
 import org.activiti.rest.api.process.ProcessInstanceSignalExecutionResource;
 import org.activiti.rest.api.process.ProcessInstanceTaskResource;
@@ -117,6 +118,7 @@ public class RestServicesInit {
     
     
     router.attach("/query/tasks", TaskQueryResource.class);
+    router.attach("/query/process-instances", ProcessInstanceQueryResource.class);
     
     // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);

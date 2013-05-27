@@ -13,10 +13,13 @@
 
 package org.activiti.rest.api.task;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
+import org.activiti.rest.api.engine.variable.RestVariable;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Form;
 import org.restlet.data.Status;
@@ -112,11 +115,25 @@ public class TaskResource extends TaskBasedResource {
   }
 
   protected void completeTask(Task task, TaskActionRequest actionRequest) {
-    // TODO: take into account variables
-    if(actionRequest.getAssignee() != null) {
-      ActivitiUtil.getTaskService().setAssignee(task.getId(), actionRequest.getAssignee());
+    if(actionRequest.getVariables() != null) {
+      Map<String, Object> variablesToSet = new HashMap<String, Object>(); 
+      for(RestVariable var : actionRequest.getVariables()) {
+        // Validate if scopes match
+        if(var.getName() == null) {
+          throw new ActivitiIllegalArgumentException("Variable name is required");
+        }
+        
+        Object actualVariableValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+                .getVariableValue(var);
+        
+        variablesToSet.put(var.getName(), actualVariableValue);
+      }
+      
+      ActivitiUtil.getTaskService().complete(task.getId(), variablesToSet);
+    } else {
+      ActivitiUtil.getTaskService().complete(task.getId());
     }
-    ActivitiUtil.getTaskService().complete(task.getId());
+    
   }
 
   protected void resolveTask(Task task, TaskActionRequest actionRequest) {

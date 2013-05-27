@@ -23,6 +23,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.rest.api.ActivitiUtil;
+import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.engine.variable.RestVariable;
 import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
@@ -89,8 +90,51 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
         if(restVariables == null || restVariables.length == 0) {
           throw new ActivitiIllegalArgumentException("Request didn't cantain a list of variables to create.");
         }
+        
+        RestVariableScope sharedScope = null;
+        RestVariableScope varScope = null;
+        Map<String, Object> variablesToSet = new HashMap<String, Object>();
+        
+        RestResponseFactory factory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
         for(RestVariable var : restVariables) {
-          variables.add(setSimpleVariable(var, execution, true));
+          // Validate if scopes match
+          varScope = var.getVariableScope();
+          if(var.getName() == null) {
+            throw new ActivitiIllegalArgumentException("Variable name is required");
+          }
+          
+          if(varScope == null) {
+            varScope = RestVariableScope.LOCAL;
+          }
+          if(sharedScope == null) {
+            sharedScope = varScope;
+          }
+          if(varScope != sharedScope) {
+            throw new ActivitiIllegalArgumentException("Only allowed to update multiple variables in the same scope.");
+          }
+          
+          if(hasVariableOnScope(execution, var.getName(), varScope)) {
+            throw new ResourceException(new Status(Status.CLIENT_ERROR_CONFLICT.getCode(), "Variable '" + var.getName() + "' is already present on execution '" + execution.getId() + "'.", null, null));
+          }
+          
+          Object actualVariableValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+                  .getVariableValue(var);
+          variablesToSet.put(var.getName(), actualVariableValue);
+          variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, execution.getId(), null, null, false));
+        }
+        
+        if(variablesToSet.size() > 0) {
+          if(sharedScope == RestVariableScope.LOCAL) {
+            ActivitiUtil.getRuntimeService().setVariablesLocal(execution.getId(), variablesToSet);
+          } else {
+            if(execution.getParentId() != null) {
+              // Explicitly set on parent, setting non-local variables on execution itself will override local-variables if exists
+              ActivitiUtil.getRuntimeService().setVariables(execution.getParentId(), variablesToSet);
+            } else {
+              // Standalone task, no global variables possible
+              throw new ActivitiIllegalArgumentException("Cannot set global variables on execution '" + execution.getId() +"', task is not part of process.");
+            }
+          }
         }
       } catch (IOException ioe) {
         throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, ioe);
