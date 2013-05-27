@@ -45,6 +45,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String subProcessInstanceId;
   protected SuspensionState suspensionState;
   protected String businessKey;
+  protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected boolean isActive;
   protected String involvedUser;
   
@@ -94,6 +95,19 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     }
     this.businessKey = businessKey;
     return this;
+  }
+  
+  public ExecutionQuery processInstanceBusinessKey(String processInstanceBusinessKey, boolean includeChildExecutions) {
+    if (!includeChildExecutions) {
+      return processInstanceBusinessKey(processInstanceBusinessKey);
+    } else {
+      if (processInstanceBusinessKey == null) {
+        throw new ActivitiIllegalArgumentException("Business key is null");
+      }
+      this.businessKey = processInstanceBusinessKey;
+      this.includeChildExecutionsWithBusinessKeyQuery = includeChildExecutions;
+      return this;
+    }
   }
   
   public ExecutionQueryImpl executionId(String executionId) {
@@ -213,11 +227,13 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public void setSuspensionState(SuspensionState suspensionState) {
     this.suspensionState = suspensionState;
   }  
-  
   public List<EventSubscriptionQueryValue> getEventSubscriptions() {
     return eventSubscriptions;
   }
-  
+  public boolean isIncludeChildExecutionsWithBusinessKeyQuery() {
+    return includeChildExecutionsWithBusinessKeyQuery;
+  }
+
   public void setEventSubscriptions(List<EventSubscriptionQueryValue> eventSubscriptions) {
     this.eventSubscriptions = eventSubscriptions;
   }

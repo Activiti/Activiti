@@ -38,6 +38,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   private static final long serialVersionUID = 1L;
   protected String executionId;
   protected String businessKey;
+  protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected String processDefinitionId;
   protected Set<String> processInstanceIds; 
   protected String processDefinitionKey;
@@ -187,6 +188,9 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   }
   public String getBusinessKey() {
     return businessKey;
+  }
+  public boolean isIncludeChildExecutionsWithBusinessKeyQuery() {
+    return includeChildExecutionsWithBusinessKeyQuery;
   }
   public String getProcessDefinitionId() {
     return processDefinitionId;
