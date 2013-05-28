@@ -58,6 +58,9 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   /** Only select executions which contain an activity with the given id. **/
   ExecutionQuery activityId(String activityId);
   
+  /** Only select executions which are a direct child-execution of the execution with the given id. **/
+  ExecutionQuery parentId(String parentId);
+  
   /** 
    * Only select executions which have a local variable with the given value. The type
    * of variable is determined based on the value, using types configured in 

@@ -31,7 +31,7 @@ import org.codehaus.jackson.node.ObjectNode;
 public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
   
   /**
-   * Test querying process instanced variables. 
+   * Test querying process instance based on variables. 
    * POST query/process-instances
    */
   @Deployment

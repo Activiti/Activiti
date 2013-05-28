@@ -57,4 +57,9 @@ public class ProcessInstanceVariableResource extends ExecutionVariableResource {
   protected String getExecutionIdParameter() {
     return "processInstanceId";
   }
+  
+  @Override
+  protected boolean allowProcessInstanceUrl() {
+    return true;
+  }
 }

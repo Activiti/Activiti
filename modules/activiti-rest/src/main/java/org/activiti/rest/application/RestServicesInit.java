@@ -39,6 +39,12 @@ import org.activiti.rest.api.management.JobsResource;
 import org.activiti.rest.api.management.TableDataResource;
 import org.activiti.rest.api.management.TableResource;
 import org.activiti.rest.api.management.TablesResource;
+import org.activiti.rest.api.process.ExecutionCollectionResource;
+import org.activiti.rest.api.process.ExecutionQueryResource;
+import org.activiti.rest.api.process.ExecutionResource;
+import org.activiti.rest.api.process.ExecutionVariableCollectionResource;
+import org.activiti.rest.api.process.ExecutionVariableDataResource;
+import org.activiti.rest.api.process.ExecutionVariableResource;
 import org.activiti.rest.api.process.ProcessDefinitionDiagramResource;
 import org.activiti.rest.api.process.ProcessDefinitionFormResource;
 import org.activiti.rest.api.process.ProcessDefinitionPropertiesResource;
@@ -116,9 +122,15 @@ public class RestServicesInit {
     router.attach("/runtime/process-instances/{processInstanceId}/variables/{variableName}", ProcessInstanceVariableResource.class);
     router.attach("/runtime/process-instances/{processInstanceId}/variables/{variableName}/data", ProcessInstanceVariableDataResource.class);
     
+    router.attach("/runtime/executions", ExecutionCollectionResource.class);
+    router.attach("/runtime/executions/{executionId}", ExecutionResource.class);
+    router.attach("/runtime/executions/{executionId}/variables", ExecutionVariableCollectionResource.class);
+    router.attach("/runtime/executions/{executionId}/variables/{variableName}", ExecutionVariableResource.class);
+    router.attach("/runtime/executions/{executionId}/variables/{variableName}/data", ExecutionVariableDataResource.class);
     
     router.attach("/query/tasks", TaskQueryResource.class);
     router.attach("/query/process-instances", ProcessInstanceQueryResource.class);
+    router.attach("/query/executions", ExecutionQueryResource.class);
     
     // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);

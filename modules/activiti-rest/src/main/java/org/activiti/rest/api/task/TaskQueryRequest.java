@@ -55,7 +55,7 @@ public class TaskQueryRequest {
   private Boolean active;
   
   private List<QueryVariable> taskVariables;
-  private List<QueryVariable> processVariables;
+  private List<QueryVariable> processInstanceVariables;
   
   public String getName() {
     return name;
@@ -283,11 +283,11 @@ public class TaskQueryRequest {
   }
   
   @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)
-  public List<QueryVariable> getProcessVariables() {
-    return processVariables;
+  public List<QueryVariable> getProcessInstanceVariables() {
+    return processInstanceVariables;
   }
   
-  public void setProcessVariables(List<QueryVariable> processVariables) {
-    this.processVariables = processVariables;
+  public void setProcessInstanceVariables(List<QueryVariable> processInstanceVariables) {
+    this.processInstanceVariables = processInstanceVariables;
   }
 }

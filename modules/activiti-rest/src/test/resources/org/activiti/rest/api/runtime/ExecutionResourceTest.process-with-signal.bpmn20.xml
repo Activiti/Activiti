@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples" xmlns:tns="Examples">
+
+  <process id="processOne" name="The One Task Process">
+    <documentation>One task process description</documentation>
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="waitState" />
+
+    <receiveTask id="waitState" name="wait" />
+    
+    <sequenceFlow id="flow2" sourceRef="waitState" targetRef="anotherWaitState" />
+    
+     <receiveTask id="anotherWaitState" name="another wait" />        
+
+    <sequenceFlow id="flow3" sourceRef="anotherWaitState" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+  </process>
+</definitions>

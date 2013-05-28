@@ -102,6 +102,15 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(sequentialProcessInstanceIds.get(0)).list().size());
   }
   
+  public void testQueryByParentId() {
+    // Concurrent processes fork into 2 child-executions. Should be found when parentId is used
+    for (String processInstanceId : concurrentProcessInstanceIds) {
+      ExecutionQuery query =  runtimeService.createExecutionQuery().parentId(processInstanceId); 
+      assertEquals(2, query.list().size());
+      assertEquals(2, query.count());
+    }
+  }
+  
   public void testQueryByInvalidProcessInstanceId() {
     ExecutionQuery query = runtimeService.createExecutionQuery().processInstanceId("invalid");
     assertNull(query.singleResult());

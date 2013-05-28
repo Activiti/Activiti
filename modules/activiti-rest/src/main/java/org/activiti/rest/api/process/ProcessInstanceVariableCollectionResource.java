@@ -72,4 +72,9 @@ public class ProcessInstanceVariableCollectionResource extends ExecutionVariable
       variableMap.put(var.getName(), var);
     }
   }
+  
+  @Override
+  protected boolean allowProcessInstanceUrl() {
+    return true;
+  }
 }

@@ -187,6 +187,11 @@ public final class RestUrls {
   public static final String[] URL_EXECUTION_VARIABLE_DATA = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
   
   /**
+   * URL template for execution query: <i>query/executions</i>
+   */
+  public static final String[] URL_EXECUTION_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_EXECUTION_RESOURCE};
+  
+  /**
    * URL template for process instance collection: <i>runtime/process-instances</i>
    */
   public static final String[] URL_PROCESS_INSTANCE_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE};

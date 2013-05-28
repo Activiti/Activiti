@@ -385,7 +385,7 @@ public class BaseRestTestCase extends PvmTestCase {
       String id = it.next().get("id").getTextValue();
       toBeFound.remove(id);
     }
-    assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
+    assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
     
     client.release();
   }

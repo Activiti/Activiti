@@ -118,7 +118,6 @@ public class TaskResource extends TaskBasedResource {
     if(actionRequest.getVariables() != null) {
       Map<String, Object> variablesToSet = new HashMap<String, Object>(); 
       for(RestVariable var : actionRequest.getVariables()) {
-        // Validate if scopes match
         if(var.getName() == null) {
           throw new ActivitiIllegalArgumentException("Variable name is required");
         }

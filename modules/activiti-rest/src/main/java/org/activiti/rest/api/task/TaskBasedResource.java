@@ -25,9 +25,11 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
+import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.api.engine.variable.QueryVariable;
 import org.activiti.rest.api.engine.variable.QueryVariable.QueryVariableOperation;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Form;
 
 
@@ -197,8 +199,8 @@ public class TaskBasedResource extends SecuredResource {
       addTaskvariables(taskQuery, request.getTaskVariables());
     }
     
-    if(request.getProcessVariables() != null) {
-      addProcessvariables(taskQuery, request.getProcessVariables());
+    if(request.getProcessInstanceVariables() != null) {
+      addProcessvariables(taskQuery, request.getProcessInstanceVariables());
     }
     
     return new TaskPaginateList(this).paginateList(query, taskQuery, "id", properties);
@@ -263,6 +265,7 @@ public class TaskBasedResource extends SecuredResource {
   }
   
   protected void addProcessvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
+    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     
     for(QueryVariable variable : variables) {
       if(variable.getVariableOperation() == null) {
@@ -274,11 +277,7 @@ public class TaskBasedResource extends SecuredResource {
       
       boolean nameLess = variable.getName() == null;
       
-      Object actualValue = variable.getValue();
-      if(variable.getType() != null) {
-        // Perform explicit conversion instead of using raw value from request
-        // TODO: use pluggable variable-creator based on objects and type
-      }
+      Object actualValue = responseFactory.getVariableValue(variable);
       
       // A value-only query is only possible using equals-operator
       if(nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {

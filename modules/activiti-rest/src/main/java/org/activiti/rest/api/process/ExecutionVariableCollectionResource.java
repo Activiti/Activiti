@@ -177,5 +177,4 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
       variableMap.put(var.getName(), var);
     }
   }
-  
 }

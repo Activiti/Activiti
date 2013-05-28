@@ -102,8 +102,8 @@ public class BaseExecutionVariableResource extends SecuredResource {
         setVariable(execution, variableName, value, scope, isNew);
         stream.close();
       }
-      if(execution instanceof ProcessInstance) {
-        
+      
+      if(execution instanceof ProcessInstance && allowProcessInstanceUrl()) {
         return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
                 .createBinaryRestVariable(this, variableName, scope, variableType, null, null, execution.getId());
       } else {
@@ -154,7 +154,11 @@ public class BaseExecutionVariableResource extends SecuredResource {
     if(scope == RestVariableScope.LOCAL) {
       ActivitiUtil.getRuntimeService().setVariableLocal(execution.getId(), name, value);
     } else {
-      ActivitiUtil.getRuntimeService().setVariable(execution.getId(), name, value);
+      if(execution.getParentId() != null) {
+        ActivitiUtil.getRuntimeService().setVariable(execution.getParentId(), name, value);
+      } else {
+        ActivitiUtil.getRuntimeService().setVariable(execution.getId(), name, value);
+      }
     }
   }
   
@@ -212,7 +216,7 @@ public class BaseExecutionVariableResource extends SecuredResource {
         throw new ActivitiObjectNotFoundException("Could not find an execution with id '" + executionId + "'.", ProcessInstance.class);
       }
       if(execution.getParentId() != null) {
-        value = ActivitiUtil.getRuntimeService().getVariable(executionId, execution.getParentId());
+        value = ActivitiUtil.getRuntimeService().getVariable(execution.getParentId(), variableName);
         variableScope = RestVariableScope.GLOBAL;
         variableFound = true;
       }
@@ -255,5 +259,9 @@ public class BaseExecutionVariableResource extends SecuredResource {
   
   protected String getExecutionIdParameter() {
     return "executionId";
+  }
+  
+  protected boolean allowProcessInstanceUrl() {
+    return false;
   }
 }

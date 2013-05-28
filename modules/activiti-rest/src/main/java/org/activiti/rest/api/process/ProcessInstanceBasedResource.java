@@ -23,9 +23,11 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
+import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.api.engine.variable.QueryVariable;
 import org.activiti.rest.api.engine.variable.QueryVariable.QueryVariableOperation;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Form;
 
 /**
@@ -78,7 +80,8 @@ public class ProcessInstanceBasedResource extends SecuredResource {
   }
 
   protected void addVariables(ProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {
-
+    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
+    
     for (QueryVariable variable : variables) {
       if (variable.getVariableOperation() == null) {
         throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
@@ -89,11 +92,7 @@ public class ProcessInstanceBasedResource extends SecuredResource {
 
       boolean nameLess = variable.getName() == null;
 
-      Object actualValue = variable.getValue();
-      if (variable.getType() != null) {
-        // Perform explicit conversion instead of using raw value from request
-        // TODO: use pluggable variable-creator based on objects and type
-      }
+      Object actualValue = responseFactory.getVariableValue(variable);
 
       // A value-only query is only possible using equals-operator
       if (nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {

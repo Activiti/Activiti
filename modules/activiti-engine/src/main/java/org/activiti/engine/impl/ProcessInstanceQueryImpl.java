@@ -17,7 +17,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -223,5 +222,13 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
 
   public void setEventSubscriptions(List<EventSubscriptionQueryValue> eventSubscriptions) {
     this.eventSubscriptions = eventSubscriptions;
+  }
+  
+  /**
+   * Method needed for ibatis because of re-use of query-xml for executions. ExecutionQuery contains
+   * a parentId property.
+   */
+  public String getParentId() {
+    return null;
   }
 }

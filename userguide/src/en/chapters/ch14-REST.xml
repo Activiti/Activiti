@@ -1642,7 +1642,7 @@
       "type" : "long"
     },
     
-    "processVariables" : [
+    "processInstanceVariables" : [
       {
          ... 
       }
@@ -1652,7 +1652,7 @@
         </para>
         <para>
           All supported JSON paremeter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processInstanceVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
         </para>
         <para>
           <table>

@@ -23,6 +23,7 @@ import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
@@ -37,12 +38,14 @@ import org.activiti.rest.api.engine.variable.DateRestVariableConverter;
 import org.activiti.rest.api.engine.variable.DoubleRestVariableConverter;
 import org.activiti.rest.api.engine.variable.IntegerRestVariableConverter;
 import org.activiti.rest.api.engine.variable.LongRestVariableConverter;
+import org.activiti.rest.api.engine.variable.QueryVariable;
 import org.activiti.rest.api.engine.variable.RestVariable;
 import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.api.engine.variable.StringRestVariableConverter;
 import org.activiti.rest.api.identity.RestIdentityLink;
+import org.activiti.rest.api.process.ExecutionResponse;
 import org.activiti.rest.api.process.ProcessInstanceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse.DeploymentResourceType;
@@ -241,6 +244,35 @@ public class RestResponseFactory {
     return value;
   }
   
+  public Object getVariableValue(QueryVariable restVariable) {
+    Object value = null;
+    
+    if(restVariable.getType() != null) {
+      // Try locating a converter if the type has been specified
+      RestVariableConverter converter = null;
+      for(RestVariableConverter conv : variableConverters) {
+        if(conv.getRestTypeName().equals(restVariable.getType())) {
+          converter = conv;
+          break;
+        }
+      }
+      if(converter == null) {
+        throw new ActivitiIllegalArgumentException("Variable '" + restVariable.getName() + "' has unsupported type: '" + restVariable.getType() + "'.");
+      }
+      
+      RestVariable temp = new RestVariable();
+      temp.setValue(restVariable.getValue());
+      temp.setType(restVariable.getType());
+      temp.setName(restVariable.getName());
+      value = converter.getVariableValue(temp);
+      
+    } else {
+      // Revert to type determined by REST-to-Java mapping when no explicit type has been provided
+      value = restVariable.getValue();
+    }
+    return value;
+  }
+  
   public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, IdentityLink link) {
     return createRestIdentityLink(securedResource, link.getType(), link.getUserId(), link.getGroupId(), link.getTaskId());
   }
@@ -333,6 +365,24 @@ public class RestResponseFactory {
   }
   
   
+  public ExecutionResponse createExecutionResponse(SecuredResource securedResource, Execution execution) {
+    ExecutionResponse result = new ExecutionResponse();
+    result.setActivityId(execution.getActivityId());
+    result.setId(execution.getId());
+    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_EXECUTION, execution.getId()));
+    result.setSuspended(execution.isSuspended());
+    
+    if(execution.getParentId() != null) {
+      result.setParentUrl(securedResource.createFullResourceUrl(RestUrls.URL_EXECUTION, execution.getParentId()));
+    }
+    
+    if(execution.getProcessInstanceId() != null) {
+      result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, execution.getProcessInstanceId()));
+    }
+    return result;
+  }
+  
+  
   /**
    * Called once when the converters need to be initialized. Override of custom conversion
    * needs to be done between java and rest.
@@ -346,5 +396,6 @@ public class RestResponseFactory {
     variableConverters.add(new BooleanRestVariableConverter());
     variableConverters.add(new DateRestVariableConverter());
   }
+
 
 }
