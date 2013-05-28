@@ -115,7 +115,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testRepeatingTimerWithCancelActivity() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("repeatingTimerAndCallActivity");
+    runtimeService.startProcessInstanceByKey("repeatingTimerAndCallActivity");
     assertEquals(1, managementService.createJobQuery().count());
     assertEquals(1, taskService.createTaskQuery().count());
     

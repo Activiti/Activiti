@@ -88,7 +88,7 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     }
   }
   
-  protected void verifyExceptionInStacktrace(Exception rootExcepton, Class expectedExceptionClass) {
+  protected void verifyExceptionInStacktrace(Exception rootExcepton, Class<?> expectedExceptionClass) {
     Throwable expectedException = rootExcepton;
     boolean found = false;
     while (!found && expectedException != null) {
