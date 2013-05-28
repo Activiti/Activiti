@@ -27,7 +27,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.HasRevision;
@@ -546,9 +545,11 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   
   private void executeGlobalListener( String taskEventName ) {
-	  TaskListener taskListener = Context.getProcessEngineConfiguration().getGlobalTaskListener() ; 
-	  if( taskListener != null ){
-		  executeListener(taskEventName , taskListener);
+	  List<TaskListener> taskListeners = Context.getProcessEngineConfiguration().getGlobalTaskListeners() ; 
+	  if( taskListeners != null ){
+		  for( TaskListener taskListener : taskListeners){
+			 executeListener(taskEventName , taskListener);
+		  }
 	  }
   }
   

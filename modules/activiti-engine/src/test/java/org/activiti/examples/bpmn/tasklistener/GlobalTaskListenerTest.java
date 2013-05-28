@@ -9,7 +9,7 @@ public class GlobalTaskListenerTest extends PluggableActivitiTestCase{
 	@Deployment
 	public void testGlobalListener () {
 		ProcessInstance instance = runtimeService.startProcessInstanceByKey("globalTaskListenerTest");
-		assertEquals(runtimeService.getVariable(instance.getProcessInstanceId(), "executeCount") , 1);
+		assertEquals(runtimeService.getVariable(instance.getProcessInstanceId(), "executeCount") , 3);
 	}
 
 }

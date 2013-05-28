@@ -14,6 +14,7 @@
 package org.activiti.engine;
 
 import java.io.InputStream;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -132,7 +133,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   protected ClassLoader classLoader;
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
-  protected TaskListener globalTaskListener ;
+  protected List<TaskListener> globalTaskListeners ;
 
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
@@ -533,11 +534,11 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     return processEngineLifecycleListener;
   }
   
-  public TaskListener getGlobalTaskListener() {
-	return globalTaskListener;
+  public List<TaskListener> getGlobalTaskListeners() {
+	return globalTaskListeners;
   }
 
-  public void setGlobalTaskListener(TaskListener globalTaskListener) {
-	this.globalTaskListener = globalTaskListener;
+  public void setGlobalTaskListeners(List<TaskListener> globalTaskListeners) {
+	this.globalTaskListeners = globalTaskListeners;
   }
 }
