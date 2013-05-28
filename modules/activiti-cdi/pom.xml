@@ -60,7 +60,6 @@
         <dependency>
           <groupId>org.jboss.arquillian.container</groupId>
           <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-          <version>1.0.0.CR3</version>
           <scope>test</scope>
         </dependency>
         <dependency>
@@ -120,7 +119,6 @@
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
-      <version>1.0.0.CR7</version>
       <scope>test</scope>
     </dependency>
     <dependency>

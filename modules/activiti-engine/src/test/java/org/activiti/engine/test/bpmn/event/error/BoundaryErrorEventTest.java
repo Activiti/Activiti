@@ -22,7 +22,6 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
