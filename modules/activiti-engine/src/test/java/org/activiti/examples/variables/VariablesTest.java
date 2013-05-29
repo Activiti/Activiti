@@ -26,14 +26,16 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  * @author Tom Baeyens
  */
 public class VariablesTest extends PluggableActivitiTestCase {
-
+  
   @Deployment
   public void testBasicVariableOperations() {
+    processEngineConfiguration.getVariableTypes().addType(CustomVariableType.instance, 0);
  
     Date now = new Date();
     List<String> serializable = new ArrayList<String>();
@@ -52,6 +54,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     variables.put("nullVar", null);
     variables.put("serializableVar", serializable);
     variables.put("bytesVar", bytes);
+    variables.put("customVar1", new CustomType(bytes));
+    variables.put("customVar2", new CustomType(null));
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
 
     variables = runtimeService.getVariables(processInstance.getId());
@@ -63,7 +67,9 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals(null, variables.get("nullVar"));
     assertEquals(serializable, variables.get("serializableVar"));
     assertTrue(Arrays.equals(bytes, (byte[]) variables.get("bytesVar")));
-    assertEquals(8, variables.size());
+    assertEquals(new CustomType(bytes), variables.get("customVar1"));
+    assertEquals(new CustomType(null), variables.get("customVar2"));
+    assertEquals(10, variables.size());
 
     // Set all existing variables values to null
     runtimeService.setVariable(processInstance.getId(), "longVar", null);
@@ -74,6 +80,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     runtimeService.setVariable(processInstance.getId(), "nullVar", null);
     runtimeService.setVariable(processInstance.getId(), "serializableVar", null);
     runtimeService.setVariable(processInstance.getId(), "bytesVar", null);
+    runtimeService.setVariable(processInstance.getId(), "customVar1", null);
+    runtimeService.setVariable(processInstance.getId(), "customVar2", null);
 
     variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(null, variables.get("longVar"));
@@ -84,7 +92,9 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals(null, variables.get("nullVar"));
     assertEquals(null, variables.get("serializableVar"));
     assertEquals(null, variables.get("bytesVar"));
-    assertEquals(8, variables.size());
+    assertEquals(null, variables.get("customVar1"));
+    assertEquals(null, variables.get("customVar2"));
+    assertEquals(10, variables.size());
 
     // Update existing variable values again, and add a new variable
     runtimeService.setVariable(processInstance.getId(), "new var", "hi");
@@ -95,6 +105,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     runtimeService.setVariable(processInstance.getId(), "dateVar", now);
     runtimeService.setVariable(processInstance.getId(), "serializableVar", serializable);
     runtimeService.setVariable(processInstance.getId(), "bytesVar", bytes);
+    runtimeService.setVariable(processInstance.getId(), "customVar1", new CustomType(bytes));
+    runtimeService.setVariable(processInstance.getId(), "customVar2", new CustomType(null));
 
     variables = runtimeService.getVariables(processInstance.getId());
     assertEquals("hi", variables.get("new var"));
@@ -106,7 +118,9 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals(null, variables.get("nullVar"));
     assertEquals(serializable, variables.get("serializableVar"));
     assertTrue(Arrays.equals(bytes, (byte[]) variables.get("bytesVar")));
-    assertEquals(9, variables.size());
+    assertEquals(new CustomType(bytes), variables.get("customVar1"));
+    assertEquals(new CustomType(null), variables.get("customVar2"));
+    assertEquals(11, variables.size());
     
     Collection<String> varFilter = new ArrayList<String>(2);
     varFilter.add("stringVar");
@@ -122,6 +136,9 @@ public class VariablesTest extends PluggableActivitiTestCase {
     Object newValue = runtimeService.getVariable(processInstance.getId(), "nullVar");
     assertNotNull(newValue);
     assertEquals("a value", newValue);
+    
+    Task task = taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
+    taskService.complete(task.getId());
   }
   
   // test case for ACT-1428
@@ -172,26 +189,41 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	    
 	    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
   }
+}
 
-  @Deployment
-  public void testCustomType() {
-    processEngineConfiguration.getVariableTypes().addType(new CustomVariableType(), 0);
-    
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("test", "Hello World");
-    
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
-    
-    variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals("Hello World", variables.get("test"));
+class CustomType {
+  private byte[] value;
+  
+  public CustomType(byte[] value) {
+    this.value = value;
   }
+
+  public byte[] getValue() {
+    return value;
+  }
+  
+  @Override
+  public int hashCode() {
+    return value.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof CustomType))
+      return false;
+    
+    CustomType other = (CustomType) obj;
+    return ArrayUtils.isEquals(this.value, other.value);
+  }
+  
 }
 
 class CustomVariableType implements VariableType {
+  public static final CustomVariableType instance = new CustomVariableType();
 
   @Override
   public String getTypeName() {
-    return "TestVariableType";
+    return "CustomVariableType";
   }
 
   @Override
@@ -201,19 +233,24 @@ class CustomVariableType implements VariableType {
 
   @Override
   public boolean isAbleToStore(Object value) {
-    return value instanceof String;
+    return value instanceof CustomType;
   }
 
   @Override
-  public void setValue(Object value, ValueFields valueFields) {
-    String str = (String) value;
-    valueFields.setBytes(str.getBytes());
+  public void setValue(Object o, ValueFields valueFields) {
+    // ensure calling setBytes multiple times no longer causes any problems 
+    valueFields.setBytes(new byte[] { 1, 2, 3} );
+    valueFields.setBytes(null);
+    valueFields.setBytes(new byte[] { 4, 5, 6} );
+    
+    byte[] value = (o == null ? null : ((CustomType) o).getValue());
+    valueFields.setBytes(value);
   }
 
   @Override
   public Object getValue(ValueFields valueFields) {
     byte[] bytes = valueFields.getBytes();
-    return new String(bytes);
+    return new CustomType(bytes);
   }
   
 }
