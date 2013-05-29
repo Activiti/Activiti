@@ -177,6 +177,34 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
   }
   
+  public void testSaveTaskAttachment() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      Task task = taskService.newTask();
+      task.setOwner("johndoe");
+      taskService.saveTask(task);
+      String taskId = task.getId();
+      identityService.setAuthenticatedUserId("johndoe");
+      
+      // Fetch attachment and update its name
+      taskService.createAttachment("web page", taskId, null, "weatherforcast", "temperatures and more", "http://weather.com");
+      Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
+      attachment.setName("UpdatedName");
+      taskService.saveAttachment(attachment);
+      
+      // Refetch and verify
+      attachment = taskService.getTaskAttachments(taskId).get(0);
+      assertEquals("UpdatedName", attachment.getName());
+      
+      // Finally, clean up
+      taskService.deleteTask(taskId);
+      
+      assertEquals(0, taskService.getTaskComments(taskId).size());
+      assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskId(taskId).list().size());
+
+      taskService.deleteTask(taskId, true);
+    }
+  }
+  
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testTaskAttachmentWithProcessInstanceId() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
@@ -1152,7 +1180,89 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       
     }
   }
-  
+
+  public void testResolveTaskNullTaskId() {
+    try {
+      taskService.resolveTask(null);
+      fail();
+    } catch (ActivitiException ae) {
+      assertTextPresent("taskId is null", ae.getMessage());
+    }
+  }
+
+  public void testResolveTaskUnexistingTaskId() {
+    try {
+      taskService.resolveTask("blergh");
+      fail();
+    } catch (ActivitiException ae) {
+      assertTextPresent("Cannot find task with id", ae.getMessage());
+    }
+  }
+
+  public void testResolveTaskWithParametersNullParameters() {
+    Task task = taskService.newTask();
+    task.setDelegationState(DelegationState.PENDING);
+    taskService.saveTask(task);
+
+    String taskId = task.getId();
+    taskService.resolveTask(taskId, null);
+
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      historyService.deleteHistoricTaskInstance(taskId);
+    }
+
+    // Fetch the task again
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+
+    taskService.deleteTask(taskId, true);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void testResolveTaskWithParametersEmptyParameters() {
+    Task task = taskService.newTask();
+    task.setDelegationState(DelegationState.PENDING);
+    taskService.saveTask(task);
+
+    String taskId = task.getId();
+    taskService.resolveTask(taskId, Collections.EMPTY_MAP);
+
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      historyService.deleteHistoricTaskInstance(taskId);
+    }
+
+    // Fetch the task again
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+
+    taskService.deleteTask(taskId, true);
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml" })
+  public void testResolveWithParametersTask() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
+
+    // Fetch first task
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("First task", task.getName());
+
+    task.delegate("johndoe");
+
+    // Resolve first task
+    Map<String, Object> taskParams = new HashMap<String, Object>();
+    taskParams.put("myParam", "myValue");
+    taskService.resolveTask(task.getId(), taskParams);
+
+    // Verify that task is resolved
+    task = taskService.createTaskQuery().taskDelegationState(DelegationState.RESOLVED).singleResult();
+    assertEquals("First task", task.getName());
+
+    // Verify task parameters set on execution
+    Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+    assertEquals(1, variables.size());
+    assertEquals("myValue", variables.get("myParam"));
+  }
+
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testDeleteTaskPartOfProcess() {
     runtimeService.startProcessInstanceByKey("oneTaskProcess");

@@ -12,6 +12,11 @@
  */
 package org.activiti.bpmn.model;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
 /**
  * @author Tijs Rademakers
  */
@@ -20,6 +25,7 @@ public class BaseElement {
   protected String id;
   protected int xmlRowNumber;
   protected int xmlColumnNumber;
+  protected Map<String, ExtensionElement> extensionElements = new LinkedHashMap<String, ExtensionElement>();
 
   public String getId() {
     return id;
@@ -43,5 +49,19 @@ public class BaseElement {
 
   public void setXmlColumnNumber(int xmlColumnNumber) {
     this.xmlColumnNumber = xmlColumnNumber;
+  }
+
+  public Map<String, ExtensionElement> getExtensionElements() {
+    return extensionElements;
+  }
+  
+  public void addExtensionElement(ExtensionElement extensionElement) {
+    if (extensionElement != null && StringUtils.isNotEmpty(extensionElement.getName())) {
+      this.extensionElements.put(extensionElement.getName(), extensionElement);
+    }
+  }
+
+  public void setExtensionElements(Map<String, ExtensionElement> extensionElements) {
+    this.extensionElements = extensionElements;
   }
 }

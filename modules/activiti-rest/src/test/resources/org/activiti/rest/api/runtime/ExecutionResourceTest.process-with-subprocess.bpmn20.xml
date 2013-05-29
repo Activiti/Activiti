@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples" xmlns:tns="Examples">
+
+  <process id="processOne" name="The One Task Process">
+    <documentation>One task process description</documentation>
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess" />
+
+    <subProcess id="subProcess">
+      <startEvent id="subProcessStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subProcessStart" targetRef="processTask" />
+      <userTask id="processTask" name="Process task" activiti:candidateUsers="kermit" activiti:candidateGroups="sales">
+        <documentation>Process task description</documentation>
+      </userTask>
+      <sequenceFlow id="subFlow2" sourceRef="processTask" targetRef="subProcessEnd" />
+      <endEvent id="subProcessEnd" />
+    </subProcess>
+
+
+    <sequenceFlow id="flow3" sourceRef="subProcess" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+  </process>
+</definitions>

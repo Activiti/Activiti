@@ -42,6 +42,6 @@
         </packageScan>
     </camelContext>
 
-    <bean id="sleepBean" class="org.activiti.camel.SleepBean"/>
+    <bean id="sleepBean" class="org.activiti.camel.util.SleepBean"/>
 
 </beans>

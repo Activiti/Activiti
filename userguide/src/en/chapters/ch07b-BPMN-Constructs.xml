@@ -910,8 +910,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		      When process execution arrives in an <emphasis role="bold">error end event</emphasis>, 
 		      the current path of execution is ended and an error is thrown. This error
 		      can <link linkend="bpmnBoundaryErrorEvent">caught by a matching intermediate boundary error event</link>.
-		      In case no matching boundary error event is found, the execution semantics default to the 
-		      <link linkend="bpmnNoneEndEvent">none end event</link> semantics.
+		      In case no matching boundary error event is found, an exception will be thrown.
 		    </para>
 		  	  
 		  </section>
@@ -3053,6 +3052,17 @@ public class FakeLdapService {
 		      engine, it is sufficient to add the corresponding jar to the classpath and use
 		      the appropriate name. For example, the Activiti unit tests often use Groovy because 
 		      the syntax is pretty similar to that of Java.
+		    </para>
+		    
+		    <para>
+		      Do note that the Grovy scripting engine is bundled with the groovy-all jar. Before version 2.0,
+		      the scripting engine was part of the regular Groovy jar. As such, one must now add following dependency:
+		      <programlisting>
+&lt;dependency&gt;
+      &lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
+      &lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
+      &lt;version&gt;2.x.x&lt;version&gt;
+&lt;/dependency&gt;</programlisting>
 		    </para>
 		    
 		  </section>

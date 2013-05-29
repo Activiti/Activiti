@@ -13,250 +13,100 @@
 
 package org.activiti.rest.api.process;
 
-import java.util.List;
-import java.util.Map;
-
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.SecuredResource;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
+import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Put;
+import org.restlet.resource.ResourceException;
+
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
 public class ProcessInstanceResource extends SecuredResource {
-  
+
   @Get
-  public ObjectNode getProcessInstance() {
-    if(authenticate() == false) return null;
-    
-    String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
-    HistoricProcessInstance instance = ActivitiUtil.getHistoryService()
-        .createHistoricProcessInstanceQuery()
-        .processInstanceId(processInstanceId)
-        .singleResult();
-    
-    if(instance == null) {
-      throw new ActivitiObjectNotFoundException("Process instance not found for id " + processInstanceId, ProcessInstance.class);
+  public ProcessInstanceResponse getProcessInstance() {
+    if(!authenticate()) {
+      return null;
     }
-    
-    ObjectNode responseJSON = new ObjectMapper().createObjectNode();
-    responseJSON.put("processInstanceId", instance.getId());
-    if (instance.getBusinessKey() != null) {
-      responseJSON.put("businessKey", instance.getBusinessKey());
-    } else {
-      responseJSON.putNull("businessKey");
-    }
-    responseJSON.put("processDefinitionId", instance.getProcessDefinitionId());
-    responseJSON.put("startTime", RequestUtil.dateToString(instance.getStartTime()));
-    responseJSON.put("startActivityId", instance.getStartActivityId());
-    if (instance.getStartUserId() != null) {
-      responseJSON.put("startUserId", instance.getStartUserId());
-    } else {
-      responseJSON.putNull("startUserId");
-    }
-    
-    if(instance.getEndTime() == null) {
-      responseJSON.put("completed", false);
-    } else {
-      responseJSON.put("completed", true);
-      responseJSON.put("endTime", RequestUtil.dateToString(instance.getEndTime()));
-      responseJSON.put("endActivityId", instance.getEndActivityId());
-      responseJSON.put("duration", instance.getDurationInMillis());
-    }
-    
-    addTaskList(processInstanceId, responseJSON);
-    addActivityList(processInstanceId, responseJSON);
-    addVariableList(processInstanceId, responseJSON);
-    
-    return responseJSON;
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createProcessInstanceResponse(this, getProcessInstanceFromRequest());
   }
   
   @Delete
-  public ObjectNode deleteProcessInstance() {
-    if(authenticate() == false) return null;
+  public void deleteProcessInstance() {
+    if(!authenticate()) {
+      return;
+    }
+    ProcessInstance processInstance = getProcessInstanceFromRequest();
+    String deleteReason = getQueryParameter("deleteReason", getQuery());
     
-    String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
-    
-    ActivitiUtil.getRuntimeService().deleteProcessInstance(processInstanceId, "REST API");
-    
-    ObjectNode successNode = new ObjectMapper().createObjectNode();
-    successNode.put("success", true);
-    return successNode;
+    ActivitiUtil.getRuntimeService().deleteProcessInstance(processInstance.getId(), deleteReason);
+    setStatus(Status.SUCCESS_NO_CONTENT);
   }
   
-  private void addTaskList(String processInstanceId, ObjectNode responseJSON) {
-    List<HistoricTaskInstance> taskList = ActivitiUtil.getHistoryService()
-        .createHistoricTaskInstanceQuery()
-        .processInstanceId(processInstanceId)
-        .orderByHistoricTaskInstanceStartTime()
-        .asc()
-        .list();
-    
-    if(taskList != null && taskList.size() > 0) {
-      ArrayNode tasksJSON = new ObjectMapper().createArrayNode();
-      responseJSON.put("tasks", tasksJSON);
-      for (HistoricTaskInstance historicTaskInstance : taskList) {
-        ObjectNode taskJSON = new ObjectMapper().createObjectNode();
-        taskJSON.put("taskId", historicTaskInstance.getId());
-        taskJSON.put("taskDefinitionKey", historicTaskInstance.getTaskDefinitionKey());
-        if (historicTaskInstance.getName() != null) {
-          taskJSON.put("taskName", historicTaskInstance.getName());
-        } else {
-          taskJSON.putNull("taskName");
-        }
-        if (historicTaskInstance.getDescription() != null) {
-          taskJSON.put("description", historicTaskInstance.getDescription());
-        } else {
-          taskJSON.putNull("description");
-        }
-        if (historicTaskInstance.getOwner() != null) {
-          taskJSON.put("owner", historicTaskInstance.getOwner());
-        } else {
-          taskJSON.putNull("owner");
-        }
-        if (historicTaskInstance.getAssignee() != null) {
-          taskJSON.put("assignee", historicTaskInstance.getAssignee());
-        } else {
-          taskJSON.putNull("assignee");
-        }
-        taskJSON.put("startTime", RequestUtil.dateToString(historicTaskInstance.getStartTime()));
-        if (historicTaskInstance.getDueDate() != null) {
-          taskJSON.put("dueDate", RequestUtil.dateToString(historicTaskInstance.getDueDate()));
-        } else {
-          taskJSON.putNull("dueDate");
-        }
-        if(historicTaskInstance.getEndTime() == null) {
-          taskJSON.put("completed", false);
-        } else {
-          taskJSON.put("completed", true);
-          taskJSON.put("endTime", RequestUtil.dateToString(historicTaskInstance.getEndTime()));
-          taskJSON.put("duration", historicTaskInstance.getDurationInMillis());
-        }
-        tasksJSON.add(taskJSON);
-      }
+  @Put
+  public ProcessInstanceResponse performProcessInstanceAction(ProcessInstanceActionRequest actionRequest) {
+    if(!authenticate()) {
+      return null;
     }
+    
+    ProcessInstance processInstance = getProcessInstanceFromRequest();
+    if(ProcessInstanceActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
+      return activateProcessInstance(processInstance);
+    } else if(ProcessInstanceActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
+      return suspendProcessInstance(processInstance);
+    }
+    throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
   }
   
-  private void addActivityList(String processInstanceId, ObjectNode responseJSON) {
-    List<HistoricActivityInstance> activityList = ActivitiUtil.getHistoryService()
-        .createHistoricActivityInstanceQuery()
-        .processInstanceId(processInstanceId)
-        .orderByHistoricActivityInstanceStartTime()
-        .asc()
-        .list();
-    
-    if(activityList != null && activityList.size() > 0) {
-      ArrayNode activitiesJSON = new ObjectMapper().createArrayNode();
-      responseJSON.put("activities", activitiesJSON);
-      for (HistoricActivityInstance historicActivityInstance : activityList) {
-        ObjectNode activityJSON = new ObjectMapper().createObjectNode();
-        activityJSON.put("activityId", historicActivityInstance.getActivityId());
-        if (historicActivityInstance.getActivityName() != null) {
-          activityJSON.put("activityName", historicActivityInstance.getActivityName());
-        } else {
-          activityJSON.putNull("activityName");
-        }
-        activityJSON.put("activityType", historicActivityInstance.getActivityType());
-        activityJSON.put("startTime", RequestUtil.dateToString(historicActivityInstance.getStartTime()));
-        if(historicActivityInstance.getEndTime() == null) {
-          activityJSON.put("completed", false);
-        } else {
-          activityJSON.put("completed", true);
-          activityJSON.put("endTime", RequestUtil.dateToString(historicActivityInstance.getEndTime()));
-          activityJSON.put("duration", historicActivityInstance.getDurationInMillis());
-        }
-        activitiesJSON.add(activityJSON);
-      }
+  protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance) {
+    if(!processInstance.isSuspended()) {
+      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process instance with id '" + processInstance.getId() + "' is already active.", null, null);
     }
+    ActivitiUtil.getRuntimeService().activateProcessInstanceById(processInstance.getId());
+   
+    ProcessInstanceResponse response =  getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createProcessInstanceResponse(this, processInstance);
+    
+    // No need to re-fetch the instance, just alter the suspended state of the result-object
+    response.setSuspended(false);
+    return response;
+  }
+
+  protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance) {
+    if(processInstance.isSuspended()) {
+      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process instance with id '" + processInstance.getId() + "' is already suspended.", null, null);
+    }
+    ActivitiUtil.getRuntimeService().suspendProcessInstanceById(processInstance.getId());
+    
+    ProcessInstanceResponse response =  getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createProcessInstanceResponse(this, processInstance);
+    
+    // No need to re-fetch the instance, just alter the suspended state of the result-object
+    response.setSuspended(true);
+    return response;
   }
   
-  private void addVariableList(String processInstanceId, ObjectNode responseJSON) {
-    
-    try {
-      Map<String, Object> variableMap = ActivitiUtil.getRuntimeService()
-          .getVariables(processInstanceId);
-      
-      if(variableMap != null && variableMap.size() > 0) {
-        ArrayNode variablesJSON = new ObjectMapper().createArrayNode();
-        responseJSON.put("variables", variablesJSON);
-        for (String key : variableMap.keySet()) {
-          Object variableValue = variableMap.get(key);
-          ObjectNode variableJSON = new ObjectMapper().createObjectNode();
-          variableJSON.put("variableName", key);
-          if (variableValue != null) {
-            if (variableValue instanceof Boolean) {
-              variableJSON.put("variableValue", (Boolean) variableValue);
-            } else if (variableValue instanceof Long) {
-              variableJSON.put("variableValue", (Long) variableValue);
-            } else if (variableValue instanceof Double) {
-              variableJSON.put("variableValue", (Double) variableValue);
-            } else if (variableValue instanceof Float) {
-              variableJSON.put("variableValue", (Float) variableValue);
-            } else if (variableValue instanceof Integer) {
-              variableJSON.put("variableValue", (Integer) variableValue);
-            } else {
-              variableJSON.put("variableValue", variableValue.toString());
-            }
-          } else {
-            variableJSON.putNull("variableValue");
-          }
-          variablesJSON.add(variableJSON);
-        }
-      }
-    } catch(Exception e) {
-      // Absorb possible error that the execution could not be found
+  
+  protected ProcessInstance getProcessInstanceFromRequest() {
+    String processInstanceId = getAttribute("processInstanceId");
+    if (processInstanceId == null) {
+      throw new ActivitiIllegalArgumentException("The processInstanceId cannot be null");
     }
     
-    List<HistoricDetail> historyVariableList = ActivitiUtil.getHistoryService()
-        .createHistoricDetailQuery()
-        .processInstanceId(processInstanceId)
-        .variableUpdates()
-        .orderByTime()
-        .desc()
-        .list();
-    
-    if(historyVariableList != null && historyVariableList.size() > 0) {
-      ArrayNode variablesJSON = new ObjectMapper().createArrayNode();
-      responseJSON.put("historyVariables", variablesJSON);
-      for (HistoricDetail historicDetail : historyVariableList) {
-        HistoricVariableUpdate variableUpdate = (HistoricVariableUpdate) historicDetail;
-        ObjectNode variableJSON = new ObjectMapper().createObjectNode();
-        variableJSON.put("variableName", variableUpdate.getVariableName());
-        if (variableUpdate.getValue() != null) {
-          if (variableUpdate.getValue() instanceof Boolean) {
-            variableJSON.put("variableValue", (Boolean) variableUpdate.getValue());
-          } else if (variableUpdate.getValue() instanceof Long) {
-            variableJSON.put("variableValue", (Long) variableUpdate.getValue());
-          } else if (variableUpdate.getValue() instanceof Double) {
-            variableJSON.put("variableValue", (Double) variableUpdate.getValue());
-          } else if (variableUpdate.getValue() instanceof Float) {
-            variableJSON.put("variableValue", (Float) variableUpdate.getValue());
-          } else if (variableUpdate.getValue() instanceof Integer) {
-            variableJSON.put("variableValue", (Integer) variableUpdate.getValue());
-          } else {
-            variableJSON.put("variableValue", variableUpdate.getValue().toString());
-          }
-        } else {
-          variableJSON.putNull("variableValue");
-        }
-        variableJSON.put("variableType", variableUpdate.getVariableTypeName());
-        variableJSON.put("revision", variableUpdate.getRevision());
-        variableJSON.put("time", RequestUtil.dateToString(variableUpdate.getTime()));
-        
-        variablesJSON.add(variableJSON);
-      }
+   ProcessInstance processInstance = ActivitiUtil.getRuntimeService().createProcessInstanceQuery()
+           .processInstanceId(processInstanceId).singleResult();
+    if (processInstance == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", ProcessInstance.class);
     }
+    return processInstance;
   }
 }

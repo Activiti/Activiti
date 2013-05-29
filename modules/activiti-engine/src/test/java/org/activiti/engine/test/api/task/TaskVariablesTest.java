@@ -59,6 +59,8 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     assertEquals(expectedVariables, runtimeService.getVariablesLocal(processInstanceId));
     
     taskService.setVariable(taskId, "player", "gonzo");
+    assertTrue(taskService.hasVariable(taskId, "player"));
+    assertFalse(taskService.hasVariableLocal(taskId, "budget"));
     
     expectedVariables = new HashMap<String, Object>();
     assertEquals(expectedVariables, taskService.getVariablesLocal(taskId));
@@ -69,6 +71,8 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     assertEquals(expectedVariables, runtimeService.getVariablesLocal(processInstanceId));
     
     taskService.setVariableLocal(taskId, "budget", "unlimited");
+    assertTrue(taskService.hasVariableLocal(taskId, "budget"));
+    assertTrue(taskService.hasVariable(taskId, "budget"));
     
     expectedVariables = new HashMap<String, Object>();
     expectedVariables.put("budget", "unlimited");

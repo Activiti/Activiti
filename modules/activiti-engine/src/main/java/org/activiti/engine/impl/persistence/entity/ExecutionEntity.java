@@ -1198,11 +1198,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   public IdentityLinkEntity addIdentityLink(String userId, String type) {
-    IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
+    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
     getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setProcessInstance(this);
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setType(type);
+    identityLinkEntity.insert();
     return identityLinkEntity;
   }
   

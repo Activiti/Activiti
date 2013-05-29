@@ -94,28 +94,28 @@
   
   <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
   	${limitBefore}
-    select RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId
+    select distinct RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId
     <include refid="selectExecutionsByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
   </select>
   
   <select id="selectExecutionCountByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultType="long">
-    select count(*)
+    select distinct count(RES.ID_)
     <include refid="selectExecutionsByQueryCriteriaSql"/>
   </select>
   
   <!--  same as selectExecutionsByQueryCriteria, but with different parameterType -->
   <select id="selectProcessInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="executionResultMap">
   	${limitBefore}
-    select RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId
+    select distinct RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId
     <include refid="selectExecutionsByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
   </select>
   
   <select id="selectProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultType="long">
-    select count(*)
+    select distinct count(RES.ID_)
     <include refid="selectExecutionsByQueryCriteriaSql"/>
   </select>
   
@@ -138,6 +138,9 @@
     	 <foreach collection="eventSubscriptions" index="index" item="eventSubscriptionValue">
     	 	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT${index} on RES.ID_ = EVT${index}.EXECUTION_ID_
 	    </foreach>
+    </if>
+    <if test="businessKey != null and includeChildExecutionsWithBusinessKeyQuery">
+        inner join ${prefix}ACT_RU_EXECUTION INST on RES.PROC_INST_ID_ = INST.ID_
     </if>
     inner join ${prefix}ACT_RE_PROCDEF P on RES.PROC_DEF_ID_ = P.ID_
     <where>
@@ -162,11 +165,17 @@
           #{item}
         </foreach>
       </if>
-      <if test="businessKey != null">
+      <if test="businessKey != null and !includeChildExecutionsWithBusinessKeyQuery">
         and RES.BUSINESS_KEY_ = #{businessKey}
+      </if>
+      <if test="businessKey != null and includeChildExecutionsWithBusinessKeyQuery">
+        and INST.BUSINESS_KEY_ = #{businessKey}
       </if>
       <if test="activityId != null">
         and RES.ACT_ID_ = #{activityId} and IS_ACTIVE_ = #{isActive}
+      </if>
+      <if test="parentId != null">
+        and RES.PARENT_ID_ = #{parentId}
       </if>
       <if test="superProcessInstanceId != null">
         <!-- A sub process instance is stored under a certain *execution*, potentially nested.
@@ -275,7 +284,23 @@
   </select>
   
   <select id="selectExecutionByNativeQuery" parameterType="java.util.Map" resultMap="executionResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+  		${limitBefore}
+  	</if>
     ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+    	${limitAfter}
+    </if>
+  </select>
+  
+  <select id="selectExecutionByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="executionResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+        ${limitBeforeNativeQuery}
+  	</if>
+  	${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+  		${limitAfter}
+  	</if>
   </select>
 
   <select id="selectExecutionCountByNativeQuery" parameterType="java.util.Map" resultType="long">

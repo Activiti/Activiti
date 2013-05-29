@@ -13,63 +13,63 @@
 
 package org.activiti.rest.api.task;
 
-import java.io.InputStream;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.Attachment;
+import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
-import org.restlet.data.CacheDirective;
-import org.restlet.data.MediaType;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.representation.Representation;
+import org.activiti.rest.api.engine.AttachmentResponse;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
+import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 
-/**
- * @author Tijs Rademakers
- */
-public class TaskAttachmentResource extends SecuredResource {
-  
-  @Get
-  public InputRepresentation getAttachment() {
-    if(authenticate() == false) return null;
-    
-    String attachmentId = (String) getRequest().getAttributes().get("attachmentId");
-    
-    if(attachmentId == null) {
-      throw new ActivitiIllegalArgumentException("No attachment id provided");
-    }
 
-    Attachment attachment = ActivitiUtil.getTaskService().getAttachment(attachmentId);
-    if(attachment == null) {
-      throw new ActivitiObjectNotFoundException("No attachment found for " + attachmentId, Attachment.class);
+/**
+ * @author Frederik Heremans
+ */
+public class TaskAttachmentResource extends TaskBasedResource {
+
+  @Get
+  public AttachmentResponse getAttachment() {
+    if(!authenticate())
+      return null;
+    
+    Task task = getTaskFromRequest();
+    
+    String attachmentId = getAttribute("attachmentId");
+    if(attachmentId == null) {
+      throw new ActivitiIllegalArgumentException("AttachmentId is required.");
     }
     
-    String contentType = attachment.getType();
-    MediaType mediatType = MediaType.IMAGE_PNG;
-    if(contentType != null) {
-      if(contentType.contains(";")) {
-        contentType = contentType.substring(0, contentType.indexOf(";"));
-      }
-      mediatType = MediaType.valueOf(contentType);
+    Attachment attachment = ActivitiUtil.getTaskService().getAttachment(attachmentId);
+    if(attachment == null || !task.getId().equals(attachment.getTaskId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
     }
-    InputStream resource = ActivitiUtil.getTaskService().getAttachmentContent(attachmentId);
-    InputRepresentation output = new InputRepresentation(resource, mediatType);
-    getResponse().getCacheDirectives().add(CacheDirective.maxAge(28800));
-    return output;
+    
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createAttachmentResponse(this, attachment);
   }
   
   @Delete
-  public void deleteAttachment(Representation entity) {
-    if(authenticate() == false) return;
-    String attachmentId = (String) getRequest().getAttributes().get("attachmentId");
+  public void delegteAttachment() {
+    if(!authenticate())
+      return;
     
+    Task task = getTaskFromRequest();
+    
+    String attachmentId = getAttribute("attachmentId");
     if(attachmentId == null) {
-      throw new ActivitiIllegalArgumentException("No attachment id provided");
+      throw new ActivitiIllegalArgumentException("AttachmentId is required.");
+    }
+    
+    Attachment attachment = ActivitiUtil.getTaskService().getAttachment(attachmentId);
+    if(attachment == null || !task.getId().equals(attachment.getTaskId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
     }
     
     ActivitiUtil.getTaskService().deleteAttachment(attachmentId);
+    setStatus(Status.SUCCESS_NO_CONTENT);
   }
 }

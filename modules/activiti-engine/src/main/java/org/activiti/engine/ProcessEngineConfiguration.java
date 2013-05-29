@@ -119,6 +119,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean jdbcPingEnabled = false;
   protected String jdbcPingQuery = null;
   protected int jdbcPingConnectionNotUsedFor;
+  protected int jdbcDefaultTransactionIsolationLevel;
   protected DataSource dataSource;
   protected boolean transactionsExternallyManaged = false;
   
@@ -130,6 +131,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String defaultCamelContext = "camelContext";
   
   protected String activityFontName = "Arial";
+  protected String labelFontName = "Arial";
   
   protected ClassLoader classLoader;
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
@@ -441,6 +443,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     return this;
   }
 
+  public int getJdbcDefaultTransactionIsolationLevel() {
+    return jdbcDefaultTransactionIsolationLevel;
+  }
+
+  public ProcessEngineConfiguration setJdbcDefaultTransactionIsolationLevel(int jdbcDefaultTransactionIsolationLevel) {
+    this.jdbcDefaultTransactionIsolationLevel = jdbcDefaultTransactionIsolationLevel;
+    return this;
+  }
+
   public boolean isJobExecutorActivate() {
     return jobExecutorActivate;
   }
@@ -533,6 +544,14 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public ProcessEngineLifecycleListener getProcessEngineLifecycleListener() {
     return processEngineLifecycleListener;
   }
+
+  public String getLabelFontName() {
+    return labelFontName;
+  }
+
+  public void setLabelFontName(String labelFontName) {
+    this.labelFontName = labelFontName;
+  }
   
   public List<TaskListener> getGlobalTaskListeners() {
 	return globalTaskListeners;
@@ -540,5 +559,5 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   public void setGlobalTaskListeners(List<TaskListener> globalTaskListeners) {
 	this.globalTaskListeners = globalTaskListeners;
-  }
+  }  
 }

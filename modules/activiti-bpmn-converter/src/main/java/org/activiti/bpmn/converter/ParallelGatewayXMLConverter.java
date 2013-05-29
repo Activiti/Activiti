@@ -41,6 +41,7 @@ public class ParallelGatewayXMLConverter extends BaseBpmnXMLConverter {
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     ParallelGateway gateway = new ParallelGateway();
     BpmnXMLUtil.addXMLLocation(gateway, xtr);
+    parseChildElements(getXMLElementName(), gateway, xtr);
     return gateway;
   }
 

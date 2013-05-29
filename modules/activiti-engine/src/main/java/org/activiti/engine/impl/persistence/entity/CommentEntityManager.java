@@ -60,6 +60,14 @@ public class CommentEntityManager extends AbstractManager {
     return getDbSqlSession().selectList("selectCommentsByProcessInstanceId", processInstanceId);
   }
   
+  public Comment findComment(String commentId) {
+    return getDbSqlSession().selectById(CommentEntity.class, commentId);
+  }
+  
+  public Event findEvent(String commentId) {
+    return getDbSqlSession().selectById(CommentEntity.class, commentId);
+  }
+  
   protected void checkHistoryEnabled() {
     if(!getHistoryManager().isHistoryEnabled()) {
       throw new ActivitiException("In order to use comments, history should be enabled");

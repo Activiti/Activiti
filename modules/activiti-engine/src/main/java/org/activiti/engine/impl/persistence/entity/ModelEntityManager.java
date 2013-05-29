@@ -13,9 +13,6 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Date;
-import java.util.List;
-
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
@@ -25,6 +22,10 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -163,5 +164,14 @@ public class ModelEntityManager extends AbstractManager {
       }
     }
     return bytes;
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectModelByNativeQuery", parameterMap, firstResult, maxResults);
+  }
+
+  public long findModelCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectModelCountByNativeQuery", parameterMap);
   }
 }

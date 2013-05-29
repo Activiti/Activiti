@@ -13,10 +13,6 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
@@ -26,6 +22,10 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -83,6 +83,14 @@ public class GroupEntityManager extends AbstractManager {
     parameters.put("procDefId", proceDefId);
     return  (List<Group>) getDbSqlSession().selectOne("selectGroupByQueryCriteria", parameters);
   }
-    
+
+  @SuppressWarnings("unchecked")
+  public List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectGroupByNativeQuery", parameterMap, firstResult, maxResults);
+  }
+
+  public long findGroupCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectGroupCountByNativeQuery", parameterMap);
+  }
   
 }

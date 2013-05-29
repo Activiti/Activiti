@@ -88,6 +88,9 @@ public class HistoricTaskInstanceEntityManager extends AbstractManager {
         commandContext
           .getAttachmentEntityManager()
           .deleteAttachmentsByTaskId(taskId);
+        
+        commandContext.getHistoricIdentityLinkEntityManager()
+          .deleteHistoricIdentityLinksByTaskId(taskId);
       
         getDbSqlSession().delete(historicTaskInstance);
       }

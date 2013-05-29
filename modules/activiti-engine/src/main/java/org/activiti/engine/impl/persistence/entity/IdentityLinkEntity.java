@@ -77,13 +77,15 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
     return persistentState;
   }
   
-  public static IdentityLinkEntity createAndInsert() {
-    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
+  public void insert() {
     Context
       .getCommandContext()
       .getDbSqlSession()
-      .insert(identityLinkEntity);
-    return identityLinkEntity;
+      .insert(this);
+
+   
+    Context.getCommandContext().getHistoryManager()
+      .recordIdentityLinkCreated(this);
   }
   
   public boolean isUser() {
@@ -136,7 +138,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
     return taskId;
   }
 
-  void setTaskId(String taskId) {
+  public void setTaskId(String taskId) {
     this.taskId = taskId;
   }
   
@@ -201,5 +203,27 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
     this.processDefId = processDef.getId();
   }
 
-  
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("IdentityLinkEntity[id=").append(id);
+    sb.append(", type=").append(type);
+    if (userId != null) {
+      sb.append(", userId=").append(userId);
+    }
+    if (groupId != null) {
+      sb.append(", groupId=").append(groupId);
+    }
+    if (taskId != null) {
+      sb.append(", taskId=").append(taskId);
+    }
+    if (processInstanceId != null) {
+      sb.append(", processInstanceId=").append(processInstanceId);
+    }
+    if (processDefId != null) {
+      sb.append(", processDefId=").append(processDefId);
+    }
+    sb.append("]");
+    return sb.toString();
+  }
 }
