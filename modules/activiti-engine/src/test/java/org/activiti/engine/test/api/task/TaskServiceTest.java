@@ -177,6 +177,34 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
   }
   
+  public void testSaveTaskAttachment() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      Task task = taskService.newTask();
+      task.setOwner("johndoe");
+      taskService.saveTask(task);
+      String taskId = task.getId();
+      identityService.setAuthenticatedUserId("johndoe");
+      
+      // Fetch attachment and update its name
+      taskService.createAttachment("web page", taskId, null, "weatherforcast", "temperatures and more", "http://weather.com");
+      Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
+      attachment.setName("UpdatedName");
+      taskService.saveAttachment(attachment);
+      
+      // Refetch and verify
+      attachment = taskService.getTaskAttachments(taskId).get(0);
+      assertEquals("UpdatedName", attachment.getName());
+      
+      // Finally, clean up
+      taskService.deleteTask(taskId);
+      
+      assertEquals(0, taskService.getTaskComments(taskId).size());
+      assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskId(taskId).list().size());
+
+      taskService.deleteTask(taskId, true);
+    }
+  }
+  
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testTaskAttachmentWithProcessInstanceId() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
