@@ -23,7 +23,7 @@ public class DataResponse {
   int start;
   String sort;
   String order;
-  int size = Integer.MAX_VALUE;
+  int size;
 
   public Object getData() {
     return data;
