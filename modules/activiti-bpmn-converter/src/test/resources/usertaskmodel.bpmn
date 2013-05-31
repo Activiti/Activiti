@@ -9,11 +9,14 @@
       <extensionElements>
         <activiti:formProperty id="formId" name="formName" type="string" expression="${expression}" variable="variable"></activiti:formProperty>
         <activiti:formProperty id="formId2" name="anotherName" type="long"></activiti:formProperty>
+        <activiti:formProperty id="formId3" name="enumName" type="enum">
+        	<activiti:value id="test" name="Test" />
+        	<activiti:value id="test2" name="Test2" />
+        </activiti:formProperty>
         <activiti:taskListener event="create" class="org.test.TestClass"></activiti:taskListener>
         <activiti:taskListener event="assignment" expression="${someExpression}"></activiti:taskListener>
         <activiti:taskListener event="complete" delegateExpression="${someDelegateExpression}"></activiti:taskListener>
       	<activiti:executionListener expression="${someExpression}" event="end" />
-      	
       </extensionElements>
     </userTask>
   </process>

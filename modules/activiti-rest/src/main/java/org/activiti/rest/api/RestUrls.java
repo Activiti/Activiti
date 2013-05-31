@@ -47,6 +47,7 @@ public final class RestUrls {
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_GROUPS = "groups";
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_USERS = "users";
   public static final String SEGMENT_VARIABLE_DATA = "data";
+  public static final String SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE = "historic-process-instances";
   public static final String SEGMENT_TABLES = "tables";
   
   /**
@@ -227,6 +228,11 @@ public final class RestUrls {
    * URL template for a comment on a process instance: <i>runtime/process-instances/{0:processInstanceId}/comments/{1:commentId}</i>
    */
   public static final String[] URL_PROCESS_INSTANCE_COMMENT = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_COMMENTS, "{1}"};
+  
+  /**
+   * URL template for historic process instance query: <i>query/historic-process-instances</i>
+   */
+  public static final String[] URL_HISTORIC_PROCESS_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE};
   
   /**
    * URL template for the collection of tables: <i>management/tables</i>

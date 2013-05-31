@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
@@ -44,15 +45,16 @@ import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.api.engine.variable.StringRestVariableConverter;
+import org.activiti.rest.api.history.HistoricProcessInstanceResponse;
 import org.activiti.rest.api.identity.RestIdentityLink;
 import org.activiti.rest.api.management.TableResponse;
-import org.activiti.rest.api.process.ExecutionResponse;
-import org.activiti.rest.api.process.ProcessInstanceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.api.repository.DeploymentResponse;
 import org.activiti.rest.api.repository.ProcessDefinitionResponse;
-import org.activiti.rest.api.task.TaskResponse;
+import org.activiti.rest.api.runtime.process.ExecutionResponse;
+import org.activiti.rest.api.runtime.process.ProcessInstanceResponse;
+import org.activiti.rest.api.runtime.task.TaskResponse;
 import org.restlet.data.MediaType;
 
 
@@ -380,6 +382,23 @@ public class RestResponseFactory {
     if(execution.getProcessInstanceId() != null) {
       result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, execution.getProcessInstanceId()));
     }
+    return result;
+  }
+  
+  public HistoricProcessInstanceResponse createHistoricProcessInstanceResponse(SecuredResource securedResource, HistoricProcessInstance processInstance) {
+    HistoricProcessInstanceResponse result = new HistoricProcessInstanceResponse();
+    result.setBusinessKey(processInstance.getBusinessKey());
+    result.setDeleteReason(processInstance.getDeleteReason());
+    result.setDurationInMillis(processInstance.getDurationInMillis());
+    result.setEndActivityId(processInstance.getEndActivityId());
+    result.setEndTime(processInstance.getEndTime());
+    result.setId(processInstance.getId());
+    result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
+    result.setStartActivityId(processInstance.getStartActivityId());
+    result.setStartTime(processInstance.getStartTime());
+    result.setStartUserId(processInstance.getStartUserId());
+    result.setSuperProcessInstanceId(processInstance.getSuperProcessInstanceId());
+    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
     return result;
   }
   

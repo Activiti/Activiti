@@ -11,24 +11,34 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.runtime;
+package org.activiti.rest.api.history;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Status;
+import org.restlet.representation.Representation;
+import org.restlet.resource.ClientResource;
 
 
 /**
- * Test for all REST-operations related to the process instance query resource.
+ * Test for REST-operation related to the historic process instance query resource.
  * 
- * @author Frederik Heremans
+ * @author Tijs Rademakers
  */
-public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
+public class HistoricProcessInstanceQueryResourceTest extends BaseRestTestCase {
   
   /**
    * Test querying process instance based on variables. 
@@ -42,8 +52,12 @@ public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
     processVariables.put("booleanVar", false);
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.complete(task.getId());
+    
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
 
-    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_QUERY);
+    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_QUERY);
     
     // Process variables
     ObjectNode requestNode = objectMapper.createObjectNode();
@@ -56,62 +70,62 @@ public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
     variableNode.put("name", "stringVar");
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
 
     // Integer equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 67890);
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // Boolean equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", false);
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // String not equals
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "ghijkl");
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
 
     // Integer not equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 45678);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // Boolean not equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", true);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // String equals ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "azeRTY");
     variableNode.put("operation", "equalsIgnoreCase");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
-    // String not equals ignore case
+    // String not equals ignore case (not supported)
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "HIJKLm");
     variableNode.put("operation", "notEqualsIgnoreCase");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertErrorResult(url, requestNode, Status.CLIENT_ERROR_BAD_REQUEST);
     
     // String equals without value
     variableNode.removeAll();
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // String equals with non existing value
     variableNode.removeAll();
@@ -119,5 +133,33 @@ public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
     variableNode.put("operation", "equals");
     assertResultsPresentInDataResponse(url, requestNode);
     
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("finished", true);
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("finished", false);
+    assertResultsPresentInDataResponse(url, requestNode, processInstance2.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionId", processInstance.getProcessDefinitionId());
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionKey", "oneTaskProcess");
+    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionKey", "oneTaskProcess");
+    
+    ClientResource client = getAuthenticatedClient(url + "?sort=startTime");
+    Representation response = client.post(requestNode);
+    
+    // Check status and size
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    assertEquals(2, dataNode.size());
+    assertEquals(processInstance.getId(), dataNode.get(0).get("id").asText());
+    assertEquals(processInstance2.getId(), dataNode.get(1).get("id").asText());
   }
 }

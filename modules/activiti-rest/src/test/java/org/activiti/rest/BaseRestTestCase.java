@@ -367,7 +367,10 @@ public class BaseRestTestCase extends PvmTestCase {
    * contains entries with the given ID's.
    */
   protected void assertResultsPresentInDataResponse(String url, ObjectNode body, String... expectedResourceIds) throws JsonProcessingException, IOException {
-    int numberOfResultsExpected = expectedResourceIds.length;
+    int numberOfResultsExpected = 0;
+    if (expectedResourceIds != null) {
+      numberOfResultsExpected = expectedResourceIds.length;
+    }
     
     // Do the actual call
     ClientResource client = getAuthenticatedClient(url);
@@ -379,13 +382,33 @@ public class BaseRestTestCase extends PvmTestCase {
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's
-    List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
-    Iterator<JsonNode> it = dataNode.iterator();
-    while(it.hasNext()) {
-      String id = it.next().get("id").getTextValue();
-      toBeFound.remove(id);
+    if (expectedResourceIds != null) {
+      List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
+      Iterator<JsonNode> it = dataNode.iterator();
+      while(it.hasNext()) {
+        String id = it.next().get("id").getTextValue();
+        toBeFound.remove(id);
+      }
+      assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
     }
-    assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
+    
+    client.release();
+  }
+  
+  /**
+   * Checks if the rest operation returns an error as expected 
+   */
+  protected void assertErrorResult(String url, ObjectNode body, Status status) throws IOException {
+    
+    // Do the actual call
+    ClientResource client = getAuthenticatedClient(url);
+    try {
+      client.post(body);
+      fail();
+    } catch(Exception e) {
+      // Check status
+      assertEquals(status, client.getResponse().getStatus());
+    }
     
     client.release();
   }
