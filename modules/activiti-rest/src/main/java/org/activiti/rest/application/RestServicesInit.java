@@ -41,6 +41,8 @@ import org.activiti.rest.api.legacy.process.LegacyProcessInstancesResource;
 import org.activiti.rest.api.legacy.process.ProcessDefinitionsResource;
 import org.activiti.rest.api.legacy.task.LegacyTaskResource;
 import org.activiti.rest.api.management.TableCollectionResource;
+import org.activiti.rest.api.management.TableColumnsResource;
+import org.activiti.rest.api.management.TableDataResource;
 import org.activiti.rest.api.management.TableResource;
 import org.activiti.rest.api.repository.DeploymentCollectionResource;
 import org.activiti.rest.api.repository.DeploymentResource;
@@ -133,6 +135,8 @@ public class RestServicesInit {
     
     router.attach("/management/tables", TableCollectionResource.class);
     router.attach("/management/tables/{tableName}", TableResource.class);
+    router.attach("/management/tables/{tableName}/columns", TableColumnsResource.class);
+    router.attach("/management/tables/{tableName}/data", TableDataResource.class);
     
     router.attach("/query/tasks", TaskQueryResource.class);
     router.attach("/query/process-instances", ProcessInstanceQueryResource.class);
