@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.management;
+package org.activiti.rest.api.legacy.management;
 
 import java.util.Date;
 import java.util.List;
@@ -31,7 +31,7 @@ import org.restlet.resource.Get;
 /**
  * @author Tijs Rademakers
  */
-public class TableDataResource extends SecuredResource {
+public class LegacyTableDataResource extends SecuredResource {
   
   @Get
   public ObjectNode getTableData() {

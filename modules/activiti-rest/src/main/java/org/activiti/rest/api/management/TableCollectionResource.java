@@ -13,12 +13,13 @@
 
 package org.activiti.rest.api.management;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.rest.api.ActivitiUtil;
+import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.resource.Get;
@@ -26,31 +27,21 @@ import org.restlet.resource.Get;
 /**
  * @author Frederik Heremans
  */
-public class TableResource extends SecuredResource {
+public class TableCollectionResource extends SecuredResource {
   
   @Get
-  public TableResponse getTable() {
+  public List<TableResponse> getTables() {
     if(authenticate() == false) return null;
 
-    String tableName = getAttribute("tableName");
-    if(tableName == null) {
-      throw new ActivitiIllegalArgumentException("The tableName cannot be null");
-    }
-    
-   Map<String, Long> tableCounts = ActivitiUtil.getManagementService().getTableCount();
-
-   TableResponse response = null;
-   for(Entry<String, Long> entry : tableCounts.entrySet()) {
-     if(entry.getKey().equals(tableName)) {
-       response = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-               .createTableResponse(this, entry.getKey(), entry.getValue());
-       break;
-     }
-   }
+   List<TableResponse> tables = new ArrayList<TableResponse>();
    
-   if(response == null) {
-     throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
+   Map<String, Long> tableCounts = ActivitiUtil.getManagementService().getTableCount();
+   
+   RestResponseFactory factory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
+   
+   for(Entry<String, Long> entry : tableCounts.entrySet()) {
+     tables.add(factory.createTableResponse(this, entry.getKey(), entry.getValue()));
    }
-   return response;
+   return tables;
   }
 }

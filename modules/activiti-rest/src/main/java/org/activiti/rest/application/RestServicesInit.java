@@ -28,17 +28,19 @@ import org.activiti.rest.api.legacy.deployment.DeploymentDeleteResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentUploadResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentsDeleteResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentsResource;
+import org.activiti.rest.api.legacy.management.JobExecuteResource;
+import org.activiti.rest.api.legacy.management.JobsExecuteResource;
+import org.activiti.rest.api.legacy.management.JobsResource;
+import org.activiti.rest.api.legacy.management.LegacyJobResource;
+import org.activiti.rest.api.legacy.management.LegacyTableDataResource;
+import org.activiti.rest.api.legacy.management.LegacyTableResource;
+import org.activiti.rest.api.legacy.management.TablesResource;
 import org.activiti.rest.api.legacy.process.LegacyProcessInstanceResource;
 import org.activiti.rest.api.legacy.process.LegacyProcessInstancesResource;
 import org.activiti.rest.api.legacy.process.ProcessDefinitionsResource;
 import org.activiti.rest.api.legacy.task.LegacyTaskResource;
-import org.activiti.rest.api.management.JobExecuteResource;
-import org.activiti.rest.api.management.JobResource;
-import org.activiti.rest.api.management.JobsExecuteResource;
-import org.activiti.rest.api.management.JobsResource;
-import org.activiti.rest.api.management.TableDataResource;
+import org.activiti.rest.api.management.TableCollectionResource;
 import org.activiti.rest.api.management.TableResource;
-import org.activiti.rest.api.management.TablesResource;
 import org.activiti.rest.api.process.ExecutionCollectionResource;
 import org.activiti.rest.api.process.ExecutionQueryResource;
 import org.activiti.rest.api.process.ExecutionResource;
@@ -128,6 +130,9 @@ public class RestServicesInit {
     router.attach("/runtime/executions/{executionId}/variables/{variableName}", ExecutionVariableResource.class);
     router.attach("/runtime/executions/{executionId}/variables/{variableName}/data", ExecutionVariableDataResource.class);
     
+    router.attach("/management/tables", TableCollectionResource.class);
+    router.attach("/management/tables/{tableName}", TableResource.class);
+    
     router.attach("/query/tasks", TaskQueryResource.class);
     router.attach("/query/process-instances", ProcessInstanceQueryResource.class);
     router.attach("/query/executions", ExecutionQueryResource.class);
@@ -185,13 +190,13 @@ public class RestServicesInit {
     router.attach("/deployment/{deploymentId}/resource/{resourceName}", DeploymentArtifactResource.class);
     
     router.attach("/management/jobs", JobsResource.class);
-    router.attach("/management/job/{jobId}", JobResource.class);
+    router.attach("/management/job/{jobId}", LegacyJobResource.class);
     router.attach("/management/job/{jobId}/execute", JobExecuteResource.class);
     router.attach("/management/jobs/execute", JobsExecuteResource.class);
     
     router.attach("/management/tables", TablesResource.class);
-    router.attach("/management/table/{tableName}", TableResource.class);
-    router.attach("/management/table/{tableName}/data", TableDataResource.class);
+    router.attach("/management/table/{tableName}", LegacyTableResource.class);
+    router.attach("/management/table/{tableName}/data", LegacyTableDataResource.class);
     
     router.attach("/simple-workflow", SimpleWorkflowResource.class);
     

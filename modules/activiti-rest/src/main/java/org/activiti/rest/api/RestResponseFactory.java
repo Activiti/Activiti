@@ -45,6 +45,7 @@ import org.activiti.rest.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.api.engine.variable.StringRestVariableConverter;
 import org.activiti.rest.api.identity.RestIdentityLink;
+import org.activiti.rest.api.management.TableResponse;
 import org.activiti.rest.api.process.ExecutionResponse;
 import org.activiti.rest.api.process.ProcessInstanceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
@@ -379,6 +380,14 @@ public class RestResponseFactory {
     if(execution.getProcessInstanceId() != null) {
       result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, execution.getProcessInstanceId()));
     }
+    return result;
+  }
+  
+  public TableResponse createTableResponse(SecuredResource securedResource, String name, Long count) {
+    TableResponse result = new TableResponse();
+    result.setName(name);
+    result.setCount(count);
+    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TABLE, name));
     return result;
   }
   

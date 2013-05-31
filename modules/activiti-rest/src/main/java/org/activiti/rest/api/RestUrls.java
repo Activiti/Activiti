@@ -27,6 +27,7 @@ public final class RestUrls {
    */
   public static final String SEGMENT_REPOSITORY_RESOURCES = "repository";
   public static final String SEGMENT_RUNTIME_RESOURCES = "runtime";
+  public static final String SEGMENT_MANAGEMENT_RESOURCES = "management";
   public static final String SEGMENT_QUERY_RESOURCES = "query";
   
   public static final String SEGMENT_DEPLOYMENT_RESOURCE = "deployments";
@@ -46,6 +47,7 @@ public final class RestUrls {
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_GROUPS = "groups";
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_USERS = "users";
   public static final String SEGMENT_VARIABLE_DATA = "data";
+  public static final String SEGMENT_TABLES = "tables";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -201,7 +203,6 @@ public final class RestUrls {
    */
   public static final String[] URL_PROCESS_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE};
   
-  
   /**
    * URL template for a single process instance: <i>runtime/process-instances/{0:processInstanceId}</i>
    */
@@ -226,6 +227,17 @@ public final class RestUrls {
    * URL template for a comment on a process instance: <i>runtime/process-instances/{0:processInstanceId}/comments/{1:commentId}</i>
    */
   public static final String[] URL_PROCESS_INSTANCE_COMMENT = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_COMMENTS, "{1}"};
+  
+  /**
+   * URL template for the collection of tables: <i>management/tables</i>
+   */
+  public static final String[] URL_TABLES_COLLECTION = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES};
+  
+  /**
+   * URL template for a single table: <i>management/tables/{0:tableName}</i>
+   */
+  public static final String[] URL_TABLE = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES, "{0}"};
+  
   
   
   /**

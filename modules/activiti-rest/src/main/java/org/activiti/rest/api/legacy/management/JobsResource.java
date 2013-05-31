@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.management;
+package org.activiti.rest.api.legacy.management;
 
 import java.util.Date;
 import java.util.HashMap;

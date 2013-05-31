@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.management;
+package org.activiti.rest.api.legacy.management;
 
 import org.activiti.engine.runtime.Job;
 import org.activiti.rest.api.RequestUtil;
@@ -19,7 +19,7 @@ import org.activiti.rest.api.RequestUtil;
 /**
  * @author Tijs Rademakers
  */
-public class JobResponse {
+public class LegacyJobResponse {
 
   String id;
   String executionId;
@@ -29,7 +29,7 @@ public class JobResponse {
   String exceptionMessage;
   String stacktrace;
   
-  public JobResponse(Job job) {
+  public LegacyJobResponse(Job job) {
     setId(job.getId());
     setExecutionId(job.getExecutionId());
     setProcessInstanceId(job.getProcessInstanceId());

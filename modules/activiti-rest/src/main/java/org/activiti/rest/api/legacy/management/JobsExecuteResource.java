@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.management;
+package org.activiti.rest.api.legacy.management;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.rest.api.ActivitiUtil;

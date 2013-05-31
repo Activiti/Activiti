@@ -11,27 +11,23 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.management;
+package org.activiti.rest.api.legacy.management;
 
-import org.activiti.engine.runtime.Job;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
-import org.restlet.resource.Get;
+import org.restlet.representation.Representation;
+import org.restlet.resource.Put;
 
 /**
  * @author Tijs Rademakers
  */
-public class JobResource extends SecuredResource {
+public class JobExecuteResource extends SecuredResource {
   
-  @Get
-  public JobResponse getJob() {
-    if(authenticate(SecuredResource.ADMIN) == false) return null;
+  @Put
+  public void executeTaskOperation(Representation entity) {
+    if(authenticate(SecuredResource.ADMIN) == false) return;
     
     String jobId = (String) getRequest().getAttributes().get("jobId");
-    Job job = ActivitiUtil.getManagementService().createJobQuery().jobId(jobId).singleResult();
-    String stacktrace = ActivitiUtil.getManagementService().getJobExceptionStacktrace(jobId);
-    JobResponse response = new JobResponse(job);
-    response.setStacktrace(stacktrace);
-    return response;
+    ActivitiUtil.getManagementService().executeJob(jobId);
   }
 }

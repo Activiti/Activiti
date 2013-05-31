@@ -19,7 +19,6 @@ import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.management.TablePageQuery;
 import org.activiti.engine.runtime.JobQuery;
-import org.activiti.engine.task.Task;
 
 
 

@@ -3709,6 +3709,115 @@ Only the attachment name is required to create a new attachment.
         </table>
   </section>
 </section>
+<section>
+    <title>Database tables</title>
+     <section>
+      <title>List of tables</title>
+        <para>
+          <programlisting>GET management/tables</programlisting>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the request was successful.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+   {
+      "name":"ACT_RU_VARIABLE",
+      "url":"http://localhost:8182/management/tables/ACT_RU_VARIABLE",
+      "count":4528
+   },
+   {
+      "name":"ACT_RU_EVENT_SUBSCR",
+      "url":"http://localhost:8182/management/tables/ACT_RU_EVENT_SUBSCR",
+      "count":3
+   },
+   
+   ...
+   
+]</programlisting>
+    </para>
+    </section>
+    
+    <section>
+      <title>Get a single table</title>
+        <para>
+          <programlisting>GET management/tables/{tableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>tableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the table to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+      "name":"ACT_RE_PROCDEF",
+      "url":"http://localhost:8182/management/tables/ACT_RE_PROCDEF",
+      "count":60
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the table exists and the table count is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested table does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+    
+    
+</section>
 
 <!-- Legacy -->
   <section>

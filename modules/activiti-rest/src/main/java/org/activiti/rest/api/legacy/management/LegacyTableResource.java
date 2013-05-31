@@ -11,23 +11,27 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.management;
+package org.activiti.rest.api.legacy.management;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.management.TableMetaData;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
-import org.restlet.representation.Representation;
-import org.restlet.resource.Put;
+import org.restlet.resource.Get;
 
 /**
  * @author Tijs Rademakers
  */
-public class JobExecuteResource extends SecuredResource {
+public class LegacyTableResource extends SecuredResource {
   
-  @Put
-  public void executeTaskOperation(Representation entity) {
-    if(authenticate(SecuredResource.ADMIN) == false) return;
+  @Get
+  public TableMetaData getTableMetaData() {
+    if(authenticate(SecuredResource.ADMIN) == false) return null;
     
-    String jobId = (String) getRequest().getAttributes().get("jobId");
-    ActivitiUtil.getManagementService().executeJob(jobId);
+    String tableName = (String) getRequest().getAttributes().get("tableName");
+    if(tableName == null) {
+      throw new ActivitiIllegalArgumentException("table name is required");
+    }
+    return ActivitiUtil.getManagementService().getTableMetaData(tableName);
   }
 }
