@@ -26,6 +26,7 @@ import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.NativeHistoricActivityInstanceQuery;
 import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
 import org.activiti.engine.history.NativeHistoricTaskInstanceQuery;
+import org.activiti.engine.history.NativeHistoricVariableInstanceQuery;
 import org.activiti.engine.impl.cmd.DeleteHistoricProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DeleteHistoricTaskInstanceCmd;
 import org.activiti.engine.impl.cmd.GetHistoricIdentityLinksForTaskCmd;
@@ -56,7 +57,12 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
   public HistoricVariableInstanceQuery createHistoricVariableInstanceQuery() {
     return new HistoricVariableInstanceQueryImpl(commandExecutor);
   }
-  
+
+  @Override
+  public NativeHistoricVariableInstanceQuery createNativeHistoricVariableInstanceQuery() {
+    return new NativeHistoricVariableInstanceQueryImpl(commandExecutor);
+  }
+
   public void deleteHistoricTaskInstance(String taskId) {
     commandExecutor.execute(new DeleteHistoricTaskInstanceCmd(taskId));
   }

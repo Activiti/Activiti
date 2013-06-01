@@ -30,6 +30,7 @@ import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.NativeHistoricActivityInstanceQuery;
 import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
 import org.activiti.engine.history.NativeHistoricTaskInstanceQuery;
+import org.activiti.engine.history.NativeHistoricVariableInstanceQuery;
 import org.activiti.engine.task.IdentityLink;
 
 /** 
@@ -59,6 +60,11 @@ public interface HistoryService {
   
   /** Creates a new programmatic query to search for {@link HistoricVariableInstance}s. */
   HistoricVariableInstanceQuery createHistoricVariableInstanceQuery();
+
+  /**
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for process definitions.
+   */
+  NativeHistoricVariableInstanceQuery createNativeHistoricVariableInstanceQuery();
 
   /** Deletes historic task instance.  This might be useful for tasks that are 
    * {@link TaskService#newTask() dynamically created} and then {@link TaskService#complete(String) completed}. 

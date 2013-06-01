@@ -13,16 +13,11 @@
 
 package org.activiti.engine.test.history;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableInstance;
@@ -312,6 +307,31 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
     count = historyService.createHistoricVariableInstanceQuery().count();
     assertEquals(2, count);
     
+  }
+
+  @Deployment(resources = "org/activiti/engine/test/history/HistoricVariableInstanceTest.testSimple.bpmn20.xml")
+  public void testNativeQuery() {
+    assertEquals("ACT_HI_VARINST", managementService.getTableName(HistoricVariableInstance.class));
+    assertEquals("ACT_HI_VARINST", managementService.getTableName(HistoricVariableInstanceEntity.class));
+    String tableName = managementService.getTableName(HistoricVariableInstance.class);
+    String baseQuerySql = "SELECT * FROM " + tableName;
+
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("var1", "value1");
+    variables.put("var2", "value2");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc", variables);
+    assertNotNull(processInstance);
+
+    assertEquals(3, historyService.createNativeHistoricVariableInstanceQuery().sql(baseQuerySql).list().size());
+
+    String sqlWithConditions = baseQuerySql + " where NAME_ = #{name}";
+    assertEquals("test123", historyService.createNativeHistoricVariableInstanceQuery().sql(sqlWithConditions)
+        .parameter("name", "myVar").singleResult().getValue());
+
+    sqlWithConditions = baseQuerySql + " where NAME_ like #{name}";
+    assertEquals(2, historyService.createNativeHistoricVariableInstanceQuery().sql(sqlWithConditions)
+        .parameter("name", "var%").list().size());
+
   }
   
 }
