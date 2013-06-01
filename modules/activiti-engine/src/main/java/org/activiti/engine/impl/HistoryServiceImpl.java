@@ -24,6 +24,7 @@ import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.NativeHistoricActivityInstanceQuery;
+import org.activiti.engine.history.NativeHistoricDetailQuery;
 import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
 import org.activiti.engine.history.NativeHistoricTaskInstanceQuery;
 import org.activiti.engine.history.NativeHistoricVariableInstanceQuery;
@@ -52,6 +53,11 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
 
   public HistoricDetailQuery createHistoricDetailQuery() {
     return new HistoricDetailQueryImpl(commandExecutor);
+  }
+
+  @Override
+  public NativeHistoricDetailQuery createNativeHistoricDetailQuery() {
+    return new NativeHistoricDetailQueryImpl(commandExecutor);
   }
 
   public HistoricVariableInstanceQuery createHistoricVariableInstanceQuery() {
