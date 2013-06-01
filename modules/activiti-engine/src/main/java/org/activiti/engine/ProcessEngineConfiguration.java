@@ -14,6 +14,7 @@
 package org.activiti.engine;
 
 import java.io.InputStream;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -21,6 +22,7 @@ import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.delegate.TaskListener;
 
 
 /** Configuration information from which a process engine can be build.
@@ -133,6 +135,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   protected ClassLoader classLoader;
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
+  protected List<TaskListener> globalTaskListeners ;
 
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
@@ -549,4 +552,12 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public void setLabelFontName(String labelFontName) {
     this.labelFontName = labelFontName;
   }
+  
+  public List<TaskListener> getGlobalTaskListeners() {
+	return globalTaskListeners;
+  }
+
+  public void setGlobalTaskListeners(List<TaskListener> globalTaskListeners) {
+	this.globalTaskListeners = globalTaskListeners;
+  }  
 }

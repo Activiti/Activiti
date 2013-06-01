@@ -522,20 +522,35 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       List<TaskListener> taskEventListeners = getTaskDefinition().getTaskListener(taskEventName);
       if (taskEventListeners != null) {
         for (TaskListener taskListener : taskEventListeners) {
-          ExecutionEntity execution = getExecution();
-          if (execution != null) {
-            setEventName(taskEventName);
-          }
-          try {
-            Context.getProcessEngineConfiguration()
-              .getDelegateInterceptor()
-              .handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask)this));
-          }catch (Exception e) {
-            throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
-          }
+        	executeListener(taskEventName, taskListener) ;
         }
       }
     }
+    executeGlobalListener(taskEventName) ;
+    
+  }
+  
+  protected void executeListener ( String taskEventName , TaskListener taskListener) {
+	  ExecutionEntity execution = getExecution();
+      if (execution != null) {
+        setEventName(taskEventName);
+      }
+      try {
+        Context.getProcessEngineConfiguration()
+          .getDelegateInterceptor()
+          .handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask)this));
+      }catch (Exception e) {
+        throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
+      }
+  }
+  
+  private void executeGlobalListener( String taskEventName ) {
+	  List<TaskListener> taskListeners = Context.getProcessEngineConfiguration().getGlobalTaskListeners() ; 
+	  if( taskListeners != null ){
+		  for( TaskListener taskListener : taskListeners){
+			 executeListener(taskEventName , taskListener);
+		  }
+	  }
   }
   
   @Override
