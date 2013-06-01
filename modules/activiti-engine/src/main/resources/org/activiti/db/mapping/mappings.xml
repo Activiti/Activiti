@@ -3,11 +3,12 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
-	<settings>
-		<setting name="lazyLoadingEnabled" value="false" />
-	</settings>
-	<mappers>
+  <settings>
+    <setting name="lazyLoadingEnabled" value="false" />
+  </settings>
+  <mappers>
     <mapper resource="org/activiti/db/mapping/entity/Attachment.xml" />
+    <mapper resource="org/activiti/db/mapping/entity/ByteArray.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Comment.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Deployment.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Execution.xml" />
@@ -31,5 +32,5 @@
     <mapper resource="org/activiti/db/mapping/entity/User.xml" />
     <mapper resource="org/activiti/db/mapping/entity/VariableInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/EventSubscription.xml" />
-	</mappers>
+  </mappers>
 </configuration>
