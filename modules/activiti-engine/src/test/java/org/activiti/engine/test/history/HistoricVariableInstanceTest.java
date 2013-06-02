@@ -13,16 +13,11 @@
 
 package org.activiti.engine.test.history;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableInstance;
@@ -98,6 +93,42 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
     
     assertEquals(5, historyService.createHistoricActivityInstanceQuery().count());
     assertEquals(3, historyService.createHistoricDetailQuery().count());
+  }
+  
+  @Deployment(resources={
+    "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"
+  })
+  public void testChangeType() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    TaskQuery taskQuery = taskService.createTaskQuery();
+    Task task = taskQuery.singleResult();
+    assertEquals("my task", task.getName());
+    
+    // no type change
+    runtimeService.setVariable(processInstance.getId(), "firstVar", "123");
+    assertEquals("123", getHistoricVariable("firstVar").getValue());
+    runtimeService.setVariable(processInstance.getId(), "firstVar", "456");
+    assertEquals("456", getHistoricVariable("firstVar").getValue());
+    runtimeService.setVariable(processInstance.getId(), "firstVar", "789");
+    assertEquals("789", getHistoricVariable("firstVar").getValue());
+
+    // type is changed from text to integer and back again. same result expected(?)
+    runtimeService.setVariable(processInstance.getId(), "secondVar", "123");
+    assertEquals("123", getHistoricVariable("secondVar").getValue());
+    runtimeService.setVariable(processInstance.getId(), "secondVar", 456);
+    // there are now 2 historic variables, so the following does not work
+//  assertEquals(456, getHistoricVariable("secondVar").getValue()); 
+    runtimeService.setVariable(processInstance.getId(), "secondVar", "789");
+    // there are now 3 historic variables, so the following does not work
+//  assertEquals("789", getHistoricVariable("secondVar").getValue());
+    
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(processInstance.getId());
+  }
+
+  private HistoricVariableInstance getHistoricVariable(String variableName) {
+    return historyService.createHistoricVariableInstanceQuery().variableName(variableName).singleResult();
   }
   
   @Deployment
@@ -217,7 +248,7 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
   @Deployment(resources={
           "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"
   })
-  public void testHidtoricProcessVariableOnDeletion() {
+  public void testHistoricProcessVariableOnDeletion() {
     HashMap<String, Object> variables = new HashMap<String,  Object>();
     variables.put("testVar", "Hallo Christian");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
