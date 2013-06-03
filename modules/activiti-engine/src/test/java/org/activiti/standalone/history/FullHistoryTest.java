@@ -23,8 +23,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import junit.framework.Assert;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
@@ -87,8 +85,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
       .singleResult();
     assertNotNull(serviceTaskActivity);
     
-    List<HistoricDetail> historicDetails = historyService
-      .createHistoricDetailQuery()
+    List<HistoricDetail> historicDetails = historyService.createHistoricDetailQuery()
       .orderByVariableName().asc()
       .orderByVariableRevision().asc()
       .list();
@@ -915,7 +912,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals(2, details.size());
     
     // Should have 2 different historic activity instance ID's, with the same activityId
-    Assert.assertNotSame(details.get(0).getActivityInstanceId(), details.get(1).getActivityInstanceId());
+    assertNotSame(details.get(0).getActivityInstanceId(), details.get(1).getActivityInstanceId());
     
     HistoricActivityInstance historicActInst1 = historyService.createHistoricActivityInstanceQuery()
       .activityInstanceId(details.get(0).getActivityInstanceId())
