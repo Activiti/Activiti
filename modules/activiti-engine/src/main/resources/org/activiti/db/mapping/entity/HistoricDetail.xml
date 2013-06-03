@@ -47,8 +47,8 @@
       #{variableName, jdbcType=VARCHAR},
       #{revision, jdbcType=VARCHAR},
       #{variableType, jdbcType=VARCHAR},
-      #{time, jdbcType=TIMESTAMP },
-      #{byteArrayValueId, jdbcType=VARCHAR},
+      #{time, jdbcType=TIMESTAMP},
+      #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
       #{doubleValue, jdbcType=DOUBLE},
       #{longValue, jdbcType=BIGINT},
       #{textValue, jdbcType=VARCHAR},
@@ -93,7 +93,7 @@
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
     <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
-    <result property="byteArrayValueId" column="BYTEARRAY_ID_" jdbcType="VARCHAR" />
+    <result property="byteArrayRef" column="BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler" />
     <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
     <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
     <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />

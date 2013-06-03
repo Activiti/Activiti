@@ -16,7 +16,7 @@
       #{processInstanceId, jdbcType=VARCHAR},
 	    #{executionId, jdbcType=VARCHAR},
       #{taskId, jdbcType=VARCHAR},
-	    #{byteArrayValueId, jdbcType=VARCHAR},
+	    #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
 	    #{doubleValue, jdbcType=DOUBLE},
 	    #{longValue, jdbcType=BIGINT},
 	    #{textValue, jdbcType=VARCHAR},
@@ -31,7 +31,7 @@
     set 
       REV_ = #{revisionNext, jdbcType=INTEGER},
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
-	    BYTEARRAY_ID_ = #{byteArrayValueId, jdbcType=VARCHAR},
+	    BYTEARRAY_ID_ = #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
 	    DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
 	    LONG_ = #{longValue, jdbcType=BIGINT},
 	    TEXT_ = #{textValue, jdbcType=VARCHAR},
@@ -59,7 +59,7 @@
 		<result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
 		<result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
 		<result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
-		<result property="byteArrayValueId" column="BYTEARRAY_ID_" jdbcType="VARCHAR" />
+		<result property="byteArrayRef" column="BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
 		<result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
 		<result property="textValue" column="TEXT_" jdbcType="VARCHAR"/>
 		<result property="textValue2" column="TEXT2_" jdbcType="VARCHAR"/>

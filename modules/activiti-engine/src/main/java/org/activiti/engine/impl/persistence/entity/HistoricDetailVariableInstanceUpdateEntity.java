@@ -38,32 +38,37 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
   protected Double doubleValue; 
   protected String textValue;
   protected String textValue2;
-
-  protected ByteArrayEntity byteArrayValue;
-  protected String byteArrayValueId;
+  protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
 
   protected Object cachedValue;
 
-  public HistoricDetailVariableInstanceUpdateEntity() {
+  protected HistoricDetailVariableInstanceUpdateEntity() {
   }
 
-  public HistoricDetailVariableInstanceUpdateEntity(VariableInstanceEntity variableInstance) {
-    this.processInstanceId = variableInstance.getProcessInstanceId();
-    this.executionId = variableInstance.getExecutionId();
-    this.taskId = variableInstance.getTaskId();
-    this.revision = variableInstance.getRevision();
-    this.name = variableInstance.getName();
-    this.variableType = variableInstance.getType();
-    this.time = ClockUtil.getCurrentTime();
-    this.textValue = variableInstance.getTextValue();
-    this.textValue2 = variableInstance.getTextValue2();
-    this.doubleValue = variableInstance.getDoubleValue();
-    this.longValue = variableInstance.getLongValue();
-    
+  public static HistoricDetailVariableInstanceUpdateEntity copyAndInsert(VariableInstanceEntity variableInstance) {
+    HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = new HistoricDetailVariableInstanceUpdateEntity();
+    historicVariableUpdate.processInstanceId = variableInstance.getProcessInstanceId();
+    historicVariableUpdate.executionId = variableInstance.getExecutionId();
+    historicVariableUpdate.taskId = variableInstance.getTaskId();
+    historicVariableUpdate.time = ClockUtil.getCurrentTime();
+    historicVariableUpdate.revision = variableInstance.getRevision();
+    historicVariableUpdate.name = variableInstance.getName();
+    historicVariableUpdate.variableType = variableInstance.getType();
+    historicVariableUpdate.textValue = variableInstance.getTextValue();
+    historicVariableUpdate.textValue2 = variableInstance.getTextValue2();
+    historicVariableUpdate.doubleValue = variableInstance.getDoubleValue();
+    historicVariableUpdate.longValue = variableInstance.getLongValue();
+
     if (variableInstance.getBytes() != null) {
-      this.byteArrayValue = ByteArrayEntity.createAndInsert("hist.var-" + name, variableInstance.getBytes());
-      this.byteArrayValueId = byteArrayValue.getId();
+      String byteArrayName = "hist.detail.var-" + variableInstance.getName();
+      historicVariableUpdate.byteArrayRef.setValue(byteArrayName, variableInstance.getBytes());
     }
+    
+    Context.getCommandContext()
+      .getDbSqlSession()
+      .insert(historicVariableUpdate);
+
+    return historicVariableUpdate;
   }
   
   public Object getValue() {
@@ -75,13 +80,8 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
 
   public void delete() {
     super.delete();
-
-    if (byteArrayValueId != null) {
-      Context
-        .getCommandContext()
-        .getByteArrayEntityManager()
-        .deleteByteArrayById(byteArrayValueId);
-    }
+    
+    byteArrayRef.delete();
   }
 
   public Object getPersistentState() {
@@ -99,61 +99,29 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
 
   // byte array value /////////////////////////////////////////////////////////
   
-  // i couldn't find a easy readable way to extract the common byte array value logic
-  // into a common class.  therefor it's duplicated in VariableInstanceEntity, 
-  // HistoricVariableInstance and HistoricDetailVariableInstanceUpdateEntity 
-  
   @Override
   public byte[] getBytes() {
-    ByteArrayEntity byteArrayValue = getByteArrayEntity();
-    return (byteArrayValue != null ? byteArrayValue.getBytes() : null);
+    return byteArrayRef.getBytes();
   }
 
   @Override
   public void setBytes(byte[] bytes) {
-    if (bytes == null) {
-      if (byteArrayValueId != null) {
-        Context.getCommandContext()
-          .getByteArrayEntityManager()
-          .deleteByteArrayById(byteArrayValueId);
-        byteArrayValueId = null;
-      }
-    }
-    else {
-      if (byteArrayValueId == null) {
-        byteArrayValue = ByteArrayEntity.createAndInsert("var-", bytes);
-        byteArrayValueId = byteArrayValue.getId();
-      }
-      else {
-        ByteArrayEntity byteArrayValue = getByteArrayEntity();
-        byteArrayValue.setBytes(bytes);
-      }
-    }
+    throw new UnsupportedOperationException("HistoricDetailVariableInstanceUpdateEntity is immutable");
   }
 
   @Override @Deprecated
   public String getByteArrayValueId() {
-    return byteArrayValueId;
+    return byteArrayRef.getId();
   }
 
   @Override @Deprecated
   public ByteArrayEntity getByteArrayValue() {
-    return getByteArrayEntity();
+    return byteArrayRef.getEntity();
   }
   
   @Override @Deprecated
   public void setByteArrayValue(byte[] bytes) {
     setBytes(bytes);
-  }
-
-  private ByteArrayEntity getByteArrayEntity() {
-    if ((byteArrayValue == null) && (byteArrayValueId != null)) {
-      byteArrayValue = Context
-        .getCommandContext()
-        .getDbSqlSession()
-        .selectById(ByteArrayEntity.class, byteArrayValueId);
-    }
-    return byteArrayValue;
   }
   
   // getters and setters //////////////////////////////////////////////////////
@@ -170,9 +138,6 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
   }
   public String getName() {
     return name;
-  }
-  public void setName(String name) {
-    this.name = name;
   }
 
   public VariableType getVariableType() {
@@ -222,7 +187,7 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("VariableInstanceEntity[");
+    sb.append("HistoricDetailVariableInstanceUpdateEntity[");
     sb.append("id=").append(id);
     sb.append(", name=").append(name);
     sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
@@ -238,8 +203,8 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
     if (textValue2 != null) {
       sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
     }
-    if (byteArrayValueId != null) {
-      sb.append(", byteArrayValueId=").append(byteArrayValueId);
+    if (byteArrayRef.getId() != null) {
+      sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
     }
     sb.append("]");
     return sb.toString();

@@ -45,22 +45,19 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   protected Double doubleValue; 
   protected String textValue;
   protected String textValue2;
-
-  protected ByteArrayEntity byteArrayValue;
-  protected String byteArrayValueId;
+  protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
 
   protected Object cachedValue;
-  boolean forcedUpdate;
+  protected boolean forcedUpdate;
   
   // Default constructor for SQL mapping
   protected VariableInstanceEntity() {
   }
-
+  
   public static VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {
     VariableInstanceEntity variableInstance = create(name, type, value);
 
-    Context
-      .getCommandContext()
+    Context.getCommandContext()
       .getDbSqlSession()
       .insert(variableInstance);
   
@@ -72,7 +69,6 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     variableInstance.name = name;
     variableInstance.type = type;
     variableInstance.setValue(value);
-    
     return variableInstance;
   }
 
@@ -88,12 +84,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
       .getDbSqlSession()
       .delete(this);
     
-    if (byteArrayValueId != null) {
-      Context
-        .getCommandContext()
-        .getByteArrayEntityManager()
-        .deleteByteArrayById(byteArrayValueId);
-    }
+    byteArrayRef.delete();
   }
 
   public Object getPersistentState() {
@@ -110,8 +101,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     if (textValue2 != null) {
       persistentState.put("textValue2", textValue2);
     }
-    if (byteArrayValueId != null) {
-      persistentState.put("byteArrayValueId", byteArrayValueId);
+    if (byteArrayRef.getId() != null) {
+      persistentState.put("byteArrayValueId", byteArrayRef.getId());
     }
     if (forcedUpdate) {
       persistentState.put("forcedUpdate", Boolean.TRUE);
@@ -135,60 +126,29 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   
   // byte array value /////////////////////////////////////////////////////////
   
-  // i couldn't find a easy readable way to extract the common byte array value logic
-  // into a common class.  therefor it's duplicated in VariableInstanceEntity, 
-  // HistoricVariableInstance and HistoricDetailVariableInstanceUpdateEntity 
-
   @Override
   public byte[] getBytes() {
-    ByteArrayEntity byteArrayValue = getByteArrayEntity();
-    return (byteArrayValue != null ? byteArrayValue.getBytes() : null);
+    return byteArrayRef.getBytes();
   }
 
   @Override
   public void setBytes(byte[] bytes) {
-    if (bytes == null) {
-      if (byteArrayValueId != null) {
-        Context.getCommandContext()
-          .getByteArrayEntityManager()
-          .deleteByteArrayById(byteArrayValueId);
-        byteArrayValueId = null;
-      }
-    }
-    else {
-      if (byteArrayValueId == null) {
-        byteArrayValue = ByteArrayEntity.createAndInsert("var-" + name, bytes);
-        byteArrayValueId = byteArrayValue.getId();
-      }
-      else {
-        ByteArrayEntity byteArrayValue = getByteArrayEntity();
-        byteArrayValue.setBytes(bytes);
-      }
-    }
+    byteArrayRef.setValue("var-" + name, bytes);
   }
   
   @Override @Deprecated
   public ByteArrayEntity getByteArrayValue() {
-    return getByteArrayEntity();
+    return byteArrayRef.getEntity();
   }
   
   @Override @Deprecated
   public String getByteArrayValueId() {
-    return byteArrayValueId;
+    return byteArrayRef.getId();
   }
 
   @Override @Deprecated
   public void setByteArrayValue(byte[] bytes) {
     setBytes(bytes);
-  }
-
-  private ByteArrayEntity getByteArrayEntity() {
-    if (byteArrayValueId != null && byteArrayValue == null) {
-      byteArrayValue = Context.getCommandContext()
-        .getByteArrayEntityManager()
-        .findById(byteArrayValueId);
-    }
-    return byteArrayValue;
   }
 
   // value ////////////////////////////////////////////////////////////////////
@@ -223,9 +183,6 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   public String getName() {
     return name;
-  }
-  public void setName(String name) {
-    this.name = name;
   }
 
   public VariableType getType() {
@@ -304,8 +261,8 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     if (textValue2 != null) {
       sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
     }
-    if (byteArrayValueId != null) {
-      sb.append(", byteArrayValueId=").append(byteArrayValueId);
+    if (byteArrayRef.getId() != null) {
+      sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
     }
     sb.append("]");
     return sb.toString();

@@ -46,34 +46,39 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   protected Double doubleValue;
   protected String textValue;
   protected String textValue2;
-
-  protected ByteArrayEntity byteArrayValue;
-  protected String byteArrayValueId;
+  protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
 
   protected Object cachedValue;
 
-  public HistoricVariableInstanceEntity() {
+  // Default constructor for SQL mapping
+  protected HistoricVariableInstanceEntity() {
   }
 
-  public HistoricVariableInstanceEntity(VariableInstanceEntity variableInstance) {
-    this.id = variableInstance.getId();
-    this.processInstanceId = variableInstance.getProcessInstanceId();
-    this.executionId = variableInstance.getExecutionId();
-    this.taskId = variableInstance.getTaskId();
-    this.revision = variableInstance.getRevision();
-    this.name = variableInstance.getName();
-    this.variableType = variableInstance.getType();
-
-    copyValue(variableInstance);
+  public static HistoricVariableInstanceEntity copyAndInsert(VariableInstanceEntity variableInstance) {
+    HistoricVariableInstanceEntity historicVariableInstance = new HistoricVariableInstanceEntity();
+    historicVariableInstance.id = variableInstance.getId();
+    historicVariableInstance.processInstanceId = variableInstance.getProcessInstanceId();
+    historicVariableInstance.executionId = variableInstance.getExecutionId();
+    historicVariableInstance.taskId = variableInstance.getTaskId();
+    historicVariableInstance.revision = variableInstance.getRevision();
+    historicVariableInstance.name = variableInstance.getName();
+    historicVariableInstance.variableType = variableInstance.getType();
+    
+    historicVariableInstance.copyValue(variableInstance);
+    
+    Context.getCommandContext()
+      .getDbSqlSession()
+      .insert(historicVariableInstance);
+    
+    return historicVariableInstance;
   }
   
-  public final void copyValue(VariableInstanceEntity variableInstance) {
+  public void copyValue(VariableInstanceEntity variableInstance) {
     this.textValue = variableInstance.getTextValue();
     this.textValue2 = variableInstance.getTextValue2();
     this.doubleValue = variableInstance.getDoubleValue();
     this.longValue = variableInstance.getLongValue();
-    
-    setBytes(variableInstance.getBytes());
+    this.setBytes(variableInstance.getBytes());
   }
 
   public void delete() {
@@ -82,21 +87,17 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
       .getDbSqlSession()
       .delete(this);
     
-    if (byteArrayValueId != null) {
-      Context
-      .getCommandContext()
-      .getByteArrayEntityManager()
-      .deleteByteArrayById(byteArrayValueId);
-    }
+    byteArrayRef.delete();
   }
 
   public Object getPersistentState() {
     List<Object> state = new ArrayList<Object>(5);
+    // type???
     state.add(textValue);
     state.add(textValue2);
     state.add(doubleValue);
     state.add(longValue);
-    state.add(byteArrayValueId);
+    state.add(byteArrayRef.getId());
     return state;
   }
   
@@ -113,60 +114,29 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   
   // byte array value /////////////////////////////////////////////////////////
   
-  // i couldn't find a easy readable way to extract the common byte array value logic
-  // into a common class.  therefor it's duplicated in VariableInstanceEntity, 
-  // HistoricVariableInstance and HistoricDetailVariableInstanceUpdateEntity 
-  
   @Override
   public byte[] getBytes() {
-    ByteArrayEntity byteArrayValue = getByteArrayEntity();
-    return (byteArrayValue != null ? byteArrayValue.getBytes() : null);
+    return byteArrayRef.getBytes();
   }
 
   @Override
   public void setBytes(byte[] bytes) {
-    if (bytes == null) {
-      if (byteArrayValueId != null) {
-        Context.getCommandContext()
-          .getByteArrayEntityManager()
-          .deleteByteArrayById(byteArrayValueId);
-        byteArrayValueId = null;
-      }
-    }
-    else {
-      if (byteArrayValueId == null) {
-        byteArrayValue = ByteArrayEntity.createAndInsert("var-" + name, bytes);
-        byteArrayValueId = byteArrayValue.getId();
-      }
-      else {
-        ByteArrayEntity byteArrayValue = getByteArrayEntity();
-        byteArrayValue.setBytes(bytes);
-      }
-    }
+    byteArrayRef.setValue("hist.var-" + name, bytes);
   }
   
   @Override @Deprecated
   public ByteArrayEntity getByteArrayValue() {
-    return getByteArrayEntity();
+    return byteArrayRef.getEntity();
   }
   
   @Override @Deprecated
   public String getByteArrayValueId() {
-    return byteArrayValueId;
+    return byteArrayRef.getId();
   }
 
   @Override @Deprecated
   public void setByteArrayValue(byte[] bytes) {
     setBytes(bytes);
-  }
-
-  private ByteArrayEntity getByteArrayEntity() {
-    if (byteArrayValueId != null && byteArrayValue == null) {
-      byteArrayValue = Context.getCommandContext()
-        .getByteArrayEntityManager()
-        .findById(byteArrayValueId);
-    }
-    return byteArrayValue;
   }
 
   // getters and setters //////////////////////////////////////////////////////
@@ -203,10 +173,6 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public Long getLongValue() {
     return longValue;
   }
@@ -237,10 +203,6 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
 
   public void setTextValue2(String textValue2) {
     this.textValue2 = textValue2;
-  }
-
-  public void setByteArrayValue(ByteArrayEntity byteArrayValue) {
-    this.byteArrayValue = byteArrayValue;
   }
 
   public Object getCachedValue() {
@@ -284,7 +246,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("VariableInstanceEntity[");
+    sb.append("HistoricVariableInstanceEntity[");
     sb.append("id=").append(id);
     sb.append(", name=").append(name);
     sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
@@ -300,8 +262,8 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     if (textValue2 != null) {
       sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
     }
-    if (byteArrayValueId != null) {
-      sb.append(", byteArrayValueId=").append(byteArrayValueId);
+    if (byteArrayRef.getId() != null) {
+      sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
     }
     sb.append("]");
     return sb.toString();
