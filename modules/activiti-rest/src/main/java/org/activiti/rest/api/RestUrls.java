@@ -53,6 +53,8 @@ public final class RestUrls {
   public static final String SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE = "historic-activity-instances";
   public static final String SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE = "historic-variable-instances";
   public static final String SEGMENT_TABLES = "tables";
+  public static final String SEGMENT_COLUMNS = "columns";
+  public static final String SEGMENT_DATA = "data";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -292,6 +294,16 @@ public final class RestUrls {
    * URL template for a single table: <i>management/tables/{0:tableName}</i>
    */
   public static final String[] URL_TABLE = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES, "{0}"};
+  
+  /**
+   * URL template for column-metadata for a single table: <i>management/tables/{0:tableName}/columns</i>
+   */
+  public static final String[] URL_TABLE_COLUMNS = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES, "{0}", SEGMENT_COLUMNS};
+  
+  /**
+   * URL template for actual table row data: <i>management/tables/{0:tableName}/data</i>
+   */
+  public static final String[] URL_TABLE_DATA = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES, "{0}", SEGMENT_DATA};
   
   
   

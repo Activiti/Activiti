@@ -1390,7 +1390,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>URL query parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3815,7 +3815,194 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-    
+    <section>
+      <title>Get column info for a single table</title>
+        <para>
+          <programlisting>GET management/tables/{tableName}/columns</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>tableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the table to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "tableName":"ACT_RU_VARIABLE",
+   "columnNames":[
+      "ID_",
+      "REV_",
+      "TYPE_",
+      "NAME_",
+      ...
+   ],
+   "columnTypes":[
+      "VARCHAR",
+      "INTEGER",
+      "VARCHAR",
+      "VARCHAR",
+      ...
+   ]
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the table exists and the table column info is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested table does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Get row data for a single table</title>
+        <para>
+          <programlisting>GET management/tables/{tableName}/data</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>tableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the table to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+            <table>
+              <title>URL query parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>start</entry>
+                    <entry>No</entry>
+                    <entry>Integer</entry>
+                    <entry>Index of the first row to fetch. Defaults to 0.</entry>
+                  </row>
+                  <row>
+                    <entry>size</entry>
+                    <entry>No</entry>
+                    <entry>Integer</entry>
+                    <entry>Number of rows to fetch, starting from <literal>start</literal>. Defaults to 10.</entry>
+                  </row>
+                  <row>
+                    <entry>orderAscendingColumn</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Name of the column to sort the resulting rows on, ascending.</entry>
+                  </row>
+                  <row>
+                    <entry>orderDescendingColumn</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Name of the column to sort the resulting rows on, descending.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "total":3,
+   "start":0,
+   "sort":null,
+   "order":null,
+   "size":3,
+   
+   "data":[
+      {
+         "TASK_ID_":"2",
+         "NAME_":"var1",
+         "REV_":1,
+         "TEXT_":"123",
+         "LONG_":123,
+         "ID_":"3",
+         "TYPE_":"integer"
+      },
+      ...
+   ]
+ 
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the table exists and the table row data is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested table does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
     
 </section>
 
