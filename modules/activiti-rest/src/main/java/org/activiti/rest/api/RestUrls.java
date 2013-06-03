@@ -28,6 +28,7 @@ public final class RestUrls {
   public static final String SEGMENT_REPOSITORY_RESOURCES = "repository";
   public static final String SEGMENT_RUNTIME_RESOURCES = "runtime";
   public static final String SEGMENT_MANAGEMENT_RESOURCES = "management";
+  public static final String SEGMENT_HISTORY_RESOURCES = "history";
   public static final String SEGMENT_QUERY_RESOURCES = "query";
   
   public static final String SEGMENT_DEPLOYMENT_RESOURCE = "deployments";
@@ -48,6 +49,9 @@ public final class RestUrls {
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_USERS = "users";
   public static final String SEGMENT_VARIABLE_DATA = "data";
   public static final String SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE = "historic-process-instances";
+  public static final String SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE = "historic-task-instances";
+  public static final String SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE = "historic-activity-instances";
+  public static final String SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE = "historic-variable-instances";
   public static final String SEGMENT_TABLES = "tables";
   public static final String SEGMENT_COLUMNS = "columns";
   public static final String SEGMENT_DATA = "data";
@@ -232,9 +236,54 @@ public final class RestUrls {
   public static final String[] URL_PROCESS_INSTANCE_COMMENT = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_COMMENTS, "{1}"};
   
   /**
+   * URL template for a single historic process instance: <i>history/historic-process-instances/{0:processInstanceId}</i>
+   */
+  public static final String[] URL_HISTORIC_PROCESS_INSTANCE = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for historic process instance query: <i>history/historic-process-instances</i>
+   */
+  public static final String[] URL_HISTORIC_PROCESS_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for a single historic task instance: <i>history/historic-task-instances/{0:taskId}</i>
+   */
+  public static final String[] URL_HISTORIC_TASK_INSTANCE = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for historic task instance query: <i>history/historic-task-instances</i>
+   */
+  public static final String[] URL_HISTORIC_TASK_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic process instance query: <i>history/historic-activity-instances</i>
+   */
+  public static final String[] URL_HISTORIC_ACTIVITY_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic process instance query: <i>history/historic-variable-instances</i>
+   */
+  public static final String[] URL_HISTORIC_VARIABLE_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE};
+  
+  /**
    * URL template for historic process instance query: <i>query/historic-process-instances</i>
    */
   public static final String[] URL_HISTORIC_PROCESS_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic process instance query: <i>query/historic-task-instances</i>
+   */
+  public static final String[] URL_HISTORIC_TASK_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic activity instance query: <i>query/historic-activity-instances</i>
+   */
+  public static final String[] URL_HISTORIC_ACTIVITY_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic variable instance query: <i>query/historic-variable-instances</i>
+   */
+  public static final String[] URL_HISTORIC_VARIABLE_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE};
   
   /**
    * URL template for the collection of tables: <i>management/tables</i>

@@ -91,7 +91,7 @@ public class BaseRestTestCase extends PvmTestCase {
   
   protected void initializeProcessEngine() {
     if (cachedProcessEngine==null) {
-      cachedProcessEngine = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration().setProcessEngineName("default").buildProcessEngine();
+      cachedProcessEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("activiti.cfg.xml").buildProcessEngine();
       if (cachedProcessEngine==null) {
         throw new ActivitiException("no in-memory process engine available");
       }

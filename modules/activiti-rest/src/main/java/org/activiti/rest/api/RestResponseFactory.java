@@ -19,7 +19,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
@@ -45,7 +48,10 @@ import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.api.engine.variable.StringRestVariableConverter;
+import org.activiti.rest.api.history.HistoricActivityInstanceResponse;
 import org.activiti.rest.api.history.HistoricProcessInstanceResponse;
+import org.activiti.rest.api.history.HistoricTaskInstanceResponse;
+import org.activiti.rest.api.history.HistoricVariableInstanceResponse;
 import org.activiti.rest.api.identity.RestIdentityLink;
 import org.activiti.rest.api.management.TableResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
@@ -393,12 +399,72 @@ public class RestResponseFactory {
     result.setEndActivityId(processInstance.getEndActivityId());
     result.setEndTime(processInstance.getEndTime());
     result.setId(processInstance.getId());
+    result.setProcessDefinitionId(processInstance.getProcessDefinitionId());
     result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
     result.setStartActivityId(processInstance.getStartActivityId());
     result.setStartTime(processInstance.getStartTime());
     result.setStartUserId(processInstance.getStartUserId());
     result.setSuperProcessInstanceId(processInstance.getSuperProcessInstanceId());
-    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
+    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, processInstance.getId()));
+    return result;
+  }
+  
+  public HistoricTaskInstanceResponse createHistoricTaskInstanceResponse(SecuredResource securedResource, HistoricTaskInstance taskInstance) {
+    HistoricTaskInstanceResponse result = new HistoricTaskInstanceResponse();
+    result.setAssignee(taskInstance.getAssignee());
+    result.setClaimTime(taskInstance.getClaimTime());
+    result.setDeleteReason(taskInstance.getDeleteReason());
+    result.setDescription(taskInstance.getDescription());
+    result.setDueDate(taskInstance.getDueDate());
+    result.setDurationInMillis(taskInstance.getDurationInMillis());
+    result.setEndTime(taskInstance.getEndTime());
+    result.setExecutionId(taskInstance.getExecutionId());
+    result.setFormKey(taskInstance.getFormKey());
+    result.setId(taskInstance.getId());
+    result.setName(taskInstance.getName());
+    result.setOwner(taskInstance.getOwner());
+    result.setParentTaskId(taskInstance.getParentTaskId());
+    result.setPriority(taskInstance.getPriority());
+    result.setProcessDefinitionId(taskInstance.getProcessDefinitionId());
+    result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, taskInstance.getProcessDefinitionId()));
+    result.setProcessInstanceId(taskInstance.getProcessInstanceId());
+    result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, taskInstance.getProcessInstanceId()));
+    result.setStartTime(taskInstance.getStartTime());
+    result.setTaskDefinitionKey(taskInstance.getTaskDefinitionKey());
+    result.setWorkTimeInMillis(taskInstance.getWorkTimeInMillis());
+    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, taskInstance.getId()));
+    return result;
+  }
+  
+  public HistoricActivityInstanceResponse createHistoricActivityInstanceResponse(SecuredResource securedResource, HistoricActivityInstance activityInstance) {
+    HistoricActivityInstanceResponse result = new HistoricActivityInstanceResponse();
+    result.setActivityId(activityInstance.getActivityId());
+    result.setActivityName(activityInstance.getActivityName());
+    result.setActivityType(activityInstance.getActivityType());
+    result.setAssignee(activityInstance.getAssignee());
+    result.setCalledProcessInstanceId(activityInstance.getCalledProcessInstanceId());
+    result.setDurationInMillis(activityInstance.getDurationInMillis());
+    result.setEndTime(activityInstance.getEndTime());
+    result.setExecutionId(activityInstance.getExecutionId());
+    result.setId(activityInstance.getId());
+    result.setProcessDefinitionId(activityInstance.getProcessDefinitionId());
+    result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, activityInstance.getProcessDefinitionId()));
+    result.setProcessInstanceId(activityInstance.getProcessInstanceId());
+    result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, activityInstance.getId()));
+    result.setStartTime(activityInstance.getStartTime());
+    result.setTaskId(activityInstance.getTaskId());
+    return result;
+  }
+  
+  public HistoricVariableInstanceResponse createHistoricVariableInstanceResponse(SecuredResource securedResource, HistoricVariableInstance variableInstance) {
+    HistoricVariableInstanceResponse result = new HistoricVariableInstanceResponse();
+    result.setId(variableInstance.getId());
+    result.setProcessInstanceId(variableInstance.getProcessInstanceId());
+    result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, variableInstance.getProcessInstanceId()));
+    result.setTaskId(variableInstance.getTaskId());
+    result.setValue(variableInstance.getValue());
+    result.setVariableName(variableInstance.getVariableName());
+    result.setVariableTypeName(variableInstance.getVariableTypeName());
     return result;
   }
   
