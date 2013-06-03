@@ -1,8 +1,17 @@
 package org.activiti.rest.application;
 
 import org.activiti.rest.api.engine.ProcessEngineResource;
+import org.activiti.rest.api.history.HistoricActivityInstanceCollectionResource;
+import org.activiti.rest.api.history.HistoricActivityInstanceQueryResource;
 import org.activiti.rest.api.history.HistoricFormPropertiesResource;
+import org.activiti.rest.api.history.HistoricProcessInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricProcessInstanceQueryResource;
+import org.activiti.rest.api.history.HistoricProcessInstanceResource;
+import org.activiti.rest.api.history.HistoricTaskInstanceCollectionResource;
+import org.activiti.rest.api.history.HistoricTaskInstanceQueryResource;
+import org.activiti.rest.api.history.HistoricTaskInstanceResource;
+import org.activiti.rest.api.history.HistoricVariableInstanceCollectionResource;
+import org.activiti.rest.api.history.HistoricVariableInstanceQueryResource;
 import org.activiti.rest.api.identity.GroupCreateResource;
 import org.activiti.rest.api.identity.GroupResource;
 import org.activiti.rest.api.identity.GroupSearchResource;
@@ -131,6 +140,13 @@ public class RestServicesInit {
     router.attach("/runtime/executions/{executionId}/variables/{variableName}", ExecutionVariableResource.class);
     router.attach("/runtime/executions/{executionId}/variables/{variableName}/data", ExecutionVariableDataResource.class);
     
+    router.attach("/history/historic-process-instances/{processInstanceId}", HistoricProcessInstanceResource.class);
+    router.attach("/history/historic-process-instances", HistoricProcessInstanceCollectionResource.class);
+    router.attach("/history/historic-task-instances/{taskId}", HistoricTaskInstanceResource.class);
+    router.attach("/history/historic-task-instances", HistoricTaskInstanceCollectionResource.class);
+    router.attach("/history/historic-activity-instances", HistoricActivityInstanceCollectionResource.class);
+    router.attach("/history/historic-variable-instances", HistoricVariableInstanceCollectionResource.class);
+    
     router.attach("/management/tables", TableCollectionResource.class);
     router.attach("/management/tables/{tableName}", TableResource.class);
     
@@ -138,6 +154,9 @@ public class RestServicesInit {
     router.attach("/query/process-instances", ProcessInstanceQueryResource.class);
     router.attach("/query/executions", ExecutionQueryResource.class);
     router.attach("/query/historic-process-instances", HistoricProcessInstanceQueryResource.class);
+    router.attach("/query/historic-task-instances", HistoricTaskInstanceQueryResource.class);
+    router.attach("/query/historic-activity-instances", HistoricActivityInstanceQueryResource.class);
+    router.attach("/query/historic-variable-instances", HistoricVariableInstanceQueryResource.class);
     
     // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);

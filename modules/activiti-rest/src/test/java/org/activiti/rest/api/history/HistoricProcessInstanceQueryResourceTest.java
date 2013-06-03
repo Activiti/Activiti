@@ -13,18 +13,13 @@
 
 package org.activiti.rest.api.history;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -41,8 +36,8 @@ import org.restlet.resource.ClientResource;
 public class HistoricProcessInstanceQueryResourceTest extends BaseRestTestCase {
   
   /**
-   * Test querying process instance based on variables. 
-   * POST query/process-instances
+   * Test querying historic process instance based on variables. 
+   * POST query/historic-process-instances
    */
   @Deployment
   public void testQueryProcessInstancesWithVariables() throws Exception {

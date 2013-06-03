@@ -18,21 +18,23 @@ import java.util.Date;
 /**
  * @author Tijs Rademakers
  */
-public class HistoricProcessInstanceResponse {
+public class HistoricActivityInstanceResponse {
   
   protected String id;
-  protected String url;
-  protected String businessKey;
+  protected String activityId;
+  protected String activityName;
+  protected String activityType;
   protected String processDefinitionId;
   protected String processDefinitionUrl;
+  protected String processInstanceId;
+  protected String processInstanceUrl;
+  protected String executionId;
+  protected String taskId;
+  protected String calledProcessInstanceId;
+  protected String assignee;
   protected Date startTime;
   protected Date endTime;
   protected Long durationInMillis;
-  protected String startUserId;
-  protected String startActivityId;
-  protected String endActivityId;
-  protected String deleteReason;
-  protected String superProcessInstanceId;
   
   public String getId() {
     return id;
@@ -40,17 +42,23 @@ public class HistoricProcessInstanceResponse {
   public void setId(String id) {
     this.id = id;
   }
-  public String getUrl() {
-    return url;
+  public String getActivityId() {
+    return activityId;
   }
-  public void setUrl(String url) {
-    this.url = url;
+  public void setActivityId(String activityId) {
+    this.activityId = activityId;
   }
-  public String getBusinessKey() {
-    return businessKey;
+  public String getActivityName() {
+    return activityName;
   }
-  public void setBusinessKey(String businessKey) {
-    this.businessKey = businessKey;
+  public void setActivityName(String activityName) {
+    this.activityName = activityName;
+  }
+  public String getActivityType() {
+    return activityType;
+  }
+  public void setActivityType(String activityType) {
+    this.activityType = activityType;
   }
   public String getProcessDefinitionId() {
     return processDefinitionId;
@@ -63,6 +71,42 @@ public class HistoricProcessInstanceResponse {
   }
   public void setProcessDefinitionUrl(String processDefinitionUrl) {
     this.processDefinitionUrl = processDefinitionUrl;
+  }
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
+  public String getProcessInstanceUrl() {
+    return processInstanceUrl;
+  }
+  public void setProcessInstanceUrl(String processInstanceUrl) {
+    this.processInstanceUrl = processInstanceUrl;
+  }
+  public String getExecutionId() {
+    return executionId;
+  }
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
+  public String getTaskId() {
+    return taskId;
+  }
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
+  }
+  public String getCalledProcessInstanceId() {
+    return calledProcessInstanceId;
+  }
+  public void setCalledProcessInstanceId(String calledProcessInstanceId) {
+    this.calledProcessInstanceId = calledProcessInstanceId;
+  }
+  public String getAssignee() {
+    return assignee;
+  }
+  public void setAssignee(String assignee) {
+    this.assignee = assignee;
   }
   public Date getStartTime() {
     return startTime;
@@ -81,35 +125,5 @@ public class HistoricProcessInstanceResponse {
   }
   public void setDurationInMillis(Long durationInMillis) {
     this.durationInMillis = durationInMillis;
-  }
-  public String getStartUserId() {
-    return startUserId;
-  }
-  public void setStartUserId(String startUserId) {
-    this.startUserId = startUserId;
-  }
-  public String getStartActivityId() {
-    return startActivityId;
-  }
-  public void setStartActivityId(String startActivityId) {
-    this.startActivityId = startActivityId;
-  }
-  public String getEndActivityId() {
-    return endActivityId;
-  }
-  public void setEndActivityId(String endActivityId) {
-    this.endActivityId = endActivityId;
-  }
-  public String getDeleteReason() {
-    return deleteReason;
-  }
-  public void setDeleteReason(String deleteReason) {
-    this.deleteReason = deleteReason;
-  }
-  public String getSuperProcessInstanceId() {
-    return superProcessInstanceId;
-  }
-  public void setSuperProcessInstanceId(String superProcessInstanceId) {
-    this.superProcessInstanceId = superProcessInstanceId;
   }
 }
