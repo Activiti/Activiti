@@ -21,7 +21,7 @@
     </userTask>
     <boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="usertask">
 	   <timerEventDefinition>
-	    <timeCycle>R3/PT10H</timeCycle>
+	    <timeCycle>${cronExpression}</timeCycle>
 	  </timerEventDefinition>
 	</boundaryEvent>
 	<sequenceFlow id="flow5" sourceRef="escalationTimer" targetRef="endEvent"></sequenceFlow>
