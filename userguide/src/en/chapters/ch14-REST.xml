@@ -4006,6 +4006,192 @@ Only the attachment name is required to create a new attachment.
     
 </section>
 
+<section>
+    <title>Jobs</title>
+    <section>
+      <title>Get a single job</title>
+        <para>
+          <programlisting>GET management/jobs/{jobId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>jobId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the job to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"8",
+   "url":"http://localhost:8182/management/jobs/8",
+   "processInstanceId":"5",
+   "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+   "processDefinitionId":"timerProcess:1:4",
+   "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/timerProcess%3A1%3A4",
+   "executionId":"7",
+   "executionUrl":"http://localhost:8182/runtime/executions/7",
+   "retries":3,
+   "exceptionMessage":null,
+   "dueDate":"2013-06-04T22:05:05.474+0000"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the job exists and is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Delete a job</title>
+        <para>
+          <programlisting>DELETE management/jobs/{jobId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>jobId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the job to delete.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the job was found and has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Execute a single job</title>
+        <para>
+          <programlisting>PUT managemebt/jobs/{jobId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "execute"
+}</programlisting>
+        <table>
+              <title>JSON Body parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Required</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>action</entry>
+                    <entry>Action to perform. Only <literal>execute</literal> is supported.</entry>
+                    <entry>Yes</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the job was executed. Response-body is intentionally empty.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>500</entry>
+                    <entry>Indicates the an exception occured while executing the job. The status-description contains additional detail about the error. The full error-stacktrace can be fetched later on if needed.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+ </section>
+   
+    
+</section>
+
 <!-- Legacy -->
   <section>
 

@@ -28,6 +28,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
@@ -53,6 +54,7 @@ import org.activiti.rest.api.history.HistoricProcessInstanceResponse;
 import org.activiti.rest.api.history.HistoricTaskInstanceResponse;
 import org.activiti.rest.api.history.HistoricVariableInstanceResponse;
 import org.activiti.rest.api.identity.RestIdentityLink;
+import org.activiti.rest.api.management.JobResponse;
 import org.activiti.rest.api.management.TableResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse.DeploymentResourceType;
@@ -391,6 +393,7 @@ public class RestResponseFactory {
     return result;
   }
   
+  @SuppressWarnings("deprecation")
   public HistoricProcessInstanceResponse createHistoricProcessInstanceResponse(SecuredResource securedResource, HistoricProcessInstance processInstance) {
     HistoricProcessInstanceResponse result = new HistoricProcessInstanceResponse();
     result.setBusinessKey(processInstance.getBusinessKey());
@@ -476,6 +479,32 @@ public class RestResponseFactory {
     return result;
   }
   
+  public JobResponse createJobResponse(SecuredResource securedResource, Job job) {
+    JobResponse response = new JobResponse();
+    response.setId(job.getId());
+    response.setDueDate(job.getDuedate());
+    response.setExceptionMessage(job.getExceptionMessage());
+    response.setExecutionId(job.getExecutionId());
+    response.setProcessDefinitionId(job.getProcessDefinitionId());
+    response.setProcessInstanceId(job.getProcessInstanceId());
+    response.setRetries(job.getRetries());
+    
+    response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_JOB, job.getId()));
+    
+    if(job.getProcessDefinitionId() != null) {
+      response.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, job.getProcessDefinitionId()));
+    }
+    
+    if(job.getProcessInstanceId() != null) {
+      response.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, job.getProcessInstanceId()));
+    }
+    
+    if(job.getExecutionId() != null) {
+      response.setExecutionUrl(securedResource.createFullResourceUrl(RestUrls.URL_EXECUTION, job.getExecutionId()));
+    }
+    
+    return response;
+  }
   
   /**
    * Called once when the converters need to be initialized. Override of custom conversion
@@ -490,6 +519,4 @@ public class RestResponseFactory {
     variableConverters.add(new BooleanRestVariableConverter());
     variableConverters.add(new DateRestVariableConverter());
   }
-
-
 }
