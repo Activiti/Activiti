@@ -54,6 +54,7 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
   // Pluggable factories
   protected LDAPUserManagerFactory ldapUserManagerFactory;
   protected LDAPGroupManagerFactory ldapGroupManagerFactory;
+  protected LDAPMembershipManagerFactory ldapMembershipManagerFactory;
   
   // Pluggable query helper bean
   protected LDAPQueryBuilder ldapQueryBuilder = new LDAPQueryBuilder();
@@ -64,6 +65,7 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
     
     LDAPGroupManagerFactory ldapGroupManagerFactory = getLdapGroupManagerFactory();
     processEngineConfiguration.getSessionFactories().put(ldapGroupManagerFactory.getSessionType(), ldapGroupManagerFactory);
+    
   }
   
   // Can be overwritten for custom factories
@@ -83,6 +85,14 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
     }
     return new LDAPGroupManagerFactory(this);
   }
+  
+  protected LDAPMembershipManagerFactory getLdapMembershipManagerFactory() {
+    if (this.ldapMembershipManagerFactory != null) {
+      this.ldapMembershipManagerFactory.setLdapConfigurator(this);
+    }
+    return new LDAPMembershipManagerFactory(this);
+  }
+  
   
   // Getters and Setters
   
@@ -228,6 +238,10 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
   
   public void setLdapGroupManagerFactory(LDAPGroupManagerFactory ldapGroupManagerFactory) {
     this.ldapGroupManagerFactory = ldapGroupManagerFactory;
+  }
+  
+  public void setLdapMembershipManagerFactory(LDAPMembershipManagerFactory ldapMembershipManagerFactory) {
+    this.ldapMembershipManagerFactory = ldapMembershipManagerFactory;
   }
 
   public LDAPQueryBuilder getLdapQueryBuilder() {
