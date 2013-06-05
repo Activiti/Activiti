@@ -33,7 +33,7 @@ import java.util.Map;
  * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class GroupEntityManager extends AbstractManager {
+public class GroupEntityManager extends AbstractManager implements GroupIdentityManager {
 
   public Group createNewGroup(String groupId) {
     return new GroupEntity(groupId);
@@ -68,20 +68,9 @@ public class GroupEntityManager extends AbstractManager {
     return (Long) getDbSqlSession().selectOne("selectGroupCountByQueryCriteria", query);
   }
 
-  public GroupEntity findGroupById(String groupId) {
-    return (GroupEntity) getDbSqlSession().selectOne("selectGroupById", groupId);
-  }
-
   @SuppressWarnings("unchecked")
   public List<Group> findGroupsByUser(String userId) {
     return getDbSqlSession().selectList("selectGroupsByUserId", userId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Group> findPotentialStarterUsers(String proceDefId) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("procDefId", proceDefId);
-    return  (List<Group>) getDbSqlSession().selectOne("selectGroupByQueryCriteria", parameters);
   }
 
   @SuppressWarnings("unchecked")

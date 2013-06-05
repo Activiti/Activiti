@@ -33,6 +33,7 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
+import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityManager;
@@ -50,6 +51,7 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
+import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
@@ -271,12 +273,12 @@ public class CommandContext {
     return getSession(JobEntityManager.class);
   }
 
-  public UserEntityManager getUserEntityManager() {
-    return getSession(UserEntityManager.class);
+  public UserIdentityManager getUserIdentityManager() {
+    return getSession(UserIdentityManager.class);
   }
 
-  public GroupEntityManager getGroupEntityManager() {
-    return getSession(GroupEntityManager.class);
+  public GroupIdentityManager getGroupIdentityManager() {
+    return getSession(GroupIdentityManager.class);
   }
 
   public IdentityInfoEntityManager getIdentityInfoEntityManager() {

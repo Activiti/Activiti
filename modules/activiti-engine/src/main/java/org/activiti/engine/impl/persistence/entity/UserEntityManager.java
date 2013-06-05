@@ -34,7 +34,7 @@ import java.util.Map;
  * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class UserEntityManager extends AbstractManager {
+public class UserEntityManager extends AbstractManager implements UserIdentityManager {
 
   public User createNewUser(String userId) {
     return new UserEntity(userId);

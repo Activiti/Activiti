@@ -10,27 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.engine.impl.cmd;
-
-import java.io.Serializable;
-
-import org.activiti.engine.identity.GroupQuery;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
+package org.activiti.engine.impl.cfg;
 
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class CreateGroupQueryCmd implements Command<GroupQuery>, Serializable {
-
-  private static final long serialVersionUID = 1L;
-
-  public GroupQuery execute(CommandContext commandContext) {
-    return commandContext
-      .getGroupIdentityManager()
-      .createNewGroupQuery();
-  }
+public interface ProcessEngineConfigurator {
+  
+  void configure(ProcessEngineConfigurationImpl processEngineConfiguration);
 
 }
