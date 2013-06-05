@@ -401,7 +401,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     // and explain alternatives
     List<Group> groups = Context
       .getCommandContext()
-      .getGroupEntityManager()
+      .getGroupIdentityManager()
       .findGroupsByUser(candidateUser);
     List<String> groupIds = new ArrayList<String>();
     for (Group group : groups) {

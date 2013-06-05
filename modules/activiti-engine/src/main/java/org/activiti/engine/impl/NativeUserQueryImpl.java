@@ -25,13 +25,13 @@ public class NativeUserQueryImpl extends AbstractNativeQuery<NativeUserQuery, Us
   
   public List<User> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
     return commandContext
-      .getUserEntityManager()
+      .getUserIdentityManager()
       .findUsersByNativeQuery(parameterMap, firstResult, maxResults);
   }
   
   public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
     return commandContext
-      .getUserEntityManager()
+      .getUserIdentityManager()
       .findUserCountByNativeQuery(parameterMap);
   }
 

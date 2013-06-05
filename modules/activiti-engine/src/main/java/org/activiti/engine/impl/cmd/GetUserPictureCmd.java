@@ -41,7 +41,7 @@ public class GetUserPictureCmd implements Command<Picture>, Serializable {
       throw new ActivitiIllegalArgumentException("userId is null");
     }
     UserEntity user = (UserEntity) commandContext
-      .getUserEntityManager()
+      .getUserIdentityManager()
       .findUserById(userId);
     if(user == null) {
       throw new ActivitiObjectNotFoundException("user "+userId+" doesn't exist", User.class);

@@ -23,12 +23,13 @@ import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
+import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityManager;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
@@ -36,7 +37,7 @@ import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
-import org.activiti.engine.impl.persistence.entity.UserEntityManager;
+import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 
 
@@ -122,12 +123,12 @@ public abstract class AbstractManager implements Session {
     return getSession(HistoricIdentityLinkEntityManager.class);
   }
   
-  protected UserEntityManager getUserManager() {
-    return getSession(UserEntityManager.class);
+  protected UserIdentityManager getUserIdentityManager() {
+    return getSession(UserIdentityManager.class);
   }
   
-  protected GroupEntityManager getGroupManager() {
-    return getSession(GroupEntityManager.class);
+  protected GroupIdentityManager getGroupIdentityManager() {
+    return getSession(GroupIdentityManager.class);
   }
   
   protected IdentityInfoEntityManager getIdentityInfoManager() {

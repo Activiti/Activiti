@@ -39,11 +39,11 @@ public class SaveUserCmd implements Command<Void>, Serializable {
     }
     if (user.getRevision()==0) {
       commandContext
-        .getUserEntityManager()
+        .getUserIdentityManager()
         .insertUser(user);
     } else {
       commandContext
-        .getUserEntityManager()
+        .getUserIdentityManager()
         .updateUser(user);
     }
     

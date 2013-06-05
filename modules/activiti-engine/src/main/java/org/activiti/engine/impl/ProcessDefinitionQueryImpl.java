@@ -209,7 +209,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     if(authorizationUserId != null) {
       List<Group> groups = Context
               .getCommandContext()
-              .getGroupEntityManager()
+              .getGroupIdentityManager()
               .findGroupsByUser(authorizationUserId);
             List<String> groupIds = new ArrayList<String>();
             for (Group group : groups) {

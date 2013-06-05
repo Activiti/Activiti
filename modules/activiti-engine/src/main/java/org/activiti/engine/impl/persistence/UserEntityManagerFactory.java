@@ -10,27 +10,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.engine.impl.persistence;
 
-package org.activiti.engine.impl.cmd;
-
-import java.io.Serializable;
-
-import org.activiti.engine.identity.GroupQuery;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.persistence.entity.UserEntityManager;
+import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class CreateGroupQueryCmd implements Command<GroupQuery>, Serializable {
+public class UserEntityManagerFactory implements SessionFactory {
 
-  private static final long serialVersionUID = 1L;
+  public Class< ? > getSessionType() {
+    return UserIdentityManager.class;
+  }
 
-  public GroupQuery execute(CommandContext commandContext) {
-    return commandContext
-      .getGroupIdentityManager()
-      .createNewGroupQuery();
+  public Session openSession() {
+    return new UserEntityManager();
   }
 
 }
