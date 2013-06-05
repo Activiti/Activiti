@@ -137,6 +137,7 @@ import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
 import org.activiti.engine.impl.persistence.GenericManagerFactory;
 import org.activiti.engine.impl.persistence.GroupEntityManagerFactory;
+import org.activiti.engine.impl.persistence.MembershipEntityManagerFactory;
 import org.activiti.engine.impl.persistence.UserEntityManagerFactory;
 import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
@@ -711,7 +712,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       
       addSessionFactory(new UserEntityManagerFactory());
       addSessionFactory(new GroupEntityManagerFactory());
-      addSessionFactory(new GenericManagerFactory(MembershipEntityManager.class));
+      addSessionFactory(new MembershipEntityManagerFactory());
     }
     
     if (customSessionFactories!=null) {
