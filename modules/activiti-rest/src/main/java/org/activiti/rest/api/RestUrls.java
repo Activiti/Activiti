@@ -52,6 +52,7 @@ public final class RestUrls {
   public static final String SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE = "historic-task-instances";
   public static final String SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE = "historic-activity-instances";
   public static final String SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE = "historic-variable-instances";
+  public static final String SEGMENT_HISTORIC_DETAIL_RESOURCE = "historic-detail";
   public static final String SEGMENT_TABLES = "tables";
   public static final String SEGMENT_COLUMNS = "columns";
   public static final String SEGMENT_DATA = "data";
@@ -256,14 +257,24 @@ public final class RestUrls {
   public static final String[] URL_HISTORIC_TASK_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE};
   
   /**
-   * URL template for historic process instance query: <i>history/historic-activity-instances</i>
+   * URL template for historic activity instance query: <i>history/historic-activity-instances</i>
    */
   public static final String[] URL_HISTORIC_ACTIVITY_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE};
   
   /**
-   * URL template for historic process instance query: <i>history/historic-variable-instances</i>
+   * URL template for historic variable instance query: <i>history/historic-variable-instances</i>
    */
   public static final String[] URL_HISTORIC_VARIABLE_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic detail query: <i>history/historic-detail</i>
+   */
+  public static final String[] URL_HISTORIC_DETAIL = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_DETAIL_RESOURCE};
+  
+  /**
+   * URL template for a single historic detail variable data: <i>history/historic-detail/{0:detailId}/data</i>
+   */
+  public static final String[] URL_HISTORIC_DETAIL_VARIABLE_DATA = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_DETAIL_RESOURCE, "{0}", SEGMENT_VARIABLE_DATA};
   
   /**
    * URL template for historic process instance query: <i>query/historic-process-instances</i>
@@ -284,6 +295,11 @@ public final class RestUrls {
    * URL template for historic variable instance query: <i>query/historic-variable-instances</i>
    */
   public static final String[] URL_HISTORIC_VARIABLE_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic detail query: <i>query/historic-detail</i>
+   */
+  public static final String[] URL_HISTORIC_DETAIL_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_DETAIL_RESOURCE};
   
   /**
    * URL template for the collection of tables: <i>management/tables</i>

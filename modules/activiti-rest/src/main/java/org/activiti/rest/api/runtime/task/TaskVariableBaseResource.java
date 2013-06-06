@@ -90,7 +90,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
         throw new ActivitiObjectNotFoundException("Task '" + taskId + "' doesn't have a variable with name: '" + variableName + "'.", VariableInstanceEntity.class);
     } else {
       return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-              .createRestVariable(this, variableName, value, variableScope, taskId, null, null, includeBinary);
+              .createRestVariable(this, variableName, value, variableScope, taskId, null, null, null, includeBinary);
     }
   }
   
@@ -199,7 +199,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
     
 
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-             .createRestVariable(this, restVariable.getName(), actualVariableValue, scope, task.getId(), null, null, false);
+             .createRestVariable(this, restVariable.getName(), actualVariableValue, scope, task.getId(), null, null, null, false);
   }
   
   protected void setVariable(Task task, String name, Object value, RestVariableScope scope, boolean isNew) {

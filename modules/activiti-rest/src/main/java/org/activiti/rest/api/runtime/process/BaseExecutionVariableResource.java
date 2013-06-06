@@ -237,7 +237,7 @@ public class BaseExecutionVariableResource extends SecuredResource {
   protected RestVariable constructRestVariable(SecuredResource securedResource, String variableName, Object value,
           RestVariableScope variableScope, String executionId, boolean includeBinary) {
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestVariable(this, variableName, value, variableScope, null, executionId, null, includeBinary);
+            .createRestVariable(this, variableName, value, variableScope, null, executionId, null, null, includeBinary);
   }
 
   /**

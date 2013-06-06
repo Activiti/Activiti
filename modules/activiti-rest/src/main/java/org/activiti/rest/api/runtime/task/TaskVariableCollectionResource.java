@@ -118,7 +118,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
           Object actualVariableValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
                   .getVariableValue(var);
           variablesToSet.put(var.getName(), actualVariableValue);
-          variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, task.getId(), null, null, false));
+          variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, task.getId(), null, null, null, false));
         }
         
         if(variablesToSet.size() > 0) {

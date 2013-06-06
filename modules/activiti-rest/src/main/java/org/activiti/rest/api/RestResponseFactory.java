@@ -20,9 +20,12 @@ import java.util.Map.Entry;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
@@ -49,6 +52,7 @@ import org.activiti.rest.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.api.engine.variable.StringRestVariableConverter;
 import org.activiti.rest.api.history.HistoricActivityInstanceResponse;
+import org.activiti.rest.api.history.HistoricDetailResponse;
 import org.activiti.rest.api.history.HistoricProcessInstanceResponse;
 import org.activiti.rest.api.history.HistoricTaskInstanceResponse;
 import org.activiti.rest.api.history.HistoricVariableInstanceResponse;
@@ -61,6 +65,7 @@ import org.activiti.rest.api.repository.ProcessDefinitionResponse;
 import org.activiti.rest.api.runtime.process.ExecutionResponse;
 import org.activiti.rest.api.runtime.process.ProcessInstanceResponse;
 import org.activiti.rest.api.runtime.task.TaskResponse;
+import org.apache.commons.lang.StringUtils;
 import org.restlet.data.MediaType;
 
 
@@ -158,13 +163,14 @@ public class RestResponseFactory {
    List<RestVariable> result = new ArrayList<RestVariable>();
    
    for(Entry<String, Object> pair : variables.entrySet()) {
-     result.add(createRestVariable(securedResource, pair.getKey(), pair.getValue(), scope, taskId, executionId, processInstanceId, false));
+     result.add(createRestVariable(securedResource, pair.getKey(), pair.getValue(), scope, taskId, executionId, processInstanceId, null, false));
    }
    
    return result;
   }
   
-  public RestVariable createRestVariable(SecuredResource securedResource, String name, Object value, RestVariableScope scope, String taskId, String executionId, String processInstanceId, boolean includeBinaryValue) {
+  public RestVariable createRestVariable(SecuredResource securedResource, String name, Object value, RestVariableScope scope, String taskId, 
+      String executionId, String processInstanceId, String historicDetailId, boolean includeBinaryValue) {
     RestVariableConverter converter = null;
     RestVariable restVar = new RestVariable();
     restVar.setVariableScope(scope);
@@ -204,6 +210,10 @@ public class RestResponseFactory {
         
         if(processInstanceId != null) {
           restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_DATA, processInstanceId, name));
+        }
+        
+        if(historicDetailId != null) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_DETAIL_VARIABLE_DATA, historicDetailId));
         }
       }
     }
@@ -465,6 +475,35 @@ public class RestResponseFactory {
     result.setValue(variableInstance.getValue());
     result.setVariableName(variableInstance.getVariableName());
     result.setVariableTypeName(variableInstance.getVariableTypeName());
+    return result;
+  }
+  
+  public HistoricDetailResponse createHistoricDetailResponse(SecuredResource securedResource, HistoricDetail detail) {
+    HistoricDetailResponse result = new HistoricDetailResponse();
+    result.setId(detail.getId());
+    result.setProcessInstanceId(detail.getProcessInstanceId());
+    if (StringUtils.isNotEmpty(detail.getProcessInstanceId())) {
+      result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, detail.getProcessInstanceId()));
+    }
+    result.setExecutionId(detail.getExecutionId());
+    result.setActivityInstanceId(detail.getActivityInstanceId());
+    result.setTaskId(detail.getTaskId());
+    if (StringUtils.isNotEmpty(detail.getTaskId())) {
+      result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, detail.getTaskId()));
+    }
+    result.setTime(detail.getTime());
+    if (detail instanceof HistoricFormProperty) {
+      HistoricFormProperty formProperty = (HistoricFormProperty) detail;
+      result.setDetailType(HistoricDetailResponse.FORM_PROPERTY);
+      result.setPropertyId(formProperty.getPropertyId());
+      result.setPropertyValue(formProperty.getPropertyValue());
+    } else if (detail instanceof HistoricVariableUpdate) {
+      HistoricVariableUpdate variableUpdate = (HistoricVariableUpdate) detail;
+      result.setDetailType(HistoricDetailResponse.VARIABLE_UPDATE);
+      result.setRevision(variableUpdate.getRevision());
+      result.setVariable(createRestVariable(securedResource, variableUpdate.getVariableName(), variableUpdate.getValue(), 
+          null, null, null, null, detail.getId(), false));
+    }
     return result;
   }
   
