@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 /**
  * @author Tom Baeyens
  */
-public class MembershipEntityManager extends AbstractManager {
+public class MembershipEntityManager extends AbstractManager implements MembershipIdentityManager {
 
   public void createMembership(String userId, String groupId) {
     MembershipEntity membershipEntity = new MembershipEntity();
