@@ -56,6 +56,7 @@ public final class RestUrls {
   public static final String SEGMENT_TABLES = "tables";
   public static final String SEGMENT_COLUMNS = "columns";
   public static final String SEGMENT_DATA = "data";
+  public static final String SEGMENT_JOBS = "jobs";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -321,7 +322,15 @@ public final class RestUrls {
    */
   public static final String[] URL_TABLE_DATA = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES, "{0}", SEGMENT_DATA};
   
+  /**
+   * URL template for a single job: <i>management/jobs/{0:jobId}</i>
+   */
+  public static final String[] URL_JOB = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS, "{0}"};
   
+  /**
+   * URL template for the collection of jobs: <i>management/jobs</i>
+   */
+  public static final String[] URL_JOB_COLLECTION = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS};
   
   /**
    * Creates an url based on the passed fragments and replaces any placeholders with the given arguments. The
