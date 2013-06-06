@@ -15,6 +15,7 @@ package org.activiti.ldap;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
+import org.activiti.ldap.LDAPGroupCache.LDAPGroupCacheListener;
 
 /**
  * @author Joram Barrez
@@ -23,8 +24,18 @@ public class LDAPGroupManagerFactory implements SessionFactory {
 
   protected LDAPConfigurator ldapConfigurator;
   
+  protected LDAPGroupCache ldapGroupCache;
+  protected LDAPGroupCacheListener ldapCacheListener;
+  
 	public LDAPGroupManagerFactory(LDAPConfigurator ldapConfigurator) {
     this.ldapConfigurator = ldapConfigurator;
+    
+    if (ldapConfigurator.getGroupCacheSize() > 0) {
+      ldapGroupCache = new LDAPGroupCache(ldapConfigurator.getGroupCacheSize(), ldapConfigurator.getGroupCacheExpirationTime());
+      if (ldapCacheListener != null) {
+        ldapGroupCache.setLdapCacheListener(ldapCacheListener);
+      }
+    }
   }
 	
 	@Override
@@ -34,7 +45,11 @@ public class LDAPGroupManagerFactory implements SessionFactory {
 
 	@Override
   public Session openSession() {
-	  return new LDAPGroupManager(ldapConfigurator);
+	  if (ldapGroupCache == null) {
+	    return new LDAPGroupManager(ldapConfigurator);
+	  } else {
+	    return new LDAPGroupManager(ldapConfigurator, ldapGroupCache);
+	  }
   }
 
   public LDAPConfigurator getLdapConfigurator() {
@@ -44,5 +59,21 @@ public class LDAPGroupManagerFactory implements SessionFactory {
   public void setLdapConfigurator(LDAPConfigurator ldapConfigurator) {
     this.ldapConfigurator = ldapConfigurator;
   }
-
+  
+  public LDAPGroupCache getLdapGroupCache() {
+    return ldapGroupCache;
+  }
+  
+  public void setLdapGroupCache(LDAPGroupCache ldapGroupCache) {
+    this.ldapGroupCache = ldapGroupCache;
+  }
+  
+  public LDAPGroupCacheListener getLdapCacheListener() {
+    return ldapCacheListener;
+  }
+  
+  public void setLdapCacheListener(LDAPGroupCacheListener ldapCacheListener) {
+    this.ldapCacheListener = ldapCacheListener;
+  }
+  
 }

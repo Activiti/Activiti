@@ -37,9 +37,15 @@ import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 public class LDAPGroupManager extends AbstractManager implements GroupIdentityManager {
 
   protected LDAPConfigurator ldapConfigurator;
+  protected LDAPGroupCache ldapGroupCache;
   
 	public LDAPGroupManager(LDAPConfigurator ldapConfigurator) {
 		this.ldapConfigurator = ldapConfigurator;
+	}
+	
+	public LDAPGroupManager(LDAPConfigurator ldapConfigurator, LDAPGroupCache ldapGroupCache) {
+	  this.ldapConfigurator = ldapConfigurator;
+	  this.ldapGroupCache = ldapGroupCache;
 	}
 
   @Override
@@ -79,6 +85,16 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
 
   @Override
   public List<Group> findGroupsByUser(final String userId) {
+    
+    // First try the cache (if one is defined)
+    if (ldapGroupCache != null) {
+      List<Group> groups = ldapGroupCache.get(userId);
+      if (groups != null) {
+        return groups;
+      }
+    }
+    
+    // Do the search against Ldap
     LDAPTemplate ldapTemplate = new LDAPTemplate(ldapConfigurator);
     return ldapTemplate.execute(new LDAPCallBack<List<Group>>() {
       
@@ -106,6 +122,12 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
           }
           
           namingEnum.close();
+          
+          // Cache results for later
+          if (ldapGroupCache != null) {
+            ldapGroupCache.add(userId, groups);
+          }
+          
           return groups;
           
         } catch (NamingException e) {

@@ -59,6 +59,10 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
   // Pluggable query helper bean
   protected LDAPQueryBuilder ldapQueryBuilder = new LDAPQueryBuilder();
   
+  // Group caching
+  protected int groupCacheSize = -1;
+  protected long groupCacheExpirationTime = 3600000L; // default: one hour
+  
   public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
     LDAPUserManagerFactory ldapUserManagerFactory = getLdapUserManagerFactory();
     processEngineConfiguration.getSessionFactories().put(ldapUserManagerFactory.getSessionType(), ldapUserManagerFactory);
@@ -250,6 +254,22 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
 
   public void setLdapQueryBuilder(LDAPQueryBuilder ldapQueryBuilder) {
     this.ldapQueryBuilder = ldapQueryBuilder;
+  }
+  
+  public int getGroupCacheSize() {
+    return groupCacheSize;
+  }
+  
+  public void setGroupCacheSize(int groupCacheSize) {
+    this.groupCacheSize = groupCacheSize;
+  }
+  
+  public long getGroupCacheExpirationTime() {
+    return groupCacheExpirationTime;
+  }
+  
+  public void setGroupCacheExpirationTime(long groupCacheExpirationTime) {
+    this.groupCacheExpirationTime = groupCacheExpirationTime;
   }
 
 }
