@@ -16,6 +16,7 @@ package org.activiti.rest.api.history;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.activiti.rest.api.RestUrls;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.util.ISO8601DateFormat;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
@@ -41,6 +43,8 @@ import org.restlet.resource.ClientResource;
  * @author Tijs Rademakers
  */
 public class HistoricTaskInstanceQueryResourceTest extends BaseRestTestCase {
+  
+  protected ISO8601DateFormat dateFormat = new ISO8601DateFormat();
   
   /**
    * Test querying historic task instance. 
@@ -58,12 +62,12 @@ public class HistoricTaskInstanceQueryResourceTest extends BaseRestTestCase {
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.setVariableLocal(task.getId(), "local", "test");
+    taskService.setOwner(task.getId(), "test");
+    taskService.setDueDate(task.getId(), new GregorianCalendar(2013, 0, 1).getTime());
     
     ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
     Task task2 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
     
-    System.out.println(historyService.createHistoricTaskInstanceQuery().processVariableValueEquals("stringVar", "Azerty").list());
-
     String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE_QUERY);
     
     // Process variables
@@ -76,7 +80,12 @@ public class HistoricTaskInstanceQueryResourceTest extends BaseRestTestCase {
     variableNode.put("name", "stringVar");
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, 3, task.getId());
+    assertResultsPresentInDataResponse(url, requestNode, 3, task.getId(), task2.getId());
+    
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67890);
+    variableNode.put("operation", "equals");
+    assertResultsPresentInDataResponse(url, requestNode, 3, task.getId(), task2.getId());
     
     variableNode.put("name", "local");
     variableNode.put("value", "test");
@@ -84,7 +93,17 @@ public class HistoricTaskInstanceQueryResourceTest extends BaseRestTestCase {
     assertResultsPresentInDataResponse(url, requestNode, 0);
     
     requestNode = objectMapper.createObjectNode();
-    assertResultsPresentInDataResponse(url, requestNode, 3, task.getId());
+    variableArray = objectMapper.createArrayNode();
+    variableNode = objectMapper.createObjectNode();
+    variableArray.add(variableNode);
+    requestNode.put("taskVariables", variableArray);
+    variableNode.put("name", "local");
+    variableNode.put("value", "test");
+    variableNode.put("operation", "equals");
+    assertResultsPresentInDataResponse(url, requestNode, 1, task.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    assertResultsPresentInDataResponse(url, requestNode, 3, task.getId(), task2.getId());
     
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processInstanceId", processInstance.getId());
@@ -93,6 +112,46 @@ public class HistoricTaskInstanceQueryResourceTest extends BaseRestTestCase {
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processInstanceId", processInstance2.getId());
     assertResultsPresentInDataResponse(url, requestNode, 1, task2.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskAssignee", "kermit");
+    assertResultsPresentInDataResponse(url, requestNode, 2, task2.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskAssigneeLike", "%mit");
+    assertResultsPresentInDataResponse(url, requestNode, 2, task2.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskAssignee", "fozzie");
+    assertResultsPresentInDataResponse(url, requestNode, 1, task.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskOwner", "test");
+    assertResultsPresentInDataResponse(url, requestNode, 1, task.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskOwnerLike", "t%");
+    assertResultsPresentInDataResponse(url, requestNode, 1, task.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskInvolvedUser", "test");
+    assertResultsPresentInDataResponse(url, requestNode, 1, task.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("dueDateAfter", dateFormat.format(new GregorianCalendar(2010, 0, 1).getTime()));
+    assertResultsPresentInDataResponse(url, requestNode, 1, task.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("dueDateAfter", dateFormat.format(new GregorianCalendar(2013, 4, 1).getTime()));
+    assertResultsPresentInDataResponse(url, requestNode, 0);
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("dueDateBefore", dateFormat.format(new GregorianCalendar(2010, 0, 1).getTime()));
+    assertResultsPresentInDataResponse(url, requestNode, 0);
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("dueDateBefore", dateFormat.format(new GregorianCalendar(2013, 4, 1).getTime()));
+    assertResultsPresentInDataResponse(url, requestNode, 1, task.getId());
   }
   
   protected void assertResultsPresentInDataResponse(String url, ObjectNode body, int numberOfResultsExpected, String... expectedTaskIds) throws JsonProcessingException, IOException {

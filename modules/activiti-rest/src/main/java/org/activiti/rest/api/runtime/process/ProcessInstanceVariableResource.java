@@ -50,7 +50,7 @@ public class ProcessInstanceVariableResource extends ExecutionVariableResource {
   protected RestVariable constructRestVariable(SecuredResource securedResource, String variableName, Object value, RestVariableScope variableScope,
           String executionId, boolean includeBinary) {
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestVariable(this, variableName, value, variableScope, null, null, executionId, includeBinary);
+            .createRestVariable(this, variableName, value, variableScope, null, null, executionId, null, includeBinary);
   }
   
   @Override

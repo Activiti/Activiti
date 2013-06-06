@@ -120,7 +120,7 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
           Object actualVariableValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
                   .getVariableValue(var);
           variablesToSet.put(var.getName(), actualVariableValue);
-          variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, execution.getId(), null, null, false));
+          variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, execution.getId(), null, null, null, false));
         }
         
         if(variablesToSet.size() > 0) {

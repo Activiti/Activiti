@@ -3,6 +3,9 @@ package org.activiti.rest.application;
 import org.activiti.rest.api.engine.ProcessEngineResource;
 import org.activiti.rest.api.history.HistoricActivityInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricActivityInstanceQueryResource;
+import org.activiti.rest.api.history.HistoricDetailCollectionResource;
+import org.activiti.rest.api.history.HistoricDetailDataResource;
+import org.activiti.rest.api.history.HistoricDetailQueryResource;
 import org.activiti.rest.api.history.HistoricFormPropertiesResource;
 import org.activiti.rest.api.history.HistoricProcessInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricProcessInstanceQueryResource;
@@ -149,6 +152,8 @@ public class RestServicesInit {
     router.attach("/history/historic-task-instances", HistoricTaskInstanceCollectionResource.class);
     router.attach("/history/historic-activity-instances", HistoricActivityInstanceCollectionResource.class);
     router.attach("/history/historic-variable-instances", HistoricVariableInstanceCollectionResource.class);
+    router.attach("/history/historic-detail", HistoricDetailCollectionResource.class);
+    router.attach("/history/historic-detail/{detailId}/data", HistoricDetailDataResource.class);
     
     router.attach("/management/tables", TableCollectionResource.class);
     router.attach("/management/tables/{tableName}", TableResource.class);
@@ -163,6 +168,7 @@ public class RestServicesInit {
     router.attach("/query/historic-task-instances", HistoricTaskInstanceQueryResource.class);
     router.attach("/query/historic-activity-instances", HistoricActivityInstanceQueryResource.class);
     router.attach("/query/historic-variable-instances", HistoricVariableInstanceQueryResource.class);
+    router.attach("/query/historic-detail", HistoricDetailQueryResource.class);
     
     // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);

@@ -11,11 +11,11 @@
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="processTask" />
     <userTask id="processTask" name="Process task" activiti:assignee="kermit">
        <documentation>Process task description</documentation>
-    </userTask>
-    <sequenceFlow id="flow2" sourceRef="processTask" targetRef="processTask2" />
-    <userTask id="processTask2" name="Process task 2" activiti:assignee="fozzie">
-       <documentation>Process task description</documentation>
     </userTask>    
+    <sequenceFlow id="flow2" sourceRef="processTask" targetRef="processTask2" />
+    <userTask id="processTask2" name="Process task2" activiti:assignee="fozzie">
+       <documentation>Process task description2</documentation>
+    </userTask>
     <sequenceFlow id="flow3" sourceRef="processTask2" targetRef="theEnd" />
     <endEvent id="theEnd" />
     
