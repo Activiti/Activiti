@@ -3,6 +3,7 @@ package org.activiti.standalone.parsing;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -42,10 +43,11 @@ public class ChineseConverterTest extends PluggableActivitiTestCase {
     return parsedModel;
   }
   
-  protected void deployProcess(BpmnModel bpmnModel)  {
+  protected void deployProcess(BpmnModel bpmnModel) throws UnsupportedEncodingException  {
     byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
     try {
-      Deployment deployment = processEngine.getRepositoryService().createDeployment().name("test").addString("test.bpmn20.xml", new String(xml)).deploy();
+      final String bpXml = new String(xml, "UTF-8");
+      Deployment deployment = processEngine.getRepositoryService().createDeployment().name("test").addString("test.bpmn20.xml", bpXml).deploy();
       processEngine.getRepositoryService().deleteDeployment(deployment.getId());
     } finally {
       processEngine.close();
