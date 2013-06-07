@@ -24,6 +24,7 @@ import org.activiti.engine.query.Query;
  * 
  * @author Joram Barrez
  * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public interface TaskQuery extends Query<TaskQuery, Task>{
 
@@ -253,6 +254,16 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    * Only selects tasks which are active (ie. not suspended)
    */
   TaskQuery active();
+  
+  /**
+   * Include local task variables in the task query result
+   */
+  TaskQuery includeTaskLocalVariables();
+  
+  /**
+   * Include global task variables in the task query result
+   */
+  TaskQuery includeProcessVariables();
   
   // ordering ////////////////////////////////////////////////////////////
   
