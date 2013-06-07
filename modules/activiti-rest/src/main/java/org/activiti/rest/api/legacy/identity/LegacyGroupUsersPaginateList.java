@@ -11,21 +11,27 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.activiti.engine.identity.User;
+import org.activiti.rest.api.AbstractPaginateList;
 
 /**
  * @author Tijs Rademakers
  */
-public class LoginResponse {
+public class LegacyGroupUsersPaginateList extends AbstractPaginateList {
 
-  private boolean success;
-
-  public boolean isSuccess() {
-    return success;
-  }
-
-  public LoginResponse setSuccess(boolean success) {
-    this.success = success;
-    return this;
+  @SuppressWarnings("rawtypes")
+  @Override
+  protected List processList(List list) {
+    List<LegacyUserInfo> responseList = new ArrayList<LegacyUserInfo>();
+    for (Object definition : list) {
+      LegacyUserInfo response = new LegacyUserInfo((User) definition);
+      responseList.add(response);
+    }
+    return responseList;
   }
 }

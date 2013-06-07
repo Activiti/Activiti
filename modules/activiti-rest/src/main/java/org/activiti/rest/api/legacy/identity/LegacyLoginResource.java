@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 import java.util.List;
 
@@ -27,10 +27,10 @@ import org.restlet.resource.ServerResource;
 /**
  * @author Tijs Rademakers
  */
-public class LoginResource extends ServerResource {
+public class LegacyLoginResource extends ServerResource {
   
   @Post
-  public LoginResponse login(LoginInfo loginInfo) {
+  public LegacyLoginResponse login(LegacyLoginInfo loginInfo) {
     if(loginInfo == null) {
       throw new ActivitiIllegalArgumentException("No login info supplied");
     }
@@ -48,7 +48,7 @@ public class LoginResource extends ServerResource {
       if (pe.getIdentityService().checkPassword(loginInfo.getUserId(), loginInfo.getPassword()) == false) {
         throw new ActivitiException("Username and password does not match.");
       }
-      return new LoginResponse().setSuccess(true);
+      return new LegacyLoginResponse().setSuccess(true);
     
     } else {
       String message;

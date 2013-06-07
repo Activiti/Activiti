@@ -21,7 +21,7 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestResponseFactory;
-import org.activiti.rest.api.identity.RestIdentityLink;
+import org.activiti.rest.api.legacy.identity.LegacyRestIdentityLink;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Get;
@@ -34,11 +34,11 @@ import org.restlet.resource.Post;
 public class TaskIdentityLinkCollectionResource extends TaskBaseResource {
 
   @Get
-  public List<RestIdentityLink> getIdentityLinks() {
+  public List<LegacyRestIdentityLink> getIdentityLinks() {
     if(!authenticate())
       return null;
     
-    List<RestIdentityLink> result = new ArrayList<RestIdentityLink>();
+    List<LegacyRestIdentityLink> result = new ArrayList<LegacyRestIdentityLink>();
     Task task = getTaskFromRequest();
     
     List<IdentityLink> identityLinks = ActivitiUtil.getTaskService().getIdentityLinksForTask(task.getId());
@@ -50,7 +50,7 @@ public class TaskIdentityLinkCollectionResource extends TaskBaseResource {
   }
   
   @Post
-  public RestIdentityLink createIdentityLink(RestIdentityLink identityLink) {
+  public LegacyRestIdentityLink createIdentityLink(LegacyRestIdentityLink identityLink) {
     if(!authenticate())
       return null;
     

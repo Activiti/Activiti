@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +28,7 @@ import org.restlet.resource.Get;
 /**
  * @author Tijs Rademakers
  */
-public class GroupSearchResource extends SecuredResource {
+public class LegacyGroupSearchResource extends SecuredResource {
 
   @Get
   public DataResponse searchGroups() {
@@ -41,16 +41,16 @@ public class GroupSearchResource extends SecuredResource {
     }
 
     List<Group> groups = ActivitiUtil.getIdentityService().createGroupQuery().list();
-    List<GroupInfo> groupList = new ArrayList<GroupInfo>();
+    List<LegacyGroupInfo> groupList = new ArrayList<LegacyGroupInfo>();
     for (Group group : groups) {
       
       if (StringUtils.isNotEmpty(searchText)) {
         if (group.getName().toLowerCase().contains(searchText)
             || group.getId().toLowerCase().contains(searchText)) {
-          groupList.add(new GroupInfo(group));
+          groupList.add(new LegacyGroupInfo(group));
         }
       } else {
-        groupList.add(new GroupInfo(group));
+        groupList.add(new LegacyGroupInfo(group));
       }
     }
 
@@ -67,9 +67,9 @@ public class GroupSearchResource extends SecuredResource {
     return response;
   }
 
-  protected class GroupResponseComparable implements Comparator<GroupInfo> {
+  protected class GroupResponseComparable implements Comparator<LegacyGroupInfo> {
 
-    public int compare(GroupInfo group1, GroupInfo group2) {
+    public int compare(LegacyGroupInfo group1, LegacyGroupInfo group2) {
       return group1.getName().compareTo(group2.getName());
     }
   }

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
@@ -23,22 +23,22 @@ import org.restlet.data.Status;
 /**
  * @author Ernesto Revilla
  */
-public class UserGroupsDeleteResource extends SecuredResource {
+public class LegacyUserGroupsDeleteResource extends SecuredResource {
 
   @Delete
-  public StateResponse deleteGroup() {
+  public LegacyStateResponse deleteGroup() {
     if (authenticate() == false)
       return null;
     String userId = (String) getRequest().getAttributes().get("userId");
     String groupId = (String) getRequest().getAttributes().get("groupId");
     if (userId == null) {
       setStatus(Status.CLIENT_ERROR_BAD_REQUEST, "No userId provided.");
-      return new StateResponse().setSuccess(false);
+      return new LegacyStateResponse().setSuccess(false);
     }
     
     if (groupId == null) {
       setStatus(Status.CLIENT_ERROR_BAD_REQUEST, "No groupId provided.");
-      return new StateResponse().setSuccess(false);
+      return new LegacyStateResponse().setSuccess(false);
     }
 
     IdentityService identityService = ActivitiUtil.getIdentityService();
@@ -46,7 +46,7 @@ public class UserGroupsDeleteResource extends SecuredResource {
     if (identityService.createUserQuery().userId(userId).singleResult() == null) {
       setStatus(Status.CLIENT_ERROR_NOT_FOUND, "The user '" + userId
           + "' does not exist.");
-      return new StateResponse().setSuccess(false);
+      return new LegacyStateResponse().setSuccess(false);
     }
 
     // Add only if not already member
@@ -54,6 +54,6 @@ public class UserGroupsDeleteResource extends SecuredResource {
         .groupId(groupId).singleResult();
     if (group != null)
       identityService.deleteMembership(userId, groupId);
-    return new StateResponse().setSuccess(true);
+    return new LegacyStateResponse().setSuccess(true);
   }
 }

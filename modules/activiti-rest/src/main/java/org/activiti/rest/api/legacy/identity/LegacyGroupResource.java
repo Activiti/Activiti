@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
@@ -24,7 +24,7 @@ import org.restlet.resource.Get;
 /**
  * @author Tijs Rademakers
  */
-public class GroupResource extends SecuredResource {
+public class LegacyGroupResource extends SecuredResource {
 
   @Get
   public Group getGroup() {
@@ -41,7 +41,7 @@ public class GroupResource extends SecuredResource {
   }
 
   @Delete
-  public StateResponse deleteGroup() {
+  public LegacyStateResponse deleteGroup() {
     if (authenticate() == false)
       return null;
 
@@ -49,14 +49,14 @@ public class GroupResource extends SecuredResource {
     if (groupId == null) {
       setStatus(Status.CLIENT_ERROR_NOT_FOUND, "The group '" + groupId
           + "' does not exist.");
-      return new StateResponse().setSuccess(false);
+      return new LegacyStateResponse().setSuccess(false);
     }
     Group group = ActivitiUtil.getIdentityService().createGroupQuery()
         .groupId(groupId).singleResult();
     if (group != null) {
       ActivitiUtil.getIdentityService().deleteGroup(groupId);
-      return new StateResponse().setSuccess(true);
+      return new LegacyStateResponse().setSuccess(true);
     }
-    return new StateResponse().setSuccess(false);
+    return new LegacyStateResponse().setSuccess(false);
   }
 }

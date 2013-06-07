@@ -26,6 +26,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
@@ -57,7 +58,8 @@ import org.activiti.rest.api.history.HistoricDetailResponse;
 import org.activiti.rest.api.history.HistoricProcessInstanceResponse;
 import org.activiti.rest.api.history.HistoricTaskInstanceResponse;
 import org.activiti.rest.api.history.HistoricVariableInstanceResponse;
-import org.activiti.rest.api.identity.RestIdentityLink;
+import org.activiti.rest.api.identity.UserResponse;
+import org.activiti.rest.api.legacy.identity.LegacyRestIdentityLink;
 import org.activiti.rest.api.management.JobResponse;
 import org.activiti.rest.api.management.TableResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
@@ -294,12 +296,12 @@ public class RestResponseFactory {
     return value;
   }
   
-  public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, IdentityLink link) {
+  public LegacyRestIdentityLink createRestIdentityLink(SecuredResource securedResource, IdentityLink link) {
     return createRestIdentityLink(securedResource, link.getType(), link.getUserId(), link.getGroupId(), link.getTaskId());
   }
   
-  public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, String type, String userId, String groupId, String taskId) {
-    RestIdentityLink result = new RestIdentityLink();
+  public LegacyRestIdentityLink createRestIdentityLink(SecuredResource securedResource, String type, String userId, String groupId, String taskId) {
+    LegacyRestIdentityLink result = new LegacyRestIdentityLink();
     result.setUser(userId);
     result.setGroup(groupId);
     result.setType(type);
@@ -545,6 +547,21 @@ public class RestResponseFactory {
     return response;
   }
   
+  public UserResponse createUserResponse(SecuredResource securedResource, User user, boolean incudePassword) {
+    UserResponse response = new UserResponse();
+    response.setFirstName(user.getFirstName());
+    response.setLastName(user.getLastName());
+    response.setId(user.getId());
+    response.setEmail(user.getEmail());
+    response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_USER, user.getId()));
+    
+    if(incudePassword) {
+      response.setPassword(user.getPassword());
+    }
+    return response;
+  }
+  
+  
   /**
    * Called once when the converters need to be initialized. Override of custom conversion
    * needs to be done between java and rest.
@@ -558,4 +575,5 @@ public class RestResponseFactory {
     variableConverters.add(new BooleanRestVariableConverter());
     variableConverters.add(new DateRestVariableConverter());
   }
+
 }

@@ -11,22 +11,22 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 import org.activiti.engine.identity.Group;
 
 /**
  * @author Ernesto Revilla
  */
-public class GroupInfo {
+public class LegacyGroupInfo {
   
   String id;
   String name;
   String type;
   
-  public GroupInfo(){}
+  public LegacyGroupInfo(){}
   
-  public GroupInfo(Group group) {
+  public LegacyGroupInfo(Group group) {
     setId(group.getId());
     setName(group.getName());
     setType(group.getType());
@@ -35,21 +35,21 @@ public class GroupInfo {
   public String getId() {
     return id;
   }
-  public GroupInfo setId(String id) {
+  public LegacyGroupInfo setId(String id) {
     this.id = id;
     return this;
   }
   public String getName() {
     return name;
   }
-  public GroupInfo setName(String name) {
+  public LegacyGroupInfo setName(String name) {
     this.name = name;
     return this;
   }
   public String getType() {
     return type;
   }
-  public GroupInfo setType(String type) {
+  public LegacyGroupInfo setType(String type) {
     this.type = type;
     return this;
   }

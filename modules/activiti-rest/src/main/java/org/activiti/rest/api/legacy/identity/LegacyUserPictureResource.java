@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Picture;
@@ -25,7 +25,7 @@ import org.restlet.resource.Get;
 /**
  * @author Tijs Rademakers
  */
-public class UserPictureResource extends SecuredResource {
+public class LegacyUserPictureResource extends SecuredResource {
   
   @Get
   public InputRepresentation getPicture() {

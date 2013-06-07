@@ -29,6 +29,7 @@ public final class RestUrls {
   public static final String SEGMENT_RUNTIME_RESOURCES = "runtime";
   public static final String SEGMENT_MANAGEMENT_RESOURCES = "management";
   public static final String SEGMENT_HISTORY_RESOURCES = "history";
+  public static final String SEGMENT_IDENTITY_RESOURCES = "identity";
   public static final String SEGMENT_QUERY_RESOURCES = "query";
   
   public static final String SEGMENT_DEPLOYMENT_RESOURCE = "deployments";
@@ -58,6 +59,8 @@ public final class RestUrls {
   public static final String SEGMENT_DATA = "data";
   public static final String SEGMENT_JOBS = "jobs";
   public static final String SEGMENT_JOB_EXCEPTION_STACKTRACE = "exception-stacktrace";
+  public static final String SEGMENT_USERS = "users";
+  public static final String SEGMENT_GROUPS = "groups";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -337,6 +340,16 @@ public final class RestUrls {
    * URL template for the collection of jobs: <i>management/jobs</i>
    */
   public static final String[] URL_JOB_COLLECTION = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS};
+  
+  /**
+   * URL template for the collection of users: <i>identity/users</i>
+   */
+  public static final String[] URL_USER_COLLECTION = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_USERS};
+  
+  /**
+   * URL template for a single user: <i>identity/users/{0:userId}</i>
+   */
+  public static final String[] URL_USER = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_USERS, "{0}"};
   
   /**
    * Creates an url based on the passed fragments and replaces any placeholders with the given arguments. The

@@ -1,4 +1,4 @@
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy;
 
 import org.activiti.rest.BaseRestTestCase;
 import org.codehaus.jackson.JsonNode;

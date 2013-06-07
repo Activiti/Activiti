@@ -11,13 +11,13 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 
 /**
  * @author Frederik Heremans
  */
-public class RestIdentityLink {
+public class LegacyRestIdentityLink {
 
   private String url;
   private String user;

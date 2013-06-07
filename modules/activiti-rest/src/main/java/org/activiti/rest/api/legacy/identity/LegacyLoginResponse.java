@@ -11,26 +11,21 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 /**
  * @author Tijs Rademakers
  */
-public class LoginInfo {
-  
-  private String userId;
-  private String password;
-  
-  public String getUserId() {
-    return userId;
+public class LegacyLoginResponse {
+
+  private boolean success;
+
+  public boolean isSuccess() {
+    return success;
   }
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
-  public String getPassword() {
-    return password;
-  }
-  public void setPassword(String password) {
-    this.password = password;
+
+  public LegacyLoginResponse setSuccess(boolean success) {
+    this.success = success;
+    return this;
   }
 }

@@ -13,6 +13,8 @@
 
 package org.activiti.rest.api.runtime.task;
 
+import java.util.Set;
+
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
@@ -55,113 +57,114 @@ public class TaskCollectionResource extends TaskBaseResource {
     // Create a Task query request
     TaskQueryRequest request = new TaskQueryRequest();
     Form query = getQuery();
+    Set<String> names = query.getNames();
     
     // Populate filter-parameters
-    if(query.getNames().contains("name")) {
+    if(names.contains("name")) {
       request.setName(getQueryParameter("name", query));
     }
     
-    if(query.getNames().contains("nameLike")) {
+    if(names.contains("nameLike")) {
       request.setNameLike(getQueryParameter("nameLike", query));
     }
     
-    if(query.getNames().contains("description")) {
+    if(names.contains("description")) {
       request.setDescription(getQueryParameter("description", query));
     }
     
-    if(query.getNames().contains("descriptionLike")) {
+    if(names.contains("descriptionLike")) {
       request.setDescriptionLike(getQueryParameter("descriptionLike", query));
     }
     
-    if(query.getNames().contains("priority")) {
+    if(names.contains("priority")) {
       request.setPriority(getQueryParameterAsInt("priority", query));
     }
     
-    if(query.getNames().contains("minimumPriority")) {
+    if(names.contains("minimumPriority")) {
       request.setMinimumPriority(getQueryParameterAsInt("minimumPriority", query));
     }
     
-    if(query.getNames().contains("maximumPriority")) {
+    if(names.contains("maximumPriority")) {
       request.setMaximumPriority(getQueryParameterAsInt("maximumPriority", query));
     }
     
-    if(query.getNames().contains("assignee")) {
+    if(names.contains("assignee")) {
       request.setAssignee(getQueryParameter("assignee", query));
     }
     
-    if(query.getNames().contains("owner")) {
+    if(names.contains("owner")) {
       request.setOwner(getQueryParameter("owner", query));
     }
     
-    if(query.getNames().contains("unassigned")) {
+    if(names.contains("unassigned")) {
       request.setUnassigned(getQueryParameterAsBoolean("unassigned", query));
     }
     
-    if(query.getNames().contains("delegationState")) {
+    if(names.contains("delegationState")) {
       request.setDelegationState(getQueryParameter("delegationState", query));
     }
     
-    if(query.getNames().contains("candidateUser")) {
+    if(names.contains("candidateUser")) {
       request.setCandidateUser(getQueryParameter("candidateUser", query));
     }
     
-    if(query.getNames().contains("involvedUser")) {
+    if(names.contains("involvedUser")) {
       request.setInvolvedUser(getQueryParameter("involvedUser", query));
     }
     
-    if(query.getNames().contains("candidateGroup")) {
+    if(names.contains("candidateGroup")) {
       request.setCandidateGroup(getQueryParameter("candidateGroup", query));
     }
     
-    if(query.getNames().contains("processInstanceId")) {
+    if(names.contains("processInstanceId")) {
       request.setProcessInstanceId(getQueryParameter("processInstanceId", query));
     }
     
-    if(query.getNames().contains("processInstanceBusinessKey")) {
+    if(names.contains("processInstanceBusinessKey")) {
       request.setProcessInstanceBusinessKey(getQueryParameter("processInstanceBusinessKey", query));
     }
     
-    if(query.getNames().contains("executionId")) {
+    if(names.contains("executionId")) {
       request.setExecutionId(getQueryParameter("executionId", query));
     }
     
-    if(query.getNames().contains("createdOn")) {
+    if(names.contains("createdOn")) {
       request.setCreatedOn(getQueryParameterAsDate("createdOn", query));
     }
     
-    if(query.getNames().contains("createdBefore")) {
+    if(names.contains("createdBefore")) {
       request.setCreatedBefore(getQueryParameterAsDate("createdBefore", query));
     }
     
-    if(query.getNames().contains("createdAfter")) {
+    if(names.contains("createdAfter")) {
       request.setCreatedAfter(getQueryParameterAsDate("createdAfter", query));
     }
     
-    if(query.getNames().contains("excludeSubTasks")) {
+    if(names.contains("excludeSubTasks")) {
       request.setExcludeSubTasks(getQueryParameterAsBoolean("excludeSubTasks", query));
     }
     
-    if(query.getNames().contains("taskDefinitionKey")) {
+    if(names.contains("taskDefinitionKey")) {
       request.setTaskDefinitionKey(getQueryParameter("taskDefinitionKey", query));
     }
     
-    if(query.getNames().contains("taskDefinitionKeyLike")) {
+    if(names.contains("taskDefinitionKeyLike")) {
       request.setTaskDefinitionKeyLike(getQueryParameter("taskDefinitionKeyLike", query));
     }
     
-    if(query.getNames().contains("dueDate")) {
+    if(names.contains("dueDate")) {
       request.setDueDate(getQueryParameterAsDate("dueDate", query));
     }
     
-    if(query.getNames().contains("dueBefore")) {
+    if(names.contains("dueBefore")) {
       request.setDueBefore(getQueryParameterAsDate("dueBefore", query));
     }
     
-    if(query.getNames().contains("dueAfter")) {
+    if(names.contains("dueAfter")) {
       request.setDueAfter(getQueryParameterAsDate("dueAfter", query));
     }
     
-    if(query.getNames().contains("active")) {
+    if(names.contains("active")) {
       request.setActive(getQueryParameterAsBoolean("active", query));
     }
     

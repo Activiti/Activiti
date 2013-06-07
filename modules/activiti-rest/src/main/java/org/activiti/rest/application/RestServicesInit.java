@@ -15,17 +15,8 @@ import org.activiti.rest.api.history.HistoricTaskInstanceQueryResource;
 import org.activiti.rest.api.history.HistoricTaskInstanceResource;
 import org.activiti.rest.api.history.HistoricVariableInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricVariableInstanceQueryResource;
-import org.activiti.rest.api.identity.GroupCreateResource;
-import org.activiti.rest.api.identity.GroupResource;
-import org.activiti.rest.api.identity.GroupSearchResource;
-import org.activiti.rest.api.identity.GroupUsersResource;
-import org.activiti.rest.api.identity.LoginResource;
-import org.activiti.rest.api.identity.UserCreateResource;
-import org.activiti.rest.api.identity.UserGroupsDeleteResource;
-import org.activiti.rest.api.identity.UserGroupsResource;
-import org.activiti.rest.api.identity.UserPictureResource;
+import org.activiti.rest.api.identity.UserCollectionResource;
 import org.activiti.rest.api.identity.UserResource;
-import org.activiti.rest.api.identity.UserSearchResource;
 import org.activiti.rest.api.legacy.LegacyTaskAttachmentResource;
 import org.activiti.rest.api.legacy.TaskAddResource;
 import org.activiti.rest.api.legacy.TaskAttachmentAddResource;
@@ -41,6 +32,17 @@ import org.activiti.rest.api.legacy.deployment.DeploymentDeleteResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentUploadResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentsDeleteResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentsResource;
+import org.activiti.rest.api.legacy.identity.LegacyGroupCreateResource;
+import org.activiti.rest.api.legacy.identity.LegacyGroupResource;
+import org.activiti.rest.api.legacy.identity.LegacyGroupSearchResource;
+import org.activiti.rest.api.legacy.identity.LegacyGroupUsersResource;
+import org.activiti.rest.api.legacy.identity.LegacyLoginResource;
+import org.activiti.rest.api.legacy.identity.LegacyUserCreateResource;
+import org.activiti.rest.api.legacy.identity.LegacyUserGroupsDeleteResource;
+import org.activiti.rest.api.legacy.identity.LegacyUserGroupsResource;
+import org.activiti.rest.api.legacy.identity.LegacyUserPictureResource;
+import org.activiti.rest.api.legacy.identity.LegacyUserResource;
+import org.activiti.rest.api.legacy.identity.LegacyUserSearchResource;
 import org.activiti.rest.api.legacy.management.JobExecuteResource;
 import org.activiti.rest.api.legacy.management.JobsExecuteResource;
 import org.activiti.rest.api.legacy.management.JobsResource;
@@ -165,6 +167,10 @@ public class RestServicesInit {
     router.attach("/management/jobs/{jobId}", JobResource.class);
     router.attach("/management/jobs/{jobId}/exception-stacktrace", JobExceptionStacktraceResource.class);
     
+    router.attach("/identity/users", UserCollectionResource.class);
+    router.attach("/identity/users/{userId}", UserResource.class);
+    
+    
     router.attach("/query/tasks", TaskQueryResource.class);
     router.attach("/query/process-instances", ProcessInstanceQueryResource.class);
     router.attach("/query/executions", ExecutionQueryResource.class);
@@ -177,20 +183,20 @@ public class RestServicesInit {
     // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);
     
-    router.attach("/login", LoginResource.class);
+    router.attach("/login", LegacyLoginResource.class);
     
-    router.attach("/user", UserCreateResource.class);
-    router.attach("/user/{userId}", UserResource.class);
-    router.attach("/user/{userId}/groups", UserGroupsResource.class);
-    router.attach("/user/{userId}/groups/{groupId}", UserGroupsDeleteResource.class);
-    router.attach("/user/{userId}/picture", UserPictureResource.class);
-    router.attach("/users", UserSearchResource.class);
+    router.attach("/user", LegacyUserCreateResource.class);
+    router.attach("/user/{userId}", LegacyUserResource.class);
+    router.attach("/user/{userId}/groups", LegacyUserGroupsResource.class);
+    router.attach("/user/{userId}/groups/{groupId}", LegacyUserGroupsDeleteResource.class);
+    router.attach("/user/{userId}/picture", LegacyUserPictureResource.class);
+    router.attach("/users", LegacyUserSearchResource.class);
 
-    router.attach("/group", GroupCreateResource.class);
-    router.attach("/group/{groupId}", GroupResource.class);
-    router.attach("/group/{groupId}/users/{userId}", UserGroupsDeleteResource.class);
-    router.attach("/group/{groupId}/users", GroupUsersResource.class);
-    router.attach("/groups", GroupSearchResource.class);
+    router.attach("/group", LegacyGroupCreateResource.class);
+    router.attach("/group/{groupId}", LegacyGroupResource.class);
+    router.attach("/group/{groupId}/users/{userId}", LegacyUserGroupsDeleteResource.class);
+    router.attach("/group/{groupId}/users", LegacyGroupUsersResource.class);
+    router.attach("/groups", LegacyGroupSearchResource.class);
     
     router.attach("/process-definitions", ProcessDefinitionsResource.class);
     router.attach("/process-instances", LegacyProcessInstancesResource.class);

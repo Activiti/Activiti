@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,11 +33,11 @@ import org.restlet.resource.Post;
 /**
  * @author Tijs Rademakers
  */
-public class UserGroupsResource extends SecuredResource {
+public class LegacyUserGroupsResource extends SecuredResource {
 
   Map<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
 
-  public UserGroupsResource() {
+  public LegacyUserGroupsResource() {
     properties.put("id", GroupQueryProperty.GROUP_ID);
     properties.put("name", GroupQueryProperty.NAME);
     properties.put("type", GroupQueryProperty.TYPE);
@@ -53,14 +53,14 @@ public class UserGroupsResource extends SecuredResource {
       throw new ActivitiIllegalArgumentException("No userId provided");
     }
 
-    DataResponse dataResponse = new UserGroupsPaginateList().paginateList(
+    DataResponse dataResponse = new LegacyUserGroupsPaginateList().paginateList(
         getQuery(), ActivitiUtil.getIdentityService().createGroupQuery()
             .groupMember(userId), "id", properties);
     return dataResponse;
   }
 
   @Post
-  public StateResponse setGroups(ArrayList<String> groupIds) {
+  public LegacyStateResponse setGroups(ArrayList<String> groupIds) {
     if (authenticate() == false)
       return null;
     String userId = (String) getRequest().getAttributes().get("userId");
@@ -87,7 +87,7 @@ public class UserGroupsResource extends SecuredResource {
           .memberOfGroup(groupId).singleResult() == null)
         identityService.createMembership(userId, groupId);
     }
-    return new StateResponse().setSuccess(true);
+    return new LegacyStateResponse().setSuccess(true);
   }
 
 }

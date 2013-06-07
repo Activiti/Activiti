@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.IdentityService;
@@ -25,10 +25,10 @@ import org.restlet.resource.ResourceException;
 /**
  * @author Ernesto Revilla
  */
-public class GroupCreateResource extends SecuredResource {
+public class LegacyGroupCreateResource extends SecuredResource {
 
   @Put()
-  public StateResponse createGroup(GroupInfo groupInfo) {
+  public LegacyStateResponse createGroup(LegacyGroupInfo groupInfo) {
     if (authenticate() == false)
       return null;
 
@@ -51,6 +51,6 @@ public class GroupCreateResource extends SecuredResource {
     } else {
       throw new ResourceException(Status.CLIENT_ERROR_CONFLICT, "group id must be unique");
     }
-    return new StateResponse().setSuccess(true);
+    return new LegacyStateResponse().setSuccess(true);
   }
 }

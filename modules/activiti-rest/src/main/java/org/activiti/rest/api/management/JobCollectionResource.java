@@ -15,6 +15,7 @@ package org.activiti.rest.api.management;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.JobQueryProperty;
@@ -49,54 +50,55 @@ public class JobCollectionResource extends SecuredResource {
     
     JobQuery query = ActivitiUtil.getManagementService().createJobQuery();
     Form form = getQuery();
+    Set<String> names = form.getNames();
     
-    if(form.getNames().contains("id")) {
+    if(names.contains("id")) {
       query.jobId(getQueryParameter("id", form));
     }
-    if(form.getNames().contains("processInstanceId")) {
+    if(names.contains("processInstanceId")) {
       query.processInstanceId(getQueryParameter("processInstanceId", form));
     }
-    if(form.getNames().contains("executionId")) {
+    if(names.contains("executionId")) {
       query.executionId(getQueryParameter("executionId", form));
     }
-    if(form.getNames().contains("processDefinitionId")) {
+    if(names.contains("processDefinitionId")) {
       query.processDefinitionId(getQueryParameter("processDefinitionId", form));
     }
-    if(form.getNames().contains("withRetriesLeft")) {
+    if(names.contains("withRetriesLeft")) {
       if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withRetriesLeft", form))) {
         query.withRetriesLeft();
       }
     }
-    if(form.getNames().contains("executable")) {
+    if(names.contains("executable")) {
       if(Boolean.TRUE.equals(getQueryParameterAsBoolean("executable", form))) {
         query.executable();
       }
     }
-    if(form.getNames().contains("timersOnly")) {
-      if(form.getNames().contains("messagesOnly")) {
+    if(names.contains("timersOnly")) {
+      if(names.contains("messagesOnly")) {
         throw new ActivitiIllegalArgumentException("Only one of 'timersOnly' or 'messagesOnly' can be provided.");
       }
       if(Boolean.TRUE.equals(getQueryParameterAsBoolean("timersOnly", form))) {
         query.timers();
       }
     }
-    if(form.getNames().contains("messagesOnly")) {
+    if(names.contains("messagesOnly")) {
       if(Boolean.TRUE.equals(getQueryParameterAsBoolean("messagesOnly", form))) {
         query.messages();
       }
     }
-    if(form.getNames().contains("dueBefore")) {
+    if(names.contains("dueBefore")) {
       query.duedateLowerThan(getQueryParameterAsDate("dueBefore", form));
     }
-    if(form.getNames().contains("dueAfter")) {
+    if(names.contains("dueAfter")) {
       query.duedateHigherThan(getQueryParameterAsDate("dueAfter", form));
     }
-    if(form.getNames().contains("withException")) {
+    if(names.contains("withException")) {
       if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withException", form))) {
         query.withException();
       }
     }
-    if(form.getNames().contains("exceptionMessage")) {
+    if(names.contains("exceptionMessage")) {
       query.exceptionMessage(getQueryParameter("exceptionMessage", form));
     }
 

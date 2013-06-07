@@ -13,53 +13,69 @@
 
 package org.activiti.rest.api.identity;
 
-import org.activiti.engine.identity.User;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Hermans
  */
-public class UserInfo {
+public class UserResponse {
+
+  protected String id;
+  protected String firstName;
+  protected String lastName;
+  protected String passWord;
+  protected String url;
+  protected String email;
   
-  String id;
-  String firstName;
-  String lastName;
-  String email;
   
-  public UserInfo(){}
+  public String getEmail() {
+    return email;
+  }
   
-  public UserInfo(User user) {
-    setId(user.getId());
-    setEmail(user.getEmail());
-    setFirstName(user.getFirstName());
-    setLastName(user.getLastName());
+  public void setEmail(String email) {
+    this.email = email;
+  }
+  
+  public String getUrl() {
+    return url;
+  }
+  
+  public void setUrl(String url) {
+    this.url = url;
   }
   
   public String getId() {
     return id;
   }
-  public UserInfo setId(String id) {
+  
+  public void setId(String id) {
     this.id = id;
-    return this;
   }
+  
   public String getFirstName() {
     return firstName;
   }
-  public UserInfo setFirstName(String firstName) {
+  
+  public void setFirstName(String firstName) {
     this.firstName = firstName;
-    return this;
   }
+  
   public String getLastName() {
     return lastName;
   }
-  public UserInfo setLastName(String lastName) {
+  
+  public void setLastName(String lastName) {
     this.lastName = lastName;
-    return this;
   }
-  public String getEmail() {
-    return email;
+  
+  @JsonSerialize(include=Inclusion.NON_NULL)
+  public String getPassword() {
+    return passWord;
   }
-  public UserInfo setEmail(String email) {
-    this.email = email;
-    return this;
+  
+  public void setPassword(String passWord) {
+    this.passWord = passWord;
   }
 }

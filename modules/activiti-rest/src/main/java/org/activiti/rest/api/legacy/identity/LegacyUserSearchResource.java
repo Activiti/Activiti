@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +30,7 @@ import org.restlet.resource.Get;
 /**
  * @author Tijs Rademakers
  */
-public class UserSearchResource extends SecuredResource {
+public class LegacyUserSearchResource extends SecuredResource {
   
   @Get
   public DataResponse searchUsers() {
@@ -45,22 +45,22 @@ public class UserSearchResource extends SecuredResource {
     List<User> firstNameMatchList = ActivitiUtil.getIdentityService().createUserQuery().userFirstNameLike(searchText).list();
     List<User> lastNameMatchList = ActivitiUtil.getIdentityService().createUserQuery().userLastNameLike(searchText).list();
     
-    Map<String, UserInfo> userMap = new HashMap<String, UserInfo>();
+    Map<String, LegacyUserInfo> userMap = new HashMap<String, LegacyUserInfo>();
     if(firstNameMatchList != null) {
       for (User user : firstNameMatchList) {
-        userMap.put(user.getId(), new UserInfo(user));
+        userMap.put(user.getId(), new LegacyUserInfo(user));
       }
     }
     
     if(lastNameMatchList != null) {
       for (User user : lastNameMatchList) {
         if(userMap.containsKey(user.getId()) == false) {
-          userMap.put(user.getId(), new UserInfo(user));
+          userMap.put(user.getId(), new LegacyUserInfo(user));
         }
       }
     }
     
-    List<UserInfo> userList = new ArrayList<UserInfo>();
+    List<LegacyUserInfo> userList = new ArrayList<LegacyUserInfo>();
     userList.addAll(userMap.values());
     Collections.sort(userList, new UserResponseComparable());
     
@@ -75,9 +75,9 @@ public class UserSearchResource extends SecuredResource {
     return response;
   }
   
-  protected class UserResponseComparable implements Comparator<UserInfo>{
+  protected class UserResponseComparable implements Comparator<LegacyUserInfo>{
     
-    public int compare(UserInfo user1, UserInfo user2) {
+    public int compare(LegacyUserInfo user1, LegacyUserInfo user2) {
         return user1.getLastName().compareTo(user2.getLastName());
     }
   }

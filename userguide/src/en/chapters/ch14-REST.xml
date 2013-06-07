@@ -4258,7 +4258,7 @@ Only the attachment name is required to create a new attachment.
                 </thead>
                 <tbody>
                   <row>
-                    <entry>jobId</entry>
+                    <entry>id</entry>
                     <entry>Only return job with the given id</entry>
                     <entry>String</entry>
                   </row>
@@ -4379,9 +4379,304 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
  </section>
-   
     
 </section>
+
+<section>
+  <title>Users</title>
+  
+  <section>
+      <title>Get a single user</title>
+        <para>
+          <programlisting>GET identity/users/{userId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>userId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the user to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"testuser",
+   "firstName":"Fred",
+   "lastName":"McDonald",
+   "url":"http://localhost:8182/identity/users/testuser",
+   "email":"no-reply@activiti.org"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the user exists and is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested user does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Get a list of users</title>
+        <para>
+          <programlisting>GET identity/users</programlisting>
+        </para>
+        <para>
+        <table>
+              <title>URL query parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Type</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>id</entry>
+                    <entry>Only return user with the given id</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>firstName</entry>
+                    <entry>Only return users with the given firstname</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>lastName</entry>
+                    <entry>Only return users with the given lastname</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>email</entry>
+                    <entry>Only return users with the given email</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>firstNameLike</entry>
+                    <entry>Only return userswith a firstname like the given value. Use <literal>%</literal> as wildcard-character.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>lastNameLike</entry>
+                    <entry>Only return users with a lastname like the given value. Use <literal>%</literal> as wildcard-character.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>emailLike</entry>
+                    <entry>Only return users with an email like the given value. Use <literal>%</literal> as wildcard-character.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>memberOfGroup</entry>
+                    <entry>Only return users which are a member of the given group.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>potentialStarter</entry>
+                    <entry>Only return users which are potential starters for a process-definition with the given id.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>firstName</literal>, <literal>lastname</literal> or <literal>email</literal>.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "data":[
+      {
+         "id":"anotherUser",
+         "firstName":"Tijs",
+         "lastName":"Barrez",
+         "url":"http://localhost:8182/identity/users/anotherUser",
+         "email":"no-reply@alfresco.org"
+      },
+      {
+         "id":"kermit",
+         "firstName":"Kermit",
+         "lastName":"the Frog",
+         "url":"http://localhost:8182/identity/users/kermit",
+         "email":null
+      },
+      {
+         "id":"testuser",
+         "firstName":"Fred",
+         "lastName":"McDonald",
+         "url":"http://localhost:8182/identity/users/testuser",
+         "email":"no-reply@activiti.org"
+      }
+   ],
+   "total":3,
+   "start":0,
+   "sort":"id",
+   "order":"asc",
+   "size":3
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the requested users were returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+ </section>
+ 
+  <section>
+      <title>Update a user</title>
+        <para>
+          <programlisting>PUT identity/users/{userId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{
+  "firstName":"Tijs",
+  "lastName":"Barrez",
+  "url":"http://localhost:8182/identity/users/anotherUser",
+  "email":"no-reply@alfresco.org"
+}</programlisting>
+      All request values are optional. For example, you can only include the 'firstName' attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: <literal>{"firstName" : null}</literal> will clear the firstName of the user).
+       </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the user was updated.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested user was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the requested user was updated simultaneously.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>runtime/tasks/{taskId}</literal>.
+      </para>
+  </section>
+  
+  <section>
+      <title>Delete a user</title>
+         <para>
+        <programlisting>DELETE identity/users/{userId}</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>userId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the user to delete.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the user was found and  has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested user was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+</section>
+
 
 <!-- Legacy -->
   <section>

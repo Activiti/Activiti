@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.identity;
+package org.activiti.rest.api.legacy.identity;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.IdentityService;
@@ -25,10 +25,10 @@ import org.restlet.resource.ResourceException;
 /**
  * @author Tijs Rademakers
  */
-public class UserCreateResource extends SecuredResource {
+public class LegacyUserCreateResource extends SecuredResource {
   
   @Put()
-  public StateResponse createUser(UserInfoWithPassword userInfo){
+  public LegacyStateResponse createUser(LegacyUserInfoWithPassword userInfo){
     if(authenticate() == false) return null;
     
     IdentityService identityService = ActivitiUtil.getIdentityService();
@@ -46,6 +46,6 @@ public class UserCreateResource extends SecuredResource {
     } else  {
       throw new ResourceException(Status.CLIENT_ERROR_CONFLICT, "user id must be unique");
     }
-    return new StateResponse().setSuccess(true);
+    return new LegacyStateResponse().setSuccess(true);
   }
 }
