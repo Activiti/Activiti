@@ -14,6 +14,7 @@
 package org.activiti.explorer.ui.task.data;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.DelegationState;
@@ -139,5 +140,13 @@ public class HistoricTaskWrapper implements Task {
   
   public boolean isSuspended() {
     return false;
+  }
+
+  public Map<String, Object> getTaskLocalVariables() {
+    return null;
+  }
+
+  public Map<String, Object> getProcessVariables() {
+    return null;
   }
 }

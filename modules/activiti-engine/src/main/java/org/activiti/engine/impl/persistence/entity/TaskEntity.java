@@ -46,6 +46,7 @@ import org.activiti.engine.task.Task;
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Falko Menge
+ * @author Tijs Rademakers
  */ 
 public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject, HasRevision {
 
@@ -86,6 +87,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected boolean isDeleted;
   
   protected String eventName;
+  
+  protected List<VariableInstanceEntity> queryVariables;
   
   public TaskEntity() {
   }
@@ -696,5 +699,33 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   public boolean isSuspended() {
     return suspensionState == SuspensionState.SUSPENDED.getStateCode();
+  }
+  public Map<String, Object> getTaskLocalVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (VariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getTaskId() != null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public Map<String, Object> getProcessVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (VariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getTaskId() == null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public List<VariableInstanceEntity> getQueryVariables() {
+    return queryVariables;
+  }
+  public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
+    this.queryVariables = queryVariables;
   }
 }

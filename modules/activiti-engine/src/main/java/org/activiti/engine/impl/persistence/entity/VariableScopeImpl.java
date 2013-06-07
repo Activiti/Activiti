@@ -34,6 +34,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public abstract class VariableScopeImpl implements Serializable, VariableScope {
   

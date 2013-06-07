@@ -44,7 +44,7 @@ public class HistoricVariableInstanceEntityManager extends AbstractManager {
       List<HistoricVariableInstanceEntity> cachedHistoricVariableInstances = getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class);
       for (HistoricVariableInstanceEntity historicProcessVariable : cachedHistoricVariableInstances) {
         // Make sure we only delete the right ones (as we cannot make a proper query in the cache)
-        if (historicProcessVariable.getProcessInstanceId().equals(historicProcessInstanceId)) {
+        if (historicProcessInstanceId.equals(historicProcessVariable.getProcessInstanceId())) {
           historicProcessVariable.delete();
         }
       }
