@@ -29,10 +29,8 @@ import org.activiti.rest.HttpMultipartRepresentation;
 import org.activiti.rest.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
-import org.restlet.engine.http.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
@@ -441,10 +439,5 @@ public class TaskVariableResourceTest extends BaseRestTestCase {
         taskService.deleteTask(task.getId(), true);
       }
     }
-  }
-  
-  protected String getMediaType(ClientResource client) {
-    Form headers = (Form) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
-    return headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE);
   }
 }

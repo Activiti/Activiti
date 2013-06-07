@@ -51,8 +51,10 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.restlet.Component;
 import org.restlet.data.ChallengeScheme;
+import org.restlet.data.Form;
 import org.restlet.data.Protocol;
 import org.restlet.data.Status;
+import org.restlet.engine.http.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.slf4j.Logger;
@@ -428,5 +430,10 @@ public class BaseRestTestCase extends PvmTestCase {
   
   protected String getISODateString(Date time) {
     return ISO8601Utils.format(time, true);
+  }
+  
+  protected String getMediaType(ClientResource client) {
+    Form headers = (Form) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
+    return headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE);
   }
 }

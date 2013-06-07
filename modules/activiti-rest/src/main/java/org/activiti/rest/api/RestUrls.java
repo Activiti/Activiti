@@ -57,6 +57,7 @@ public final class RestUrls {
   public static final String SEGMENT_COLUMNS = "columns";
   public static final String SEGMENT_DATA = "data";
   public static final String SEGMENT_JOBS = "jobs";
+  public static final String SEGMENT_JOB_EXCEPTION_STACKTRACE = "exception-stacktrace";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -326,6 +327,11 @@ public final class RestUrls {
    * URL template for a single job: <i>management/jobs/{0:jobId}</i>
    */
   public static final String[] URL_JOB = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS, "{0}"};
+  
+  /**
+   * URL template for the stacktrace of a single job: <i>management/jobs/{0:jobId}/exception-stacktrace</i>
+   */
+  public static final String[] URL_JOB_EXCEPTION_STRACKTRACE = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS, "{0}", SEGMENT_JOB_EXCEPTION_STACKTRACE};
   
   /**
    * URL template for the collection of jobs: <i>management/jobs</i>
