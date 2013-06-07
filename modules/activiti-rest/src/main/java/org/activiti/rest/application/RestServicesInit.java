@@ -52,6 +52,7 @@ import org.activiti.rest.api.legacy.process.LegacyProcessInstanceResource;
 import org.activiti.rest.api.legacy.process.LegacyProcessInstancesResource;
 import org.activiti.rest.api.legacy.process.ProcessDefinitionsResource;
 import org.activiti.rest.api.legacy.task.LegacyTaskResource;
+import org.activiti.rest.api.management.JobCollectionResource;
 import org.activiti.rest.api.management.JobExceptionStacktraceResource;
 import org.activiti.rest.api.management.JobResource;
 import org.activiti.rest.api.management.TableCollectionResource;
@@ -160,6 +161,7 @@ public class RestServicesInit {
     router.attach("/management/tables/{tableName}", TableResource.class);
     router.attach("/management/tables/{tableName}/columns", TableColumnsResource.class);
     router.attach("/management/tables/{tableName}/data", TableDataResource.class);
+    router.attach("/management/jobs", JobCollectionResource.class);
     router.attach("/management/jobs/{jobId}", JobResource.class);
     router.attach("/management/jobs/{jobId}/exception-stacktrace", JobExceptionStacktraceResource.class);
     
