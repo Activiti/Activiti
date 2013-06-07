@@ -157,8 +157,8 @@
     <if test="includeTaskLocalVariables || includeProcessVariables">
       VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
       VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
-      VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, VAR.TEXT_ as VAR_TEXT_,
-      VAR.DOUBLE_ as VAR_DOUBLE_, VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT_, VAR.LONG_ as VAR_LONG_
+      VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, 
+      VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT2_, VAR.LONG_ as VAR_LONG_
     </if>
     ${limitBetween}
     <include refid="selectTaskWithVariablesByQueryCriteriaSql"/> 
