@@ -63,8 +63,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   protected String jobHandlerType = null;
   protected String jobHandlerConfiguration = null;
   
-  protected ByteArrayEntity exceptionByteArray;
-  protected String exceptionByteArrayId;
+  protected final ByteArrayRef exceptionByteArrayRef = new ByteArrayRef();
   
   protected String exceptionMessage;
 
@@ -82,7 +81,8 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   
   public void insert() {
     Context.getCommandContext()
-      .getDbSqlSession().insert(this);
+      .getDbSqlSession()
+      .insert(this);
     
     // add link to execution
     if (executionId != null) {
@@ -99,11 +99,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
       .delete(this);
 
     // Also delete the job's exception byte array
-    if (exceptionByteArrayId != null) {
-      Context.getCommandContext()
-        .getByteArrayEntityManager()
-        .deleteByteArrayById(exceptionByteArrayId);
-    }
+    exceptionByteArrayRef.delete();
     
     // remove link to execution
     if (executionId != null) {
@@ -121,38 +117,19 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   }
 
   public String getExceptionStacktrace() {
-    ByteArrayEntity byteArrayEntity = getExceptionByteArrayEntity();
-    if (byteArrayEntity == null) {
+    byte[] bytes = exceptionByteArrayRef.getBytes();
+    if (bytes == null) {
       return null;
     }
     try {
-      return new String(byteArrayEntity.getBytes(), "UTF-8");
+      return new String(bytes, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       throw new ActivitiException("UTF-8 is not a supported encoding");
     }
   }
   
   public void setExceptionStacktrace(String exception) {
-    byte[] bytes = getUtf8Bytes(exception);   
-
-    if (bytes == null) {
-      if (exceptionByteArrayId != null) {
-        Context.getCommandContext()
-          .getByteArrayEntityManager()
-          .deleteByteArrayById(exceptionByteArrayId);
-        exceptionByteArrayId = null;
-      }
-    }
-    else {
-      if (exceptionByteArrayId == null) {
-        exceptionByteArray = ByteArrayEntity.createAndInsert("job.exceptionByteArray", bytes);
-        exceptionByteArrayId = exceptionByteArray.getId();
-      }
-      else {
-        ByteArrayEntity byteArrayEntity = getExceptionByteArrayEntity();
-        byteArrayEntity.setBytes(bytes);
-      }
-    }
+    exceptionByteArrayRef.setValue("stacktrace", getUtf8Bytes(exception));
   }
 
   private byte[] getUtf8Bytes(String str) {
@@ -166,15 +143,6 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
     }
   }
   
-  private ByteArrayEntity getExceptionByteArrayEntity() {
-    if (exceptionByteArrayId != null && exceptionByteArray == null) {
-      exceptionByteArray = Context.getCommandContext()
-        .getDbSqlSession()
-        .selectById(ByteArrayEntity.class, exceptionByteArrayId);
-    }
-    return exceptionByteArray;
-  }
-  
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("lockOwner", lockOwner);
@@ -182,9 +150,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
     persistentState.put("retries", retries);
     persistentState.put("duedate", duedate);
     persistentState.put("exceptionMessage", exceptionMessage);
-    if (exceptionByteArrayId != null) {
-      persistentState.put("exceptionByteArrayId", exceptionByteArrayId);      
-    }
+    persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());      
     return persistentState;
   }
   
