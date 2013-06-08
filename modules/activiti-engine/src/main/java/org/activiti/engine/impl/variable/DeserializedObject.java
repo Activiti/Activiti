@@ -37,9 +37,7 @@ public class DeserializedObject {
     if (deserializedObject==variableInstanceEntity.getCachedValue()) {
       byte[] bytes = SerializableType.serialize(deserializedObject, variableInstanceEntity);
       if (!Arrays.equals(originalBytes, bytes)) {
-        variableInstanceEntity
-          .getByteArrayValue()
-          .setBytes(bytes);
+        variableInstanceEntity.setBytes(bytes);
       }
     }
   }
