@@ -20,12 +20,16 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
  */
 public class TaskCandidateTest extends PluggableActivitiTestCase {
 
+  private static Logger logger = LoggerFactory.getLogger(TaskCandidateTest.class);
+  
   private static final String KERMIT = "kermit";
 
   private static final String GONZO = "gonzo";
@@ -125,6 +129,10 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     // The task should be visible in the candidate task list of Gonzo and Kermit
     // and anyone in the management/accountancy group
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
+    List<Task> tempTaskList = taskService.createTaskQuery().taskCandidateUser(GONZO).list();
+    for (Task task : tempTaskList) {
+      logger.error("!!!Found task " + task.getId() + " key " + task.getTaskDefinitionKey() + " execution " + task.getExecutionId());
+    }
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
     assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("accountancy").count());
