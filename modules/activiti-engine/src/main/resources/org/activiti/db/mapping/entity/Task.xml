@@ -172,7 +172,7 @@
     VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT2_, VAR.LONG_ as VAR_LONG_, 
     row_number() over (ORDER BY ${orderBy}) as rnk 
     <include refid="selectTaskWithVariablesByQueryCriteriaSql"/> 
-    ) as RES WHERE rnk >= #{firstRow} AND rnk < #{lastRow}
+    ) as RES WHERE rnk &gt;= #{firstRow} AND rnk &lt; #{lastRow}
   </select>
   
   <sql id="selectTaskWithVariablesByQueryCriteriaSql">  
