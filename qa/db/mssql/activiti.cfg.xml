@@ -10,10 +10,10 @@
     <property name="jdbcDriver" value="@jdbc.driver@" />
     <property name="jdbcUsername" value="@jdbc.username@" />
     <property name="jdbcPassword" value="@jdbc.password@" />
-    <property name="jdbcDefaultTransactionIsolationLevel" value="4096" />
+    <!-- <property name="jdbcDefaultTransactionIsolationLevel" value="4096" /> -->
     
     <!-- Database configurations -->
-    <property name="databaseSchemaUpdate" value="false" />
+    <property name="databaseSchemaUpdate" value="drop-create" />
     
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />
