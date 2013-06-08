@@ -152,6 +152,7 @@
   </sql>
   
   <select id="selectTaskWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
+    ${limitBefore}
     select distinct RES.*,
     VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
     VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
