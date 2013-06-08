@@ -104,6 +104,15 @@
         </para> 
     </section>
     <section>
+      <title>Error response body</title>
+      <para>When an error occurs (both client and server, 4XX and 5XX status-codes) the response body contains an object describing the error that occurred. An example for a 404-status when a task is not found:</para>
+                  <programlisting>
+{
+  "statusCode" : 404,
+  "errorMessage" : "Could not find a task with id '444'."
+}</programlisting>
+    </section>
+    <section>
       <title>Request parameters</title>
       <section>
         <title>URL fragments</title>
@@ -205,7 +214,7 @@
   "type" : "string"
 }</programlisting>
             <table>
-              <title>Variable query JSON paremeters</title>
+              <title>Variable query JSON parameters</title>
               <tgroup cols="2">
                 <thead>
                   <row>
@@ -254,20 +263,28 @@
                     <entry>Value is threaded as and converted to a <literal>java.lang.String</literal>.</entry>
                   </row>
                   <row>
-                    <entry>long</entry>
-                    <entry>Value is threaded as and converted to a <literal>java.lang.Long</literal>.</entry>
+                    <entry>short</entry>
+                    <entry>Value is threaded as and converted to a <literal>java.lang.Integer</literal>.</entry>
                   </row>
                   <row>
                     <entry>integer</entry>
                     <entry>Value is threaded as and converted to a <literal>java.lang.Integer</literal>.</entry>
                   </row>
                   <row>
+                    <entry>long</entry>
+                    <entry>Value is threaded as and converted to a <literal>java.lang.Long</literal>.</entry>
+                  </row>
+                  <row>
                     <entry>double</entry>
                     <entry>Value is threaded as and converted to a <literal>java.lang.Double</literal>.</entry>
                   </row>
                   <row>
+                    <entry>boolean</entry>
+                    <entry>Value is threaded as and converted to a <literal>java.lang.Boolean</literal>.</entry>
+                  </row>
+                  <row>
                     <entry>date</entry>
-                    <entry>Value is threaded as and converted to a <literal>java.util.Date</literal>. The JSON string will be converted using ISO-8601 date format.</entry>
+                    <entry>Value is treated as and converted to a <literal>java.util.Date</literal>. The JSON string will be converted using ISO-8601 date format.</entry>
                   </row>
                 </tbody>
               </tgroup>
@@ -275,6 +292,111 @@
         </para>
       </section>
       
+      <section id="restVariables">
+        <title>Variable representation</title>
+        <para>
+          When working with variables (execution/procees and task), the REST-api uses some common principles and JSON-format for both reading and writing. The JSON representation of a variable looks like this:
+           <programlisting>
+{ 
+  "name" : "variableName",
+  "value" : "variableValue",
+  "valueUrl" : "http://...",
+  "scope" : "local",
+  "type" : "string"
+}</programlisting>
+          
+           <table>
+              <title>Variable JSON attributes</title>
+              <tgroup cols="2">
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>name</entry>
+                    <entry>Yes</entry>
+                    <entry>Name of the variable.</entry>
+                  </row>
+                  <row>
+                    <entry>value</entry>
+                    <entry>No</entry>
+                    <entry>Value of the variable. When writing a variable and <literal>value</literal> is omitted, <literal>null</literal> will be used as value.</entry>
+                  </row>
+                  <row>
+                    <entry>valueUrl</entry>
+                    <entry>No</entry>
+                    <entry>When reading a variable of type <literal>binary</literal> or <literal>serializable</literal>, this attribute will point to the URL where the raw binary data can be fetched from.</entry>
+                  </row>
+                  <row>
+                    <entry>scope</entry>
+                    <entry>No</entry>
+                    <entry>Scope of the variable. If '<literal>local</literal>', the variable is explicitally defined on the resource it's requested from. When '<literal>global</literal>', the variable is defined on the parent (or any parent in the parent-tree) of the resource it's requested from. When writing a variable and the scope is omitted, <literal>global</literal> is assumed.</entry>
+                  </row>
+                  <row>
+                    <entry>type</entry>
+                    <entry>No</entry>
+                    <entry>Type of the variable. See table below for additional information on types. When writing a variable and this value is omitted, the type will be deducted from the raw JSON-attribute request type and is limited to either <literal>string</literal>, <literal>double</literal>, <literal>integer</literal> and <literal>boolean</literal>. It's advised to always include a type to make sure no wrong assumption about the type can be done.</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+            <table>
+              <title>Variable Types</title>
+              <tgroup cols="2">
+                <thead>
+                  <row>
+                    <entry>Type name</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>string</entry>
+                    <entry>Value is threaded as a <literal>java.lang.String</literal>. Raw JSON-text value is used when writing a variable.</entry>
+                  </row>
+                  <row>
+                    <entry>integer</entry>
+                    <entry>Value is threaded as a <literal>java.lang.Integer</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                  </row>
+                  <row>
+                    <entry>short</entry>
+                    <entry>Value is threaded as a <literal>java.lang.Short</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                  </row>
+                  <row>
+                    <entry>long</entry>
+                    <entry>Value is threaded as a <literal>java.lang.Long</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                  </row>
+                  <row>
+                    <entry>double</entry>
+                    <entry>Value is threaded as a <literal>java.lang.Double</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                  </row>
+                  <row>
+                    <entry>boolean</entry>
+                    <entry>Value is threaded as a <literal>java.lang.Boolean</literal>. When writing, JSON boolean value is used for conversion.</entry>
+                  </row>
+                  <row>
+                    <entry>date</entry>
+                    <entry>Value is treated as a <literal>java.util.Date</literal>. When writing, the JSON text will be converted using ISO-8601 date format.</entry>
+                  </row>
+                  <row>
+                    <entry>binary</entry>
+                    <entry>Binary variable, threated as an array of bytes. The <literal>value</literal> attribute is null, the <literal>valueUrl</literal> contains an URL pointing to the raw binary stream.</entry>
+                  </row>
+                  <row>
+                    <entry>serializable</entry>
+                    <entry>Serialized representation of a Serializable Java-object. As with the <literal>binary</literal> type, the <literal>value</literal> attribute is null, the <literal>valueUrl</literal> contains an URL pointing to the raw binary stream. All serializable variables (which are not of any of the above types) will be exposed as a variable of this type.</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+            It's possible to support additional variable-types with a custom JSON representation (either simple value or complex/nested JSON object). By extending the <literal>initializeVariableConverters()</literal> method on <literal>org.activiti.rest.api.RestResponseFactory</literal>,
+            you can add additional <literal>org.activiti.rest.api.engine.variable.RestVariableConverter</literal> classes to support converting your POJO's to a format suitable for transerring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
+        </para>
+       </section>
     </section>
       
   </section>
@@ -1268,7 +1390,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>URL query parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1520,7 +1642,7 @@
       "type" : "long"
     },
     
-    "processVariables" : [
+    "processInstanceVariables" : [
       {
          ... 
       }
@@ -1529,8 +1651,8 @@
 }</programlisting> 
         </para>
         <para>
-          All supported JSON paremeter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+          All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
+          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processInstanceVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
         </para>
         <para>
           <table>
@@ -1596,7 +1718,8 @@
         <para>
          <emphasis role="bold">Body JSON:</emphasis>
            <programlisting>
-{ "assignee" : "assignee",
+{ 
+  "assignee" : "assignee",
   "delegationState" : "resolved",
   "description" : "New task description",
   "dueDate" : "2013-04-17T13:06:02.438+02:00",
@@ -1638,6 +1761,81 @@
        <emphasis role="bold">Success response body:</emphasis> see response for <literal>runtime/tasks/{taskId}</literal>.
       </para>
   </section>
+   <section>
+      <title>Task actions</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Complete a task - Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "complete",
+  "variables" : ...
+}</programlisting>
+       Completes the task. Optional variable array can be passed in using the <literal>variables</literal> property. More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that the variable-scope that is supplied is ignored and the variables are set on the parent-scope unless a variable exists in a local scope, which is overridden in this case. This is the same behavior as the <literal>TaskService.completeTask(taskId, variables)</literal> invocation.
+       </para>
+       <para>
+         <emphasis role="bold">Claim a task - Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "claim",
+  "assignee" : "userWhoClaims"
+}</programlisting>
+      Claims the task by the given assignee. The assignee is required.
+       </para>
+       <para>
+         <emphasis role="bold">Delegate a task - Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "delegate",
+  "assignee" : "userToDelegateTo"
+}</programlisting>
+      Delegates the task to the given assignee. The assignee is required.
+       </para>
+       <para>
+         <emphasis role="bold">Resolve a task - Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "resolve"
+}</programlisting>
+Resolves the task delegation. The task is assigned back to the task owner (if any).
+       </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the action was executed.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>When the body contains an invalid value or when the assignee is missing when the action requires it.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the action cannot be performed due to a conflict. Either the task was updates simultaneously or the task was claimend by another user, in case of the '<literal>claim</literal>' action.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>runtime/tasks/{taskId}</literal>.
+      </para>
+  </section>
       <section>
       <title>Delete a task</title>
         <para>
@@ -1657,7 +1855,7 @@
                 </thead>
                 <tbody>
                   <row>
-                    <entry>deploymentId</entry>
+                    <entry>taskId</entry>
                     <entry>Yes</entry>
                     <entry>String</entry>
                     <entry>The id of the task to delete.</entry>
@@ -1706,7 +1904,2484 @@
           </table>
         </para>
   </section>
+  
+   <section>
+      <title>Get all variables for a single task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/variables?scope={scope}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get variables for.</entry>
+                  </row>
+                  <row>
+                    <entry>scope</entry>
+                    <entry>False</entry>
+                    <entry>String</entry>
+                    <entry>Scope of variables to be returned. When '<literal>local</literal>', only task-local variables are returned. When '<literal>global</literal>', only variables from the task's parent execution-hierarchy are returned. When the parameter is omitted, both local and global variables are returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the requested variables are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "name" : "doubleTaskVar",
+    "scope" : "local",
+    "type" : "double",
+    "value" : 99.99
+  },
+  {
+    "name" : "stringProcVar",
+    "scope" : "global",
+    "type" : "string",
+    "value" : "This is a ProcVariable"
+  },
+  
+  ...
+  
+]</programlisting>
+
+      The variables are returned as a JSON array. Full response description can be found in the general <link linkend="restVariables">REST-variables section</link>. 
+    </para>
+  </section>
+  
+   <section>
+      <title>Get a single variable for a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/variables/{variableName}?scope={scope}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get a variable for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to get.</entry>
+                  </row>
+                  <row>
+                    <entry>scope</entry>
+                    <entry>False</entry>
+                    <entry>String</entry>
+                    <entry>Scope of variable to be returned. When '<literal>local</literal>', only task-local variable value is returned. When '<literal>global</literal>', only variable value from the task's parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the requested variables are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name (in the given scope). Status message provides additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "myTaskVariable",
+  "scope" : "local",
+  "type" : "string",
+  "value" : "Hello my friend"
+}</programlisting>
+      Full response body description can be found in the general <link linkend="restVariables">REST-variables section</link>. 
+    </para>
+  </section>
+  
+  <section>
+      <title>Get the binary data for a variable</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/variables/{variableName}/data?scope={scope}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get a variable data for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to get data for. Only variables of type <literal>binary</literal> and <literal>serializable</literal> can be used. If any other type of variable is used, a <literal>404</literal> is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>scope</entry>
+                    <entry>False</entry>
+                    <entry>String</entry>
+                    <entry>Scope of variable to be returned. When '<literal>local</literal>', only task-local variable value is returned. When '<literal>global</literal>', only variable value from the task's parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the requested variables are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name (in the given scope) or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Success response body:</emphasis>
+      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+    </para>
+  </section>
+  
+  <section>
+      <title>Create new variables on a task</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}/variables</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to create the new variable for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body for creating simple (non-binary) variables:</emphasis>
+            <programlisting>
+[
+  { 
+    "name" : "myTaskVariable",
+    "scope" : "local",
+    "type" : "string",
+    "value" : "Hello my friend"
+  },
+  {
+    ...
+  }
+]</programlisting>
+The request body should be an array containing one or more JSON-objects representing the variables that should be created.
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable</para>
+          </listitem>
+          <listitem>
+            <para><literal>scope</literal>: Scope of variable that is created. If omitted, <literal>local</literal> is assumed.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is created. If omitted, reverts to raw JSON-value type (string, boolean, integer or double).</para>
+          </listitem>
+          <listitem>
+            <para><literal>value</literal>: Variable value.</para>
+          </listitem>
+      </itemizedlist>
+      More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>.
+        </para>
+        <para>
+        <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "name" : "myTaskVariable",
+    "scope" : "local",
+    "type" : "string",
+    "value" : "Hello my friend"
+  },
+  {
+    ...
+  }
+]</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the variables were created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of a variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal> or an empty array of variables was included in the request or request did not contain an array of variables. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the task already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+   <section>
+      <title>Create a new binary variable on a task</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}/variables</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to create the new variable for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable.</para>
+          </listitem>
+          <listitem>
+            <para><literal>scope</literal>: Scope of variable that is created. If omitted, <literal>local</literal> is assumed.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+          </listitem>
+      </itemizedlist>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "binaryVariable",
+  "scope" : "local",
+  "type" : "binary",
+  "value" : null,
+  "valueUrl" : "http://.../runtime/tasks/123/variables/binaryVariable/data"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the variable was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of the variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the task already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                  </row>
+                  <row>
+                    <entry>415</entry>
+                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefor cannot be deserialized.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+   <section>
+      <title>Update an existing variable on a task</title>
+        <para>
+          <programlisting>PUT runtime/tasks/{taskId}/variables/{variableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to update the variable for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to update.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body for updating simple (non-binary) variables:</emphasis>
+            <programlisting>
+{ 
+  "name" : "myTaskVariable",
+  "scope" : "local",
+  "type" : "string",
+  "value" : "Hello my friend"
+}</programlisting>
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable</para>
+          </listitem>
+          <listitem>
+            <para><literal>scope</literal>: Scope of variable that is updated. If omitted, <literal>local</literal> is assumed.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is updated. If omitted, reverts to raw JSON-value type (string, boolean, integer or double).</para>
+          </listitem>
+          <listitem>
+            <para><literal>value</literal>: Variable value.</para>
+          </listitem>
+      </itemizedlist>
+      More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>.
+        </para>
+        <para>
+        <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "myTaskVariable",
+  "scope" : "local",
+  "type" : "string",
+  "value" : "Hello my friend"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the variables was updated and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of a variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name in the given scope. Status message contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Updating a binary variable on a task</title>
+        <para>
+          <programlisting>PUT runtime/tasks/{taskId}/variables/{variableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to update the variable for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to update.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable.</para>
+          </listitem>
+          <listitem>
+            <para><literal>scope</literal>: Scope of variable that is updated. If omitted, <literal>local</literal> is assumed.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is updated. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+          </listitem>
+      </itemizedlist>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "binaryVariable",
+  "scope" : "local",
+  "type" : "binary",
+  "value" : null,
+  "valueUrl" : "http://.../runtime/tasks/123/variables/binaryVariable/data"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the variable was updated and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of the variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the variable to update doesn't exist for the given task in the given scope.</entry>
+                  </row>
+                  <row>
+                    <entry>415</entry>
+                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefor cannot be deserialized.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Delete a variable on a task</title>
+        <para>
+          <programlisting>DELETE runtime/tasks/{taskId}/variables/{variableName}?scope={scope}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task the variable to delete belongs to.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to delete.</entry>
+                  </row>
+                  <row>
+                    <entry>scope</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Scope of variable to delete in. Can be either <literal>local</literal> or <literal>global</literal>. If omitted, <literal>local</literal> is assumed.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the task variable was found and has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name. Status message contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Delete all local variables on a task</title>
+        <para>
+          <programlisting>DELETE runtime/tasks/{taskId}/variables</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task the variable to delete belongs to.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates all local task variables have been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get all identity links for a single task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/identitylinks</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the identity links for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the requested idenity links are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "userId" : "kermit",
+    "groupId" : null,
+    "type" : "candidate",
+    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/users/kermit/candidate"
+  },
+  {
+    "userId" : null,
+    "groupId" : "sales",
+    "type" : "candidate",
+    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/groups/sales/candidate"
+  },
+  
+  ...
+]</programlisting>
+    </para>
+  </section>
+  
+   <section>
+      <title>Get all identitylinks for a task for either groups or users</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/identitylinks/users
+GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
+        </para>
+        <para>
+        Returns only identity links targetting either users or groups. Response body and status-codes are exactly the same as when getting the full list of identity links for a task.
+        </para>
+  </section>
+  <section>
+  <title>Get a single identity link on a task</title>
+      <para>
+        <programlisting>GET runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>taskId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the task .</entry>
+                </row>
+                <row>
+                  <entry>family</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>Either <literal>groups</literal> or <literal>users</literal>, depending on what kind of identity is targetted.</entry>
+                </row>
+                <row>
+                  <entry>identityId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the identity.</entry>
+                </row>
+                <row>
+                  <entry>type</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The type of identity link.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates the task and identity link was found and returned.</entry>
+                </row>
+                 <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested task was not found or the task doesn't have the requested identityLink. The status contains additional information about this error.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "userId" : null,
+  "groupId" : "sales",
+  "type" : "candidate",
+  "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/groups/sales/candidate"
+}</programlisting>
+    </para>
+    </section>
+    
+    
+     <section>
+      <title>Delete a single identity link on a task</title>
+         <para>
+        <programlisting>DELETE runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>taskId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the task.</entry>
+                </row>
+                <row>
+                  <entry>family</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>Either <literal>groups</literal> or <literal>users</literal>, depending on what kind of identity is targetted.</entry>
+                </row>
+                <row>
+                  <entry>identityId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the identity.</entry>
+                </row>
+                <row>
+                  <entry>type</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The type of identity link.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the task and identity link were found and the link has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have the requested identityLink. The status contains additional information about this error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Create a new comment on a task</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}/comments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to create the comment for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{ 
+  "message" : "This is a comment on the task."
+}</programlisting>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "id" : "123",
+  "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+  "message" : "This is a comment on the task.",
+  "author" : "kermit"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the comment was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the comment is missing from the request.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get all comments on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/comments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the comments for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "id" : "123",
+    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+    "message" : "This is a comment on the task.",
+    "author" : "kermit"
+  },
+  { 
+    "id" : "456",
+    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/456",
+    "message" : "This is another comment on the task.",
+    "author" : "gonzo"
+  }
+]</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the comments are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get a single comment on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/comments/{commentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the comment for.</entry>
+                  </row>
+                  <row>
+                    <entry>commentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the comment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "id" : "123",
+  "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+  "message" : "This is a comment on the task.",
+  "author" : "kermit"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task and comment were found and the comment is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the tasks doesn't have a comment with the given ID.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Delete a single comment on a task</title>
+        <para>
+          <programlisting>DELETE runtime/tasks/{taskId}/comments/{commentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to delete the comment for.</entry>
+                  </row>
+                  <row>
+                    <entry>commentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the comment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>204</entry>
+                  <entry>Indicates the task and comment were found and the comment is deleted. Response body is left empty intentionally.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested task was not found or the tasks doesn't have a comment with the given ID.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+  </section>
+    <section>
+      <title>Get all events on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/events</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the events for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "action" : "AddUserLink",
+    "id" : "4",
+    "message" : [ "gonzo", "contributor" ],
+    "taskUrl" : "http://localhost:8182/runtime/tasks/2",
+    "time" : "2013-05-17T11:50:50.000+0000",
+    "url" : "http://localhost:8182/runtime/tasks/2/events/4",
+    "userId" : null
+  },
+  
+  ...
+
+]</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the events are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get a single event on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/events/{eventId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the event for.</entry>
+                  </row>
+                  <row>
+                    <entry>eventId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the event.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "action" : "AddUserLink",
+  "id" : "4",
+  "message" : [ "gonzo", "contributor" ],
+  "taskUrl" : "http://localhost:8182/runtime/tasks/2",
+  "time" : "2013-05-17T11:50:50.000+0000",
+  "url" : "http://localhost:8182/runtime/tasks/2/events/4",
+  "userId" : null
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task and event were found and the event is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the tasks doesn't have an event with the given ID.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  
+    <section>
+      <title>Create a new attachment on a task, containing a link to an external resource</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}/attachments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to create the attachment for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{ 
+  "name":"Simple attachment",
+  "description":"Simple attachment description",
+  "type":"simpleType",
+  "externalUrl":"http://activiti.org"
+}</programlisting>
+Only the attachment name is required to create a new attachment.
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "id":"3",
+  "url":"http://localhost:8182/runtime/tasks/2/attachments/3",
+  "name":"Simple attachment",
+  "description":"Simple attachment description",
+  "type":"simpleType",
+  "taskUrl":"http://localhost:8182/runtime/tasks/2",
+  "processInstanceUrl":null,
+  "externalUrl":"http://activiti.org",
+  "contentUrl":null
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the attachment was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the attachment name is missing from the request.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+  <title>Create a new attachment on a task, with an attached file</title>
+        <para>
+          <programlisting>POST runtime/tasks/{taskId}/attachments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to create the attachment for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable.</para>
+          </listitem>
+          <listitem>
+            <para><literal>description</literal>: Description of the attachment, optional.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of attachment, optional. Supports any arbitrary string or a valid HTTP content-type.</para>
+          </listitem>
+      </itemizedlist>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+      "id":"5",
+      "url":"http://localhost:8182/runtime/tasks/2/attachments/5",
+      "name":"Binary attachment",
+      "description":"Binary attachment description",
+      "type":"binaryType",
+      "taskUrl":"http://localhost:8182/runtime/tasks/2",
+      "processInstanceUrl":null,
+      "externalUrl":null,
+      "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
+   }</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the attachment was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the attachment name is missing from the request or no file was present in the request. The error-message contains additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get all attachments on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/attachments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the attachments for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  {
+    "id":"3",
+    "url":"http://localhost:8182/runtime/tasks/2/attachments/3",
+    "name":"Simple attachment",
+    "description":"Simple attachment description",
+    "type":"simpleType",
+    "taskUrl":"http://localhost:8182/runtime/tasks/2",
+    "processInstanceUrl":null,
+    "externalUrl":"http://activiti.org",
+    "contentUrl":null
+  },
+  {
+    "id":"5",
+    "url":"http://localhost:8182/runtime/tasks/2/attachments/5",
+    "name":"Binary attachment",
+    "description":"Binary attachment description",
+    "type":"binaryType",
+    "taskUrl":"http://localhost:8182/runtime/tasks/2",
+    "processInstanceUrl":null,
+    "externalUrl":null,
+    "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
+  }
+]</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and the attachments are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get a single attachment on a task</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/attachments/{attachmentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get the attachment for.</entry>
+                  </row>
+                  <row>
+                    <entry>attachmentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the attachment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+  {
+    "id":"5",
+    "url":"http://localhost:8182/runtime/tasks/2/attachments/5",
+    "name":"Binary attachment",
+    "description":"Binary attachment description",
+    "type":"binaryType",
+    "taskUrl":"http://localhost:8182/runtime/tasks/2",
+    "processInstanceUrl":null,
+    "externalUrl":null,
+    "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
+  }</programlisting>
+  <itemizedlist>
+    <listitem>
+      <para>
+        <literal>externalUrl - contentUrl:</literal>In case the attachment is a link to an external resource, the <literal>externalUrl</literal> contains the URL to the external content. If the attachment content is present in the
+        Activiti engine, the <literal>contentUrl</literal> will contain an URL where the binary content can be streamed from.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        <literal>type:</literal>Can be any arbitrary value. When a valid formatted media-type (eg. application/xml, text/plain) is included, the binary content HTTP response content-type will be set the the given value.
+      </para>
+    </listitem>
+  </itemizedlist>
+   
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task and attachment were found and the attachment is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the tasks doesn't have a attachment with the given ID.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get the content for an attachment</title>
+        <para>
+          <programlisting>GET runtime/tasks/{taskId}/attachment/{attachmentId}/content</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to get a variable data for.</entry>
+                  </row>
+                  <row>
+                    <entry>attachmentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the attachment, a <literal>404</literal> is returned when the attachment points to an external URL rather than content attached in Activiti.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task and attachment was found and the requested content is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have an attachment with the given id or the attachment doesn't have a binary stream available. Status message provides additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Success response body:</emphasis>
+      The response body contains the binary content. By default, the content-type of the response is set to <literal>application/octet-stream</literal> unless the attachment type contains a valid Content-type. 
+    </para>
+  </section>
+  <section>
+      <title>Delete a single attachment on a task</title>
+        <para>
+          <programlisting>DELETE runtime/tasks/{taskId}/attachments/{attachmentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>taskId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the task to delete the attachment for.</entry>
+                  </row>
+                  <row>
+                    <entry>attachmentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the attachment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>204</entry>
+                  <entry>Indicates the task and attachment were found and the attachment is deleted. Response body is left empty intentionally.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested task was not found or the tasks doesn't have a attachment with the given ID.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+  </section>
+</section>
+<section>
+    <title>Database tables</title>
+     <section>
+      <title>List of tables</title>
+        <para>
+          <programlisting>GET management/tables</programlisting>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the request was successful.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+   {
+      "name":"ACT_RU_VARIABLE",
+      "url":"http://localhost:8182/management/tables/ACT_RU_VARIABLE",
+      "count":4528
+   },
+   {
+      "name":"ACT_RU_EVENT_SUBSCR",
+      "url":"http://localhost:8182/management/tables/ACT_RU_EVENT_SUBSCR",
+      "count":3
+   },
+   
+   ...
+   
+]</programlisting>
+    </para>
+    </section>
+    
+    <section>
+      <title>Get a single table</title>
+        <para>
+          <programlisting>GET management/tables/{tableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>tableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the table to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+      "name":"ACT_RE_PROCDEF",
+      "url":"http://localhost:8182/management/tables/ACT_RE_PROCDEF",
+      "count":60
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the table exists and the table count is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested table does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+    <section>
+      <title>Get column info for a single table</title>
+        <para>
+          <programlisting>GET management/tables/{tableName}/columns</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>tableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the table to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "tableName":"ACT_RU_VARIABLE",
+   "columnNames":[
+      "ID_",
+      "REV_",
+      "TYPE_",
+      "NAME_",
+      ...
+   ],
+   "columnTypes":[
+      "VARCHAR",
+      "INTEGER",
+      "VARCHAR",
+      "VARCHAR",
+      ...
+   ]
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the table exists and the table column info is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested table does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Get row data for a single table</title>
+        <para>
+          <programlisting>GET management/tables/{tableName}/data</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>tableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the table to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+            <table>
+              <title>URL query parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>start</entry>
+                    <entry>No</entry>
+                    <entry>Integer</entry>
+                    <entry>Index of the first row to fetch. Defaults to 0.</entry>
+                  </row>
+                  <row>
+                    <entry>size</entry>
+                    <entry>No</entry>
+                    <entry>Integer</entry>
+                    <entry>Number of rows to fetch, starting from <literal>start</literal>. Defaults to 10.</entry>
+                  </row>
+                  <row>
+                    <entry>orderAscendingColumn</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Name of the column to sort the resulting rows on, ascending.</entry>
+                  </row>
+                  <row>
+                    <entry>orderDescendingColumn</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Name of the column to sort the resulting rows on, descending.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "total":3,
+   "start":0,
+   "sort":null,
+   "order":null,
+   "size":3,
+   
+   "data":[
+      {
+         "TASK_ID_":"2",
+         "NAME_":"var1",
+         "REV_":1,
+         "TEXT_":"123",
+         "LONG_":123,
+         "ID_":"3",
+         "TYPE_":"integer"
+      },
+      ...
+   ]
+ 
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the table exists and the table row data is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested table does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+    
+</section>
+
+<section>
+    <title>Jobs</title>
+    <section>
+      <title>Get a single job</title>
+        <para>
+          <programlisting>GET management/jobs/{jobId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>jobId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the job to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"8",
+   "url":"http://localhost:8182/management/jobs/8",
+   "processInstanceId":"5",
+   "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+   "processDefinitionId":"timerProcess:1:4",
+   "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/timerProcess%3A1%3A4",
+   "executionId":"7",
+   "executionUrl":"http://localhost:8182/runtime/executions/7",
+   "retries":3,
+   "exceptionMessage":null,
+   "dueDate":"2013-06-04T22:05:05.474+0000"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the job exists and is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Delete a job</title>
+        <para>
+          <programlisting>DELETE management/jobs/{jobId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>jobId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the job to delete.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the job was found and has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Execute a single job</title>
+        <para>
+          <programlisting>PUT management/jobs/{jobId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "execute"
+}</programlisting>
+        <table>
+              <title>JSON Body parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Required</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>action</entry>
+                    <entry>Action to perform. Only <literal>execute</literal> is supported.</entry>
+                    <entry>Yes</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the job was executed. Response-body is intentionally empty.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>500</entry>
+                    <entry>Indicates the an exception occured while executing the job. The status-description contains additional detail about the error. The full error-stacktrace can be fetched later on if needed.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
  </section>
+ 
+ <section>
+      <title>Get the exception stacktrace for a job</title>
+        <para>
+          <programlisting>GET management/jobs/{jobId}/exception-stracktrace</programlisting>
+        </para>
+        <para>
+        <table>
+              <title>URL parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Required</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>jobId</entry>
+                    <entry>Id of the job to get the stacktrace for.</entry>
+                    <entry>Yes</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the requested job was not found and the stacktrace has been returned. The response contains the raw stacktrace and always has a Content-type of <literal>text/plain</literal>.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job was not found or the job doesn't have an exception stacktrace. Status-description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+ </section>
+ 
+ <section>
+      <title>Get a list of jobs</title>
+        <para>
+          <programlisting>GET management/jobs</programlisting>
+        </para>
+        <para>
+        <table>
+              <title>URL query parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Type</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>jobId</entry>
+                    <entry>Only return job with the given id</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Only return jobs part of a process with the given id</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>executionId</entry>
+                    <entry>Only return jobs part of an execution with the given id</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionId</entry>
+                    <entry>Only return jobs with the given process definition id</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>withRetriesLeft</entry>
+                    <entry>If <literal>true</literal>, only return jobs with retries left. If false, this parameter is ignored.</entry>
+                    <entry>Boolean</entry>
+                  </row>
+                  <row>
+                    <entry>executable</entry>
+                    <entry>If <literal>true</literal>, only return jobs which are executable. If false, this parameter is ignored.</entry>
+                    <entry>Boolean</entry>
+                  </row>
+                  <row>
+                    <entry>timersOnly</entry>
+                    <entry>If <literal>true</literal>, only return jobs which are timers. If false, this parameter is ignored. Cannot be used toghether with <literal>'messagesOnly'</literal>.</entry>
+                    <entry>Boolean</entry>
+                  </row>
+                  <row>
+                    <entry>messagesOnly</entry>
+                    <entry>If <literal>true</literal>, only return jobs which are messages. If false, this parameter is ignored. Cannot be used toghether with <literal>'timersOnly'</literal></entry>
+                    <entry>Boolean</entry>
+                  </row>
+                  <row>
+                    <entry>withException</entry>
+                    <entry>If <literal>true</literal>, only return jobs for which an exception occured while executing it. If false, this parameter is ignored.</entry>
+                    <entry>Boolean</entry>
+                  </row>
+                  <row>
+                    <entry>dueBefore</entry>
+                    <entry>Only return jobs which are due to be executed before the given date. Jobs without duedate are never returned using this parameter.</entry>
+                    <entry>Date</entry>
+                  </row>
+                  <row>
+                    <entry>dueAfter</entry>
+                    <entry>Only return jobs which are due to be executed after the given date. Jobs without duedate are never returned using this parameter.</entry>
+                    <entry>Date</entry>
+                  </row>
+                  <row>
+                    <entry>exceptionMessage</entry>
+                    <entry>Only return jobs with the given exception message</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>dueDate</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal> or <literal>retries</literal>.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "data":[
+      {
+         "id":"13",
+         "url":"http://localhost:8182/management/jobs/13",
+         "processInstanceId":"5",
+         "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+         "processDefinitionId":"timerProcess:1:4",
+         "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/timerProcess%3A1%3A4",
+         "executionId":"12",
+         "executionUrl":"http://localhost:8182/runtime/executions/12",
+         "retries":0,
+         "exceptionMessage":"Can't find scripting engine for 'unexistinglanguage'",
+         "dueDate":"2013-06-07T10:00:24.653+0000"
+      },
+      
+      ...
+   ],
+   "total":2,
+   "start":0,
+   "sort":"id",
+   "order":"asc",
+   "size":2
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the requested jobs were returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates an illegal value has been used in a url query parameter or the both <literal>'messagesOnly'</literal> and <literal>'timersOnly'</literal> are used as parameters. Status description contains additional details about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+ </section>
+   
+    
+</section>
 
 <!-- Legacy -->
   <section>
@@ -3024,7 +5699,7 @@
           <listitem>
             <para>
               <emphasis role="bold">Request:</emphasis>
-              <literal>POST /user</literal>
+              <literal>PUT /user</literal>
               <programlisting>
 {
   "id": "kermit",
@@ -3264,7 +5939,7 @@
           <listitem>
             <para>
               <emphasis role="bold">Request:</emphasis>
-              <literal>POST /group</literal>
+              <literal>PUT /group</literal>
               <programlisting>
 {
   "id": "admin",

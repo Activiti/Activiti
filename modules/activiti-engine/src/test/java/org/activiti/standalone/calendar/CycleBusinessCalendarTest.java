@@ -13,13 +13,12 @@
 
 package org.activiti.standalone.calendar;
 
-import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
-import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
-import org.activiti.engine.impl.test.PvmTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
+import org.activiti.engine.impl.test.PvmTestCase;
+import org.activiti.engine.impl.util.ClockUtil;
 
 public class CycleBusinessCalendarTest extends PvmTestCase {
 

@@ -47,4 +47,9 @@ public interface Execution {
   /** Id of the root of the execution tree representing the process instance.
    * It is the same as {@link #getId()} if this execution is the process instance. */ 
   String getProcessInstanceId();
+  
+  /**
+   * Gets the id of the parent of this execution. If null, the execution represents a process-instance.
+   */
+  String getParentId();
 }

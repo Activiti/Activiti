@@ -102,6 +102,15 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(sequentialProcessInstanceIds.get(0)).list().size());
   }
   
+  public void testQueryByParentId() {
+    // Concurrent processes fork into 2 child-executions. Should be found when parentId is used
+    for (String processInstanceId : concurrentProcessInstanceIds) {
+      ExecutionQuery query =  runtimeService.createExecutionQuery().parentId(processInstanceId); 
+      assertEquals(2, query.list().size());
+      assertEquals(2, query.count());
+    }
+  }
+  
   public void testQueryByInvalidProcessInstanceId() {
     ExecutionQuery query = runtimeService.createExecutionQuery().processInstanceId("invalid");
     assertNull(query.singleResult());
@@ -177,6 +186,12 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("BUSINESS-KEY-1").list().size());
     assertEquals(1, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("BUSINESS-KEY-2").list().size());
     assertEquals(0, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("NON-EXISTING").list().size());
+  }  
+  
+  public void testQueryByBusinessKeyIncludingChildExecutions() {
+    assertEquals(3, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("BUSINESS-KEY-1", true).list().size());
+    assertEquals(3, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("BUSINESS-KEY-2", true).list().size());
+    assertEquals(0, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("NON-EXISTING", true).list().size());
   }  
   
   @Deployment(resources={
@@ -1240,6 +1255,11 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     
     assertEquals(executionCount, runtimeService.createNativeExecutionQuery().sql("SELECT * FROM " + managementService.getTableName(Execution.class)).list().size());
     assertEquals(executionCount, runtimeService.createNativeExecutionQuery().sql("SELECT count(*) FROM " + managementService.getTableName(Execution.class)).count());
+  }
+  
+  public void testNativeQueryPaging() {
+    assertEquals(5, runtimeService.createNativeExecutionQuery().sql("SELECT * FROM " + managementService.getTableName(Execution.class)).listPage(1, 5).size());
+    assertEquals(1, runtimeService.createNativeExecutionQuery().sql("SELECT * FROM " + managementService.getTableName(Execution.class)).listPage(2, 1).size());
   }
 
   @Deployment(resources={"org/activiti/engine/test/api/runtime/concurrentExecution.bpmn20.xml"})

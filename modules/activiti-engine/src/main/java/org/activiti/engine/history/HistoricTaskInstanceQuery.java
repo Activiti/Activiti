@@ -32,6 +32,9 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   /** Only select historic task instances for the given process instance. */
   HistoricTaskInstanceQuery processInstanceId(String processInstanceId);
   
+  /** Only select historic process instances with the given business key */
+  HistoricTaskInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey);
+  
   /** Only select historic task instances for the given execution. */
   HistoricTaskInstanceQuery executionId(String executionId);
   
@@ -114,6 +117,10 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    */
   HistoricTaskInstanceQuery taskOwnerLike(String taskOwnerLike);
   
+  /** Only select historic task for which there exist an {@link HistoricIdentityLink} with the given user, including tasks
+   *  which have been assigned to the given user (assignee) or owned by the given user (owner). */
+  HistoricTaskInstanceQuery taskInvolvedUser(String involvedUser);
+  
   /** 
    * Only select historic task instances with the given priority.
    */
@@ -174,6 +181,11 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    * Only select select historic task instances which have a due date after the given date.
    */
   HistoricTaskInstanceQuery taskDueAfter(Date dueDate);
+  
+  /**
+   * Only select select historic task instances which are created on the given date
+   */
+  HistoricTaskInstanceQuery taskCreatedOn(Date startDate);
   
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskId();

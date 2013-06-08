@@ -24,6 +24,9 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.apache.ibatis.exceptions.PersistenceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -33,6 +36,9 @@ import org.activiti.engine.test.Deployment;
  */
 public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
 
+  private static Logger log = LoggerFactory.getLogger(ConcurrentEngineUsageTest.class);
+  private static final int MAX_RETRIES = 5;
+  
   @Deployment
   public void testConcurrentUsage() throws Exception {
     
@@ -65,6 +71,53 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
     }
   }
   
+  protected void retryStartProcess(String runningUser) {
+    int retries = MAX_RETRIES;
+    int timeout = 200;
+    boolean success = false;
+    while(retries > 0 && !success) {
+      try {
+        runtimeService.startProcessInstanceByKey("concurrentProcess", Collections.singletonMap("assignee", (Object)runningUser));
+        success = true;
+      } catch(PersistenceException pe) {
+        retries = retries - 1;
+        log.debug("Retrying process start - " + (MAX_RETRIES - retries));
+        try {
+          Thread.sleep(timeout);
+        } catch (InterruptedException ignore) {
+        }
+        timeout = timeout + 200;
+      }
+    }
+    if(success == false) {
+      log.debug("Retrying process start FAILED " + MAX_RETRIES + " times");
+    }
+  }
+  
+  protected void retryFinishTask(String taskId) {
+    int retries = MAX_RETRIES;
+    int timeout = 200;
+    boolean success = false;
+    while(retries > 0 && !success) {
+      try {
+        taskService.complete(taskId);
+        success = true;
+      } catch(PersistenceException pe) {
+        retries = retries - 1;
+        log.debug("Retrying task completion - " + (MAX_RETRIES - retries));
+        try {
+          Thread.sleep(timeout);
+        } catch (InterruptedException ignore) {
+        }
+        timeout = timeout + 200;
+      }
+    }
+    
+    if(success == false) {
+      log.debug("Retrying task completion FAILED " + MAX_RETRIES + " times");
+    }
+  }
+  
   
   private class ConcurrentProcessRunnerRunnable implements Runnable {
     private String drivingUser;
@@ -86,7 +139,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
       {
         if(numberOfProcesses > 0 && !finishTask) {
           // Start a new process
-          runtimeService.startProcessInstanceByKey("concurrentProcess", Collections.singletonMap("assignee", (Object)drivingUser));
+          retryStartProcess(drivingUser);
           finishTask = true;
           
           if(numberOfProcesses == 0) {
@@ -98,7 +151,9 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
           // Finish a task
           List<Task> taskToComplete = taskService.createTaskQuery().taskAssignee(drivingUser).listPage(0, 1);
           tasksAvailable = taskToComplete.size() > 0;
-          taskService.complete(taskToComplete.get(0).getId());
+          if(tasksAvailable) {
+            retryFinishTask(taskToComplete.get(0).getId());
+          }
           finishTask = false;
         }
       }

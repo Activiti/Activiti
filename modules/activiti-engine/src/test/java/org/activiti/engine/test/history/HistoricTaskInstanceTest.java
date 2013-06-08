@@ -17,12 +17,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -109,16 +113,23 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testHistoricTaskInstanceQuery() throws Exception {
+    Calendar start = Calendar.getInstance();
+    start.set(Calendar.MILLISECOND, 0);
+    ClockUtil.setCurrentTime(start.getTime());
+    
     // First instance is finished
-    ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
+    ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest", "myBusinessKey");
+    ClockUtil.setCurrentTime(null);
     
     // Set priority to non-default value
     Task task = taskService.createTaskQuery().processInstanceId(finishedInstance.getId()).singleResult();
     task.setPriority(1234);
+    task.setOwner("fozzie");
     Date dueDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("01/02/2003 04:05:06");
     task.setDueDate(dueDate);
     
     taskService.saveTask(task);
+    taskService.addUserIdentityLink(task.getId(), "gonzo", "someType");
     
     // Complete the task
     String taskId = task.getId();
@@ -152,6 +163,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     // Process instance id
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(finishedInstance.getId()).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().processInstanceId("unexistingid").count());
+    
+    // Process instance business key
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKey("myBusinessKey").count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKey("unexistingKey").count());
     
     // Process definition id
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().processDefinitionId(finishedInstance.getProcessDefinitionId()).count());
@@ -212,6 +227,20 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDueAfter(anHourAgo.getTime()).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDueAfter(anHourLater.getTime()).count());
     
+    // Start date
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskCreatedOn(start.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskCreatedOn(anHourAgo.getTime()).count());
+    
+    // Filter based on identity-links
+    // Assignee is involved
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUser("kermit").count());
+    
+    // Owner is involved
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUser("fozzie").count());
+    
+    // Manually involved person
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskInvolvedUser("gonzo").count());
+
     // Finished and Unfinished - Add anther other instance that has a running task (unfinished)
     runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest");
     
@@ -272,6 +301,61 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskPriority().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskAssignee().desc().count());    
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().orderByTaskId().desc().count());    
+  }
+  
+  @Deployment
+  public void testHistoricIdentityLinksOnTask() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historicIdentityLinks");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    
+    // Set additional identity-link not coming from process
+    taskService.addUserIdentityLink(task.getId(), "gonzo", "customUseridentityLink");
+    assertEquals(4, taskService.getIdentityLinksForTask(task.getId()).size());
+    
+    // Check historic identity-links when task is still active
+    List<HistoricIdentityLink> historicIdentityLinks = historyService.getHistoricIdentityLinksForTask(task.getId()); 
+    assertEquals(4, historicIdentityLinks.size());
+    
+    // Validate all links
+    boolean foundCandidateUser= false, foundCandidateGroup = false, foundAssignee = false, foundCustom = false;
+    for(HistoricIdentityLink link : historicIdentityLinks) {
+      assertEquals(task.getId(), link.getTaskId());
+      if(link.getGroupId() != null) {
+        assertEquals("sales", link.getGroupId());
+        foundCandidateGroup = true;
+      } else {
+        if(link.getType().equals("candidate")) {
+          assertEquals("fozzie", link.getUserId());
+          foundCandidateUser = true;
+        } else if(link.getType().equals("assignee")){
+          assertEquals("kermit", link.getUserId());
+          foundAssignee = true;
+        } else if(link.getType().equals("customUseridentityLink")){
+          assertEquals("gonzo", link.getUserId());
+          foundCustom = true;
+        }
+      }
+    }
+    
+    assertTrue(foundAssignee);
+    assertTrue(foundCandidateGroup);
+    assertTrue(foundCandidateUser);
+    assertTrue(foundCustom);
+    
+    // Now complete the task and check if links are still there
+    taskService.complete(task.getId());
+    assertEquals(4, historyService.getHistoricIdentityLinksForTask(task.getId()).size());
+    
+    // After deleting historic task, exception should be thrown when trying to get links
+    historyService.deleteHistoricTaskInstance(task.getId());
+    
+    try {
+      historyService.getHistoricIdentityLinksForTask(task.getId()).size();
+      fail("Exception expected");
+    } catch(ActivitiObjectNotFoundException aonfe) {
+      assertEquals(HistoricTaskInstance.class, aonfe.getObjectClass());
+    }
   }
   
   public void testInvalidSorting() {

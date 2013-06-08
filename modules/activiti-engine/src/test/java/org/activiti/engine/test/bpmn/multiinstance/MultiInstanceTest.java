@@ -24,13 +24,7 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -1059,6 +1053,28 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedMultiInstanceTasks.bpmn20.xml"})
+  public void testNestedMultiInstanceTasks() {
+    List<String> processes = Arrays.asList("process A", "process B");
+    List<String> assignees = Arrays.asList("kermit", "gonzo");
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("subProcesses", processes);
+    variableMap.put("assignees", assignees);
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("miNestedMultiInstanceTasks", variableMap);
+
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(processes.size() * assignees.size(), tasks.size());
+
+    for (Task t : tasks) {
+      taskService.complete(t.getId());
+    }
+
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processDefinitionKey("miNestedMultiInstanceTasks").list();
+    assertEquals(0, processInstances.size());
+    assertProcessEnded(processInstance.getId());
   }
   
   

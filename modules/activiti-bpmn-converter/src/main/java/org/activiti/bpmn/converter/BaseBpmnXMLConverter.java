@@ -47,6 +47,8 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.ExtensionAttribute;
+import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.FormValue;
@@ -201,6 +203,18 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     
     writeExtensionChildElements(baseElement, xtw);
     didWriteExtensionStartElement = writeListeners(baseElement, xtw);
+    
+    if (baseElement.getExtensionElements().size() > 0) {
+      if (didWriteExtensionStartElement == false) {
+        xtw.writeStartElement(ELEMENT_EXTENSIONS);
+        didWriteExtensionStartElement = true;
+      }
+      Map<String, String> namespaceMap = new HashMap<String, String>();
+      for (ExtensionElement extensionElement : baseElement.getExtensionElements().values()) {
+        writeExtensionElement(extensionElement, namespaceMap, xtw);
+      }
+    }
+    
     if (didWriteExtensionStartElement) {
       xtw.writeEndElement();
     }
@@ -234,21 +248,69 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       childParsers.putAll(childElementParsers);
     }
     
+    boolean inExtensionElements = false;
     boolean readyWithChildElements = false;
     while (readyWithChildElements == false && xtr.hasNext()) {
       xtr.next();
       if (xtr.isStartElement()) {
-        if (childParsers.containsKey(xtr.getLocalName())) {
+        if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
+          inExtensionElements = true;
+        } else if (childParsers.containsKey(xtr.getLocalName())) {
           childParsers.get(xtr.getLocalName()).parseChildElement(xtr, parentElement, model);
+        } else if (inExtensionElements) {
+          ExtensionElement extensionElement = parseExtensionElement(xtr);
+          parentElement.addExtensionElement(extensionElement);
         }
 
-      } else if (xtr.isEndElement() && elementName.equalsIgnoreCase(xtr.getLocalName())) {
-        readyWithChildElements = true;
+      } else if (xtr.isEndElement()) {
+        if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
+          inExtensionElements = false;
+        } else if (elementName.equalsIgnoreCase(xtr.getLocalName())) {
+          readyWithChildElements = true;
+        }
       }
     }
   }
   
-  private boolean parseAsync(XMLStreamReader xtr) {
+  protected ExtensionElement parseExtensionElement(XMLStreamReader xtr) throws Exception {
+    ExtensionElement extensionElement = new ExtensionElement();
+    extensionElement.setName(xtr.getLocalName());
+    if (StringUtils.isNotEmpty(xtr.getNamespaceURI())) {
+      extensionElement.setNamespace(xtr.getNamespaceURI());
+    }
+    if (StringUtils.isNotEmpty(xtr.getPrefix())) {
+      extensionElement.setNamespacePrefix(xtr.getPrefix());
+    }
+    
+    for (int i = 0; i < xtr.getAttributeCount(); i++) {
+      ExtensionAttribute extensionAttribute = new ExtensionAttribute();
+      extensionAttribute.setName(xtr.getAttributeLocalName(i));
+      extensionAttribute.setValue(xtr.getAttributeValue(i));
+      extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
+      if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
+        extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
+      }
+      extensionElement.addAttribute(extensionAttribute);
+    }
+    
+    boolean readyWithExtensionElement = false;
+    while (readyWithExtensionElement == false && xtr.hasNext()) {
+      xtr.next();
+      if (xtr.isCharacters()) {
+        if (StringUtils.isNotEmpty(xtr.getText().trim())) {
+          extensionElement.setElementText(xtr.getText().trim());
+        }
+      } else if (xtr.isStartElement()) {
+        ExtensionElement childExtensionElement = parseExtensionElement(xtr);
+        extensionElement.addChildElement(childExtensionElement);
+      } else if (xtr.isEndElement() && extensionElement.getName().equalsIgnoreCase(xtr.getLocalName())) {
+        readyWithExtensionElement = true;
+      }
+    }
+    return extensionElement;
+  }
+  
+  protected boolean parseAsync(XMLStreamReader xtr) {
     boolean async = false;
     String asyncString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS);
     if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(asyncString)) {
@@ -257,7 +319,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     return async;
   }
   
-  private boolean parseNotExclusive(XMLStreamReader xtr) {
+  protected boolean parseNotExclusive(XMLStreamReader xtr) {
     boolean notExclusive = false;
     String exclusiveString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE);
     if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(exclusiveString)) {
@@ -266,7 +328,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     return notExclusive;
   }
   
-  private boolean parseForCompensation(XMLStreamReader xtr) {
+  protected boolean parseForCompensation(XMLStreamReader xtr) {
     boolean isForCompensation = false;
     String compensationString = xtr.getAttributeValue(null, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION);
     if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(compensationString)) {
@@ -288,6 +350,59 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   }
   
   // To XML converter convenience methods
+  
+  protected void writeExtensionElement(ExtensionElement extensionElement, Map<String, String> namespaceMap, XMLStreamWriter xtw) throws Exception {
+    if (StringUtils.isNotEmpty(extensionElement.getName())) {
+      if (StringUtils.isNotEmpty(extensionElement.getNamespace())) {
+        if (StringUtils.isNotEmpty(extensionElement.getNamespacePrefix())) {
+          xtw.writeStartElement(extensionElement.getNamespacePrefix(), extensionElement.getName(), extensionElement.getNamespace());
+          
+          if (namespaceMap.containsKey(extensionElement.getNamespacePrefix()) == false ||
+              namespaceMap.get(extensionElement.getNamespacePrefix()).equals(extensionElement.getNamespace()) == false) {
+            
+            xtw.writeNamespace(extensionElement.getNamespacePrefix(), extensionElement.getNamespace());
+            namespaceMap.put(extensionElement.getNamespacePrefix(), extensionElement.getNamespace());
+          }
+        } else {
+          xtw.writeStartElement(extensionElement.getNamespace(), extensionElement.getName());
+        }
+      } else {
+        xtw.writeStartElement(extensionElement.getName());
+      }
+      
+      for (ExtensionAttribute attribute : extensionElement.getAttributes().values()) {
+        if (StringUtils.isNotEmpty(attribute.getName()) && attribute.getValue() != null) {
+          if (StringUtils.isNotEmpty(attribute.getNamespace())) {
+            if (StringUtils.isNotEmpty(attribute.getNamespacePrefix())) {
+              
+              if (namespaceMap.containsKey(attribute.getNamespacePrefix()) == false ||
+                  namespaceMap.get(attribute.getNamespacePrefix()).equals(attribute.getNamespace()) == false) {
+                
+                xtw.writeNamespace(attribute.getNamespacePrefix(), attribute.getNamespace());
+                namespaceMap.put(attribute.getNamespacePrefix(), attribute.getNamespace());
+              }
+              
+              xtw.writeAttribute(attribute.getNamespacePrefix(), attribute.getNamespace(), attribute.getName(), attribute.getValue());
+            } else {
+              xtw.writeAttribute(attribute.getNamespace(), attribute.getName(), attribute.getValue());
+            }
+          } else {
+            xtw.writeAttribute(attribute.getName(), attribute.getValue());
+          }
+        }
+      }
+      
+      if (extensionElement.getElementText() != null) {
+        xtw.writeCharacters(extensionElement.getElementText());
+      } else {
+        for (ExtensionElement childElement : extensionElement.getChildElements().values()) {
+          writeExtensionElement(childElement, namespaceMap, xtw);
+        }
+      }
+      
+      xtw.writeEndElement();
+    }
+  }
   
   protected String convertToDelimitedString(List<String> stringList) {
     return BpmnXMLUtil.convertToDelimitedString(stringList);

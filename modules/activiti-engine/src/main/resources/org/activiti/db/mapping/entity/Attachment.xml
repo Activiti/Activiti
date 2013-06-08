@@ -40,7 +40,7 @@
   <update id="updateAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
     update ${prefix}ACT_HI_ATTACHMENT 
     set
-      REV_ = #{nextRevision, jdbcType=INTEGER},
+      REV_ = #{revisionNext, jdbcType=INTEGER},
       NAME_ = #{name, jdbcType=VARCHAR},
       DESCRIPTION_ = #{description, jdbcType=TIMESTAMP}
     where ID_ = #{id}

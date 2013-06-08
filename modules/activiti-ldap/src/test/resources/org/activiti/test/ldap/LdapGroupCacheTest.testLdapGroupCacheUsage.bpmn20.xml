@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="ldap">
+
+	<process id="testLdapGroupCache">
+
+		<startEvent id="theStart" />
+
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask1" />
+
+		<userTask id="theTask1">
+			<potentialOwner>
+				<resourceAssignmentExpression>
+					<formalExpression>user(kermit), group(Sales)</formalExpression>
+				</resourceAssignmentExpression>
+			</potentialOwner>
+		</userTask>
+
+		<sequenceFlow id="flow2" sourceRef="theTask1" targetRef="theTask2" />
+
+		<userTask id="theTask2">
+			<potentialOwner>
+				<resourceAssignmentExpression>
+					<formalExpression>user(pepe), group(Sales)</formalExpression>
+				</resourceAssignmentExpression>
+			</potentialOwner>
+		</userTask>
+
+		<sequenceFlow id="flow3" sourceRef="theTask2" targetRef="theTask3" />
+
+		<userTask id="theTask3">
+			<potentialOwner>
+				<resourceAssignmentExpression>
+					<formalExpression>user(kermit), group(Sales)</formalExpression>
+				</resourceAssignmentExpression>
+			</potentialOwner>
+		</userTask>
+		
+		<sequenceFlow id="flow4" sourceRef="theTask3" targetRef="theTask4" />
+
+        <userTask id="theTask4">
+            <potentialOwner>
+                <resourceAssignmentExpression>
+                    <formalExpression>user(fozzie), group(Sales)</formalExpression>
+                </resourceAssignmentExpression>
+            </potentialOwner>
+        </userTask>
+
+		<sequenceFlow id="flow5" sourceRef="theTask3" targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

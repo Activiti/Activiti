@@ -13,10 +13,6 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
@@ -28,13 +24,17 @@ import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * @author Tom Baeyens
  * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class UserEntityManager extends AbstractManager {
+public class UserEntityManager extends AbstractManager implements UserIdentityManager {
 
   public User createNewUser(String userId) {
     return new UserEntity(userId);
@@ -118,6 +118,14 @@ public class UserEntityManager extends AbstractManager {
     return  (List<User>) getDbSqlSession().selectOne("selectUserByQueryCriteria", parameters);
     
   }
-  
+
+  @SuppressWarnings("unchecked")
+  public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectUserByNativeQuery", parameterMap, firstResult, maxResults);
+  }
+
+  public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectUserCountByNativeQuery", parameterMap);
+  }
   
 }

@@ -47,9 +47,9 @@ public class DeploymentCollectionResource extends SecuredResource {
   
   protected static final String DEPRECATED_API_DEPLOYMENT_SEGMENT = "deployment";
   
-  Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
+  private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
   
-  public DeploymentCollectionResource() {
+  static {
     allowedSortProperties.put("id", DeploymentQueryProperty.DEPLOYMENT_ID);
     allowedSortProperties.put("name", DeploymentQueryProperty.DEPLOYMENT_NAME);
     allowedSortProperties.put("deployTime", DeploymentQueryProperty.DEPLOY_TIME);

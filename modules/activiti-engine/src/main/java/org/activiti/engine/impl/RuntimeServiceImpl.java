@@ -29,6 +29,7 @@ import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
+import org.activiti.engine.impl.cmd.HasExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.MessageEventReceivedCmd;
 import org.activiti.engine.impl.cmd.RemoveExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
@@ -118,8 +119,18 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, false));
   }
   
+  @Override
+  public boolean hasVariable(String executionId, String variableName) {
+    return commandExecutor.execute(new HasExecutionVariableCmd(executionId, variableName, false));
+  }
+  
   public Object getVariableLocal(String executionId, String variableName) {
     return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, true));
+  }
+  
+  @Override
+  public boolean hasVariableLocal(String executionId, String variableName) {
+    return commandExecutor.execute(new HasExecutionVariableCmd(executionId, variableName, true));
   }
   
   public void setVariable(String executionId, String variableName, Object value) {

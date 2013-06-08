@@ -19,7 +19,9 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 
-
+/**
+ * @author Joram Barrez
+ */
 public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
 
   
@@ -56,4 +58,39 @@ public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
     }
     return processDefinitionNames;
   }
+  
+  @org.activiti.engine.test.Deployment
+  public void testSetProcessDefinitionCategory() {
+    
+    // Verify category and see if we can start a process instance
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    assertEquals("testCategory", processDefinition.getCategory());
+    
+    processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionCategory("testCategory").singleResult();
+    assertNotNull(processDefinition);
+    
+    long count = runtimeService.createProcessInstanceQuery().count();
+    runtimeService.startProcessInstanceById(processDefinition.getId());
+    long newCount = runtimeService.createProcessInstanceQuery().count();
+    assertTrue(newCount == count + 1);
+    
+    // Update category
+    repositoryService.setProcessDefinitionCategory(processDefinition.getId(), "UpdatedCategory");
+    
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().processDefinitionCategory("testCategory").count());
+    processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionCategory("UpdatedCategory").singleResult();
+    assertNotNull(processDefinition);
+    
+    // Start a process instance
+    runtimeService.startProcessInstanceById(processDefinition.getId());
+    newCount = runtimeService.createProcessInstanceQuery().count();
+    assertTrue(newCount == count + 2);
+    
+    // Set category to null
+    repositoryService.setProcessDefinitionCategory(processDefinition.getId(), null);
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().processDefinitionCategory("testCategory").count());
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().processDefinitionCategory("UpdatedCategory").count());
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionCategoryNotEquals("UpdatedCategory").count());
+  }
+  
 }

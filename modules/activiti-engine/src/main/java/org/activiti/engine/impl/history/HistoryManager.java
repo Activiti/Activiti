@@ -31,9 +31,11 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
@@ -611,6 +613,25 @@ public class HistoryManager extends AbstractManager {
         HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(processInstance, propertyId, propertyValue, taskId);
         getDbSqlSession().insert(historicFormProperty);
       }
+    }
+  }
+  
+  // Identity link related history
+  /**
+   * Record the creation of a new {@link IdentityLink}, if audit history is enabled.
+   */
+  public void recordIdentityLinkCreated(IdentityLinkEntity identityLink) {
+    // It makes no sense storing historic counterpart for an identity-link that is related
+    // to a process-definition only as this is never kept in history
+    if (isHistoryLevelAtLeast(HistoryLevel.AUDIT) && (identityLink.getProcessInstanceId() != null || identityLink.getTaskId() != null)) {
+      HistoricIdentityLinkEntity historicIdentityLinkEntity = new HistoricIdentityLinkEntity(identityLink);
+      getDbSqlSession().insert(historicIdentityLinkEntity);
+    }
+  }
+
+  public void deleteHistoricIdentityLink(String id) {
+    if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
+      getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLink(id);
     }
   }
 }

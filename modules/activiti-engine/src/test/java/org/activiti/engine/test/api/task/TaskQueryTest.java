@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -247,6 +248,33 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, query.count());
     assertEquals(0, query.list().size());
     assertNull(query.singleResult());
+  }
+  
+  public void testQueryByInvolvedUser() {
+    try {
+      Task adhocTask = taskService.newTask();
+      adhocTask.setAssignee("kermit");
+      adhocTask.setOwner("fozzie");
+      taskService.saveTask(adhocTask);
+      taskService.addUserIdentityLink(adhocTask.getId(), "gonzo", "customType");
+      
+      assertEquals(3, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
+      
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("gonzo").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("kermit").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("fozzie").count());
+      
+    } finally {
+      List<Task> allTasks = taskService.createTaskQuery().list();
+      for(Task task : allTasks) {
+        if(task.getExecutionId() == null) {
+          taskService.deleteTask(task.getId());
+          if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            historyService.deleteHistoricTaskInstance(task.getId());
+          }
+        }
+      }
+    }
   }
   
   public void testQueryByNullAssignee() {
@@ -888,6 +916,13 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     
     assertEquals(6, taskService.createTaskQuery().orderByTaskId().taskName("testTask").asc().list().size());
     assertEquals(6, taskService.createTaskQuery().orderByTaskId().taskName("testTask").desc().list().size());
+  }
+  
+  public void testNativeQueryPaging() {
+    assertEquals("ACT_RU_TASK", managementService.getTableName(Task.class));
+    assertEquals("ACT_RU_TASK", managementService.getTableName(TaskEntity.class));
+    assertEquals(5, taskService.createNativeTaskQuery().sql("SELECT * FROM " + managementService.getTableName(Task.class)).listPage(0, 5).size());
+    assertEquals(2, taskService.createNativeTaskQuery().sql("SELECT * FROM " + managementService.getTableName(Task.class)).listPage(10, 12).size());
   }
   
   public void testNativeQuery() {

@@ -3,7 +3,6 @@ package org.activiti.examples.bpmn.shell;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.junit.Assume;
 import org.junit.Test;
 
 public class ShellTaskTest extends PluggableActivitiTestCase {

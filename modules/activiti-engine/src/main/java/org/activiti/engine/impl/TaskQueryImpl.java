@@ -31,6 +31,7 @@ import org.activiti.engine.task.TaskQuery;
  * @author Joram Barrez
  * @author Tom Baeyens
  * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements TaskQuery {
   
@@ -69,6 +70,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected Date dueAfter;
   protected SuspensionState suspensionState;
   protected boolean excludeSubtasks = false;
+  protected boolean includeTaskLocalVariables = false;
+  protected boolean includeProcessVariables = false;
 
   public TaskQueryImpl() {
   }
@@ -382,6 +385,16 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     this.suspensionState = SuspensionState.ACTIVE;
     return this;
   }
+  
+  public TaskQuery includeTaskLocalVariables() {
+    this.includeTaskLocalVariables = true;
+    return this;
+  }
+  
+  public TaskQuery includeProcessVariables() {
+    this.includeProcessVariables = true;
+    return this;
+  }
 
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
@@ -401,7 +414,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     // and explain alternatives
     List<Group> groups = Context
       .getCommandContext()
-      .getGroupEntityManager()
+      .getGroupIdentityManager()
       .findGroupsByUser(candidateUser);
     List<String> groupIds = new ArrayList<String>();
     for (Group group : groups) {
@@ -460,9 +473,15 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   public List<Task> executeList(CommandContext commandContext, Page page) {
     ensureVariablesInitialized();
     checkQueryOk();
-    return commandContext
-      .getTaskEntityManager()
-      .findTasksByQueryCriteria(this);
+    if (includeTaskLocalVariables || includeProcessVariables) {
+      return commandContext
+          .getTaskEntityManager()
+          .findTasksAndVariablesByQueryCriteria(this);
+    } else {
+      return commandContext
+          .getTaskEntityManager()
+          .findTasksByQueryCriteria(this);
+    }
   }
   
   public long executeCount(CommandContext commandContext) {

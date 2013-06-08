@@ -46,6 +46,7 @@ import org.activiti.engine.task.Task;
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Falko Menge
+ * @author Tijs Rademakers
  */ 
 public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject, HasRevision {
 
@@ -86,6 +87,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected boolean isDeleted;
   
   protected String eventName;
+  
+  protected List<VariableInstanceEntity> queryVariables;
   
   public TaskEntity() {
   }
@@ -265,13 +268,13 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   // task assignment //////////////////////////////////////////////////////////
   
   public IdentityLinkEntity addIdentityLink(String userId, String groupId, String type) {
-    IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
+    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
     getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setTask(this);
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(type);
-    
+    identityLinkEntity.insert();
     if (userId != null && processInstanceId != null) {
       getProcessInstance().involveUser(userId, IdentityLinkType.PARTICIPANT);
     }
@@ -287,8 +290,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     for (IdentityLinkEntity identityLink: identityLinks) {
       Context
         .getCommandContext()
-        .getDbSqlSession()
-        .delete(identityLink);
+        .getIdentityLinkEntityManager()
+        .deleteIdentityLink(identityLink, true);
     }
   }
   
@@ -377,7 +380,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   
   public String toString() {
-    return "Task["+id+"]";
+    return "Task[id=" + id + ", name=" + name + "]";
   }
   
   // special setters //////////////////////////////////////////////////////////
@@ -696,5 +699,33 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   public boolean isSuspended() {
     return suspensionState == SuspensionState.SUSPENDED.getStateCode();
+  }
+  public Map<String, Object> getTaskLocalVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (VariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getTaskId() != null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public Map<String, Object> getProcessVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (VariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getTaskId() == null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public List<VariableInstanceEntity> getQueryVariables() {
+    return queryVariables;
+  }
+  public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
+    this.queryVariables = queryVariables;
   }
 }

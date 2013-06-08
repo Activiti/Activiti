@@ -84,7 +84,7 @@ public class ProcessDiagramCanvas {
   protected static Color LABEL_COLOR = new Color(112, 146, 190);
   
   // Fonts
-  protected static Font LABEL_FONT = new Font("Arial", Font.ITALIC, 10);
+  protected static Font LABEL_FONT = null;
 
   // Strokes
   protected static Stroke THICK_TASK_BORDER_STROKE = new BasicStroke(3.0f);
@@ -140,6 +140,7 @@ public class ProcessDiagramCanvas {
   protected FontMetrics fontMetrics;
   protected boolean closed;
   protected String activityFontName = "Arial";
+  protected String labelFontName = "Arial";
 
   /**
    * Creates an empty canvas with given width and height.
@@ -151,6 +152,10 @@ public class ProcessDiagramCanvas {
     if (Context.getProcessEngineConfiguration() != null) {
       this.activityFontName = Context.getProcessEngineConfiguration().getActivityFontName();
     }
+
+    if (Context.getProcessEngineConfiguration() != null) {
+      this.labelFontName = Context.getProcessEngineConfiguration().getLabelFontName();
+    }
     
     this.processDiagram = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     this.g = processDiagram.createGraphics();
@@ -160,6 +165,8 @@ public class ProcessDiagramCanvas {
     Font font = new Font(activityFontName, Font.BOLD, FONT_SIZE);
     g.setFont(font);
     this.fontMetrics = g.getFontMetrics();
+
+    LABEL_FONT = new Font(labelFontName, Font.ITALIC, 10);
   }
 
   /**

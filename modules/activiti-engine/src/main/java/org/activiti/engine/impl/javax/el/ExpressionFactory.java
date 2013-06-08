@@ -24,6 +24,9 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.util.Properties;
 
+import org.activiti.engine.ActivitiClassLoadingException;
+import org.activiti.engine.impl.util.ReflectUtil;
+
 /**
  * Parses a String into a {@link ValueExpression} or {@link MethodExpression} instance for later
  * evaluation. Classes that implement the EL expression language expose their functionality via this
@@ -117,7 +120,7 @@ public abstract class ExpressionFactory {
 		String className = null;
 
 		String serviceId = "META-INF/services/" + ExpressionFactory.class.getName();
-		InputStream input = classLoader.getResourceAsStream(serviceId);
+		InputStream input = ReflectUtil.getResourceAsStream(serviceId);
 		try {
 			if (input != null) {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
@@ -180,7 +183,7 @@ public abstract class ExpressionFactory {
 			className = "org.activiti.engine.impl.juel.ExpressionFactoryImpl";
 		}
 
-		return newInstance(properties, className, classLoader);
+		return newInstance(properties, className);
 	}
 
 	/**
@@ -198,14 +201,14 @@ public abstract class ExpressionFactory {
 	 *             if the class could not be found or if it is not a subclass of ExpressionFactory
 	 *             or if the class could not be instantiated.
 	 */
-	private static ExpressionFactory newInstance(Properties properties, String className, ClassLoader classLoader) {
+	private static ExpressionFactory newInstance(Properties properties, String className) {
 		Class<?> clazz = null;
 		try {
-			clazz = classLoader.loadClass(className.trim());
+		  clazz = ReflectUtil.loadClass(className.trim());
 			if (!ExpressionFactory.class.isAssignableFrom(clazz)) {
 				throw new ELException("Invalid expression factory class: " + clazz.getName());
 			}
-		} catch (ClassNotFoundException e) {
+		} catch (ActivitiClassLoadingException e) {
 			throw new ELException("Could not find expression factory class", e);
 		}
 		try {

@@ -32,23 +32,24 @@ import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
+import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
-import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
+import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
-import org.activiti.engine.impl.persistence.entity.UserEntityManager;
+import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
@@ -133,9 +134,9 @@ public class CommandContext {
               log.info("Error while closing command context", exception);
             } else if (exception instanceof ActivitiOptimisticLockingException) {
               // reduce log level, as normally we're not interested in logging this exception
-            log.debug("Optimistic locking exception : " + exception);
-            }else {
-              log.error("Error while closing command context", exception);
+              log.debug("Optimistic locking exception : " + exception);
+            } else {
+              log.debug("Error while closing command context", exception);
             }
 
             transactionContext.rollback();
@@ -262,24 +263,28 @@ public class CommandContext {
     return getSession(HistoricTaskInstanceEntityManager.class);
   }
   
+  public HistoricIdentityLinkEntityManager getHistoricIdentityLinkEntityManager() {
+    return getSession(HistoricIdentityLinkEntityManager.class);
+  }
+  
   public JobEntityManager getJobEntityManager() {
     return getSession(JobEntityManager.class);
   }
 
-  public UserEntityManager getUserEntityManager() {
-    return getSession(UserEntityManager.class);
+  public UserIdentityManager getUserIdentityManager() {
+    return getSession(UserIdentityManager.class);
   }
 
-  public GroupEntityManager getGroupEntityManager() {
-    return getSession(GroupEntityManager.class);
+  public GroupIdentityManager getGroupIdentityManager() {
+    return getSession(GroupIdentityManager.class);
   }
 
   public IdentityInfoEntityManager getIdentityInfoEntityManager() {
     return getSession(IdentityInfoEntityManager.class);
   }
 
-  public MembershipEntityManager getMembershipEntityManager() {
-    return getSession(MembershipEntityManager.class);
+  public MembershipIdentityManager getMembershipIdentityManager() {
+    return getSession(MembershipIdentityManager.class);
   }
   
   public AttachmentEntityManager getAttachmentEntityManager() {

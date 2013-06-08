@@ -3054,6 +3054,17 @@ public class FakeLdapService {
 		      the syntax is pretty similar to that of Java.
 		    </para>
 		    
+		    <para>
+		      Do note that the Grovy scripting engine is bundled with the groovy-all jar. Before version 2.0,
+		      the scripting engine was part of the regular Groovy jar. As such, one must now add following dependency:
+		      <programlisting>
+&lt;dependency&gt;
+      &lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
+      &lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
+      &lt;version&gt;2.x.x&lt;version&gt;
+&lt;/dependency&gt;</programlisting>
+		    </para>
+		    
 		  </section>
 		  
 		  <section id="bpmnScriptTaskVariables">

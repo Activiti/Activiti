@@ -12,11 +12,11 @@
  */
 package org.activiti.engine.impl;
 
-import java.util.List;
-
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
+import org.activiti.engine.identity.NativeGroupQuery;
+import org.activiti.engine.identity.NativeUserQuery;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
@@ -40,6 +40,8 @@ import org.activiti.engine.impl.cmd.SetUserPictureCmd;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
+
+import java.util.List;
 
 
 /**
@@ -66,9 +68,19 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
   public UserQuery createUserQuery() {
     return commandExecutor.execute(new CreateUserQueryCmd());
   }
-  
+
+  @Override
+  public NativeUserQuery createNativeUserQuery() {
+    return new NativeUserQueryImpl(commandExecutor);
+  }
+
   public GroupQuery createGroupQuery() {
     return commandExecutor.execute(new CreateGroupQueryCmd());
+  }
+
+  @Override
+  public NativeGroupQuery createNativeGroupQuery() {
+    return new NativeGroupQueryImpl(commandExecutor);
   }
 
   public void createMembership(String userId, String groupId) {

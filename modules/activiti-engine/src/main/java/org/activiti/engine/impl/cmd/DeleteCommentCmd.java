@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
@@ -29,27 +30,39 @@ public class DeleteCommentCmd implements Command<Void>, Serializable {
   private static final long serialVersionUID = 1L;
   protected String taskId;
   protected String processInstanceId;
+  protected String commentId;
 
-  public DeleteCommentCmd(String taskId, String processInstanceId) {
+  public DeleteCommentCmd(String taskId, String processInstanceId, String commentId) {
     this.taskId = taskId;
     this.processInstanceId = processInstanceId;
+    this.commentId = commentId;
   }
 
   public Void execute(CommandContext commandContext) {
     CommentEntityManager commentManager = commandContext.getCommentEntityManager();
     
-    ArrayList<Comment> comments = new ArrayList<Comment>();
-    if (processInstanceId != null) {
-      comments.addAll(commentManager.findCommentsByProcessInstanceId(processInstanceId));
-    }
-    if (taskId != null) {
-      comments.addAll(commentManager.findCommentsByTaskId(taskId));
-    }
+    if(commentId != null) {
+      // Delete for an individual comment
+      Comment comment = commentManager.findComment(commentId);
+      if(comment == null) {
+        throw new ActivitiObjectNotFoundException("Comment with id '" + commentId + "' doesn't exists.", Comment.class);
+      }
+      commentManager.delete((CommentEntity) comment);
+      
+    } else {
+      // Delete all comments on a task of process
+      ArrayList<Comment> comments = new ArrayList<Comment>();
+      if (processInstanceId != null) {
+        comments.addAll(commentManager.findCommentsByProcessInstanceId(processInstanceId));
+      }
+      if (taskId != null) {
+        comments.addAll(commentManager.findCommentsByTaskId(taskId));
+      }
 
-    for (Comment comment : comments) {
-      commentManager.delete((CommentEntity)comment);
+      for (Comment comment : comments) {
+        commentManager.delete((CommentEntity)comment);
+      }
     }
-    
     return null;
   }
 }

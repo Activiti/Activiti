@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -26,6 +27,7 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -373,5 +375,346 @@ public class TaskResourceTest extends BaseRestTestCase {
       assertEquals(Status.CLIENT_ERROR_FORBIDDEN, expected.getStatus());
       assertEquals("Cannot delete a task that is part of a process-instance.", expected.getStatus().getDescription());
     }
+  }
+  
+  /**
+   * Test completing a single task.
+   * POST runtime/tasks/{taskId}
+   */
+  @Deployment
+  public void testCompleteTask() throws Exception {
+    try {
+      
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      String taskId = task.getId();
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      requestNode.put("action", "complete");
+      client.post(requestNode);
+      
+      // Task shouldn't exist anymore
+      task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      assertNull(task);
+     
+      // Test completing with variables
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+      taskId = task.getId();
+      
+      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      requestNode = objectMapper.createObjectNode();
+      ArrayNode variablesNode = objectMapper.createArrayNode();
+      requestNode.put("action", "complete");
+      requestNode.put("variables", variablesNode);
+      
+      ObjectNode var1 = objectMapper.createObjectNode();
+      variablesNode.add(var1);
+      var1.put("name", "var1");
+      var1.put("value", "First value");
+      ObjectNode var2 = objectMapper.createObjectNode();
+      variablesNode.add(var2);
+      var2.put("name", "var2");
+      var2.put("value", "Second value");
+      
+      client.post(requestNode);
+      
+      task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      assertNull(task);
+      
+      if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+        HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+        assertNotNull(historicTaskInstance);
+        List<HistoricVariableInstance> updates =  historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
+        assertNotNull(updates);
+        assertEquals(2, updates.size());
+        boolean foundFirst = false;
+        boolean foundSecond = false;
+        for(HistoricVariableInstance var : updates) {
+          if(var.getVariableName().equals("var1")) {
+            assertEquals("First value", var.getValue());
+            foundFirst = true;
+          } else if(var.getVariableName().equals("var2")) {
+            assertEquals("Second value", var.getValue());
+            foundSecond = true;
+          }
+        }
+        
+        assertTrue(foundFirst);
+        assertTrue(foundSecond);
+      }
+      
+      
+    }
+    finally
+    {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for(Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+      
+      // Clean historic tasks with no runtime-counterpart
+      List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().list();
+      for(HistoricTaskInstance task : historicTasks) {
+        historyService.deleteHistoricTaskInstance(task.getId());
+      }
+    }
+  }
+  
+  /**
+   * Test claiming a single task and all exceptional cases related to claiming.
+   * POST runtime/tasks/{taskId}
+   */
+  public void testClaimTask() throws Exception {
+    try {
+      
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      taskService.addCandidateUser(task.getId(), "newAssignee");
+      
+      assertEquals(1L, taskService.createTaskQuery().taskCandidateUser("newAssignee").count());
+      // Add candidate group
+      String taskId = task.getId();
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      
+      // Claiming without assignee fails
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      requestNode.put("action", "claim");
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch(ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+        assertEquals("An assignee is required when claiming a task.", expected.getStatus().getDescription());
+      }
+
+      // Claim the task and check result
+      requestNode.put("assignee", "newAssignee");
+      client.post(requestNode);
+      task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      assertNotNull(task);
+      assertEquals("newAssignee", task.getAssignee());
+      assertEquals(0L, taskService.createTaskQuery().taskCandidateUser("newAssignee").count());
+      
+      // Claiming with the same user shouldn't cause an exception
+      client.post(requestNode);
+      task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      assertNotNull(task);
+      assertEquals("newAssignee", task.getAssignee());
+      assertEquals(0L, taskService.createTaskQuery().taskCandidateUser("newAssignee").count());
+      
+      // Claiming with another user should cause exception
+      requestNode.put("assignee", "anotherUser");
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch(ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
+        assertEquals("Task '" + task.getId() + "' is already claimed by someone else.", expected.getStatus().getDescription());
+      }
+      
+    }
+    finally
+    {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for(Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+      
+      // Clean historic tasks with no runtime-counterpart
+      List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().list();
+      for(HistoricTaskInstance task : historicTasks) {
+        historyService.deleteHistoricTaskInstance(task.getId());
+      }
+    }
+  }
+  
+  /**
+   * Test delegating a single task and all exceptional cases related to delegation.
+   * POST runtime/tasks/{taskId}
+   */
+  public void testDelegateTask() throws Exception {
+    try {
+      
+      Task task = taskService.newTask();
+      task.setAssignee("initialAssignee");
+      taskService.saveTask(task);
+      String taskId = task.getId();
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      
+      // Delegating without assignee fails
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      requestNode.put("action", "delegate");
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch(ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+        assertEquals("An assignee is required when delegating a task.", expected.getStatus().getDescription());
+      }
+
+      // Delegate the task and check result
+      requestNode.put("assignee", "newAssignee");
+      client.post(requestNode);
+      task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      assertNotNull(task);
+      assertEquals("newAssignee", task.getAssignee());
+      assertEquals("initialAssignee", task.getOwner());
+      assertEquals(DelegationState.PENDING, task.getDelegationState());
+      
+      // Delegating again shouldn't cause an exception and should delegate to user without affecting initial delegator (owner)
+      requestNode.put("assignee", "anotherAssignee");
+      client.post(requestNode);
+      task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      assertNotNull(task);
+      assertEquals("anotherAssignee", task.getAssignee());
+      assertEquals("initialAssignee", task.getOwner());
+      assertEquals(DelegationState.PENDING, task.getDelegationState());
+    }
+    finally
+    {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for(Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+    }
+  }
+  
+  /**
+   * Test resolving a single task and all exceptional cases related to resolution.
+   * POST runtime/tasks/{taskId}
+   */
+  public void testResolveTask() throws Exception {
+    try {
+      
+      Task task = taskService.newTask();
+      task.setAssignee("initialAssignee");
+      taskService.saveTask(task);
+      taskService.delegateTask(task.getId(), "anotherUser");
+      String taskId = task.getId();
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      
+      // Resolve the task and check result
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      requestNode.put("action", "resolve");
+      client.post(requestNode);
+      
+      task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      assertNotNull(task);
+      assertEquals("initialAssignee", task.getAssignee());
+      assertEquals("initialAssignee", task.getOwner());
+      assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+      
+      // Resolving again shouldn't cause an exception
+      client.post(requestNode);
+      task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      assertNotNull(task);
+      assertEquals("initialAssignee", task.getAssignee());
+      assertEquals("initialAssignee", task.getOwner());
+      assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+    }
+    finally
+    {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for(Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+    }
+  }
+  
+  /**
+   * Test executing an invalid action on a single task.
+   * POST runtime/tasks/{taskId}
+   */
+  public void testInvalidTaskAction() throws Exception {
+    try {
+      
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      String taskId = task.getId();
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      requestNode.put("action", "unexistingaction");
+      
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch(ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+        assertEquals("Invalid action: 'unexistingaction'.", expected.getStatus().getDescription());
+      }
+    }
+    finally
+    {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for(Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+      
+      // Clean historic tasks with no runtime-counterpart
+      List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().list();
+      for(HistoricTaskInstance task : historicTasks) {
+        historyService.deleteHistoricTaskInstance(task.getId());
+      }
+    }
+  }
+  
+  /**
+   * Test actions on an unexisting task.
+   * POST runtime/tasks/{taskId}
+   */
+  public void testActionsUnexistingTask() throws Exception {
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, "unexisting"));
+      
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      requestNode.put("action", "complete");
+      
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch(ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+        assertEquals("Could not find a task with id 'unexisting'.", expected.getStatus().getDescription());
+      }
+      
+      requestNode.put("action", "claim");
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch(ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+        assertEquals("Could not find a task with id 'unexisting'.", expected.getStatus().getDescription());
+      }
+      
+      requestNode.put("action", "delegate");
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch(ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+        assertEquals("Could not find a task with id 'unexisting'.", expected.getStatus().getDescription());
+      }
+      
+      requestNode.put("action", "resolve");
+      try {
+        client.post(requestNode);
+        fail("Exception expected");
+      } catch(ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+        assertEquals("Could not find a task with id 'unexisting'.", expected.getStatus().getDescription());
+      }
   }
 }

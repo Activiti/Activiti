@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+
+  <process id="timerProcess">
+
+    <startEvent id="start" />
+    
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="fork" />
+    <parallelGateway id="fork" />
+    <sequenceFlow sourceRef="fork" targetRef="task" />
+    <sequenceFlow sourceRef="fork" targetRef="asyncTask" />
+    
+    <serviceTask id="asyncTask" activiti:async="true" activiti:expression="${test}" />
+    
+    <sequenceFlow sourceRef="asyncTask" targetRef="asyncEnd" />
+    <endEvent id="asyncEnd" />
+     
+    <userTask id="task" />
+
+    <boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="task">
+      <timerEventDefinition>
+        <timeDuration>PT30M</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+
+    <sequenceFlow id="flow3" sourceRef="escalationTimer" targetRef="exclusiveGw" />
+    
+    <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway" />
+    
+    <sequenceFlow sourceRef="exclusiveGw" targetRef="error">
+      <conditionExpression xsi:type="tFormalExpression">${error == true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow sourceRef="exclusiveGw" targetRef="afterTimerTest" />
+    
+    <scriptTask id="error" scriptFormat="unexistinglanguage">
+        <script>
+            // Using unexisting language to force error
+        </script>
+    </scriptTask>
+    <userTask id="afterTimerTest" />
+    <sequenceFlow id="flow4" sourceRef="afterTimerTest" targetRef="end" />
+    
+    <sequenceFlow id="flow2" sourceRef="task" targetRef="end" />
+    <endEvent id="end" />
+
+  </process>
+
+</definitions>

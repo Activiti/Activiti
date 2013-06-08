@@ -14,15 +14,16 @@
 
 package org.activiti.standalone.calendar;
 
-import org.activiti.engine.impl.calendar.DurationHelper;
-import org.activiti.engine.impl.util.ClockUtil;
-import org.junit.Test;
+import static groovy.util.GroovyTestCase.assertEquals;
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static groovy.util.GroovyTestCase.assertEquals;
-import static junit.framework.Assert.assertNull;
+import org.activiti.engine.impl.calendar.DurationHelper;
+import org.activiti.engine.impl.util.ClockUtil;
+import org.junit.Test;
 
 public class DurationHelperTest {
 
