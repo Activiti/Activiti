@@ -129,10 +129,6 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     // The task should be visible in the candidate task list of Gonzo and Kermit
     // and anyone in the management/accountancy group
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
-    List<Task> tempTaskList = taskService.createTaskQuery().taskCandidateUser(GONZO).list();
-    for (Task task : tempTaskList) {
-      logger.error("!!!Found task " + task.getId() + " key " + task.getTaskDefinitionKey() + " execution " + task.getExecutionId());
-    }
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
     assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("accountancy").count());
