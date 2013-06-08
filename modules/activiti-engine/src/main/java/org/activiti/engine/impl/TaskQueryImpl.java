@@ -468,8 +468,16 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return orderBy(TaskQueryProperty.DUE_DATE);
   }
   
-  //results ////////////////////////////////////////////////////////////////
+  public String getMssqlOrDB2OrderBy() {
+    String specialOrderBy = super.getOrderBy();
+    if (specialOrderBy != null && specialOrderBy.length() > 0) {
+      specialOrderBy = specialOrderBy.replace("RES.", "TEMPRES_");
+    }
+    return specialOrderBy;
+  }
   
+  //results ////////////////////////////////////////////////////////////////
+
   public List<Task> executeList(CommandContext commandContext, Page page) {
     ensureVariablesInitialized();
     checkQueryOk();
