@@ -13,7 +13,7 @@ import org.activiti.engine.impl.context.Context;
  * private final ByteArrayRef byteArrayRef = new ByteArrayRef();
  * </pre>
  * 
- * @author Marcus Klimstra
+ * @author Marcus Klimstra (CGI)
  */
 public final class ByteArrayRef {
   private String id;
@@ -66,12 +66,21 @@ public final class ByteArrayRef {
 
   public void delete() {
     if (id != null) {
-      Context.getCommandContext()
+      if (entity != null) {
+        // if the entity has been loaded already,
+        // we might as well use the safer optimistic locking delete.
+        Context.getCommandContext()
         .getByteArrayEntityManager()
-        .deleteByteArray(getEntity());
-//        .deleteByteArrayById(id);
+        .deleteByteArray(entity);
+      }
+      else {
+        Context.getCommandContext()
+          .getByteArrayEntityManager()
+          .deleteByteArrayById(id);
+      }
       id = null;
       entity = null;
+      name = null;
     }
   }
   

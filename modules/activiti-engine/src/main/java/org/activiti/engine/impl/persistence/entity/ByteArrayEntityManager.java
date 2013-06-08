@@ -17,6 +17,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 
 /**
  * @author Joram Barrez
+ * @author Marcus Klimstra (CGI)
  */
 public class ByteArrayEntityManager extends AbstractManager {
 
@@ -31,12 +32,11 @@ public class ByteArrayEntityManager extends AbstractManager {
    * optimistic locking!.
    */
   public void deleteByteArrayById(String byteArrayEntityId) {
-    // TODO dit geeft potentieel problemen met de cache als het element wel geladen is. 
-    //      kan ook met een deleteById(ByteArrayEntity.class, byteArrayEntityId);
-    //      analoog aan selectById(class, id)
     getDbSqlSession().delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId);
-    
-//    getDbSqlSession().deleteById(ByteArrayEntity.class, byteArrayEntityId);
+  }
+  
+  public void deleteByteArray(ByteArrayEntity byteArray) {
+    getDbSqlSession().delete(byteArray);
   }
 
 }

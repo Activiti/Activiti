@@ -209,10 +209,11 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       ensureVariableInstancesInitialized();
       VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
       if (variableInstance != null) {
-        variableInstance.delete();
-
+        
         Context.getCommandContext().getHistoryManager()
           .recordVariableUpdate(variableInstance);
+        
+        variableInstance.delete();
       }
     }
   }
