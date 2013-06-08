@@ -37,8 +37,7 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
   protected String email;
   protected String password;
   
-  protected String pictureByteArrayId;
-  protected ByteArrayEntity pictureByteArray;
+  protected final ByteArrayRef pictureByteArrayRef = new ByteArrayRef();
   
   public UserEntity() {
   }
@@ -47,13 +46,21 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
     this.id = id;
   }
   
+  public void delete() {
+    Context.getCommandContext()
+      .getDbSqlSession()
+      .delete(this);
+
+    pictureByteArrayRef.delete();
+  }
+  
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("firstName", firstName);
     persistentState.put("lastName", lastName);
     persistentState.put("email", email);
     persistentState.put("password", password);
-    persistentState.put("pictureByteArrayId", pictureByteArrayId);
+    persistentState.put("pictureByteArrayId", pictureByteArrayRef.getId());
     return persistentState;
   }
   
@@ -62,44 +69,11 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
   }
   
   public Picture getPicture() {
-    ByteArrayEntity pictureByteArray = getPictureByteArrayEntity();
-    if (pictureByteArray == null) {
-      return null;
-    }
-    return new Picture(pictureByteArray.getBytes(), pictureByteArray.getName());
+    return new Picture(pictureByteArrayRef.getBytes(), pictureByteArrayRef.getName());
   }
   
   public void setPicture(Picture picture) {
-    if (picture == null) {
-      if (pictureByteArrayId != null) {
-        Context.getCommandContext()
-          .getByteArrayEntityManager()
-          .deleteByteArrayById(pictureByteArrayId);
-        pictureByteArrayId = null;
-        pictureByteArray = null;
-      }
-    }
-    else {
-      if (pictureByteArrayId == null) {
-        pictureByteArray = ByteArrayEntity.createAndInsert(picture.getMimeType(), picture.getBytes());
-        pictureByteArrayId = pictureByteArray.getId();
-      }
-      else {
-        ByteArrayEntity pictureByteArray = getPictureByteArrayEntity();
-        pictureByteArray.setName(picture.getMimeType());
-        pictureByteArray.setBytes(picture.getBytes());
-      }
-    }
-  }
-
-  private ByteArrayEntity getPictureByteArrayEntity() {
-    if (pictureByteArrayId != null && pictureByteArray == null) {
-      pictureByteArray = Context
-        .getCommandContext()
-        .getByteArrayEntityManager()
-        .findById(pictureByteArrayId);
-    }
-    return pictureByteArray;
+    pictureByteArrayRef.setValue(picture.getMimeType(), picture.getBytes());
   }
 
 
@@ -139,10 +113,5 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
   public void setRevision(int revision) {
     this.revision = revision;
   }
-  public String getPictureByteArrayId() {
-    return pictureByteArrayId;
-  }
-  public void setPictureByteArrayId(String pictureByteArrayId) {
-    this.pictureByteArrayId = pictureByteArrayId;
-  }
+
 }

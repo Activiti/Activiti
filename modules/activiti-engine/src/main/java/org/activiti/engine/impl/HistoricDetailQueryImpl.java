@@ -109,11 +109,12 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
           varUpdate = (HistoricDetailVariableInstanceUpdateEntity)historicDetail;
           
           // Touch byte-array to ensure initialized inside context
-          varUpdate.getByteArrayValue();
+          // TODO there should be a generic way to initialize variable values
+          varUpdate.getBytes();
           
           // ACT-863: EntityManagerFactorySession instance needed for fetching value, touch while inside context to store
           // cached value
-          if(varUpdate.getVariableType() instanceof JPAEntityVariableType) {
+          if (varUpdate.getVariableType() instanceof JPAEntityVariableType) {
             // Use HistoricJPAEntityVariableType to force caching of value to return from query
             varUpdate.setVariableType(HistoricJPAEntityVariableType.getSharedInstance());
             varUpdate.getValue();

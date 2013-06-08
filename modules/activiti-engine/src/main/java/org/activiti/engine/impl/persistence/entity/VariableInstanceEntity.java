@@ -25,7 +25,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Tom Baeyens
- * @author Marcus Klimstra
+ * @author Marcus Klimstra (CGI)
  */
 public class VariableInstanceEntity implements ValueFields, PersistentObject, HasRevision, Serializable {
 

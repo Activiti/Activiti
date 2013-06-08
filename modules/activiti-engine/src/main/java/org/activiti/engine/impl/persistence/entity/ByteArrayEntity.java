@@ -22,6 +22,7 @@ import org.apache.commons.lang.ObjectUtils;
 
 /**
  * @author Tom Baeyens
+ * @author Marcus Klimstra (CGI)
  */
 public class ByteArrayEntity implements Serializable, PersistentObject, HasRevision {
 
@@ -127,6 +128,11 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
             && Arrays.equals(this.bytes, other.bytes);
       }
       return false;
+    }
+    
+    @Override
+    public int hashCode() {
+      throw new UnsupportedOperationException();
     }
     
   }
