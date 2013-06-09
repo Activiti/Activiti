@@ -13,25 +13,90 @@
 
 package org.activiti.rest.api.management;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.runtime.Job;
 import org.activiti.rest.api.ActivitiUtil;
+import org.activiti.rest.api.RestActionRequest;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
+import org.restlet.data.Status;
+import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
 public class JobResource extends SecuredResource {
-  
+
+  private static final String EXECUTE_ACTION = "execute";
+
   @Get
   public JobResponse getJob() {
-    if(authenticate(SecuredResource.ADMIN) == false) return null;
-    
-    String jobId = (String) getRequest().getAttributes().get("jobId");
-    Job job = ActivitiUtil.getManagementService().createJobQuery().jobId(jobId).singleResult();
-    String stacktrace = ActivitiUtil.getManagementService().getJobExceptionStacktrace(jobId);
-    JobResponse response = new JobResponse(job);
-    response.setStacktrace(stacktrace);
+    if (authenticate() == false)
+      return null;
+
+    Job job = getJobFromResponse();
+
+    JobResponse response = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createJobResponse(this, job);
     return response;
+  }
+
+  @Delete
+  public void deleteJob() {
+    if (authenticate() == false)
+      return;
+    
+    String jobId = getAttribute("jobId");
+    if (jobId == null) {
+      throw new ActivitiIllegalArgumentException("The jobId cannot be null");
+    }
+    try {
+      ActivitiUtil.getManagementService().deleteJob(jobId);
+    } catch(ActivitiObjectNotFoundException aonfe) {
+      // Re-throw to have consistent error-messaging acrosse REST-api
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class); 
+    }
+    setStatus(Status.SUCCESS_NO_CONTENT);
+  }
+  
+  @Post
+  public void executeJobAction(RestActionRequest actionRequest) {
+    if (authenticate() == false)
+      return;
+    
+    String jobId = getAttribute("jobId");
+    if (jobId == null) {
+      throw new ActivitiIllegalArgumentException("The jobId cannot be null");
+    }
+    
+    if(actionRequest == null || ! EXECUTE_ACTION.equals(actionRequest.getAction())) {
+      throw new ActivitiIllegalArgumentException("Invalid action, only 'execute' is supported.");
+    }
+    
+    try {
+      ActivitiUtil.getManagementService().executeJob(jobId);
+    } catch(ActivitiObjectNotFoundException aonfe) {
+      // Re-throw to have consistent error-messaging acrosse REST-api
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class); 
+    }
+    
+    setStatus(Status.SUCCESS_NO_CONTENT);
+  }
+
+  protected Job getJobFromResponse() {
+    String jobId = getAttribute("jobId");
+    if (jobId == null) {
+      throw new ActivitiIllegalArgumentException("The jobId cannot be null");
+    }
+
+    Job job = ActivitiUtil.getManagementService().createJobQuery().jobId(jobId).singleResult();
+
+    if (job == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
+    }
+    return job;
   }
 }

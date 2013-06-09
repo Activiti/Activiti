@@ -31,7 +31,7 @@ import org.codehaus.jackson.node.ObjectNode;
 public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
   
   /**
-   * Test querying process instanced variables. 
+   * Test querying process instance based on variables. 
    * POST query/process-instances
    */
   @Deployment
@@ -112,6 +112,12 @@ public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
     assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    
+    // String equals with non existing value
+    variableNode.removeAll();
+    variableNode.put("value", "Azerty2");
+    variableNode.put("operation", "equals");
+    assertResultsPresentInDataResponse(url, requestNode);
     
   }
 }

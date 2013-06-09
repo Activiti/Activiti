@@ -51,8 +51,10 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.restlet.Component;
 import org.restlet.data.ChallengeScheme;
+import org.restlet.data.Form;
 import org.restlet.data.Protocol;
 import org.restlet.data.Status;
+import org.restlet.engine.http.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.slf4j.Logger;
@@ -91,7 +93,7 @@ public class BaseRestTestCase extends PvmTestCase {
   
   protected void initializeProcessEngine() {
     if (cachedProcessEngine==null) {
-      cachedProcessEngine = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration().setProcessEngineName("default").buildProcessEngine();
+      cachedProcessEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("activiti.cfg.xml").buildProcessEngine();
       if (cachedProcessEngine==null) {
         throw new ActivitiException("no in-memory process engine available");
       }
@@ -367,7 +369,10 @@ public class BaseRestTestCase extends PvmTestCase {
    * contains entries with the given ID's.
    */
   protected void assertResultsPresentInDataResponse(String url, ObjectNode body, String... expectedResourceIds) throws JsonProcessingException, IOException {
-    int numberOfResultsExpected = expectedResourceIds.length;
+    int numberOfResultsExpected = 0;
+    if (expectedResourceIds != null) {
+      numberOfResultsExpected = expectedResourceIds.length;
+    }
     
     // Do the actual call
     ClientResource client = getAuthenticatedClient(url);
@@ -379,13 +384,33 @@ public class BaseRestTestCase extends PvmTestCase {
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's
-    List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
-    Iterator<JsonNode> it = dataNode.iterator();
-    while(it.hasNext()) {
-      String id = it.next().get("id").getTextValue();
-      toBeFound.remove(id);
+    if (expectedResourceIds != null) {
+      List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
+      Iterator<JsonNode> it = dataNode.iterator();
+      while(it.hasNext()) {
+        String id = it.next().get("id").getTextValue();
+        toBeFound.remove(id);
+      }
+      assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
     }
-    assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
+    
+    client.release();
+  }
+  
+  /**
+   * Checks if the rest operation returns an error as expected 
+   */
+  protected void assertErrorResult(String url, ObjectNode body, Status status) throws IOException {
+    
+    // Do the actual call
+    ClientResource client = getAuthenticatedClient(url);
+    try {
+      client.post(body);
+      fail();
+    } catch(Exception e) {
+      // Check status
+      assertEquals(status, client.getResponse().getStatus());
+    }
     
     client.release();
   }
@@ -405,5 +430,10 @@ public class BaseRestTestCase extends PvmTestCase {
   
   protected String getISODateString(Date time) {
     return ISO8601Utils.format(time, true);
+  }
+  
+  protected String getMediaType(ClientResource client) {
+    Form headers = (Form) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
+    return headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE);
   }
 }

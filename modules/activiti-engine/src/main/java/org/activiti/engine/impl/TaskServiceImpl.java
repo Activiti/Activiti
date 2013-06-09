@@ -175,7 +175,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     commandExecutor.execute(new ResolveTaskCmd(taskId, null));
   }
 
-  public void resolve(String taskId, Map<String, Object> variables) {
+  public void resolveTask(String taskId, Map<String, Object> variables) {
     commandExecutor.execute(new ResolveTaskCmd(taskId, variables));
   }
 

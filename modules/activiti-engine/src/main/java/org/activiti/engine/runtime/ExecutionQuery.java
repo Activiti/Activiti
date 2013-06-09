@@ -35,14 +35,31 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   /** Only select executions which have the given process instance id. **/
   ExecutionQuery processInstanceId(String processInstanceId);
   
-  /** Only executions with the given business key */
+  /** 
+   * Only executions with the given business key.
+   * 
+   * Note that only process instances have a business key and as such, child executions
+   * will NOT be returned. If you want to return child executions of the process instance with
+   * the given business key too, use the {@link #processInstanceBusinessKey(String, boolean)} method
+   * with a boolean value of <i>true</i> instead.
+   */
   ExecutionQuery processInstanceBusinessKey(String processInstanceBusinessKey);
+  
+  /**
+   * Only executions with the given business key. 
+   * Similar to {@link #processInstanceBusinessKey(String)}, but allows to choose
+   * whether child executions are returned or not.
+   */
+  ExecutionQuery processInstanceBusinessKey(String processInstanceBusinessKey, boolean includeChildExecutions);
 
   /** Only select executions with the given id. **/
   ExecutionQuery executionId(String executionId);
   
   /** Only select executions which contain an activity with the given id. **/
   ExecutionQuery activityId(String activityId);
+  
+  /** Only select executions which are a direct child-execution of the execution with the given id. **/
+  ExecutionQuery parentId(String parentId);
   
   /** 
    * Only select executions which have a local variable with the given value. The type

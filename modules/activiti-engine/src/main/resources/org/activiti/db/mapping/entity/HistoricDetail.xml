@@ -123,6 +123,9 @@
   <sql id="selectHistoricDetailsByQueryCriteriaSql">
     from ${prefix}ACT_HI_DETAIL RES
     <where>
+      <if test="id != null">
+        RES.ID_ = #{id}
+      </if>
       <if test="processInstanceId != null">
         RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
@@ -151,5 +154,29 @@
       </if>
     </where>
   </sql>
+
+  <select id="selectHistoricDetailByNativeQuery" parameterType="java.util.Map" resultMap="historicDetailResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectHistoricDetailByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicDetailResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectHistoricDetailCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
   
 </mapper>

@@ -139,6 +139,9 @@
     	 	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT${index} on RES.ID_ = EVT${index}.EXECUTION_ID_
 	    </foreach>
     </if>
+    <if test="businessKey != null and includeChildExecutionsWithBusinessKeyQuery">
+        inner join ${prefix}ACT_RU_EXECUTION INST on RES.PROC_INST_ID_ = INST.ID_
+    </if>
     inner join ${prefix}ACT_RE_PROCDEF P on RES.PROC_DEF_ID_ = P.ID_
     <where>
       <if test="onlyProcessInstances">
@@ -162,11 +165,17 @@
           #{item}
         </foreach>
       </if>
-      <if test="businessKey != null">
+      <if test="businessKey != null and !includeChildExecutionsWithBusinessKeyQuery">
         and RES.BUSINESS_KEY_ = #{businessKey}
+      </if>
+      <if test="businessKey != null and includeChildExecutionsWithBusinessKeyQuery">
+        and INST.BUSINESS_KEY_ = #{businessKey}
       </if>
       <if test="activityId != null">
         and RES.ACT_ID_ = #{activityId} and IS_ACTIVE_ = #{isActive}
+      </if>
+      <if test="parentId != null">
+        and RES.PARENT_ID_ = #{parentId}
       </if>
       <if test="superProcessInstanceId != null">
         <!-- A sub process instance is stored under a certain *execution*, potentially nested.

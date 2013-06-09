@@ -32,6 +32,8 @@ public class ScriptTaskListener implements TaskListener {
   protected Expression language = null;
 
   protected Expression resultVariable = null;
+  
+  protected boolean autoStoreVariables;
 
 	public void notify(DelegateTask delegateTask) {
 		if (script == null) {
@@ -44,7 +46,7 @@ public class ScriptTaskListener implements TaskListener {
 
 		ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 
-		Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), delegateTask);
+		Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), delegateTask, autoStoreVariables);
 
 		if (resultVariable != null) {
 			delegateTask.setVariable(resultVariable.getExpressionText(), result);
@@ -62,5 +64,10 @@ public class ScriptTaskListener implements TaskListener {
 	public void setResultVariable(Expression resultVariable) {
 		this.resultVariable = resultVariable;
 	}
+
+  public void setAutoStoreVariables(boolean autoStoreVariables) {
+    this.autoStoreVariables = autoStoreVariables;
+  }
+	
 	
 }

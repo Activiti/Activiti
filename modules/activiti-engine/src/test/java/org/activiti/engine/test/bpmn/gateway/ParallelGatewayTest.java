@@ -110,7 +110,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
    */
   @Deployment
   public void testReceyclingExecutionWithCallActivity() {
-    String processInstanceId = runtimeService.startProcessInstanceByKey("parent-process").getId();
+    runtimeService.startProcessInstanceByKey("parent-process");
     
     // After process start we have two tasks, one from the parent and one from the sub process
     TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc(); 

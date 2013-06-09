@@ -136,6 +136,9 @@ import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
 import org.activiti.engine.impl.persistence.GenericManagerFactory;
+import org.activiti.engine.impl.persistence.GroupEntityManagerFactory;
+import org.activiti.engine.impl.persistence.MembershipEntityManagerFactory;
+import org.activiti.engine.impl.persistence.UserEntityManagerFactory;
 import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
@@ -146,7 +149,6 @@ import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityManager;
@@ -164,7 +166,6 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
-import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.scripting.BeansResolverFactory;
 import org.activiti.engine.impl.scripting.ResolverFactory;
@@ -208,6 +209,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {  
 
@@ -256,6 +258,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<SessionFactory> customSessionFactories;
   protected DbSqlSessionFactory dbSqlSessionFactory;
   protected Map<Class<?>, SessionFactory> sessionFactories;
+  
+  // Configurators ////////////////////////////////////////////////////////////
+  
+  protected List<ProcessEngineConfigurator> configurators;
   
   // DEPLOYERS ////////////////////////////////////////////////////////////////
 
@@ -402,6 +408,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initDelegateInterceptor();
     initEventHandlers();
     initFailedJobCommandFactory();
+    initConfigurators();
   }
 
   // failedJobCommandFactory ////////////////////////////////////////////////////////
@@ -640,6 +647,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           properties.put("limitBefore" , DbSqlSessionFactory.databaseSpecificLimitBeforeStatements.get(databaseType));
           properties.put("limitAfter" , DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));
           properties.put("limitBetween" , DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
+          properties.put("limitOuterJoinBetween" , DbSqlSessionFactory.databaseOuterJoinLimitBetweenStatements.get(databaseType));
           properties.put("orderBy" , DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
           properties.put("limitBeforeNativeQuery" , ObjectUtils.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
         }
@@ -693,19 +701,21 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(IdentityInfoEntityManager.class));
       addSessionFactory(new GenericManagerFactory(IdentityLinkEntityManager.class));
       addSessionFactory(new GenericManagerFactory(JobEntityManager.class));
-      addSessionFactory(new GenericManagerFactory(GroupEntityManager.class));
-      addSessionFactory(new GenericManagerFactory(MembershipEntityManager.class));
       addSessionFactory(new GenericManagerFactory(ProcessDefinitionEntityManager.class));
       addSessionFactory(new GenericManagerFactory(PropertyEntityManager.class));
       addSessionFactory(new GenericManagerFactory(ResourceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(ByteArrayEntityManager.class));
       addSessionFactory(new GenericManagerFactory(TableDataManager.class));
       addSessionFactory(new GenericManagerFactory(TaskEntityManager.class));
-      addSessionFactory(new GenericManagerFactory(UserEntityManager.class));
       addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManager.class));
       addSessionFactory(new GenericManagerFactory(HistoryManager.class));
+      
+      addSessionFactory(new UserEntityManagerFactory());
+      addSessionFactory(new GroupEntityManagerFactory());
+      addSessionFactory(new MembershipEntityManagerFactory());
     }
+    
     if (customSessionFactories!=null) {
       for (SessionFactory sessionFactory: customSessionFactories) {
         addSessionFactory(sessionFactory);
@@ -715,6 +725,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected void addSessionFactory(SessionFactory sessionFactory) {
     sessionFactories.put(sessionFactory.getSessionType(), sessionFactory);
+  }
+  
+  protected void initConfigurators() {
+    if (configurators != null) {
+      for (ProcessEngineConfigurator configurator : configurators) {
+        configurator.configure(this);
+      }
+    }
   }
   
   // deployers ////////////////////////////////////////////////////////////////
@@ -1294,6 +1312,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public List<ProcessEngineConfigurator> getConfigurators() {
+    return configurators;
+  }
+  
+  public void setConfigurators(List<ProcessEngineConfigurator> configurators) {
+    this.configurators = configurators;
+  }
+
   public BpmnDeployer getBpmnDeployer() {
     return bpmnDeployer;
   }

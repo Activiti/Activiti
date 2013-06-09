@@ -160,6 +160,19 @@ public interface TaskService {
    * @throws ActivitiObjectNotFoundException when no task exists with the given id.
    */
   void resolveTask(String taskId);
+  
+  /**
+   * Marks that the assignee is done with this task providing the required
+   * variables and that it can be sent back to the owner. Can only be called
+   * when this task is {@link DelegationState#PENDING} delegation. After this
+   * method returns, the {@link Task#getDelegationState() delegationState} is
+   * set to {@link DelegationState#RESOLVED}.
+   * 
+   * @param taskId
+   * @param variables
+   * @throws ProcessEngineException When no task exists with the given id.
+   */
+  void resolveTask(String taskId, Map<String, Object> variables);
 
   /**
    * Called when the task is successfully executed, 

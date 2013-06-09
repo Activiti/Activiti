@@ -27,6 +27,8 @@ public final class RestUrls {
    */
   public static final String SEGMENT_REPOSITORY_RESOURCES = "repository";
   public static final String SEGMENT_RUNTIME_RESOURCES = "runtime";
+  public static final String SEGMENT_MANAGEMENT_RESOURCES = "management";
+  public static final String SEGMENT_HISTORY_RESOURCES = "history";
   public static final String SEGMENT_QUERY_RESOURCES = "query";
   
   public static final String SEGMENT_DEPLOYMENT_RESOURCE = "deployments";
@@ -46,6 +48,16 @@ public final class RestUrls {
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_GROUPS = "groups";
   public static final String SEGMENT_IDENTITYLINKS_FAMILY_USERS = "users";
   public static final String SEGMENT_VARIABLE_DATA = "data";
+  public static final String SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE = "historic-process-instances";
+  public static final String SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE = "historic-task-instances";
+  public static final String SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE = "historic-activity-instances";
+  public static final String SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE = "historic-variable-instances";
+  public static final String SEGMENT_HISTORIC_DETAIL_RESOURCE = "historic-detail";
+  public static final String SEGMENT_TABLES = "tables";
+  public static final String SEGMENT_COLUMNS = "columns";
+  public static final String SEGMENT_DATA = "data";
+  public static final String SEGMENT_JOBS = "jobs";
+  public static final String SEGMENT_JOB_EXCEPTION_STACKTRACE = "exception-stacktrace";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -187,6 +199,11 @@ public final class RestUrls {
   public static final String[] URL_EXECUTION_VARIABLE_DATA = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
   
   /**
+   * URL template for execution query: <i>query/executions</i>
+   */
+  public static final String[] URL_EXECUTION_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_EXECUTION_RESOURCE};
+  
+  /**
    * URL template for process instance collection: <i>runtime/process-instances</i>
    */
   public static final String[] URL_PROCESS_INSTANCE_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE};
@@ -195,7 +212,6 @@ public final class RestUrls {
    * URL template for process instance query: <i>query/process-instances</i>
    */
   public static final String[] URL_PROCESS_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE};
-  
   
   /**
    * URL template for a single process instance: <i>runtime/process-instances/{0:processInstanceId}</i>
@@ -222,6 +238,105 @@ public final class RestUrls {
    */
   public static final String[] URL_PROCESS_INSTANCE_COMMENT = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_COMMENTS, "{1}"};
   
+  /**
+   * URL template for a single historic process instance: <i>history/historic-process-instances/{0:processInstanceId}</i>
+   */
+  public static final String[] URL_HISTORIC_PROCESS_INSTANCE = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for historic process instance query: <i>history/historic-process-instances</i>
+   */
+  public static final String[] URL_HISTORIC_PROCESS_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for a single historic task instance: <i>history/historic-task-instances/{0:taskId}</i>
+   */
+  public static final String[] URL_HISTORIC_TASK_INSTANCE = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for historic task instance query: <i>history/historic-task-instances</i>
+   */
+  public static final String[] URL_HISTORIC_TASK_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic activity instance query: <i>history/historic-activity-instances</i>
+   */
+  public static final String[] URL_HISTORIC_ACTIVITY_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic variable instance query: <i>history/historic-variable-instances</i>
+   */
+  public static final String[] URL_HISTORIC_VARIABLE_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic detail query: <i>history/historic-detail</i>
+   */
+  public static final String[] URL_HISTORIC_DETAIL = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_DETAIL_RESOURCE};
+  
+  /**
+   * URL template for a single historic detail variable data: <i>history/historic-detail/{0:detailId}/data</i>
+   */
+  public static final String[] URL_HISTORIC_DETAIL_VARIABLE_DATA = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_DETAIL_RESOURCE, "{0}", SEGMENT_VARIABLE_DATA};
+  
+  /**
+   * URL template for historic process instance query: <i>query/historic-process-instances</i>
+   */
+  public static final String[] URL_HISTORIC_PROCESS_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic process instance query: <i>query/historic-task-instances</i>
+   */
+  public static final String[] URL_HISTORIC_TASK_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic activity instance query: <i>query/historic-activity-instances</i>
+   */
+  public static final String[] URL_HISTORIC_ACTIVITY_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic variable instance query: <i>query/historic-variable-instances</i>
+   */
+  public static final String[] URL_HISTORIC_VARIABLE_INSTANCE_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic detail query: <i>query/historic-detail</i>
+   */
+  public static final String[] URL_HISTORIC_DETAIL_QUERY = {SEGMENT_QUERY_RESOURCES, SEGMENT_HISTORIC_DETAIL_RESOURCE};
+  
+  /**
+   * URL template for the collection of tables: <i>management/tables</i>
+   */
+  public static final String[] URL_TABLES_COLLECTION = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES};
+  
+  /**
+   * URL template for a single table: <i>management/tables/{0:tableName}</i>
+   */
+  public static final String[] URL_TABLE = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES, "{0}"};
+  
+  /**
+   * URL template for column-metadata for a single table: <i>management/tables/{0:tableName}/columns</i>
+   */
+  public static final String[] URL_TABLE_COLUMNS = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES, "{0}", SEGMENT_COLUMNS};
+  
+  /**
+   * URL template for actual table row data: <i>management/tables/{0:tableName}/data</i>
+   */
+  public static final String[] URL_TABLE_DATA = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES, "{0}", SEGMENT_DATA};
+  
+  /**
+   * URL template for a single job: <i>management/jobs/{0:jobId}</i>
+   */
+  public static final String[] URL_JOB = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS, "{0}"};
+  
+  /**
+   * URL template for the stacktrace of a single job: <i>management/jobs/{0:jobId}/exception-stacktrace</i>
+   */
+  public static final String[] URL_JOB_EXCEPTION_STRACKTRACE = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS, "{0}", SEGMENT_JOB_EXCEPTION_STACKTRACE};
+  
+  /**
+   * URL template for the collection of jobs: <i>management/jobs</i>
+   */
+  public static final String[] URL_JOB_COLLECTION = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS};
   
   /**
    * Creates an url based on the passed fragments and replaces any placeholders with the given arguments. The

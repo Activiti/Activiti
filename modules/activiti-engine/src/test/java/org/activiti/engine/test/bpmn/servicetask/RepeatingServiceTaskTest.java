@@ -14,9 +14,6 @@
 package org.activiti.engine.test.bpmn.servicetask;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.test.Deployment;
 
 
 /**

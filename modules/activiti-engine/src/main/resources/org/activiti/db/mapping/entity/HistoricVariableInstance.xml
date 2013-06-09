@@ -169,5 +169,29 @@
   <select id="selectHistoricVariableInstanceByVariableInstanceId" resultMap="historicProcessVariableResultMap">
     select * from ${prefix}ACT_HI_VARINST where ID_ = #{variableInstanceId}
   </select>
+
+  <select id="selectHistoricVariableInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicProcessVariableResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectHistoricVariableInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicProcessVariableResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectHistoricVariableInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
   
 </mapper>

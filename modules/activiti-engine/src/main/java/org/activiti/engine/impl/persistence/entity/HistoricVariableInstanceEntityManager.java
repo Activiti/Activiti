@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
@@ -44,7 +45,7 @@ public class HistoricVariableInstanceEntityManager extends AbstractManager {
       List<HistoricVariableInstanceEntity> cachedHistoricVariableInstances = getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class);
       for (HistoricVariableInstanceEntity historicProcessVariable : cachedHistoricVariableInstances) {
         // Make sure we only delete the right ones (as we cannot make a proper query in the cache)
-        if (historicProcessVariable.getProcessInstanceId().equals(historicProcessInstanceId)) {
+        if (historicProcessInstanceId.equals(historicProcessVariable.getProcessInstanceId())) {
           historicProcessVariable.delete();
         }
       }
@@ -73,5 +74,14 @@ public class HistoricVariableInstanceEntityManager extends AbstractManager {
         ((HistoricVariableInstanceEntity) historicProcessVariable).delete();
       }
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricVariableInstance> findHistoricVariableInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectHistoricVariableInstanceByNativeQuery", parameterMap, firstResult, maxResults);
+  }
+
+  public long findHistoricVariableInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectHistoricVariableInstanceCountByNativeQuery", parameterMap);
   }
 }

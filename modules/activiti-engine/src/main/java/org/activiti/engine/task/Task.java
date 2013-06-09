@@ -13,12 +13,14 @@
 package org.activiti.engine.task;
 
 import java.util.Date;
+import java.util.Map;
 
 
 
 /** Represents one task for a human user.
  * 
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public interface Task {
 
@@ -105,4 +107,10 @@ public interface Task {
   
   /** Indicated whether this task is suspended or not. */
   boolean isSuspended();
+  
+  /** Returns the local task variables if requested in the task query */
+  Map<String, Object> getTaskLocalVariables();
+  
+  /** Returns the process variables if requested in the task query */
+  Map<String, Object> getProcessVariables();
 }

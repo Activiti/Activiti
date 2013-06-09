@@ -109,6 +109,12 @@ public class TaskEntityManager extends AbstractManager {
     final String query = "selectTaskByQueryCriteria";
     return getDbSqlSession().selectList(query, taskQuery);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<Task> findTasksAndVariablesByQueryCriteria(TaskQueryImpl taskQuery) {
+    final String query = "selectTaskWithVariablesByQueryCriteria";
+    return getDbSqlSession().selectList(query, taskQuery);
+  }
 
   public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
     return (Long) getDbSqlSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);

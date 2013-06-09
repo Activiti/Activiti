@@ -214,7 +214,7 @@
   "type" : "string"
 }</programlisting>
             <table>
-              <title>Variable query JSON paremeters</title>
+              <title>Variable query JSON parameters</title>
               <tgroup cols="2">
                 <thead>
                   <row>
@@ -1390,7 +1390,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>URL query parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1642,7 +1642,7 @@
       "type" : "long"
     },
     
-    "processVariables" : [
+    "processInstanceVariables" : [
       {
          ... 
       }
@@ -1651,8 +1651,8 @@
 }</programlisting> 
         </para>
         <para>
-          All supported JSON paremeter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+          All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
+          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processInstanceVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
         </para>
         <para>
           <table>
@@ -3708,6 +3708,679 @@ Only the attachment name is required to create a new attachment.
            </tgroup>
         </table>
   </section>
+</section>
+<section>
+    <title>Database tables</title>
+     <section>
+      <title>List of tables</title>
+        <para>
+          <programlisting>GET management/tables</programlisting>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the request was successful.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+   {
+      "name":"ACT_RU_VARIABLE",
+      "url":"http://localhost:8182/management/tables/ACT_RU_VARIABLE",
+      "count":4528
+   },
+   {
+      "name":"ACT_RU_EVENT_SUBSCR",
+      "url":"http://localhost:8182/management/tables/ACT_RU_EVENT_SUBSCR",
+      "count":3
+   },
+   
+   ...
+   
+]</programlisting>
+    </para>
+    </section>
+    
+    <section>
+      <title>Get a single table</title>
+        <para>
+          <programlisting>GET management/tables/{tableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>tableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the table to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+      "name":"ACT_RE_PROCDEF",
+      "url":"http://localhost:8182/management/tables/ACT_RE_PROCDEF",
+      "count":60
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the table exists and the table count is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested table does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+    <section>
+      <title>Get column info for a single table</title>
+        <para>
+          <programlisting>GET management/tables/{tableName}/columns</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>tableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the table to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "tableName":"ACT_RU_VARIABLE",
+   "columnNames":[
+      "ID_",
+      "REV_",
+      "TYPE_",
+      "NAME_",
+      ...
+   ],
+   "columnTypes":[
+      "VARCHAR",
+      "INTEGER",
+      "VARCHAR",
+      "VARCHAR",
+      ...
+   ]
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the table exists and the table column info is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested table does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Get row data for a single table</title>
+        <para>
+          <programlisting>GET management/tables/{tableName}/data</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>tableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the table to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+            <table>
+              <title>URL query parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>start</entry>
+                    <entry>No</entry>
+                    <entry>Integer</entry>
+                    <entry>Index of the first row to fetch. Defaults to 0.</entry>
+                  </row>
+                  <row>
+                    <entry>size</entry>
+                    <entry>No</entry>
+                    <entry>Integer</entry>
+                    <entry>Number of rows to fetch, starting from <literal>start</literal>. Defaults to 10.</entry>
+                  </row>
+                  <row>
+                    <entry>orderAscendingColumn</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Name of the column to sort the resulting rows on, ascending.</entry>
+                  </row>
+                  <row>
+                    <entry>orderDescendingColumn</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Name of the column to sort the resulting rows on, descending.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "total":3,
+   "start":0,
+   "sort":null,
+   "order":null,
+   "size":3,
+   
+   "data":[
+      {
+         "TASK_ID_":"2",
+         "NAME_":"var1",
+         "REV_":1,
+         "TEXT_":"123",
+         "LONG_":123,
+         "ID_":"3",
+         "TYPE_":"integer"
+      },
+      ...
+   ]
+ 
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the table exists and the table row data is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested table does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+    
+</section>
+
+<section>
+    <title>Jobs</title>
+    <section>
+      <title>Get a single job</title>
+        <para>
+          <programlisting>GET management/jobs/{jobId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>jobId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the job to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"8",
+   "url":"http://localhost:8182/management/jobs/8",
+   "processInstanceId":"5",
+   "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+   "processDefinitionId":"timerProcess:1:4",
+   "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/timerProcess%3A1%3A4",
+   "executionId":"7",
+   "executionUrl":"http://localhost:8182/runtime/executions/7",
+   "retries":3,
+   "exceptionMessage":null,
+   "dueDate":"2013-06-04T22:05:05.474+0000"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the job exists and is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Delete a job</title>
+        <para>
+          <programlisting>DELETE management/jobs/{jobId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>jobId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the job to delete.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the job was found and has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Execute a single job</title>
+        <para>
+          <programlisting>PUT management/jobs/{jobId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "action" : "execute"
+}</programlisting>
+        <table>
+              <title>JSON Body parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Required</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>action</entry>
+                    <entry>Action to perform. Only <literal>execute</literal> is supported.</entry>
+                    <entry>Yes</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the job was executed. Response-body is intentionally empty.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>500</entry>
+                    <entry>Indicates the an exception occured while executing the job. The status-description contains additional detail about the error. The full error-stacktrace can be fetched later on if needed.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+ </section>
+ 
+ <section>
+      <title>Get the exception stacktrace for a job</title>
+        <para>
+          <programlisting>GET management/jobs/{jobId}/exception-stracktrace</programlisting>
+        </para>
+        <para>
+        <table>
+              <title>URL parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Required</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>jobId</entry>
+                    <entry>Id of the job to get the stacktrace for.</entry>
+                    <entry>Yes</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the requested job was not found and the stacktrace has been returned. The response contains the raw stacktrace and always has a Content-type of <literal>text/plain</literal>.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested job was not found or the job doesn't have an exception stacktrace. Status-description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+ </section>
+ 
+ <section>
+      <title>Get a list of jobs</title>
+        <para>
+          <programlisting>GET management/jobs</programlisting>
+        </para>
+        <para>
+        <table>
+              <title>URL query parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Type</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>jobId</entry>
+                    <entry>Only return job with the given id</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Only return jobs part of a process with the given id</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>executionId</entry>
+                    <entry>Only return jobs part of an execution with the given id</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionId</entry>
+                    <entry>Only return jobs with the given process definition id</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>withRetriesLeft</entry>
+                    <entry>If <literal>true</literal>, only return jobs with retries left. If false, this parameter is ignored.</entry>
+                    <entry>Boolean</entry>
+                  </row>
+                  <row>
+                    <entry>executable</entry>
+                    <entry>If <literal>true</literal>, only return jobs which are executable. If false, this parameter is ignored.</entry>
+                    <entry>Boolean</entry>
+                  </row>
+                  <row>
+                    <entry>timersOnly</entry>
+                    <entry>If <literal>true</literal>, only return jobs which are timers. If false, this parameter is ignored. Cannot be used toghether with <literal>'messagesOnly'</literal>.</entry>
+                    <entry>Boolean</entry>
+                  </row>
+                  <row>
+                    <entry>messagesOnly</entry>
+                    <entry>If <literal>true</literal>, only return jobs which are messages. If false, this parameter is ignored. Cannot be used toghether with <literal>'timersOnly'</literal></entry>
+                    <entry>Boolean</entry>
+                  </row>
+                  <row>
+                    <entry>withException</entry>
+                    <entry>If <literal>true</literal>, only return jobs for which an exception occured while executing it. If false, this parameter is ignored.</entry>
+                    <entry>Boolean</entry>
+                  </row>
+                  <row>
+                    <entry>dueBefore</entry>
+                    <entry>Only return jobs which are due to be executed before the given date. Jobs without duedate are never returned using this parameter.</entry>
+                    <entry>Date</entry>
+                  </row>
+                  <row>
+                    <entry>dueAfter</entry>
+                    <entry>Only return jobs which are due to be executed after the given date. Jobs without duedate are never returned using this parameter.</entry>
+                    <entry>Date</entry>
+                  </row>
+                  <row>
+                    <entry>exceptionMessage</entry>
+                    <entry>Only return jobs with the given exception message</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>dueDate</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal> or <literal>retries</literal>.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "data":[
+      {
+         "id":"13",
+         "url":"http://localhost:8182/management/jobs/13",
+         "processInstanceId":"5",
+         "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+         "processDefinitionId":"timerProcess:1:4",
+         "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/timerProcess%3A1%3A4",
+         "executionId":"12",
+         "executionUrl":"http://localhost:8182/runtime/executions/12",
+         "retries":0,
+         "exceptionMessage":"Can't find scripting engine for 'unexistinglanguage'",
+         "dueDate":"2013-06-07T10:00:24.653+0000"
+      },
+      
+      ...
+   ],
+   "total":2,
+   "start":0,
+   "sort":"id",
+   "order":"asc",
+   "size":2
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the requested jobs were returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates an illegal value has been used in a url query parameter or the both <literal>'messagesOnly'</literal> and <literal>'timersOnly'</literal> are used as parameters. Status description contains additional details about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+ </section>
+   
+    
 </section>
 
 <!-- Legacy -->
