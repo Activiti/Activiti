@@ -24,14 +24,14 @@ import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration("classpath:activiti-context-ldap-group-cache.xml")
-public class LdapGroupCacheTest extends SpringActivitiTestCase {
+public class LdapGroupCacheTest extends LDAPTestCase {
   
   protected TestLDAPGroupCacheListener cacheListener;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
- 
+    
     // Set test cache listener
     LDAPGroupManagerFactory ldapGroupManagerFactory = 
             (LDAPGroupManagerFactory) processEngineConfiguration.getSessionFactories().get(GroupIdentityManager.class);
@@ -40,6 +40,8 @@ public class LdapGroupCacheTest extends SpringActivitiTestCase {
     
     cacheListener = new TestLDAPGroupCacheListener();
     ldapGroupCache.setLdapCacheListener(cacheListener);
+    
+    
   }
   
   @Deployment
