@@ -58,6 +58,7 @@ import org.activiti.rest.api.history.HistoricDetailResponse;
 import org.activiti.rest.api.history.HistoricProcessInstanceResponse;
 import org.activiti.rest.api.history.HistoricTaskInstanceResponse;
 import org.activiti.rest.api.history.HistoricVariableInstanceResponse;
+import org.activiti.rest.api.identity.UserInfoResponse;
 import org.activiti.rest.api.identity.UserResponse;
 import org.activiti.rest.api.legacy.identity.LegacyRestIdentityLink;
 import org.activiti.rest.api.management.JobResponse;
@@ -561,6 +562,14 @@ public class RestResponseFactory {
     return response;
   }
   
+  public UserInfoResponse createUserInfoResponse(SecuredResource securedResource, String key, String value, String userId) {
+    UserInfoResponse response = new UserInfoResponse();
+    response.setKey(key);
+    response.setValue(value);
+    response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_USER_INFO, userId, key));
+    return response;
+  }
+  
   
   /**
    * Called once when the converters need to be initialized. Override of custom conversion
@@ -575,5 +584,4 @@ public class RestResponseFactory {
     variableConverters.add(new BooleanRestVariableConverter());
     variableConverters.add(new DateRestVariableConverter());
   }
-
 }

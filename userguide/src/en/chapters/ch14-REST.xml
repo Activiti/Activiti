@@ -4618,7 +4618,52 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
     <para>
-       <emphasis role="bold">Success response body:</emphasis> see response for <literal>runtime/tasks/{taskId}</literal>.
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>identity/users/{userId}</literal>.
+      </para>
+  </section>
+  
+   <section>
+      <title>Create a user</title>
+        <para>
+          <programlisting>POST identity/users/</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{
+  "id":"tijs",
+  "firstName":"Tijs",
+  "lastName":"Barrez",
+  "url":"http://localhost:8182/identity/users/anotherUser",
+  "email":"no-reply@alfresco.org"
+}</programlisting>
+      All request values are optional. For example, you can only include the 'firstName' attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: <literal>{"firstName" : null}</literal> will clear the firstName of the user).
+       </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the user was created.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the id of the user was missing.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>identity/users/{userId}</literal>.
       </para>
   </section>
   
@@ -4674,7 +4719,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-   <section>
+  <section>
       <title>Get a user's picture</title>
          <para>
         <programlisting>GET identity/users/{userId}/picture</programlisting>
@@ -4791,6 +4836,348 @@ Only the attachment name is required to create a new attachment.
         </para>
   </section>
   
+  <section>
+      <title>List a user's info</title>
+         <para>
+        <programlisting>GET identity/users/{userId}/info</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>userId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the user to get the info for.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+          <emphasis role="bold">Response Body:</emphasis>
+<programlisting>
+[
+   {
+      "key":"key1",
+      "url":"http://localhost:8182/identity/users/testuser/info/key1"
+   },
+   {
+      "key":"key2",
+      "url":"http://localhost:8182/identity/users/testuser/info/key2"
+   }
+]</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the user was found and list of info (key and url) is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested user was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Get a user's info</title>
+         <para>
+        <programlisting>GET identity/users/{userId}/info/{key}</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>userId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the user to get the info for.</entry>
+                </row>
+                <row>
+                  <entry>key</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The key of the user info to get.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+          <emphasis role="bold">Response Body:</emphasis>
+<programlisting>
+{
+   "key":"key1",
+   "value":"Value 1",
+   "url":"http://localhost:8182/identity/users/testuser/info/key1"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the user was found and the user has info for the given key..</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. Status description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Update a user's info</title>
+         <para>
+        <programlisting>PUT identity/users/{userId}/info/{key}</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>userId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the user to update the info for.</entry>
+                </row>
+                <row>
+                  <entry>key</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The key of the user info to update.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+       <para>
+          <emphasis role="bold">Request Body:</emphasis>
+<programlisting>
+{
+   "value":"The updated value"
+}</programlisting>
+      </para>
+        <para>
+          <emphasis role="bold">Response Body:</emphasis>
+<programlisting>
+{
+   "key":"key1",
+   "value":"The updated value",
+   "url":"http://localhost:8182/identity/users/testuser/info/key1"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the user was found and the info has been updated.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the value was missing from the request body.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. Status description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+   <section>
+      <title>Create a new user's info entry</title>
+         <para>
+        <programlisting>POST identity/users/{userId}/info</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>userId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the user to create the info for.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+       <para>
+          <emphasis role="bold">Request Body:</emphasis>
+<programlisting>
+{
+   "key":"key1",
+   "value":"The value"
+}</programlisting>
+      </para>
+        <para>
+          <emphasis role="bold">Response Body:</emphasis>
+<programlisting>
+{
+   "key":"key1",
+   "value":"The value",
+   "url":"http://localhost:8182/identity/users/testuser/info/key1"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the user was found and the info has been created.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the key or value was missing from the request body. Status description contains additional information about the error.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested user was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates there is already an info-entry with the given key for the user, update the resource instance (<literal>PUT</literal>).</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Delete a user's info</title>
+         <para>
+        <programlisting>DELETE identity/users/{userId}/info/{key}</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>userId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the user to delete the info for.</entry>
+                </row>
+                <row>
+                  <entry>key</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The key of the user info to delete.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the user was found and the info for the given key has been deleted. Response body is left empty intentionally.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. Status description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
   
 </section>
 

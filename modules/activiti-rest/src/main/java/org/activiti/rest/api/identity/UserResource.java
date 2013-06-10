@@ -13,11 +13,8 @@
 
 package org.activiti.rest.api.identity;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -27,7 +24,7 @@ import org.restlet.resource.Put;
 /**
  * @author Frederik Heremans
  */
-public class UserResource extends SecuredResource {
+public class UserResource extends BaseUserResource {
 
   @Get
   public UserResponse getUser() {
@@ -66,20 +63,5 @@ public class UserResource extends SecuredResource {
     User user = getUserFromRequest();
     ActivitiUtil.getIdentityService().deleteUser(user.getId());
     setStatus(Status.SUCCESS_NO_CONTENT);
-  }
-  
-  
-  protected User getUserFromRequest() {
-    String userId = getAttribute("userId");
-    if (userId == null) {
-      throw new ActivitiIllegalArgumentException("The userId cannot be null");
-    }
-
-    User user = ActivitiUtil.getIdentityService().createUserQuery().userId(userId).singleResult();
-
-    if (user == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a user with id '" + userId + "'.", User.class);
-    }
-    return user;
   }
 }

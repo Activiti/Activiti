@@ -20,6 +20,12 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Status;
+import org.restlet.representation.Representation;
+import org.restlet.resource.ClientResource;
+import org.restlet.resource.ResourceException;
 
 
 /**
@@ -104,6 +110,69 @@ public class UserCollectionResourceTest extends BaseRestTestCase {
           identityService.deleteUser(user.getId());
         }
       }
+    }
+  }
+  
+  public void testCreateUser() throws Exception {
+    try {
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      requestNode.put("id", "testuser");
+      requestNode.put("firstName", "Frederik");
+      requestNode.put("lastName", "Heremans");
+      requestNode.put("email", "no-reply@activiti.org");
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_COLLECTION, "testuser"));
+      Representation response = client.post(requestNode);
+      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      
+      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      assertNotNull(responseNode);
+      assertEquals("testuser", responseNode.get("id").getTextValue());
+      assertEquals("Frederik", responseNode.get("firstName").getTextValue());
+      assertEquals("Heremans", responseNode.get("lastName").getTextValue());
+      assertEquals("no-reply@activiti.org", responseNode.get("email").getTextValue());
+      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, "testuser")));
+      
+    } finally {
+      try {
+        identityService.deleteUser("testuser");
+      } catch(Throwable t) {
+        // Ignore, user might not have been created by test
+      }
+    }
+  }
+  
+  public void testCreateUserExceptions() throws Exception {
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_COLLECTION, "unexisting"));
+    
+    // Create without ID
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("firstName", "Frederik");
+    requestNode.put("lastName", "Heremans");
+    requestNode.put("email", "no-reply@activiti.org");
+    
+    try {
+      client.post(requestNode);
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+      assertEquals("Id cannot be null.", expected.getStatus().getDescription());
+    }
+    
+    // Create when user already exists
+    // Create without ID
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("id", "kermit");
+    requestNode.put("firstName", "Frederik");
+    requestNode.put("lastName", "Heremans");
+    requestNode.put("email", "no-reply@activiti.org");
+    
+    try {
+      client.post(requestNode);
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
+      assertEquals("A user with id 'kermit' already exists.", expected.getStatus().getDescription());
     }
   }
 }
