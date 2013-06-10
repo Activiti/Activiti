@@ -85,8 +85,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
       .singleResult();
     assertNotNull(serviceTaskActivity);
     
-    List<HistoricDetail> historicDetails = historyService
-      .createHistoricDetailQuery()
+    List<HistoricDetail> historicDetails = historyService.createHistoricDetailQuery()
       .orderByVariableName().asc()
       .orderByVariableRevision().asc()
       .list();

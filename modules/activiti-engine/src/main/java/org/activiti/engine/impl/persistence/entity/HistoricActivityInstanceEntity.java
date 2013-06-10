@@ -49,38 +49,34 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   public String getActivityId() {
     return activityId;
   }
+  public void setActivityId(String activityId) {
+    this.activityId = activityId;
+  }
+
   public String getActivityName() {
     return activityName;
+  }
+  public void setActivityName(String activityName) {
+    this.activityName = activityName;
   }
 
   public String getActivityType() {
     return activityType;
   }
+  public void setActivityType(String activityType) {
+    this.activityType = activityType;
+  }
   
   public String getExecutionId() {
     return executionId;
   }
-  
   public void setExecutionId(String executionId) {
     this.executionId = executionId;
   }
   
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;
-  }
-  
-  public void setActivityName(String activityName) {
-    this.activityName = activityName;
-  }
-  
-  public void setActivityType(String activityType) {
-    this.activityType = activityType;
-  }
-
   public String getAssignee() {
     return assignee;
   }
-
   public void setAssignee(String assignee) {
     this.assignee = assignee;
   }
@@ -88,7 +84,6 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   public String getTaskId() {
     return taskId;
   }
-  
   public void setTaskId(String taskId) {
     this.taskId = taskId;
   }
@@ -96,9 +91,15 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   public String getCalledProcessInstanceId() {
     return calledProcessInstanceId;
   }
-  
   public void setCalledProcessInstanceId(String calledProcessInstanceId) {
     this.calledProcessInstanceId = calledProcessInstanceId;
+  }
+
+  // common methods  //////////////////////////////////////////////////////////
+
+  @Override
+  public String toString() {
+    return "HistoricActivityInstanceEntity[activityId=" + activityId + ", activityName=" + activityName + "]";
   }
 
 }
