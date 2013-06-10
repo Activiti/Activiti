@@ -5479,6 +5479,153 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
+  <section>
+    <title>Get members in a group</title>
+    <para>There is no GET allowed on <literal>identity/groups/members</literal>. Use the <literal>identity/users?memberOfGroup=sales</literal> URL to get all users that are part of a particular group.</para>
+  </section>
+  <section>
+      <title>Add a member to a group</title>
+         <para>
+        <programlisting>POST identity/groups/{groupId}/members</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>groupId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the group to add a member to.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+       <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{
+   "userId":"kermit"
+}</programlisting>
+       </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the group was found and the member has been added.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the userId was not included in the request body.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested group was not found.</entry>
+                  </row>
+                   <row>
+                    <entry>409</entry>
+                    <entry>Indicates the requested user is already a member of the group.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+         <emphasis role="bold">Response Body:</emphasis>
+           <programlisting>
+{
+   "userId":"kermit",
+   "groupId":"sales",
+    "url":"http://localhost:8182/identity/groups/sales/members/kermit"
+}</programlisting>
+       </para>
+  </section>
+  <section>
+      <title>Delete a member from a group</title>
+         <para>
+        <programlisting>DELETE identity/groups/{groupId}/members/{userId}</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>groupId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the group to remove a member from.</entry>
+                </row>
+                <row>
+                  <entry>userId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the user to remove.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the group was found and the member has been deleted. The response body is left empty intentionally.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested group was not found or that the user is not a member of the group. The status description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+         <emphasis role="bold">Response Body:</emphasis>
+           <programlisting>
+{
+   "userId":"kermit",
+   "groupId":"sales",
+    "url":"http://localhost:8182/identity/groups/sales/members/kermit"
+}</programlisting>
+       </para>
+  </section>
   
 </section>
 
