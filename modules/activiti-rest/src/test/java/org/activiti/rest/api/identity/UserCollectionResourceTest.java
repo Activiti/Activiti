@@ -133,6 +133,7 @@ public class UserCollectionResourceTest extends BaseRestTestCase {
       assertEquals("no-reply@activiti.org", responseNode.get("email").getTextValue());
       assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, "testuser")));
       
+      assertNotNull(identityService.createUserQuery().userId("testuser").singleResult());
     } finally {
       try {
         identityService.deleteUser("testuser");

@@ -369,6 +369,16 @@ public final class RestUrls {
   public static final String[] URL_USER_INFO_COLLECTION = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_USERS, "{0}", SEGMENT_INFO};
   
   /**
+   * URL template for the collection of groups: <i>identity/groups</i>
+   */
+  public static final String[] URL_GROUP_COLLECTION = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_GROUPS};
+  
+  /**
+   * URL template for a single group: <i>identity/groups/{0:groupId}</i>
+   */
+  public static final String[] URL_GROUP = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_GROUPS, "{0}"};
+  
+  /**
    * Creates an url based on the passed fragments and replaces any placeholders with the given arguments. The
    * placeholders are folowing the {@link MessageFormat} convention 
    * (eg. {0} is replaced by first argument value).
