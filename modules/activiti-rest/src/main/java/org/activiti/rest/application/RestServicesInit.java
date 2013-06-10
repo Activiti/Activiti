@@ -16,6 +16,7 @@ import org.activiti.rest.api.history.HistoricTaskInstanceResource;
 import org.activiti.rest.api.history.HistoricVariableInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricVariableInstanceQueryResource;
 import org.activiti.rest.api.identity.UserCollectionResource;
+import org.activiti.rest.api.identity.UserPictureResource;
 import org.activiti.rest.api.identity.UserResource;
 import org.activiti.rest.api.legacy.LegacyTaskAttachmentResource;
 import org.activiti.rest.api.legacy.TaskAddResource;
@@ -169,6 +170,7 @@ public class RestServicesInit {
     
     router.attach("/identity/users", UserCollectionResource.class);
     router.attach("/identity/users/{userId}", UserResource.class);
+    router.attach("/identity/users/{userId}/picture", UserPictureResource.class);
     
     
     router.attach("/query/tasks", TaskQueryResource.class);

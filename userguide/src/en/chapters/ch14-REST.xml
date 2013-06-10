@@ -4674,6 +4674,123 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
+   <section>
+      <title>Get a user's picture</title>
+         <para>
+        <programlisting>GET identity/users/{userId}/picture</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>userId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the user to get the pîcture for.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+          <emphasis role="bold">Response Body:</emphasis>
+          The response body contains the raw picture data, representing the user's picture. The Content-type of the response corresponds to the mimeType that was set when creating the picture.
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the user was found and has a picture, which is returned in the body.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested user was not found or the user does not have a profile picture. Status-description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Updating a user's picture</title>
+         <para>
+        <programlisting>GET identity/users/{userId}/picture</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>userId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the user to get the pîcture for.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the picture. On top of that, the folowing additionl form-fields can be present:
+        <itemizedlist>
+            <listitem>
+              <para><literal>mimeType</literal>: Optional mime-type for the uploaded picture. If omitted, the default of <literal>image/jpeg</literal> is used as a mime-type for the picture.</para>
+            </listitem>
+        </itemizedlist>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the user was found and the picture has been updated. The response-body is left empty intentionally.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested user was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
   
 </section>
 
