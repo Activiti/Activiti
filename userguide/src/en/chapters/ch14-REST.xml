@@ -4585,7 +4585,6 @@ Only the attachment name is required to create a new attachment.
 {
   "firstName":"Tijs",
   "lastName":"Barrez",
-  "url":"http://localhost:8182/identity/users/anotherUser",
   "email":"no-reply@alfresco.org"
 }</programlisting>
       All request values are optional. For example, you can only include the 'firstName' attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: <literal>{"firstName" : null}</literal> will clear the firstName of the user).
@@ -4625,7 +4624,7 @@ Only the attachment name is required to create a new attachment.
    <section>
       <title>Create a user</title>
         <para>
-          <programlisting>POST identity/users/</programlisting>
+          <programlisting>POST identity/users</programlisting>
         </para>
         <para>
          <emphasis role="bold">Body JSON:</emphasis>
@@ -4634,10 +4633,8 @@ Only the attachment name is required to create a new attachment.
   "id":"tijs",
   "firstName":"Tijs",
   "lastName":"Barrez",
-  "url":"http://localhost:8182/identity/users/anotherUser",
   "email":"no-reply@alfresco.org"
 }</programlisting>
-      All request values are optional. For example, you can only include the 'firstName' attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: <literal>{"firstName" : null}</literal> will clear the firstName of the user).
        </para>
         <para>
           <table>
@@ -5180,7 +5177,310 @@ Only the attachment name is required to create a new attachment.
   </section>
   
 </section>
+<section>
+  <title>Groups</title>
+   <section>
+      <title>Get a single group</title>
+        <para>
+          <programlisting>GET identity/groups/{groupId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>groupId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the group to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"testgroup",
+   "url":"http://localhost:8182/identity/groups/testgroup",
+   "name":"Test group",
+   "type":"Test type"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the group exists and is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested group does not exist.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Get a list of groups</title>
+        <para>
+          <programlisting>GET identity/groups</programlisting>
+        </para>
+        <para>
+        <table>
+              <title>URL query parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Type</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>id</entry>
+                    <entry>Only return group with the given id</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>name</entry>
+                    <entry>Only return groups with the given name</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>type</entry>
+                    <entry>Only return groups with the given type</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>nameLike</entry>
+                    <entry>Only return groups with a name like the given value. Use <literal>%</literal> as wildcard-character.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>member</entry>
+                    <entry>Only return groups which have a member with the given username.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>potentialStarter</entry>
+                    <entry>Only return groups which members are potential starters for a process-definition with the given id.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>name</literal> or <literal>type</literal>.</entry>
+                    <entry>String</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "data":[
+     {
+        "id":"testgroup",
+        "url":"http://localhost:8182/identity/groups/testgroup",
+        "name":"Test group",
+        "type":"Test type"
+     },
 
+      ...
+   ],
+   "total":3,
+   "start":0,
+   "sort":"id",
+   "order":"asc",
+   "size":3
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the requested groups were returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+ </section>
+ 
+  <section>
+      <title>Update a group</title>
+        <para>
+          <programlisting>PUT identity/groups/{groupId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{
+   "name":"Test group",
+   "type":"Test type"
+}</programlisting>
+      All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only updating the name of the group, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the group-value will be updated to null.
+       </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the group was updated.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested group was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the requested group was updated simultaneously.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>identity/groups/{groupId}</literal>.
+      </para>
+  </section>
+  
+   <section>
+      <title>Create a group</title>
+        <para>
+          <programlisting>POST identity/groups</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{
+   "id":"testgroup",
+   "name":"Test group",
+   "type":"Test type"
+}</programlisting>
+       </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the group was created.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the id of the group was missing.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>identity/groups/{groupId}</literal>.
+      </para>
+  </section>
+  
+  <section>
+      <title>Delete a group</title>
+         <para>
+        <programlisting>DELETE identity/groups/{groupId}</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>groupId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the group to delete.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the group was found and  has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested group was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+</section>
 
 <!-- Legacy -->
   <section>
