@@ -212,6 +212,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected String superExecutionId;
   
   protected boolean forcedUpdate;
+  
+  protected List<VariableInstanceEntity> queryVariables;
 
   public ExecutionEntity() {
   }
@@ -1374,4 +1376,21 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return activityName;
   }
   
+  public Map<String, Object> getProcessVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (VariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getTaskId() == null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public List<VariableInstanceEntity> getQueryVariables() {
+    return queryVariables;
+  }
+  public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
+    this.queryVariables = queryVariables;
+  }
 }

@@ -48,6 +48,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String processDefinitionKey;
   protected Set<String> processInstanceIds;
   protected String involvedUser;
+  protected boolean includeProcessVariables;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -144,6 +145,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return this;
   }
   
+  public HistoricProcessInstanceQuery includeProcessVariables() {
+    this.includeProcessVariables = true;
+    return this;
+  }
+  
   public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
     return orderBy(HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
   }
@@ -168,6 +174,14 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return orderBy(HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
   }
   
+  public String getMssqlOrDB2OrderBy() {
+    String specialOrderBy = super.getOrderBy();
+    if (specialOrderBy != null && specialOrderBy.length() > 0) {
+      specialOrderBy = specialOrderBy.replace("RES.", "TEMPRES_");
+    }
+    return specialOrderBy;
+  }
+  
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
@@ -179,9 +193,15 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext
-      .getHistoricProcessInstanceEntityManager()
-      .findHistoricProcessInstancesByQueryCriteria(this, page);
+    if (includeProcessVariables) {
+      return commandContext
+          .getHistoricProcessInstanceEntityManager()
+          .findHistoricProcessInstancesAndVariablesByQueryCriteria(this, page);
+    } else {
+      return commandContext
+          .getHistoricProcessInstanceEntityManager()
+          .findHistoricProcessInstancesByQueryCriteria(this, page);
+    }
   }
   
   public String getBusinessKey() {

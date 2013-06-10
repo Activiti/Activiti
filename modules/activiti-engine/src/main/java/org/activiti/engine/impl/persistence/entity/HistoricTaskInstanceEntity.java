@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -40,6 +41,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected int priority;
   protected Date dueDate;
   protected Date claimTime;
+  protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricTaskInstanceEntity() {
   }
@@ -161,5 +163,33 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
       return null;
     }
     return endTime.getTime() - claimTime.getTime();
+  }
+  public Map<String, Object> getTaskLocalVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (HistoricVariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getTaskId() != null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public Map<String, Object> getProcessVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (HistoricVariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getTaskId() == null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public List<HistoricVariableInstanceEntity> getQueryVariables() {
+    return queryVariables;
+  }
+  public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
+    this.queryVariables = queryVariables;
   }
 }

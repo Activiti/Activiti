@@ -45,6 +45,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String subProcessInstanceId;
   protected String involvedUser;
   protected SuspensionState suspensionState;
+  protected boolean includeProcessVariables;
   
   // Unused, see dynamic query
   protected String activityId;
@@ -156,6 +157,19 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     return this;
   }
   
+  public ProcessInstanceQuery includeProcessVariables() {
+    this.includeProcessVariables = true;
+    return this;
+  }
+  
+  public String getMssqlOrDB2OrderBy() {
+    String specialOrderBy = super.getOrderBy();
+    if (specialOrderBy != null && specialOrderBy.length() > 0) {
+      specialOrderBy = specialOrderBy.replace("RES.", "TEMPRES_");
+    }
+    return specialOrderBy;
+  }
+  
   //results /////////////////////////////////////////////////////////////////
   
   public long executeCount(CommandContext commandContext) {
@@ -169,9 +183,15 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public List<ProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext
-      .getExecutionEntityManager()
-      .findProcessInstanceByQueryCriteria(this, page);
+    if (includeProcessVariables) {
+      return commandContext
+          .getExecutionEntityManager()
+          .findProcessInstanceAndVariablesByQueryCriteria(this, page);
+    } else {
+      return commandContext
+          .getExecutionEntityManager()
+          .findProcessInstanceByQueryCriteria(this, page);
+    }
   }
   
   //getters /////////////////////////////////////////////////////////////////

@@ -15,6 +15,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -34,6 +35,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   protected String startUserId;
   protected String startActivityId;
   protected String superProcessInstanceId;
+  protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricProcessInstanceEntity() {
   }
@@ -89,10 +91,26 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     this.startActivityId = startUserId;
   }
   public String getSuperProcessInstanceId() {
-	return superProcessInstanceId;
+    return superProcessInstanceId;
   }
   public void setSuperProcessInstanceId(String superProcessInstanceId) {
-	this.superProcessInstanceId = superProcessInstanceId;
+    this.superProcessInstanceId = superProcessInstanceId;
   }
-  
+  public Map<String, Object> getProcessVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (HistoricVariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getTaskId() == null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public List<HistoricVariableInstanceEntity> getQueryVariables() {
+    return queryVariables;
+  }
+  public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
+    this.queryVariables = queryVariables;
+  }
 }

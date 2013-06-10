@@ -92,6 +92,14 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
     }
     return Collections.EMPTY_LIST;
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery, Page page) {
+    if (getHistoryManager().isHistoryEnabled()) {
+      return getDbSqlSession().selectList("selectHistoricProcessInstancesWithVariablesByQueryCriteria", historicProcessInstanceQuery, page);
+    }
+    return Collections.EMPTY_LIST;
+  }
 
   @SuppressWarnings("unchecked")
   public List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
