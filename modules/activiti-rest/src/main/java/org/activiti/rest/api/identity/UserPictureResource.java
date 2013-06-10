@@ -23,7 +23,6 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -40,7 +39,7 @@ import org.restlet.resource.ResourceException;
 /**
  * @author Frederik Heremans
  */
-public class UserPictureResource extends SecuredResource {
+public class UserPictureResource extends BaseUserResource {
 
   @Get
   public InputRepresentation getUserPicture() {
@@ -104,19 +103,5 @@ public class UserPictureResource extends SecuredResource {
     } catch (IOException e) {
       throw new ActivitiException("Error while reading uploaded file: " + e.getMessage(), e);
     }
-  }
-  
-  protected User getUserFromRequest() {
-    String userId = getAttribute("userId");
-    if (userId == null) {
-      throw new ActivitiIllegalArgumentException("The userId cannot be null");
-    }
-
-    User user = ActivitiUtil.getIdentityService().createUserQuery().userId(userId).singleResult();
-
-    if (user == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a user with id '" + userId + "'.", User.class);
-    }
-    return user;
   }
 }

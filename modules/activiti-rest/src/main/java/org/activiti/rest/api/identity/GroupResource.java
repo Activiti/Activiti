@@ -13,7 +13,8 @@
 
 package org.activiti.rest.api.identity;
 
-import org.activiti.engine.identity.User;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.identity.Group;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
@@ -24,44 +25,42 @@ import org.restlet.resource.Put;
 /**
  * @author Frederik Heremans
  */
-public class UserResource extends BaseUserResource {
+public class GroupResource extends BaseGroupResource {
 
   @Get
-  public UserResponse getUser() {
+  public GroupResponse getUser() {
     if(!authenticate())
       return null;
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createUserResponse(this, getUserFromRequest(), false);
+            .createGroupResponse(this, getGroupFromRequest());
   }
   
   @Put
-  public UserResponse updateUser(UserRequest request) {
+  public GroupResponse updateGroup(GroupRequest request) {
 
-    User user = getUserFromRequest();
-    if(request.isEmailChanged()) {
-      user.setEmail(request.getEmail());
+    Group group = getGroupFromRequest();
+
+    if(request.getId() == null || request.getId().equals(group.getId())) {
+      if(request.isNameChanged()) {
+        group.setName(request.getName());
+      }
+      if(request.isTypeChanged()) {
+        group.setType(request.getType());
+      }
+      ActivitiUtil.getIdentityService().saveGroup(group);
+    } else {
+      throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
     }
-    if(request.isFirstNameChanged()) {
-      user.setFirstName(request.getFirstName());
-    }
-    if(request.isLastNameChanged()) {
-      user.setLastName(request.getLastName());
-    }
-    if(request.isPasswordChanged()) {
-      user.setPassword(request.getPassword());
-    }
-    
-    ActivitiUtil.getIdentityService().saveUser(user);
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createUserResponse(this, user, false);
+            .createGroupResponse(this, group);
   }
   
   @Delete
-  public void deleteUser() {
-    User user = getUserFromRequest();
-    ActivitiUtil.getIdentityService().deleteUser(user.getId());
+  public void deleteGroup() {
+    Group group = getGroupFromRequest();
+    ActivitiUtil.getIdentityService().deleteGroup(group.getId());
     setStatus(Status.SUCCESS_NO_CONTENT);
   }
 }

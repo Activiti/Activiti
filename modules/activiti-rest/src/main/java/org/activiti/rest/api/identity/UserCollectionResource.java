@@ -88,7 +88,7 @@ public class UserCollectionResource extends SecuredResource {
   @Post
   public UserResponse createUser(UserRequest request) {
     if(request.getId() == null) {
-      throw new ActivitiIllegalArgumentException("The id for the new user cannot be null");
+      throw new ActivitiIllegalArgumentException("Id cannot be null.");
     }
 
     // Check if a user with the given ID already exists so we return a CONFLICT
@@ -102,6 +102,8 @@ public class UserCollectionResource extends SecuredResource {
     created.setLastName(request.getLastName());
     created.setPassword(request.getPassword());
     ActivitiUtil.getIdentityService().saveUser(created);
+    
+    setStatus(Status.SUCCESS_CREATED);
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
             .createUserResponse(this, created, true);

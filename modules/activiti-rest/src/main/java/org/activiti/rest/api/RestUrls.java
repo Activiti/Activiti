@@ -62,6 +62,7 @@ public final class RestUrls {
   public static final String SEGMENT_USERS = "users";
   public static final String SEGMENT_GROUPS = "groups";
   public static final String SEGMENT_PICTURE = "picture";
+  public static final String SEGMENT_INFO = "info";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -356,6 +357,26 @@ public final class RestUrls {
    * URL template for the picture for a single user: <i>identity/users/{0:userId}/picture</i>
    */
   public static final String[] URL_USER_PICTURE = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_USERS, "{0}", SEGMENT_PICTURE};
+
+  /**
+   * URL template for an info entry for a single user: <i>identity/users/{0:userId}/info/{1:key}</i>
+   */
+  public static final String[] URL_USER_INFO = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_USERS, "{0}", SEGMENT_INFO, "{1}"};
+  
+  /**
+   * URL template for the info collection for a single user: <i>identity/users/{0:userId}/info</i>
+   */
+  public static final String[] URL_USER_INFO_COLLECTION = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_USERS, "{0}", SEGMENT_INFO};
+  
+  /**
+   * URL template for the collection of groups: <i>identity/groups</i>
+   */
+  public static final String[] URL_GROUP_COLLECTION = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_GROUPS};
+  
+  /**
+   * URL template for a single group: <i>identity/groups/{0:groupId}</i>
+   */
+  public static final String[] URL_GROUP = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_GROUPS, "{0}"};
   
   /**
    * Creates an url based on the passed fragments and replaces any placeholders with the given arguments. The

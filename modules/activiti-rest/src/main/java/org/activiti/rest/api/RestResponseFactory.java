@@ -26,6 +26,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -58,6 +59,8 @@ import org.activiti.rest.api.history.HistoricDetailResponse;
 import org.activiti.rest.api.history.HistoricProcessInstanceResponse;
 import org.activiti.rest.api.history.HistoricTaskInstanceResponse;
 import org.activiti.rest.api.history.HistoricVariableInstanceResponse;
+import org.activiti.rest.api.identity.GroupResponse;
+import org.activiti.rest.api.identity.UserInfoResponse;
 import org.activiti.rest.api.identity.UserResponse;
 import org.activiti.rest.api.legacy.identity.LegacyRestIdentityLink;
 import org.activiti.rest.api.management.JobResponse;
@@ -558,6 +561,24 @@ public class RestResponseFactory {
     if(incudePassword) {
       response.setPassword(user.getPassword());
     }
+    return response;
+  }
+  
+  public UserInfoResponse createUserInfoResponse(SecuredResource securedResource, String key, String value, String userId) {
+    UserInfoResponse response = new UserInfoResponse();
+    response.setKey(key);
+    response.setValue(value);
+    response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_USER_INFO, userId, key));
+    return response;
+  }
+  
+  public GroupResponse createGroupResponse(SecuredResource securedResource, Group group) {
+    GroupResponse response = new GroupResponse();
+    response.setId(group.getId());
+    response.setName(group.getName());
+    response.setType(group.getType());
+    response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_GROUP, group.getId()));
+    
     return response;
   }
   

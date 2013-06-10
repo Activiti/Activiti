@@ -13,6 +13,8 @@
 
 package org.activiti.rest.api.identity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 
 /**
  * @author Frederik Heremans
@@ -48,18 +50,19 @@ public class UserRequest extends UserResponse {
     passwordChanged = true;
   }
   
+  @JsonIgnore
   public boolean isEmailChanged() {
     return emailChanged;
   }
-  
+  @JsonIgnore
   public boolean isFirstNameChanged() {
     return firstNameChanged;
   }
-  
+  @JsonIgnore
   public boolean isLastNameChanged() {
     return lastNameChanged;
   }
-  
+  @JsonIgnore
   public boolean isPasswordChanged() {
     return passwordChanged;
   }

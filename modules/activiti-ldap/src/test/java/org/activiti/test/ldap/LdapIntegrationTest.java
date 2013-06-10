@@ -13,12 +13,11 @@
 package org.activiti.test.ldap;
 
 import org.activiti.engine.test.Deployment;
-import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration("classpath:activiti-context.xml")
-public class LdapIntegrationTest extends SpringActivitiTestCase {
-
+public class LdapIntegrationTest extends LDAPTestCase {
+  
   public void testAuthenticationThroughLdap() {
     assertTrue(identityService.checkPassword("kermit", "pass"));
     assertFalse(identityService.checkPassword("kermit", "blah"));
