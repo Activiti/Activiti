@@ -32,6 +32,11 @@ import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 
 /**
+ * Implementation of the {@link GroupIdentityManager} interface specifically for LDAP.
+ * 
+ * Note that only a few methods are actually implemented, as many of the operations 
+ * (save, update, etc.) are done on the LDAP system directly. 
+ * 
  * @author Joram Barrez
  */
 public class LDAPGroupManager extends AbstractManager implements GroupIdentityManager {

@@ -22,6 +22,11 @@ import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility class for managing LDAP connections.
+ * 
+ * @author jbarrez
+ */
 public class LDAPConnectionUtil {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(LDAPConnectionUtil.class); 
@@ -34,6 +39,7 @@ public class LDAPConnectionUtil {
     Properties properties = new Properties();
     properties.put(Context.INITIAL_CONTEXT_FACTORY, ldapConfigurator.getInitialContextFactory()); 
     properties.put(Context.PROVIDER_URL, ldapConfigurator.getServer() + ":" + ldapConfigurator.getPort());
+    properties.put(Context.SECURITY_AUTHENTICATION, ldapConfigurator.getSecurityAuthentication());
     properties.put(Context.SECURITY_PRINCIPAL, principal);
     properties.put(Context.SECURITY_CREDENTIALS, credentials);
     

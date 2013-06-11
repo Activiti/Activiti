@@ -19,6 +19,9 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ * Internal class used to simplify ldap calls by wrapping the
+ * actual ldap logic in a {@link LDAPCallBack}.
+ * 
  * @author Joram Barrez
  */
 public class LDAPTemplate {

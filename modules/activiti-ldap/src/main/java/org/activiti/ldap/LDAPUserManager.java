@@ -35,6 +35,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Implementation of the {@link UserIdentityManager} interface specifically for LDAP.
+ * 
+ * Note that only a few methods are actually implemented, as many of the operations 
+ * (save, update, etc.) are done on the LDAP system directly. 
+ * 
  * @author Joram Barrez
  */
 public class LDAPUserManager extends AbstractManager implements UserIdentityManager {
@@ -80,7 +85,11 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
           while (namingEnum.hasMore()) { // Should be only one
             SearchResult result = (SearchResult) namingEnum.next();
             
-            user.setId(userId);
+            if (ldapConfigurator.getUserIdAttribute() != null) {
+              user.setId(result.getAttributes().get(ldapConfigurator.getUserIdAttribute()).get().toString());
+            } else {
+              user.setId(userId);
+            }
             
             if (ldapConfigurator.getUserFirstNameAttribute() != null) {
               user.setFirstName(result.getAttributes().get(ldapConfigurator.getUserFirstNameAttribute()).get().toString());
