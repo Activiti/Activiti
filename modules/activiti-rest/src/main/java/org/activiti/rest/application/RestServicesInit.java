@@ -89,6 +89,8 @@ import org.activiti.rest.api.runtime.process.ProcessDefinitionFormResource;
 import org.activiti.rest.api.runtime.process.ProcessDefinitionPropertiesResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceCollectionResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceDiagramResource;
+import org.activiti.rest.api.runtime.process.ProcessInstanceIdentityLinkCollectionResource;
+import org.activiti.rest.api.runtime.process.ProcessInstanceIdentityLinkResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceQueryResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceSignalExecutionResource;
@@ -154,6 +156,8 @@ public class RestServicesInit {
     router.attach("/runtime/process-instances/{processInstanceId}/variables", ProcessInstanceVariableCollectionResource.class);
     router.attach("/runtime/process-instances/{processInstanceId}/variables/{variableName}", ProcessInstanceVariableResource.class);
     router.attach("/runtime/process-instances/{processInstanceId}/variables/{variableName}/data", ProcessInstanceVariableDataResource.class);
+    router.attach("/runtime/process-instances/{processInstanceId}/identitylinks", ProcessInstanceIdentityLinkCollectionResource.class);
+    router.attach("/runtime/process-instances/{processInstanceId}/identitylinks/users/{identityId}/{type}", ProcessInstanceIdentityLinkResource.class);
     
     router.attach("/runtime/executions", ExecutionCollectionResource.class);
     router.attach("/runtime/executions/{executionId}", ExecutionResource.class);

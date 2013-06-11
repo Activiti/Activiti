@@ -78,7 +78,7 @@ public class ProcessDefinitionIdentityLinkCollectionResource extends SecuredReso
     
     setStatus(Status.SUCCESS_CREATED);
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestIdentityLink(this, identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), null, processDefinition.getId());
+            .createRestIdentityLink(this, identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), null, processDefinition.getId(), null);
   }
   
   /**
