@@ -55,7 +55,12 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
       
       // Wait for termination or timeout and check if all tasks are complete
       executor.shutdown();
-      executor.awaitTermination(20000, TimeUnit.MILLISECONDS);
+      boolean isEnded = executor.awaitTermination(20000, TimeUnit.MILLISECONDS);
+      if(!isEnded) {
+        log.error("Executor was not shut down after timeout, not al tasks have been executed");
+        executor.shutdownNow();
+        
+      }
       assertEquals(0, executor.getActiveCount());
       
       // Check there are no processes active anymore
