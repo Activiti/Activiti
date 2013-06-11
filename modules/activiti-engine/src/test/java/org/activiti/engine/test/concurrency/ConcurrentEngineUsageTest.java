@@ -42,7 +42,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
   @Deployment
   public void testConcurrentUsage() throws Exception {
     
-    if(!processEngineConfiguration.getDatabaseType().equals("h2")) {
+    if(!processEngineConfiguration.getDatabaseType().equals("h2") && !processEngineConfiguration.getDatabaseType().equals("db2")) {
       int numberOfThreads = 5;
       int numberOfProcessesPerThread = 5;
       int totalNumberOfTasks = 2 * numberOfThreads * numberOfProcessesPerThread;
