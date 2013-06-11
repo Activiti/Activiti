@@ -43,6 +43,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.rest.api.engine.AttachmentResponse;
 import org.activiti.rest.api.engine.CommentResponse;
 import org.activiti.rest.api.engine.EventResponse;
+import org.activiti.rest.api.engine.RestIdentityLink;
 import org.activiti.rest.api.engine.variable.BooleanRestVariableConverter;
 import org.activiti.rest.api.engine.variable.DateRestVariableConverter;
 import org.activiti.rest.api.engine.variable.DoubleRestVariableConverter;
@@ -63,7 +64,6 @@ import org.activiti.rest.api.identity.GroupResponse;
 import org.activiti.rest.api.identity.MembershipResponse;
 import org.activiti.rest.api.identity.UserInfoResponse;
 import org.activiti.rest.api.identity.UserResponse;
-import org.activiti.rest.api.legacy.identity.LegacyRestIdentityLink;
 import org.activiti.rest.api.management.JobResponse;
 import org.activiti.rest.api.management.TableResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
@@ -84,6 +84,14 @@ import org.restlet.data.MediaType;
  */
 public class RestResponseFactory {
 
+  public static final int VARIABLE_TASK = 1;
+  public static final int VARIABLE_EXECUTION = 2;
+  public static final int VARIABLE_PROCESS = 3;
+  public static final int VARIABLE_HISTORY_TASK = 4;
+  public static final int VARIABLE_HISTORY_PROCESS = 5;
+  public static final int VARIABLE_HISTORY_VARINSTANCE = 6;
+  public static final int VARIABLE_HISTORY_DETAIL = 7;
+  
   public static final String BYTE_ARRAY_VARIABLE_TYPE = "binary";
   public static final String SERIALIZABLE_VARIABLE_TYPE = "serializable";
   
@@ -167,33 +175,34 @@ public class RestResponseFactory {
     return response;
   }
   
-  public List<RestVariable> createRestVariables(SecuredResource securedResource, Map<String, Object> variables, String taskId, String executionId, String processInstanceId, RestVariableScope scope) {
+  public List<RestVariable> createRestVariables(SecuredResource securedResource, Map<String, Object> variables, String id, int variableType, RestVariableScope scope) {
    List<RestVariable> result = new ArrayList<RestVariable>();
    
    for(Entry<String, Object> pair : variables.entrySet()) {
-     result.add(createRestVariable(securedResource, pair.getKey(), pair.getValue(), scope, taskId, executionId, processInstanceId, null, false));
+     result.add(createRestVariable(securedResource, pair.getKey(), pair.getValue(), scope, id, variableType, false));
    }
    
    return result;
   }
   
-  public RestVariable createRestVariable(SecuredResource securedResource, String name, Object value, RestVariableScope scope, String taskId, 
-      String executionId, String processInstanceId, String historicDetailId, boolean includeBinaryValue) {
+  public RestVariable createRestVariable(SecuredResource securedResource, String name, Object value, RestVariableScope scope, 
+      String id, int variableType, boolean includeBinaryValue) {
+    
     RestVariableConverter converter = null;
     RestVariable restVar = new RestVariable();
     restVar.setVariableScope(scope);
     restVar.setName(name);
     
-    if(value != null) {
+    if (value != null) {
       // Try converting the value
-      for(RestVariableConverter c : variableConverters) {
-        if(value.getClass().isAssignableFrom(c.getVariableType())) {
+      for (RestVariableConverter c : variableConverters) {
+        if (value.getClass().isAssignableFrom(c.getVariableType())) {
           converter = c;
           break;
         }
       }
       
-      if(converter != null) {
+      if (converter != null) {
         converter.convertVariableValue(value, restVar);
         restVar.setType(converter.getRestTypeName());
       } else {
@@ -204,24 +213,24 @@ public class RestResponseFactory {
           restVar.setType(SERIALIZABLE_VARIABLE_TYPE);
         }
         
-        if(includeBinaryValue) {
+        if (includeBinaryValue) {
           restVar.setValue(value);
         }
         
-        if(taskId != null) {
-          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
-        }
-        
-        if(executionId != null) {
-          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, executionId, name));
-        }
-        
-        if(processInstanceId != null) {
-          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_DATA, processInstanceId, name));
-        }
-        
-        if(historicDetailId != null) {
-          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_DETAIL_VARIABLE_DATA, historicDetailId));
+        if (variableType == VARIABLE_TASK) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, id, name));
+        } else if (variableType == VARIABLE_EXECUTION) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, id, name));
+        } else if (variableType == VARIABLE_PROCESS) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_DATA, id, name));
+        } else if (variableType == VARIABLE_HISTORY_TASK) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE_VARIABLE_DATA, id, name));
+        } else if (variableType == VARIABLE_HISTORY_PROCESS) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_VARIABLE_DATA, id, name));
+        } else if (variableType == VARIABLE_HISTORY_VARINSTANCE) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_VARIABLE_INSTANCE_DATA, id));
+        } else if (variableType == VARIABLE_HISTORY_DETAIL) {
+          restVar.setValueUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_DETAIL_VARIABLE_DATA, id));
         }
       }
     }
@@ -300,12 +309,12 @@ public class RestResponseFactory {
     return value;
   }
   
-  public LegacyRestIdentityLink createRestIdentityLink(SecuredResource securedResource, IdentityLink link) {
-    return createRestIdentityLink(securedResource, link.getType(), link.getUserId(), link.getGroupId(), link.getTaskId());
+  public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, IdentityLink link) {
+    return createRestIdentityLink(securedResource, link.getType(), link.getUserId(), link.getGroupId(), link.getTaskId(), link.getProcessDefinitionId(), link.getProcessInstanceId());
   }
   
-  public LegacyRestIdentityLink createRestIdentityLink(SecuredResource securedResource, String type, String userId, String groupId, String taskId) {
-    LegacyRestIdentityLink result = new LegacyRestIdentityLink();
+  public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, String type, String userId, String groupId, String taskId, String processDefinitionId, String processInstanceId) {
+    RestIdentityLink result = new RestIdentityLink();
     result.setUser(userId);
     result.setGroup(groupId);
     result.setType(type);
@@ -316,7 +325,13 @@ public class RestResponseFactory {
     } else {
       family = RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS;
     }
-    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, taskId, family, (userId != null ? userId : groupId), type));
+    if(processDefinitionId != null) {
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinitionId, family, (userId != null ? userId : groupId)));
+    } else if(taskId != null){
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, taskId, family, (userId != null ? userId : groupId), type));
+    } else {
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, processInstanceId, (userId != null ? userId : groupId), type));
+    }
     return result;
   }
   
@@ -425,6 +440,13 @@ public class RestResponseFactory {
     result.setStartUserId(processInstance.getStartUserId());
     result.setSuperProcessInstanceId(processInstance.getSuperProcessInstanceId());
     result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, processInstance.getId()));
+    if (processInstance.getProcessVariables() != null) {
+      Map<String, Object> variableMap = processInstance.getProcessVariables();
+      for (String name : variableMap.keySet()) {
+        result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
+            RestVariableScope.GLOBAL, processInstance.getId(), VARIABLE_HISTORY_PROCESS, false));
+      }
+    }
     return result;
   }
   
@@ -452,6 +474,20 @@ public class RestResponseFactory {
     result.setTaskDefinitionKey(taskInstance.getTaskDefinitionKey());
     result.setWorkTimeInMillis(taskInstance.getWorkTimeInMillis());
     result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, taskInstance.getId()));
+    if (taskInstance.getProcessVariables() != null) {
+      Map<String, Object> variableMap = taskInstance.getProcessVariables();
+      for (String name : variableMap.keySet()) {
+        result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
+            RestVariableScope.GLOBAL, taskInstance.getId(), VARIABLE_HISTORY_TASK, false));
+      }
+    }
+    if (taskInstance.getTaskLocalVariables() != null) {
+      Map<String, Object> variableMap = taskInstance.getTaskLocalVariables();
+      for (String name : variableMap.keySet()) {
+        result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
+            RestVariableScope.LOCAL, taskInstance.getId(), VARIABLE_HISTORY_TASK, false));
+      }
+    }
     return result;
   }
   
@@ -481,9 +517,8 @@ public class RestResponseFactory {
     result.setProcessInstanceId(variableInstance.getProcessInstanceId());
     result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, variableInstance.getProcessInstanceId()));
     result.setTaskId(variableInstance.getTaskId());
-    result.setValue(variableInstance.getValue());
-    result.setVariableName(variableInstance.getVariableName());
-    result.setVariableTypeName(variableInstance.getVariableTypeName());
+    result.setVariable(createRestVariable(securedResource, variableInstance.getVariableName(), variableInstance.getValue(), 
+        null, variableInstance.getId(), VARIABLE_HISTORY_VARINSTANCE, false));
     return result;
   }
   
@@ -511,7 +546,7 @@ public class RestResponseFactory {
       result.setDetailType(HistoricDetailResponse.VARIABLE_UPDATE);
       result.setRevision(variableUpdate.getRevision());
       result.setVariable(createRestVariable(securedResource, variableUpdate.getVariableName(), variableUpdate.getValue(), 
-          null, null, null, null, detail.getId(), false));
+          null, detail.getId(), VARIABLE_HISTORY_DETAIL, false));
     }
     return result;
   }

@@ -118,7 +118,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
           Object actualVariableValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
                   .getVariableValue(var);
           variablesToSet.put(var.getName(), actualVariableValue);
-          variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, task.getId(), null, null, null, false));
+          variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, task.getId(), RestResponseFactory.VARIABLE_TASK, false));
         }
         
         if(variablesToSet.size() > 0) {
@@ -155,7 +155,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
     if(task.getExecutionId() != null) {
       Map<String, Object> rawVariables = ActivitiUtil.getRuntimeService().getVariables(task.getExecutionId());
       List<RestVariable> globalVariables = getApplication(ActivitiRestServicesApplication.class)
-              .getRestResponseFactory().createRestVariables(this, rawVariables, task.getId(), null, null, RestVariableScope.GLOBAL);
+              .getRestResponseFactory().createRestVariables(this, rawVariables, task.getId(), RestResponseFactory.VARIABLE_TASK, RestVariableScope.GLOBAL);
       
       // Overlay global variables over local ones. In case they are present the values are not overridden, 
       // since local variables get precedence over global ones at all times.
@@ -171,7 +171,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
   protected void addLocalVariables(Task task, Map<String, RestVariable> variableMap) {
     Map<String, Object> rawVariables = ActivitiUtil.getTaskService().getVariablesLocal(task.getId());
     List<RestVariable> localVariables = getApplication(ActivitiRestServicesApplication.class)
-            .getRestResponseFactory().createRestVariables(this, rawVariables, task.getId(), null, null, RestVariableScope.LOCAL);
+            .getRestResponseFactory().createRestVariables(this, rawVariables, task.getId(), RestResponseFactory.VARIABLE_TASK, RestVariableScope.LOCAL);
     
     for(RestVariable var : localVariables) {
       variableMap.put(var.getName(), var);

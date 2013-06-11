@@ -12,12 +12,16 @@
  */
 package org.activiti.ldap;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.ldap.LDAPGroupCache.LDAPGroupCacheListener;
 
 /**
+ * {@link SessionFactory} responsible for creating the {@link LDAPGroupManager}.
+ * Is plugged into the {@link ProcessEngineConfiguration} automatically through the {@link LDAPConfigurator}.
+ * 
  * @author Joram Barrez
  */
 public class LDAPGroupManagerFactory implements SessionFactory {

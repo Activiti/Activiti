@@ -16,6 +16,9 @@ import javax.naming.directory.InitialDirContext;
 
 
 /**
+ * Used to wrap ldap logic so it can be used by the {@link LDAPTemplate},
+ * so that no boilerplate code needs to be repeated every time.
+ * 
  * @author Joram Barrez
  */
 public interface LDAPCallBack<T> {

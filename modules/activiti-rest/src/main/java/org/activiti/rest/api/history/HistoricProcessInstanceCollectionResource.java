@@ -82,6 +82,10 @@ public class HistoricProcessInstanceCollectionResource extends HistoricProcessIn
       queryRequest.setStartedBy(getQueryParameter("startedBy", urlQuery));
     }
     
+    if(getQueryParameter("includeProcessVariables", urlQuery) != null) {
+      queryRequest.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", urlQuery));
+    }
+    
     return getQueryResponse(queryRequest, urlQuery);
   }
 }

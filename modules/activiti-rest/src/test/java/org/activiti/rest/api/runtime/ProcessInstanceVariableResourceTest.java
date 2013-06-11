@@ -58,7 +58,6 @@ public class ProcessInstanceVariableResourceTest extends BaseRestTestCase {
 
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals("local", responseNode.get("scope").asText());
     assertEquals("processValue", responseNode.get("value").asText());
     assertEquals("variable", responseNode.get("name").asText());
     assertEquals("string", responseNode.get("type").asText());
@@ -187,7 +186,7 @@ public class ProcessInstanceVariableResourceTest extends BaseRestTestCase {
     Representation response = client.delete();
     assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
     assertEquals(0L, response.getSize());
-    assertFalse(runtimeService.hasVariableLocal(processInstance.getId(), "myVariable"));
+    assertFalse(runtimeService.hasVariable(processInstance.getId(), "myVariable"));
     
     // Run the same delete again, variable is not there so 404 should be returned
     client.release();
@@ -209,7 +208,7 @@ public class ProcessInstanceVariableResourceTest extends BaseRestTestCase {
   public void testUpdateProcessVariable() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", 
             Collections.singletonMap("overlappingVariable", (Object) "processValue"));
-    runtimeService.setVariableLocal(processInstance.getId(), "myVar", "value");
+    runtimeService.setVariable(processInstance.getId(), "myVar", "value");
     
     // Update variable 
     ObjectNode requestNode = objectMapper.createObjectNode();
@@ -224,7 +223,6 @@ public class ProcessInstanceVariableResourceTest extends BaseRestTestCase {
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
     assertEquals("updatedValue", responseNode.get("value").asText());
-    assertEquals("local", responseNode.get("scope").asText());
     
            
     // Try updating with mismatch between URL and body variableName
@@ -259,7 +257,7 @@ public class ProcessInstanceVariableResourceTest extends BaseRestTestCase {
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", 
             Collections.singletonMap("overlappingVariable", (Object) "processValue"));
-    runtimeService.setVariableLocal(processInstance.getId(), "binaryVariable", "Initial binary value".getBytes());
+    runtimeService.setVariable(processInstance.getId(), "binaryVariable", "Initial binary value".getBytes());
     
     InputStream binaryContent = new ByteArrayInputStream("This is binary content".getBytes());
 
@@ -279,7 +277,6 @@ public class ProcessInstanceVariableResourceTest extends BaseRestTestCase {
     assertNotNull(responseNode);
     assertEquals("binaryVariable", responseNode.get("name").asText());
     assertTrue(responseNode.get("value").isNull());
-    assertEquals("local", responseNode.get("scope").asText());
     assertEquals("binary", responseNode.get("type").asText());
     assertNotNull(responseNode.get("valueUrl").isNull());
     assertTrue(responseNode.get("valueUrl").asText()

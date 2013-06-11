@@ -23,7 +23,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.RestUrls;
-import org.activiti.rest.api.legacy.identity.LegacyRestIdentityLink;
+import org.activiti.rest.api.engine.RestIdentityLink;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -36,7 +36,7 @@ import org.restlet.resource.Get;
 public class TaskIdentityLinkFamilyResource extends TaskBaseResource {
 
   @Get
-  public List<LegacyRestIdentityLink> getIdentityLinksForFamily() {
+  public List<RestIdentityLink> getIdentityLinksForFamily() {
     if(!authenticate())
       return null;
     
@@ -51,7 +51,7 @@ public class TaskIdentityLinkFamilyResource extends TaskBaseResource {
     }
     
     boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
-    List<LegacyRestIdentityLink> results = new ArrayList<LegacyRestIdentityLink>();
+    List<RestIdentityLink> results = new ArrayList<RestIdentityLink>();
     RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     
     List<IdentityLink> allLinks = ActivitiUtil.getTaskService().getIdentityLinksForTask(task.getId());

@@ -21,8 +21,8 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
+import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.engine.variable.RestVariable;
-import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 
 
@@ -49,9 +49,14 @@ public class ProcessInstanceVariableCollectionResource extends ExecutionVariable
   }
   
   protected void addGlobalVariables(Execution execution, Map<String, RestVariable> variableMap) {
+    // no global variables
+  }
+
+  //For process instance there's only one scope. Using the local variables method for that
+  protected void addLocalVariables(Execution execution, Map<String, RestVariable> variableMap) {
     Map<String, Object> rawVariables = ActivitiUtil.getRuntimeService().getVariables(execution.getId());
     List<RestVariable> globalVariables = getApplication(ActivitiRestServicesApplication.class)
-            .getRestResponseFactory().createRestVariables(this, rawVariables, null, null, execution.getId(), RestVariableScope.GLOBAL);
+            .getRestResponseFactory().createRestVariables(this, rawVariables, execution.getId(), RestResponseFactory.VARIABLE_PROCESS, null);
     
     // Overlay global variables over local ones. In case they are present the values are not overridden, 
     // since local variables get precedence over global ones at all times.
@@ -59,17 +64,6 @@ public class ProcessInstanceVariableCollectionResource extends ExecutionVariable
       if(!variableMap.containsKey(var.getName())) {
         variableMap.put(var.getName(), var);
       }
-    }
-  }
-
-  
-  protected void addLocalVariables(Execution execution, Map<String, RestVariable> variableMap) {
-    Map<String, Object> rawLocalvariables = ActivitiUtil.getRuntimeService().getVariablesLocal(execution.getId());
-    List<RestVariable> localVariables = getApplication(ActivitiRestServicesApplication.class)
-            .getRestResponseFactory().createRestVariables(this, rawLocalvariables, null, null, execution.getId(), RestVariableScope.LOCAL);
-    
-    for(RestVariable var : localVariables) {
-      variableMap.put(var.getName(), var);
     }
   }
   

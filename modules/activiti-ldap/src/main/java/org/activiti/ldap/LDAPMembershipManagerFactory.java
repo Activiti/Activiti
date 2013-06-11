@@ -14,9 +14,16 @@ package org.activiti.ldap;
 
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.persistence.entity.MembershipEntity;
 import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
 
 /**
+ * {@link SessionFactory} responsible for creating a {@link Session}
+ * that manages {@link MembershipEntity}s.
+ * 
+ * For LDAP, this will not do anything and even throw an exception
+ * when trying to use, as memberships are managed by the ldap system itself.
+ * 
  * @author Joram Barrez
  */
 public class LDAPMembershipManagerFactory implements SessionFactory {

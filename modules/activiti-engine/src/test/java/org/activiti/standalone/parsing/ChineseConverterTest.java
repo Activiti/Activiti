@@ -2,43 +2,42 @@ package org.activiti.standalone.parsing;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.test.ResourceActivitiTestCase;
+import org.activiti.engine.impl.util.io.InputStreamSource;
+import org.activiti.engine.impl.util.io.StreamSource;
 import org.activiti.engine.repository.Deployment;
 
-public class ChineseConverterTest extends PluggableActivitiTestCase {
+public class ChineseConverterTest extends ResourceActivitiTestCase {
+  
+  public ChineseConverterTest() {
+    super("org/activiti/standalone/parsing/encoding.activiti.cfg.xml");
+  }
   
   public void testConvertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
+    bpmnModel = exportAndReadXMLFile(bpmnModel);
     deployProcess(bpmnModel);
   }
   
   protected String getResource() {
-    return "chinese.bpmn";
+    return "org/activiti/standalone/parsing/chinese.bpmn";
   }
   
   protected BpmnModel readXMLFile() throws Exception {
     InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
-    XMLStreamReader xtr = xif.createXMLStreamReader(in);
-    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+    StreamSource xmlSource = new InputStreamSource(xmlStream);
+    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xmlSource, false, false, processEngineConfiguration.getXmlEncoding());
     return bpmnModel;
   }
   
   protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel) throws Exception {
-    byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
-    System.out.println("xml " + new String(xml, "UTF-8"));
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(xml), "UTF-8");
-    XMLStreamReader xtr = xif.createXMLStreamReader(in);
-    BpmnModel parsedModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+    byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel, processEngineConfiguration.getXmlEncoding());
+    System.out.println("xml " + new String(xml, processEngineConfiguration.getXmlEncoding()));
+    StreamSource xmlSource = new InputStreamSource(new ByteArrayInputStream(xml));
+    BpmnModel parsedModel = new BpmnXMLConverter().convertToBpmnModel(xmlSource, false, false, processEngineConfiguration.getXmlEncoding());
     return parsedModel;
   }
   

@@ -92,6 +92,9 @@
   <sql id="selectHistoricVariableInstanceByQueryCriteriaSql">
     from ${prefix}ACT_HI_VARINST RES
     <where>
+      <if test="id != null">
+        RES.ID_ = #{id}
+      </if>
       <if test="processInstanceId != null">
         RES.PROC_INST_ID_ = #{processInstanceId}
       </if>

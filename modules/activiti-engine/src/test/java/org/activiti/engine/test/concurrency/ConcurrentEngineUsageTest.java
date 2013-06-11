@@ -42,7 +42,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
   @Deployment
   public void testConcurrentUsage() throws Exception {
     
-    if(!processEngineConfiguration.getDatabaseType().equals("h2")) {
+    if(!processEngineConfiguration.getDatabaseType().equals("h2") && !processEngineConfiguration.getDatabaseType().equals("db2")) {
       int numberOfThreads = 5;
       int numberOfProcessesPerThread = 5;
       int totalNumberOfTasks = 2 * numberOfThreads * numberOfProcessesPerThread;
@@ -55,7 +55,12 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
       
       // Wait for termination or timeout and check if all tasks are complete
       executor.shutdown();
-      executor.awaitTermination(20000, TimeUnit.MILLISECONDS);
+      boolean isEnded = executor.awaitTermination(20000, TimeUnit.MILLISECONDS);
+      if(!isEnded) {
+        log.error("Executor was not shut down after timeout, not al tasks have been executed");
+        executor.shutdownNow();
+        
+      }
       assertEquals(0, executor.getActiveCount());
       
       // Check there are no processes active anymore

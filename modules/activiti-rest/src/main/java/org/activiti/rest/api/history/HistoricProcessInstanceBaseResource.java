@@ -90,6 +90,11 @@ public class HistoricProcessInstanceBaseResource extends SecuredResource {
         query.unfinished();
       }
     }
+    if (queryRequest.getIncludeProcessVariables() != null) {
+      if (queryRequest.getIncludeProcessVariables()) {
+        query.includeProcessVariables();
+      }
+    }
     if (queryRequest.getVariables() != null) {
       addVariables(query, queryRequest.getVariables());
     }

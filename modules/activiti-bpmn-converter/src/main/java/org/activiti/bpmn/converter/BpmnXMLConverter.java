@@ -88,6 +88,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
   protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnXMLConverter.class);
 	
   protected static final String BPMN_XSD = "org/activiti/impl/bpmn/parser/BPMN20.xsd";
+  protected static final String DEFAULT_ENCODING = "UTF-8";
   
 	protected static Map<String, Class<? extends BaseBpmnXMLConverter>> convertersToBpmnMap = 
 	    new HashMap<String, Class<? extends BaseBpmnXMLConverter>>();
@@ -188,6 +189,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
   }
   
   public BpmnModel convertToBpmnModel(InputStreamProvider inputStreamProvider, boolean validateSchema, boolean enableSafeBpmnXml) {
+    return convertToBpmnModel(inputStreamProvider, validateSchema, enableSafeBpmnXml, DEFAULT_ENCODING);
+  }
+  
+  public BpmnModel convertToBpmnModel(InputStreamProvider inputStreamProvider, boolean validateSchema, boolean enableSafeBpmnXml, String encoding) {
     XMLInputFactory xif = XMLInputFactory.newInstance();
 
     if (xif.isPropertySupported(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES)) {
@@ -204,7 +209,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
     InputStreamReader in = null;
     try {
-      in = new InputStreamReader(inputStreamProvider.getInputStream(), "UTF-8");
+      in = new InputStreamReader(inputStreamProvider.getInputStream(), encoding);
       XMLStreamReader xtr = xif.createXMLStreamReader(in);
   
       try {
@@ -217,7 +222,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           }
   
           // The input stream is closed after schema validation
-          in = new InputStreamReader(inputStreamProvider.getInputStream(), "UTF-8");
+          in = new InputStreamReader(inputStreamProvider.getInputStream(), encoding);
           xtr = xif.createXMLStreamReader(in);
         }
   
@@ -434,17 +439,21 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 	}
 	
 	public byte[] convertToXML(BpmnModel model) {
+	  return convertToXML(model, DEFAULT_ENCODING);
+	}
+	
+	public byte[] convertToXML(BpmnModel model, String encoding) {
     try {
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       
       XMLOutputFactory xof = XMLOutputFactory.newInstance();
-      OutputStreamWriter out = new OutputStreamWriter(outputStream, "UTF-8");
+      OutputStreamWriter out = new OutputStreamWriter(outputStream, encoding);
 
       XMLStreamWriter writer = xof.createXMLStreamWriter(out);
       XMLStreamWriter xtw = new IndentingXMLStreamWriter(writer);
 
-      DefinitionsRootExport.writeRootElement(model, xtw);
+      DefinitionsRootExport.writeRootElement(model, xtw, encoding);
       SignalAndMessageDefinitionExport.writeSignalsAndMessages(model, xtw);
       PoolExport.writePools(model, xtw);
       

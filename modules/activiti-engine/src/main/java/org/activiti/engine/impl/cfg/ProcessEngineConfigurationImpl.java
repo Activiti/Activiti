@@ -158,7 +158,6 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
-import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
@@ -365,6 +364,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    */
   protected int batchSizeProcessInstances = 25;
   protected int batchSizeTasks = 25;
+  
+  protected String xmlEncoding = "UTF-8";
   
   /**
    * In some situations you want to set the schema to use for table checks / generation if the database metadata
@@ -2005,5 +2006,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setEnableSafeBpmnXml(boolean enableSafeBpmnXml) {
     this.enableSafeBpmnXml = enableSafeBpmnXml;
   }
-  
+
+  public String getXmlEncoding() {
+    return xmlEncoding;
+  }
+
+  public void setXmlEncoding(String xmlEncoding) {
+    this.xmlEncoding = xmlEncoding;
+  }
 }
