@@ -399,7 +399,7 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
    * {@link LDAPGroupManager} does an actual query against the LDAP system.
    * 
    * The default implementation uses the properties as set on this instance
-   * such as {@link #setQueryGroupsForUser(String)} and {@link #setQueryGroupsForUser(String)}.
+   * such as {@link #setQueryGroupsForUser(String)} and {@link #setQueryUserByUserId(String)}.
    */
   public LDAPQueryBuilder getLdapQueryBuilder() {
     return ldapQueryBuilder;
@@ -422,7 +422,7 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
    * The cache will not be instantiated if the value is less then zero.
    * By default set to -1, so no caching is done.
    * 
-   * Note that the group cache is instantiatyed on the {@link LDAPGroupManagerFactory}.
+   * Note that the group cache is instantiated on the {@link LDAPGroupManagerFactory}.
    * As such, if you have a custom implementation of the {@link LDAPGroupManagerFactory},
    * do not forget to add the group cache functionality.
    */
