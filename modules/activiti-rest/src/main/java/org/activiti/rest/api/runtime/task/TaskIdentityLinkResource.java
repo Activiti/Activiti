@@ -21,7 +21,7 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestUrls;
-import org.activiti.rest.api.legacy.identity.LegacyRestIdentityLink;
+import org.activiti.rest.api.engine.RestIdentityLink;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
@@ -34,7 +34,7 @@ import org.restlet.resource.Get;
 public class TaskIdentityLinkResource extends TaskBaseResource {
 
   @Get
-  public LegacyRestIdentityLink getIdentityLink() {
+  public RestIdentityLink getIdentityLink() {
     if(!authenticate())
       return null;
     
