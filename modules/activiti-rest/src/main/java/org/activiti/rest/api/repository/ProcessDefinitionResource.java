@@ -16,10 +16,8 @@ package org.activiti.rest.api.repository;
 import java.util.Date;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Get;
@@ -29,7 +27,7 @@ import org.restlet.resource.ResourceException;
 /**
  * @author Frederik Heremans
  */
-public class ProcessDefinitionResource extends SecuredResource {
+public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
   
   @Get
   public ProcessDefinitionResponse getProcessDefinition() {
@@ -90,22 +88,4 @@ public class ProcessDefinitionResource extends SecuredResource {
     return response;
   }
 
-  /**
-   * Returns the {@link ProcessDefinition} that is requested. Throws the right exceptions
-   * when bad request was made or definition is not found.
-   */
-  protected ProcessDefinition getProcessDefinitionFromRequest() {
-    String processDefinitionId = getAttribute("processDefinitionId");
-    if(processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("The processDefinitionId cannot be null");
-    }
-    
-    ProcessDefinition processDefinition = ActivitiUtil.getRepositoryService().createProcessDefinitionQuery()
-            .processDefinitionId(processDefinitionId).singleResult();
-   
-   if(processDefinition == null) {
-     throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
-   }
-   return processDefinition;
-  }
 }

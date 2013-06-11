@@ -17,13 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestResponseFactory;
-import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.api.engine.RestIdentityLink;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
@@ -34,7 +32,7 @@ import org.restlet.resource.Post;
 /**
  * @author Frederik Heremans
  */
-public class ProcessDefinitionIdentityLinkCollectionResource extends SecuredResource {
+public class ProcessDefinitionIdentityLinkCollectionResource extends BaseProcessDefinitionResource {
 
   @Get
   public List<RestIdentityLink> getIdentityLinks() {
@@ -81,22 +79,4 @@ public class ProcessDefinitionIdentityLinkCollectionResource extends SecuredReso
             .createRestIdentityLink(this, identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), null, processDefinition.getId(), null);
   }
   
-  /**
-   * Returns the {@link ProcessDefinition} that is requested. Throws the right exceptions
-   * when bad request was made or definition is not found.
-   */
-  protected ProcessDefinition getProcessDefinitionFromRequest() {
-    String processDefinitionId = getAttribute("processDefinitionId");
-    if(processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("The processDefinitionId cannot be null");
-    }
-    
-    ProcessDefinition processDefinition = ActivitiUtil.getRepositoryService().createProcessDefinitionQuery()
-            .processDefinitionId(processDefinitionId).singleResult();
-   
-   if(processDefinition == null) {
-     throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
-   }
-   return processDefinition;
-  }
 }

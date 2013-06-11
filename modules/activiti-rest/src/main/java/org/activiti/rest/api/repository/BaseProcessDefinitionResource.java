@@ -17,22 +17,14 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.api.ActivitiUtil;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.resource.Get;
+import org.activiti.rest.api.SecuredResource;
+
 
 /**
  * @author Frederik Heremans
  */
-public class ProcessDefinitionResourceDataResource extends BaseDeploymentResourceDataResource {
+public class BaseProcessDefinitionResource extends SecuredResource {
 
-  @Get
-  public InputRepresentation getProcessDefinitionResource() {
-    if (authenticate() == false)
-      return null;
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
-    return getDeploymentResource(processDefinition.getDeploymentId(), processDefinition.getResourceName());
-  }
-  
   /**
    * Returns the {@link ProcessDefinition} that is requested. Throws the right exceptions
    * when bad request was made or definition is not found.

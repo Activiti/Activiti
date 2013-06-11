@@ -1212,6 +1212,86 @@
       Exactly the same response codes/boy as <literal>GET repository/deployment/{deploymentId}/resourcedata/{resourceId}</literal>.
     </para>
   </section>  
+  
+   <section>
+      <title>Get a process definition BPMN model</title>
+        <para>
+          <programlisting>GET repository/process-definitions/{processDefinitionId}/model</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processDefinitionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process definition to get the model for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process definition was found and the model is returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process definition was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Response body:</emphasis>
+       The response body is a JSON representation of the <literal>org.activiti.bpmn.model.BpmnModel</literal> and contains the full process definition model.
+<programlisting>
+{
+   "processes":[
+      {
+         "id":"oneTaskProcess",
+         "xmlRowNumber":7,
+         "xmlColumnNumber":60,
+         "extensionElements":{
+
+         },
+         "name":"The One Task Process",
+         "executable":true,
+         "documentation":"One task process description",
+         
+         ...
+    ], 
+    
+    ...
+}
+</programlisting>
+    </para>
+    <para>
+     
+    </para>
+  </section>  
  
   <section>
       <title>Suspend a single process definition</title>

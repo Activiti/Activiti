@@ -93,7 +93,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
    * Test getting an unexisting process-definition.
    * GET repository/process-definitions/{processDefinitionId}
    */
-   public void testGetUnexistingDeployment() throws Exception {
+   public void testGetUnexistingProcessDefinition() throws Exception {
      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, "unexisting"));
      try {
        client.get();
@@ -328,5 +328,52 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      assertNotNull(content);
      assertTrue(content.contains("The One Task Process"));
    }
+   
+   @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+   public void testGetProcessDefinitionModel() throws Exception {
+     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     
+     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_MODEL, processDefinition.getId()));
+     
+     Representation response = client.get();
+     
+     // Check "OK" status
+     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+     JsonNode resultNode = objectMapper.readTree(response.getReader());
+     assertNotNull(resultNode);
+     JsonNode processes = resultNode.get("processes");
+     assertNotNull(processes);
+     assertTrue(processes.isArray());
+     assertEquals(1, processes.size());
+     assertEquals("oneTaskProcess", processes.get(0).get("id").getTextValue());
+   }
+   
+   /**
+    * Test getting model for an unexisting process-definition .
+    */
+    public void testGetModelForUnexistingProcessDefinition() throws Exception {
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_MODEL, "unexisting"));
+      try {
+        client.get();
+        fail("404 expected, but was: " + client.getResponse().getStatus());
+      } catch(ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
+        assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
+      }
+    }
+    
+    /**
+     * Test getting resource content for an unexisting process-definition .
+     */
+     public void testGetResourceContentForUnexistingProcessDefinition() throws Exception {
+       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_RESOURCE_CONTENT, "unexisting"));
+       try {
+         client.get();
+         fail("404 expected, but was: " + client.getResponse().getStatus());
+       } catch(ResourceException expected) {
+         assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
+         assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
+       }
+     }
    
 }

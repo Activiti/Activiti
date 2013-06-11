@@ -76,6 +76,7 @@ import org.activiti.rest.api.repository.DeploymentResourceResource;
 import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionIdentityLinkCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionIdentityLinkResource;
+import org.activiti.rest.api.repository.ProcessDefinitionModelResource;
 import org.activiti.rest.api.repository.ProcessDefinitionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionResourceDataResource;
 import org.activiti.rest.api.repository.SimpleWorkflowResource;
@@ -134,6 +135,7 @@ public class RestServicesInit {
     router.attach("/repository/process-definitions", ProcessDefinitionCollectionResource.class);
     router.attach("/repository/process-definitions/{processDefinitionId}", ProcessDefinitionResource.class);
     router.attach("/repository/process-definitions/{processDefinitionId}/resourcedata", ProcessDefinitionResourceDataResource.class);
+    router.attach("/repository/process-definitions/{processDefinitionId}/model", ProcessDefinitionModelResource.class);
     router.attach("/repository/process-definitions/{processDefinitionId}/identitylinks", ProcessDefinitionIdentityLinkCollectionResource.class);
     router.attach("/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", ProcessDefinitionIdentityLinkResource.class);
     
