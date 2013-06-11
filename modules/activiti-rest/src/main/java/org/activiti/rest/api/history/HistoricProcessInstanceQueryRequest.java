@@ -38,6 +38,7 @@ public class HistoricProcessInstanceQueryRequest {
   private Date startedAfter;
   private Date startedBefore;
   private String startedBy;
+  private Boolean includeProcessVariables;
   private List<QueryVariable> variables;
   
   public String getProcessInstanceId() {
@@ -134,6 +135,14 @@ public class HistoricProcessInstanceQueryRequest {
 
   public void setStartedBy(String startedBy) {
     this.startedBy = startedBy;
+  }
+
+  public Boolean getIncludeProcessVariables() {
+    return includeProcessVariables;
+  }
+
+  public void setIncludeProcessVariables(Boolean includeProcessVariables) {
+    this.includeProcessVariables = includeProcessVariables;
   }
 
   @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  

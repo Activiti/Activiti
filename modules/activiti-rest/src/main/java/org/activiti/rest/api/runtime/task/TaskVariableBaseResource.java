@@ -89,8 +89,8 @@ public class TaskVariableBaseResource extends TaskBaseResource {
     if(!variableFound) {
         throw new ActivitiObjectNotFoundException("Task '" + taskId + "' doesn't have a variable with name: '" + variableName + "'.", VariableInstanceEntity.class);
     } else {
-      return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-              .createRestVariable(this, variableName, value, variableScope, taskId, null, null, null, includeBinary);
+      RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
+      return responseFactory.createRestVariable(this, variableName, value, variableScope, taskId, RestResponseFactory.VARIABLE_TASK, includeBinary);
     }
   }
   
@@ -197,9 +197,8 @@ public class TaskVariableBaseResource extends TaskBaseResource {
             .getVariableValue(restVariable);
     setVariable(task, restVariable.getName(), actualVariableValue, scope, isNew);
     
-
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-             .createRestVariable(this, restVariable.getName(), actualVariableValue, scope, task.getId(), null, null, null, false);
+    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
+    return responseFactory.createRestVariable(this, restVariable.getName(), actualVariableValue, scope, task.getId(), RestResponseFactory.VARIABLE_TASK, false);
   }
   
   protected void setVariable(Task task, String name, Object value, RestVariableScope scope, boolean isNew) {

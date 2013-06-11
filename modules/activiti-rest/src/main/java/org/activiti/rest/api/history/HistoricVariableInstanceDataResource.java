@@ -21,8 +21,7 @@ import java.io.ObjectOutputStream;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestResponseFactory;
@@ -38,7 +37,7 @@ import org.restlet.resource.ResourceException;
 /**
  * @author Tijs Rademakers
  */
-public class HistoricDetailDataResource extends SecuredResource {
+public class HistoricVariableInstanceDataResource extends SecuredResource {
 
   @Get
   public InputRepresentation getVariableData() {
@@ -71,25 +70,19 @@ public class HistoricDetailDataResource extends SecuredResource {
   }
   
   public RestVariable getVariableFromRequest(boolean includeBinary) {
-    String detailId = getAttribute("detailId");
-    if (detailId == null) {
-      throw new ActivitiIllegalArgumentException("The detailId cannot be null");
+    String varInstanceId = getAttribute("varInstanceId");
+    if (varInstanceId == null) {
+      throw new ActivitiIllegalArgumentException("The varInstanceId cannot be null");
     }
     
-    Object value = null;
-    HistoricVariableUpdate variableUpdate = null;
-    HistoricDetail detailObject = ActivitiUtil.getHistoryService().createHistoricDetailQuery().id(detailId).singleResult();
-    if (detailObject != null && detailObject instanceof HistoricVariableUpdate) {
-      variableUpdate = (HistoricVariableUpdate) detailObject;
-      value = variableUpdate.getValue();
-    }
+    HistoricVariableInstance varObject = ActivitiUtil.getHistoryService().createHistoricVariableInstanceQuery().id(varInstanceId).singleResult();
     
-    if(value == null) {
-        throw new ActivitiObjectNotFoundException("Historic detail '" + detailId + "' doesn't have a variable value.", VariableInstanceEntity.class);
+    if(varObject == null) {
+        throw new ActivitiObjectNotFoundException("Historic variable instance '" + varInstanceId + "' couldn't be found.", VariableInstanceEntity.class);
     } else {
       RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-      return responseFactory.createRestVariable(this, variableUpdate.getVariableName(), value, null, detailId, 
-          RestResponseFactory.VARIABLE_HISTORY_DETAIL, includeBinary);
+      return responseFactory.createRestVariable(this, varObject.getVariableName(), varObject.getValue(), null, varInstanceId, 
+          RestResponseFactory.VARIABLE_HISTORY_VARINSTANCE, includeBinary);
     }
   }
 }

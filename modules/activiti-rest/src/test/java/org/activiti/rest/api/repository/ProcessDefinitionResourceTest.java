@@ -62,7 +62,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
    */
    @Deployment
    public void testGetProcessDefinitionWithGraphicalNotation() throws Exception {
-
+  
      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
      
      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
@@ -93,7 +93,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
    * Test getting an unexisting process-definition.
    * GET repository/process-definitions/{processDefinitionId}
    */
-   public void testGetUnexistingDeployment() throws Exception {
+   public void testGetUnexistingProcessDefinition() throws Exception {
      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, "unexisting"));
      try {
        client.get();
@@ -129,188 +129,251 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
       assertTrue(processDefinition.isSuspended());
     }
     
-    /**
-     * Test suspending a process definition on a certain date.
-     * POST repository/process-definitions/{processDefinitionId}
-     */
-     @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
-     public void testSuspendProcessDefinitionDelayed() throws Exception {
-       ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-       assertFalse(processDefinition.isSuspended());
-       
-       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-       ObjectNode requestNode = objectMapper.createObjectNode();
-       
-       Calendar cal = Calendar.getInstance();
-       cal.add(Calendar.HOUR, 2);
-       
-       // Format the date using ISO date format
-       DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
-       String dateString = formatter.print(cal.getTimeInMillis());
-       
-       requestNode.put("action", "suspend");
-       requestNode.put("date", dateString);
-       
-       Representation response = client.put(requestNode);
-       
-       // Check "OK" status
-       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-       JsonNode responseNode = objectMapper.readTree(response.getStream());
-       assertTrue(responseNode.get("suspended").getBooleanValue());
-       
-       // Check if process-definition is not yet suspended
-       processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-       assertFalse(processDefinition.isSuspended());
-       
-       // Force suspension by altering time
-       cal.add(Calendar.HOUR, 1);
-       ClockUtil.setCurrentTime(cal.getTime());
-       waitForJobExecutorToProcessAllJobs(5000, 100);
-       
-       // Check if process-definition is suspended
-       processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-       assertTrue(processDefinition.isSuspended());
+  /**
+   * Test suspending a process definition on a certain date.
+   * POST repository/process-definitions/{processDefinitionId}
+   */
+   @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+   public void testSuspendProcessDefinitionDelayed() throws Exception {
+     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     assertFalse(processDefinition.isSuspended());
+     
+     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+     ObjectNode requestNode = objectMapper.createObjectNode();
+     
+     Calendar cal = Calendar.getInstance();
+     cal.add(Calendar.HOUR, 2);
+     
+     // Format the date using ISO date format
+     DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
+     String dateString = formatter.print(cal.getTimeInMillis());
+     
+     requestNode.put("action", "suspend");
+     requestNode.put("date", dateString);
+     
+     Representation response = client.put(requestNode);
+     
+     // Check "OK" status
+     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+     JsonNode responseNode = objectMapper.readTree(response.getStream());
+     assertTrue(responseNode.get("suspended").getBooleanValue());
+     
+     // Check if process-definition is not yet suspended
+     processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     assertFalse(processDefinition.isSuspended());
+     
+     // Force suspension by altering time
+     cal.add(Calendar.HOUR, 1);
+     ClockUtil.setCurrentTime(cal.getTime());
+     waitForJobExecutorToProcessAllJobs(5000, 100);
+     
+     // Check if process-definition is suspended
+     processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     assertTrue(processDefinition.isSuspended());
+   }
+  
+  /**
+   * Test suspending already suspended process definition.
+   * POST repository/process-definitions/{processDefinitionId}
+   */
+   @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+   public void testSuspendAlreadySuspendedProcessDefinition() throws Exception {
+     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+     
+     processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     assertTrue(processDefinition.isSuspended());
+     
+     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+     ObjectNode requestNode = objectMapper.createObjectNode();
+     requestNode.put("action", "suspend");
+     
+     try {
+       client.put(requestNode);
+       fail("Expected exception");
+     } catch(ResourceException expected) {
+       assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
      }
+   }
+   
+  
+  /**
+   * Test activating a suspended process definition.
+   * POST repository/process-definitions/{processDefinitionId}
+   */
+   @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+   public void testActivateProcessDefinition() throws Exception {
+     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+     
+     processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     assertTrue(processDefinition.isSuspended());
+     
+     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+     ObjectNode requestNode = objectMapper.createObjectNode();
+     requestNode.put("action", "activate");
+     
+     Representation response = client.put(requestNode);
+     
+     // Check "OK" status
+     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+     JsonNode responseNode = objectMapper.readTree(response.getStream());
+     assertFalse(responseNode.get("suspended").getBooleanValue());
+     
+     // Check if process-definitoin is suspended
+     processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     assertFalse(processDefinition.isSuspended());
+   }
+     
+ /**
+  * Test activating a suspended process definition delayed.
+  * POST repository/process-definitions/{processDefinitionId}
+  */
+  @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+  public void testActivateProcessDefinitionDelayed() throws Exception {
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+    
+    processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    assertTrue(processDefinition.isSuspended());
+    
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.HOUR, 2);
+    
+    // Format the date using ISO date format
+    DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
+    String dateString = formatter.print(cal.getTimeInMillis());
+    
+    requestNode.put("action", "activate");
+    requestNode.put("date", dateString);
+    
+    Representation response = client.put(requestNode);
+    
+    // Check "OK" status
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertFalse(responseNode.get("suspended").getBooleanValue());
+    
+    // Check if process-definition is not yet active
+    processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    assertTrue(processDefinition.isSuspended());
+    
+    // Force activation by altering time
+    cal.add(Calendar.HOUR, 1);
+    ClockUtil.setCurrentTime(cal.getTime());
+    waitForJobExecutorToProcessAllJobs(5000, 100);
+    
+    // Check if process-definition is activated
+    processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    assertFalse(processDefinition.isSuspended());
+  }
+     
+ /**
+  * Test activating already active process definition.
+  * POST repository/process-definitions/{processDefinitionId}
+  */
+  @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+  public void testActivateAlreadyActiveProcessDefinition() throws Exception {
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    assertFalse(processDefinition.isSuspended());
+    
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("action", "activate");
+    
+    try {
+      client.put(requestNode);
+      fail("Expected exception");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
+    }
+  }
+  
+  /**
+   * Test executing an unexisting action.
+   * 
+   * POST repository/process-definitions/{processDefinitionId}
+   */
+   @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+   public void testIllegalAction() throws Exception {
+     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     assertFalse(processDefinition.isSuspended());
+     
+     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+     ObjectNode requestNode = objectMapper.createObjectNode();
+     requestNode.put("action", "unexistingaction");
+     
+     try {
+       client.put(requestNode);
+       fail("Expected exception");
+     } catch(ResourceException expected) {
+       assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
+     }
+   }
+   
+   @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+   public void testGetProcessDefinitionResourceData() throws Exception {
+     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     
+     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_RESOURCE_CONTENT, processDefinition.getId()));
+     
+     Representation response = client.get();
+     
+     // Check "OK" status
+     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+     String content = response.getText();
+     assertNotNull(content);
+     assertTrue(content.contains("The One Task Process"));
+   }
+   
+   @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+   public void testGetProcessDefinitionModel() throws Exception {
+     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     
+     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_MODEL, processDefinition.getId()));
+     
+     Representation response = client.get();
+     
+     // Check "OK" status
+     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+     JsonNode resultNode = objectMapper.readTree(response.getReader());
+     assertNotNull(resultNode);
+     JsonNode processes = resultNode.get("processes");
+     assertNotNull(processes);
+     assertTrue(processes.isArray());
+     assertEquals(1, processes.size());
+     assertEquals("oneTaskProcess", processes.get(0).get("id").getTextValue());
+   }
+   
+   /**
+    * Test getting model for an unexisting process-definition .
+    */
+    public void testGetModelForUnexistingProcessDefinition() throws Exception {
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_MODEL, "unexisting"));
+      try {
+        client.get();
+        fail("404 expected, but was: " + client.getResponse().getStatus());
+      } catch(ResourceException expected) {
+        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
+        assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
+      }
+    }
     
     /**
-     * Test suspending already suspended process definition.
-     * POST repository/process-definitions/{processDefinitionId}
+     * Test getting resource content for an unexisting process-definition .
      */
-     @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
-     public void testSuspendAlreadySuspendedProcessDefinition() throws Exception {
-       ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-       repositoryService.suspendProcessDefinitionById(processDefinition.getId());
-       
-       processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-       assertTrue(processDefinition.isSuspended());
-       
-       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-       ObjectNode requestNode = objectMapper.createObjectNode();
-       requestNode.put("action", "suspend");
-       
+     public void testGetResourceContentForUnexistingProcessDefinition() throws Exception {
+       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_RESOURCE_CONTENT, "unexisting"));
        try {
-         client.put(requestNode);
-         fail("Expected exception");
+         client.get();
+         fail("404 expected, but was: " + client.getResponse().getStatus());
        } catch(ResourceException expected) {
-         assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
+         assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
+         assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
        }
      }
-     
-    
-    /**
-     * Test activating a suspended process definition.
-     * POST repository/process-definitions/{processDefinitionId}
-     */
-     @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
-     public void testActivateProcessDefinition() throws Exception {
-       ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-       repositoryService.suspendProcessDefinitionById(processDefinition.getId());
-       
-       processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-       assertTrue(processDefinition.isSuspended());
-       
-       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-       ObjectNode requestNode = objectMapper.createObjectNode();
-       requestNode.put("action", "activate");
-       
-       Representation response = client.put(requestNode);
-       
-       // Check "OK" status
-       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-       JsonNode responseNode = objectMapper.readTree(response.getStream());
-       assertFalse(responseNode.get("suspended").getBooleanValue());
-       
-       // Check if process-definitoin is suspended
-       processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-       assertFalse(processDefinition.isSuspended());
-     }
-     
-     /**
-      * Test activating a suspended process definition delayed.
-      * POST repository/process-definitions/{processDefinitionId}
-      */
-      @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
-      public void testActivateProcessDefinitionDelayed() throws Exception {
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-        repositoryService.suspendProcessDefinitionById(processDefinition.getId());
-        
-        processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-        assertTrue(processDefinition.isSuspended());
-        
-        ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-        ObjectNode requestNode = objectMapper.createObjectNode();
-        
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.HOUR, 2);
-        
-        // Format the date using ISO date format
-        DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
-        String dateString = formatter.print(cal.getTimeInMillis());
-        
-        requestNode.put("action", "activate");
-        requestNode.put("date", dateString);
-        
-        Representation response = client.put(requestNode);
-        
-        // Check "OK" status
-        assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-        JsonNode responseNode = objectMapper.readTree(response.getStream());
-        assertFalse(responseNode.get("suspended").getBooleanValue());
-        
-        // Check if process-definition is not yet active
-        processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-        assertTrue(processDefinition.isSuspended());
-        
-        // Force activation by altering time
-        cal.add(Calendar.HOUR, 1);
-        ClockUtil.setCurrentTime(cal.getTime());
-        waitForJobExecutorToProcessAllJobs(5000, 100);
-        
-        // Check if process-definition is activated
-        processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-        assertFalse(processDefinition.isSuspended());
-      }
-     
-     /**
-      * Test activating already active process definition.
-      * POST repository/process-definitions/{processDefinitionId}
-      */
-      @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
-      public void testActivateAlreadyActiveProcessDefinition() throws Exception {
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-        assertFalse(processDefinition.isSuspended());
-        
-        ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-        ObjectNode requestNode = objectMapper.createObjectNode();
-        requestNode.put("action", "activate");
-        
-        try {
-          client.put(requestNode);
-          fail("Expected exception");
-        } catch(ResourceException expected) {
-          assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
-        }
-      }
-      
-      /**
-       * Test executing an unexisting action.
-       * 
-       * POST repository/process-definitions/{processDefinitionId}
-       */
-       @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
-       public void testIllegalAction() throws Exception {
-         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-         assertFalse(processDefinition.isSuspended());
-         
-         ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-         ObjectNode requestNode = objectMapper.createObjectNode();
-         requestNode.put("action", "unexistingaction");
-         
-         try {
-           client.put(requestNode);
-           fail("Expected exception");
-         } catch(ResourceException expected) {
-           assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-         }
-       }
+   
 }

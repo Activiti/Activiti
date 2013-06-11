@@ -18,6 +18,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
+import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.api.engine.variable.RestVariable;
 import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
@@ -50,7 +51,7 @@ public class ProcessInstanceVariableResource extends ExecutionVariableResource {
   protected RestVariable constructRestVariable(SecuredResource securedResource, String variableName, Object value, RestVariableScope variableScope,
           String executionId, boolean includeBinary) {
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestVariable(this, variableName, value, variableScope, null, null, executionId, null, includeBinary);
+            .createRestVariable(this, variableName, value, null, executionId, RestResponseFactory.VARIABLE_PROCESS, includeBinary);
   }
   
   @Override
