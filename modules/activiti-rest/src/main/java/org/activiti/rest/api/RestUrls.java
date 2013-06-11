@@ -64,6 +64,7 @@ public final class RestUrls {
   public static final String SEGMENT_PICTURE = "picture";
   public static final String SEGMENT_INFO = "info";
   public static final String SEGMENT_MEMBERS = "members";
+  public static final String SEGMENT_MODEL = "model";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -103,6 +104,25 @@ public final class RestUrls {
    */
   public static final String[] URL_PROCESS_DEFINITION = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}"};
   
+  /**
+   * URL template for the resource of a single process definition: <i>repository/process-definitions/{0:processDefinitionId}/resourcedata</i>
+   */
+  public static final String[] URL_PROCESS_DEFINITION_RESOURCE_CONTENT = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE_CONTENT};
+  
+  /**
+   * URL template for a process definition's identity links: <i>repository/process-definitions/{0:processDefinitionId}/identitylinks</i>
+   */
+  public static final String[] URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_IDENTITYLINKS};
+  
+  /**
+   * URL template for an identitylink on a process definition: <i>repository/process-definitions/{0:processDefinitionId}/identitylinks/{1:family}/{2:identityId}</i>
+   */
+  public static final String[] URL_PROCESS_DEFINITION_IDENTITYLINK = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_IDENTITYLINKS, "{1}", "{2}"};
+  
+  /**
+   * URL template for the model of a process definition: <i>repository/process-definitions/{0:processDefinitionId}/model</i>
+   */
+  public static final String[] URL_PROCESS_DEFINITION_MODEL = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_MODEL};
   
   /**
    * URL template for task collection: <i>runtime/tasks/{0:taskId}</i>
@@ -243,6 +263,16 @@ public final class RestUrls {
    * URL template for a comment on a process instance: <i>runtime/process-instances/{0:processInstanceId}/comments/{1:commentId}</i>
    */
   public static final String[] URL_PROCESS_INSTANCE_COMMENT = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_COMMENTS, "{1}"};
+  
+  /**
+   * URL template for a process instance's identity links: <i>runtime/process-instances/{0:processInstanceId}/identitylinks</i>
+   */
+  public static final String[] URL_PROCESS_INSTANCE_IDENTITYLINKS_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_IDENTITYLINKS};
+  
+  /**
+   * URL template for an identitylink on a process instance: <i>runtime/process-instances/{0:processInstanceId}/identitylinks/users/{1:identityId}/{2:type}</i>
+   */
+  public static final String[] URL_PROCESS_INSTANCE_IDENTITYLINK = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_IDENTITYLINKS, SEGMENT_IDENTITYLINKS_FAMILY_USERS, "{1}", "{2}"};
   
   /**
    * URL template for a single historic process instance: <i>history/historic-process-instances/{0:processInstanceId}</i>

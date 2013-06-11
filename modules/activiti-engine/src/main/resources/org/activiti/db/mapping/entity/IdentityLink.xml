@@ -39,7 +39,7 @@
     <result property="groupId" column="GROUP_ID_" jdbcType="VARCHAR" />
     <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />    
-    <result property="processDefId" column="PROCESS_DEF_ID_" jdbcType="VARCHAR" />    
+    <result property="processDefId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />    
   </resultMap>
 
   <!-- IDENTITY LINK SELECT -->

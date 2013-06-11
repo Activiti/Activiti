@@ -11,14 +11,15 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.runtime.task;
+package org.activiti.rest.api.repository;
 
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.engine.task.Task;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestUrls;
 import org.activiti.rest.api.engine.RestIdentityLink;
@@ -27,82 +28,75 @@ import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 
-
 /**
  * @author Frederik Heremans
  */
-public class TaskIdentityLinkResource extends TaskBaseResource {
+public class ProcessDefinitionIdentityLinkResource extends BaseProcessDefinitionResource {
 
   @Get
   public RestIdentityLink getIdentityLink() {
-    if(!authenticate())
+    if (!authenticate())
       return null;
-    
-    Task task = getTaskFromRequest();
+
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
 
     // Extract and validate identity link from URL
     String family = getAttribute("family");
     String identityId = getAttribute("identityId");
-    String type = getAttribute("type");
-    validateIdentityLinkArguments(family, identityId, type);
-    
-    IdentityLink link = getIdentityLink(family, identityId, type, task.getId());
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestIdentityLink(this, link);
+    validateIdentityLinkArguments(family, identityId);
+
+    // Check if identitylink to get exists
+    IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId());
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory().createRestIdentityLink(this, link);
   }
-  
+
   @Delete
   public void deleteIdentityLink() {
-    if(!authenticate())
+    if (!authenticate())
       return;
-    
-    Task task = getTaskFromRequest();
+
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
 
     // Extract and validate identity link from URL
     String family = getAttribute("family");
     String identityId = getAttribute("identityId");
-    String type = getAttribute("type");
-    validateIdentityLinkArguments(family, identityId, type);
-    
+    validateIdentityLinkArguments(family, identityId);
+
     // Check if identitylink to delete exists
-    getIdentityLink(family, identityId, type, task.getId());
-    
-    if(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family)) {
-      ActivitiUtil.getTaskService().deleteUserIdentityLink(task.getId(), identityId, type);
+    IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId());
+    if(link.getUserId() != null) {
+      ActivitiUtil.getRepositoryService().deleteCandidateStarterUser(processDefinition.getId(), link.getUserId());
     } else {
-      ActivitiUtil.getTaskService().deleteGroupIdentityLink(task.getId(), identityId, type);
+      ActivitiUtil.getRepositoryService().deleteCandidateStarterGroup(processDefinition.getId(), link.getGroupId());
     }
     
     setStatus(Status.SUCCESS_NO_CONTENT);
   }
-  
-  protected void validateIdentityLinkArguments(String family, String identityId, String type) {
-    if(family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family)
-            && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
+
+  protected void validateIdentityLinkArguments(String family, String identityId) {
+    if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family) && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
       throw new ActivitiIllegalArgumentException("Identity link family should be 'users' or 'groups'.");
     }
-    if(identityId == null) {
+    if (identityId == null) {
       throw new ActivitiIllegalArgumentException("IdentityId is required.");
     }
-    if(type == null) {
-      throw new ActivitiIllegalArgumentException("Type is required.");
-    }
   }
-  
-  protected IdentityLink getIdentityLink(String family, String identityId, String type, String taskId) {
+
+  protected IdentityLink getIdentityLink(String family, String identityId, String processDefinitionId) {
     boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
-    
-    // Perhaps it would be better to offer getting a single identitylink from the API
-    List<IdentityLink> allLinks = ActivitiUtil.getTaskService().getIdentityLinksForTask(taskId);
-    for(IdentityLink link : allLinks) {
+
+    // Perhaps it would be better to offer getting a single identitylink from
+    // the API
+    List<IdentityLink> allLinks = ActivitiUtil.getRepositoryService().getIdentityLinksForProcessDefinition(processDefinitionId);
+    for (IdentityLink link : allLinks) {
       boolean rightIdentity = false;
-      if(isUser) {
+      if (isUser) {
         rightIdentity = identityId.equals(link.getUserId());
       } else {
         rightIdentity = identityId.equals(link.getGroupId());
       }
-      
-      if(rightIdentity && link.getType().equals(type)) {
+
+      if (rightIdentity && link.getType().equals(IdentityLinkType.CANDIDATE)) {
         return link;
       }
     }

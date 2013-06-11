@@ -43,6 +43,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.rest.api.engine.AttachmentResponse;
 import org.activiti.rest.api.engine.CommentResponse;
 import org.activiti.rest.api.engine.EventResponse;
+import org.activiti.rest.api.engine.RestIdentityLink;
 import org.activiti.rest.api.engine.variable.BooleanRestVariableConverter;
 import org.activiti.rest.api.engine.variable.DateRestVariableConverter;
 import org.activiti.rest.api.engine.variable.DoubleRestVariableConverter;
@@ -63,7 +64,6 @@ import org.activiti.rest.api.identity.GroupResponse;
 import org.activiti.rest.api.identity.MembershipResponse;
 import org.activiti.rest.api.identity.UserInfoResponse;
 import org.activiti.rest.api.identity.UserResponse;
-import org.activiti.rest.api.legacy.identity.LegacyRestIdentityLink;
 import org.activiti.rest.api.management.JobResponse;
 import org.activiti.rest.api.management.TableResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
@@ -309,12 +309,12 @@ public class RestResponseFactory {
     return value;
   }
   
-  public LegacyRestIdentityLink createRestIdentityLink(SecuredResource securedResource, IdentityLink link) {
-    return createRestIdentityLink(securedResource, link.getType(), link.getUserId(), link.getGroupId(), link.getTaskId());
+  public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, IdentityLink link) {
+    return createRestIdentityLink(securedResource, link.getType(), link.getUserId(), link.getGroupId(), link.getTaskId(), link.getProcessDefinitionId(), link.getProcessInstanceId());
   }
   
-  public LegacyRestIdentityLink createRestIdentityLink(SecuredResource securedResource, String type, String userId, String groupId, String taskId) {
-    LegacyRestIdentityLink result = new LegacyRestIdentityLink();
+  public RestIdentityLink createRestIdentityLink(SecuredResource securedResource, String type, String userId, String groupId, String taskId, String processDefinitionId, String processInstanceId) {
+    RestIdentityLink result = new RestIdentityLink();
     result.setUser(userId);
     result.setGroup(groupId);
     result.setType(type);
@@ -325,7 +325,13 @@ public class RestResponseFactory {
     } else {
       family = RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS;
     }
-    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, taskId, family, (userId != null ? userId : groupId), type));
+    if(processDefinitionId != null) {
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinitionId, family, (userId != null ? userId : groupId)));
+    } else if(taskId != null){
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, taskId, family, (userId != null ? userId : groupId), type));
+    } else {
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, processInstanceId, (userId != null ? userId : groupId), type));
+    }
     return result;
   }
   

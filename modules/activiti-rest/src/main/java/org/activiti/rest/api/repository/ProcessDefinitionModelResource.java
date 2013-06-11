@@ -13,19 +13,22 @@
 
 package org.activiti.rest.api.repository;
 
-import org.restlet.representation.InputRepresentation;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.rest.api.ActivitiUtil;
 import org.restlet.resource.Get;
 
 /**
  * @author Frederik Heremans
  */
-public class DeploymentResourceDataResource extends BaseDeploymentResourceDataResource {
+public class ProcessDefinitionModelResource extends BaseProcessDefinitionResource {
 
   @Get
-  public InputRepresentation getDeploymentResource() {
+  public BpmnModel getModelResource() {
     if (authenticate() == false)
       return null;
-
-    return getDeploymentResource(getAttribute("deploymentId"), getAttribute("resourceId"));
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
+    return ActivitiUtil.getRepositoryService().getBpmnModel(processDefinition.getId());
   }
+  
 }

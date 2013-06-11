@@ -77,7 +77,11 @@ import org.activiti.rest.api.repository.DeploymentResourceCollectionResource;
 import org.activiti.rest.api.repository.DeploymentResourceDataResource;
 import org.activiti.rest.api.repository.DeploymentResourceResource;
 import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
+import org.activiti.rest.api.repository.ProcessDefinitionIdentityLinkCollectionResource;
+import org.activiti.rest.api.repository.ProcessDefinitionIdentityLinkResource;
+import org.activiti.rest.api.repository.ProcessDefinitionModelResource;
 import org.activiti.rest.api.repository.ProcessDefinitionResource;
+import org.activiti.rest.api.repository.ProcessDefinitionResourceDataResource;
 import org.activiti.rest.api.repository.SimpleWorkflowResource;
 import org.activiti.rest.api.runtime.process.ExecutionCollectionResource;
 import org.activiti.rest.api.runtime.process.ExecutionQueryResource;
@@ -90,6 +94,8 @@ import org.activiti.rest.api.runtime.process.ProcessDefinitionFormResource;
 import org.activiti.rest.api.runtime.process.ProcessDefinitionPropertiesResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceCollectionResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceDiagramResource;
+import org.activiti.rest.api.runtime.process.ProcessInstanceIdentityLinkCollectionResource;
+import org.activiti.rest.api.runtime.process.ProcessInstanceIdentityLinkResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceQueryResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceSignalExecutionResource;
@@ -131,6 +137,10 @@ public class RestServicesInit {
     
     router.attach("/repository/process-definitions", ProcessDefinitionCollectionResource.class);
     router.attach("/repository/process-definitions/{processDefinitionId}", ProcessDefinitionResource.class);
+    router.attach("/repository/process-definitions/{processDefinitionId}/resourcedata", ProcessDefinitionResourceDataResource.class);
+    router.attach("/repository/process-definitions/{processDefinitionId}/model", ProcessDefinitionModelResource.class);
+    router.attach("/repository/process-definitions/{processDefinitionId}/identitylinks", ProcessDefinitionIdentityLinkCollectionResource.class);
+    router.attach("/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", ProcessDefinitionIdentityLinkResource.class);
     
     router.attach("/runtime/tasks", TaskCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}", TaskResource.class);
@@ -153,6 +163,8 @@ public class RestServicesInit {
     router.attach("/runtime/process-instances/{processInstanceId}/variables", ProcessInstanceVariableCollectionResource.class);
     router.attach("/runtime/process-instances/{processInstanceId}/variables/{variableName}", ProcessInstanceVariableResource.class);
     router.attach("/runtime/process-instances/{processInstanceId}/variables/{variableName}/data", ProcessInstanceVariableDataResource.class);
+    router.attach("/runtime/process-instances/{processInstanceId}/identitylinks", ProcessInstanceIdentityLinkCollectionResource.class);
+    router.attach("/runtime/process-instances/{processInstanceId}/identitylinks/users/{identityId}/{type}", ProcessInstanceIdentityLinkResource.class);
     
     router.attach("/runtime/executions", ExecutionCollectionResource.class);
     router.attach("/runtime/executions/{executionId}", ExecutionResource.class);

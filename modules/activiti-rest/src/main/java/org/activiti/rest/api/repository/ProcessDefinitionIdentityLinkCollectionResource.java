@@ -11,14 +11,15 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.runtime.task;
+package org.activiti.rest.api.repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.engine.task.Task;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.engine.RestIdentityLink;
@@ -31,7 +32,7 @@ import org.restlet.resource.Post;
 /**
  * @author Frederik Heremans
  */
-public class TaskIdentityLinkCollectionResource extends TaskBaseResource {
+public class ProcessDefinitionIdentityLinkCollectionResource extends BaseProcessDefinitionResource {
 
   @Get
   public List<RestIdentityLink> getIdentityLinks() {
@@ -39,9 +40,9 @@ public class TaskIdentityLinkCollectionResource extends TaskBaseResource {
       return null;
     
     List<RestIdentityLink> result = new ArrayList<RestIdentityLink>();
-    Task task = getTaskFromRequest();
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
     
-    List<IdentityLink> identityLinks = ActivitiUtil.getTaskService().getIdentityLinksForTask(task.getId());
+    List<IdentityLink> identityLinks = ActivitiUtil.getRepositoryService().getIdentityLinksForProcessDefinition(processDefinition.getId());
     RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     for(IdentityLink link : identityLinks) {
       result.add(responseFactory.createRestIdentityLink(this, link));
@@ -54,7 +55,7 @@ public class TaskIdentityLinkCollectionResource extends TaskBaseResource {
     if(!authenticate())
       return null;
     
-    Task task = getTaskFromRequest();
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
     
     if(identityLink.getGroup() == null && identityLink.getUser() == null) {
       throw new ActivitiIllegalArgumentException("A group or a user is required to create an identity link.");
@@ -64,18 +65,18 @@ public class TaskIdentityLinkCollectionResource extends TaskBaseResource {
       throw new ActivitiIllegalArgumentException("Only one of user or group can be used to create an identity link.");
     }
     
-    if(identityLink.getType() == null) {
-      throw new ActivitiIllegalArgumentException("The identity link type is required.");
-    }
-
     if(identityLink.getGroup() != null) {
-      ActivitiUtil.getTaskService().addGroupIdentityLink(task.getId(), identityLink.getGroup(), identityLink.getType());
+      ActivitiUtil.getRepositoryService().addCandidateStarterGroup(processDefinition.getId(), identityLink.getGroup());
     } else {
-      ActivitiUtil.getTaskService().addUserIdentityLink(task.getId(), identityLink.getUser(), identityLink.getType());
+      ActivitiUtil.getRepositoryService().addCandidateStarterUser(processDefinition.getId(), identityLink.getUser());
     }
+    
+    // Always candidate for process-definition. User-provided value is ignored
+    identityLink.setType(IdentityLinkType.CANDIDATE);
     
     setStatus(Status.SUCCESS_CREATED);
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestIdentityLink(this, identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), task.getId(), null, null);
+            .createRestIdentityLink(this, identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), null, processDefinition.getId(), null);
   }
+  
 }

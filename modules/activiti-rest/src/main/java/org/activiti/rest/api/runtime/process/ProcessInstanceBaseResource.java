@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.ProcessInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
@@ -159,5 +161,19 @@ public class ProcessInstanceBaseResource extends SecuredResource {
         throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
     }
+  }
+  
+  protected ProcessInstance getProcessInstanceFromRequest() {
+    String processInstanceId = getAttribute("processInstanceId");
+    if (processInstanceId == null) {
+      throw new ActivitiIllegalArgumentException("The processInstanceId cannot be null");
+    }
+    
+   ProcessInstance processInstance = ActivitiUtil.getRuntimeService().createProcessInstanceQuery()
+           .processInstanceId(processInstanceId).singleResult();
+    if (processInstance == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", ProcessInstance.class);
+    }
+    return processInstance;
   }
 }
