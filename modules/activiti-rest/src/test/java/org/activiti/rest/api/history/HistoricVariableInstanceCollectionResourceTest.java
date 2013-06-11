@@ -94,8 +94,9 @@ public class HistoricVariableInstanceCollectionResourceTest extends BaseRestTest
       boolean variableFound = false;
       Iterator<JsonNode> it = dataNode.iterator();
       while(it.hasNext()) {
-        JsonNode variableNode = it.next();
-        String name = variableNode.get("variableName").getTextValue();
+        JsonNode dataElementNode = it.next();
+        JsonNode variableNode = dataElementNode.get("variable");
+        String name = variableNode.get("name").getTextValue();
         if (variableName.equals(name)) {
           variableFound = true;
           if (variableValue instanceof Boolean) {

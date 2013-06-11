@@ -13,6 +13,8 @@
 
 package org.activiti.rest.api.history;
 
+import org.activiti.rest.api.engine.variable.RestVariable;
+
 
 /**
  * @author Tijs Rademakers
@@ -20,36 +22,16 @@ package org.activiti.rest.api.history;
 public class HistoricVariableInstanceResponse {
   
   protected String id;
-  protected String variableName;
-  protected String variableTypeName;
-  protected Object value;
   protected String processInstanceId;
   protected String processInstanceUrl;
   protected String taskId;
+  protected RestVariable variable;
   
   public String getId() {
     return id;
   }
   public void setId(String id) {
     this.id = id;
-  }
-  public String getVariableName() {
-    return variableName;
-  }
-  public void setVariableName(String variableName) {
-    this.variableName = variableName;
-  }
-  public String getVariableTypeName() {
-    return variableTypeName;
-  }
-  public void setVariableTypeName(String variableTypeName) {
-    this.variableTypeName = variableTypeName;
-  }
-  public Object getValue() {
-    return value;
-  }
-  public void setValue(Object value) {
-    this.value = value;
   }
   public String getProcessInstanceId() {
     return processInstanceId;
@@ -68,5 +50,11 @@ public class HistoricVariableInstanceResponse {
   }
   public void setTaskId(String taskId) {
     this.taskId = taskId;
+  }
+  public RestVariable getVariable() {
+    return variable;
+  }
+  public void setVariable(RestVariable variable) {
+    this.variable = variable;
   }
 }

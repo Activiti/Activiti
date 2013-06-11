@@ -10,10 +10,13 @@ import org.activiti.rest.api.history.HistoricFormPropertiesResource;
 import org.activiti.rest.api.history.HistoricProcessInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricProcessInstanceQueryResource;
 import org.activiti.rest.api.history.HistoricProcessInstanceResource;
+import org.activiti.rest.api.history.HistoricProcessInstanceVariableDataResource;
 import org.activiti.rest.api.history.HistoricTaskInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricTaskInstanceQueryResource;
 import org.activiti.rest.api.history.HistoricTaskInstanceResource;
+import org.activiti.rest.api.history.HistoricTaskInstanceVariableDataResource;
 import org.activiti.rest.api.history.HistoricVariableInstanceCollectionResource;
+import org.activiti.rest.api.history.HistoricVariableInstanceDataResource;
 import org.activiti.rest.api.history.HistoricVariableInstanceQueryResource;
 import org.activiti.rest.api.identity.GroupCollectionResource;
 import org.activiti.rest.api.identity.GroupMembershipCollectionResource;
@@ -158,11 +161,14 @@ public class RestServicesInit {
     router.attach("/runtime/executions/{executionId}/variables/{variableName}/data", ExecutionVariableDataResource.class);
     
     router.attach("/history/historic-process-instances/{processInstanceId}", HistoricProcessInstanceResource.class);
+    router.attach("/history/historic-process-instances/{processInstanceId}/variables/{variableName}/data", HistoricProcessInstanceVariableDataResource.class);
     router.attach("/history/historic-process-instances", HistoricProcessInstanceCollectionResource.class);
     router.attach("/history/historic-task-instances/{taskId}", HistoricTaskInstanceResource.class);
+    router.attach("/history/historic-task-instances/{taskId}/variables/{variableName}/data", HistoricTaskInstanceVariableDataResource.class);
     router.attach("/history/historic-task-instances", HistoricTaskInstanceCollectionResource.class);
     router.attach("/history/historic-activity-instances", HistoricActivityInstanceCollectionResource.class);
     router.attach("/history/historic-variable-instances", HistoricVariableInstanceCollectionResource.class);
+    router.attach("/history/historic-variable-instances/{varInstanceId}/data", HistoricVariableInstanceDataResource.class);
     router.attach("/history/historic-detail", HistoricDetailCollectionResource.class);
     router.attach("/history/historic-detail/{detailId}/data", HistoricDetailDataResource.class);
     

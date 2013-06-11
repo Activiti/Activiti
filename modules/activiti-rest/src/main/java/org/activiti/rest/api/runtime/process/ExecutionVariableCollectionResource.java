@@ -120,7 +120,7 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
           Object actualVariableValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
                   .getVariableValue(var);
           variablesToSet.put(var.getName(), actualVariableValue);
-          variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, execution.getId(), null, null, null, false));
+          variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, execution.getId(), RestResponseFactory.VARIABLE_EXECUTION, false));
         }
         
         if(variablesToSet.size() > 0) {
@@ -156,7 +156,7 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
   protected void addGlobalVariables(Execution execution, Map<String, RestVariable> variableMap) {
     Map<String, Object> rawVariables = ActivitiUtil.getRuntimeService().getVariables(execution.getId());
     List<RestVariable> globalVariables = getApplication(ActivitiRestServicesApplication.class)
-            .getRestResponseFactory().createRestVariables(this, rawVariables, null, execution.getId(), null, RestVariableScope.GLOBAL);
+            .getRestResponseFactory().createRestVariables(this, rawVariables, execution.getId(), RestResponseFactory.VARIABLE_EXECUTION, RestVariableScope.GLOBAL);
     
     // Overlay global variables over local ones. In case they are present the values are not overridden, 
     // since local variables get precedence over global ones at all times.
@@ -171,7 +171,7 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
   protected void addLocalVariables(Execution execution, Map<String, RestVariable> variableMap) {
     Map<String, Object> rawLocalvariables = ActivitiUtil.getRuntimeService().getVariablesLocal(execution.getId());
     List<RestVariable> localVariables = getApplication(ActivitiRestServicesApplication.class)
-            .getRestResponseFactory().createRestVariables(this, rawLocalvariables, null, execution.getId(), null, RestVariableScope.LOCAL);
+            .getRestResponseFactory().createRestVariables(this, rawLocalvariables, execution.getId(), RestResponseFactory.VARIABLE_EXECUTION, RestVariableScope.LOCAL);
     
     for(RestVariable var : localVariables) {
       variableMap.put(var.getName(), var);

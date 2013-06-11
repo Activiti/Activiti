@@ -13,35 +13,40 @@
 
 package org.activiti.rest.api.history;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.activiti.rest.api.engine.variable.RestVariable;
 
 /**
  * @author Tijs Rademakers
  */
 public class HistoricTaskInstanceResponse {
   
-  private String id;
-  private String processDefinitionId;
-  private String processDefinitionUrl;
-  private String processInstanceId;
-  private String processInstanceUrl;
-  private String executionId;
-  private String name;
-  private String description;
-  private String deleteReason;
-  private String owner;
-  private String assignee;
-  private Date startTime;
-  private Date endTime;
-  private Long durationInMillis;
-  private Long workTimeInMillis;
-  private Date claimTime;
-  private String taskDefinitionKey;
-  private String formKey;
-  private Integer priority;
-  private Date dueDate;
-  private String parentTaskId;
-  private String url;
+  protected String id;
+  protected String processDefinitionId;
+  protected String processDefinitionUrl;
+  protected String processInstanceId;
+  protected String processInstanceUrl;
+  protected String executionId;
+  protected String name;
+  protected String description;
+  protected String deleteReason;
+  protected String owner;
+  protected String assignee;
+  protected Date startTime;
+  protected Date endTime;
+  protected Long durationInMillis;
+  protected Long workTimeInMillis;
+  protected Date claimTime;
+  protected String taskDefinitionKey;
+  protected String formKey;
+  protected Integer priority;
+  protected Date dueDate;
+  protected String parentTaskId;
+  protected String url;
+  protected List<RestVariable> variables = new ArrayList<RestVariable>();
   
   public String getId() {
     return id;
@@ -174,5 +179,14 @@ public class HistoricTaskInstanceResponse {
   }
   public void setUrl(String url) {
     this.url = url;
+  }
+  public List<RestVariable> getVariables() {
+    return variables;
+  }
+  public void setVariables(List<RestVariable> variables) {
+    this.variables = variables;
+  }
+  public void addVariable(RestVariable variable) {
+    variables.add(variable);
   }
 }

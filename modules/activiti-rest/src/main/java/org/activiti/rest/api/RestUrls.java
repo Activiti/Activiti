@@ -255,6 +255,11 @@ public final class RestUrls {
   public static final String[] URL_HISTORIC_PROCESS_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE};
   
   /**
+   * URL template for a single historic task instance: <i>history/historic-process-instances/{0:processInstanceId}/variables/{1:variableName}</i>
+   */
+  public static final String[] URL_HISTORIC_PROCESS_INSTANCE_VARIABLE_DATA = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
+  
+  /**
    * URL template for a single historic task instance: <i>history/historic-task-instances/{0:taskId}</i>
    */
   public static final String[] URL_HISTORIC_TASK_INSTANCE = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE, "{0}"};
@@ -265,6 +270,11 @@ public final class RestUrls {
   public static final String[] URL_HISTORIC_TASK_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE};
   
   /**
+   * URL template for a single historic task instance: <i>history/historic-task-instances/{0:taskId}/variables/{1:variableName}</i>
+   */
+  public static final String[] URL_HISTORIC_TASK_INSTANCE_VARIABLE_DATA = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
+  
+  /**
    * URL template for historic activity instance query: <i>history/historic-activity-instances</i>
    */
   public static final String[] URL_HISTORIC_ACTIVITY_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE};
@@ -273,6 +283,11 @@ public final class RestUrls {
    * URL template for historic variable instance query: <i>history/historic-variable-instances</i>
    */
   public static final String[] URL_HISTORIC_VARIABLE_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for a single historic variable instance data: <i>history/historic-variable-instances/{0:varInstanceId}/data</i>
+   */
+  public static final String[] URL_HISTORIC_VARIABLE_INSTANCE_DATA = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE, "{0}", SEGMENT_VARIABLE_DATA};
   
   /**
    * URL template for historic detail query: <i>history/historic-detail</i>

@@ -13,7 +13,11 @@
 
 package org.activiti.rest.api.history;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.activiti.rest.api.engine.variable.RestVariable;
 
 /**
  * @author Tijs Rademakers
@@ -33,6 +37,7 @@ public class HistoricProcessInstanceResponse {
   protected String endActivityId;
   protected String deleteReason;
   protected String superProcessInstanceId;
+  protected List<RestVariable> variables = new ArrayList<RestVariable>();
   
   public String getId() {
     return id;
@@ -111,5 +116,14 @@ public class HistoricProcessInstanceResponse {
   }
   public void setSuperProcessInstanceId(String superProcessInstanceId) {
     this.superProcessInstanceId = superProcessInstanceId;
+  }
+  public List<RestVariable> getVariables() {
+    return variables;
+  }
+  public void setVariables(List<RestVariable> variables) {
+    this.variables = variables;
+  }
+  public void addVariable(RestVariable variable) {
+    variables.add(variable);
   }
 }
