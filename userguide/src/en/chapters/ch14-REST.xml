@@ -1176,6 +1176,42 @@
       </itemizedlist>
     </para>
     </section>
+    
+     <section>
+      <title>Get a process definition resource content</title>
+        <para>
+          <programlisting>GET repository/process-definitions/{processDefinitionId}/resourcedata</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processDefinitionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process definition to get the resource data for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Response:</emphasis>
+    </para>
+    <para>
+      Exactly the same response codes/boy as <literal>GET repository/deployment/{deploymentId}/resourcedata/{resourceId}</literal>.
+    </para>
+  </section>  
  
   <section>
       <title>Suspend a single process definition</title>

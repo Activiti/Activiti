@@ -104,6 +104,11 @@ public final class RestUrls {
   public static final String[] URL_PROCESS_DEFINITION = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}"};
   
   /**
+   * URL template for the resource of a single process definition: <i>repository/process-definitions/{0:processDefinitionId}/resourcedata</i>
+   */
+  public static final String[] URL_PROCESS_DEFINITION_RESOURCE_CONTENT = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE_CONTENT};
+  
+  /**
    * URL template for a process definition's identity links: <i>repository/process-definitions/{0:processDefinitionId}/identitylinks</i>
    */
   public static final String[] URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_IDENTITYLINKS};
