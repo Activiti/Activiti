@@ -16,6 +16,8 @@ import org.activiti.rest.api.history.HistoricTaskInstanceResource;
 import org.activiti.rest.api.history.HistoricVariableInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricVariableInstanceQueryResource;
 import org.activiti.rest.api.identity.GroupCollectionResource;
+import org.activiti.rest.api.identity.GroupMembershipCollectionResource;
+import org.activiti.rest.api.identity.GroupMembershipResource;
 import org.activiti.rest.api.identity.GroupResource;
 import org.activiti.rest.api.identity.UserCollectionResource;
 import org.activiti.rest.api.identity.UserInfoCollectionResource;
@@ -179,6 +181,8 @@ public class RestServicesInit {
     router.attach("/identity/users/{userId}/info", UserInfoCollectionResource.class);
     router.attach("/identity/groups", GroupCollectionResource.class);
     router.attach("/identity/groups/{groupId}", GroupResource.class);
+    router.attach("/identity/groups/{groupId}/members", GroupMembershipCollectionResource.class);
+    router.attach("/identity/groups/{groupId}/members/{userId}", GroupMembershipResource.class);
     
     
     router.attach("/query/tasks", TaskQueryResource.class);

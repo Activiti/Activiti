@@ -63,6 +63,7 @@ public final class RestUrls {
   public static final String SEGMENT_GROUPS = "groups";
   public static final String SEGMENT_PICTURE = "picture";
   public static final String SEGMENT_INFO = "info";
+  public static final String SEGMENT_MEMBERS = "members";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -377,6 +378,16 @@ public final class RestUrls {
    * URL template for a single group: <i>identity/groups/{0:groupId}</i>
    */
   public static final String[] URL_GROUP = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_GROUPS, "{0}"};
+  
+  /**
+   * URL template for the membership-collection of a group: <i>identity/groups/{0:groupId}/members</i>
+   */
+  public static final String[] URL_GROUP_MEMBERSHIP_COLLECTION = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_GROUPS, "{0}", SEGMENT_MEMBERS};
+  
+  /**
+   * URL template for the membership-collection of a single group membership: <i>identity/groups/{0:groupId}/members/{1:userId}</i>
+   */
+  public static final String[] URL_GROUP_MEMBERSHIP = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_GROUPS, "{0}", SEGMENT_MEMBERS, "{1}"};
   
   /**
    * Creates an url based on the passed fragments and replaces any placeholders with the given arguments. The

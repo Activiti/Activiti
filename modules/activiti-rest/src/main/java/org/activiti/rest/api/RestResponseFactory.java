@@ -60,6 +60,7 @@ import org.activiti.rest.api.history.HistoricProcessInstanceResponse;
 import org.activiti.rest.api.history.HistoricTaskInstanceResponse;
 import org.activiti.rest.api.history.HistoricVariableInstanceResponse;
 import org.activiti.rest.api.identity.GroupResponse;
+import org.activiti.rest.api.identity.MembershipResponse;
 import org.activiti.rest.api.identity.UserInfoResponse;
 import org.activiti.rest.api.identity.UserResponse;
 import org.activiti.rest.api.legacy.identity.LegacyRestIdentityLink;
@@ -582,6 +583,13 @@ public class RestResponseFactory {
     return response;
   }
   
+  public MembershipResponse createMembershipResponse(SecuredResource securedResource, String userId, String groupId) {
+    MembershipResponse response = new MembershipResponse();
+    response.setGroupId(groupId);
+    response.setUserId(userId);
+    response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP, groupId, userId));
+    return response;
+  }
   
   /**
    * Called once when the converters need to be initialized. Override of custom conversion
