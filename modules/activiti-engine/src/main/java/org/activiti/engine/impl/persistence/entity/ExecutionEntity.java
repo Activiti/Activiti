@@ -280,7 +280,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public void initialize() {
     log.debug("initializing {}", this);
 
-    ScopeImpl scope = getScope();
+    ScopeImpl scope = getScopeObject();
     ensureParentInitialized();
 
     // initialize the lists of referenced objects (prevents db queries)
@@ -792,7 +792,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   // scopes ///////////////////////////////////////////////////////////////////
   
-  protected ScopeImpl getScope() {
+  protected ScopeImpl getScopeObject() {
     ScopeImpl scope = null;
     if (isProcessInstance()) {
       scope = getProcessDefinition();
