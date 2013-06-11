@@ -343,8 +343,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected FailedJobCommandFactory failedJobCommandFactory;
   
-  protected String databaseTablePrefix = "";
-  
   /**
    * Set this to true if you want to have extra checks on the BPMN xml that is parsed.
    * See http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/
@@ -364,8 +362,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    */
   protected int batchSizeProcessInstances = 25;
   protected int batchSizeTasks = 25;
-  
-  protected String xmlEncoding = "UTF-8";
   
   /**
    * In some situations you want to set the schema to use for table checks / generation if the database metadata
