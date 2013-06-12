@@ -67,6 +67,7 @@ public final class RestUrls {
   public static final String SEGMENT_MODEL = "model";
   public static final String SEGMENT_PROPERTIES = "properties";
   public static final String SEGMENT_ENGINE_INFO = "engine";
+  public static final String SEGMENT_ACTIVITIES = "activities";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -225,6 +226,11 @@ public final class RestUrls {
    * URL template for a single variables for an execution: <i>runtime/executions/{0:executionId}/variables/{1:variableName}/data</i>
    */
   public static final String[] URL_EXECUTION_VARIABLE_DATA = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
+  
+  /**
+   * URL template for a single execution: <i>runtime/executions/{0:executionId}</i>
+   */
+  public static final String[] URL_EXECUTION_ACTIVITIES_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_ACTIVITIES};
   
   /**
    * URL template for execution query: <i>query/executions</i>
