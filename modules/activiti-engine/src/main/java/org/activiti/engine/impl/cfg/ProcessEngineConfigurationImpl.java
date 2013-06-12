@@ -98,6 +98,7 @@ import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.delegate.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.email.AbstractEmailConfiguration;
 import org.activiti.engine.impl.event.CompensationEventHandler;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.event.MessageEventHandler;
@@ -343,6 +344,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected FailedJobCommandFactory failedJobCommandFactory;
   
+  protected String databaseTablePrefix = "";
+  
   /**
    * Set this to true if you want to have extra checks on the BPMN xml that is parsed.
    * See http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/
@@ -374,7 +377,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
-  public ProcessEngine buildProcessEngine() {
+  @Override
+public ProcessEngine buildProcessEngine() {
     init();
     return new ProcessEngineImpl(this);
   }
@@ -644,7 +648,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           properties.put("limitBefore" , DbSqlSessionFactory.databaseSpecificLimitBeforeStatements.get(databaseType));
           properties.put("limitAfter" , DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));
           properties.put("limitBetween" , DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
-          properties.put("limitOuterJoinBetween" , DbSqlSessionFactory.databaseOuterJoinLimitBetweenStatements.get(databaseType));
           properties.put("orderBy" , DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
           properties.put("limitBeforeNativeQuery" , ObjectUtils.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
         }
@@ -1148,7 +1151,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   // getters and setters //////////////////////////////////////////////////////
   
-  public String getProcessEngineName() {
+  @Override
+public String getProcessEngineName() {
     return processEngineName;
   }
 
@@ -1160,7 +1164,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.historyLevel = historyLevel;
   }
 
-  public ProcessEngineConfigurationImpl setProcessEngineName(String processEngineName) {
+  @Override
+public ProcessEngineConfigurationImpl setProcessEngineName(String processEngineName) {
     this.processEngineName = processEngineName;
     return this;
   }
@@ -1237,7 +1242,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public RepositoryService getRepositoryService() {
+  @Override
+public RepositoryService getRepositoryService() {
     return repositoryService;
   }
   
@@ -1246,7 +1252,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public RuntimeService getRuntimeService() {
+  @Override
+public RuntimeService getRuntimeService() {
     return runtimeService;
   }
   
@@ -1255,7 +1262,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public HistoryService getHistoryService() {
+  @Override
+public HistoryService getHistoryService() {
     return historyService;
   }
   
@@ -1264,7 +1272,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public IdentityService getIdentityService() {
+  @Override
+public IdentityService getIdentityService() {
     return identityService;
   }
   
@@ -1273,7 +1282,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public TaskService getTaskService() {
+  @Override
+public TaskService getTaskService() {
     return taskService;
   }
   
@@ -1282,7 +1292,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public FormService getFormService() {
+  @Override
+public FormService getFormService() {
     return formService;
   }
   
@@ -1291,7 +1302,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public ManagementService getManagementService() {
+  @Override
+public ManagementService getManagementService() {
     return managementService;
   }
   
@@ -1704,38 +1716,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   @Override
-  public ProcessEngineConfigurationImpl setMailServerHost(String mailServerHost) {
-    super.setMailServerHost(mailServerHost);
-    return this;
-  }
-
-  @Override
-  public ProcessEngineConfigurationImpl setMailServerPassword(String mailServerPassword) {
-    super.setMailServerPassword(mailServerPassword);
-    return this;
-  }
-
-  @Override
-  public ProcessEngineConfigurationImpl setMailServerPort(int mailServerPort) {
-    super.setMailServerPort(mailServerPort);
-    return this;
-  }
-
-  @Override
-  public ProcessEngineConfigurationImpl setMailServerUseSSL(boolean useSSL) {
-	    super.setMailServerUseSSL(useSSL);
-	    return this;
-	  }
-  
-  @Override
-  public ProcessEngineConfigurationImpl setMailServerUseTLS(boolean useTLS) {
-    super.setMailServerUseTLS(useTLS);
-    return this;
-  }
-
-  @Override
-  public ProcessEngineConfigurationImpl setMailServerUsername(String mailServerUsername) {
-    super.setMailServerUsername(mailServerUsername);
+	public ProcessEngineConfigurationImpl setEmailConfiguration(AbstractEmailConfiguration emailConfiguration) {
+		super.setEmailConfiguration(emailConfiguration);
     return this;
   }
 
@@ -2002,12 +1984,5 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setEnableSafeBpmnXml(boolean enableSafeBpmnXml) {
     this.enableSafeBpmnXml = enableSafeBpmnXml;
   }
-
-  public String getXmlEncoding() {
-    return xmlEncoding;
-  }
-
-  public void setXmlEncoding(String xmlEncoding) {
-    this.xmlEncoding = xmlEncoding;
-  }
+  
 }

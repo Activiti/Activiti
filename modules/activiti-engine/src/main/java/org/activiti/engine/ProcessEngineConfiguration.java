@@ -20,6 +20,8 @@ import javax.sql.DataSource;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
+import org.activiti.engine.impl.email.AbstractEmailConfiguration;
+import org.activiti.engine.impl.email.SimpleEmailConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
 
 
@@ -95,12 +97,8 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String history = HistoryLevel.AUDIT.getKey();
   protected boolean jobExecutorActivate;
 
-  protected String mailServerHost = "localhost";
-  protected String mailServerUsername; // by default no name and password are provided, which 
-  protected String mailServerPassword; // means no authentication for mail server
-  protected int mailServerPort = 25;
-  protected boolean useSSL = false;
-  protected boolean useTLS = false;
+	protected AbstractEmailConfiguration emailConfiguration;
+	protected SimpleEmailConfiguration simpleEmailConfiguration;
   protected String mailServerDefaultFrom = "activiti@localhost";
 
   protected String databaseType;
@@ -126,8 +124,6 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean jpaHandleTransaction;
   protected boolean jpaCloseEntityManager;
   
-  protected String databaseTablePrefix = "";
-  protected String xmlEncoding = "UTF-8";
   protected String defaultCamelContext = "camelContext";
   
   protected String activityFontName = "Arial";
@@ -211,65 +207,71 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   
   public String getMailServerHost() {
-    return mailServerHost;
+		return simpleEmailConfiguration.getMailServerHost();
   }
 
   
   public ProcessEngineConfiguration setMailServerHost(String mailServerHost) {
-    this.mailServerHost = mailServerHost;
+		this.simpleEmailConfiguration.setMailServerHost(mailServerHost);
+		this.emailConfiguration = simpleEmailConfiguration;
     return this;
   }
 
   
   public String getMailServerUsername() {
-    return mailServerUsername;
+		return simpleEmailConfiguration.getMailServerUsername();
   }
 
   
   public ProcessEngineConfiguration setMailServerUsername(String mailServerUsername) {
-    this.mailServerUsername = mailServerUsername;
+		this.simpleEmailConfiguration.setMailServerUsername(mailServerUsername);
+		this.emailConfiguration = simpleEmailConfiguration;
     return this;
   }
 
   
   public String getMailServerPassword() {
-    return mailServerPassword;
+		return simpleEmailConfiguration.getMailServerPassword();
   }
 
   
   public ProcessEngineConfiguration setMailServerPassword(String mailServerPassword) {
-    this.mailServerPassword = mailServerPassword;
+		this.simpleEmailConfiguration.setMailServerPassword(mailServerPassword);
+		this.emailConfiguration = simpleEmailConfiguration;
     return this;
   }
 
   
   public int getMailServerPort() {
-    return mailServerPort;
+		return simpleEmailConfiguration.getMailServerPort();
   }
 
   
   public ProcessEngineConfiguration setMailServerPort(int mailServerPort) {
-    this.mailServerPort = mailServerPort;
+		this.simpleEmailConfiguration.setMailServerPort(mailServerPort);
+		this.emailConfiguration = simpleEmailConfiguration;
     return this;
   }
   
   public boolean getMailServerUseSSL() {
-	  return useSSL;
+		return simpleEmailConfiguration.getMailServerUseSSL();
   }
   
   public ProcessEngineConfiguration setMailServerUseSSL(boolean useSSL) {
-	  this.useSSL = useSSL;
+		this.simpleEmailConfiguration.setUseSSL(useSSL);
+		this.emailConfiguration = simpleEmailConfiguration;
 	  return this;
   }
   
   
   public boolean getMailServerUseTLS() {
-    return useTLS;
+		return simpleEmailConfiguration.getMailServerUseTLS();
   }
 
   
   public ProcessEngineConfiguration setMailServerUseTLS(boolean useTLS) {
-    this.useTLS = useTLS;
+		this.simpleEmailConfiguration.setUseTLS(useTLS);
+		this.emailConfiguration = simpleEmailConfiguration;
     return this;
   }
 
@@ -281,6 +283,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   public ProcessEngineConfiguration setMailServerDefaultFrom(String mailServerDefaultFrom) {
     this.mailServerDefaultFrom = mailServerDefaultFrom;
+		this.emailConfiguration = simpleEmailConfiguration;
     return this;
   }
 
@@ -551,21 +554,13 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public void setLabelFontName(String labelFontName) {
     this.labelFontName = labelFontName;
   }
-  
-  public ProcessEngineConfiguration setDatabaseTablePrefix(String databaseTablePrefix) {
-    this.databaseTablePrefix = databaseTablePrefix;
-    return this;
-  }
-    
-  public String getDatabaseTablePrefix() {
-    return databaseTablePrefix;
-  }
-  
-  public String getXmlEncoding() {
-    return xmlEncoding;
-  }
 
-  public void setXmlEncoding(String xmlEncoding) {
-    this.xmlEncoding = xmlEncoding;
-  }
+	public AbstractEmailConfiguration getEmailConfiguration() {
+		return emailConfiguration;
+	}
+
+	public ProcessEngineConfiguration setEmailConfiguration(AbstractEmailConfiguration emailConfiguration) {
+		this.emailConfiguration = emailConfiguration;
+		return this;
+	}
 }

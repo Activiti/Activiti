@@ -174,7 +174,7 @@ public class BpmnParse implements BpmnXMLConstants {
       String encoding = null;
       if (Context.getProcessEngineConfiguration() != null) {
         enableSafeBpmnXml = Context.getProcessEngineConfiguration().isEnableSafeBpmnXml();
-        encoding = Context.getProcessEngineConfiguration().getXmlEncoding();
+        //encoding = Context.getProcessEngineConfiguration().getXmlEncoding();
       }
       
       if (encoding != null) {
