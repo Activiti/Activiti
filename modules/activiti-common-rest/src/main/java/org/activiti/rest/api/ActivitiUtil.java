@@ -29,22 +29,36 @@ import org.activiti.engine.TaskService;
  */
 public class ActivitiUtil {
   
+  private static ActivitiUtilProvider activitiProvider;
+  
+  public static void setActivitiProvider(ActivitiUtilProvider provider) {
+      activitiProvider = provider;
+  }
+  
   /**
    * Returns the process engine info.
    *
    * @return The process engine info
    */
   public static ProcessEngineInfo getProcessEngineInfo() {
-    return ProcessEngines.getProcessEngineInfo(ProcessEngines.NAME_DEFAULT);
+    if (activitiProvider != null) {
+      return activitiProvider.getProcessEngineInfo();
+    } else {
+      return ProcessEngines.getProcessEngineInfo(ProcessEngines.NAME_DEFAULT);
+    }
   }
-
+  
   /**
    * Returns the process engine.
    *
    * @return The process engine
    */
   public static ProcessEngine getProcessEngine() {
-    return ProcessEngines.getDefaultProcessEngine();
+    if (activitiProvider != null) {
+      return activitiProvider.getProcessEngine();
+    } else {
+      return ProcessEngines.getDefaultProcessEngine();
+    }
   }
 
   /**

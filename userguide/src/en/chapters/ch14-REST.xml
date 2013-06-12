@@ -1177,6 +1177,49 @@
     </para>
     </section>
     
+    <section>
+      <title>Update category for a single process definition</title>
+        <para>
+          <programlisting>PUT repository/process-definitions/{processDefinitionId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "category" : "updatedcategory"
+}</programlisting>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process was category was altered.</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates no category was defined in the request body.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process definition was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>repository/process-definitions/{processDefinitionId}</literal>.
+      </para>
+ </section>
      <section>
       <title>Get a process definition resource content</title>
         <para>
@@ -4498,6 +4541,83 @@ Only the attachment name is required to create a new attachment.
     
 </section>
 
+
+<section>
+    <title>Engine</title>
+    <section>
+      <title>Get engine properties</title>
+        <para>
+          <programlisting>GET management/properties</programlisting>
+        </para>
+        <para>
+        Returns a read-only view of the properties used internally in the engine.
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "next.dbid":"101",
+   "schema.history":"create(5.13)",
+   "schema.version":"5.13"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the properties are returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get engine info</title>
+        <para>
+          <programlisting>GET management/engine</programlisting>
+        </para>
+        <para>
+        Returns a read-only view of the engine that is used in this REST-service.
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "name":"default",
+   "version":"5.13",
+   "resourceUrl":"file://activiti/activiti.cfg.xml",
+   "exception":null
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the engine info is returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+ </section>
+ 
+ 
 <section>
     <title>Jobs</title>
     <section>

@@ -16,6 +16,7 @@ import java.util.Date;
 
 import org.activiti.engine.ActivitiException;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 
 
 public class DueDateBusinessCalendar implements BusinessCalendar {
@@ -24,6 +25,12 @@ public class DueDateBusinessCalendar implements BusinessCalendar {
   
   public Date resolveDuedate(String duedate) {
     try {
+    	
+    	// check if due period was specified
+    	if(duedate.startsWith("P")){
+    		return DateTime.now().plus(Period.parse(duedate)).toDate();
+    	}
+    	
       return DateTime.parse(duedate).toDate();
 
     } catch (Exception e) {

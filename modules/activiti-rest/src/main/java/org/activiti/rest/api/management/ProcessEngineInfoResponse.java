@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.engine;
+package org.activiti.rest.api.management;
 
 /**
  * @author Tijs Rademakers
