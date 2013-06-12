@@ -98,7 +98,6 @@ import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.delegate.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.email.AbstractEmailConfiguration;
 import org.activiti.engine.impl.event.CompensationEventHandler;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.event.MessageEventHandler;
@@ -344,8 +343,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected FailedJobCommandFactory failedJobCommandFactory;
   
-  protected String databaseTablePrefix = "";
-  
   /**
    * Set this to true if you want to have extra checks on the BPMN xml that is parsed.
    * See http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/
@@ -377,8 +374,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
-  @Override
-public ProcessEngine buildProcessEngine() {
+  public ProcessEngine buildProcessEngine() {
     init();
     return new ProcessEngineImpl(this);
   }
@@ -648,6 +644,7 @@ public ProcessEngine buildProcessEngine() {
           properties.put("limitBefore" , DbSqlSessionFactory.databaseSpecificLimitBeforeStatements.get(databaseType));
           properties.put("limitAfter" , DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));
           properties.put("limitBetween" , DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
+          properties.put("limitOuterJoinBetween" , DbSqlSessionFactory.databaseOuterJoinLimitBetweenStatements.get(databaseType));
           properties.put("orderBy" , DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
           properties.put("limitBeforeNativeQuery" , ObjectUtils.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
         }
@@ -1151,8 +1148,7 @@ public ProcessEngine buildProcessEngine() {
 
   // getters and setters //////////////////////////////////////////////////////
   
-  @Override
-public String getProcessEngineName() {
+  public String getProcessEngineName() {
     return processEngineName;
   }
 
@@ -1164,8 +1160,7 @@ public String getProcessEngineName() {
     this.historyLevel = historyLevel;
   }
 
-  @Override
-public ProcessEngineConfigurationImpl setProcessEngineName(String processEngineName) {
+  public ProcessEngineConfigurationImpl setProcessEngineName(String processEngineName) {
     this.processEngineName = processEngineName;
     return this;
   }
@@ -1242,8 +1237,7 @@ public ProcessEngineConfigurationImpl setProcessEngineName(String processEngineN
     return this;
   }
   
-  @Override
-public RepositoryService getRepositoryService() {
+  public RepositoryService getRepositoryService() {
     return repositoryService;
   }
   
@@ -1252,8 +1246,7 @@ public RepositoryService getRepositoryService() {
     return this;
   }
   
-  @Override
-public RuntimeService getRuntimeService() {
+  public RuntimeService getRuntimeService() {
     return runtimeService;
   }
   
@@ -1262,8 +1255,7 @@ public RuntimeService getRuntimeService() {
     return this;
   }
   
-  @Override
-public HistoryService getHistoryService() {
+  public HistoryService getHistoryService() {
     return historyService;
   }
   
@@ -1272,8 +1264,7 @@ public HistoryService getHistoryService() {
     return this;
   }
   
-  @Override
-public IdentityService getIdentityService() {
+  public IdentityService getIdentityService() {
     return identityService;
   }
   
@@ -1282,8 +1273,7 @@ public IdentityService getIdentityService() {
     return this;
   }
   
-  @Override
-public TaskService getTaskService() {
+  public TaskService getTaskService() {
     return taskService;
   }
   
@@ -1292,8 +1282,7 @@ public TaskService getTaskService() {
     return this;
   }
   
-  @Override
-public FormService getFormService() {
+  public FormService getFormService() {
     return formService;
   }
   
@@ -1302,8 +1291,7 @@ public FormService getFormService() {
     return this;
   }
   
-  @Override
-public ManagementService getManagementService() {
+  public ManagementService getManagementService() {
     return managementService;
   }
   
@@ -1716,8 +1704,38 @@ public ManagementService getManagementService() {
   }
 
   @Override
-	public ProcessEngineConfigurationImpl setEmailConfiguration(AbstractEmailConfiguration emailConfiguration) {
-		super.setEmailConfiguration(emailConfiguration);
+  public ProcessEngineConfigurationImpl setMailServerHost(String mailServerHost) {
+    super.setMailServerHost(mailServerHost);
+    return this;
+  }
+
+  @Override
+  public ProcessEngineConfigurationImpl setMailServerPassword(String mailServerPassword) {
+    super.setMailServerPassword(mailServerPassword);
+    return this;
+  }
+
+  @Override
+  public ProcessEngineConfigurationImpl setMailServerPort(int mailServerPort) {
+    super.setMailServerPort(mailServerPort);
+    return this;
+  }
+
+  @Override
+  public ProcessEngineConfigurationImpl setMailServerUseSSL(boolean useSSL) {
+	    super.setMailServerUseSSL(useSSL);
+	    return this;
+	  }
+  
+  @Override
+  public ProcessEngineConfigurationImpl setMailServerUseTLS(boolean useTLS) {
+    super.setMailServerUseTLS(useTLS);
+    return this;
+  }
+
+  @Override
+  public ProcessEngineConfigurationImpl setMailServerUsername(String mailServerUsername) {
+    super.setMailServerUsername(mailServerUsername);
     return this;
   }
 
@@ -1984,5 +2002,12 @@ public ManagementService getManagementService() {
   public void setEnableSafeBpmnXml(boolean enableSafeBpmnXml) {
     this.enableSafeBpmnXml = enableSafeBpmnXml;
   }
-  
+
+  public String getXmlEncoding() {
+    return xmlEncoding;
+  }
+
+  public void setXmlEncoding(String xmlEncoding) {
+    this.xmlEncoding = xmlEncoding;
+  }
 }
