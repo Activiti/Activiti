@@ -2782,8 +2782,7 @@ assertEquals("Ship Order", task.getName());</programlisting>
                 There is an activity extension which allows you to specify an expression in your task-definition to set the initial due
                 date of a task when it is created. The expression <emphasis role="bold">should always resolve to a <literal>java.util.Date</literal>, 
                 <literal>java.util.String (ISO8601 formatted)</literal>, ISO8601 time-duration (eg. PT50M) or <literal>null</literal></emphasis>. 
-                For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task. In case a time-duration
-                is used, the due-date is calculated based on the current date and time, incremented by the given period.
+                For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task. In case a time-duration is used, the due-date is calculated based on the current time, incremented by the given period. For example, when "PT30M" is used as dueDate, the task is due in thirty minutes from now.
               </para>
                <programlisting>
 &lt;userTask id=&quot;theTask&quot; name=&quot;Important task&quot; <emphasis role="bold">activiti:dueDate=&quot;${dateVariable}&quot;</emphasis>/&gt;</programlisting>

@@ -4541,6 +4541,83 @@ Only the attachment name is required to create a new attachment.
     
 </section>
 
+
+<section>
+    <title>Engine</title>
+    <section>
+      <title>Get engine properties</title>
+        <para>
+          <programlisting>GET management/properties</programlisting>
+        </para>
+        <para>
+        Returns a read-only view of the properties used internally in the engine.
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "next.dbid":"101",
+   "schema.history":"create(5.13)",
+   "schema.version":"5.13"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the properties are returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Get engine info</title>
+        <para>
+          <programlisting>GET management/engine</programlisting>
+        </para>
+        <para>
+        Returns a read-only view of the engine that is used in this REST-service.
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "name":"default",
+   "version":"5.13",
+   "resourceUrl":"file://activiti/activiti.cfg.xml",
+   "exception":null
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the engine info is returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+ </section>
+ 
+ 
 <section>
     <title>Jobs</title>
     <section>

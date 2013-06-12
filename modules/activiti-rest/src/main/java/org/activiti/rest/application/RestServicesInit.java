@@ -1,6 +1,5 @@
 package org.activiti.rest.application;
 
-import org.activiti.rest.api.engine.ProcessEngineResource;
 import org.activiti.rest.api.history.HistoricActivityInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricActivityInstanceQueryResource;
 import org.activiti.rest.api.history.HistoricDetailCollectionResource;
@@ -67,6 +66,8 @@ import org.activiti.rest.api.legacy.task.LegacyTaskResource;
 import org.activiti.rest.api.management.JobCollectionResource;
 import org.activiti.rest.api.management.JobExceptionStacktraceResource;
 import org.activiti.rest.api.management.JobResource;
+import org.activiti.rest.api.management.ProcessEngineResource;
+import org.activiti.rest.api.management.PropertiesCollectionResource;
 import org.activiti.rest.api.management.TableCollectionResource;
 import org.activiti.rest.api.management.TableColumnsResource;
 import org.activiti.rest.api.management.TableDataResource;
@@ -191,6 +192,8 @@ public class RestServicesInit {
     router.attach("/management/jobs", JobCollectionResource.class);
     router.attach("/management/jobs/{jobId}", JobResource.class);
     router.attach("/management/jobs/{jobId}/exception-stacktrace", JobExceptionStacktraceResource.class);
+    router.attach("/management/properties", PropertiesCollectionResource.class);
+    router.attach("/management/engine", ProcessEngineResource.class);
     
     router.attach("/identity/users", UserCollectionResource.class);
     router.attach("/identity/users/{userId}", UserResource.class);

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.engine;
+package org.activiti.rest.api.management;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
@@ -28,11 +28,19 @@ public class ProcessEngineResource extends SecuredResource {
   public ProcessEngineInfoResponse getEngineInfo() {
     if(authenticate() == false) return null;
     
-    ProcessEngineInfo engineInfo = ActivitiUtil.getProcessEngineInfo();
     ProcessEngineInfoResponse response = new ProcessEngineInfoResponse();
-    response.setName(engineInfo.getName());
-    response.setResourceUrl(engineInfo.getResourceUrl());
-    response.setException(engineInfo.getException());
+    
+    ProcessEngineInfo engineInfo = ActivitiUtil.getProcessEngineInfo();
+    if(engineInfo != null) {
+      response.setName(engineInfo.getName());
+      response.setResourceUrl(engineInfo.getResourceUrl());
+      response.setException(engineInfo.getException());
+    } else {
+      // Revert to using process-engine directly
+      ProcessEngine engine = ActivitiUtil.getProcessEngine();
+      response.setName(engine.getName());
+    }
+   
     response.setVersion(ProcessEngine.VERSION);
     return response;
   }

@@ -65,6 +65,8 @@ public final class RestUrls {
   public static final String SEGMENT_INFO = "info";
   public static final String SEGMENT_MEMBERS = "members";
   public static final String SEGMENT_MODEL = "model";
+  public static final String SEGMENT_PROPERTIES = "properties";
+  public static final String SEGMENT_ENGINE_INFO = "engine";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -388,6 +390,16 @@ public final class RestUrls {
    * URL template for the collection of jobs: <i>management/jobs</i>
    */
   public static final String[] URL_JOB_COLLECTION = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS};
+  
+  /**
+   * URL template for the collection of properties: <i>management/properties</i>
+   */
+  public static final String[] URL_PROPERTIES_COLLECTION = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_PROPERTIES};
+  
+  /**
+   * URL template for the collection of properties: <i>management/properties</i>
+   */
+  public static final String[] URL_ENGINE_INFO = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_ENGINE_INFO};
   
   /**
    * URL template for the collection of users: <i>identity/users</i>
