@@ -1177,6 +1177,49 @@
     </para>
     </section>
     
+    <section>
+      <title>Update category for a single process definition</title>
+        <para>
+          <programlisting>PUT repository/process-definitions/{processDefinitionId}</programlisting>
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "category" : "updatedcategory"
+}</programlisting>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process was category was altered.</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates no category was defined in the request body.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process definition was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis> see response for <literal>repository/process-definitions/{processDefinitionId}</literal>.
+      </para>
+ </section>
      <section>
       <title>Get a process definition resource content</title>
         <para>

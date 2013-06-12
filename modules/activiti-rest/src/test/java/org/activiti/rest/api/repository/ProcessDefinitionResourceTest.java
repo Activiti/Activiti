@@ -375,5 +375,31 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
          assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
        }
      }
+     
+     /**
+      * Test activating a suspended process definition delayed.
+      * POST repository/process-definitions/{processDefinitionId}
+      */
+      @Deployment(resources={"org/activiti/rest/api/repository/oneTaskProcess.bpmn20.xml"})
+      public void testUpdateProcessDefinitionCategory() throws Exception {
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionCategory("OneTaskCategory").count());
+        
+        ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+        ObjectNode requestNode = objectMapper.createObjectNode();
+        requestNode.put("category", "updatedcategory");
+        
+        Representation response = client.put(requestNode);
+        
+        // Check "OK" status
+        assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+        
+        JsonNode responseNode = objectMapper.readTree(response.getStream());
+        assertEquals("updatedcategory", responseNode.get("category").getTextValue());
+        
+        // Check actual entry in DB
+        assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionCategory("updatedcategory").count());
+        
+      }
    
 }

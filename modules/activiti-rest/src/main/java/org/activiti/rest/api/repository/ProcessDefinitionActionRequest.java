@@ -28,6 +28,7 @@ public class ProcessDefinitionActionRequest extends RestActionRequest {
   
   private boolean includeProcessInstances = false;
   private Date date;
+  private String category;
   
   public void setIncludeProcessInstances(boolean includeProcessInstances) {
     this.includeProcessInstances = includeProcessInstances;
@@ -40,5 +41,11 @@ public class ProcessDefinitionActionRequest extends RestActionRequest {
   }
   public Date getDate() {
     return date;
+  }
+  public void setCategory(String category) {
+    this.category = category;
+  }
+  public String getCategory() {
+    return category;
   }
 }
