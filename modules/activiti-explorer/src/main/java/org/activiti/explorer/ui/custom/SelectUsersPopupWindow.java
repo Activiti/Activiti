@@ -32,6 +32,7 @@ import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -132,6 +133,7 @@ public class SelectUsersPopupWindow extends PopupWindow {
     searchField.setInputPrompt(i18nManager.getMessage(Messages.PEOPLE_SEARCH));
     searchField.setWidth(180, UNITS_PIXELS);
     searchField.focus();
+    searchField.setTextChangeEventMode(TextChangeEventMode.EAGER);
     searchLayout.addComponent(searchField);
     
     // Logic to change table according to input
