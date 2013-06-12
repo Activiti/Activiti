@@ -228,7 +228,7 @@ public final class RestUrls {
   public static final String[] URL_EXECUTION_VARIABLE_DATA = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
   
   /**
-   * URL template for a single execution: <i>runtime/executions/{0:executionId}</i>
+   * URL template for all active activities on an execution: <i>runtime/executions/{0:executionId}/activities</i>
    */
   public static final String[] URL_EXECUTION_ACTIVITIES_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_ACTIVITIES};
   
