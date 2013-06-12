@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
@@ -173,7 +174,13 @@ public class SelectUsersPopupWindow extends PopupWindow {
   protected void searchPeople(String searchText) {
     if (searchText.length() >= 2) {
       matchingUsersTable.removeAllItems();
-      List<User> results = ExplorerApp.get().getUserCache().findMatchingUsers(searchText);
+      
+      List<User> results = ProcessEngines.getDefaultProcessEngine()
+              .getIdentityService()
+              .createUserQuery()
+              .userFullNameLike("%" + searchText + "%")
+              .list();
+      
       for (User user : results) {
         if (!multiSelect || !selectedUsersTable.containsId(user.getId())) {
           if (ignoredUserIds == null || !ignoredUserIds.contains(user.getId())) {

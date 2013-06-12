@@ -91,6 +91,9 @@
       <if test="lastNameLike != null">
         and RES.LAST_ like #{lastNameLike}
       </if>
+      <if test="fullNameLike != null">
+        and (RES.FIRST_ like #{fullNameLike} or RES.LAST_ like #{fullNameLike})
+      </if>
       <if test="email != null">
         and RES.EMAIL_ = #{email}
       </if>

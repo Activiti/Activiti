@@ -23,10 +23,12 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
@@ -75,17 +77,22 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
 
   @Override
   public GroupQuery createNewGroupQuery() {
-    throw new ActivitiException("LDAP group manager doesn't support querying");
+    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
   }
 
   @Override
   public List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page) {
-    throw new ActivitiException("LDAP group manager doesn't support querying");
+    // Only support for groupMember() at the moment
+    if (query.getUserId() != null) {
+      return findGroupsByUser(query.getUserId());
+    } else {
+      throw new ActivitiIllegalArgumentException("This query is not supported by the LDAPGroupManager");
+    }
   }
 
   @Override
   public long findGroupCountByQueryCriteria(GroupQueryImpl query) {
-    throw new ActivitiException("LDAP group manager doesn't support querying");
+    return findGroupByQueryCriteria(query, null).size(); // Is there a generic way to do a count(*) in ldap?
   }
 
   @Override

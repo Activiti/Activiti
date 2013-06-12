@@ -12,6 +12,7 @@
  */
 package org.activiti.ldap;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,11 +23,13 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
@@ -84,19 +87,7 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
           UserEntity user = new UserEntity();
           while (namingEnum.hasMore()) { // Should be only one
             SearchResult result = (SearchResult) namingEnum.next();
-            
-            if (ldapConfigurator.getUserIdAttribute() != null) {
-              user.setId(result.getAttributes().get(ldapConfigurator.getUserIdAttribute()).get().toString());
-            } else {
-              user.setId(userId);
-            }
-            
-            if (ldapConfigurator.getUserFirstNameAttribute() != null) {
-              user.setFirstName(result.getAttributes().get(ldapConfigurator.getUserFirstNameAttribute()).get().toString());
-            }
-            if (ldapConfigurator.getUserLastNameAttribute() != null) {
-              user.setLastName(result.getAttributes().get(ldapConfigurator.getUserLastNameAttribute()).get().toString());
-            }
+            mapSearchResultToUser(result, user);
           }
           namingEnum.close();
           
@@ -107,7 +98,7 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
           return null;
         }
       }
-      
+
     });
   }
 
@@ -119,14 +110,67 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
 
 
   @Override
-  public List<User> findUserByQueryCriteria(UserQueryImpl query, Page page) {
-    throw new ActivitiException("LDAP user manager doesn't support querying");
+  public List<User> findUserByQueryCriteria(final UserQueryImpl query, final Page page) {
+    
+    if (query.getId() != null) {
+      List<User> result = new ArrayList<User>();
+      result.add(findUserById(query.getId()));
+      return result;
+    } else if (query.getFullNameLike() != null){
+      
+      LDAPTemplate ldapTemplate = new LDAPTemplate(ldapConfigurator);
+      return ldapTemplate.execute(new LDAPCallBack<List<User>>() {
+        
+        public List<User> executeInContext(InitialDirContext initialDirContext) {
+          List<User> result = new ArrayList<User>();
+          try {
+            String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryByFullNameLike(ldapConfigurator, query.getFullNameLike());
+            NamingEnumeration< ? > namingEnum = initialDirContext.search(ldapConfigurator.getBaseDn(), searchExpression, createSearchControls());
+            
+            while (namingEnum.hasMore()) { 
+              SearchResult searchResult = (SearchResult) namingEnum.next();
+              
+              UserEntity user = new UserEntity();
+              mapSearchResultToUser(searchResult, user);
+              result.add(user);
+              
+            }
+            namingEnum.close();
+            
+          } catch (NamingException ne) {
+            logger.debug("Could not execute LDAP query: " + ne.getMessage(), ne);
+            return null;
+          }
+          return result;
+        }
+        
+      });
+      
+    } else {
+      throw new ActivitiIllegalArgumentException("Query is currently not supported by LDAPUserManager.");
+    }
+    
+  }
+  
+  protected void mapSearchResultToUser( SearchResult result, UserEntity user) throws NamingException {
+    if (ldapConfigurator.getUserIdAttribute() != null) {
+      user.setId(result.getAttributes().get(ldapConfigurator.getUserIdAttribute()).get().toString());
+    }
+    if (ldapConfigurator.getUserFirstNameAttribute() != null) {
+      user.setFirstName(result.getAttributes().get(ldapConfigurator.getUserFirstNameAttribute()).get().toString());
+    }
+    if (ldapConfigurator.getUserLastNameAttribute() != null) {
+      user.setLastName(result.getAttributes().get(ldapConfigurator.getUserLastNameAttribute()).get().toString());
+    }
+    if (ldapConfigurator.getUserEmailAttribute() != null) {
+      user.setEmail(result.getAttributes().get(ldapConfigurator.getUserEmailAttribute()).get().toString());
+    }
   }
 
 
   @Override
   public long findUserCountByQueryCriteria(UserQueryImpl query) {
-    throw new ActivitiException("LDAP user manager doesn't support querying");
+    return findUserByQueryCriteria(query, null).size(); // Is there a generic way to do counts in ldap?
   }
 
 
@@ -138,7 +182,7 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
 
   @Override
   public UserQuery createNewUserQuery() {
-    throw new ActivitiException("LDAP user manager doesn't support querying");
+    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
   }
 
 

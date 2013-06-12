@@ -92,6 +92,9 @@ public class LoggedInUserImpl implements LoggedInUser {
   public List<Group> getSecurityRoles() {
     return securityRoles;
   }
+  public List<Group> getGroups() {
+    return groups;
+  }
   public void addGroup(Group group) {
     groups.add(group);
   }

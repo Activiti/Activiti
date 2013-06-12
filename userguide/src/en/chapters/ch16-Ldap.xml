@@ -91,9 +91,11 @@
                 &lt;!-- Query params --&gt;
                 &lt;property name=&quot;baseDn&quot; value=&quot;o=activiti&quot; /&gt;
                 &lt;property name=&quot;queryUserByUserId&quot; value=&quot;(&amp;(objectClass=inetOrgPerson)(uid={0}))&quot; /&gt;
+                &lt;property name=&quot;queryUserByFullNameLike&quot; value=&quot;(&amp;(objectClass=inetOrgPerson)(|({0}=*{1}*)({2}=*{3}*)))&quot; /&gt;
                 &lt;property name=&quot;queryGroupsForUser&quot; value=&quot;(&amp;(objectClass=groupOfUniqueNames)(uniqueMember={0}))&quot; /&gt;
                 
                 &lt;!-- Attribute config --&gt;
+                &lt;property name=&quot;userIdAttribute&quot; value=&quot;uid&quot; /&gt;
                 &lt;property name=&quot;userFirstNameAttribute&quot; value=&quot;cn&quot; /&gt;
                 &lt;property name=&quot;userLastNameAttribute&quot; value=&quot;sn&quot; /&gt;
                 
@@ -185,7 +187,7 @@
                             <entry>long</entry>
                             <entry>one hour</entry>
                         </row>     
-                         <row>
+                        <row>
                             <entry>queryUserByUserId</entry>
                             <entry>
                             The query that is executed when searching for a user by userId. 
@@ -199,7 +201,22 @@
                             </entry>
                             <entry>string</entry>
                             <entry></entry>
-                        </row>     
+                        </row>    
+                        <row>
+                            <entry>queryUserByFullNameLike</entry>
+                            <entry>
+                            The query that is executed when searching for a user by full name. 
+                            For example: (&amp; (objectClass=inetOrgPerson) (|({0}=*{1}*)({2}=*{3}*)) )
+                            Here, all the objects in LDAP with the class 'inetOrgPerson'
+                            and who have the matching first name and last name values will be returned.
+                            Note that {0} injects the firstNameAttribute (as defined above), {1} and {3} the search text
+                            and {2} the lastNameAttribute. If setting the query alone is insufficient for your specific
+                            LDAP setup, you can alternatively plug in a different
+                            LDAPQueryBuilder, which allows for more customization than only the  query.
+                            </entry>
+                            <entry>string</entry>
+                            <entry></entry>
+                        </row>      
                          <row>
                             <entry>queryGroupsForUser</entry>
                             <entry>The query that is executed when searching for the groups of a specific user.
@@ -218,8 +235,7 @@
                             <entry>Name of the attribute that matches the user id.
                             This property is used when looking for a User object
                             and the mapping between the LDAP object and the Activiti User object
-                            is done. This property is optional and is only needed if searching for User
-                            objects using the Activiti API.</entry>
+                            is done.</entry>
                             <entry>string</entry>
                             <entry></entry>
                         </row>     
@@ -342,6 +358,53 @@
                 </tgroup>
             
             </table>
+        </para>
+    
+    </section>
+    
+    <section id="lda-explorer">
+    
+        <title>Integrate LDAP in Explorer</title>
+        
+        <para>
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        Add the LDAP configuration as above to <literal>activiti-standalone-context.xml</literal>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Add the activiti-ldap jar to WEB-INF/lib
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Remove the <literal>demoDataGenerator</literal> bean, as it will try to insert users (which is not possible with the LDAP integration)
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Add following configuration to the <literal>explorerApp</literal> bean in <literal>activiti-ui.context</literal>:
+                        <programlisting>
+&lt;property name=&quot;adminGroups&quot;&gt;
+  &lt;list&gt;
+    &lt;value&gt;admin&lt;/value&gt;
+  &lt;/list&gt;
+  &lt;/property&gt;
+  &lt;property name=&quot;userGroups&quot;&gt;
+    &lt;list&gt;
+      &lt;value&gt;user&lt;/value&gt;
+    &lt;/list&gt;
+&lt;/property&gt;                        
+                        </programlisting>
+                        Obviously replacing the values with your own values. The value that needs to be used is the id of the group (configurable
+                        through <literal>groupIdAttribute</literal>). The config above will make all members of the 'admin' group an Administrator user
+                        in Activiti Explorer and similar for the user group. Any group not matching these values is seen as an 'assignment' group, 
+                        ie where tasks can become assigned to.
+                    </para>
+                </listitem>
+            </itemizedlist>
         </para>
     
     </section>

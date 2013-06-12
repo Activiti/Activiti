@@ -34,7 +34,7 @@
 		      <bean class="org.activiti.ldap.LDAPConfigurator">
 		      
 		        <!-- Server connection params -->
-		        <property name="server" value="ldap://localhost" />
+                <property name="server" value="ldap://localhost" />
                 <property name="port" value="33389" />
                 <property name="user" value="uid=admin, ou=users, o=activiti" />
                 <property name="password" value="pass" />
@@ -42,13 +42,15 @@
                 <!-- Query params -->
                 <property name="baseDn" value="o=activiti" />
                 <property name="queryUserByUserId" value="(&amp;(objectClass=inetOrgPerson)(uid={0}))" />
+                <property name="queryUserByFullNameLike" value="(&amp;(objectClass=inetOrgPerson)(|({0}=*{1}*)({2}=*{3}*)))" />
                 <property name="queryGroupsForUser" value="(&amp;(objectClass=groupOfUniqueNames)(uniqueMember={0}))" />
                 
                 <!-- Attribute config -->
+                <property name="userIdAttribute" value="uid" />
                 <property name="userFirstNameAttribute" value="cn" />
                 <property name="userLastNameAttribute" value="sn" />
                 
-                <property name="groupIdAttribute" value="cn" />
+                <property name="groupIdAttribute" value="uid" />
                 <property name="groupNameAttribute" value="cn" />
                 
                 <!-- Group cache settings -->

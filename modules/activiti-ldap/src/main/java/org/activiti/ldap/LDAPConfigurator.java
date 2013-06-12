@@ -57,11 +57,13 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
 
   protected String queryUserByUserId;
   protected String queryGroupsForUser;
+  protected String queryUserByFullNameLike;
   
   // Attribute names
   protected String userIdAttribute;
   protected String userFirstNameAttribute;
   protected String userLastNameAttribute;
+  protected String userEmailAttribute;
   
   protected String groupIdAttribute;
   protected String groupNameAttribute;
@@ -256,6 +258,34 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
     return queryGroupsForUser;
   }
   
+  
+  public String getQueryUserByFullNameLike() {
+    return queryUserByFullNameLike;
+  }
+  
+  /**
+   * The query that is executed when searching for a user by full name.
+   * 
+   * For example: (&amp;(objectClass=inetOrgPerson)(|({0}=*{1}*)({2}={3})))
+   * 
+   * Here, all the objects in LDAP with the class 'inetOrgPerson'
+   * and who have the matching first name or last name will be returned
+   * 
+   * Several things will be injected in the expression:
+   * {0} : the first name attribute
+   * {1} : the search text
+   * {2} : the last name attribute
+   * {3} : the search text
+   * 
+   * If setting the query alone is insufficient for your specific
+   * LDAP setup, you can alternatively plug in a different
+   * {@link LDAPQueryBuilder}, which allows for more customization than
+   * only the  query.
+   */
+  public void setQueryUserByFullNameLike(String queryUserByFullNameLike) {
+    this.queryUserByFullNameLike = queryUserByFullNameLike;
+  }
+
   /**
    * The query that is executed when searching for the groups of a specific user.
    * 
@@ -322,6 +352,22 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
    */
   public void setUserLastNameAttribute(String userLastNameAttribute) {
     this.userLastNameAttribute = userLastNameAttribute;
+  }
+  
+  
+  public String getUserEmailAttribute() {
+    return userEmailAttribute;
+  }
+
+  /**
+   * Name of the attribute that matches the user email.
+   * 
+   * This property is used when looking for a {@link User} object
+   * and the mapping between the LDAP object and the Activiti {@link User} object
+   * is done.
+   */
+  public void setUserEmailAttribute(String userEmailAttribute) {
+    this.userEmailAttribute = userEmailAttribute;
   }
 
   public String getGroupIdAttribute() {

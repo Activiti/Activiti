@@ -139,7 +139,7 @@ public class TaskTable extends Table implements TaskFormModelListener {
     } else {
       groupComboBox.setValue(taskGroups);
     }
-    for (Group group : ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().groupType("assignment").orderByGroupName().asc().list()) {
+    for (Group group : ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().orderByGroupName().asc().list()) {
       groupComboBox.addItem(group.getId());
       groupComboBox.setItemCaption(group.getId(), group.getName());
     }

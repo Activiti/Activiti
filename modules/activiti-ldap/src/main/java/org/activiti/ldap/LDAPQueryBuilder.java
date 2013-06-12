@@ -20,6 +20,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +76,20 @@ public class LDAPQueryBuilder {
       
     } else {
       searchExpression = userId;
+    }
+    return searchExpression;
+  }
+  
+  public String buildQueryByFullNameLike(final LDAPConfigurator ldapConfigurator, String searchText) {
+    String searchExpression = null;
+    if (ldapConfigurator.getQueryUserByFullNameLike() != null) {
+      searchExpression = MessageFormat.format(ldapConfigurator.getQueryUserByFullNameLike(), 
+              ldapConfigurator.getUserFirstNameAttribute(),
+              searchText,
+              ldapConfigurator.getUserLastNameAttribute(),
+              searchText);
+    } else {
+      throw new ActivitiIllegalArgumentException("No 'queryUserByFullNameLike' configured");
     }
     return searchExpression;
   }
