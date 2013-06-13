@@ -1,6 +1,7 @@
 package org.activiti.rest.application;
 
 import org.activiti.rest.api.engine.ProcessEngineResource;
+import org.activiti.rest.api.form.FormDataResource;
 import org.activiti.rest.api.history.HistoricActivityInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricActivityInstanceQueryResource;
 import org.activiti.rest.api.history.HistoricDetailCollectionResource;
@@ -192,6 +193,8 @@ public class RestServicesInit {
     router.attach("/management/jobs/{jobId}", JobResource.class);
     router.attach("/management/jobs/{jobId}/exception-stacktrace", JobExceptionStacktraceResource.class);
     
+    router.attach("/form/form-data", FormDataResource.class);
+    
     router.attach("/identity/users", UserCollectionResource.class);
     router.attach("/identity/users/{userId}", UserResource.class);
     router.attach("/identity/users/{userId}/picture", UserPictureResource.class);
@@ -201,7 +204,6 @@ public class RestServicesInit {
     router.attach("/identity/groups/{groupId}", GroupResource.class);
     router.attach("/identity/groups/{groupId}/members", GroupMembershipCollectionResource.class);
     router.attach("/identity/groups/{groupId}/members/{userId}", GroupMembershipResource.class);
-    
     
     router.attach("/query/tasks", TaskQueryResource.class);
     router.attach("/query/process-instances", ProcessInstanceQueryResource.class);
