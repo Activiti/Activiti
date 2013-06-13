@@ -203,7 +203,8 @@ public class FormDataResourceTest extends BaseRestTestCase {
     variableMap.put("address", address);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variableMap);
     String processInstanceId = processInstance.getId();
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    String processDefinitionId = processInstance.getProcessDefinitionId();
+    Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
 
     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA));
     ObjectNode requestNode = objectMapper.createObjectNode();
@@ -240,5 +241,54 @@ public class FormDataResourceTest extends BaseRestTestCase {
     
     assertEquals("123", historyMap.get("room").getValue());
     assertEquals(processInstanceId, historyMap.get("room").getProcessInstanceId());
+    
+    processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variableMap);
+    processInstanceId = processInstance.getId();
+    task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+    
+    requestNode.put("taskId", task.getId());
+    propNode = objectMapper.createObjectNode();
+    propNode.put("id", "direction");
+    propNode.put("value", "nowhere");
+    propertyArray.add(propNode);
+    try {
+      client.post(requestNode);
+    } catch(Exception e) {
+      // expected
+      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, client.getResponse().getStatus());
+    }
+    
+    propNode.put("value", "up");
+    client.post(requestNode);
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+    assertNull(task);
+    processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    assertNull(processInstance);
+    variables = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstanceId).list();
+    historyMap.clear();
+    for (HistoricVariableInstance historicVariableInstance : variables) {
+      historyMap.put(historicVariableInstance.getVariableName(), historicVariableInstance);
+    }
+    
+    assertEquals("123", historyMap.get("room").getValue());
+    assertEquals(processInstanceId, historyMap.get("room").getProcessInstanceId());
+    assertEquals("up", historyMap.get("direction").getValue());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionId", processDefinitionId);
+    propertyArray = objectMapper.createArrayNode();
+    requestNode.put("properties", propertyArray);
+    propNode = objectMapper.createObjectNode();
+    propNode.put("id", "number");
+    propNode.put("value", 123);
+    propertyArray.add(propNode);
+    Representation response = client.post(requestNode);
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode.get("id").asText());
+    assertEquals(processDefinitionId, responseNode.get("processDefinitionId").asText());
+    task = taskService.createTaskQuery().processInstanceId(responseNode.get("id").asText()).singleResult();
+    assertNotNull(task);
   }
 }

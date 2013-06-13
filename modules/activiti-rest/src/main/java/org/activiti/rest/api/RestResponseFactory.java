@@ -409,6 +409,7 @@ public class RestResponseFactory {
     result.setActivityId(processInstance.getActivityId());
     result.setBusinessKey(processInstance.getBusinessKey());
     result.setId(processInstance.getId());
+    result.setProcessDefinitionId(processInstance.getProcessDefinitionId());
     result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
     result.setSuspended(processInstance.isSuspended());
     result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));

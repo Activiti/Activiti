@@ -19,8 +19,10 @@ import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.form.FormData;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.api.runtime.process.ProcessInstanceResponse;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Form;
 import org.restlet.data.Status;
@@ -70,9 +72,9 @@ public class FormDataResource extends SecuredResource {
   }
   
   @Post
-  public void submitForm(SubmitFormRequest submitRequest) {
+  public ProcessInstanceResponse submitForm(SubmitFormRequest submitRequest) {
     if (!authenticate()) {
-      return;
+      return null;
     }
 
     if (submitRequest == null) {
@@ -93,12 +95,16 @@ public class FormDataResource extends SecuredResource {
     
     if (submitRequest.getTaskId() != null) {
       ActivitiUtil.getFormService().submitTaskFormData(submitRequest.getTaskId(), propertyMap);
+      return null;
     } else {
+      ProcessInstance processInstance = null;
       if (submitRequest.getBusinessKey() != null) {
-        ActivitiUtil.getFormService().submitStartFormData(submitRequest.getProcessDefinitionId(), submitRequest.getBusinessKey(), propertyMap);
+        processInstance = ActivitiUtil.getFormService().submitStartFormData(submitRequest.getProcessDefinitionId(), submitRequest.getBusinessKey(), propertyMap);
       } else {
-        ActivitiUtil.getFormService().submitStartFormData(submitRequest.getProcessDefinitionId(), propertyMap);
+        processInstance = ActivitiUtil.getFormService().submitStartFormData(submitRequest.getProcessDefinitionId(), propertyMap);
       }
+      return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+          .createProcessInstanceResponse(this, processInstance);
     }
   }
 }
