@@ -23,6 +23,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.engine.variable.RestVariable;
+import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 
 
@@ -56,7 +57,7 @@ public class ProcessInstanceVariableCollectionResource extends ExecutionVariable
   protected void addLocalVariables(Execution execution, Map<String, RestVariable> variableMap) {
     Map<String, Object> rawVariables = ActivitiUtil.getRuntimeService().getVariables(execution.getId());
     List<RestVariable> globalVariables = getApplication(ActivitiRestServicesApplication.class)
-            .getRestResponseFactory().createRestVariables(this, rawVariables, execution.getId(), RestResponseFactory.VARIABLE_PROCESS, null);
+            .getRestResponseFactory().createRestVariables(this, rawVariables, execution.getId(), RestResponseFactory.VARIABLE_PROCESS, RestVariableScope.LOCAL);
     
     // Overlay global variables over local ones. In case they are present the values are not overridden, 
     // since local variables get precedence over global ones at all times.
