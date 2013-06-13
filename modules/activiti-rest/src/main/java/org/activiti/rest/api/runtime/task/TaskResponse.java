@@ -23,25 +23,28 @@ import org.activiti.engine.task.Task;
  */
 public class TaskResponse {
 
-  private String id;
-  private String url;
-  private String owner;
-  private String assignee;
-  private String delegationState;
-  private String name;
-  private String description;
-  private Date createTime;
-  private Date dueDate;
-  private int priority;
-  private boolean suspended;
-  private String taskDefinitionKey;
+  protected String id;
+  protected String url;
+  protected String owner;
+  protected String assignee;
+  protected String delegationState;
+  protected String name;
+  protected String description;
+  protected Date createTime;
+  protected Date dueDate;
+  protected int priority;
+  protected boolean suspended;
+  protected String taskDefinitionKey;
   
   // References to other resources
-  private String parentTask;
-  private String execution;
-  private String processInstance;
-  private String processDefinition;
-  
+  protected String parentTaskId;
+  protected String parentTaskUrl;
+  protected String executionId;
+  protected String executionUrl;
+  protected String processInstanceId;
+  protected String processInstanceUrl;
+  protected String processDefinitionId;
+  protected String processDefinitionUrl;
   
   public TaskResponse(Task task) {
     setId(task.getId());
@@ -55,6 +58,10 @@ public class TaskResponse {
     setPriority(task.getPriority());
     setSuspended(task.isSuspended());
     setTaskDefinitionKey(task.getTaskDefinitionKey());
+    setParentTaskId(task.getParentTaskId());
+    setExecutionId(task.getExecutionId());
+    setProcessInstanceId(task.getProcessInstanceId());
+    setProcessDefinitionId(task.getProcessDefinitionId());
   }
   
   protected String getDelegationStateString(DelegationState state) {
@@ -131,34 +138,74 @@ public class TaskResponse {
   public void setSuspended(boolean suspended) {
     this.suspended = suspended;
   }
-  public String getParentTask() {
-    return parentTask;
-  }
-  public void setParentTask(String parentTask) {
-    this.parentTask = parentTask;
-  }
-  public String getExecution() {
-    return execution;
-  }
-  public void setExecution(String execution) {
-    this.execution = execution;
-  }
-  public String getProcessInstance() {
-    return processInstance;
-  }
-  public void setProcessInstance(String processInstance) {
-    this.processInstance = processInstance;
-  }
-  public String getProcessDefinition() {
-    return processDefinition;
-  }
-  public void setProcessDefinition(String processDefinition) {
-    this.processDefinition = processDefinition;
-  }
   public String getTaskDefinitionKey() {
     return taskDefinitionKey;
   }
   public void setTaskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
+  }
+
+  public String getParentTaskId() {
+    return parentTaskId;
+  }
+
+  public void setParentTaskId(String parentTaskId) {
+    this.parentTaskId = parentTaskId;
+  }
+
+  public String getParentTaskUrl() {
+    return parentTaskUrl;
+  }
+
+  public void setParentTaskUrl(String parentTaskUrl) {
+    this.parentTaskUrl = parentTaskUrl;
+  }
+
+  public String getExecutionId() {
+    return executionId;
+  }
+
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
+
+  public String getExecutionUrl() {
+    return executionUrl;
+  }
+
+  public void setExecutionUrl(String executionUrl) {
+    this.executionUrl = executionUrl;
+  }
+
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
+
+  public String getProcessInstanceUrl() {
+    return processInstanceUrl;
+  }
+
+  public void setProcessInstanceUrl(String processInstanceUrl) {
+    this.processInstanceUrl = processInstanceUrl;
+  }
+
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+
+  public String getProcessDefinitionUrl() {
+    return processDefinitionUrl;
+  }
+
+  public void setProcessDefinitionUrl(String processDefinitionUrl) {
+    this.processDefinitionUrl = processDefinitionUrl;
   }
 }

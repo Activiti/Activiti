@@ -115,17 +115,17 @@ public class RestResponseFactory {
     response.setUrl(resourceContext.createFullResourceUrl(RestUrls.URL_TASK, task.getId()));
 
     // Add references to other resources, if needed
-    if(task.getParentTaskId() != null) {
-      response.setParentTask(resourceContext.createFullResourceUrl(RestUrls.URL_TASK, task.getParentTaskId()));
+    if (response.getParentTaskId() != null) {
+      response.setParentTaskUrl(resourceContext.createFullResourceUrl(RestUrls.URL_TASK, response.getParentTaskId()));
     }
-    if(task.getProcessDefinitionId() != null) {
-      response.setProcessDefinition(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, task.getProcessDefinitionId()));
+    if (response.getProcessDefinitionId() != null) {
+      response.setProcessDefinitionUrl(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, response.getProcessDefinitionId()));
     }
-    if(task.getExecutionId() != null) {
-      response.setExecution(resourceContext.createFullResourceUrl(RestUrls.URL_EXECUTION, task.getExecutionId()));
+    if (response.getExecutionId() != null) {
+      response.setExecutionUrl(resourceContext.createFullResourceUrl(RestUrls.URL_EXECUTION, response.getExecutionId()));
     }
-    if(task.getProcessInstanceId() != null) {
-      response.setProcessInstance(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, task.getProcessInstanceId()));
+    if (response.getProcessInstanceId() != null) {
+      response.setProcessInstanceUrl(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, response.getProcessInstanceId()));
     }
     
     return response;

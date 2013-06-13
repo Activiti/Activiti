@@ -33,6 +33,7 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
+import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
 
 
@@ -69,8 +70,27 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
     return result;
   }
   
+  @Put
+  public Object createOrUpdateExecutionVariable(Representation representation) {
+    return createExecutionVariable(representation, true);
+  }
+  
+  
   @Post
   public Object createExecutionVariable(Representation representation) {
+   return createExecutionVariable(representation, false);
+  }
+  
+  @Delete
+  public void deleteAllLocalVariables() {
+    Execution execution = getExecutionFromRequest();
+    Collection<String> currentVariables = ActivitiUtil.getRuntimeService().getVariablesLocal(execution.getId()).keySet();
+    ActivitiUtil.getRuntimeService().removeVariablesLocal(execution.getId(), currentVariables);
+    
+    setStatus(Status.SUCCESS_NO_CONTENT);
+  }
+  
+  protected Object createExecutionVariable(Representation representation, boolean override) {
     if (authenticate() == false)
       return null;
     
@@ -83,6 +103,7 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
       // Since we accept both an array of RestVariables and a single RestVariable, we need to inspect the
       // body before passing on to the converterService
       try {
+        
         List<RestVariable> variables = new ArrayList<RestVariable>();
         result = variables;
         
@@ -113,7 +134,7 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
             throw new ActivitiIllegalArgumentException("Only allowed to update multiple variables in the same scope.");
           }
           
-          if(hasVariableOnScope(execution, var.getName(), varScope)) {
+          if(!override && hasVariableOnScope(execution, var.getName(), varScope)) {
             throw new ResourceException(new Status(Status.CLIENT_ERROR_CONFLICT.getCode(), "Variable '" + var.getName() + "' is already present on execution '" + execution.getId() + "'.", null, null));
           }
           
@@ -142,15 +163,6 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
     }
     setStatus(Status.SUCCESS_CREATED);
     return result;
-  }
-  
-  @Delete
-  public void deleteAllLocalVariables() {
-    Execution execution = getExecutionFromRequest();
-    Collection<String> currentVariables = ActivitiUtil.getRuntimeService().getVariablesLocal(execution.getId()).keySet();
-    ActivitiUtil.getRuntimeService().removeVariablesLocal(execution.getId(), currentVariables);
-    
-    setStatus(Status.SUCCESS_NO_CONTENT);
   }
   
   protected void addGlobalVariables(Execution execution, Map<String, RestVariable> variableMap) {

@@ -396,6 +396,46 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseRestTest
   }
   
   /**
+   * Test creating multiple process variables in a single call.
+   * POST runtime/process-instance/{processInstanceId}/variables?override=true
+   */
+  @Deployment(resources = {"org/activiti/rest/api/runtime/ProcessInstanceVariablesCollectionResourceTest.testProcess.bpmn20.xml"})
+  public void testCreateMultipleProcessVariablesWithOverride() throws Exception {
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    runtimeService.setVariable(processInstance.getId(), "stringVariable", "initialValue");
+    ArrayNode requestNode = objectMapper.createArrayNode();
+    
+    // String variable
+    ObjectNode stringVarNode = requestNode.addObject();
+    stringVarNode.put("name", "stringVariable");
+    stringVarNode.put("value", "simple string value");
+    stringVarNode.put("type", "string");
+    
+    ObjectNode anotherVariable = requestNode.addObject();
+    anotherVariable.put("name", "stringVariable2");
+    anotherVariable.put("value", "another string value");
+    anotherVariable.put("type", "string");
+    
+    // Create local variables with a single request
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
+    Representation response = client.put(requestNode);
+    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertTrue(responseNode.isArray());
+    assertEquals(2, responseNode.size());
+    
+    // Check if engine has correct variables set
+    Map<String, Object> variables = runtimeService.getVariablesLocal(processInstance.getId());
+    assertEquals(2, variables.size());
+    
+    assertEquals("simple string value", variables.get("stringVariable"));
+    assertEquals("another string value", variables.get("stringVariable2"));
+  }
+  
+  /**
    * Test deleting all process variables.
    * DELETE runtime/process-instance/{processInstanceId}/variables
    */

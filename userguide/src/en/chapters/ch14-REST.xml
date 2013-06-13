@@ -66,7 +66,7 @@
             </row>
             <row>
               <entry><literal>204 - No content</literal></entry>
-              <entry>The operation was successful and entity has been deleted and therefor there is no response-body returned (<literal>DELETE</literal> request).</entry>
+              <entry>The operation was successful and entity has been deleted and therefore there is no response-body returned (<literal>DELETE</literal> request).</entry>
             </row>
             <row>
               <entry><literal>401 - Unauthorized</literal></entry>
@@ -1048,7 +1048,7 @@
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates an parameter was passed in the wrong format or that 'latest' is used with other parameters other than 'key' and 'keyLike'. The status-message contains additional information.</entry>
+                    <entry>Indicates a parameter was passed in the wrong format or that 'latest' is used with other parameters other than 'key' and 'keyLike'. The status-message contains additional information.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1874,7 +1874,7 @@
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                    <entry>Indicates a parameter was passed in the wrong format. The status-message contains additional information.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2388,6 +2388,2185 @@
     
  </section>
  
+ <section>
+  <title>Process Instances</title>
+  
+   <section>
+      <title>Get a process instance</title>
+        <para>
+          <programlisting>GET runtime/process-instances/{processInstanceId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process instance was found and returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"7",
+   "url":"http://localhost:8182/runtime/process-instances/7",
+   "businessKey":"myBusinessKey",
+   "suspended":false,
+   "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
+   "activityId":"processTask"
+}</programlisting>
+    </para>
+</section>
+
+ <section>
+      <title>Delete a process instance</title>
+        <para>
+          <programlisting>DELETE runtime/process-instances/{processInstanceId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to delete.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the process instance was found and deleted. Response body is left empty intentionally.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+</section>
+
+<section>
+      <title>Activate or suspend a process instance</title>
+        <para>
+          <programlisting>PUT runtime/process-instances/{processInstanceId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to activate/suspend.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request response body (suspend):</emphasis>
+            <programlisting>
+{
+   "action":"suspend"
+}</programlisting>
+    </para>
+     <para>
+       <emphasis role="bold">Request response body (activate):</emphasis>
+            <programlisting>
+{
+   "action":"activate"
+}</programlisting>
+    </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process instance was found and action was executed.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates an invalid action was supplied.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                   <row>
+                    <entry>409</entry>
+                    <entry>Indicates the requested process instance action cannot be executed since the process-instance is already activated/suspended.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+</section>
+
+<section>
+      <title>Start a process instance</title>
+        <para>
+          <programlisting>POST runtime/process-instances</programlisting>
+        </para>
+        <para>
+       <emphasis role="bold">Request body (start by process definition id):</emphasis>
+            <programlisting>
+{
+   "processDefinitionId":"oneTaskProcess:1:158",
+   "businessKey":"myBusinessKey",
+   "variables": [
+      {
+        "name":"myVar",
+        "value":"This is a variable",
+      },
+      
+      ... 
+   ]
+}</programlisting>
+    </para>
+    <para>
+       <emphasis role="bold">Request body (start by process definition key):</emphasis>
+            <programlisting>
+{
+   "processDefinitionKey":"oneTaskProcess",
+   "businessKey":"myBusinessKey",
+   "variables": [
+      {
+        "name":"myVar",
+        "value":"This is a variable",
+      },
+      
+      ... 
+   ]
+}</programlisting>
+    </para>
+    <para>
+       <emphasis role="bold">Request body (start by message):</emphasis>
+            <programlisting>
+{
+   "processDefinitionKey":"newOrderMessage",
+   "businessKey":"myBusinessKey",
+   "variables": [
+      {
+        "name":"myVar",
+        "value":"This is a variable",
+      },
+      
+      ... 
+   ]
+}</programlisting>
+    </para>
+    <para>
+    Only one of <literal>processDefinitionId</literal>, <literal>processDefinitionKey</literal> or <literal>message</literal> can be used in the request body. Both <literal>businessKey</literal> and <literal>variables</literal> are optional.
+    More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that the variable-scope that is supplied is ignored, process-variables are always <literal>local</literal>.
+    </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the process instance was created.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates either the process-definition was not found (based on id or key), no process is started by sending the given message or an invalid variable has been passed. Status description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"7",
+   "url":"http://localhost:8182/runtime/process-instances/7",
+   "businessKey":"myBusinessKey",
+   "suspended":false,
+   "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
+   "activityId":"processTask"
+}</programlisting>
+    </para>
+</section>
+
+<section id="restProcessinstancesGet">
+      <title>List of process instances</title>
+        <para>
+          <programlisting>GET repository/process-instances</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL query parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>id</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process instance with the given id.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKey</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process instances with the given process definition key.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process instances with the given process definition id.</entry>
+                  </row>
+                  <row>
+                    <entry>businessKey</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process instances with the given businessKey.</entry>
+                  </row>
+                  <row>
+                    <entry>involvedUser</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process instances in which the given user is involved.</entry>
+                  </row>
+                  <row>
+                    <entry>suspended</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only return process instance which are suspended. If <literal>false</literal>, only return process instances which are not suspended (active).</entry>
+                  </row>
+                  <row>
+                    <entry>superProcessInstanceId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process instances which have the given super process-instance id (for processes that have a call-activities).</entry>
+                  </row>
+                  <row>
+                    <entry>subProcessInstanceId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                        <entry>Only return process instances which have the given sub process-instance id (for processes started as a call-activity).</entry>
+                  </row>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Sort field, should be either one of <literal>id</literal> (default), <literal>processDefinitionId</literal> or <literal>processDefinitionKey</literal>.</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates request was successful and the process-instances are returned</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates a parameter was passed in the wrong format . The status-message contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "data":[
+      {
+         "id":"7",
+         "url":"http://localhost:8182/runtime/process-instances/7",
+         "businessKey":"myBusinessKey",
+         "suspended":false,
+         "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
+         "activityId":"processTask"
+      },
+      
+      ...
+   ],
+   "total":2,
+   "start":0,
+   "sort":"id",
+   "order":"asc",
+   "size":2
+}</programlisting>
+    </para>
+    </section>
+    
+    <section>
+      <title>Query process instances</title>
+        <para>
+          <programlisting>POST query/process-instances</programlisting>
+        </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+            <programlisting>
+{
+  "processDefinitionKey":"oneTaskProcess",
+  "variables": 
+  [
+    {
+        "name" : "myVariable",
+        "value" : 1234,
+        "operator" : "equals",
+        "type" : "long"
+    },
+    ...
+  ],
+  ...
+}</programlisting>
+
+The request body can contain all possible filters that can be used in the <link linkend="restProcessInstancesGet">List process instances</link> URL query. On top of these, it's possible to provide an array of variables
+to include in the query, with their format <link linkend="restQueryVariable"> described here</link>.
+    </para>
+    <para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates request was successful and the process-instances are returned</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates a parameter was passed in the wrong format . The status-message contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "data":[
+      {
+         "id":"7",
+         "url":"http://localhost:8182/runtime/process-instances/7",
+         "businessKey":"myBusinessKey",
+         "suspended":false,
+         "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
+         "activityId":"processTask"
+      },
+      
+      ...
+   ],
+   "total":2,
+   "start":0,
+   "sort":"id",
+   "order":"asc",
+   "size":2
+}</programlisting>
+    </para>
+    </section>
+    
+     <section>
+      <title>Get a involved people for process instance</title>
+        <para>
+          <programlisting>GET runtime/process-instances/{processInstanceId}/identitylinks</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to the links for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process instance was found and links are returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+   {
+      "url":"http://localhost:8182/runtime/process-instances/5/identitylinks/users/john/customType",
+      "user":"john",
+      "group":null,
+      "type":"customType"
+   },
+   {
+      "url":"http://localhost:8182/runtime/process-instances/5/identitylinks/users/paul/candidate",
+      "user":"paul",
+      "group":null,
+      "type":"candidate"
+   }
+]</programlisting>
+Note that the <literal>groupId</literal> will always be null, as it's only possible to involve users with a process-instance.
+    </para>
+</section>
+
+<section>
+      <title>Add an involved user to a process instance</title>
+        <para>
+          <programlisting>POST runtime/process-instances/{processInstanceId}/identitylinks</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to the links for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+            <programlisting>
+{
+  "userId":"kermit",
+  "type":"participant"
+}</programlisting>
+Both <literal>userId</literal> and <literal>type</literal> are required.
+    </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the process instance was found and the link is created.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the requested body did not contain a userId or a type.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "url":"http://localhost:8182/runtime/process-instances/5/identitylinks/users/john/customType",
+   "user":"john",
+   "group":null,
+   "type":"customType"
+}</programlisting>
+Note that the <literal>groupId</literal> will always be null, as it's only possible to involve users with a process-instance.
+    </para>
+</section>
+
+<section>
+      <title>Remove an involved user to from process instance</title>
+        <para>
+          <programlisting>DELETE runtime/process-instances/{processInstanceId}/identitylinks/users/{userId}/{type}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance.</entry>
+                  </row>
+                  <row>
+                    <entry>userId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the user to delete link for.</entry>
+                  </row>
+                  <row>
+                    <entry>type</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>Type of link to delete.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the process instance was found and the link has been deleted. Response body is left empty intentionally.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found or the link to delete doesn't exist. The response status contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "url":"http://localhost:8182/runtime/process-instances/5/identitylinks/users/john/customType",
+   "user":"john",
+   "group":null,
+   "type":"customType"
+}</programlisting>
+Note that the <literal>groupId</literal> will always be null, as it's only possible to involve users with a process-instance.
+    </para>
+</section>
+
+ <section>
+      <title>List variables for a process instance</title>
+        <para>
+          <programlisting>GET runtime/process-instances/{processInstanceId}/variables</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to the variables for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process instance was found and variables are returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+   {
+      "name":"intProcVar",
+      "type":"integer",
+      "value":123,
+      "scope":"local"
+   },
+   {
+      "name":"byteArrayProcVar",
+      "type":"binary",
+      "value":null,
+      "valueUrl":"http://localhost:8182/runtime/process-instances/5/variables/byteArrayProcVar/data",
+      "scope":"local"
+   },
+   
+   ...
+]</programlisting>
+In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
+Note that only <literal>local</literal> scoped variables are returned, as there is no <literal>global</literal> scope for process-instance variables.</para>
+</section>
+
+  <section>
+      <title>Get a variable for a process instance</title>
+        <para>
+          <programlisting>GET runtime/process-instances/{processInstanceId}/variables/{variableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to the variables for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>Name of the variable to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates both the process instance and variable were found and variable is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+   {
+      "name":"intProcVar",
+      "type":"integer",
+      "value":123,
+      "scope":"local"
+   }</programlisting>
+    In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
+    Note that only <literal>local</literal> scoped variables are returned, as there is no <literal>global</literal> scope for process-instance variables.</para>
+  </section>
+  
+  
+  <section>
+      <title>Create (or update) variables on a process instance</title>
+        <para>
+          <programlisting>POST runtime/process-instances/{processInstanceId}/variables</programlisting>
+          <programlisting>PUT runtime/process-instances/{processInstanceId}/variables</programlisting>
+        </para>
+        <para>
+          When using <literal>POST</literal>, all variables that are passed are created. In case one of the variables already exists on the process instance, the request results in an error (409 - CONFLICT). When <literal>PUT</literal> is used,
+          unexisting variables are created on the process-instance and existing ones are overridden without any error. 
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to the variables for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+            <programlisting>
+[
+   {
+      "name":"intProcVar"
+      "type":"integer"
+      "value":123
+   },
+   
+   ...
+]</programlisting>
+        Any number of variables can be passed into the request body array. More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that scope is ignored, only <literal>local</literal> variables can be set in a process instance.
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the process instance was found and variable is created.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                   <row>
+                    <entry>409</entry>
+                    <entry>Indicates the process instance was found but already contains a variable with the given name (only thrown when POST method is used). Use the update-method instead.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+   {
+      "name":"intProcVar",
+      "type":"integer",
+      "value":123,
+      "scope":"local"
+   },
+   
+   ...
+   
+]</programlisting>
+  </para>
+  </section>
+  
+  <section>
+      <title>Update a single variable on a process instance</title>
+        <para>
+          <programlisting>PUT runtime/process-instances/{processInstanceId}/variables/{variableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to the variables for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>Name of the variable to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+            <programlisting>
+ {
+    "name":"intProcVar"
+    "type":"integer"
+    "value":123
+ }</programlisting>
+        More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that scope is ignored, only <literal>local</literal> variables can be set in a process instance.
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates both the process instance and variable were found and variable is updated.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+   {
+      "name":"intProcVar",
+      "type":"integer",
+      "value":123,
+      "scope":"local"
+   }</programlisting>
+  In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
+  Note that only <literal>local</literal> scoped variables are returned, as there is no <literal>global</literal> scope for process-instance variables.
+  </para>
+  </section>
+  
+   <section>
+      <title>Create a new binary variable on a process-instance</title>
+        <para>
+          <programlisting>POST runtime/process-instances/{processInstanceId}/variables</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to create the new variable for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+          </listitem>
+      </itemizedlist>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "binaryVariable",
+  "scope" : "local",
+  "type" : "binary",
+  "value" : null,
+  "valueUrl" : "http://.../runtime/process-instances/123/variables/binaryVariable/data"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the variable was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of the variable to create was missing. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the process instance already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                  </row>
+                  <row>
+                    <entry>415</entry>
+                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Update an existing binary variable on a process-instance</title>
+        <para>
+          <programlisting>PUT runtime/process-instances/{processInstanceId}/variables</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to create the new variable for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+          </listitem>
+      </itemizedlist>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "binaryVariable",
+  "scope" : "local",
+  "type" : "binary",
+  "value" : null,
+  "valueUrl" : "http://.../runtime/process-instances/123/variables/binaryVariable/data"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the variable was udpated and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of the variable to update was missing. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found or the process instance does not have a variable with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>415</entry>
+                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+
+</section>
+ 
+  <section>
+  <title>Executions</title>
+  
+   <section>
+      <title>Get an execution</title>
+        <para>
+          <programlisting>GET runtime/executions/{exeuctionId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>exeuctionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the execution to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the execution was found and returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the execution was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"5",
+   "url":"http://localhost:8182/runtime/executions/5",
+   "parentUrl":null,
+   "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+   "suspended":false,
+   "activityId":null
+}</programlisting>
+    </para>
+  </section>
+ <section>
+      <title>Execute an action on an execution</title>
+        <para>
+          <programlisting>PUT runtime/executions/{exeuctionId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>exeuctionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the execution to execute action on.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body (signal an execution):</emphasis>
+            <programlisting>
+{
+  "action":"signal"
+}</programlisting>
+    </para>
+     <para>
+       <emphasis role="bold">Request body (signal event received for execution):</emphasis>
+            <programlisting>
+{
+  "action":"signalEventReceived",
+  "signalName":"mySignal"
+  "variables": [ ... ]
+}</programlisting>
+ Notifies the execution that a signal event has been received, requires a <literal>signalName</literal> parameter. Optional <literal>variables</literal> can be passed that are set on the execution before the action is executed.
+    </para>
+     <para>
+       <emphasis role="bold">Request body (signal event received for execution):</emphasis>
+            <programlisting>
+{
+  "action":"messageEventReceived",
+  "messageName":"myMessage"
+  "variables": [ ... ]
+}</programlisting>
+ Notifies the execution that a message event has been received, requires a <literal>messageName</literal> parameter. Optional <literal>variables</literal> can be passed that are set on the execution before the action is executed.
+    </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the execution was found and the action is performed.</entry>
+                  </row>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the execution was found, the action was performed and the action caused the execution to end.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates an illegal action was requested, required parameters are missing in the resuest body or illegal variables are passed in. Status description contains additional information about the error.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the execution was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body (in case execution is not ended due to action):</emphasis>
+            <programlisting>
+{
+   "id":"5",
+   "url":"http://localhost:8182/runtime/executions/5",
+   "parentUrl":null,
+   "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+   "suspended":false,
+   "activityId":null
+}</programlisting>
+    </para>
+  </section>
+  
+  <section>
+      <title>Get active activities in an execution</title>
+        <para>
+          <programlisting>GET runtime/executions/{exeuctionId}/activities</programlisting>
+        </para>
+        <para>
+          Returns all activities which are active in the execution and in all child-executions (and their children, recursively), if any.
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>exeuctionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the execution to get activities for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the execution was found and activities are returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the execution was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  "userTaskForManager",
+  "receiveTask"
+]</programlisting>
+    </para>
+  </section>
+  
+  <section id="restExecutionsGet">
+      <title>List of executions</title>
+        <para>
+          <programlisting>GET repository/executions</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL query parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>id</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions with the given id.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKey</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions with the given process definition key.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions with the given process definition id.</entry>
+                  </row>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions which are part of the process instance with the given id.</entry>
+                  </row>
+                  <row>
+                    <entry>messageEventSubscriptionName</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions which are subscribed to a message with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>signalEventSubscriptionName</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions which are subscribed to a signal with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>parentId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions wich are a direct child of the given execution.</entry>
+                  </row>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Sort field, should be either one of <literal>processInstanceId</literal> (default), <literal>processDefinitionId</literal> or <literal>processDefinitionKey</literal>.</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates request was successful and the executions are returned</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates a parameter was passed in the wrong format . The status-message contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "data":[
+      {
+         "id":"5",
+         "url":"http://localhost:8182/runtime/executions/5",
+         "parentUrl":null,
+         "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+         "suspended":false,
+         "activityId":null
+      },
+      {
+         "id":"7",
+         "url":"http://localhost:8182/runtime/executions/7",
+         "parentUrl":"http://localhost:8182/runtime/executions/5",
+         "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+         "suspended":false,
+         "activityId":"processTask"
+      }
+   ],
+   "total":2,
+   "start":0,
+   "sort":"processInstanceId",
+   "order":"asc",
+   "size":2
+}</programlisting>
+    </para>
+    </section>
+    
+    <section>
+      <title>Query executions</title>
+        <para>
+          <programlisting>POST query/executions</programlisting>
+        </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+            <programlisting>
+{
+  "processDefinitionKey":"oneTaskProcess",
+  "variables": 
+  [
+    {
+        "name" : "myVariable",
+        "value" : 1234,
+        "operator" : "equals",
+        "type" : "long"
+    },
+    ...
+  ],
+  "processInstanceVariables": 
+  [
+    {
+        "name" : "processVariable",
+        "value" : "some string",
+        "operator" : "equals",
+        "type" : "string"
+    },
+    ...
+  ],
+  ...
+}</programlisting>
+
+The request body can contain all possible filters that can be used in the <link linkend="restExecutionsGet">List executions</link> URL query. On top of these, it's possible to provide an array of <literal>variables</literal> and <literal>processInstanceVariables</literal>
+to include in the query, with their format <link linkend="restQueryVariable"> described here</link>.
+    </para>
+    <para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates request was successful and the executions are returned</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates a parameter was passed in the wrong format . The status-message contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "data":[
+      {
+         "id":"5",
+         "url":"http://localhost:8182/runtime/executions/5",
+         "parentUrl":null,
+         "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+         "suspended":false,
+         "activityId":null
+      },
+      {
+         "id":"7",
+         "url":"http://localhost:8182/runtime/executions/7",
+         "parentUrl":"http://localhost:8182/runtime/executions/5",
+         "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
+         "suspended":false,
+         "activityId":"processTask"
+      }
+   ],
+   "total":2,
+   "start":0,
+   "sort":"processInstanceId",
+   "order":"asc",
+   "size":2
+}</programlisting>
+    </para>
+    </section>
+    
+    
+    <section>
+      <title>List variables for an execution</title>
+        <para>
+          <programlisting>GET runtime/executions/{executionId}/variables?scope={scope}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>executionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the execution to the variables for.</entry>
+                  </row>
+                   <row>
+                    <entry>scope</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Either <literal>local</literal> or <literal>global</literal>. If ommitted, both local and global scoped variables are returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the execution was found and variables are returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested execution was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+   {
+      "name":"intProcVar",
+      "type":"integer",
+      "value":123,
+      "scope":"global"
+   },
+   {
+      "name":"byteArrayProcVar",
+      "type":"binary",
+      "value":null,
+      "valueUrl":"http://localhost:8182/runtime/process-instances/5/variables/byteArrayProcVar/data",
+      "scope":"local"
+   },
+   
+   ...
+]</programlisting>
+In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
+</para> 
+</section>
+
+  <section>
+      <title>Get a variable for an execution</title>
+        <para>
+          <programlisting>GET runtime/executions/{executionId}/variables/{variableName}?scope={scope}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>executionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the execution to the variables for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>Name of the variable to get.</entry>
+                  </row>
+                   <row>
+                    <entry>scope</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Either <literal>local</literal> or <literal>global</literal>. If ommitted, local variable is returned (if exists). If not, a global variable is returned (if exists).</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates both the execution and variable were found and variable is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested execution was not found or the execution does not have a variable with the given name in the requested scope (in case scope-query parameter was omitted, variable doesn't exist in local and global scope). Status description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+   {
+      "name":"intProcVar",
+      "type":"integer",
+      "value":123,
+      "scope":"local"
+   }</programlisting>
+    In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
+    </para> 
+  </section>
+  
+  
+  <section>
+      <title>Create (or update) variables on an execution</title>
+        <para>
+          <programlisting>POST runtime/executions/{executionId}/variables</programlisting>
+          <programlisting>PUT runtime/executions/{executionId}/variables</programlisting>
+        </para>
+        <para>
+          When using <literal>POST</literal>, all variables that are passed are created. In case one of the variables already exists on the execution in the requested scope, the request results in an error (409 - CONFLICT). When <literal>PUT</literal> is used,
+          unexisting variables are created on the execution and existing ones are overridden without any error. 
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>executionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the execution to the variables for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+            <programlisting>
+[
+   {
+      "name":"intProcVar"
+      "type":"integer"
+      "value":123,
+      "scope":"local"
+   },
+   
+   ...
+]</programlisting>
+        <emphasis role="bold">Note that you can only provide variables that have the same scope. If the request-body array contains variables from mixed scopes, the request results in an error (400 - BAD REQUEST).</emphasis>Any number of variables can be passed into the request body array. More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that scope is ignored, only <literal>local</literal> variables can be set in a process instance.
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the execution was found and variable is created.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested execution was not found.</entry>
+                  </row>
+                   <row>
+                    <entry>409</entry>
+                    <entry>Indicates the execution was found but already contains a variable with the given name (only thrown when POST method is used). Use the update-method instead.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+   {
+      "name":"intProcVar",
+      "type":"integer",
+      "value":123,
+      "scope":"local"
+   },
+   
+   ...
+   
+]</programlisting>
+  </para>
+  </section>
+  
+  <section>
+      <title>Update a single variable on an execution</title>
+        <para>
+          <programlisting>PUT runtime/executions/{executionId}/variables/{variableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>executionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the execution to update the variables for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>Name of the variable to update.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+            <programlisting>
+ {
+    "name":"intProcVar"
+    "type":"integer"
+    "value":123,
+    "scope":"global"
+ }</programlisting>
+        More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>.
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates both the process instance and variable were found and variable is updated.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+   {
+      "name":"intProcVar",
+      "type":"integer",
+      "value":123,
+      "scope":"global"
+   }</programlisting>
+  In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
+  </para>
+  </section>
+  
+   <section>
+      <title>Create a new binary variable on an execution</title>
+        <para>
+          <programlisting>POST runtime/executions/{executionId}/variables</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>executionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the execution to create the new variable for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+          </listitem>
+          <listitem>
+            <para><literal>scope</literal>: Scope of variable that is created. If omitted, <literal>local</literal> is assumed.</para>
+          </listitem>
+      </itemizedlist>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "binaryVariable",
+  "scope" : "local",
+  "type" : "binary",
+  "value" : null,
+  "valueUrl" : "http://.../runtime/executions/123/variables/binaryVariable/data"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the variable was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of the variable to create was missing. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested execution was not found.</entry>
+                  </row>
+                  <row>
+                    <entry>409</entry>
+                    <entry>Indicates the execution already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                  </row>
+                  <row>
+                    <entry>415</entry>
+                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  
+  <section>
+      <title>Update an existing binary variable on a process-instance</title>
+         <para>
+          <programlisting>PUT runtime/executions/{executionId}/variables/{variableName}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>executionId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the execution to create the new variable for.</entry>
+                  </row>
+                  <row>
+                    <entry>variableName</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The name of the variable to update.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+      <itemizedlist>
+          <listitem>
+            <para><literal>name</literal>: Required name of the variable.</para>
+          </listitem>
+          <listitem>
+            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+          </listitem>
+           <listitem>
+            <para><literal>scope</literal>: Scope of variable that is created. If omitted, <literal>local</literal> is assumed.</para>
+          </listitem>
+      </itemizedlist>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "name" : "binaryVariable",
+  "scope" : "local",
+  "type" : "binary",
+  "value" : null,
+  "valueUrl" : "http://.../runtime/executions/123/variables/binaryVariable/data"
+}</programlisting>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the variable was udpated and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the name of the variable to update was missing. Status message provides additional information.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested execution was not found or the execution does not have a variable with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>415</entry>
+                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+</section>
+ 
   <section>
   <title>Tasks</title>
       <section>
@@ -2473,7 +4652,7 @@
   <section id="restTasksGet">
       <title>List of tasks</title>
         <para>
-          <programlisting>GET repository/tasks</programlisting>
+          <programlisting>GET runtime/tasks</programlisting>
         </para>
         <para>
             <table>
@@ -2668,7 +4847,7 @@
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates an parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). The status-message contains additional information.</entry>
+                    <entry>Indicates a parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). The status-message contains additional information.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2727,7 +4906,8 @@
       "value" : 1234,
       "operator" : "equals",
       "type" : "long"
-    },
+    }
+  ],
     
     "processInstanceVariables" : [
       {
@@ -2758,7 +4938,7 @@
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates an parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). The status-message contains additional information.</entry>
+                    <entry>Indicates a parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). The status-message contains additional information.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3404,7 +5584,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>415</entry>
-                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefor cannot be deserialized.</entry>
+                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3589,7 +5769,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>415</entry>
-                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefor cannot be deserialized.</entry>
+                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4877,330 +7057,54 @@ Only the attachment name is required to create a new attachment.
 </section>
 <section>
   <title>History</title>
-      <section>
-      <title>Query for historic process instances</title>
-        <para>
-          <programlisting>GET history/historic-process-instances</programlisting>
-        </para>
-        <para>
-            <table>
-              <title>URL parameters</title>
-              <tgroup cols='3'>
-                <thead>
-                  <row>
-                    <entry>Parameter</entry>
-                    <entry>Required</entry>
-                    <entry>Value</entry>
-                    <entry>Description</entry>
-                  </row>
-                </thead>
-                <tbody>
-                  <row>
-                    <entry>processInstanceId</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>An id of the historic process instance.</entry>
-                  </row>
-                  <row>
-                    <entry>processDefinitionKey</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>The process definition key of the historic process instance.</entry>
-                  </row>
-                  <row>
-                    <entry>processDefinitionId</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>The process definition id of the historic process instance.</entry>
-                  </row>
-                  <row>
-                    <entry>businessKey</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>The business key of the historic process instance.</entry>
-                  </row>
-                </tbody>
-             </tgroup>
-          </table>
-        </para>
-        <para>
-          <table>
-              <title>Response codes</title>
-              <tgroup cols='2'>
-                <thead>
-                  <row>
-                    <entry>Response code</entry>
-                    <entry>Description</entry>
-                  </row>
-                </thead>
-                <tbody>
-                  <row>
-                    <entry>200</entry>
-                    <entry>Indicates the task was found and returned.</entry>
-                  </row>
-                   <row>
-                    <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
-                  </row>
-                </tbody>
-             </tgroup>
-          </table>
-        </para>
+  <section>
+    <title>Get a single historic process instance</title>
     <para>
-       <emphasis role="bold">Success response body:</emphasis>
-            <programlisting>
-{ 
-  "assignee" : "kermit",
-  "createTime" : "2013-04-17T10:17:43.902+0000",
-  "delegationState" : "pending",
-  "description" : "Task description",
-  "dueDate" : "2013-04-17T10:17:43.902+0000",
-  "execution" : "http://localhost:8182/runtime/executions/5",
-  "id" : "8",
-  "name" : "My task",
-  "owner" : "owner",
-  "parentTask" : "http://localhost:8182/runtime/tasks/9",
-  "priority" : 50,
-  "processDefinition" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
-  "processInstance" : "http://localhost:8182/runtime/process-instances/5",
-  "suspended" : false,
-  "taskDefinitionKey" : "theTask",
-  "url" : "http://localhost:8182/runtime/tasks/8"
-}</programlisting>
-      <itemizedlist>
-          <listitem>
-            <para><literal>delegationState</literal>: Delegation-state of the task, can be <literal>null</literal>, <literal>"pending"</literal> or <literal>"resolved".</literal></para>
-          </listitem>
-      </itemizedlist>
+      <programlisting>GET history/historic-process-instances/{processInstanceId}</programlisting>
     </para>
-    </section>
- 
-  <section id="restTasksGet">
-      <title>List of tasks</title>
-        <para>
-          <programlisting>GET repository/tasks</programlisting>
-        </para>
-        <para>
-            <table>
-              <title>URL query parameters</title>
-              <tgroup cols='3'>
-                <thead>
-                  <row>
-                    <entry>Parameter</entry>
-                    <entry>Required</entry>
-                    <entry>Value</entry>
-                    <entry>Description</entry>
-                  </row>
-                </thead>
-                <tbody>
-                  <row>
-                    <entry>name</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks with the given name.</entry>
-                  </row>
-                  <row>
-                    <entry>nameLike</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks with a name like the given name.</entry>
-                  </row>
-                  <row>
-                    <entry>description</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks with the given description.</entry>
-                  </row>
-                  <row>
-                    <entry>priority</entry>
-                    <entry>No</entry>
-                    <entry>Integer</entry>
-                    <entry>Only return tasks with the given priotiry.</entry>
-                  </row>
-                  <row>
-                    <entry>minimumPriority</entry>
-                    <entry>No</entry>
-                    <entry>Integer</entry>
-                    <entry>Only return tasks with a priority greater than the given value.</entry>
-                  </row>
-                  <row>
-                    <entry>maximumPriority</entry>
-                    <entry>No</entry>
-                    <entry>Integer</entry>
-                    <entry>Only return tasks with a priority lower than the given value.</entry>
-                  </row>
-                  <row>
-                    <entry>assignee</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks assigned to the given user.</entry>
-                  </row>
-                  <row>
-                    <entry>owner</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks owned by the given user.</entry>
-                  </row>
-                  <row>
-                    <entry>unassigned</entry>
-                    <entry>No</entry>
-                    <entry>Boolean</entry>
-                    <entry>Only return tasks that are not assigned to anyone. If <literal>false</literal> is passed, the value is ignored.</entry>
-                  </row>
-                  <row>
-                    <entry>delegationState</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks that have the given delegation state. Possible values are <literal>pending</literal> and <literal>resolved</literal>.</entry>
-                  </row>
-                  <row>
-                    <entry>candidateUser</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks that can be claimed by the given user. This includes both tasks where the user is an explicit candidate for and task that are claimable by a group that the user is a member of.</entry>
-                  </row>
-                  <row>
-                    <entry>candidateGroup</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks that can be claimed by a user in the given group.</entry>
-                  </row>
-                  <row>
-                    <entry>involvedUser</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks in which the given user is involved.</entry>
-                  </row>
-                  <row>
-                    <entry>taskDefinitionKey</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks with the given task definition id.</entry>
-                  </row>
-                  <row>
-                    <entry>taskDefinitionKeyLike</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks with a given task definition id like the given value.</entry>
-                  </row>
-                  <row>
-                    <entry>processInstanceId</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks which are part of the process instance with the given id.</entry>
-                  </row>
-                  <row>
-                    <entry>processInstanceBusinessKey</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks which are part of the process instance with the given business key.</entry>
-                  </row>
-                  <row>
-                    <entry>executionId</entry>
-                    <entry>No</entry>
-                    <entry>String</entry>
-                    <entry>Only return tasks which are part of the execution with the given id.</entry>
-                  </row>
-                  <row>
-                    <entry>createdOn</entry>
-                    <entry>No</entry>
-                    <entry>ISO Date</entry>
-                    <entry>Only return tasks which are created on the given date.</entry>
-                  </row>
-                  <row>
-                    <entry>createdBefore</entry>
-                    <entry>No</entry>
-                    <entry>ISO Date</entry>
-                    <entry>Only return tasks which are created before the given date.</entry>
-                  </row>
-                  <row>
-                    <entry>createdAfter</entry>
-                    <entry>No</entry>
-                    <entry>ISO Date</entry>
-                    <entry>Only return tasks which are created after the given date.</entry>
-                  </row>
-                  <row>
-                    <entry>dueOn</entry>
-                    <entry>No</entry>
-                    <entry>ISO Date</entry>
-                    <entry>Only return tasks which are due on the given date.</entry>
-                  </row>
-                  <row>
-                    <entry>dueBefore</entry>
-                    <entry>No</entry>
-                    <entry>ISO Date</entry>
-                    <entry>Only return tasks which are due before the given date.</entry>
-                  </row>
-                  <row>
-                    <entry>dueAfter</entry>
-                    <entry>No</entry>
-                    <entry>ISO Date</entry>
-                    <entry>Only return tasks which are due after the given date.</entry>
-                  </row>
-                  <row>
-                    <entry>excludeSubTasks</entry>
-                    <entry>No</entry>
-                    <entry>Boolean</entry>
-                    <entry>Only return tasks that are not a subtask of another task.</entry>
-                  </row>
-                  <row>
-                    <entry>active</entry>
-                    <entry>No</entry>
-                    <entry>Boolean</entry>
-                    <entry>If <literal>true</literal>, only return tasks that are not suspended (either part of a process that is not suspended or not part of a process at all). If false, only tasks that are part of suspended process instances are returned.</entry>
-                  </row>
-                  <row>
-                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
-                  </row>
-                </tbody>
-             </tgroup>
-          </table>
-        </para>
-        <para>
-          <table>
-              <title>Response codes</title>
-              <tgroup cols='2'>
-                <thead>
-                  <row>
-                    <entry>Response code</entry>
-                    <entry>Description</entry>
-                  </row>
-                </thead>
-                <tbody>
-                  <row>
-                    <entry>200</entry>
-                    <entry>Indicates request was successful and the tasks are returned</entry>
-                  </row>
-                   <row>
-                    <entry>400</entry>
-                    <entry>Indicates an parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). The status-message contains additional information.</entry>
-                  </row>
-                </tbody>
-             </tgroup>
-          </table>
-        </para>
     <para>
-       <emphasis role="bold">Success response body:</emphasis>
-            <programlisting>
+      <table>
+          <title>Response codes</title>
+          <tgroup cols='2'>
+            <thead>
+              <row>
+                <entry>Response code</entry>
+                <entry>Description</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>200</entry>
+                <entry>Indicates that the historic process instances could be found.</entry>
+              </row>
+              <row>
+                <entry>404</entry>
+                <entry>Indicates that the historic process instances could not be found.</entry>
+              </row>
+            </tbody>
+         </tgroup>
+      </table>
+    </para>
+    <para>
+      <emphasis role="bold">Success response body:</emphasis>
+        <programlisting>
 {
   "data": [
     { 
-      "assignee" : "kermit",
-      "createTime" : "2013-04-17T10:17:43.902+0000",
-      "delegationState" : "pending",
-      "description" : "Task description",
-      "dueDate" : "2013-04-17T10:17:43.902+0000",
-      "execution" : "http://localhost:8182/runtime/executions/5",
-      "id" : "8",
-      "name" : "My task",
-      "owner" : "owner",
-      "parentTask" : "http://localhost:8182/runtime/tasks/9",
-      "priority" : 50,
-      "processDefinition" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
-      "processInstance" : "http://localhost:8182/runtime/process-instances/5",
-      "suspended" : false,
-      "taskDefinitionKey" : "theTask",
-      "url" : "http://localhost:8182/runtime/tasks/8"
+      "id" : "5",
+      "businessKey" : "myKey",
+      "processDefinitionId" : "oneTaskProcess%3A1%3A4",
+      "processDefinitionUrl" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "startTime" : "2013-04-17T10:17:43.902+0000",
+      "endTime" : "2013-04-18T14:06:32.715+0000",
+      "durationInMillis" : 86400056,
+      "startUserId" : "kermit",
+      "startActivityId" : "startEvent",
+      "endActivityId" : "endEvent",
+      "deleteReason" : null,
+      "superProcessInstanceId" : "3",
+      "url" : "http://localhost:8182/history/historic-process-instances/5",
+      "variables": null
     }
   ],
   "total": 1,
@@ -5209,88 +7113,245 @@ Only the attachment name is required to create a new attachment.
   "order": "asc",
   "size": 1
 }</programlisting>
-    </para>
+      </para>
     </section>
-    
-   <section>
-      <title>Query for tasks</title>
-        <para>
-          <programlisting>POST repository/tasks</programlisting>
-        </para>
-        <para>
-          <emphasis role="bold">Request body:</emphasis>
+    <section id="restHistoricProcessInstancesGet">
+    <title>Get historic process instances</title>
+      <para>
+        <programlisting>GET history/historic-process-instances</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='4'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>processInstanceId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>An id of the historic process instance.</entry>
+                </row>
+                <row>
+                  <entry>processDefinitionKey</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process definition key of the historic process instance.</entry>
+                </row>
+                <row>
+                  <entry>processDefinitionId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process definition id of the historic process instance.</entry>
+                </row>
+                <row>
+                  <entry>businessKey</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The business key of the historic process instance.</entry>
+                </row>
+                <row>
+                  <entry>involvedUser</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>An involved user of the historic process instance.</entry>
+                </row>
+                <row>
+                  <entry>finished</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>Indication if the historic process instance is finished.</entry>
+                </row>
+                <row>
+                  <entry>superProcessInstanceId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>An optional parent process id of the historic process instance.</entry>
+                </row>
+                <row>
+                  <entry>finishedAfter</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic process instances that were finished after this date.</entry>
+                </row>
+                <row>
+                  <entry>finishedBefore</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic process instances that were finished before this date.</entry>
+                </row>
+                <row>
+                  <entry>startedAfter</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic process instances that were started after this date.</entry>
+                </row>
+                <row>
+                  <entry>startedBefore</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic process instances that were started before this date.</entry>
+                </row>
+                <row>
+                  <entry>startedBy</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>Return only historic process instances that were started by this user.</entry>
+                </row>
+                <row>
+                  <entry>includeProcessVariables</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>An indication if the historic process instance variables should be returned as well.</entry>
+                </row>
+                <row>
+                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates that historic process instances could be queried.</entry>
+                </row>
+                <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
           <programlisting>
 {
-  "name" : "My task",
-  "description" : "The task description",
-  
+  "data": [
+    { 
+      "id" : "5",
+      "businessKey" : "myKey",
+      "processDefinitionId" : "oneTaskProcess%3A1%3A4",
+      "processDefinitionUrl" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "startTime" : "2013-04-17T10:17:43.902+0000",
+      "endTime" : "2013-04-18T14:06:32.715+0000",
+      "durationInMillis" : 86400056,
+      "startUserId" : "kermit",
+      "startActivityId" : "startEvent",
+      "endActivityId" : "endEvent",
+      "deleteReason" : null,
+      "superProcessInstanceId" : "3",
+      "url" : "http://localhost:8182/history/historic-process-instances/5",
+      "variables": [
+        {
+          "name": "test",
+          "variableScope": "local",
+          "value": "myTest"
+        }
+      ]
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Query for historic process instances</title>
+      <para>
+        <programlisting>POST query/historic-process-instances</programlisting>
+      </para>
+      <para>
+        <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{
+  "processDefinitionId" : "oneTaskProcess%3A1%3A4",
   ...
   
-  "taskVariables" : [
+  "variables" : [
     {
       "name" : "myVariable",
       "value" : 1234,
       "operator" : "equals",
       "type" : "long"
-    },
-    
-    "processInstanceVariables" : [
-      {
-         ... 
-      }
-    ]
+    }
   ]
 }</programlisting> 
-        </para>
-        <para>
-          All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processInstanceVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
-        </para>
-        <para>
-          <table>
-              <title>Response codes</title>
-              <tgroup cols='2'>
-                <thead>
-                  <row>
-                    <entry>Response code</entry>
-                    <entry>Description</entry>
-                  </row>
-                </thead>
-                <tbody>
-                  <row>
-                    <entry>200</entry>
-                    <entry>Indicates request was successful and the tasks are returned</entry>
-                  </row>
-                   <row>
-                    <entry>400</entry>
-                    <entry>Indicates an parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). The status-message contains additional information.</entry>
-                  </row>
-                </tbody>
-             </tgroup>
-          </table>
-        </para>
-    <para>
-       <emphasis role="bold">Success response body:</emphasis>
-            <programlisting>
+      </para>
+      <para>
+        All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricProcessInstancesGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
+        for filtering based on process variables. The <literal>variables</literal> property is a json-array containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates request was successful and the tasks are returned</entry>
+                </row>
+                 <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
 {
   "data": [
     { 
-      "assignee" : "kermit",
-      "createTime" : "2013-04-17T10:17:43.902+0000",
-      "delegationState" : "pending",
-      "description" : "Task description",
-      "dueDate" : "2013-04-17T10:17:43.902+0000",
-      "execution" : "http://localhost:8182/runtime/executions/5",
-      "id" : "8",
-      "name" : "My task",
-      "owner" : "owner",
-      "parentTask" : "http://localhost:8182/runtime/tasks/9",
-      "priority" : 50,
-      "processDefinition" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
-      "processInstance" : "http://localhost:8182/runtime/process-instances/5",
-      "suspended" : false,
-      "taskDefinitionKey" : "theTask",
-      "url" : "http://localhost:8182/runtime/tasks/8"
+      "id" : "5",
+      "businessKey" : "myKey",
+      "processDefinitionId" : "oneTaskProcess%3A1%3A4",
+      "processDefinitionUrl" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "startTime" : "2013-04-17T10:17:43.902+0000",
+      "endTime" : "2013-04-18T14:06:32.715+0000",
+      "durationInMillis" : 86400056,
+      "startUserId" : "kermit",
+      "startActivityId" : "startEvent",
+      "endActivityId" : "endEvent",
+      "deleteReason" : null,
+      "superProcessInstanceId" : "3",
+      "url" : "http://localhost:8182/history/historic-process-instances/5",
+      "variables": [
+        {
+          "name": "test",
+          "variableScope": "local",
+          "value": "myTest"
+        }
+      ]
     }
   ],
   "total": 1,
@@ -5299,34 +7360,1173 @@ Only the attachment name is required to create a new attachment.
   "order": "asc",
   "size": 1
 }</programlisting>
-    </para>
+      </para>
     </section>
-<section>
-    <title>Database tables</title>
-     <section>
-      <title>List of tables</title>
-        <para>
-          <programlisting>GET management/tables</programlisting>
-        </para>
-        <para>
+    <section>
+      <title>Get the binary data for a historic process instance variable</title>
+      <para>
+        <programlisting>GET history/historic-process-instances/{processInstanceId}/variables/{variableName}/data</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates the process instance was found and the requested variable data is returned.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested process instance was not found or the process instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+      <emphasis role="bold">Success response body:</emphasis>
+      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+    </para>
+  </section>
+    <section>
+    <title>Get a single historic task instance</title>
+    <para>
+      <programlisting>GET history/historic-task-instances/{taskId}</programlisting>
+    </para>
+    <para>
+      <table>
+          <title>Response codes</title>
+          <tgroup cols='2'>
+            <thead>
+              <row>
+                <entry>Response code</entry>
+                <entry>Description</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>200</entry>
+                <entry>Indicates that the historic task instances could be found.</entry>
+              </row>
+              <row>
+                <entry>404</entry>
+                <entry>Indicates that the historic task instances could not be found.</entry>
+              </row>
+            </tbody>
+         </tgroup>
+      </table>
+    </para>
+    <para>
+      <emphasis role="bold">Success response body:</emphasis>
+        <programlisting>
+{
+  "id" : "5",
+  "processDefinitionId" : "oneTaskProcess%3A1%3A4",
+  "processDefinitionUrl" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+  "processInstanceId" : "3",
+  "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/3",
+  "executionId" : "4",
+  "name" : "My task name",
+  "description" : "My task description",
+  "deleteReason" : null,
+  "owner" : "kermit",
+  "assignee" : "fozzie",
+  "startTime" : "2013-04-17T10:17:43.902+0000",
+  "endTime" : "2013-04-18T14:06:32.715+0000",
+  "durationInMillis" : 86400056,
+  "workTimeInMillis" : 234890,
+  "claimTime" : "2013-04-18T11:01:54.715+0000",
+  "taskDefinitionKey" : "taskKey",
+  "formKey" : null,
+  "priority" : 50,
+  "dueDate" : "2013-04-20T12:11:13.134+0000",
+  "parentTaskId" : null,
+  "url" : "http://localhost:8182/history/historic-task-instances/5",
+  "variables": null
+}</programlisting>
+      </para>
+    </section>
+    <section id="restHistoricTaskInstancesGet">
+      <title>Get historic task instances</title>
+      <para>
+        <programlisting>GET history/historic-task-instances</programlisting>
+      </para>
+      <para>
           <table>
-              <title>Response codes</title>
-              <tgroup cols='2'>
-                <thead>
-                  <row>
-                    <entry>Response code</entry>
-                    <entry>Description</entry>
-                  </row>
-                </thead>
-                <tbody>
-                  <row>
-                    <entry>200</entry>
-                    <entry>Indicates the request was successful.</entry>
-                  </row>
-                </tbody>
-             </tgroup>
-          </table>
-        </para>
+            <title>URL parameters</title>
+            <tgroup cols='4'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>taskId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>An id of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>processInstanceId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process instance id of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>processDefinitionKey</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process definition key of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>processDefinitionId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process definition id of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>processDefinitionName</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process definition name of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>processBusinessKey</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process instance business key of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>executionId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The execution id of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskName</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task name of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskNameLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task name with 'like' operator for the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskDescription</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task description of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskDescriptionLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task description with 'like' operator for the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskDefinitionKey</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task identifier from the process definition for the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskDeleteReason</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task delete reason of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskDeleteReasonLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task delete reason with 'like' operator for the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskAssignee</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The assignee of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskAssigneeLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The assignee with 'like' operator for the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskOwner</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The owner of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskOwnerLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The owner with 'like' operator for the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskInvolvedUser</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>An involved user of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskPriority</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The priority of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>finished</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>Indication if the historic task instance is finished.</entry>
+                </row>
+                <row>
+                  <entry>processFinished</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>Indication if the process instance of the historic task instance is finished.</entry>
+                </row>
+                <row>
+                  <entry>parentTaskId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>An optional parent task id of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>dueDate</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that have a due date equal this date.</entry>
+                </row>
+                <row>
+                  <entry>dueDateAfter</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that have a due date after this date.</entry>
+                </row>
+                <row>
+                  <entry>dueDateBefore</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that have a due date before this date.</entry>
+                </row>
+                <row>
+                  <entry>taskCreatedOn</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that were created on this date.</entry>
+                </row>
+                <row>
+                  <entry>includeTaskLocalVariables</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>An indication if the historic task instance local variables should be returned as well.</entry>
+                </row>
+                <row>
+                  <entry>includeProcessVariables</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>An indication if the historic task instance global variables should be returned as well.</entry>
+                </row>
+                <row>
+                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates that historic process instances could be queried.</entry>
+                </row>
+                <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+{
+  "data": [
+    { 
+      "id" : "5",
+      "processDefinitionId" : "oneTaskProcess%3A1%3A4",
+      "processDefinitionUrl" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "processInstanceId" : "3",
+      "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/3",
+      "executionId" : "4",
+      "name" : "My task name",
+      "description" : "My task description",
+      "deleteReason" : null,
+      "owner" : "kermit",
+      "assignee" : "fozzie",
+      "startTime" : "2013-04-17T10:17:43.902+0000",
+      "endTime" : "2013-04-18T14:06:32.715+0000",
+      "durationInMillis" : 86400056,
+      "workTimeInMillis" : 234890,
+      "claimTime" : "2013-04-18T11:01:54.715+0000",
+      "taskDefinitionKey" : "taskKey",
+      "formKey" : null,
+      "priority" : 50,
+      "dueDate" : "2013-04-20T12:11:13.134+0000",
+      "parentTaskId" : null,
+      "url" : "http://localhost:8182/history/historic-task-instances/5",
+      "taskVariables": [
+        {
+          "name": "test",
+          "variableScope": "local",
+          "value": "myTest"
+        }
+      ],
+      "processVariables": [
+        {
+          "name": "processTest",
+          "variableScope": "global",
+          "value": "myProcessTest"
+        }
+      ]
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Query for historic task instances</title>
+      <para>
+        <programlisting>POST query/historic-task-instances</programlisting>
+      </para>
+      <para>
+        <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{
+  "processDefinitionId" : "oneTaskProcess%3A1%3A4",
+  ...
+  
+  "variables" : [
+    {
+      "name" : "myVariable",
+      "value" : 1234,
+      "operator" : "equals",
+      "type" : "long"
+    }
+  ]
+}</programlisting> 
+      </para>
+      <para>
+        All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricTaskInstancesGet">getting a collection of historic task instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
+        for filtering based on process variables. The <literal>taskVariables</literal> and <literal>processVariables</literal> properties are json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates request was successful and the tasks are returned</entry>
+                </row>
+                 <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+{
+  "data": [
+    { 
+      "id" : "5",
+      "processDefinitionId" : "oneTaskProcess%3A1%3A4",
+      "processDefinitionUrl" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "processInstanceId" : "3",
+      "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/3",
+      "executionId" : "4",
+      "name" : "My task name",
+      "description" : "My task description",
+      "deleteReason" : null,
+      "owner" : "kermit",
+      "assignee" : "fozzie",
+      "startTime" : "2013-04-17T10:17:43.902+0000",
+      "endTime" : "2013-04-18T14:06:32.715+0000",
+      "durationInMillis" : 86400056,
+      "workTimeInMillis" : 234890,
+      "claimTime" : "2013-04-18T11:01:54.715+0000",
+      "taskDefinitionKey" : "taskKey",
+      "formKey" : null,
+      "priority" : 50,
+      "dueDate" : "2013-04-20T12:11:13.134+0000",
+      "parentTaskId" : null,
+      "url" : "http://localhost:8182/history/historic-task-instances/5",
+      "taskVariables": [
+        {
+          "name": "test",
+          "variableScope": "local",
+          "value": "myTest"
+        }
+      ],
+      "processVariables": [
+        {
+          "name": "processTest",
+          "variableScope": "global",
+          "value": "myProcessTest"
+        }
+      ]
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Get the binary data for a historic task instance variable</title>
+      <para>
+        <programlisting>GET history/historic-task-instances/{taskId}/variables/{variableName}/data</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates the task instance was found and the requested variable data is returned.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested task instance was not found or the process instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+        The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+      </para>
+    </section>
+    <section id="restHistoricActivityInstancesGet">
+      <title>Get historic activity instances</title>
+      <para>
+        <programlisting>GET history/historic-activity-instances</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='4'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>activityId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>An id of the activity instance.</entry>
+                </row>
+                <row>
+                  <entry>activityInstanceId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>An id of the historic activity instance.</entry>
+                </row>
+                <row>
+                  <entry>activityName</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The name of the historic activity instance.</entry>
+                </row>
+                <row>
+                  <entry>activityType</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The element type of the historic activity instance.</entry>
+                </row>
+                <row>
+                  <entry>executionId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The execution id of the historic activity instance.</entry>
+                </row>
+                <row>
+                  <entry>finished</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>Indication if the historic activity instance is finished.</entry>
+                </row>
+                <row>
+                  <entry>taskAssignee</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The assignee of the historic activity instance.</entry>
+                </row>
+                <row>
+                  <entry>processInstanceId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process instance id of the historic activity instance.</entry>
+                </row>
+                <row>
+                  <entry>processDefinitionId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process definition id of the historic activity instance.</entry>
+                </row>
+                <row>
+                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates that historic activity instances could be queried.</entry>
+                </row>
+                <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+{
+  "data": [
+    { 
+      "id" : "5",
+      "activityId" : "4",
+      "activityName" : "My user task",
+      "activityType" : "userTask",
+      "processDefinitionId" : "oneTaskProcess%3A1%3A4",
+      "processDefinitionUrl" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "processInstanceId" : "3",
+      "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/3",
+      "executionId" : "4",
+      "taskId" : "4",
+      "calledProcessInstanceId" : null,
+      "assignee" : "fozzie",
+      "startTime" : "2013-04-17T10:17:43.902+0000",
+      "endTime" : "2013-04-18T14:06:32.715+0000",
+      "durationInMillis" : 86400056
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Query for historic activity instances</title>
+      <para>
+        <programlisting>POST query/historic-activity-instances</programlisting>
+      </para>
+      <para>
+        <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{
+  "processDefinitionId" : "oneTaskProcess%3A1%3A4"
+}</programlisting> 
+      </para>
+      <para>
+        All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricTaskInstancesGet">getting a collection of historic task instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long.
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates request was successful and the activities are returned</entry>
+                </row>
+                 <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+{
+  "data": [
+    { 
+      "id" : "5",
+      "activityId" : "4",
+      "activityName" : "My user task",
+      "activityType" : "userTask",
+      "processDefinitionId" : "oneTaskProcess%3A1%3A4",
+      "processDefinitionUrl" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "processInstanceId" : "3",
+      "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/3",
+      "executionId" : "4",
+      "taskId" : "4",
+      "calledProcessInstanceId" : null,
+      "assignee" : "fozzie",
+      "startTime" : "2013-04-17T10:17:43.902+0000",
+      "endTime" : "2013-04-18T14:06:32.715+0000",
+      "durationInMillis" : 86400056
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      </para>
+    </section>
+    <section id="restHistoricVariableInstancesGet">
+      <title>Get historic variable instances</title>
+      <para>
+        <programlisting>GET history/historic-variable-instances</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='4'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>processInstanceId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process instance id of the historic variable instance.</entry>
+                </row>
+                <row>
+                  <entry>taskId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task id of the historic variable instance.</entry>
+                </row>
+                <row>
+                  <entry>excludeTaskVariables</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>Indication to exclude the task variables from the result.</entry>
+                </row>
+                <row>
+                  <entry>variableName</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The variable name of the historic variable instance.</entry>
+                </row>
+                <row>
+                  <entry>variableNameLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The variable name using the 'like' operator for the historic variable instance.</entry>
+                </row>
+                <row>
+                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates that historic variable instances could be queried.</entry>
+                </row>
+                <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+{
+  "data": [
+    { 
+      "id" : "14",
+      "processInstanceId" : "5",
+      "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/5",
+      "taskId" : "6",
+      "variable" : {
+        "name" : "myVariable",
+        "variableScope", "global",
+        "value" : "test"
+      }
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Query for historic variable instances</title>
+      <para>
+        <programlisting>POST query/historic-variable-instances</programlisting>
+      </para>
+      <para>
+        <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{
+  "processDefinitionId" : "oneTaskProcess%3A1%3A4",
+  ...
+  
+  "variables" : [
+    {
+      "name" : "myVariable",
+      "value" : 1234,
+      "operator" : "equals",
+      "type" : "long"
+    }
+  ]
+}</programlisting> 
+      </para>
+      <para>
+        All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricVariableInstancesGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
+        for filtering based on process variables. The <literal>variables</literal> property is a json-array containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates request was successful and the tasks are returned</entry>
+                </row>
+                 <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+{
+  "data": [
+    { 
+      "id" : "14",
+      "processInstanceId" : "5",
+      "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/5",
+      "taskId" : "6",
+      "variable" : {
+        "name" : "myVariable",
+        "variableScope", "global",
+        "value" : "test"
+      }
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Get the binary data for a historic task instance variable</title>
+      <para>
+        <programlisting>GET history/historic-variable-instances/{varInstanceId}/data</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates the variable instance was found and the requested variable data is returned.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested variable instance was not found or the variable instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+      <emphasis role="bold">Success response body:</emphasis>
+      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+    </para>
+  </section>
+    <section id="restHistoricDetailGet">
+    <title>Get historic detail</title>
+      <para>
+        <programlisting>GET history/historic-detail</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='4'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>id</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The id of the historic detail.</entry>
+                </row>
+                <row>
+                  <entry>processInstanceId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process instance id of the historic detail.</entry>
+                </row>
+                <row>
+                  <entry>executionId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The execution id of the historic detail.</entry>
+                </row>
+                <row>
+                  <entry>activityInstanceId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The activity instance id of the historic detail.</entry>
+                </row>
+                <row>
+                  <entry>taskId</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task id of the historic detail.</entry>
+                </row>
+                <row>
+                  <entry>selectOnlyFormProperties</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>Indication to only return form properties in the result.</entry>
+                </row>
+                <row>
+                  <entry>selectOnlyVariableUpdates</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>Indication to only return variable updates in the result.</entry>
+                </row>
+                <row>
+                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates that historic detail could be queried.</entry>
+                </row>
+                <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+{
+  "data": [
+    { 
+      "id" : "26",
+      "processInstanceId" : "5",
+      "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/5",
+      "executionId" : "6",
+      "activityInstanceId", "10",
+      "taskId" : "6",
+      "taskUrl" : "http://localhost:8182/history/historic-task-instances/6",
+      "time" : "2013-04-17T10:17:43.902+0000",
+      "detailType" : "variableUpdate",
+      "revision" : 2,
+      "variable" : {
+        "name" : "myVariable",
+        "variableScope", "global",
+        "value" : "test"
+      },
+      "propertyId", null,
+      "propertyValue", null
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Query for historic detail</title>
+      <para>
+        <programlisting>POST query/historic-detail</programlisting>
+      </para>
+      <para>
+        <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{
+  "processInstanceId" : "5",
+}</programlisting> 
+      </para>
+      <para>
+        All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricDetailGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long.
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates request was successful and the historic details are returned</entry>
+                </row>
+                 <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+{
+  "data": [
+    { 
+      "id" : "26",
+      "processInstanceId" : "5",
+      "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/5",
+      "executionId" : "6",
+      "activityInstanceId", "10",
+      "taskId" : "6",
+      "taskUrl" : "http://localhost:8182/history/historic-task-instances/6",
+      "time" : "2013-04-17T10:17:43.902+0000",
+      "detailType" : "variableUpdate",
+      "revision" : 2,
+      "variable" : {
+        "name" : "myVariable",
+        "variableScope", "global",
+        "value" : "test"
+      },
+      "propertyId", null,
+      "propertyValue", null
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Get the binary data for a historic detail variable</title>
+      <para>
+        <programlisting>GET history/historic-detail/{detailId}/data</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates the historic detail instance was found and the requested variable data is returned.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested historic detail instance was not found or the historic detail instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+        The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+      </para>
+    </section>
+  </section>
+  <section>
+    <title>Database tables</title>
+    <section>
+      <title>List of tables</title>
+      <para>
+        <programlisting>GET management/tables</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates the request was successful.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
     <para>
        <emphasis role="bold">Success response body:</emphasis>
             <programlisting>

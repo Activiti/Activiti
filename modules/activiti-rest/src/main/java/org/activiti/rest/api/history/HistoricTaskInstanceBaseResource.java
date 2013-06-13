@@ -147,6 +147,16 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
     if (queryRequest.getTaskCreatedOn() != null) {
       query.taskCreatedOn(queryRequest.getTaskCreatedOn());
     }
+    if (queryRequest.getIncludeTaskLocalVariables() != null) {
+      if (queryRequest.getIncludeTaskLocalVariables()) {
+        query.includeTaskLocalVariables();
+      }
+    }
+    if (queryRequest.getIncludeProcessVariables() != null) {
+      if (queryRequest.getIncludeProcessVariables()) {
+        query.includeProcessVariables();
+      }
+    }
     if (queryRequest.getTaskVariables() != null) {
       addTaskVariables(query, queryRequest.getTaskVariables());
     }
