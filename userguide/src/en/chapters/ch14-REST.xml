@@ -4876,6 +4876,432 @@ Only the attachment name is required to create a new attachment.
   </section>
 </section>
 <section>
+  <title>History</title>
+      <section>
+      <title>Query for historic process instances</title>
+        <para>
+          <programlisting>GET history/historic-process-instances</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>An id of the historic process instance.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKey</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>The process definition key of the historic process instance.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>The process definition id of the historic process instance.</entry>
+                  </row>
+                  <row>
+                    <entry>businessKey</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>The business key of the historic process instance.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the task was found and returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "assignee" : "kermit",
+  "createTime" : "2013-04-17T10:17:43.902+0000",
+  "delegationState" : "pending",
+  "description" : "Task description",
+  "dueDate" : "2013-04-17T10:17:43.902+0000",
+  "execution" : "http://localhost:8182/runtime/executions/5",
+  "id" : "8",
+  "name" : "My task",
+  "owner" : "owner",
+  "parentTask" : "http://localhost:8182/runtime/tasks/9",
+  "priority" : 50,
+  "processDefinition" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+  "processInstance" : "http://localhost:8182/runtime/process-instances/5",
+  "suspended" : false,
+  "taskDefinitionKey" : "theTask",
+  "url" : "http://localhost:8182/runtime/tasks/8"
+}</programlisting>
+      <itemizedlist>
+          <listitem>
+            <para><literal>delegationState</literal>: Delegation-state of the task, can be <literal>null</literal>, <literal>"pending"</literal> or <literal>"resolved".</literal></para>
+          </listitem>
+      </itemizedlist>
+    </para>
+    </section>
+ 
+  <section id="restTasksGet">
+      <title>List of tasks</title>
+        <para>
+          <programlisting>GET repository/tasks</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL query parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>name</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>nameLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks with a name like the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>description</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks with the given description.</entry>
+                  </row>
+                  <row>
+                    <entry>priority</entry>
+                    <entry>No</entry>
+                    <entry>Integer</entry>
+                    <entry>Only return tasks with the given priotiry.</entry>
+                  </row>
+                  <row>
+                    <entry>minimumPriority</entry>
+                    <entry>No</entry>
+                    <entry>Integer</entry>
+                    <entry>Only return tasks with a priority greater than the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>maximumPriority</entry>
+                    <entry>No</entry>
+                    <entry>Integer</entry>
+                    <entry>Only return tasks with a priority lower than the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>assignee</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks assigned to the given user.</entry>
+                  </row>
+                  <row>
+                    <entry>owner</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks owned by the given user.</entry>
+                  </row>
+                  <row>
+                    <entry>unassigned</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Only return tasks that are not assigned to anyone. If <literal>false</literal> is passed, the value is ignored.</entry>
+                  </row>
+                  <row>
+                    <entry>delegationState</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks that have the given delegation state. Possible values are <literal>pending</literal> and <literal>resolved</literal>.</entry>
+                  </row>
+                  <row>
+                    <entry>candidateUser</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks that can be claimed by the given user. This includes both tasks where the user is an explicit candidate for and task that are claimable by a group that the user is a member of.</entry>
+                  </row>
+                  <row>
+                    <entry>candidateGroup</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks that can be claimed by a user in the given group.</entry>
+                  </row>
+                  <row>
+                    <entry>involvedUser</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks in which the given user is involved.</entry>
+                  </row>
+                  <row>
+                    <entry>taskDefinitionKey</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks with the given task definition id.</entry>
+                  </row>
+                  <row>
+                    <entry>taskDefinitionKeyLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks with a given task definition id like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of the process instance with the given id.</entry>
+                  </row>
+                  <row>
+                    <entry>processInstanceBusinessKey</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of the process instance with the given business key.</entry>
+                  </row>
+                  <row>
+                    <entry>executionId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of the execution with the given id.</entry>
+                  </row>
+                  <row>
+                    <entry>createdOn</entry>
+                    <entry>No</entry>
+                    <entry>ISO Date</entry>
+                    <entry>Only return tasks which are created on the given date.</entry>
+                  </row>
+                  <row>
+                    <entry>createdBefore</entry>
+                    <entry>No</entry>
+                    <entry>ISO Date</entry>
+                    <entry>Only return tasks which are created before the given date.</entry>
+                  </row>
+                  <row>
+                    <entry>createdAfter</entry>
+                    <entry>No</entry>
+                    <entry>ISO Date</entry>
+                    <entry>Only return tasks which are created after the given date.</entry>
+                  </row>
+                  <row>
+                    <entry>dueOn</entry>
+                    <entry>No</entry>
+                    <entry>ISO Date</entry>
+                    <entry>Only return tasks which are due on the given date.</entry>
+                  </row>
+                  <row>
+                    <entry>dueBefore</entry>
+                    <entry>No</entry>
+                    <entry>ISO Date</entry>
+                    <entry>Only return tasks which are due before the given date.</entry>
+                  </row>
+                  <row>
+                    <entry>dueAfter</entry>
+                    <entry>No</entry>
+                    <entry>ISO Date</entry>
+                    <entry>Only return tasks which are due after the given date.</entry>
+                  </row>
+                  <row>
+                    <entry>excludeSubTasks</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Only return tasks that are not a subtask of another task.</entry>
+                  </row>
+                  <row>
+                    <entry>active</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only return tasks that are not suspended (either part of a process that is not suspended or not part of a process at all). If false, only tasks that are part of suspended process instances are returned.</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates request was successful and the tasks are returned</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates an parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). The status-message contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "data": [
+    { 
+      "assignee" : "kermit",
+      "createTime" : "2013-04-17T10:17:43.902+0000",
+      "delegationState" : "pending",
+      "description" : "Task description",
+      "dueDate" : "2013-04-17T10:17:43.902+0000",
+      "execution" : "http://localhost:8182/runtime/executions/5",
+      "id" : "8",
+      "name" : "My task",
+      "owner" : "owner",
+      "parentTask" : "http://localhost:8182/runtime/tasks/9",
+      "priority" : 50,
+      "processDefinition" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "processInstance" : "http://localhost:8182/runtime/process-instances/5",
+      "suspended" : false,
+      "taskDefinitionKey" : "theTask",
+      "url" : "http://localhost:8182/runtime/tasks/8"
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+    </para>
+    </section>
+    
+   <section>
+      <title>Query for tasks</title>
+        <para>
+          <programlisting>POST repository/tasks</programlisting>
+        </para>
+        <para>
+          <emphasis role="bold">Request body:</emphasis>
+          <programlisting>
+{
+  "name" : "My task",
+  "description" : "The task description",
+  
+  ...
+  
+  "taskVariables" : [
+    {
+      "name" : "myVariable",
+      "value" : 1234,
+      "operator" : "equals",
+      "type" : "long"
+    },
+    
+    "processInstanceVariables" : [
+      {
+         ... 
+      }
+    ]
+  ]
+}</programlisting> 
+        </para>
+        <para>
+          All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
+          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processInstanceVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates request was successful and the tasks are returned</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates an parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). The status-message contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+  "data": [
+    { 
+      "assignee" : "kermit",
+      "createTime" : "2013-04-17T10:17:43.902+0000",
+      "delegationState" : "pending",
+      "description" : "Task description",
+      "dueDate" : "2013-04-17T10:17:43.902+0000",
+      "execution" : "http://localhost:8182/runtime/executions/5",
+      "id" : "8",
+      "name" : "My task",
+      "owner" : "owner",
+      "parentTask" : "http://localhost:8182/runtime/tasks/9",
+      "priority" : 50,
+      "processDefinition" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
+      "processInstance" : "http://localhost:8182/runtime/process-instances/5",
+      "suspended" : false,
+      "taskDefinitionKey" : "theTask",
+      "url" : "http://localhost:8182/runtime/tasks/8"
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+    </para>
+    </section>
+<section>
     <title>Database tables</title>
      <section>
       <title>List of tables</title>
