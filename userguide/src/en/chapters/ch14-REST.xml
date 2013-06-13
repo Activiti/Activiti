@@ -1757,6 +1757,401 @@
  
  </section>
  
+ <section>
+  <title>Models</title>
+  
+   <section>
+      <title>Get a list of models</title>
+        <para>
+          <programlisting>GET repository/models</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL query parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>id</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models with the given id.</entry>
+                  </row>
+                  <row>
+                    <entry>category</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models with the given category.</entry>
+                  </row>
+                   <row>
+                    <entry>categoryLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models with a category like the given value. Use the <literal>%</literal> character as wildcard.</entry>
+                  </row>
+                   <row>
+                    <entry>categoryNotEquals</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models without the given category.</entry>
+                  </row>
+                  <row>
+                    <entry>name</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models with the given name.</entry>
+                  </row>
+                   <row>
+                    <entry>nameLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models with a name like the given value. Use the <literal>%</literal> character as wildcard.</entry>
+                  </row>
+                  <row>
+                    <entry>key</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models with the given key.</entry>
+                  </row>
+                  <row>
+                    <entry>deploymentId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models which are deployed in the given deployment.</entry>
+                  </row>
+                  <row>
+                    <entry>version</entry>
+                    <entry>No</entry>
+                    <entry>Integer</entry>
+                    <entry>Only return models with the given version.</entry>
+                  </row>
+                  <row>
+                    <entry>latestVersion</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only return models which are the latest version. Best used in combination with <literal>key</literal>. If <literal>false</literal> is passed in as value, this is ignored and all versions are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>deployed</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only deployed models are returned. If <literal>false</literal>, only undeployed models are returned (deploymentId is null).</entry>
+                  </row>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>No</entry>
+                    <entry>'id' (default), 'category', 'createTime', 'key', 'lastUpdateTime', 'name' and 'version'</entry>
+                    <entry>Property to sort on, to be used toghether with the 'order'.</entry>
+                  </row>
+                  <row>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates request was successful and the models are returned</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "data":[
+      {
+         "name":"Model name",
+         "key":"Model key",
+         "category":"Model category",
+         "version":2,
+         "metaInfo":"Model metainfo",
+         "deploymentId":"7",
+         "id":"10",
+         "url":"http://localhost:8182/repository/models/10",
+         "createTime":"2013-06-12T14:31:08.612+0000",
+         "lastUpdateTime":"2013-06-12T14:31:08.612+0000",
+         "deploymentUrl":"http://localhost:8182/repository/deployments/7"
+      },
+      
+      ...
+      
+   ],
+   "total":2,
+   "start":0,
+   "sort":"id",
+   "order":"asc",
+   "size":2
+}</programlisting>
+    </para>
+    </section>
+    
+    <section>
+      <title>Get a model</title>
+        <para>
+          <programlisting>GET repository/models/{modelId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>modelId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the model to get.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the model was found and returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested model was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"5",
+   "url":"http://localhost:8182/repository/models/5",
+   "name":"Model name",
+   "key":"Model key",
+   "category":"Model category",
+   "version":2,
+   "metaInfo":"Model metainfo",
+   "deploymentId":"2",
+   "deploymentUrl":"http://localhost:8182/repository/deployments/2",
+   "createTime":"2013-06-12T12:31:19.861+0000",
+   "lastUpdateTime":"2013-06-12T12:31:19.861+0000"
+}</programlisting>
+    </para>
+    </section>
+    
+ <section>
+      <title>Update a model</title>
+        <para>
+          <programlisting>PUT repository/models/{modelId}</programlisting>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+            <programlisting>
+{
+   "name":"Model name",
+   "key":"Model key",
+   "category":"Model category",
+   "version":2,
+   "metaInfo":"Model metainfo",
+   "deploymentId":"2"
+}</programlisting>
+   All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only updating the name of the model, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the model-value will be updated to null. Example: <literal>{"metaInfo" : null}</literal> will clear the metaInfo of the model).
+    </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the model was found and updated.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested model was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"5",
+   "url":"http://localhost:8182/repository/models/5",
+   "name":"Model name",
+   "key":"Model key",
+   "category":"Model category",
+   "version":2,
+   "metaInfo":"Model metainfo",
+   "deploymentId":"2",
+   "deploymentUrl":"http://localhost:8182/repository/deployments/2",
+   "createTime":"2013-06-12T12:31:19.861+0000",
+   "lastUpdateTime":"2013-06-12T12:31:19.861+0000"
+}</programlisting>
+    </para>
+    </section>
+    
+    <section>
+      <title>Create a model</title>
+        <para>
+          <programlisting>POST repository/models</programlisting>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+            <programlisting>
+{
+   "name":"Model name",
+   "key":"Model key",
+   "category":"Model category",
+   "version":1,
+   "metaInfo":"Model metainfo",
+   "deploymentId":"2"
+}</programlisting>
+   All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only setting the name of the model, leaving all other fields null.
+    </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the model was created.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"5",
+   "url":"http://localhost:8182/repository/models/5",
+   "name":"Model name",
+   "key":"Model key",
+   "category":"Model category",
+   "version":1,
+   "metaInfo":"Model metainfo",
+   "deploymentId":"2",
+   "deploymentUrl":"http://localhost:8182/repository/deployments/2",
+   "createTime":"2013-06-12T12:31:19.861+0000",
+   "lastUpdateTime":"2013-06-12T12:31:19.861+0000"
+}</programlisting>
+    </para>
+    </section>
+    
+      <section>
+      <title>Delete a model</title>
+        <para>
+          <programlisting>DELETE repository/models/{modelId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>modelId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the model to delete.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>204</entry>
+                    <entry>Indicates the model was found and has been deleted. Response-body is intentionally empty.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested model was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+    
+ </section>
+ 
   <section>
   <title>Tasks</title>
       <section>

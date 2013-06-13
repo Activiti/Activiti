@@ -77,6 +77,9 @@ import org.activiti.rest.api.repository.DeploymentResource;
 import org.activiti.rest.api.repository.DeploymentResourceCollectionResource;
 import org.activiti.rest.api.repository.DeploymentResourceDataResource;
 import org.activiti.rest.api.repository.DeploymentResourceResource;
+import org.activiti.rest.api.repository.ModelCollectionResource;
+import org.activiti.rest.api.repository.ModelResource;
+import org.activiti.rest.api.repository.ModelResponse;
 import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionIdentityLinkCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionIdentityLinkResource;
@@ -143,6 +146,9 @@ public class RestServicesInit {
     router.attach("/repository/process-definitions/{processDefinitionId}/model", ProcessDefinitionModelResource.class);
     router.attach("/repository/process-definitions/{processDefinitionId}/identitylinks", ProcessDefinitionIdentityLinkCollectionResource.class);
     router.attach("/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", ProcessDefinitionIdentityLinkResource.class);
+    
+    router.attach("/repository/models", ModelCollectionResource.class);
+    router.attach("/repository/models/{modelId}", ModelResource.class);
     
     router.attach("/runtime/tasks", TaskCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}", TaskResource.class);

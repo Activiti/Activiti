@@ -68,6 +68,7 @@ public final class RestUrls {
   public static final String SEGMENT_PROPERTIES = "properties";
   public static final String SEGMENT_ENGINE_INFO = "engine";
   public static final String SEGMENT_ACTIVITIES = "activities";
+  public static final String SEGMENT_MODEL_RESOURCE = "models";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -126,6 +127,16 @@ public final class RestUrls {
    * URL template for the model of a process definition: <i>repository/process-definitions/{0:processDefinitionId}/model</i>
    */
   public static final String[] URL_PROCESS_DEFINITION_MODEL = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_MODEL};
+  
+  /**
+   * URL template for the model collection: <i>repository/models</i>
+   */
+  public static final String[] URL_MODEL_COLLECTION = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE};
+  
+  /**
+   * URL template for a single model  <i>repository/models/{0:modelId}</i>
+   */
+  public static final String[] URL_MODEL = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}"};
   
   /**
    * URL template for task collection: <i>runtime/tasks/{0:taskId}</i>
