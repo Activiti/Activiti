@@ -2149,6 +2149,242 @@
           </table>
         </para>
   </section>
+  
+  <section>
+      <title>Get the editor source for a model</title>
+        <para>
+          <programlisting>GET repository/models/{modelId}/source</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>modelId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the model.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the model was found and source is returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested model was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+       Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
+    </para>
+    </section>
+    
+    <section>
+      <title>Set the editor source for a model</title>
+         <para>
+        <programlisting>PUT repository/models/{modelId}/source</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>modelId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the model.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the source.
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the model was found and the source has been updated.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested model was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Success response body:</emphasis>
+       Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
+    </para>
+  </section>
+    
+      <section>
+      <title>Get the extra editor source for a model</title>
+        <para>
+          <programlisting>GET repository/models/{modelId}/source-extra</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>modelId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the model.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the model was found and source is returned.</entry>
+                  </row>
+                   <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested model was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+       Reponse body contains the model's raw extra editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the extra source.
+    </para>
+    </section>
+    
+    <section>
+      <title>Set the extra editor source for a model</title>
+         <para>
+        <programlisting>PUT repository/models/{modelId}/source-extra</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='3'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>modelId</entry>
+                  <entry>Yes</entry>
+                  <entry>String</entry>
+                  <entry>The id of the model.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+        <para>
+       <emphasis role="bold">Request body:</emphasis>
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the extra source.
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the model was found and the extra source has been updated.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested model was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Success response body:</emphasis>
+       Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
+    </para>
+  </section>
     
  </section>
  
@@ -5843,7 +6079,7 @@ Only the attachment name is required to create a new attachment.
   <section>
       <title>List a user's info</title>
          <para>
-        <programlisting>GET identity/users/{userId}/info</programlisting>
+        <programlisting>PUT identity/users/{userId}/info</programlisting>
       </para>
       <para>
           <table>

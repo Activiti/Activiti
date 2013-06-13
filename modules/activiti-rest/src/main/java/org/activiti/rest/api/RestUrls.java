@@ -69,6 +69,8 @@ public final class RestUrls {
   public static final String SEGMENT_ENGINE_INFO = "engine";
   public static final String SEGMENT_ACTIVITIES = "activities";
   public static final String SEGMENT_MODEL_RESOURCE = "models";
+  public static final String SEGMENT_SOURCE = "source";
+  public static final String SEGMENT_SOURCE_EXTRA = "source-extra";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -137,6 +139,16 @@ public final class RestUrls {
    * URL template for a single model  <i>repository/models/{0:modelId}</i>
    */
   public static final String[] URL_MODEL = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for the editor source of a model  <i>repository/models/{0:modelId}/source</i>
+   */
+  public static final String[] URL_MODEL_SOURCE = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}", SEGMENT_SOURCE};
+  
+  /**
+   * URL template for the extra editor source of a model  <i>repository/models/{0:modelId}/source-extra</i>
+   */
+  public static final String[] URL_MODEL_SOURCE_EXTRA = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}", SEGMENT_SOURCE_EXTRA};
   
   /**
    * URL template for task collection: <i>runtime/tasks/{0:taskId}</i>
