@@ -126,6 +126,8 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean jpaHandleTransaction;
   protected boolean jpaCloseEntityManager;
   
+  protected String databaseTablePrefix = "";
+  protected String xmlEncoding = "UTF-8";
   protected String defaultCamelContext = "camelContext";
   
   protected String activityFontName = "Arial";
@@ -548,5 +550,22 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   public void setLabelFontName(String labelFontName) {
     this.labelFontName = labelFontName;
+  }
+  
+  public ProcessEngineConfiguration setDatabaseTablePrefix(String databaseTablePrefix) {
+    this.databaseTablePrefix = databaseTablePrefix;
+    return this;
+  }
+    
+  public String getDatabaseTablePrefix() {
+    return databaseTablePrefix;
+  }
+  
+  public String getXmlEncoding() {
+    return xmlEncoding;
+  }
+
+  public void setXmlEncoding(String xmlEncoding) {
+    this.xmlEncoding = xmlEncoding;
   }
 }

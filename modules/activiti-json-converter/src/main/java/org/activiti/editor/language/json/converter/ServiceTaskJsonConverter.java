@@ -71,6 +71,10 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
         propertiesNode.put(PROPERTY_SERVICETASK_DELEGATE_EXPRESSION, serviceTask.getImplementation());
       }
     	
+    	if (StringUtils.isNotEmpty(serviceTask.getResultVariableName())) {
+    	  propertiesNode.put(PROPERTY_SERVICETASK_RESULT_VARIABLE, serviceTask.getResultVariableName());
+    	}
+    	
     	addFieldExtensions(serviceTask.getFieldExtensions(), propertiesNode);
   	}
   }
@@ -88,6 +92,10 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
     } else if (StringUtils.isNotEmpty(getPropertyValueAsString(PROPERTY_SERVICETASK_DELEGATE_EXPRESSION, elementNode))) {
       task.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
       task.setImplementation(getPropertyValueAsString(PROPERTY_SERVICETASK_DELEGATE_EXPRESSION, elementNode));
+    }
+    
+    if (StringUtils.isNotEmpty(getPropertyValueAsString(PROPERTY_SERVICETASK_RESULT_VARIABLE, elementNode))) {
+      task.setResultVariableName(getPropertyValueAsString(PROPERTY_SERVICETASK_RESULT_VARIABLE, elementNode));
     }
     
     JsonNode fieldsNode = getProperty(PROPERTY_SERVICETASK_FIELDS, elementNode);

@@ -35,6 +35,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -76,6 +77,7 @@ import org.activiti.rest.api.management.TableResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.api.repository.DeploymentResponse;
+import org.activiti.rest.api.repository.ModelResponse;
 import org.activiti.rest.api.repository.ProcessDefinitionResponse;
 import org.activiti.rest.api.runtime.process.ExecutionResponse;
 import org.activiti.rest.api.runtime.process.ProcessInstanceResponse;
@@ -680,6 +682,27 @@ public class RestResponseFactory {
     response.setGroupId(groupId);
     response.setUserId(userId);
     response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP, groupId, userId));
+    return response;
+  }
+  
+  public ModelResponse createModelResponse(SecuredResource securedResource, Model model) {
+    ModelResponse response = new ModelResponse();
+    
+    response.setCategory(model.getCategory());
+    response.setCreateTime(model.getCreateTime());
+    response.setId(model.getId());
+    response.setKey(model.getKey());
+    response.setLastUpdateTime(model.getLastUpdateTime());
+    response.setMetaInfo(model.getMetaInfo());
+    response.setName(model.getName());
+    response.setDeploymentId(model.getDeploymentId());
+    response.setVersion(model.getVersion());
+    
+    response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_MODEL, model.getId()));
+    if(model.getDeploymentId() != null) {
+      response.setDeploymentUrl(securedResource.createFullResourceUrl(RestUrls.URL_DEPLOYMENT, model.getDeploymentId()));
+    }
+    
     return response;
   }
   

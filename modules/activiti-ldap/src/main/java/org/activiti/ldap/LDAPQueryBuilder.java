@@ -20,11 +20,16 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
+ * Class with overridable methods that are called when doing the calls to the ldap system.
+ * You can extend this class and plug it into the {@link LDAPConfigurator} if the default
+ * queries are inadequate for your use case.
+ * 
  * @author Joram Barrez
  */
 public class LDAPQueryBuilder {
@@ -71,6 +76,20 @@ public class LDAPQueryBuilder {
       
     } else {
       searchExpression = userId;
+    }
+    return searchExpression;
+  }
+  
+  public String buildQueryByFullNameLike(final LDAPConfigurator ldapConfigurator, String searchText) {
+    String searchExpression = null;
+    if (ldapConfigurator.getQueryUserByFullNameLike() != null) {
+      searchExpression = MessageFormat.format(ldapConfigurator.getQueryUserByFullNameLike(), 
+              ldapConfigurator.getUserFirstNameAttribute(),
+              searchText,
+              ldapConfigurator.getUserLastNameAttribute(),
+              searchText);
+    } else {
+      throw new ActivitiIllegalArgumentException("No 'queryUserByFullNameLike' configured");
     }
     return searchExpression;
   }

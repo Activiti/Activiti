@@ -10,29 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.explorer.cache;
 
-import java.util.List;
+package org.activiti.rest.api.management;
 
-import org.activiti.engine.identity.User;
+import java.util.Map;
 
+import org.activiti.rest.api.ActivitiUtil;
+import org.activiti.rest.api.SecuredResource;
+import org.restlet.resource.Get;
 
 /**
- * Interface for a cache that allows to retrieve cached {@link User} objects,
- * based on a prefix:
- * 
- * eg. 'ke' -> Kermit The Frog
- * eg. 'Th' -> Kermit The Frog
- * eg 'be' -> Fozzie Bear
- * 
- * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public interface UserCache {
-  
-  List<User> findMatchingUsers(String prefix);
-  
-  User findUser(String userId);
-  
-  void notifyUserDataChanged(String userId);
-  
+public class PropertiesCollectionResource extends SecuredResource {
+
+  @Get
+  public Map<String, String> getProperties() {
+    if (authenticate() == false)
+      return null;
+
+    return ActivitiUtil.getManagementService().getProperties();
+  }
 }
+

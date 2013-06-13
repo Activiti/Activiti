@@ -67,6 +67,12 @@ public final class RestUrls {
   public static final String SEGMENT_INFO = "info";
   public static final String SEGMENT_MEMBERS = "members";
   public static final String SEGMENT_MODEL = "model";
+  public static final String SEGMENT_PROPERTIES = "properties";
+  public static final String SEGMENT_ENGINE_INFO = "engine";
+  public static final String SEGMENT_ACTIVITIES = "activities";
+  public static final String SEGMENT_MODEL_RESOURCE = "models";
+  public static final String SEGMENT_SOURCE = "source";
+  public static final String SEGMENT_SOURCE_EXTRA = "source-extra";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -125,6 +131,26 @@ public final class RestUrls {
    * URL template for the model of a process definition: <i>repository/process-definitions/{0:processDefinitionId}/model</i>
    */
   public static final String[] URL_PROCESS_DEFINITION_MODEL = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_MODEL};
+  
+  /**
+   * URL template for the model collection: <i>repository/models</i>
+   */
+  public static final String[] URL_MODEL_COLLECTION = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE};
+  
+  /**
+   * URL template for a single model  <i>repository/models/{0:modelId}</i>
+   */
+  public static final String[] URL_MODEL = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for the editor source of a model  <i>repository/models/{0:modelId}/source</i>
+   */
+  public static final String[] URL_MODEL_SOURCE = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}", SEGMENT_SOURCE};
+  
+  /**
+   * URL template for the extra editor source of a model  <i>repository/models/{0:modelId}/source-extra</i>
+   */
+  public static final String[] URL_MODEL_SOURCE_EXTRA = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}", SEGMENT_SOURCE_EXTRA};
   
   /**
    * URL template for task collection: <i>runtime/tasks/{0:taskId}</i>
@@ -225,6 +251,11 @@ public final class RestUrls {
    * URL template for a single variables for an execution: <i>runtime/executions/{0:executionId}/variables/{1:variableName}/data</i>
    */
   public static final String[] URL_EXECUTION_VARIABLE_DATA = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
+  
+  /**
+   * URL template for all active activities on an execution: <i>runtime/executions/{0:executionId}/activities</i>
+   */
+  public static final String[] URL_EXECUTION_ACTIVITIES_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_EXECUTION_RESOURCE, "{0}", SEGMENT_ACTIVITIES};
   
   /**
    * URL template for execution query: <i>query/executions</i>
@@ -395,6 +426,16 @@ public final class RestUrls {
    * URL template for the collection of jobs: <i>management/jobs</i>
    */
   public static final String[] URL_JOB_COLLECTION = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_JOBS};
+  
+  /**
+   * URL template for the collection of properties: <i>management/properties</i>
+   */
+  public static final String[] URL_PROPERTIES_COLLECTION = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_PROPERTIES};
+  
+  /**
+   * URL template for the collection of properties: <i>management/properties</i>
+   */
+  public static final String[] URL_ENGINE_INFO = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_ENGINE_INFO};
   
   /**
    * URL template for the collection of users: <i>identity/users</i>

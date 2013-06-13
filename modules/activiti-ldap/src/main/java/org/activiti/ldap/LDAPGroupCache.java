@@ -22,6 +22,15 @@ import org.activiti.engine.impl.util.ClockUtil;
 
 
 /**
+ * Simple cache for groups a user belongs to, which avoid hitting the LDAP system too much.
+ * Groups are fetched internally by the engine for exampe when doing queries, eg when fetching tasks for a candidateUser.
+ * Configured through the {@link LDAPConfigurator}.
+ * 
+ * Cached entries have an expiration time. For example when set to one hour, changes to the ldap
+ * system around the groups of a user will be visible after that hour.
+ * 
+ * Experimental: can have a listener for cache events, and instance of  {@link LDAPGroupCacheListener}.
+ * 
  * @author Joram Barrez
  */
 public class LDAPGroupCache {

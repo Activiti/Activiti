@@ -12,11 +12,15 @@
  */
 package org.activiti.ldap;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 
 /**
+ * {@link SessionFactory} responsible for creating the {@link LDAPUserManager}.
+ * Is plugged into the {@link ProcessEngineConfiguration} automatically through the {@link LDAPConfigurator}.
+ * 
  * @author Joram Barrez
  */
 public class LDAPUserManagerFactory implements SessionFactory {

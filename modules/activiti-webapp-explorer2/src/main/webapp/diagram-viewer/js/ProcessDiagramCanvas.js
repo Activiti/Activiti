@@ -1614,7 +1614,7 @@ ProcessDiagramCanvas.prototype = {
 	
 	drawCollapsedCallActivity: function(name, x, y, width, height) {
 	  this.g.setStart();
-		this.drawCollapsedTask(name, x, y, width, height, true);
+		this._drawCollapsedTask(name, x, y, width, height, true);
 		var set = this.g.setFinish();
     this.addHandlers(set, x, y, width, height, "task");
 	},

@@ -13,6 +13,9 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
@@ -20,12 +23,9 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -38,12 +38,14 @@ public class ModelEntityManager extends AbstractManager {
   }
 
   public void insertModel(Model model) {
-    ((ModelEntity) model).setCreateTime(new Date());
+    ((ModelEntity) model).setCreateTime(ClockUtil.getCurrentTime());
+    ((ModelEntity) model).setLastUpdateTime(ClockUtil.getCurrentTime());
     getDbSqlSession().insert((PersistentObject) model);
   }
 
   public void updateModel(ModelEntity updatedModel) {
     CommandContext commandContext = Context.getCommandContext();
+    updatedModel.setLastUpdateTime(ClockUtil.getCurrentTime());
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.update(updatedModel);
   }

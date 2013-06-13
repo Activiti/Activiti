@@ -49,15 +49,28 @@ public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
     
     ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
     
-    if(actionRequest.getAction() != null) {
-      if(ProcessDefinitionActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
-        return suspendProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
-      } else if(ProcessDefinitionActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
-        return activateProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
+    if(actionRequest.getCategory() != null) {
+      // Update of category required
+      ActivitiUtil.getRepositoryService().setProcessDefinitionCategory(processDefinition.getId(), actionRequest.getCategory());
+      
+      // No need to re-fetch the ProcessDefinition entity, just update category in response
+      ProcessDefinitionResponse response =  getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+              .createProcessDefinitionResponse(this, processDefinition);
+      response.setCategory(actionRequest.getCategory());
+      return response;
+      
+    } else {
+      // Actual action
+      if(actionRequest.getAction() != null) {
+        if(ProcessDefinitionActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
+          return suspendProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
+        } else if(ProcessDefinitionActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
+          return activateProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
+        }
       }
+      
+      throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
     }
-    
-    throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
   }
   
   protected ProcessDefinitionResponse activateProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
