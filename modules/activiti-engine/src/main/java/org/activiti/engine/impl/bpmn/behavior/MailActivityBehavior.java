@@ -166,24 +166,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
 
   protected void setMailServerProperties(Email email) {
     ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-
-    String host = processEngineConfiguration.getMailServerHost();
-    if (host == null) {
-      throw new ActivitiException("Could not send email: no SMTP host is configured");
-    }
-    email.setHostName(host);
-
-    int port = processEngineConfiguration.getMailServerPort();
-    email.setSmtpPort(port);
-
-    email.setSSL(processEngineConfiguration.getMailServerUseSSL());
-    email.setTLS(processEngineConfiguration.getMailServerUseTLS());
-
-    String user = processEngineConfiguration.getMailServerUsername();
-    String password = processEngineConfiguration.getMailServerPassword();
-    if (user != null && password != null) {
-      email.setAuthentication(user, password);
-    }
+    processEngineConfiguration.getEmailConfiguration().apply(email);
   }
   
   protected void setCharset(Email email, String charSetStr) {
