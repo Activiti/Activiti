@@ -1272,7 +1272,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     List<Execution> concurrentExecutions = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).list();
     assertEquals(3, concurrentExecutions.size());
     for (Execution execution : concurrentExecutions) {
-      if (!((ExecutionEntity)execution).isProcessInstance()) {
+      if (!((ExecutionEntity)execution).isProcessInstanceType()) {
         // only the concurrent executions, not the root one, would be cooler to query that directly, see http://jira.codehaus.org/browse/ACT-1373        
         runtimeService.setVariableLocal(execution.getId(), "x", "child");
         runtimeService.setVariableLocal(execution.getId(), "xIgnoreCase", "ChILD");
