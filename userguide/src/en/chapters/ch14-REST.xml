@@ -9,10 +9,10 @@
     <section>
       <title>Installation and Authentication</title>
       
-      <para>Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. By default the Activiti Engine will connect to a standalone H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).</para>
+      <para>Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. By default the Activiti Engine will connect to an in-memory H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).</para>
       <para>All REST-resources (except for the Login-resource) require a valid Activiti-user to be authenticated. Basic HTTP access authentication is used, so you should always include a <literal>Authorization: Basic ...==</literal> HTTP-header when performing requests or include the username and password in the request-url (eg. <literal>http://username:password@localhost...</literal>).
       </para>
-      <para><emphasis role="bold">It's recommended to use Basic in combination with HTTPS.</emphasis></para>
+      <para><emphasis role="bold">It's recommended to use Basic Authentication in combination with HTTPS.</emphasis></para>
     </section>
     
      <section>
@@ -196,6 +196,46 @@
                   <row>
                     <entry>Date</entry>
                     <entry>Parameter representing a date value, using a JSON text. Use the ISO-8601 date-format (see <ulink url="http://en.wikipedia.org/wiki/ISO_8601">ISO-8601 on wikipedia</ulink>) using both time and date-components (eg. <literal>2013-04-03T23:45Z</literal>).</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+        </para>
+      </section>
+      <section id="restPagingAndSort">
+        <title>Paging and sorting</title>
+        <para>
+            Paging and order parameters can be added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?sort=name&start=3&size=10&order=desc</literal>).
+            <table>
+              <title>Variable query JSON parameters</title>
+              <tgroup cols="2">
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Default value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>different per query implementation</entry>
+                    <entry>Name of the sort key, for which the default value and the allowed values are different per query implementation.</entry>
+                  </row>
+                  <row>
+                    <entry>order</entry>
+                    <entry>asc</entry>
+                    <entry>Sorting order which can be 'asc' or 'desc'.</entry>
+                  </row>
+                  <row>
+                    <entry>start</entry>
+                    <entry>0</entry>
+                    <entry>Parameter to allow for paging of the result. By default the result will start at 0.</entry>
+                  </row>
+                  <row>
+                    <entry>size</entry>
+                    <entry>10</entry>
+                    <entry>Parameter to allow for paging of the result. By default the size will be 10.</entry>
                   </row>
                 </tbody>
               </tgroup>
@@ -1068,7 +1108,8 @@
       "suspended" : false,
       "name" : "The One Task Process",
       "description" : "This is a process for testing purposes",
-      "deployment" : "http://localhost:8081/repository/deployments/2",
+      "deploymentId" : "2",
+      "deploymentUrl" : "http://localhost:8081/repository/deployments/2",
       "graphicalNotationDefined" : true,
       "resource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.xml",
       "diagramResource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.png",
@@ -1157,7 +1198,8 @@
   "suspended" : false,
   "name" : "The One Task Process",
   "description" : "This is a process for testing purposes",
-  "deployment" : "http://localhost:8081/repository/deployments/2",
+  "deploymentId" : "2",
+  "deploymentUrl" : "http://localhost:8081/repository/deployments/2",
   "graphicalNotationDefined" : true,
   "resource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.xml",
   "diagramResource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.png",
@@ -2681,7 +2723,7 @@
 <section id="restProcessinstancesGet">
       <title>List of process instances</title>
         <para>
-          <programlisting>GET repository/process-instances</programlisting>
+          <programlisting>GET runtime/process-instances</programlisting>
         </para>
         <para>
             <table>
@@ -2742,7 +2784,13 @@
                     <entry>subProcessInstanceId</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                        <entry>Only return process instances which have the given sub process-instance id (for processes started as a call-activity).</entry>
+                    <entry>Only return process instances which have the given sub process-instance id (for processes started as a call-activity).</entry>
+                  </row>
+                  <row>
+                    <entry>includeProcessVariables</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Indication to include process variables in the result.</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
@@ -3605,7 +3653,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
    <section>
       <title>Get an execution</title>
         <para>
-          <programlisting>GET runtime/executions/{exeuctionId}</programlisting>
+          <programlisting>GET runtime/executions/{executionId}</programlisting>
         </para>
         <para>
             <table>
@@ -3621,7 +3669,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 </thead>
                 <tbody>
                   <row>
-                    <entry>exeuctionId</entry>
+                    <entry>executionId</entry>
                     <entry>Yes</entry>
                     <entry>String</entry>
                     <entry>The id of the execution to get.</entry>
@@ -3659,7 +3707,9 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
 {
    "id":"5",
    "url":"http://localhost:8182/runtime/executions/5",
+   "parentId":null,
    "parentUrl":null,
+   "processInstanceId":"5",
    "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
    "suspended":false,
    "activityId":null
@@ -3669,7 +3719,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
  <section>
       <title>Execute an action on an execution</title>
         <para>
-          <programlisting>PUT runtime/executions/{exeuctionId}</programlisting>
+          <programlisting>PUT runtime/executions/{executionId}</programlisting>
         </para>
         <para>
             <table>
@@ -3685,7 +3735,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 </thead>
                 <tbody>
                   <row>
-                    <entry>exeuctionId</entry>
+                    <entry>executionId</entry>
                     <entry>Yes</entry>
                     <entry>String</entry>
                     <entry>The id of the execution to execute action on.</entry>
@@ -3758,7 +3808,9 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
 {
    "id":"5",
    "url":"http://localhost:8182/runtime/executions/5",
+   "parentId":null,
    "parentUrl":null,
+   "processInstanceId":"5",
    "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
    "suspended":false,
    "activityId":null
@@ -3769,7 +3821,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
   <section>
       <title>Get active activities in an execution</title>
         <para>
-          <programlisting>GET runtime/executions/{exeuctionId}/activities</programlisting>
+          <programlisting>GET runtime/executions/{executionId}/activities</programlisting>
         </para>
         <para>
           Returns all activities which are active in the execution and in all child-executions (and their children, recursively), if any.
@@ -3788,7 +3840,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 </thead>
                 <tbody>
                   <row>
-                    <entry>exeuctionId</entry>
+                    <entry>executionId</entry>
                     <entry>Yes</entry>
                     <entry>String</entry>
                     <entry>The id of the execution to get activities for.</entry>
@@ -3934,7 +3986,9 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
       {
          "id":"5",
          "url":"http://localhost:8182/runtime/executions/5",
+         "parentId":null,
          "parentUrl":null,
+         "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
          "activityId":null
@@ -3942,7 +3996,9 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
       {
          "id":"7",
          "url":"http://localhost:8182/runtime/executions/7",
+         "parentId":"5",
          "parentUrl":"http://localhost:8182/runtime/executions/5",
+         "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
          "activityId":"processTask"
@@ -4025,7 +4081,9 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
       {
          "id":"5",
          "url":"http://localhost:8182/runtime/executions/5",
+         "parentId":null,
          "parentUrl":null,
+         "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
          "activityId":null
@@ -4033,7 +4091,9 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
       {
          "id":"7",
          "url":"http://localhost:8182/runtime/executions/7",
+         "parentId":"5",
          "parentUrl":"http://localhost:8182/runtime/executions/5",
+         "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
          "activityId":"processTask"
@@ -4822,6 +4882,18 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>No</entry>
                     <entry>Boolean</entry>
                     <entry>If <literal>true</literal>, only return tasks that are not suspended (either part of a process that is not suspended or not part of a process at all). If false, only tasks that are part of suspended process instances are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>includeTaskLocalVariables</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Indication to include task local variables in the result.</entry>
+                  </row>
+                  <row>
+                    <entry>includeProcessVariables</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Indication to include process variables in the result.</entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>

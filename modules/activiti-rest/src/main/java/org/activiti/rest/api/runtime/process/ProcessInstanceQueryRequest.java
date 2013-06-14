@@ -33,6 +33,7 @@ public class ProcessInstanceQueryRequest {
   private String subProcessInstanceId;
   private String involvedUser;
   private Boolean suspended;
+  private Boolean includeProcessVariables;
   private List<QueryVariable> variables;
   
   public String getProcessInstanceId() {
@@ -99,6 +100,14 @@ public class ProcessInstanceQueryRequest {
     this.suspended = suspended;
   }
   
+  public Boolean getIncludeProcessVariables() {
+    return includeProcessVariables;
+  }
+
+  public void setIncludeProcessVariables(Boolean includeProcessVariables) {
+    this.includeProcessVariables = includeProcessVariables;
+  }
+
   @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  
   public List<QueryVariable> getVariables() {
     return variables;

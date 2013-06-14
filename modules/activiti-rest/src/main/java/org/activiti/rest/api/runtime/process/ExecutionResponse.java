@@ -21,7 +21,9 @@ public class ExecutionResponse {
 
   protected String id;
   protected String url;
+  protected String parentId;
   protected String parentUrl;
+  protected String processInstanceId;
   protected String processInstanceUrl;
   protected boolean suspended;
   protected String activityId;
@@ -42,6 +44,14 @@ public class ExecutionResponse {
     this.url = url;
   }
   
+  public String getParentId() {
+    return parentId;
+  }
+
+  public void setParentId(String parentId) {
+    this.parentId = parentId;
+  }
+
   public String getParentUrl() {
     return parentUrl;
   }
@@ -50,6 +60,14 @@ public class ExecutionResponse {
     this.parentUrl = parentUrl;
   }
   
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
+
   public String getProcessInstanceUrl() {
     return processInstanceUrl;
   }

@@ -13,6 +13,11 @@
 
 package org.activiti.rest.api.runtime.process;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.activiti.rest.api.engine.variable.RestVariable;
+
 /**
  * @author Frederik Heremans
  */
@@ -24,6 +29,7 @@ public class ProcessInstanceResponse {
   protected String processDefinitionId;
   protected String processDefinitionUrl;
   protected String activityId;
+  protected List<RestVariable> variables = new ArrayList<RestVariable>();
   
   public String getId() {
     return id;
@@ -79,5 +85,17 @@ public class ProcessInstanceResponse {
   
   public void setActivityId(String activityId) {
     this.activityId = activityId;
+  }
+  
+  public List<RestVariable> getVariables() {
+    return variables;
+  }
+  
+  public void setVariables(List<RestVariable> variables) {
+    this.variables = variables;
+  }
+  
+  public void addVariable(RestVariable variable) {
+    variables.add(variable);
   }
 }

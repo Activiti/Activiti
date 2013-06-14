@@ -13,10 +13,13 @@
 
 package org.activiti.rest.api.runtime.task;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
+import org.activiti.rest.api.engine.variable.RestVariable;
 
 /**
  * @author Frederik Heremans
@@ -45,6 +48,8 @@ public class TaskResponse {
   protected String processInstanceUrl;
   protected String processDefinitionId;
   protected String processDefinitionUrl;
+  
+  protected List<RestVariable> variables = new ArrayList<RestVariable>();
   
   public TaskResponse(Task task) {
     setId(task.getId());
@@ -207,5 +212,17 @@ public class TaskResponse {
 
   public void setProcessDefinitionUrl(String processDefinitionUrl) {
     this.processDefinitionUrl = processDefinitionUrl;
+  }
+  
+  public List<RestVariable> getVariables() {
+    return variables;
+  }
+  
+  public void setVariables(List<RestVariable> variables) {
+    this.variables = variables;
+  }
+  
+  public void addVariable(RestVariable variable) {
+    variables.add(variable);
   }
 }

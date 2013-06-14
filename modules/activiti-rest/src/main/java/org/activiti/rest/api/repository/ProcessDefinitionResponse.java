@@ -24,7 +24,8 @@ public class ProcessDefinitionResponse {
   private int version;
   private String name;
   private String description;
-  private String deployment;
+  private String deploymentId;
+  private String deploymentUrl;
   private String resource;
   private String diagramResource;
   private String category;
@@ -62,11 +63,17 @@ public class ProcessDefinitionResponse {
   public void setName(String name) {
     this.name = name;
   }
-  public String getDeployment() {
-    return deployment;
+  public String getDeploymentId() {
+    return deploymentId;
   }
-  public void setDeployment(String deployment) {
-    this.deployment = deployment;
+  public void setDeploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
+  }
+  public String getDeploymentUrl() {
+    return deploymentUrl;
+  }
+  public void setDeploymentUrl(String deploymentUrl) {
+    this.deploymentUrl = deploymentUrl;
   }
   public String getCategory() {
     return category;

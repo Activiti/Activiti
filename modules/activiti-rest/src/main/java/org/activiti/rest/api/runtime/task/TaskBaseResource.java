@@ -195,6 +195,17 @@ public class TaskBaseResource extends SecuredResource {
       }
     }
     
+    if (request.getIncludeTaskLocalVariables() != null) {
+      if (request.getIncludeTaskLocalVariables()) {
+        taskQuery.includeTaskLocalVariables();
+      }
+    }
+    if (request.getIncludeProcessVariables() != null) {
+      if (request.getIncludeProcessVariables()) {
+        taskQuery.includeProcessVariables();
+      }
+    }
+    
     if(request.getTaskVariables() != null) {
       addTaskvariables(taskQuery, request.getTaskVariables());
     }

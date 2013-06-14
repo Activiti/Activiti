@@ -110,22 +110,37 @@ public class RestResponseFactory {
     initializeVariableConverters();
   }
   
-  public TaskResponse createTaskReponse(SecuredResource resourceContext, Task task) {
+  public TaskResponse createTaskReponse(SecuredResource securedResource, Task task) {
     TaskResponse response = new TaskResponse(task);
-    response.setUrl(resourceContext.createFullResourceUrl(RestUrls.URL_TASK, task.getId()));
+    response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK, task.getId()));
 
     // Add references to other resources, if needed
     if (response.getParentTaskId() != null) {
-      response.setParentTaskUrl(resourceContext.createFullResourceUrl(RestUrls.URL_TASK, response.getParentTaskId()));
+      response.setParentTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK, response.getParentTaskId()));
     }
     if (response.getProcessDefinitionId() != null) {
-      response.setProcessDefinitionUrl(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, response.getProcessDefinitionId()));
+      response.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, response.getProcessDefinitionId()));
     }
     if (response.getExecutionId() != null) {
-      response.setExecutionUrl(resourceContext.createFullResourceUrl(RestUrls.URL_EXECUTION, response.getExecutionId()));
+      response.setExecutionUrl(securedResource.createFullResourceUrl(RestUrls.URL_EXECUTION, response.getExecutionId()));
     }
     if (response.getProcessInstanceId() != null) {
-      response.setProcessInstanceUrl(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, response.getProcessInstanceId()));
+      response.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, response.getProcessInstanceId()));
+    }
+    
+    if (task.getProcessVariables() != null) {
+      Map<String, Object> variableMap = task.getProcessVariables();
+      for (String name : variableMap.keySet()) {
+        response.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
+            RestVariableScope.GLOBAL, task.getId(), VARIABLE_TASK, false));
+      }
+    }
+    if (task.getTaskLocalVariables() != null) {
+      Map<String, Object> variableMap = task.getTaskLocalVariables();
+      for (String name : variableMap.keySet()) {
+        response.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
+            RestVariableScope.LOCAL, task.getId(), VARIABLE_TASK, false));
+      }
     }
     
     return response;
@@ -175,7 +190,8 @@ public class RestResponseFactory {
     response.setGraphicalNotationDefined(((ProcessDefinitionEntity) deployedDefinition).isGraphicalNotationDefined());
     
     // Links to other resources
-    response.setDeployment(resourceContext.createFullResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId()));
+    response.setDeploymentId(processDefinition.getDeploymentId());
+    response.setDeploymentUrl(resourceContext.createFullResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId()));
     response.setResource(resourceContext.createFullResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getResourceName()));
     if(processDefinition.getDiagramResourceName() != null) {
       response.setDiagramResource(resourceContext.createFullResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE,
@@ -413,6 +429,13 @@ public class RestResponseFactory {
     result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
     result.setSuspended(processInstance.isSuspended());
     result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
+    if (processInstance.getProcessVariables() != null) {
+      Map<String, Object> variableMap = processInstance.getProcessVariables();
+      for (String name : variableMap.keySet()) {
+        result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
+            RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false));
+      }
+    }
     return result;
   }
   
@@ -424,10 +447,12 @@ public class RestResponseFactory {
     result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_EXECUTION, execution.getId()));
     result.setSuspended(execution.isSuspended());
     
+    result.setParentId(execution.getParentId());
     if(execution.getParentId() != null) {
       result.setParentUrl(securedResource.createFullResourceUrl(RestUrls.URL_EXECUTION, execution.getParentId()));
     }
     
+    result.setProcessInstanceId(execution.getProcessInstanceId());
     if(execution.getProcessInstanceId() != null) {
       result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, execution.getProcessInstanceId()));
     }
@@ -504,7 +529,7 @@ public class RestResponseFactory {
       Map<String, Object> variableMap = processInstance.getProcessVariables();
       for (String name : variableMap.keySet()) {
         result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
-            RestVariableScope.GLOBAL, processInstance.getId(), VARIABLE_HISTORY_PROCESS, false));
+            RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_HISTORY_PROCESS, false));
       }
     }
     return result;
@@ -527,9 +552,13 @@ public class RestResponseFactory {
     result.setParentTaskId(taskInstance.getParentTaskId());
     result.setPriority(taskInstance.getPriority());
     result.setProcessDefinitionId(taskInstance.getProcessDefinitionId());
-    result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, taskInstance.getProcessDefinitionId()));
+    if (taskInstance.getProcessDefinitionId() != null) {
+      result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, taskInstance.getProcessDefinitionId()));
+    }
     result.setProcessInstanceId(taskInstance.getProcessInstanceId());
-    result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, taskInstance.getProcessInstanceId()));
+    if (taskInstance.getProcessInstanceId() != null) {
+      result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, taskInstance.getProcessInstanceId()));
+    }
     result.setStartTime(taskInstance.getStartTime());
     result.setTaskDefinitionKey(taskInstance.getTaskDefinitionKey());
     result.setWorkTimeInMillis(taskInstance.getWorkTimeInMillis());

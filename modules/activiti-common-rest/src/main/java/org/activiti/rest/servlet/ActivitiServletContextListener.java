@@ -30,9 +30,14 @@ public class ActivitiServletContextListener implements ServletContextListener {
 
   public void contextInitialized(ServletContextEvent event) {
     LOGGER.info("Booting Activiti Process Engine");
-    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+    ProcessEngine processEngine = null;
+    try {
+      processEngine = ProcessEngines.getDefaultProcessEngine();
+    } catch (Exception e) {
+      LOGGER.error("Error starting the Activiti REST API", e);
+    }
     if (processEngine == null) {
-      LOGGER.error("Could not start the Activiti Engine");
+      LOGGER.error("Could not start the Activiti REST API");
     }
   }
 

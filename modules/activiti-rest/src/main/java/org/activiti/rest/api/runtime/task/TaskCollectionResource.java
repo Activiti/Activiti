@@ -168,6 +168,14 @@ public class TaskCollectionResource extends TaskBaseResource {
       request.setActive(getQueryParameterAsBoolean("active", query));
     }
     
+    if(names.contains("includeTaskLocalVariables")) {
+      request.setIncludeTaskLocalVariables(getQueryParameterAsBoolean("includeTaskLocalVariables", query));
+    }
+    
+    if(names.contains("includeProcessVariables")) {
+      request.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", query));
+    }
+    
     return getTasksFromQueryRequest(request);
   }
 }

@@ -77,6 +77,11 @@ public class ProcessInstanceBaseResource extends SecuredResource {
     if (queryRequest.getSuperProcessInstanceId() != null) {
       query.superProcessInstanceId(queryRequest.getSuperProcessInstanceId());
     }
+    if (queryRequest.getIncludeProcessVariables() != null) {
+      if (queryRequest.getIncludeProcessVariables()) {
+        query.includeProcessVariables();
+      }
+    }
     if (queryRequest.getVariables() != null) {
       addVariables(query, queryRequest.getVariables());
     }
