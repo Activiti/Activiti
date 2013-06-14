@@ -22,11 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 public class LdapIntegrationTest extends LDAPTestCase {
   
   public void testAuthenticationThroughLdap() {
-    try {
-      Thread.sleep(Long.MAX_VALUE);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
     assertTrue(identityService.checkPassword("kermit", "pass"));
     assertFalse(identityService.checkPassword("kermit", "blah"));
   }
