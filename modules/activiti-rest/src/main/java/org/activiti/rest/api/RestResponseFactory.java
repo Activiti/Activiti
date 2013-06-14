@@ -19,6 +19,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.form.FormData;
+import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricFormProperty;
@@ -31,6 +35,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -55,6 +60,9 @@ import org.activiti.rest.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.api.engine.variable.StringRestVariableConverter;
+import org.activiti.rest.api.form.FormDataResponse;
+import org.activiti.rest.api.form.RestEnumFormProperty;
+import org.activiti.rest.api.form.RestFormProperty;
 import org.activiti.rest.api.history.HistoricActivityInstanceResponse;
 import org.activiti.rest.api.history.HistoricDetailResponse;
 import org.activiti.rest.api.history.HistoricProcessInstanceResponse;
@@ -69,6 +77,7 @@ import org.activiti.rest.api.management.TableResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse;
 import org.activiti.rest.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.api.repository.DeploymentResponse;
+import org.activiti.rest.api.repository.ModelResponse;
 import org.activiti.rest.api.repository.ProcessDefinitionResponse;
 import org.activiti.rest.api.runtime.process.ExecutionResponse;
 import org.activiti.rest.api.runtime.process.ProcessInstanceResponse;
@@ -106,17 +115,17 @@ public class RestResponseFactory {
     response.setUrl(resourceContext.createFullResourceUrl(RestUrls.URL_TASK, task.getId()));
 
     // Add references to other resources, if needed
-    if(task.getParentTaskId() != null) {
-      response.setParentTask(resourceContext.createFullResourceUrl(RestUrls.URL_TASK, task.getParentTaskId()));
+    if (response.getParentTaskId() != null) {
+      response.setParentTaskUrl(resourceContext.createFullResourceUrl(RestUrls.URL_TASK, response.getParentTaskId()));
     }
-    if(task.getProcessDefinitionId() != null) {
-      response.setProcessDefinition(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, task.getProcessDefinitionId()));
+    if (response.getProcessDefinitionId() != null) {
+      response.setProcessDefinitionUrl(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, response.getProcessDefinitionId()));
     }
-    if(task.getExecutionId() != null) {
-      response.setExecution(resourceContext.createFullResourceUrl(RestUrls.URL_EXECUTION, task.getExecutionId()));
+    if (response.getExecutionId() != null) {
+      response.setExecutionUrl(resourceContext.createFullResourceUrl(RestUrls.URL_EXECUTION, response.getExecutionId()));
     }
-    if(task.getProcessInstanceId() != null) {
-      response.setProcessInstance(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, task.getProcessInstanceId()));
+    if (response.getProcessInstanceId() != null) {
+      response.setProcessInstanceUrl(resourceContext.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, response.getProcessInstanceId()));
     }
     
     return response;
@@ -400,6 +409,7 @@ public class RestResponseFactory {
     result.setActivityId(processInstance.getActivityId());
     result.setBusinessKey(processInstance.getBusinessKey());
     result.setId(processInstance.getId());
+    result.setProcessDefinitionId(processInstance.getProcessDefinitionId());
     result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
     result.setSuspended(processInstance.isSuspended());
     result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
@@ -420,6 +430,56 @@ public class RestResponseFactory {
     
     if(execution.getProcessInstanceId() != null) {
       result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, execution.getProcessInstanceId()));
+    }
+    return result;
+  }
+  
+  public FormDataResponse createFormDataResponse(SecuredResource securedResource, FormData formData) {
+    FormDataResponse result = new FormDataResponse();
+    result.setDeploymentId(formData.getDeploymentId());
+    result.setFormKey(formData.getFormKey());
+    if (formData.getFormProperties() != null) {
+      for (FormProperty formProp : formData.getFormProperties()) {
+        RestFormProperty restFormProp = new RestFormProperty();
+        restFormProp.setId(formProp.getId());
+        restFormProp.setName(formProp.getName());
+        if (formProp.getType() != null) {
+          restFormProp.setType(formProp.getType().getName());
+        }
+        restFormProp.setValue(formProp.getValue());
+        restFormProp.setReadable(formProp.isReadable());
+        restFormProp.setRequired(formProp.isRequired());
+        restFormProp.setWritable(formProp.isWritable());
+        if ("enum".equals(restFormProp.getType())) {
+          Object values = formProp.getType().getInformation("values");
+          if (values != null) {
+            @SuppressWarnings("unchecked")
+            Map<String, String> enumValues = (Map<String, String>) values;
+            for (String enumId : enumValues.keySet()) {
+              RestEnumFormProperty enumProperty = new RestEnumFormProperty();
+              enumProperty.setId(enumId);
+              enumProperty.setName(enumValues.get(enumId));
+              restFormProp.addEnumValue(enumProperty);
+            }
+          }
+        } else if ("date".equals(restFormProp.getType())) {
+          restFormProp.setDatePattern((String) formProp.getType().getInformation("datePattern"));
+        }
+        result.addFormProperty(restFormProp);
+      }
+    }
+    if (formData instanceof StartFormData) {
+      StartFormData startFormData = (StartFormData) formData;
+      if (startFormData.getProcessDefinition() != null) {
+        result.setProcessDefinitionId(startFormData.getProcessDefinition().getId());
+        result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, startFormData.getProcessDefinition().getId()));
+      }
+    } else if (formData instanceof TaskFormData) {
+      TaskFormData taskFormData = (TaskFormData) formData;
+      if (taskFormData.getTask() != null) {
+        result.setTaskId(taskFormData.getTask().getId());
+        result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK, taskFormData.getTask().getId()));
+      }
     }
     return result;
   }
@@ -623,6 +683,27 @@ public class RestResponseFactory {
     response.setGroupId(groupId);
     response.setUserId(userId);
     response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP, groupId, userId));
+    return response;
+  }
+  
+  public ModelResponse createModelResponse(SecuredResource securedResource, Model model) {
+    ModelResponse response = new ModelResponse();
+    
+    response.setCategory(model.getCategory());
+    response.setCreateTime(model.getCreateTime());
+    response.setId(model.getId());
+    response.setKey(model.getKey());
+    response.setLastUpdateTime(model.getLastUpdateTime());
+    response.setMetaInfo(model.getMetaInfo());
+    response.setName(model.getName());
+    response.setDeploymentId(model.getDeploymentId());
+    response.setVersion(model.getVersion());
+    
+    response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_MODEL, model.getId()));
+    if(model.getDeploymentId() != null) {
+      response.setDeploymentUrl(securedResource.createFullResourceUrl(RestUrls.URL_DEPLOYMENT, model.getDeploymentId()));
+    }
+    
     return response;
   }
   

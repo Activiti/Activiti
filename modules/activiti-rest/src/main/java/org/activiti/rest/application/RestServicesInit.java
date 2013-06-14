@@ -1,11 +1,11 @@
 package org.activiti.rest.application;
 
+import org.activiti.rest.api.form.FormDataResource;
 import org.activiti.rest.api.history.HistoricActivityInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricActivityInstanceQueryResource;
 import org.activiti.rest.api.history.HistoricDetailCollectionResource;
 import org.activiti.rest.api.history.HistoricDetailDataResource;
 import org.activiti.rest.api.history.HistoricDetailQueryResource;
-import org.activiti.rest.api.history.HistoricFormPropertiesResource;
 import org.activiti.rest.api.history.HistoricProcessInstanceCollectionResource;
 import org.activiti.rest.api.history.HistoricProcessInstanceQueryResource;
 import org.activiti.rest.api.history.HistoricProcessInstanceResource;
@@ -41,6 +41,7 @@ import org.activiti.rest.api.legacy.deployment.DeploymentDeleteResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentUploadResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentsDeleteResource;
 import org.activiti.rest.api.legacy.deployment.DeploymentsResource;
+import org.activiti.rest.api.legacy.history.HistoricFormPropertiesResource;
 import org.activiti.rest.api.legacy.identity.LegacyGroupCreateResource;
 import org.activiti.rest.api.legacy.identity.LegacyGroupResource;
 import org.activiti.rest.api.legacy.identity.LegacyGroupSearchResource;
@@ -62,6 +63,10 @@ import org.activiti.rest.api.legacy.management.TablesResource;
 import org.activiti.rest.api.legacy.process.LegacyProcessInstanceResource;
 import org.activiti.rest.api.legacy.process.LegacyProcessInstancesResource;
 import org.activiti.rest.api.legacy.process.ProcessDefinitionsResource;
+import org.activiti.rest.api.legacy.process.ProcessInstanceSignalExecutionResource;
+import org.activiti.rest.api.legacy.process.ProcessInstanceTaskResource;
+import org.activiti.rest.api.legacy.process.SignalEventSubscriptionResource;
+import org.activiti.rest.api.legacy.process.StartProcessInstanceResource;
 import org.activiti.rest.api.legacy.task.LegacyTaskResource;
 import org.activiti.rest.api.management.JobCollectionResource;
 import org.activiti.rest.api.management.JobExceptionStacktraceResource;
@@ -77,6 +82,10 @@ import org.activiti.rest.api.repository.DeploymentResource;
 import org.activiti.rest.api.repository.DeploymentResourceCollectionResource;
 import org.activiti.rest.api.repository.DeploymentResourceDataResource;
 import org.activiti.rest.api.repository.DeploymentResourceResource;
+import org.activiti.rest.api.repository.ModelCollectionResource;
+import org.activiti.rest.api.repository.ModelResource;
+import org.activiti.rest.api.repository.ModelSourceExtraResource;
+import org.activiti.rest.api.repository.ModelSourceResource;
 import org.activiti.rest.api.repository.ProcessDefinitionCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionIdentityLinkCollectionResource;
 import org.activiti.rest.api.repository.ProcessDefinitionIdentityLinkResource;
@@ -100,13 +109,9 @@ import org.activiti.rest.api.runtime.process.ProcessInstanceIdentityLinkCollecti
 import org.activiti.rest.api.runtime.process.ProcessInstanceIdentityLinkResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceQueryResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceResource;
-import org.activiti.rest.api.runtime.process.ProcessInstanceSignalExecutionResource;
-import org.activiti.rest.api.runtime.process.ProcessInstanceTaskResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceVariableCollectionResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceVariableDataResource;
 import org.activiti.rest.api.runtime.process.ProcessInstanceVariableResource;
-import org.activiti.rest.api.runtime.process.SignalEventSubscriptionResource;
-import org.activiti.rest.api.runtime.process.StartProcessInstanceResource;
 import org.activiti.rest.api.runtime.task.TaskAttachmentCollectionResource;
 import org.activiti.rest.api.runtime.task.TaskAttachmentContentResource;
 import org.activiti.rest.api.runtime.task.TaskAttachmentResource;
@@ -143,6 +148,11 @@ public class RestServicesInit {
     router.attach("/repository/process-definitions/{processDefinitionId}/model", ProcessDefinitionModelResource.class);
     router.attach("/repository/process-definitions/{processDefinitionId}/identitylinks", ProcessDefinitionIdentityLinkCollectionResource.class);
     router.attach("/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", ProcessDefinitionIdentityLinkResource.class);
+    
+    router.attach("/repository/models", ModelCollectionResource.class);
+    router.attach("/repository/models/{modelId}", ModelResource.class);
+    router.attach("/repository/models/{modelId}/source", ModelSourceResource.class);
+    router.attach("/repository/models/{modelId}/source-extra", ModelSourceExtraResource.class);
     
     router.attach("/runtime/tasks", TaskCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}", TaskResource.class);
@@ -197,6 +207,8 @@ public class RestServicesInit {
     router.attach("/management/properties", PropertiesCollectionResource.class);
     router.attach("/management/engine", ProcessEngineResource.class);
     
+    router.attach("/form/form-data", FormDataResource.class);
+    
     router.attach("/identity/users", UserCollectionResource.class);
     router.attach("/identity/users/{userId}", UserResource.class);
     router.attach("/identity/users/{userId}/picture", UserPictureResource.class);
@@ -206,7 +218,6 @@ public class RestServicesInit {
     router.attach("/identity/groups/{groupId}", GroupResource.class);
     router.attach("/identity/groups/{groupId}/members", GroupMembershipCollectionResource.class);
     router.attach("/identity/groups/{groupId}/members/{userId}", GroupMembershipResource.class);
-    
     
     router.attach("/query/tasks", TaskQueryResource.class);
     router.attach("/query/process-instances", ProcessInstanceQueryResource.class);

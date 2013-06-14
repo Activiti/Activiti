@@ -21,6 +21,7 @@ public class ProcessInstanceResponse {
   protected String url;
   protected String businessKey;
   protected boolean suspended;
+  protected String processDefinitionId;
   protected String processDefinitionUrl;
   protected String activityId;
   
@@ -56,6 +57,14 @@ public class ProcessInstanceResponse {
     this.suspended = suspended;
   }
   
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+
   public String getProcessDefinitionUrl() {
     return processDefinitionUrl;
   }

@@ -12,15 +12,17 @@
  */
 package org.activiti.engine.test.bpmn.async;
 
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.TaskListener;
 
 
-public class AsyncListener implements ExecutionListener {
+public class AsyncTaskListener implements TaskListener {
 
   private static final long serialVersionUID = 1L;
 
-  public void notify(DelegateExecution execution) throws Exception {
-    execution.setVariable("listener", "listener invoked");
+  @Override
+  public void notify(DelegateTask delegateTask) {
+    delegateTask.setVariable("taskListener", "listener invoked");
   }
+
 }

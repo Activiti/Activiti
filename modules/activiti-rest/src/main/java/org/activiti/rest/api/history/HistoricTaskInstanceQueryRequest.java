@@ -53,6 +53,8 @@ public class HistoricTaskInstanceQueryRequest {
   private Date dueDateAfter;
   private Date dueDateBefore;
   private Date taskCreatedOn;
+  private Boolean includeTaskLocalVariables;
+  private Boolean includeProcessVariables;
   private List<QueryVariable> taskVariables;
   private List<QueryVariable> processVariables;
 
@@ -270,6 +272,22 @@ public class HistoricTaskInstanceQueryRequest {
 
   public void setTaskCreatedOn(Date taskCreatedOn) {
     this.taskCreatedOn = taskCreatedOn;
+  }
+
+  public Boolean getIncludeTaskLocalVariables() {
+    return includeTaskLocalVariables;
+  }
+
+  public void setIncludeTaskLocalVariables(Boolean includeTaskLocalVariables) {
+    this.includeTaskLocalVariables = includeTaskLocalVariables;
+  }
+
+  public Boolean getIncludeProcessVariables() {
+    return includeProcessVariables;
+  }
+
+  public void setIncludeProcessVariables(Boolean includeProcessVariables) {
+    this.includeProcessVariables = includeProcessVariables;
   }
 
   @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  

@@ -142,6 +142,14 @@ public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstance
       queryRequest.setTaskCreatedOn(getQueryParameterAsDate("taskCreatedOn", urlQuery));
     }
     
+    if(getQueryParameter("includeTaskLocalVariables", urlQuery) != null) {
+      queryRequest.setIncludeTaskLocalVariables(getQueryParameterAsBoolean("includeTaskLocalVariables", urlQuery));
+    }
+    
+    if(getQueryParameter("includeProcessVariables", urlQuery) != null) {
+      queryRequest.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", urlQuery));
+    }
+    
     return getQueryResponse(queryRequest, urlQuery);
   }
 }

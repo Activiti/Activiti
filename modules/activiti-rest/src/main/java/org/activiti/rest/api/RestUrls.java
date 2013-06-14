@@ -29,6 +29,7 @@ public final class RestUrls {
   public static final String SEGMENT_RUNTIME_RESOURCES = "runtime";
   public static final String SEGMENT_MANAGEMENT_RESOURCES = "management";
   public static final String SEGMENT_HISTORY_RESOURCES = "history";
+  public static final String SEGMENT_FORM_RESOURCES = "form";
   public static final String SEGMENT_IDENTITY_RESOURCES = "identity";
   public static final String SEGMENT_QUERY_RESOURCES = "query";
   
@@ -54,6 +55,7 @@ public final class RestUrls {
   public static final String SEGMENT_HISTORIC_ACTIVITY_INSTANCE_RESOURCE = "historic-activity-instances";
   public static final String SEGMENT_HISTORIC_VARIABLE_INSTANCE_RESOURCE = "historic-variable-instances";
   public static final String SEGMENT_HISTORIC_DETAIL_RESOURCE = "historic-detail";
+  public static final String SEGMENT_FORM_DATA = "form-data";
   public static final String SEGMENT_TABLES = "tables";
   public static final String SEGMENT_COLUMNS = "columns";
   public static final String SEGMENT_DATA = "data";
@@ -68,6 +70,9 @@ public final class RestUrls {
   public static final String SEGMENT_PROPERTIES = "properties";
   public static final String SEGMENT_ENGINE_INFO = "engine";
   public static final String SEGMENT_ACTIVITIES = "activities";
+  public static final String SEGMENT_MODEL_RESOURCE = "models";
+  public static final String SEGMENT_SOURCE = "source";
+  public static final String SEGMENT_SOURCE_EXTRA = "source-extra";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -126,6 +131,26 @@ public final class RestUrls {
    * URL template for the model of a process definition: <i>repository/process-definitions/{0:processDefinitionId}/model</i>
    */
   public static final String[] URL_PROCESS_DEFINITION_MODEL = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_MODEL};
+  
+  /**
+   * URL template for the model collection: <i>repository/models</i>
+   */
+  public static final String[] URL_MODEL_COLLECTION = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE};
+  
+  /**
+   * URL template for a single model  <i>repository/models/{0:modelId}</i>
+   */
+  public static final String[] URL_MODEL = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for the editor source of a model  <i>repository/models/{0:modelId}/source</i>
+   */
+  public static final String[] URL_MODEL_SOURCE = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}", SEGMENT_SOURCE};
+  
+  /**
+   * URL template for the extra editor source of a model  <i>repository/models/{0:modelId}/source-extra</i>
+   */
+  public static final String[] URL_MODEL_SOURCE_EXTRA = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}", SEGMENT_SOURCE_EXTRA};
   
   /**
    * URL template for task collection: <i>runtime/tasks/{0:taskId}</i>
@@ -366,6 +391,11 @@ public final class RestUrls {
    * URL template for the collection of tables: <i>management/tables</i>
    */
   public static final String[] URL_TABLES_COLLECTION = {SEGMENT_MANAGEMENT_RESOURCES, SEGMENT_TABLES};
+  
+  /**
+   * URL template for form data: <i>form/form-data</i>
+   */
+  public static final String[] URL_FORM_DATA = {SEGMENT_FORM_RESOURCES, SEGMENT_FORM_DATA};
   
   /**
    * URL template for a single table: <i>management/tables/{0:tableName}</i>
