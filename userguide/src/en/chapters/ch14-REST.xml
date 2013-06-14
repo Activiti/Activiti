@@ -205,7 +205,7 @@
       <section id="restPagingAndSort">
         <title>Paging and sorting</title>
         <para>
-            Paging and order parameters can be added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?sort=name&start=3&size=10&order=desc</literal>).
+            Paging and order parameters can be added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?sort=name</literal>).
             <table>
               <title>Variable query JSON parameters</title>
               <tgroup cols="2">
@@ -2720,7 +2720,7 @@
     </para>
 </section>
 
-<section id="restProcessinstancesGet">
+<section id="restProcessInstancesGet">
       <title>List of process instances</title>
         <para>
           <programlisting>GET runtime/process-instances</programlisting>
