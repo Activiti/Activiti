@@ -2929,6 +2929,75 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
     </para>
     </section>
     
+    <section>
+      <title>Get diagram for a process instance</title>
+        <para>
+          <programlisting>GET runtime/process-instances/{processInstanceId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to get the diagram for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process instance was found and the diagram was returned.</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates the requested process instance was not found but the process doesn't contain any graphical information (BPMN:DI) and no diagram can be created.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"7",
+   "url":"http://localhost:8182/runtime/process-instances/7",
+   "businessKey":"myBusinessKey",
+   "suspended":false,
+   "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
+   "activityId":"processTask"
+}</programlisting>
+    </para>
+</section>
+    
      <section>
       <title>Get a involved people for process instance</title>
         <para>

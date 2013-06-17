@@ -34,7 +34,7 @@ import org.restlet.resource.Post;
 /**
  * @author Frederik Heremans
  */
-public class ProcessInstanceCollectionResource extends ProcessInstanceBaseResource {
+public class ProcessInstanceCollectionResource extends BaseProcessInstanceResource {
 
   @Get
   public DataResponse getProcessInstances() {

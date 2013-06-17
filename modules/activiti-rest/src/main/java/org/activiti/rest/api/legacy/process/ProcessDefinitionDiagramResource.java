@@ -1,4 +1,4 @@
-package org.activiti.rest.api.runtime.process;
+package org.activiti.rest.api.legacy.process;
 
 import java.io.InputStream;
 

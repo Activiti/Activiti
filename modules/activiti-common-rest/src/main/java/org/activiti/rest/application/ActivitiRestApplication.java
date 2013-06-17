@@ -21,7 +21,6 @@ import org.restlet.data.ChallengeScheme;
 import org.restlet.security.ChallengeAuthenticator;
 import org.restlet.security.SecretVerifier;
 import org.restlet.security.Verifier;
-import org.restlet.service.StatusService;
 /**
  * @author Tijs Rademakers
  */
