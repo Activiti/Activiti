@@ -53,4 +53,8 @@ public class LegacyGroupCreateResource extends SecuredResource {
     }
     return new LegacyStateResponse().setSuccess(true);
   }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
+  }
 }

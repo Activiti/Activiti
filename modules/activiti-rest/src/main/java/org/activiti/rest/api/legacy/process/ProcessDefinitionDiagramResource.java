@@ -9,6 +9,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.data.MediaType;
+import org.restlet.data.Status;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
 
@@ -42,4 +43,7 @@ public class ProcessDefinitionDiagramResource extends SecuredResource {
 		return new InputRepresentation(definitionImageStream, MediaType.IMAGE_PNG);
 	}
 
+	 protected Status getAuthenticationFailureStatus() {
+	    return Status.CLIENT_ERROR_FORBIDDEN;
+	  }
 }

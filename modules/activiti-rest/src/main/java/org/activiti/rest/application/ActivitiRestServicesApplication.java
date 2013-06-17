@@ -47,8 +47,8 @@ public class ActivitiRestServicesApplication extends ActivitiRestApplication {
     RestServicesInit.attachResources(router);
     
     JsonpFilter jsonpFilter = new JsonpFilter(getContext());
-    jsonpFilter.setNext(router);
     authenticator.setNext(jsonpFilter);
+    jsonpFilter.setNext(router);
 
     // Get hold of JSONConverter and enable ISO-date format by default
     List<ConverterHelper> registeredConverters = Engine.getInstance().getRegisteredConverters();

@@ -14,6 +14,7 @@
 package org.activiti.rest.application;
 
 import org.activiti.rest.api.ActivitiUtil;
+import org.activiti.rest.filter.RestAuthenticator;
 import org.restlet.Application;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -29,6 +30,7 @@ public abstract class ActivitiRestApplication extends Application {
   protected ChallengeAuthenticator authenticator;
   protected ActivitiStatusService activitiStatusService;
   protected MediaTypeResolver mediaTypeResolver;
+  protected RestAuthenticator restAuthenticator;
 
   public ActivitiRestApplication() {
     activitiStatusService = new ActivitiStatusService();
@@ -42,6 +44,10 @@ public abstract class ActivitiRestApplication extends Application {
     }
     
     return mediaTypeResolver;
+  }
+  
+  public void setRestAuthenticator(RestAuthenticator restAuthenticator) {
+    this.restAuthenticator = restAuthenticator;
   }
 
   public void setMediaTypeResolver(MediaTypeResolver mediaTypeResolver) {
@@ -57,15 +63,30 @@ public abstract class ActivitiRestApplication extends Application {
         return verified;
       }
     };
+    
+    // Set authenticator as a NON-optional filter. If certain request require no authentication, a custom RestAuthenticator
+    // should be used to free the request from authentication.
     authenticator = new ChallengeAuthenticator(null, true, ChallengeScheme.HTTP_BASIC,
           "Activiti Realm") {
       
       @Override
       protected boolean authenticate(Request request, Response response) {
+        
+        // Check if authentication is required if a custom RestAuthenticator is set
+        if(restAuthenticator != null && !restAuthenticator.requestRequiresAuthentication(request)) {
+          return true;
+        }
+        
         if (request.getChallengeResponse() == null) {
           return false;
         } else {
-          return super.authenticate(request, response);
+          boolean authenticated = super.authenticate(request, response);
+          if(authenticated && restAuthenticator != null) {
+            // Additional check to see if authenticated user is authorised. By default, when no RestAuthenticator
+            // is set, a valid user can perform any request.
+            authenticated = restAuthenticator.isRequestAuthorized(request);
+          }
+          return authenticated;
         }
       }
     };

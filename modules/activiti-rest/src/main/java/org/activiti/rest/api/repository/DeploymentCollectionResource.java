@@ -58,8 +58,6 @@ public class DeploymentCollectionResource extends SecuredResource {
   
   @Get
   public DataResponse getDeployments() {
-    if(authenticate() == false) return null;
-    
     DeploymentQuery deploymentQuery = ActivitiUtil.getRepositoryService().createDeploymentQuery();
     
     Form query = getQuery();
@@ -87,7 +85,6 @@ public class DeploymentCollectionResource extends SecuredResource {
   @Post
   public DeploymentResponse uploadDeployment(Representation entity) {
     try {
-      if(authenticate() == false) return null;
 
       if(entity == null || entity.getMediaType() == null || !MediaType.MULTIPART_FORM_DATA.isCompatible(entity.getMediaType())) {
         throw new ActivitiIllegalArgumentException("The request should be of type" + MediaType.MULTIPART_FORM_DATA  +".");

@@ -29,6 +29,7 @@ import org.activiti.rest.api.legacy.IdentityLinkResponse;
 import org.activiti.rest.api.legacy.SubTaskResponse;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
@@ -160,5 +161,9 @@ public class LegacyTaskResource extends SecuredResource {
     }
     
     ActivitiUtil.getTaskService().deleteTask(taskId);
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }
