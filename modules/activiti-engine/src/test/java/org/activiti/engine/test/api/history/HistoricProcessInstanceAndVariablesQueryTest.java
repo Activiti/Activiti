@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
@@ -66,33 +67,35 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
   }
   
   public void testQuery() {
-    HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().includeProcessVariables()
-        .variableValueEquals("anothertest", 123).singleResult();
-    Map<String, Object> variableMap = processInstance.getProcessVariables();
-    assertEquals(1, variableMap.size());
-    assertEquals(123, variableMap.get("anothertest"));
-    
-    List<HistoricProcessInstance> instanceList = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().list();
-    assertEquals(5, instanceList.size());
-    
-    instanceList = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().processDefinitionKey(PROCESS_DEFINITION_KEY).list();
-    assertEquals(4, instanceList.size());
-    processInstance = instanceList.get(0);
-    variableMap = processInstance.getProcessVariables();
-    assertEquals(2, variableMap.size());
-    assertEquals("test", variableMap.get("test"));
-    assertEquals("test2", variableMap.get("test2"));
-    
-    processInstance = historyService.createHistoricProcessInstanceQuery().includeProcessVariables()
-        .processDefinitionKey(PROCESS_DEFINITION_KEY_2).singleResult();
-    variableMap = processInstance.getProcessVariables();
-    assertEquals(1, variableMap.size());
-    assertEquals(123, variableMap.get("anothertest"));
-    
-    processInstance = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().finished().singleResult();
-    variableMap = processInstance.getProcessVariables();
-    assertEquals(2, variableMap.size());
-    assertEquals("test", variableMap.get("test"));
-    assertEquals("test2", variableMap.get("test2"));
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().includeProcessVariables()
+              .variableValueEquals("anothertest", 123).singleResult();
+          Map<String, Object> variableMap = processInstance.getProcessVariables();
+          assertEquals(1, variableMap.size());
+          assertEquals(123, variableMap.get("anothertest"));
+          
+          List<HistoricProcessInstance> instanceList = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().list();
+          assertEquals(5, instanceList.size());
+          
+          instanceList = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().processDefinitionKey(PROCESS_DEFINITION_KEY).list();
+          assertEquals(4, instanceList.size());
+          processInstance = instanceList.get(0);
+          variableMap = processInstance.getProcessVariables();
+          assertEquals(2, variableMap.size());
+          assertEquals("test", variableMap.get("test"));
+          assertEquals("test2", variableMap.get("test2"));
+          
+          processInstance = historyService.createHistoricProcessInstanceQuery().includeProcessVariables()
+              .processDefinitionKey(PROCESS_DEFINITION_KEY_2).singleResult();
+          variableMap = processInstance.getProcessVariables();
+          assertEquals(1, variableMap.size());
+          assertEquals(123, variableMap.get("anothertest"));
+          
+          processInstance = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().finished().singleResult();
+          variableMap = processInstance.getProcessVariables();
+          assertEquals(2, variableMap.size());
+          assertEquals("test", variableMap.get("test"));
+          assertEquals("test2", variableMap.get("test2"));
+    }
   }
 }

@@ -53,6 +53,8 @@ public class TaskQueryRequest {
   private Date dueBefore;
   private Date dueAfter;
   private Boolean active;
+  private Boolean includeTaskLocalVariables;
+  private Boolean includeProcessVariables;
   
   private List<QueryVariable> taskVariables;
   private List<QueryVariable> processInstanceVariables;
@@ -273,6 +275,22 @@ public class TaskQueryRequest {
     this.active = active;
   }
   
+  public Boolean getIncludeTaskLocalVariables() {
+    return includeTaskLocalVariables;
+  }
+
+  public void setIncludeTaskLocalVariables(Boolean includeTaskLocalVariables) {
+    this.includeTaskLocalVariables = includeTaskLocalVariables;
+  }
+
+  public Boolean getIncludeProcessVariables() {
+    return includeProcessVariables;
+  }
+
+  public void setIncludeProcessVariables(Boolean includeProcessVariables) {
+    this.includeProcessVariables = includeProcessVariables;
+  }
+
   @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)
   public List<QueryVariable> getTaskVariables() {
     return taskVariables;

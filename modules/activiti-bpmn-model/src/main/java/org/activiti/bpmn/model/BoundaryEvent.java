@@ -12,11 +12,14 @@
  */
 package org.activiti.bpmn.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * @author Tijs Rademakers
  */
 public class BoundaryEvent extends Event {
 
+  @JsonIgnore
   protected Activity attachedToRef;
   protected String attachedToRefId;
   protected boolean cancelActivity = true;

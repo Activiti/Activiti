@@ -50,7 +50,7 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     if(executionEntity == null) {
       throw new ActivitiObjectNotFoundException("Cannot find processInstance for id '"+executionId+"'.", Execution.class);
     }
-    if(!executionEntity.isProcessInstance()) {
+    if(!executionEntity.isProcessInstanceType()) {
       throw new ActivitiException("Cannot set suspension state for execution '"+executionId+"': not a process instance.");
     }
     

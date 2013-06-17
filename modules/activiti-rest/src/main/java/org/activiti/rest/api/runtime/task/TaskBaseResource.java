@@ -195,6 +195,17 @@ public class TaskBaseResource extends SecuredResource {
       }
     }
     
+    if (request.getIncludeTaskLocalVariables() != null) {
+      if (request.getIncludeTaskLocalVariables()) {
+        taskQuery.includeTaskLocalVariables();
+      }
+    }
+    if (request.getIncludeProcessVariables() != null) {
+      if (request.getIncludeProcessVariables()) {
+        taskQuery.includeProcessVariables();
+      }
+    }
+    
     if(request.getTaskVariables() != null) {
       addTaskvariables(taskQuery, request.getTaskVariables());
     }
@@ -218,11 +229,8 @@ public class TaskBaseResource extends SecuredResource {
       
       boolean nameLess = variable.getName() == null;
       
-      Object actualValue = variable.getValue();
-      if(variable.getType() != null) {
-        // Perform explicit conversion instead of using raw value from request
-        // TODO: use pluggable variable-creator based on objects and type
-      }
+      Object actualValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+              .getVariableValue(variable);
       
       // A value-only query is only possible using equals-operator
       if(nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {

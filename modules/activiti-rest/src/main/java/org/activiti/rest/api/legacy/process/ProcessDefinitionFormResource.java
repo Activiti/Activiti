@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.api.runtime.process;
+package org.activiti.rest.api.legacy.process;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

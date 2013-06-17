@@ -35,7 +35,7 @@ import org.restlet.data.Form;
 /**
  * @author Frederik Heremans
  */
-public class ProcessInstanceBaseResource extends SecuredResource {
+public class BaseProcessInstanceResource extends SecuredResource {
 
   private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
 
@@ -76,6 +76,11 @@ public class ProcessInstanceBaseResource extends SecuredResource {
     }
     if (queryRequest.getSuperProcessInstanceId() != null) {
       query.superProcessInstanceId(queryRequest.getSuperProcessInstanceId());
+    }
+    if (queryRequest.getIncludeProcessVariables() != null) {
+      if (queryRequest.getIncludeProcessVariables()) {
+        query.includeProcessVariables();
+      }
     }
     if (queryRequest.getVariables() != null) {
       addVariables(query, queryRequest.getVariables());

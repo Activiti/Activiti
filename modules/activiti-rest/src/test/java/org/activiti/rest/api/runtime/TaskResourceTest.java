@@ -72,14 +72,14 @@ public class TaskResourceTest extends BaseRestTestCase {
     assertEquals(task.getDueDate(), getDateFromISOString(responseNode.get("dueDate").asText()));
     assertEquals(task.getCreateTime(), getDateFromISOString(responseNode.get("createTime").asText()));
     assertEquals(task.getPriority(), responseNode.get("priority").asInt());
-    assertTrue(responseNode.get("parentTask").isNull());
+    assertTrue(responseNode.get("parentTaskId").isNull());
     assertTrue(responseNode.get("delegationState").isNull());
     
-    assertTrue(responseNode.get("execution").asText().endsWith(
+    assertTrue(responseNode.get("executionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, task.getExecutionId())));
-    assertTrue(responseNode.get("processInstance").asText().endsWith(
+    assertTrue(responseNode.get("processInstanceUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, task.getProcessInstanceId())));
-    assertTrue(responseNode.get("processDefinition").asText().endsWith(
+    assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(task.getProcessDefinitionId()))));
   }
   
@@ -123,11 +123,11 @@ public class TaskResourceTest extends BaseRestTestCase {
       assertEquals(task.getCreateTime(), getDateFromISOString(responseNode.get("createTime").asText()));
       assertEquals(task.getPriority(), responseNode.get("priority").asInt());
       assertEquals("resolved", responseNode.get("delegationState").asText());
-      assertTrue(responseNode.get("execution").isNull());
-      assertTrue(responseNode.get("processInstance").isNull());
-      assertTrue(responseNode.get("processDefinition").isNull());
+      assertTrue(responseNode.get("executionId").isNull());
+      assertTrue(responseNode.get("processInstanceId").isNull());
+      assertTrue(responseNode.get("processDefinitionId").isNull());
       
-      assertTrue(responseNode.get("parentTask").asText().endsWith(
+      assertTrue(responseNode.get("parentTaskUrl").asText().endsWith(
               RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, parentTask.getId())));
       
     } finally {

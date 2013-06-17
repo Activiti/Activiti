@@ -21,7 +21,7 @@ import org.restlet.resource.Post;
 /**
  * @author Frederik Heremans
  */
-public class ProcessInstanceQueryResource extends ProcessInstanceBaseResource {
+public class ProcessInstanceQueryResource extends BaseProcessInstanceResource {
 
   @Post
   public DataResponse queryProcessInstances(ProcessInstanceQueryRequest queryRequest) {

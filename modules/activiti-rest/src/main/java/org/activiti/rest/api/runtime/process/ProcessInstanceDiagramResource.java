@@ -16,52 +16,37 @@ package org.activiti.rest.api.runtime.process;
 import java.io.InputStream;
 
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
 import org.restlet.data.MediaType;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
-public class ProcessInstanceDiagramResource extends SecuredResource {
+public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource {
   
   @Get
-  public InputRepresentation getInstanceDiagram() {
-    String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
+  public InputRepresentation getProcessInstanceDiagram() {
+    ProcessInstance processInstance = getProcessInstanceFromRequest();
     
-    if(processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("No process instance id provided");
-    }
-
-    ExecutionEntity pi = (ExecutionEntity) ActivitiUtil.getRuntimeService().createProcessInstanceQuery()
-        .processInstanceId(processInstanceId).singleResult();
-
-    if (pi == null) {
-      throw new ActivitiObjectNotFoundException("Process instance with id" + processInstanceId + " could not be found", ProcessInstance.class);
-    }
-
     ProcessDefinitionEntity pde = (ProcessDefinitionEntity) ((RepositoryServiceImpl) 
-        ActivitiUtil.getRepositoryService()).getDeployedProcessDefinition(pi.getProcessDefinitionId());
+            ActivitiUtil.getRepositoryService()).getDeployedProcessDefinition(processInstance.getProcessDefinitionId());
 
     if (pde != null && pde.isGraphicalNotationDefined()) {
       BpmnModel bpmnModel = ActivitiUtil.getRepositoryService().getBpmnModel(pde.getId());
-      InputStream resource = ProcessDiagramGenerator.generateDiagram(bpmnModel, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstanceId));
+      InputStream resource = ProcessDiagramGenerator.generateDiagram(bpmnModel, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstance.getId()));
 
       InputRepresentation output = new InputRepresentation(resource, MediaType.IMAGE_PNG);
       return output;
       
     } else {
-      throw new ActivitiException("Process instance with id " + processInstanceId + " has no graphic description");
+      throw new ActivitiIllegalArgumentException("Process instance with id '" + processInstance.getId() + "' has no graphical notation defined.");
     }
   }
 }

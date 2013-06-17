@@ -9,10 +9,10 @@
     <section>
       <title>Installation and Authentication</title>
       
-      <para>Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. By default the Activiti Engine will connect to a standalone H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).</para>
+      <para>Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. By default the Activiti Engine will connect to an in-memory H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).</para>
       <para>All REST-resources (except for the Login-resource) require a valid Activiti-user to be authenticated. Basic HTTP access authentication is used, so you should always include a <literal>Authorization: Basic ...==</literal> HTTP-header when performing requests or include the username and password in the request-url (eg. <literal>http://username:password@localhost...</literal>).
       </para>
-      <para><emphasis role="bold">It's recommended to use Basic in combination with HTTPS.</emphasis></para>
+      <para><emphasis role="bold">It's recommended to use Basic Authentication in combination with HTTPS.</emphasis></para>
     </section>
     
      <section>
@@ -196,6 +196,46 @@
                   <row>
                     <entry>Date</entry>
                     <entry>Parameter representing a date value, using a JSON text. Use the ISO-8601 date-format (see <ulink url="http://en.wikipedia.org/wiki/ISO_8601">ISO-8601 on wikipedia</ulink>) using both time and date-components (eg. <literal>2013-04-03T23:45Z</literal>).</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+        </para>
+      </section>
+      <section id="restPagingAndSort">
+        <title>Paging and sorting</title>
+        <para>
+            Paging and order parameters can be added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?sort=name</literal>).
+            <table>
+              <title>Variable query JSON parameters</title>
+              <tgroup cols="2">
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Default value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>sort</entry>
+                    <entry>different per query implementation</entry>
+                    <entry>Name of the sort key, for which the default value and the allowed values are different per query implementation.</entry>
+                  </row>
+                  <row>
+                    <entry>order</entry>
+                    <entry>asc</entry>
+                    <entry>Sorting order which can be 'asc' or 'desc'.</entry>
+                  </row>
+                  <row>
+                    <entry>start</entry>
+                    <entry>0</entry>
+                    <entry>Parameter to allow for paging of the result. By default the result will start at 0.</entry>
+                  </row>
+                  <row>
+                    <entry>size</entry>
+                    <entry>10</entry>
+                    <entry>Parameter to allow for paging of the result. By default the size will be 10.</entry>
                   </row>
                 </tbody>
               </tgroup>
@@ -574,7 +614,8 @@
         <para>
           <emphasis role="bold">Request body:</emphasis>
         </para>
-        <para>The request should body should contain data of type <emphasis>multipart/form-data</emphasis>. There should be only exactly file in the request, any additional files will be ignored.</para>
+        <para>The request should body should contain data of type <emphasis>multipart/form-data</emphasis>. There should be only exactly file in the request, any additional files will be ignored. The deployment name is the name
+        of the file-field passed in. If multiple resources need to be deployed in a single deployment, compress the resources in a zip and make sure the file-name ends with <literal>.bar</literal> or <literal>.zip</literal>.</para>
         <para>
           <table>
               <title>Response codes</title>
@@ -1068,7 +1109,8 @@
       "suspended" : false,
       "name" : "The One Task Process",
       "description" : "This is a process for testing purposes",
-      "deployment" : "http://localhost:8081/repository/deployments/2",
+      "deploymentId" : "2",
+      "deploymentUrl" : "http://localhost:8081/repository/deployments/2",
       "graphicalNotationDefined" : true,
       "resource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.xml",
       "diagramResource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.png",
@@ -1157,7 +1199,8 @@
   "suspended" : false,
   "name" : "The One Task Process",
   "description" : "This is a process for testing purposes",
-  "deployment" : "http://localhost:8081/repository/deployments/2",
+  "deploymentId" : "2",
+  "deploymentUrl" : "http://localhost:8081/repository/deployments/2",
   "graphicalNotationDefined" : true,
   "resource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.xml",
   "diagramResource" : "http://localhost:8182/repository/deployments/2/resources/testProcess.png",
@@ -2678,10 +2721,10 @@
     </para>
 </section>
 
-<section id="restProcessinstancesGet">
+<section id="restProcessInstancesGet">
       <title>List of process instances</title>
         <para>
-          <programlisting>GET repository/process-instances</programlisting>
+          <programlisting>GET runtime/process-instances</programlisting>
         </para>
         <para>
             <table>
@@ -2742,7 +2785,13 @@
                     <entry>subProcessInstanceId</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                        <entry>Only return process instances which have the given sub process-instance id (for processes started as a call-activity).</entry>
+                    <entry>Only return process instances which have the given sub process-instance id (for processes started as a call-activity).</entry>
+                  </row>
+                  <row>
+                    <entry>includeProcessVariables</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Indication to include process variables in the result.</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
@@ -2879,6 +2928,75 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 }</programlisting>
     </para>
     </section>
+    
+    <section>
+      <title>Get diagram for a process instance</title>
+        <para>
+          <programlisting>GET runtime/process-instances/{processInstanceId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to get the diagram for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process instance was found and the diagram was returned.</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates the requested process instance was not found but the process doesn't contain any graphical information (BPMN:DI) and no diagram can be created.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"7",
+   "url":"http://localhost:8182/runtime/process-instances/7",
+   "businessKey":"myBusinessKey",
+   "suspended":false,
+   "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
+   "activityId":"processTask"
+}</programlisting>
+    </para>
+</section>
     
      <section>
       <title>Get a involved people for process instance</title>
@@ -3605,7 +3723,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
    <section>
       <title>Get an execution</title>
         <para>
-          <programlisting>GET runtime/executions/{exeuctionId}</programlisting>
+          <programlisting>GET runtime/executions/{executionId}</programlisting>
         </para>
         <para>
             <table>
@@ -3621,7 +3739,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 </thead>
                 <tbody>
                   <row>
-                    <entry>exeuctionId</entry>
+                    <entry>executionId</entry>
                     <entry>Yes</entry>
                     <entry>String</entry>
                     <entry>The id of the execution to get.</entry>
@@ -3659,7 +3777,9 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
 {
    "id":"5",
    "url":"http://localhost:8182/runtime/executions/5",
+   "parentId":null,
    "parentUrl":null,
+   "processInstanceId":"5",
    "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
    "suspended":false,
    "activityId":null
@@ -3669,7 +3789,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
  <section>
       <title>Execute an action on an execution</title>
         <para>
-          <programlisting>PUT runtime/executions/{exeuctionId}</programlisting>
+          <programlisting>PUT runtime/executions/{executionId}</programlisting>
         </para>
         <para>
             <table>
@@ -3685,7 +3805,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 </thead>
                 <tbody>
                   <row>
-                    <entry>exeuctionId</entry>
+                    <entry>executionId</entry>
                     <entry>Yes</entry>
                     <entry>String</entry>
                     <entry>The id of the execution to execute action on.</entry>
@@ -3758,7 +3878,9 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
 {
    "id":"5",
    "url":"http://localhost:8182/runtime/executions/5",
+   "parentId":null,
    "parentUrl":null,
+   "processInstanceId":"5",
    "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
    "suspended":false,
    "activityId":null
@@ -3769,7 +3891,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
   <section>
       <title>Get active activities in an execution</title>
         <para>
-          <programlisting>GET runtime/executions/{exeuctionId}/activities</programlisting>
+          <programlisting>GET runtime/executions/{executionId}/activities</programlisting>
         </para>
         <para>
           Returns all activities which are active in the execution and in all child-executions (and their children, recursively), if any.
@@ -3788,7 +3910,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 </thead>
                 <tbody>
                   <row>
-                    <entry>exeuctionId</entry>
+                    <entry>executionId</entry>
                     <entry>Yes</entry>
                     <entry>String</entry>
                     <entry>The id of the execution to get activities for.</entry>
@@ -3934,7 +4056,9 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
       {
          "id":"5",
          "url":"http://localhost:8182/runtime/executions/5",
+         "parentId":null,
          "parentUrl":null,
+         "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
          "activityId":null
@@ -3942,7 +4066,9 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
       {
          "id":"7",
          "url":"http://localhost:8182/runtime/executions/7",
+         "parentId":"5",
          "parentUrl":"http://localhost:8182/runtime/executions/5",
+         "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
          "activityId":"processTask"
@@ -4025,7 +4151,9 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
       {
          "id":"5",
          "url":"http://localhost:8182/runtime/executions/5",
+         "parentId":null,
          "parentUrl":null,
+         "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
          "activityId":null
@@ -4033,7 +4161,9 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
       {
          "id":"7",
          "url":"http://localhost:8182/runtime/executions/7",
+         "parentId":"5",
          "parentUrl":"http://localhost:8182/runtime/executions/5",
+         "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
          "activityId":"processTask"
@@ -4822,6 +4952,18 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>No</entry>
                     <entry>Boolean</entry>
                     <entry>If <literal>true</literal>, only return tasks that are not suspended (either part of a process that is not suspended or not part of a process at all). If false, only tasks that are part of suspended process instances are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>includeTaskLocalVariables</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Indication to include task local variables in the result.</entry>
+                  </row>
+                  <row>
+                    <entry>includeProcessVariables</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Indication to include process variables in the result.</entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
@@ -7363,6 +7505,79 @@ Only the attachment name is required to create a new attachment.
       </para>
     </section>
     <section>
+      <title>Delete a historic process instance</title>
+      <para>
+        <programlisting>DELETE history/historic-process-instances/{processInstanceId}</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates that the historic process instance was deleted.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates that the historic process instance could not be found.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+    </section>
+    <section>
+      <title>Get the identity links of a historic process instance</title>
+      <para>
+        <programlisting>GET history/historic-process-instance/{processInstanceId}/identitylinks</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates request was successful and the identity links are returned</entry>
+                </row>
+                 <row>
+                  <entry>404</entry>
+                  <entry>Indicates the process instance could not be found.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+[
+ {
+  "type" : "participant",
+  "userId" : "kermit",
+  "groupId" : null,
+  "taskId" : null,
+  "taskUrl" : null,
+  "processInstanceId" : "5",
+  "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/5"
+ }
+]</programlisting>
+      </para>
+    </section>
+    <section>
       <title>Get the binary data for a historic process instance variable</title>
       <para>
         <programlisting>GET history/historic-process-instances/{processInstanceId}/variables/{variableName}/data</programlisting>
@@ -7826,6 +8041,79 @@ Only the attachment name is required to create a new attachment.
   "order": "asc",
   "size": 1
 }</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Delete a historic task instance</title>
+      <para>
+        <programlisting>DELETE history/historic-task-instances/{taskId}</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates that the historic task instance was deleted.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates that the historic task instance could not be found.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+    </section>
+    <section>
+      <title>Get the identity links of a historic task instance</title>
+      <para>
+        <programlisting>GET history/historic-task-instance/{taskId}/identitylinks</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates request was successful and the identity links are returned</entry>
+                </row>
+                 <row>
+                  <entry>404</entry>
+                  <entry>Indicates the task instance could not be found.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+[
+ {
+  "type" : "assignee",
+  "userId" : "kermit",
+  "groupId" : null,
+  "taskId" : "6",
+  "taskUrl" : "http://localhost:8182/history/historic-task-instances/5",
+  "processInstanceId" : null,
+  "processInstanceUrl" : null
+ }
+]</programlisting>
       </para>
     </section>
     <section>
@@ -8498,6 +8786,179 @@ Only the attachment name is required to create a new attachment.
       <para>
         <emphasis role="bold">Success response body:</emphasis>
         The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+      </para>
+    </section>
+  </section>
+  <section>
+    <title>Forms</title>
+    <section>
+      <title>Get form data</title>
+      <para>
+        <programlisting>GET form/form-data</programlisting>
+      </para>
+      <para>
+          <table>
+            <title>URL parameters</title>
+            <tgroup cols='4'>
+              <thead>
+                <row>
+                  <entry>Parameter</entry>
+                  <entry>Required</entry>
+                  <entry>Value</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>taskId</entry>
+                  <entry>Yes (if no processDefinitionId)</entry>
+                  <entry>String</entry>
+                  <entry>The task id corresponding to the form data that needs to be retrieved.</entry>
+                </row>
+                <row>
+                  <entry>processDefinitionId</entry>
+                  <entry>Yes (if no taskId)</entry>
+                  <entry>String</entry>
+                  <entry>The process definition id corresponding to the start event form data that needs to be retrieved.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates that form data could be queried.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates that form data could not be found.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+{
+  "data": [
+    { 
+      "formKey" : null,
+      "deploymentId" : "2",
+      "processDefinitionId" : "3",
+      "processDefinitionUrl" : "http://localhost:8182/repository/process-definition/3",
+      "taskId" : "6",
+      "taskUrl" : "http://localhost:8182/runtime/task/6",
+      "formProperties" : [
+        {
+          "id" : "room",
+          "name" : "Room",
+          "type" : "string",
+          "value" : null,
+          "readable" : true,
+          "writable" : true,
+          "required" : true,
+          "datePattern" : null,
+          "enumValues" : [
+            {
+              "id" : "normal",
+              "name" : "Normal bed"
+            },
+            {
+              "id" : "kingsize",
+              "name" : "Kingsize bed"
+            },
+          ]
+        }
+      ]
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "name",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Submit task form data</title>
+      <para>
+        <programlisting>POST form/form-data</programlisting>
+      </para>
+      <para>
+        <emphasis role="bold">Request body for task form:</emphasis>
+        <programlisting>
+{
+  "taskId" : "5",
+  "properties" : [
+    {
+      "id" : "room",
+      "value" : "normal"
+    }
+  ]
+}</programlisting> 
+      </para>
+      <para>
+        <emphasis role="bold">Request body for start event form:</emphasis>
+        <programlisting>
+{
+  "processDefinitionId" : "5",
+  "businessKey" : "myKey", (optional)
+  "properties" : [
+    {
+      "id" : "room",
+      "value" : "normal"
+    }
+  ]
+}</programlisting> 
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates request was successful and the form data was submitted</entry>
+                </row>
+                 <row>
+                  <entry>400</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body for start event form data (no response for task form data):</emphasis>
+          <programlisting>
+{
+  "id" : "5",
+  "url" : "http://localhost:8182/history/historic-process-instances/5",
+  "businessKey" : "myKey",
+  "suspended", false,
+  "processDefinitionId" : "3",
+  "processDefinitionUrl" : "http://localhost:8182/repository/process-definition/3",
+  "activityId" : "myTask"
+}</programlisting>
       </para>
     </section>
   </section>

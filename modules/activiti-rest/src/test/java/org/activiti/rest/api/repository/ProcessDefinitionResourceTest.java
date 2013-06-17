@@ -50,7 +50,8 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
     
     // Check URL's
     assertEquals(client.getRequest().getResourceRef().toString(), URLDecoder.decode(responseNode.get("url").getTextValue(),"UTF-8"));
-    assertTrue(responseNode.get("deployment").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
+    assertEquals(processDefinition.getDeploymentId(), responseNode.get("deploymentId").getTextValue());
+    assertTrue(responseNode.get("deploymentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
     assertTrue(URLDecoder.decode(responseNode.get("resource").getTextValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
             RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getResourceName())));
     assertTrue(responseNode.get("diagramResource").isNull());
@@ -82,7 +83,8 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      
      // Check URL's
      assertEquals(client.getRequest().getResourceRef().toString(), URLDecoder.decode(responseNode.get("url").getTextValue(),"UTF-8"));
-     assertTrue(responseNode.get("deployment").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
+     assertEquals(processDefinition.getDeploymentId(), responseNode.get("deploymentId").getTextValue());
+     assertTrue(responseNode.get("deploymentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
      assertTrue(URLDecoder.decode(responseNode.get("resource").getTextValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
              RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getResourceName())));
      assertTrue(URLDecoder.decode(responseNode.get("diagramResource").getTextValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(

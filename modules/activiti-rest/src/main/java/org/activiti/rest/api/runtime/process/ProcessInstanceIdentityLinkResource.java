@@ -28,7 +28,7 @@ import org.restlet.resource.Get;
 /**
  * @author Frederik Heremans
  */
-public class ProcessInstanceIdentityLinkResource extends ProcessInstanceBaseResource {
+public class ProcessInstanceIdentityLinkResource extends BaseProcessInstanceResource {
 
   @Get
   public RestIdentityLink getIdentityLink() {

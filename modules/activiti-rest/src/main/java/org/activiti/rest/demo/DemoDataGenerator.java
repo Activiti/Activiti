@@ -13,10 +13,12 @@
 
 package org.activiti.rest.demo;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -25,7 +27,12 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.Model;
 import org.activiti.engine.task.Task;
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +40,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Joram Barrez
  */
-public class DemoDataGenerator {
+public class DemoDataGenerator implements ModelDataJsonConstants {
   
   protected static final Logger LOGGER = LoggerFactory.getLogger(DemoDataGenerator.class);
 
@@ -43,6 +50,8 @@ public class DemoDataGenerator {
   protected transient TaskService taskService;
   
   protected boolean createDemoUsersAndGroups;
+  protected boolean createDemoProcessDefinitions;
+  protected boolean createDemoModels;
   
   public void init() {
     this.identityService = processEngine.getIdentityService();
@@ -56,6 +65,16 @@ public class DemoDataGenerator {
       initDemoUsers();
     }
     
+    if (createDemoProcessDefinitions) {
+      LOGGER.info("Initializing demo process definitions");
+      initDemoProcessDefinitions();
+    }
+    
+    if (createDemoModels) {
+      LOGGER.info("Initializing demo models");
+      initDemoModelData();
+    }
+    
     initDemoStandaloneTasks();
     
   }
@@ -66,6 +85,14 @@ public class DemoDataGenerator {
   
   public void setCreateDemoUsersAndGroups(boolean createDemoUsersAndGroups) {
     this.createDemoUsersAndGroups = createDemoUsersAndGroups;
+  }
+  
+  public void setCreateDemoProcessDefinitions(boolean createDemoProcessDefinitions) {
+    this.createDemoProcessDefinitions = createDemoProcessDefinitions;
+  }
+
+  public void setCreateDemoModels(boolean createDemoModels) {
+    this.createDemoModels = createDemoModels;
   }
 
   protected void initDemoGroups() {
@@ -143,6 +170,62 @@ public class DemoDataGenerator {
       }
     }
     
+  }
+  
+protected void initDemoProcessDefinitions() {
+    
+    String deploymentName = "Demo processes";
+    List<Deployment> deploymentList = repositoryService.createDeploymentQuery().deploymentName(deploymentName).list();
+    
+    if (deploymentList == null || deploymentList.size() == 0) {
+      repositoryService.createDeployment()
+        .name(deploymentName)
+        .addClasspathResource("org/activiti/rest/demo/process/createTimersProcess.bpmn20.xml")
+        .addClasspathResource("org/activiti/rest/demo/process/oneTaskProcess.bpmn20.xml")
+        .addClasspathResource("org/activiti/rest/demo/process/VacationRequest.bpmn20.xml")
+        .addClasspathResource("org/activiti/rest/demo/process/VacationRequest.png")
+        .addClasspathResource("org/activiti/rest/demo/process/FixSystemFailureProcess.bpmn20.xml")
+        .addClasspathResource("org/activiti/rest/demo/process/FixSystemFailureProcess.png")
+        .addClasspathResource("org/activiti/rest/demo/process/Helpdesk.bpmn20.xml")
+        .addClasspathResource("org/activiti/rest/demo/process/Helpdesk.png")
+        .addClasspathResource("org/activiti/rest/demo/process/reviewSalesLead.bpmn20.xml")
+        .deploy();
+    }
+  }
+  
+  protected void initDemoModelData() {
+    createModelData("Demo model", "This is a demo model", "org/activiti/rest/demo/model/test.model.json");
+  }
+  
+  protected void createModelData(String name, String description, String jsonFile) {
+    List<Model> modelList = repositoryService.createModelQuery().modelName("Demo model").list();
+    
+    if (modelList == null || modelList.size() == 0) {
+    
+      Model model = repositoryService.newModel();
+      model.setName(name);
+      
+      ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
+      modelObjectNode.put(MODEL_NAME, name);
+      modelObjectNode.put(MODEL_DESCRIPTION, description);
+      model.setMetaInfo(modelObjectNode.toString());
+      
+      repositoryService.saveModel(model);
+      
+      try {
+        InputStream svgStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/rest/demo/model/test.svg");
+        repositoryService.addModelEditorSourceExtra(model.getId(), IOUtils.toByteArray(svgStream));
+      } catch(Exception e) {
+        LOGGER.warn("Failed to read SVG", e);
+      }
+      
+      try {
+        InputStream editorJsonStream = this.getClass().getClassLoader().getResourceAsStream(jsonFile);
+        repositoryService.addModelEditorSource(model.getId(), IOUtils.toByteArray(editorJsonStream));
+      } catch(Exception e) {
+        LOGGER.warn("Failed to read editor JSON", e);
+      }
+    }
   }
   
   protected void initDemoStandaloneTasks() {

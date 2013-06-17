@@ -19,6 +19,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
+import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 
 
@@ -34,6 +35,20 @@ public class HistoricTaskInstanceResource extends SecuredResource {
     }
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
             .createHistoricTaskInstanceResponse(this, getHistoricTaskInstanceFromRequest());
+  }
+  
+  @Delete
+  public void deleteTaskInstance() {
+    if(!authenticate()) {
+      return;
+    }
+    
+    String taskId = getAttribute("taskId");
+    if (taskId == null) {
+      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
+    }
+    
+    ActivitiUtil.getHistoryService().deleteHistoricTaskInstance(taskId);
   }
   
   protected HistoricTaskInstance getHistoricTaskInstanceFromRequest() {

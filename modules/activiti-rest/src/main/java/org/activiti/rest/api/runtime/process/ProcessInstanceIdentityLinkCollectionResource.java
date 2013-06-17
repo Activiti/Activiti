@@ -31,7 +31,7 @@ import org.restlet.resource.Post;
 /**
  * @author Frederik Heremans
  */
-public class ProcessInstanceIdentityLinkCollectionResource extends ProcessInstanceBaseResource {
+public class ProcessInstanceIdentityLinkCollectionResource extends BaseProcessInstanceResource {
 
   @Get
   public List<RestIdentityLink> getIdentityLinks() {
