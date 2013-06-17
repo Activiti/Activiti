@@ -13,7 +13,7 @@
 		<userTask id="theTask">
 		  <potentialOwner>
 		    <resourceAssignmentExpression>
-		      <formalExpression>user(kermit), group(Sales)</formalExpression>
+		      <formalExpression>user(kermit), group(sales)</formalExpression>
 		    </resourceAssignmentExpression>
 		  </potentialOwner>
 		</userTask>
