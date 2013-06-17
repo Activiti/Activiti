@@ -21,6 +21,7 @@ import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Post;
 
@@ -68,5 +69,10 @@ public class StartProcessInstanceResource extends SecuredResource {
       }
       throw new ActivitiException("Failed to retrieve the process definition parameters", e);
     }
+    
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

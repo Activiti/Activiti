@@ -19,6 +19,7 @@ import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.data.CacheDirective;
 import org.restlet.data.MediaType;
+import org.restlet.data.Status;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
 
@@ -49,6 +50,10 @@ public class LegacyUserPictureResource extends SecuredResource {
     getResponse().getCacheDirectives().add(CacheDirective.maxAge(28800));
     
     return output;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 
 }

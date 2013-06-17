@@ -24,6 +24,7 @@ import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 
 /**
@@ -86,5 +87,9 @@ public class JobsResource extends SecuredResource {
     
     DataResponse response = new JobsPaginateList().paginateList(getQuery(), jobQuery, "id", properties);
     return response;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

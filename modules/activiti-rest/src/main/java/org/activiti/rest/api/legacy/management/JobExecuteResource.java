@@ -15,6 +15,7 @@ package org.activiti.rest.api.legacy.management;
 
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Put;
 
@@ -29,5 +30,9 @@ public class JobExecuteResource extends SecuredResource {
     
     String jobId = (String) getRequest().getAttributes().get("jobId");
     ActivitiUtil.getManagementService().executeJob(jobId);
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

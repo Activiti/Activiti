@@ -21,6 +21,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.rest.api.ActivitiUtil;
+import org.restlet.data.Status;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
@@ -75,6 +76,10 @@ public class LegacyLoginResource extends ServerResource {
       }
       throw new ActivitiException(message);
     }
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 
 }

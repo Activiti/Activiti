@@ -27,6 +27,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.restlet.data.MediaType;
+import org.restlet.data.Status;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
 
@@ -63,5 +64,9 @@ public class ProcessInstanceDiagramResource extends SecuredResource {
     } else {
       throw new ActivitiException("Process instance with id " + processInstanceId + " has no graphic description");
     }
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

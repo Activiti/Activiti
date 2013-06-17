@@ -24,6 +24,7 @@ import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.api.legacy.LegacyTasksPaginateList;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 
 public class ProcessInstanceTaskResource extends SecuredResource {
@@ -57,4 +58,8 @@ public class ProcessInstanceTaskResource extends SecuredResource {
 		DataResponse dataResponse = new LegacyTasksPaginateList().paginateList(getQuery(), taskQuery, "id", properties);
 		return dataResponse;
 	}
+	
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
+  }
 }

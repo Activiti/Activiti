@@ -25,6 +25,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 
 /**
@@ -73,6 +74,10 @@ public class LegacyUserSearchResource extends SecuredResource {
     response.setData(userList);
     
     return response;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
   
   protected class UserResponseComparable implements Comparator<LegacyUserInfo>{

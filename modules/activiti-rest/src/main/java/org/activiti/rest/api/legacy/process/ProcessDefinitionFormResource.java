@@ -19,6 +19,7 @@ import java.io.InputStream;
 import org.activiti.engine.ActivitiException;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
 
@@ -50,5 +51,9 @@ public class ProcessDefinitionFormResource extends SecuredResource {
     } else {
       throw new ActivitiException("The form for process definition '" + processDefinitionId + "' cannot be rendered using the rest api.");
     }
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

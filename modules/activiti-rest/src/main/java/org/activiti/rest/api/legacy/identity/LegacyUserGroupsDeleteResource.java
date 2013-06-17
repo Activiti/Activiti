@@ -56,4 +56,8 @@ public class LegacyUserGroupsDeleteResource extends SecuredResource {
       identityService.deleteMembership(userId, groupId);
     return new LegacyStateResponse().setSuccess(true);
   }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
+  }
 }

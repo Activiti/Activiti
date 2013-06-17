@@ -27,6 +27,7 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 
@@ -88,6 +89,10 @@ public class LegacyUserGroupsResource extends SecuredResource {
         identityService.createMembership(userId, groupId);
     }
     return new LegacyStateResponse().setSuccess(true);
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 
 }

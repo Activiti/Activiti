@@ -26,6 +26,7 @@ import org.activiti.rest.api.SecuredResource;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 
 /**
@@ -97,5 +98,9 @@ public class LegacyTableDataResource extends SecuredResource {
     responseJSON.put("data", tableArray);
     
     return responseJSON;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

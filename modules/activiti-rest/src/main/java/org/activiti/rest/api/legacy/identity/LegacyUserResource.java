@@ -17,6 +17,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 
 /**
@@ -35,6 +36,10 @@ public class LegacyUserResource extends SecuredResource {
     User user = ActivitiUtil.getIdentityService().createUserQuery().userId(userId).singleResult();
     LegacyUserInfo response = new LegacyUserInfo(user);
     return response;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 
 }

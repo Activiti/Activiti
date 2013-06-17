@@ -9,10 +9,34 @@
     <section>
       <title>Installation and Authentication</title>
       
-      <para>Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. By default the Activiti Engine will connect to an in-memory H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).</para>
-      <para>All REST-resources (except for the Login-resource) require a valid Activiti-user to be authenticated. Basic HTTP access authentication is used, so you should always include a <literal>Authorization: Basic ...==</literal> HTTP-header when performing requests or include the username and password in the request-url (eg. <literal>http://username:password@localhost...</literal>).
+      <para>Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. However, it can also be used in another web-application by including the servlet and it's mapping in your application and add all activiti-rest dependencies to the classpath.</para>
+      
+      
+      <para>By default the Activiti Engine will connect to an in-memory H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).</para>
+      <para>All REST-resources require a valid Activiti-user to be authenticated by default. Basic HTTP access authentication is used, so you should always include a <literal>Authorization: Basic ...==</literal> HTTP-header when performing requests or include the username and password in the request-url (eg. <literal>http://username:password@localhost...</literal>).
       </para>
       <para><emphasis role="bold">It's recommended to use Basic Authentication in combination with HTTPS.</emphasis></para>
+      <para>It's possible to remove authentication from certain resources or adding additional authorisation on top of being an authenticated user (eg. being part of group X allows a user to execute request with URL Y). 
+      This can be achieved by using an implementation of <literal>org.activiti.rest.filter.RestAuthenticator</literal> which has 2 methods:
+      <itemizedlist>
+        <listitem><para><emphasis><literal>boolean requestRequiresAuthentication(Request request)</literal></emphasis>: Called before a request is checked for authentication (valid username and password is passed in header). If this method returns true, the method needs authentication. If false is returned, the request will be done regardless of the request being authenticated. If false is returned, <literal>isRequestAuthorized</literal> will not be called either for this request.</para></listitem>
+        <listitem><para><emphasis><literal>boolean isRequestAuthorized(Request request)</literal></emphasis>: Called after a user is successfully authenticated against the Activiti identity-management but before the request is actually executed. Can be used to check if a certain request is valid for the authenticated user. If true is returned, the request is considered authorised and is executed. When false is returned, the request is not executed and the client gets an appropriate error.</para></listitem>
+      </itemizedlist>
+      </para>
+      <para>The custom RestAuthenticator should be set on the <literal>org.activiti.rest.application.ActivitiRestServicesApplication</literal>that is used in the RestletServlet. 
+      The easiest way for this to create a subclass of the <literal>ActivitiRestServicesApplication</literal> and use the custom implementation classname in the servlet-mapping:</para>
+      
+      <programlisting>
+<![CDATA[   <!-- Restlet adapter -->  
+  <servlet>  
+    <servlet-name>RestletServlet</servlet-name>  
+    <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+    <init-param>
+      <!-- Application class name -->
+      <param-name>org.restlet.application</param-name>
+      <param-value>com.my.company.CustomActivitiRestServicesApplication</param-value>
+    </init-param>
+  </servlet>]]></programlisting>
     </section>
     
      <section>
@@ -33,7 +57,7 @@
             </row>
             <row>
               <entry><literal>POST</literal></entry>
-              <entry>Create a new resource.</entry>
+              <entry>Create a new resource. Also used for executing resource-queries which have a too complex request-structure to fit in the query-URL of a GET-request.</entry>
             </row>
             <row>
               <entry><literal>PUT</literal></entry>
@@ -86,7 +110,7 @@
             </row>
             <row>
               <entry><literal>409 - Conflict</literal></entry>
-              <entry>The operation failed. The operation causes an update of a resource that has been updated by another operation, which makes the update no longer valid.</entry>
+              <entry>The operation failed. The operation causes an update of a resource that has been updated by another operation, which makes the update no longer valid. Can also indicate a resource that is being created in a collection where a resource with that identifier already exists.</entry>
             </row>
             <row>
               <entry><literal>415 - Unsupported Media Type</literal></entry>
@@ -124,7 +148,7 @@
       </section>
       
       <section>
-        <title>URL query parameters</title>
+        <title>Rest URL query parameters</title>
         <para>
             Parameters added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?name=Deployment</literal>) can have the folowing types and are
             mentioned in the corresponding REST-API documentation:
@@ -503,7 +527,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>REST Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -543,13 +567,13 @@
     </section>
     
     <section>
-      <title>Get a single deployment</title>
+      <title>Get a deployment</title>
         <para>
           <programlisting>GET repository/deployments/{deploymentId}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a deployment - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -572,7 +596,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a deployment - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -618,7 +642,7 @@
         of the file-field passed in. If multiple resources need to be deployed in a single deployment, compress the resources in a zip and make sure the file-name ends with <literal>.bar</literal> or <literal>.zip</literal>.</para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Create a new deployment - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -658,7 +682,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Delete a deployment - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -681,7 +705,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete a deployment - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -710,7 +734,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>List resources in a deployment - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -733,7 +757,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>List resources in a deployment - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -799,13 +823,13 @@
     </para>
   </section>
   <section>
-      <title>Get a single deployment resource</title>
+      <title>Get a deployment resource</title>
         <para>
           <programlisting>GET repository/deployments/{deploymentId}/resources/{resourceId}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a deployment resource - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -834,7 +858,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a deployment resource - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -895,7 +919,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a deployment resource content - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -924,7 +948,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a deployment resource content - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -964,7 +988,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>List of process definitions - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1074,7 +1098,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>List of process definitions - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1137,13 +1161,13 @@
     </para>
     </section>
    <section>
-      <title>Get a single process definition</title>
+      <title>Get a process definition</title>
         <para>
           <programlisting>GET repository/process-definitions/{processDefinitionId}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a process definition - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1166,7 +1190,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a process definition - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1221,7 +1245,7 @@
     </section>
     
     <section>
-      <title>Update category for a single process definition</title>
+      <title>Update category for a process definition</title>
         <para>
           <programlisting>PUT repository/process-definitions/{processDefinitionId}</programlisting>
         </para>
@@ -1234,7 +1258,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Update category for a process definition - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1270,7 +1294,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a process definition resource content - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1306,7 +1330,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a process definition BPMN model - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1329,7 +1353,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a process definition BPMN model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1380,7 +1404,7 @@
   </section>  
  
   <section>
-      <title>Suspend a single process definition</title>
+      <title>Suspend a process definition</title>
         <para>
           <programlisting>PUT repository/process-definitions/{processDefinitionId}</programlisting>
         </para>
@@ -1393,7 +1417,7 @@
   "date" : "2013-04-15T00:42:12Z"
 }</programlisting>
         <table id="processDefinitionActionBodyParameters">
-              <title>JSON Body parameters</title>
+              <title>Suspend a process definition - JSON Body parameters</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1424,7 +1448,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Suspend a process definition - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1454,7 +1478,7 @@
       </para>
  </section>
    <section>
-      <title>Activate a single process definition</title>
+      <title>Activate a process definition</title>
         <para>
           <programlisting>PUT repository/process-definitions/{processDefinitionId}</programlisting>
         </para>
@@ -1471,7 +1495,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Activate a process definition - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1508,7 +1532,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get all candidate starters for a process-definition - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1531,7 +1555,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get all candidate starters for a process-definition - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1578,7 +1602,7 @@
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Add a candidate starter to a process definition - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -1615,7 +1639,7 @@
     </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Add a candidate starter to a process definition - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -1655,7 +1679,7 @@
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Delete a candidate starter from a process definition - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -1690,7 +1714,7 @@
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Delete a candidate starter from a process definition - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -1730,7 +1754,7 @@
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Get a candidate starter from a process definition - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -1765,7 +1789,7 @@
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Get a candidate starter from a process definition - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -1810,7 +1834,7 @@
         </para>
         <para>
             <table>
-              <title>URL query parameters</title>
+              <title>Get a list of models - URL query parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1902,7 +1926,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a list of models - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1961,7 +1985,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a model - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1984,7 +2008,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2044,7 +2068,7 @@
     </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Update a model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2085,7 +2109,7 @@
     </section>
     
     <section>
-      <title>Create a model</title>
+      <title>Update a model - Create a model</title>
         <para>
           <programlisting>POST repository/models</programlisting>
         </para>
@@ -2104,7 +2128,7 @@
     </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Update a model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2147,7 +2171,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Delete a model - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2170,7 +2194,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete a model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2200,7 +2224,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get the editor source for a model - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2223,7 +2247,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get the editor source for a model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2257,7 +2281,7 @@
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Set the editor source for a model - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -2284,7 +2308,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Set the editor source for a model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2318,7 +2342,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get the extra editor source for a model - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2341,7 +2365,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get the extra editor source for a model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2375,7 +2399,7 @@
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Set the extra editor source for a model - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -2402,7 +2426,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Set the extra editor source for a model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2441,7 +2465,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2464,7 +2488,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2506,7 +2530,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Delete a process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2529,7 +2553,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete a process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2559,7 +2583,7 @@
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Activate or suspend a process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2596,7 +2620,7 @@
     </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Activate or suspend a process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2686,7 +2710,7 @@
     </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Start a process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2728,7 +2752,7 @@
         </para>
         <para>
             <table>
-              <title>URL query parameters</title>
+              <title>List of process instances - URL query parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2814,7 +2838,7 @@
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>List of process instances - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2889,7 +2913,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
     <para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Query process instances - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2942,7 +2966,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get diagram for a process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2965,7 +2989,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get diagram for a process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3005,13 +3029,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 </section>
     
      <section>
-      <title>Get a involved people for process instance</title>
+      <title>Get involved people for process instance</title>
         <para>
           <programlisting>GET runtime/process-instances/{processInstanceId}/identitylinks</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get involved people for process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3034,7 +3058,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get involved people for process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3083,7 +3107,7 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Add an involved user to a process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3115,7 +3139,7 @@ Both <literal>userId</literal> and <literal>type</literal> are required.
     </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Add an involved user to a process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3160,7 +3184,7 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Remove an involved user to from process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3195,7 +3219,7 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Remove an involved user to from process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3230,13 +3254,13 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
 </section>
 
  <section>
-      <title>List variables for a process instance</title>
+      <title>List of variables for a process instance</title>
         <para>
           <programlisting>GET runtime/process-instances/{processInstanceId}/variables</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>List of variables for a process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3259,7 +3283,7 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>List of variables for a process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3311,7 +3335,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a variable for a process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3340,7 +3364,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a variable for a process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3389,7 +3413,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
           When using <literal>POST</literal>, all variables that are passed are created. In case one of the variables already exists on the process instance, the request results in an error (409 - CONFLICT). When <literal>PUT</literal> is used,
           unexisting variables are created on the process-instance and existing ones are overridden without any error. 
             <table>
-              <title>URL parameters</title>
+              <title>Create (or update) variables on a process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3426,7 +3450,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Create (or update) variables on a process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3479,7 +3503,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Update a single variable on a process instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3518,7 +3542,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Update a single variable on a process instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3560,7 +3584,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Create a new binary variable on a process-instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3604,7 +3628,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
   "valueUrl" : "http://.../runtime/process-instances/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Create a new binary variable on a process-instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3646,7 +3670,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Update an existing binary variable on a process-instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3690,7 +3714,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
   "valueUrl" : "http://.../runtime/process-instances/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Update an existing binary variable on a process-instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3733,7 +3757,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get an execution - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3756,7 +3780,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get an execution - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3799,7 +3823,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Execute an action on an execution - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3849,7 +3873,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
     </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Execute an action on an execution - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3904,7 +3928,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get active activities in an execution - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3927,7 +3951,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get active activities in an execution - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3965,7 +3989,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
             <table>
-              <title>URL query parameters</title>
+              <title>List of executions - URL query parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4033,7 +4057,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>List of executions - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4128,7 +4152,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
     <para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Query executions - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4186,13 +4210,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
     
     
     <section>
-      <title>List variables for an execution</title>
+      <title>List of variables for an execution</title>
         <para>
           <programlisting>GET runtime/executions/{executionId}/variables?scope={scope}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>List of variables for an execution - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4221,7 +4245,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>List of variables for an execution - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4273,7 +4297,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a variable for an execution - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4308,7 +4332,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a variable for an execution - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4357,7 +4381,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
           When using <literal>POST</literal>, all variables that are passed are created. In case one of the variables already exists on the execution in the requested scope, the request results in an error (409 - CONFLICT). When <literal>PUT</literal> is used,
           unexisting variables are created on the execution and existing ones are overridden without any error. 
             <table>
-              <title>URL parameters</title>
+              <title>Create (or update) variables on an execution - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4395,7 +4419,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Create (or update) variables on an execution - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4442,13 +4466,13 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
   </section>
   
   <section>
-      <title>Update a single variable on an execution</title>
+      <title>Update a variable on an execution</title>
         <para>
           <programlisting>PUT runtime/executions/{executionId}/variables/{variableName}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Update a variable on an execution - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4488,7 +4512,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Update a variable on an execution - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4529,7 +4553,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Create a new binary variable on an execution - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4576,7 +4600,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
   "valueUrl" : "http://.../runtime/executions/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Create a new binary variable on an execution - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4618,7 +4642,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Update an existing binary variable on a process-instance - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4671,7 +4695,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
   "valueUrl" : "http://.../runtime/executions/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Update an existing binary variable on a process-instance - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4706,13 +4730,13 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
   <section>
   <title>Tasks</title>
       <section>
-      <title>Get a single task</title>
+      <title>Get a task</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4735,7 +4759,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4792,7 +4816,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
             <table>
-              <title>URL query parameters</title>
+              <title>List of tasks - URL query parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4980,7 +5004,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>List of tasks - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5071,7 +5095,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Query for tasks - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5147,7 +5171,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
        </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Update a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5218,7 +5242,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
        </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Task actions - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5258,7 +5282,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>>Delete a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5293,7 +5317,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>>Delete a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5321,13 +5345,13 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
   </section>
   
    <section>
-      <title>Get all variables for a single task</title>
+      <title>Get all variables for a task</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/variables?scope={scope}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get all variables for a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5356,7 +5380,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get all variables for a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5403,13 +5427,13 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
   </section>
   
    <section>
-      <title>Get a single variable for a task</title>
+      <title>Get a variable from a task</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/variables/{variableName}?scope={scope}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a variable from a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5444,7 +5468,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get a variable from a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5485,7 +5509,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get the binary data for a variable - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5520,7 +5544,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get the binary data for a variable - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5554,7 +5578,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Create new variables on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5621,7 +5645,7 @@ The request body should be an array containing one or more JSON-objects represen
   }
 ]</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Create new variables on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5658,7 +5682,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Create a new binary variable on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5705,7 +5729,7 @@ The request body should be an array containing one or more JSON-objects represen
   "valueUrl" : "http://.../runtime/tasks/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Create a new binary variable on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5746,7 +5770,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Update an existing variable on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5808,7 +5832,7 @@ The request body should be an array containing one or more JSON-objects represen
   "value" : "Hello my friend"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Update an existing variable on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5841,7 +5865,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Updating a binary variable on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5894,7 +5918,7 @@ The request body should be an array containing one or more JSON-objects represen
   "valueUrl" : "http://.../runtime/tasks/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Updating a binary variable on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5931,7 +5955,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Delete a variable on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5966,7 +5990,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete a variable on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5995,7 +6019,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Delete all local variables on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6018,7 +6042,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete all local variables on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6041,13 +6065,13 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
   </section>
   <section>
-      <title>Get all identity links for a single task</title>
+      <title>Get all identity links for a task</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/identitylinks</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get all identity links for a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6070,7 +6094,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get all identity links for a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6130,7 +6154,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Get all identitylinks for a task for either groups or users - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -6171,7 +6195,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Get all identitylinks for a task for either groups or users - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -6205,13 +6229,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 </section>
     
   <section>
-    <title>Create a single identity link on a task</title>
+    <title>Create an identity link on a task</title>
       <para>
         <programlisting>POST runtime/tasks/{taskId}/identitylinks</programlisting>
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Create an identity link on a task - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -6250,7 +6274,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Create an identity link on a task - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -6285,13 +6309,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     
     
      <section>
-      <title>Delete a single identity link on a task</title>
+      <title>Delete an identity link on a task</title>
          <para>
         <programlisting>DELETE runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}</programlisting>
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Delete an identity link on a task - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -6332,7 +6356,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete an identity link on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6362,7 +6386,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Create a new comment on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6400,7 +6424,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   "author" : "kermit"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Create a new comment on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6433,7 +6457,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get all comments on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6472,7 +6496,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   }
 ]</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get all comments on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6495,13 +6519,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   <section>
-      <title>Get a single comment on a task</title>
+      <title>Get a comment on a task</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/comments/{commentId}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a comment on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6538,7 +6562,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   "author" : "kermit"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get a comment on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6561,13 +6585,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   <section>
-      <title>Delete a single comment on a task</title>
+      <title>Delete a comment on a task</title>
         <para>
           <programlisting>DELETE runtime/tasks/{taskId}/comments/{commentId}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Delete a comment on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6595,7 +6619,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           </table>
         </para>
         <table>
-            <title>Response codes</title>
+            <title>Delete a comment on a task - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -6617,13 +6641,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </table>
   </section>
     <section>
-      <title>Get all events on a task</title>
+      <title>Get all events for a task</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/events</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get all events for a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6662,7 +6686,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
 ]</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get all events for a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6685,13 +6709,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   <section>
-      <title>Get a single event on a task</title>
+      <title>Get an event on a task</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/events/{eventId}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get an event on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6731,7 +6755,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   "userId" : null
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get an event on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6762,7 +6786,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Create a new attachment on a task, containing a link to an external resource - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6809,7 +6833,7 @@ Only the attachment name is required to create a new attachment.
   "contentUrl":null
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Create a new attachment on a task, containing a link to an external resource - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6842,7 +6866,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Create a new attachment on a task, with an attached file - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6893,7 +6917,7 @@ Only the attachment name is required to create a new attachment.
       "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
    }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Create a new attachment on a task, with an attached file - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6926,7 +6950,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get all attachments on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6975,7 +6999,7 @@ Only the attachment name is required to create a new attachment.
   }
 ]</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get all attachments on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6998,13 +7022,13 @@ Only the attachment name is required to create a new attachment.
         </para>
   </section>
   <section>
-      <title>Get a single attachment on a task</title>
+      <title>Get an attachment on a task</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/attachments/{attachmentId}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get an attachment on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -7062,7 +7086,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get an attachment on a task - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -7091,7 +7115,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get the content for an attachment - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -7120,7 +7144,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get the content for an attachment - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -7147,13 +7171,13 @@ Only the attachment name is required to create a new attachment.
     </para>
   </section>
   <section>
-      <title>Delete a single attachment on a task</title>
+      <title>Delete an attachment on a task</title>
         <para>
           <programlisting>DELETE runtime/tasks/{taskId}/attachments/{attachmentId}</programlisting>
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Delete an attachment on a task - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -7181,7 +7205,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
         <table>
-            <title>Response codes</title>
+            <title>Delete an attachment on a task - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -7206,13 +7230,13 @@ Only the attachment name is required to create a new attachment.
 <section>
   <title>History</title>
   <section>
-    <title>Get a single historic process instance</title>
+    <title>Get a historic process instance</title>
     <para>
       <programlisting>GET history/historic-process-instances/{processInstanceId}</programlisting>
     </para>
     <para>
       <table>
-          <title>Response codes</title>
+          <title>Get a historic process instance - Response codes</title>
           <tgroup cols='2'>
             <thead>
               <row>
@@ -7264,13 +7288,13 @@ Only the attachment name is required to create a new attachment.
       </para>
     </section>
     <section id="restHistoricProcessInstancesGet">
-    <title>Get historic process instances</title>
+    <title>List of historic process instances</title>
       <para>
         <programlisting>GET history/historic-process-instances</programlisting>
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>List of historic process instances - URL parameters</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -7374,7 +7398,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>List of historic process instances - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -7459,7 +7483,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Query for historic process instances - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -7596,7 +7620,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Get the binary data for a historic process instance variable - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -7629,7 +7653,7 @@ Only the attachment name is required to create a new attachment.
     </para>
     <para>
       <table>
-          <title>Response codes</title>
+          <title>Get a single historic task instance - Response codes</title>
           <tgroup cols='2'>
             <thead>
               <row>
@@ -7687,7 +7711,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Get historic task instances - URL parameters</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -7881,7 +7905,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Get historic task instances - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -7960,7 +7984,7 @@ Only the attachment name is required to create a new attachment.
         <programlisting>POST query/historic-task-instances</programlisting>
       </para>
       <para>
-        <emphasis role="bold">Request body:</emphasis>
+        <emphasis role="bold">Query for historic task instances - Request body:</emphasis>
         <programlisting>
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
@@ -7982,7 +8006,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Query for historic task instances - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8135,7 +8159,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Get the binary data for a historic task instance variable - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8168,7 +8192,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Get historic activity instances - URL parameters</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -8242,7 +8266,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Get historic activity instances - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8311,7 +8335,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Query for historic activity instances - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8364,13 +8388,13 @@ Only the attachment name is required to create a new attachment.
       </para>
     </section>
     <section id="restHistoricVariableInstancesGet">
-      <title>Get historic variable instances</title>
+      <title>List of historic variable instances</title>
       <para>
         <programlisting>GET history/historic-variable-instances</programlisting>
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>List of historic variable instances - URL parameters</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -8420,7 +8444,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>List of historic variable instances - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8494,7 +8518,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Query for historic variable instances - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8547,7 +8571,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Get the binary data for a historic task instance variable - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8580,7 +8604,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Get historic detail - URL parameters</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -8642,7 +8666,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Get historic detail - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8697,7 +8721,7 @@ Only the attachment name is required to create a new attachment.
       </para>
     </section>
     <section>
-      <title>Query for historic detail</title>
+      <title>Query for historic details</title>
       <para>
         <programlisting>POST query/historic-detail</programlisting>
       </para>
@@ -8713,7 +8737,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Query for historic details - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8774,7 +8798,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Get the binary data for a historic detail variable - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8810,7 +8834,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Get form data - URL parameters</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -8839,7 +8863,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Get form data - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8938,7 +8962,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>Submit task form data - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8983,7 +9007,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <table>
-            <title>Response codes</title>
+            <title>List of tables - Response codes</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -9028,7 +9052,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a single table - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9058,7 +9082,7 @@ Only the attachment name is required to create a new attachment.
       "count":60
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get a single table - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9087,7 +9111,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get column info for a single table - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9129,7 +9153,7 @@ Only the attachment name is required to create a new attachment.
    ]
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get column info for a single table - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9159,7 +9183,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get row data for a single table - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9182,7 +9206,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL query parameters</title>
+              <title>Get row data for a single table - URL query parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9246,7 +9270,7 @@ Only the attachment name is required to create a new attachment.
  
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get row data for a single table - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9291,7 +9315,7 @@ Only the attachment name is required to create a new attachment.
    "schema.version":"5.13"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get engine properties - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9327,7 +9351,7 @@ Only the attachment name is required to create a new attachment.
    "exception":null
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get engine info - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9357,7 +9381,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a single job - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9395,7 +9419,7 @@ Only the attachment name is required to create a new attachment.
    "dueDate":"2013-06-04T22:05:05.474+0000"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get a single job - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9425,7 +9449,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Delete a job - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9448,7 +9472,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete a job - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9483,7 +9507,7 @@ Only the attachment name is required to create a new attachment.
   "action" : "execute"
 }</programlisting>
         <table>
-              <title>JSON Body parameters</title>
+              <title>Execute a single job - JSON Body parameters</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9504,7 +9528,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Execute a single job - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9538,7 +9562,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
         <table>
-              <title>URL parameters</title>
+              <title>Get the exception stacktrace for a job - URL parameters</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9559,7 +9583,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Get the exception stacktrace for a job - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9589,7 +9613,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
         <table>
-              <title>URL query parameters</title>
+              <title>Get a list of jobs - URL query parameters</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9699,7 +9723,7 @@ Only the attachment name is required to create a new attachment.
    "size":2
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get a list of jobs - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9734,7 +9758,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a single user - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9766,7 +9790,7 @@ Only the attachment name is required to create a new attachment.
    "email":"no-reply@activiti.org"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get a single user - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9796,7 +9820,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
         <table>
-              <title>URL query parameters</title>
+              <title>Get a list of users - URL query parameters</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9897,7 +9921,7 @@ Only the attachment name is required to create a new attachment.
    "size":3
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get a list of users - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9933,7 +9957,7 @@ Only the attachment name is required to create a new attachment.
        </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Update a user - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9980,7 +10004,7 @@ Only the attachment name is required to create a new attachment.
        </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Create a user - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10013,7 +10037,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Delete a user - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10036,7 +10060,7 @@ Only the attachment name is required to create a new attachment.
       </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete a user - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10065,7 +10089,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Get a user's picture - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10090,7 +10114,7 @@ Only the attachment name is required to create a new attachment.
           <emphasis role="bold">Response Body:</emphasis>
           The response body contains the raw picture data, representing the user's picture. The Content-type of the response corresponds to the mimeType that was set when creating the picture.
           <table>
-              <title>Response codes</title>
+              <title>Get a user's picture - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10120,7 +10144,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Updating a user's picture - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10152,7 +10176,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Updating a user's picture - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10182,7 +10206,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>List a user's info - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10217,7 +10241,7 @@ Only the attachment name is required to create a new attachment.
    }
 ]</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>List a user's info - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10247,7 +10271,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Get a user's info - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10283,7 +10307,7 @@ Only the attachment name is required to create a new attachment.
    "url":"http://localhost:8182/identity/users/testuser/info/key1"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get a user's info - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10313,7 +10337,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Update a user's info - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10356,7 +10380,7 @@ Only the attachment name is required to create a new attachment.
    "url":"http://localhost:8182/identity/users/testuser/info/key1"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Update a user's info - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10390,7 +10414,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Create a new user's info entry - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10428,7 +10452,7 @@ Only the attachment name is required to create a new attachment.
    "url":"http://localhost:8182/identity/users/testuser/info/key1"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Create a new user's info entry - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10466,7 +10490,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Delete a user's info - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10495,7 +10519,7 @@ Only the attachment name is required to create a new attachment.
       </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete a user's info - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10528,7 +10552,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>URL parameters</title>
+              <title>Get a single group - URL parameters</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -10559,7 +10583,7 @@ Only the attachment name is required to create a new attachment.
    "type":"Test type"
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get a single group - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10589,7 +10613,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
         <table>
-              <title>URL query parameters</title>
+              <title>Get a list of groups - URL query parameters</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10662,7 +10686,7 @@ Only the attachment name is required to create a new attachment.
    "size":3
 }</programlisting>
           <table>
-              <title>Response codes</title>
+              <title>Get a list of groups - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10697,7 +10721,7 @@ Only the attachment name is required to create a new attachment.
        </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Update a group - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10743,7 +10767,7 @@ Only the attachment name is required to create a new attachment.
        </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Create a group - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10776,7 +10800,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Delete a group - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10799,7 +10823,7 @@ Only the attachment name is required to create a new attachment.
       </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete a group - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10832,7 +10856,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Add a member to a group - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10862,7 +10886,7 @@ Only the attachment name is required to create a new attachment.
        </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Add a member to a group - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10908,7 +10932,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
           <table>
-            <title>URL parameters</title>
+            <title>Delete a member from a group - URL parameters</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10937,7 +10961,7 @@ Only the attachment name is required to create a new attachment.
       </para>
         <para>
           <table>
-              <title>Response codes</title>
+              <title>Delete a member from a group - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10975,7 +10999,7 @@ Only the attachment name is required to create a new attachment.
   <section>
 
     <title>Legacy REST - General Usage</title>
-
+    <para><emphasis role="bold">The folowing section contains documentation of the Legacy REST-api, which has been deprecated since the 5.13 release. The REST-urls will not be removed in the future but will not be maintained. Any future additions and improvements will be done to the new REST API.</emphasis></para>
     <para>
       Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat.
       By default the Activiti Engine will connect to a standalone H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder.
