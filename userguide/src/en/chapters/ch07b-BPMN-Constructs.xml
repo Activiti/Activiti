@@ -1457,7 +1457,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		    	A compensation boundary event has a different activation policy from other boundary events. Other boundary events 
 		    	like for instance the signal boundary event are activated when the activity they are attached to is started. 
 		    	When the activity is left, they are deactivated and the corresponding event subscription is cancelled. 
-		    	The compensation boundary event is different. The compensation boundary is activated when the activity is attached
+		    	The compensation boundary event is different. The compensation boundary is activated when the activity it is attached
 		    	to <emphasis role="bold">completes successfully</emphasis>. At this point, the corresponding subscription to 
 		    	compensation events is created. The subscription is removed either when a compensation event is triggered
 		    	or when the corresponding process instance ends. From this, it follows: 
