@@ -205,7 +205,7 @@
       <section id="restPagingAndSort">
         <title>Paging and sorting</title>
         <para>
-            Paging and order parameters can be added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?sort=name&start=3&size=10&order=desc</literal>).
+            Paging and order parameters can be added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?sort=name</literal>).
             <table>
               <title>Variable query JSON parameters</title>
               <tgroup cols="2">
@@ -614,7 +614,8 @@
         <para>
           <emphasis role="bold">Request body:</emphasis>
         </para>
-        <para>The request should body should contain data of type <emphasis>multipart/form-data</emphasis>. There should be only exactly file in the request, any additional files will be ignored.</para>
+        <para>The request should body should contain data of type <emphasis>multipart/form-data</emphasis>. There should be only exactly file in the request, any additional files will be ignored. The deployment name is the name
+        of the file-field passed in. If multiple resources need to be deployed in a single deployment, compress the resources in a zip and make sure the file-name ends with <literal>.bar</literal> or <literal>.zip</literal>.</para>
         <para>
           <table>
               <title>Response codes</title>
@@ -2720,7 +2721,7 @@
     </para>
 </section>
 
-<section id="restProcessinstancesGet">
+<section id="restProcessInstancesGet">
       <title>List of process instances</title>
         <para>
           <programlisting>GET runtime/process-instances</programlisting>
@@ -2927,6 +2928,75 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 }</programlisting>
     </para>
     </section>
+    
+    <section>
+      <title>Get diagram for a process instance</title>
+        <para>
+          <programlisting>GET runtime/process-instances/{processInstanceId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to get the diagram for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <table>
+              <title>Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process instance was found and the diagram was returned.</entry>
+                  </row>
+                   <row>
+                    <entry>400</entry>
+                    <entry>Indicates the requested process instance was not found but the process doesn't contain any graphical information (BPMN:DI) and no diagram can be created.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested process instance was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+    <para>
+       <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{
+   "id":"7",
+   "url":"http://localhost:8182/runtime/process-instances/7",
+   "businessKey":"myBusinessKey",
+   "suspended":false,
+   "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
+   "activityId":"processTask"
+}</programlisting>
+    </para>
+</section>
     
      <section>
       <title>Get a involved people for process instance</title>

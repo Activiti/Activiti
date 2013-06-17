@@ -73,6 +73,7 @@ public final class RestUrls {
   public static final String SEGMENT_MODEL_RESOURCE = "models";
   public static final String SEGMENT_SOURCE = "source";
   public static final String SEGMENT_SOURCE_EXTRA = "source-extra";
+  public static final String SEGMENT_DIAGRAM = "diagram";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -276,6 +277,11 @@ public final class RestUrls {
    * URL template for a single process instance: <i>runtime/process-instances/{0:processInstanceId}</i>
    */
   public static final String[] URL_PROCESS_INSTANCE = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for the diagram for a single process instance: <i>runtime/process-instances/{0:processInstanceId}/diagram</i>
+   */
+  public static final String[] URL_PROCESS_INSTANCE_DIAGRAM = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_DIAGRAM};
   
   /**
    * URL template for process instance variable collection: <i>runtime/process-instances/{0:processInstanceId}/variables</i>

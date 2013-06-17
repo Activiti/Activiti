@@ -162,7 +162,6 @@ public class RestResponseFactory {
     String mediaTypeString = (mediaType != null) ? mediaType.toString() : null;
     
     // Determine type
-    // TODO: do based on the returned resource-POJO from the API once ready instead of doing it here
     DeploymentResourceType type = DeploymentResourceType.RESOURCE;
     for(String suffix : BpmnDeployer.BPMN_RESOURCE_SUFFIXES) {
       if(resourceId.endsWith(suffix)) {
@@ -186,7 +185,7 @@ public class RestResponseFactory {
     response.setStartFormDefined(processDefinition.hasStartFormKey());
     
     // Check if graphical notation defined
-    // TODO: this method does an additional check to see if the process-definition exists which causes an additional query on top
+    // This method does an additional check to see if the process-definition exists which causes an additional query on top
     // of the one we already did to retrieve the processdefinition in the first place.
     ProcessDefinition deployedDefinition = ActivitiUtil.getRepositoryService().getProcessDefinition(processDefinition.getId());
     response.setGraphicalNotationDefined(((ProcessDefinitionEntity) deployedDefinition).isGraphicalNotationDefined());

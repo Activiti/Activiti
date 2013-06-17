@@ -21,6 +21,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.MediaType;
 import org.restlet.representation.InputRepresentation;
 
@@ -49,18 +50,8 @@ public class BaseDeploymentResourceDataResource extends SecuredResource {
     if (resourceList.contains(resourceId)) {
       final InputStream resourceStream = ActivitiUtil.getRepositoryService().getResourceAsStream(deploymentId, resourceId);
 
-      // TODO: Externalize mime-type-mappings?
-      MediaType mediaType = null;
-      String lowerResourceName = resourceId.toLowerCase();
-      if (lowerResourceName.endsWith("png")) {
-        mediaType = MediaType.IMAGE_PNG;
-
-      } else if (lowerResourceName.endsWith("xml") || lowerResourceName.endsWith("bpmn")) {
-        mediaType = MediaType.TEXT_XML;
-
-      } else {
-        mediaType = MediaType.APPLICATION_ALL;
-      }
+      MediaType mediaType = getApplication(ActivitiRestServicesApplication.class).getMediaTypeResolver()
+              .resolveMediaType(resourceId);
 
       return new InputRepresentation(resourceStream, mediaType);
     } else {

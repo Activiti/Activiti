@@ -35,7 +35,7 @@ import org.restlet.data.Form;
 /**
  * @author Frederik Heremans
  */
-public class ProcessInstanceBaseResource extends SecuredResource {
+public class BaseProcessInstanceResource extends SecuredResource {
 
   private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
 
