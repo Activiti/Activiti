@@ -7435,6 +7435,79 @@ Only the attachment name is required to create a new attachment.
       </para>
     </section>
     <section>
+      <title>Delete a historic process instance</title>
+      <para>
+        <programlisting>DELETE history/historic-process-instances/{processInstanceId}</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates that the historic process instance was deleted.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates that the historic process instance could not be found.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+    </section>
+    <section>
+      <title>Get the identity links of a historic process instance</title>
+      <para>
+        <programlisting>GET history/historic-process-instance/{processInstanceId}/identitylinks</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates request was successful and the identity links are returned</entry>
+                </row>
+                 <row>
+                  <entry>404</entry>
+                  <entry>Indicates the process instance could not be found.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+[
+ {
+  "type" : "participant",
+  "userId" : "kermit",
+  "groupId" : null,
+  "taskId" : null,
+  "taskUrl" : null,
+  "processInstanceId" : "5",
+  "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/5"
+ }
+]</programlisting>
+      </para>
+    </section>
+    <section>
       <title>Get the binary data for a historic process instance variable</title>
       <para>
         <programlisting>GET history/historic-process-instances/{processInstanceId}/variables/{variableName}/data</programlisting>
@@ -7898,6 +7971,79 @@ Only the attachment name is required to create a new attachment.
   "order": "asc",
   "size": 1
 }</programlisting>
+      </para>
+    </section>
+    <section>
+      <title>Delete a historic task instance</title>
+      <para>
+        <programlisting>DELETE history/historic-task-instances/{taskId}</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates that the historic task instance was deleted.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates that the historic task instance could not be found.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+    </section>
+    <section>
+      <title>Get the identity links of a historic task instance</title>
+      <para>
+        <programlisting>GET history/historic-task-instance/{taskId}/identitylinks</programlisting>
+      </para>
+      <para>
+        <table>
+            <title>Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>200</entry>
+                  <entry>Indicates request was successful and the identity links are returned</entry>
+                </row>
+                 <row>
+                  <entry>404</entry>
+                  <entry>Indicates the task instance could not be found.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+      </para>
+      <para>
+        <emphasis role="bold">Success response body:</emphasis>
+          <programlisting>
+[
+ {
+  "type" : "assignee",
+  "userId" : "kermit",
+  "groupId" : null,
+  "taskId" : "6",
+  "taskUrl" : "http://localhost:8182/history/historic-task-instances/5",
+  "processInstanceId" : null,
+  "processInstanceUrl" : null
+ }
+]</programlisting>
       </para>
     </section>
     <section>
