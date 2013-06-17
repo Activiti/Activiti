@@ -318,6 +318,11 @@ public final class RestUrls {
   public static final String[] URL_HISTORIC_PROCESS_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE};
   
   /**
+   * URL template for historic process instance identity links: <i>history/historic-process-instances/{0:processInstanceId}/identitylinks</i>
+   */
+  public static final String[] URL_HISTORIC_PROCESS_INSTANCE_IDENTITY_LINKS = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_IDENTITYLINKS};
+  
+  /**
    * URL template for a single historic task instance: <i>history/historic-process-instances/{0:processInstanceId}/variables/{1:variableName}</i>
    */
   public static final String[] URL_HISTORIC_PROCESS_INSTANCE_VARIABLE_DATA = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
@@ -331,6 +336,11 @@ public final class RestUrls {
    * URL template for historic task instance query: <i>history/historic-task-instances</i>
    */
   public static final String[] URL_HISTORIC_TASK_INSTANCES = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE};
+  
+  /**
+   * URL template for historic task instance identity links: <i>history/historic-task-instances/{0:taskId}/identitylinks</i>
+   */
+  public static final String[] URL_HISTORIC_TASK_INSTANCE_IDENTITY_LINKS = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_TASK_INSTANCE_RESOURCE, "{0}", SEGMENT_IDENTITYLINKS};
   
   /**
    * URL template for a single historic task instance: <i>history/historic-task-instances/{0:taskId}/variables/{1:variableName}</i>

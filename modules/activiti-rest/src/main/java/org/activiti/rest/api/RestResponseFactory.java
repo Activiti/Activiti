@@ -26,6 +26,7 @@ import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricFormProperty;
+import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
@@ -65,6 +66,7 @@ import org.activiti.rest.api.form.RestEnumFormProperty;
 import org.activiti.rest.api.form.RestFormProperty;
 import org.activiti.rest.api.history.HistoricActivityInstanceResponse;
 import org.activiti.rest.api.history.HistoricDetailResponse;
+import org.activiti.rest.api.history.HistoricIdentityLinkResponse;
 import org.activiti.rest.api.history.HistoricProcessInstanceResponse;
 import org.activiti.rest.api.history.HistoricTaskInstanceResponse;
 import org.activiti.rest.api.history.HistoricVariableInstanceResponse;
@@ -636,6 +638,22 @@ public class RestResponseFactory {
       result.setRevision(variableUpdate.getRevision());
       result.setVariable(createRestVariable(securedResource, variableUpdate.getVariableName(), variableUpdate.getValue(), 
           null, detail.getId(), VARIABLE_HISTORY_DETAIL, false));
+    }
+    return result;
+  }
+  
+  public HistoricIdentityLinkResponse createHistoricIdentityLinkResponse(SecuredResource securedResource, HistoricIdentityLink identityLink) {
+    HistoricIdentityLinkResponse result = new HistoricIdentityLinkResponse();
+    result.setType(identityLink.getType());
+    result.setUserId(identityLink.getUserId());
+    result.setGroupId(identityLink.getGroupId());
+    result.setTaskId(identityLink.getTaskId());
+    if (StringUtils.isNotEmpty(identityLink.getTaskId())) {
+      result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, identityLink.getTaskId()));
+    }
+    result.setProcessInstanceId(identityLink.getProcessInstanceId());
+    if (StringUtils.isNotEmpty(identityLink.getProcessInstanceId())) {
+      result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, identityLink.getProcessInstanceId()));
     }
     return result;
   }

@@ -19,6 +19,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
+import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 
 
@@ -34,6 +35,20 @@ public class HistoricProcessInstanceResource extends SecuredResource {
     }
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
             .createHistoricProcessInstanceResponse(this, getHistoricProcessInstanceFromRequest());
+  }
+  
+  @Delete
+  public void deleteProcessInstance() {
+    if(!authenticate()) {
+      return;
+    }
+    
+    String processInstanceId = getAttribute("processInstanceId");
+    if (processInstanceId == null) {
+      throw new ActivitiIllegalArgumentException("The processInstanceId cannot be null");
+    }
+    
+    ActivitiUtil.getHistoryService().deleteHistoricProcessInstance(processInstanceId);
   }
   
   protected HistoricProcessInstance getHistoricProcessInstanceFromRequest() {
