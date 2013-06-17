@@ -43,6 +43,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String processDefinitionKey;
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
+  protected boolean excludeSubprocesses;
   protected String involvedUser;
   protected SuspensionState suspensionState;
   protected boolean includeProcessVariables;
@@ -121,6 +122,11 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   
   public ProcessInstanceQuery subProcessInstanceId(String subProcessInstanceId) {
     this.subProcessInstanceId = subProcessInstanceId;
+    return this;
+  }
+  
+  public ProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses) {
+    this.excludeSubprocesses = excludeSubprocesses;
     return this;
   }
   
@@ -225,7 +231,10 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   }
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
-  }  
+  }
+  public boolean isExcludeSubprocesses() {
+    return excludeSubprocesses;
+  }
   public String getInvolvedUser() {
     return involvedUser;
   }

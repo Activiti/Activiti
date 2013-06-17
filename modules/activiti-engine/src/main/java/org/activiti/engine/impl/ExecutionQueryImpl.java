@@ -43,6 +43,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
+  protected boolean excludeSubprocesses;
   protected SuspensionState suspensionState;
   protected String businessKey;
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
@@ -228,7 +229,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   }
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
-  }  
+  }
+  public boolean isExcludeSubprocesses() {
+    return excludeSubprocesses;
+  }
   public SuspensionState getSuspensionState() {
     return suspensionState;
   }  

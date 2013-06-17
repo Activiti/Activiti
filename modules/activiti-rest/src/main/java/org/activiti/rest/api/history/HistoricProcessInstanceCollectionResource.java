@@ -62,6 +62,10 @@ public class HistoricProcessInstanceCollectionResource extends HistoricProcessIn
       queryRequest.setSuperProcessInstanceId(getQueryParameter("superProcessInstanceId", urlQuery));
     }
     
+    if(getQueryParameter("excludeSubprocesses", urlQuery) != null) {
+      queryRequest.setExcludeSubprocesses(getQueryParameterAsBoolean("excludeSubprocesses", urlQuery));
+    }
+    
     if(getQueryParameter("finishedAfter", urlQuery) != null) {
       queryRequest.setFinishedAfter(getQueryParameterAsDate("finishedAfter", urlQuery));
     }

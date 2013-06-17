@@ -272,6 +272,9 @@
       <if test="subProcessInstanceId != null">
         and RES.ID_ = (select PROC_INST_ID_ from ${prefix}ACT_RU_EXECUTION where ID_ = (select SUPER_EXEC_ from ${prefix}ACT_RU_EXECUTION where ID_ = #{subProcessInstanceId}))
       </if>
+      <if test="excludeSubprocesses">
+        and RES.SUPER_EXEC_ is null
+      </if>
       <if test="suspensionState != null">
       	<if test="suspensionState.stateCode == 1">
         	and (RES.SUSPENSION_STATE_ = 1)

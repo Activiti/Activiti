@@ -2788,6 +2788,12 @@
                     <entry>Only return process instances which have the given sub process-instance id (for processes started as a call-activity).</entry>
                   </row>
                   <row>
+                    <entry>excludeSubprocesses</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>Return only process instances which aren't sub processes.</entry>
+                  </row>
+                  <row>
                     <entry>includeProcessVariables</entry>
                     <entry>No</entry>
                     <entry>Boolean</entry>
@@ -7316,6 +7322,12 @@ Only the attachment name is required to create a new attachment.
                   <entry>No</entry>
                   <entry>String</entry>
                   <entry>An optional parent process id of the historic process instance.</entry>
+                </row>
+                <row>
+                  <entry>excludeSubprocesses</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>Return only historic process instances which aren't sub processes.</entry>
                 </row>
                 <row>
                   <entry>finishedAfter</entry>

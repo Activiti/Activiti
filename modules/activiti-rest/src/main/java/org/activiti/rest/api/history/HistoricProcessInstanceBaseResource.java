@@ -68,6 +68,9 @@ public class HistoricProcessInstanceBaseResource extends SecuredResource {
     if (queryRequest.getSuperProcessInstanceId() != null) {
       query.superProcessInstanceId(queryRequest.getSuperProcessInstanceId());
     }
+    if (queryRequest.getExcludeSubprocesses() != null) {
+      query.excludeSubprocesses(queryRequest.getExcludeSubprocesses());
+    }
     if (queryRequest.getFinishedAfter() != null) {
       query.finishedAfter(queryRequest.getFinishedAfter());
     }

@@ -276,6 +276,9 @@
       <if test="superProcessInstanceId != null">
         and RES.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
       </if>
+      <if test="excludeSubprocesses">
+        and RES.SUPER_PROCESS_INSTANCE_ID_ is null
+      </if>
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
         <if test="queryVariableValue.name != null">
           <!-- Match-all variable-names when name is null -->

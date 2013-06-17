@@ -31,6 +31,7 @@ public class HistoricProcessInstanceQueryRequest {
   private String processDefinitionId;
   private String processDefinitionKey;
   private String superProcessInstanceId;
+  private Boolean excludeSubprocesses;
   private Boolean finished;
   private String involvedUser;
   private Date finishedAfter;
@@ -79,6 +80,14 @@ public class HistoricProcessInstanceQueryRequest {
   
   public void setSuperProcessInstanceId(String superProcessInstanceId) {
     this.superProcessInstanceId = superProcessInstanceId;
+  }
+
+  public Boolean getExcludeSubprocesses() {
+    return excludeSubprocesses;
+  }
+
+  public void setExcludeSubprocesses(Boolean excludeSubprocesses) {
+    this.excludeSubprocesses = excludeSubprocesses;
   }
 
   public Boolean getFinished() {

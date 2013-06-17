@@ -40,6 +40,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected boolean unfinished = false;
   protected String startedBy;
   protected String superProcessInstanceId;
+  protected boolean excludeSubprocesses;
   protected List<String> processKeyNotIn;
   protected Date startedBefore;
   protected Date startedAfter;
@@ -135,8 +136,13 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   
   public HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId) {
-   this.superProcessInstanceId = superProcessInstanceId;
-   return this;
+    this.superProcessInstanceId = superProcessInstanceId;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses) {
+    this.excludeSubprocesses = excludeSubprocesses;
+    return this;
   }
   
   @Override
@@ -231,10 +237,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public String getSuperProcessInstanceId() {
     return superProcessInstanceId;
   }
-  public void setSuperProcessInstanceId(String superProcessInstanceId) {
-    this.superProcessInstanceId = superProcessInstanceId;
+  public boolean isExcludeSubprocesses() {
+    return excludeSubprocesses;
   }
-  
   public List<String> getProcessKeyNotIn() {
     return processKeyNotIn;
   }
@@ -253,7 +258,6 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public String getInvolvedUser() {
     return involvedUser;
   }
- 
   
   // below is deprecated and to be removed in 5.12
   

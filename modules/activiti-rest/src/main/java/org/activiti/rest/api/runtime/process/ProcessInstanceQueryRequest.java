@@ -31,6 +31,7 @@ public class ProcessInstanceQueryRequest {
   private String processDefinitionKey;
   private String superProcessInstanceId;
   private String subProcessInstanceId;
+  private Boolean excludeSubprocesses;
   private String involvedUser;
   private Boolean suspended;
   private Boolean includeProcessVariables;
@@ -84,6 +85,14 @@ public class ProcessInstanceQueryRequest {
     this.subProcessInstanceId = subProcessInstanceId;
   }
   
+  public Boolean getExcludeSubprocesses() {
+    return excludeSubprocesses;
+  }
+
+  public void setExcludeSubprocesses(Boolean excludeSubprocesses) {
+    this.excludeSubprocesses = excludeSubprocesses;
+  }
+
   public String getInvolvedUser() {
     return involvedUser;
   }
