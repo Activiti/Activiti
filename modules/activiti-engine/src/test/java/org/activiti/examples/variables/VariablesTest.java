@@ -122,6 +122,60 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertEquals("a value", newValue);
   }
   
+  
+  // test case for ACT-1082
+  @Deployment(resources = 
+	     {"org/activiti/examples/variables/VariablesTest.testBasicVariableOperations.bpmn20.xml" })
+  public void testChangeVariableType() {
+ 
+    Date now = new Date();
+    List<String> serializable = new ArrayList<String>();
+    serializable.add("one");
+    serializable.add("two");
+    serializable.add("three");
+    byte[] bytes = "somebytes".getBytes();
+
+    // Start process instance with different types of variables
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("longVar", 928374L);
+    variables.put("shortVar", (short) 123);
+    variables.put("integerVar", 1234);
+    variables.put("stringVar", "coca-cola");
+    variables.put("dateVar", now);
+    variables.put("nullVar", null);
+    variables.put("serializableVar", serializable);
+    variables.put("bytesVar", bytes);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
+
+    variables = runtimeService.getVariables(processInstance.getId());
+    assertEquals(928374L, variables.get("longVar"));
+    assertEquals((short) 123, variables.get("shortVar"));
+    assertEquals(1234, variables.get("integerVar"));
+    assertEquals("coca-cola", variables.get("stringVar"));
+    assertEquals(now, variables.get("dateVar"));
+    assertEquals(null, variables.get("nullVar"));
+    assertEquals(serializable, variables.get("serializableVar"));
+    assertTrue(Arrays.equals(bytes, (byte[]) variables.get("bytesVar")));
+    assertEquals(8, variables.size());
+
+    // Change type of serializableVar from serializable to Short
+    Map<String, Object> newVariables = new HashMap<String, Object>();
+    newVariables.put("serializableVar", (short) 222);
+    runtimeService.setVariables(processInstance.getId(), newVariables);
+    variables = runtimeService.getVariables(processInstance.getId());
+    assertEquals((short) 222, variables.get("serializableVar"));
+    
+    // Change type of a  longVar from Long to Short
+    newVariables = new HashMap<String, Object>();
+    newVariables.put("longVar", (short) 123);
+    runtimeService.setVariables(processInstance.getId(), newVariables);
+    variables = runtimeService.getVariables(processInstance.getId());
+    assertEquals((short) 123, variables.get("longVar"));
+    
+
+  }
+  
+  
   // test case for ACT-1428
   @Deployment
   public void testNullVariable() {
