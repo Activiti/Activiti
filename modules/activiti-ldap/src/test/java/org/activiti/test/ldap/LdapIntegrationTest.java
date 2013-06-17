@@ -30,7 +30,7 @@ public class LdapIntegrationTest extends LDAPTestCase {
   public void testCandidateGroupFetchedThroughLdap() {
     runtimeService.startProcessInstanceByKey("testCandidateGroup");
     assertEquals(1, taskService.createTaskQuery().count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("Sales").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("sales").count());
 
     // Pepe is a member of the candidate group and should be able to find the task
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser("pepe").count());
