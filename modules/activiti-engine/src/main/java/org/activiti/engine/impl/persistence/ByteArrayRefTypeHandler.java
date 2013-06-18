@@ -33,21 +33,18 @@ public class ByteArrayRefTypeHandler extends TypeReference<ByteArrayRef> impleme
   @Override
   public ByteArrayRef getResult(ResultSet rs, String columnName) throws SQLException {
     String id = rs.getString(columnName);
-    System.out.println("*******id " + id + " columnName " + columnName);
     return new ByteArrayRef(id);
   }
 
   @Override
   public ByteArrayRef getResult(ResultSet rs, int columnIndex) throws SQLException {
     String id = rs.getString(columnIndex);
-    System.out.println("*******id " + id + " columnIndex " + columnIndex);
     return new ByteArrayRef(id);
   }
 
   @Override
   public ByteArrayRef getResult(CallableStatement cs, int columnIndex) throws SQLException {
     String id = cs.getString(columnIndex);
-    System.out.println("*******id " + id + " columnIndex " + columnIndex);
     return new ByteArrayRef(id);
   }
 

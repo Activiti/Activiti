@@ -106,7 +106,6 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   }
 
   public Object getValue() {
-    System.out.println(this.toString());
     if (!variableType.isCachable() || cachedValue == null) {
       cachedValue = variableType.getValue(this);
     }
