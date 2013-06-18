@@ -49,6 +49,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   protected Object cachedValue;
   protected boolean forcedUpdate;
+  protected boolean deleted = false;
   
   // Default constructor for SQL mapping
   protected VariableInstanceEntity() {
@@ -85,6 +86,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
       .delete(this);
     
     byteArrayRef.delete();
+    deleted = true; 
   }
 
   public Object getPersistentState() {
@@ -112,6 +114,11 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   
   public int getRevisionNext() {
     return revision+1;
+  }
+  
+  
+  public boolean isDeleted() {
+    return deleted;
   }
 
   // lazy initialized relations ///////////////////////////////////////////////
