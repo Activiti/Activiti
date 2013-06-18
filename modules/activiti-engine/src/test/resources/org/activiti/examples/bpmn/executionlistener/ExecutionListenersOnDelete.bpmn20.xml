@@ -1,0 +1,30 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="executionListenersOnCreate">
+  
+    
+    <startEvent id="theStart" />
+    
+    <sequenceFlow sourceRef="theStart" targetRef="firstTask" />
+    
+    
+    <userTask id="firstTask" >
+      <extensionElements>
+      
+        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="delete" >
+             <activiti:field name="parameter" stringValue="Task Delete Event" />
+         </activiti:executionListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow sourceRef="secondTask" targetRef="thirdTask" />
+       
+    <userTask id="thirdTask" />
+    <sequenceFlow sourceRef="thirdTask" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+    
+  </process>
+</definitions>

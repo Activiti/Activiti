@@ -470,6 +470,7 @@
             <enumeration value="start" />
             <enumeration value="end" />
             <enumeration value="take" />
+            <enumeration value="delete" />
           </restriction>
         </simpleType>
       </attribute>
