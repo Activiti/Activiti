@@ -148,7 +148,7 @@ public abstract class ProcessEngines {
   }
 
   private static ProcessEngineInfo initProcessEnginFromResource(URL resourceUrl) {
-    ProcessEngineInfo processEngineInfo = processEngineInfosByResourceUrl.get(resourceUrl);
+    ProcessEngineInfo processEngineInfo = processEngineInfosByResourceUrl.get(resourceUrl.toString());
     // if there is an existing process engine info
     if (processEngineInfo!=null) {
       // remove that process engine from the member fields
