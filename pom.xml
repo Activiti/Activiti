@@ -731,6 +731,7 @@
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
+        <module>modules/activiti-json-converter</module>
         <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
