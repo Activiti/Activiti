@@ -69,7 +69,10 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
   }
   
   public Picture getPicture() {
-    return new Picture(pictureByteArrayRef.getBytes(), pictureByteArrayRef.getName());
+    if(pictureByteArrayRef.getId() != null) {
+      return new Picture(pictureByteArrayRef.getBytes(), pictureByteArrayRef.getName());
+    }
+    return null;
   }
   
   public void setPicture(Picture picture) {
