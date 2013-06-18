@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Tom Baeyens
  */
-public class PvmTestCase extends TestCase {
+public abstract class PvmTestCase extends TestCase {
 
   protected static final String EMPTY_LINE = "                                                                                           ";
 
