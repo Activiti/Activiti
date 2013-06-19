@@ -180,15 +180,15 @@ protected void initDemoProcessDefinitions() {
     if (deploymentList == null || deploymentList.size() == 0) {
       repositoryService.createDeployment()
         .name(deploymentName)
-        .addClasspathResource("org/activiti/rest/demo/process/createTimersProcess.bpmn20.xml")
-        .addClasspathResource("org/activiti/rest/demo/process/oneTaskProcess.bpmn20.xml")
-        .addClasspathResource("org/activiti/rest/demo/process/VacationRequest.bpmn20.xml")
-        .addClasspathResource("org/activiti/rest/demo/process/VacationRequest.png")
-        .addClasspathResource("org/activiti/rest/demo/process/FixSystemFailureProcess.bpmn20.xml")
-        .addClasspathResource("org/activiti/rest/demo/process/FixSystemFailureProcess.png")
-        .addClasspathResource("org/activiti/rest/demo/process/Helpdesk.bpmn20.xml")
-        .addClasspathResource("org/activiti/rest/demo/process/Helpdesk.png")
-        .addClasspathResource("org/activiti/rest/demo/process/reviewSalesLead.bpmn20.xml")
+        .addClasspathResource("createTimersProcess.bpmn20.xml")
+        .addClasspathResource("oneTaskProcess.bpmn20.xml")
+        .addClasspathResource("VacationRequest.bpmn20.xml")
+        .addClasspathResource("VacationRequest.png")
+        .addClasspathResource("FixSystemFailureProcess.bpmn20.xml")
+        .addClasspathResource("FixSystemFailureProcess.png")
+        .addClasspathResource("Helpdesk.bpmn20.xml")
+        .addClasspathResource("Helpdesk.png")
+        .addClasspathResource("reviewSalesLead.bpmn20.xml")
         .deploy();
     }
   }
