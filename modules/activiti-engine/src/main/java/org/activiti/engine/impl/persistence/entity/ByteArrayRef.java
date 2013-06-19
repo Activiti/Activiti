@@ -1,5 +1,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
+import java.io.Serializable;
+
 import org.activiti.engine.impl.context.Context;
 
 /**
@@ -15,7 +17,10 @@ import org.activiti.engine.impl.context.Context;
  * 
  * @author Marcus Klimstra (CGI)
  */
-public final class ByteArrayRef {
+public final class ByteArrayRef implements Serializable {
+  
+  private static final long serialVersionUID = 1L;
+  
   private String id;
   private String name;
   private ByteArrayEntity entity;
