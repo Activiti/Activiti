@@ -225,14 +225,14 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
     // an association may reference elements that are not parsed as activities (like for instance 
     // text annotations so do not throw an exception if sourceActivity or targetActivity are null)
     // However, we make sure they reference 'something':
-    if(sourceActivity == null) {
+    if (sourceActivity == null) {
       //bpmnModel.addProblem("Invalid reference sourceRef '" + association.getSourceRef() + "' of association element ", association.getId());
-    } else if(targetActivity == null) {
+    } else if (targetActivity == null) {
       //bpmnModel.addProblem("Invalid reference targetRef '" + association.getTargetRef() + "' of association element ", association.getId());
     } else {      
-      if(sourceActivity != null && sourceActivity.getProperty("type").equals("compensationBoundaryCatch")) {
+      if (sourceActivity.getProperty("type").equals("compensationBoundaryCatch")) {
         Object isForCompensation = targetActivity.getProperty(PROPERTYNAME_IS_FOR_COMPENSATION);          
-        if(isForCompensation == null || !(Boolean) isForCompensation) {
+        if (isForCompensation == null || !(Boolean) isForCompensation) {
           bpmnModel.addProblem("compensation boundary catch must be connected to element with isForCompensation=true", association);
         } else {            
           ActivityImpl compensatedActivity = sourceActivity.getParentActivity();

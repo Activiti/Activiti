@@ -10,8 +10,6 @@
       <title>Installation and Authentication</title>
       
       <para>Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. However, it can also be used in another web-application by including the servlet and it's mapping in your application and add all activiti-rest dependencies to the classpath.</para>
-      
-      
       <para>By default the Activiti Engine will connect to an in-memory H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).</para>
       <para>All REST-resources require a valid Activiti-user to be authenticated by default. Basic HTTP access authentication is used, so you should always include a <literal>Authorization: Basic ...==</literal> HTTP-header when performing requests or include the username and password in the request-url (eg. <literal>http://username:password@localhost...</literal>).
       </para>
@@ -37,6 +35,14 @@
       <param-value>com.my.company.CustomActivitiRestServicesApplication</param-value>
     </init-param>
   </servlet>]]></programlisting>
+    </section>
+    
+     <section id="restUsageInTomcat">
+      <title>Usage in Tomcat</title>
+      <para>Due to <ulink url="http://tomcat.apache.org/tomcat-7.0-doc/security-howto.html"> default security properties on Tomcat</ulink>, <emphasis role="bold">escaped forward slashes (<literal>%2F</literal> and <literal>%5C</literal>) are not allowed by default (400-result is returned).</emphasis>
+      This may have an impact on the deployment resources and their data-URL, as the URL can potentially contain escaped forward slashes.
+      
+      <emphasis role="bold">When issues are experienced with unexpected 400-results, set the following system-property: <literal>-Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true.</literal></emphasis></para>
     </section>
     
      <section>
@@ -466,6 +472,7 @@
   </section>
   <section>
     <title>Deployment</title>
+    <para><emphasis role="bold">When using tomcat, please read <link linkend="restUsageInTomcat">Usage in Tomcat</link>.</emphasis></para>
      <section>
       <title>List of Deployments</title>
         <para>
@@ -2109,7 +2116,7 @@
     </section>
     
     <section>
-      <title>Update a model - Create a model</title>
+      <title>Create a model</title>
         <para>
           <programlisting>POST repository/models</programlisting>
         </para>
@@ -2128,7 +2135,7 @@
     </para>
         <para>
           <table>
-              <title>Update a model - Response codes</title>
+              <title>Create a model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>

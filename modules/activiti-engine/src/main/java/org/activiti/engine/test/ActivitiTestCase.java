@@ -56,7 +56,7 @@ import org.activiti.engine.impl.util.ClockUtil;
  *  
  * @author Tom Baeyens
  */
-public class ActivitiTestCase extends TestCase {
+public abstract class ActivitiTestCase extends TestCase {
 
   protected String configurationResource = "activiti.cfg.xml";
   protected String deploymentId = null;

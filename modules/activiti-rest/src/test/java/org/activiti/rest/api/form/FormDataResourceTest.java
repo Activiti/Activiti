@@ -226,6 +226,7 @@ public class FormDataResourceTest extends BaseRestTestCase {
     propNode.put("id", "street");
     propNode.put("value", "test");
     propertyArray.add(propNode);
+    client.release();
     client.post(requestNode);
     
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
@@ -252,6 +253,7 @@ public class FormDataResourceTest extends BaseRestTestCase {
     propNode.put("value", "nowhere");
     propertyArray.add(propNode);
     try {
+      client.release();
       client.post(requestNode);
     } catch(Exception e) {
       // expected
@@ -259,6 +261,7 @@ public class FormDataResourceTest extends BaseRestTestCase {
     }
     
     propNode.put("value", "up");
+    client.release();
     client.post(requestNode);
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
@@ -283,6 +286,7 @@ public class FormDataResourceTest extends BaseRestTestCase {
     propNode.put("id", "number");
     propNode.put("value", 123);
     propertyArray.add(propNode);
+    client.release();
     Representation response = client.post(requestNode);
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     JsonNode responseNode = objectMapper.readTree(response.getStream());
