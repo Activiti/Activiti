@@ -35,6 +35,102 @@
 
   <h1>Activiti Release Notes</h1>
   
+  <h3>Release Notes - Activiti - Version 5.13</h3>
+   
+   <h4>Highlights</h4>
+   <ul>
+    <li>Fully refactored REST API. The REST API should now offer the same functionality as the Java API.</li>
+    <li>Out-of-the-box LDAP integration</li>
+    <li>Include process and task variables in the result of the process, historic process, task and historic task queries</li>
+    <li>Lots of fixes</li>
+   </ul>
+   
+   <h4>Bug fixes and various smaller improvements</h4>
+    <p>Check out the <a href="https://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=12091&version=18880">Release notes</a> for more details</p>
+   
+   ** Sub-task
+    * [ACT-1264] - Reintroduce ExportMarshaller invocation
+
+
+   ** Bug
+    * [ACT-1082] - Cannot close Workflow due to duplicate process variables
+    * [ACT-1186] - ActivitiRule services not initialized when using SpringJUnit4ClassRunner together with @ContextConfiguration
+    * [ACT-1231] - Adding index ACT_HI_ACTINST (EXECUTION_ID_, ACT_ID_)
+    * [ACT-1388] - NPE in ExecutionEntity#ensureExecutionsInitialized()
+    * [ACT-1399] - Boundary-event and event-based auditing
+    * [ACT-1426] - Nested multi-instance activities do not work
+    * [ACT-1438] - Target expressions for call activities are not supported
+    * [ACT-1484] - Special character escaping
+    * [ACT-1542] - CommandContext Logs and Re-throws Exceptions
+    * [ACT-1544] - Asynchronous Continuations join exception
+    * [ACT-1578] - Update documentation: sort parameter in REST-API method /process-definitions 
+    * [ACT-1591] - Referential integrity constraint violation on PROC_INST and IDENTITY_LINK
+    * [ACT-1596] - Not generated boundary event in diagram created by RaphaÃƒÂ«l
+    * [ACT-1605] - The execution of many processes at once will cause constraint violations with the ID_ field.
+    * [ACT-1607] - org.activiti.engine.ActivitiIllegalArgumentException: taskId is null when using taskService.addComment with process instance
+    * [ACT-1619] - NullPointerException when no script is given to the script task,leading to process failure
+    * [ACT-1620] - My Instances view fails to generate process diagram
+    * [ACT-1623] - NPE when eventbased gateway is after referenced event
+    * [ACT-1626] - Make not storing variable automatically in scripts the default
+    * [ACT-1632] - Business Rule support global
+    * [ACT-1641] - Process diagram not shown for certain hostnames
+    * [ACT-1649] - Deadlock occured in load test with db2
+    * [ACT-1653] - Deleting candidate users/groups for any user task
+    * [ACT-1654] - Camel integration does not handle exceptions propagated back by Camel DefaultErrorHandler 
+    * [ACT-1655] - Wrong execution order 
+    * [ACT-1656] - Designer puts Task listener class where Execution listener class should be
+    * [ACT-1657] - Wrong execution order of execution-listeners on event-based gateway and service-task
+    * [ACT-1664] - Parsing results in exception when using textannotation on collaboration tag
+    * [ACT-1668] - Auto refresh of task counts after task completion in Explorer
+    * [ACT-1669] - Possible NPE in ActivitiDiagramMatchingStrategy
+    * [ACT-1673] - CamelBehavior throws Exception when using with StrongUuidGenerator
+    * [ACT-1674] - Classloading bug when using ExpressionFactory in OSGI environment
+    * [ACT-1679] - Activiti 5.12.1 not compatiable with Mybatis 3.2.2
+    * [ACT-1685] - In activiti-web-explorer2, when call method "drawCollapsedCallActivity" throw an error "Object#<Object> has no method 'drawCollapsedTask'"
+    * [ACT-1686] - ProcessInstanceQuery.involvedUser() can return duplicate process instances
+    * [ACT-1688] - Add identity-links to history and allow querying history based on involvedUser
+    * [ACT-1690] - NPE when converting to BPMN a model with boundary event that is not attached to a task
+    * [ACT-1698] - Activiti fails to build when default charset is Windows-1252
+    * [ACT-1702] - Setting the databaseTablePrefix not possible directly on the ProcessEngineConfiguration
+    * [ACT-1703] - The "result variable name" attribute of a Java service task is lost when exporting a process
+    * [ACT-1709] - Some fields cannot be set directly on the ProcessEngineConfiguration
+
+
+
+** Improvement
+    * [ACT-1491] - Parsing association, drawing Annotation and connections
+    * [ACT-1496] - Replace JSON.org with GSON dependencies
+    * [ACT-1523] - Always set ProcessDefinitionId available on JobEntity
+    * [ACT-1576] - Rest API improvements for getting tasks
+    * [ACT-1606] - Create a convenience method in TaskService to set a task's due date
+    * [ACT-1616] - Expose activityID in interface Execution (add a public getter for activityID)
+    * [ACT-1634] - FormKey and TargetNameSpace attributes using Activiti Modeler
+    * [ACT-1642] - Deprecated IMAGE datatype under MS SQL Server
+    * [ACT-1672] - Add getKey() to PvmProcessDefinition
+    * [ACT-1704] - Option to exclude subprocesses in ProcessInstancesQuery and HistoricProcessInstanceQuery
+    * [ACT-1705] - Some methods on the {{ProcessEngineConfiguration}} are not supporting the builder pattern
+
+** New Feature
+    * [ACT-432] - Terminate end event
+    * [ACT-1367] - Collection form type
+    * [ACT-1395] - Allow to fetch tasks that are in a candidateGroup and that are already assigned
+    * [ACT-1588] - Native query support paging
+    * [ACT-1598] - Support signal events
+    * [ACT-1599] - Support Message Flow
+    * [ACT-1647] - Enable querying TaskService for Tasks including local variables
+    * [ACT-1652] - Add support for message start events to the REST-API
+    * [ACT-1662] - New methods processDefinitionIds(Set<String> processDefinitionIds) and processDefinitionKeys(Set<String> processDefinitionKeys)
+    * [ACT-1680] - Support for custom ProcessEngine selection in REST
+    * [ACT-1691] - Allow to update process definition category through RepositoryService
+    * [ACT-1696] - Provide out of the box LDAP integration
+    * [ACT-1706] - Add fullNameLike to UserQuery
+
+
+** Task
+    * [ACT-1396] - Bring REST api in sync with Java API
+    * [ACT-1594] - Remove deprecated Task-priority-constants
+    * [ACT-1707] - Remove UserCache from Activiti Explorer
+   
    <h3>Release Notes - Activiti - Version 5.12.1</h3>
    
    <h4>Highlights</h4>
