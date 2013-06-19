@@ -605,7 +605,9 @@ public class RestResponseFactory {
     HistoricVariableInstanceResponse result = new HistoricVariableInstanceResponse();
     result.setId(variableInstance.getId());
     result.setProcessInstanceId(variableInstance.getProcessInstanceId());
-    result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, variableInstance.getProcessInstanceId()));
+    if(variableInstance.getProcessInstanceId() != null) {
+      result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, variableInstance.getProcessInstanceId()));
+    }
     result.setTaskId(variableInstance.getTaskId());
     result.setVariable(createRestVariable(securedResource, variableInstance.getVariableName(), variableInstance.getValue(), 
         null, variableInstance.getId(), VARIABLE_HISTORY_VARINSTANCE, false));
