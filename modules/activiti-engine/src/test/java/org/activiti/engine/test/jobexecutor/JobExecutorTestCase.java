@@ -21,7 +21,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 /**
  * @author Tom Baeyens
  */
-public class JobExecutorTestCase extends PluggableActivitiTestCase {
+public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
 
   protected TweetHandler tweetHandler = new TweetHandler();
 

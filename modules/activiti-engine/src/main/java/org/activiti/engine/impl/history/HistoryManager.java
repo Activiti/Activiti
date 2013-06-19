@@ -492,9 +492,8 @@ public class HistoryManager extends AbstractManager {
    */
   public void recordVariableCreate(VariableInstanceEntity variable) {
     // Historic variables
-    if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceEntity historicVariableInstance = new HistoricVariableInstanceEntity(variable);
-      getDbSqlSession().insert(historicVariableInstance);
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricVariableInstanceEntity.copyAndInsert(variable);
     }
   }
   
@@ -502,18 +501,17 @@ public class HistoryManager extends AbstractManager {
    * Record a variable has been created, if audit history is enabled.
    */
   public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
-    if(isHistoryLevelAtLeast(HistoryLevel.FULL)) {
+    if (isHistoryLevelAtLeast(HistoryLevel.FULL)) {
       
-      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = new HistoricDetailVariableInstanceUpdateEntity(variable);
+      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = 
+          HistoricDetailVariableInstanceUpdateEntity.copyAndInsert(variable);
       
-      if(useActivityId && sourceActivityExecution != null) {
+      if (useActivityId && sourceActivityExecution != null) {
         HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution); 
         if (historicActivityInstance!=null) {
           historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
         }
       }
-      
-     getDbSqlSession().insert(historicVariableUpdate);
     }
   }
   
@@ -521,20 +519,19 @@ public class HistoryManager extends AbstractManager {
    * Record a variable has been updated, if audit history is enabled.
    */
   public void recordVariableUpdate(VariableInstanceEntity variable) {
-    if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricVariableInstanceEntity historicProcessVariable = 
-      getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class, variable.getId());
+          getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable==null) {
-        historicProcessVariable = Context
-                .getCommandContext()
+        historicProcessVariable = Context.getCommandContext()
                 .getHistoricVariableInstanceEntityManager()
                 .findHistoricVariableInstanceByVariableInstanceId(variable.getId());
       }
+      
       if (historicProcessVariable!=null) {
         historicProcessVariable.copyValue(variable);
       } else {
-        historicProcessVariable = new HistoricVariableInstanceEntity(variable);
-        getDbSqlSession().insert(historicProcessVariable);
+        HistoricVariableInstanceEntity.copyAndInsert(variable);
       }
     }
   }

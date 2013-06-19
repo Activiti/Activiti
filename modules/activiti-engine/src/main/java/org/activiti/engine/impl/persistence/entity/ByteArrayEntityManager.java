@@ -17,8 +17,13 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 
 /**
  * @author Joram Barrez
+ * @author Marcus Klimstra (CGI)
  */
 public class ByteArrayEntityManager extends AbstractManager {
+
+  public ByteArrayEntity findById(String byteArrayEntityId) {
+    return getDbSqlSession().selectById(ByteArrayEntity.class, byteArrayEntityId);
+  }
   
   /**
    * Deletes the {@link ByteArrayEntity} with the given id from the database.
@@ -28,6 +33,10 @@ public class ByteArrayEntityManager extends AbstractManager {
    */
   public void deleteByteArrayById(String byteArrayEntityId) {
     getDbSqlSession().delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId);
+  }
+  
+  public void deleteByteArray(ByteArrayEntity byteArray) {
+    getDbSqlSession().delete(byteArray);
   }
 
 }

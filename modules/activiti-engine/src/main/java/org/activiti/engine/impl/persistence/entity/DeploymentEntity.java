@@ -45,6 +45,15 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
    */
   protected Map<Class<?>, List<Object>> deployedArtifacts;
   
+  public Object getPersistentState() {
+    // properties of this entity are immutable
+    // so always the same value is returned
+    // so never will an update be issued for a DeploymentEntity
+    return DeploymentEntity.class;
+  }
+  
+  // lazy loading /////////////////////////////////////////////////////////////
+
   public ResourceEntity getResource(String resourceName) {
     return getResources().get(resourceName);
   }
@@ -56,7 +65,6 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     resources.put(resource.getName(), resource);
   }
 
-  // lazy loading /////////////////////////////////////////////////////////////
   public Map<String, ResourceEntity> getResources() {
     if (resources==null && id!=null) {
       List<ResourceEntity> resourcesList = Context
@@ -71,14 +79,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     return resources;
   }
 
-  public Object getPersistentState() {
-    // properties of this entity are immutable
-    // so always the same value is returned
-    // so never will an update be issued for a DeploymentEntity
-    return DeploymentEntity.class;
-  }
-  
-  // Deployed artifacts manipulation //////////////////////////////////////////
+  // deployed artifacts manipulation //////////////////////////////////////////
   
   public void addDeployedArtifact(Object deployedArtifact) {
     if (deployedArtifacts == null) {
@@ -118,6 +119,14 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     this.name = name;
   }
   
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
   public void setResources(Map<String, ResourceEntity> resources) {
     this.resources = resources;
   }
@@ -138,11 +147,12 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     this.isNew = isNew;
   }
 
-  public String getCategory() {
-    return category;
-  }
+  
+  // common methods  //////////////////////////////////////////////////////////
 
-  public void setCategory(String category) {
-    this.category = category;
+  @Override
+  public String toString() {
+    return "DeploymentEntity[id=" + id + ", name=" + name + "]";
   }
+  
 }
