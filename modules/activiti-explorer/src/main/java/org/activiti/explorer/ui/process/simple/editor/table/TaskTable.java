@@ -134,15 +134,15 @@ public class TaskTable extends Table implements TaskFormModelListener {
     // groups
     ComboBox groupComboBox = new ComboBox();
     groupComboBox.setNullSelectionAllowed(true);
-    if (taskGroups == null) {
-      groupComboBox.setValue(null);
-    } else {
-      groupComboBox.setValue(taskGroups);
-    }
     for (Group group : ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().orderByGroupName().asc().list()) {
       groupComboBox.addItem(group.getId());
       groupComboBox.setItemCaption(group.getId(), group.getName());
     }
+    
+    if (taskGroups != null) {
+      groupComboBox.select(taskGroups);
+    }
+    
     newItem.getItemProperty(ID_GROUPS).setValue(groupComboBox);
 
     // description
