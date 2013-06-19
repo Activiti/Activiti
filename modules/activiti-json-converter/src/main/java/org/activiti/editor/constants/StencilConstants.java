@@ -114,9 +114,6 @@ public interface StencilConstants {
 	final String PROPERTY_PRIORITY = "prioritydefinition";
 	
 	final String PROPERTY_USERTASK_ASSIGNMENT = "usertaskassignment";
-	final String PROPERTY_USERTASK_FORMKEY = "formkeydefinition";
-	final String PROPERTY_USERTASK_PRIORITY = "prioritydefinition";
-	final String PROPERTY_USERTASK_DUEDATE = "duedatedefinition";
   final String PROPERTY_USERTASK_ASSIGNMENT_TYPE = "assignment_type";
   final String PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION = "resourceassignmentexpr";
   final String PROPERTY_USERTASK_ASSIGNEE = "assignee";
