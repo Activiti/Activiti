@@ -2109,7 +2109,7 @@
     </section>
     
     <section>
-      <title>Update a model - Create a model</title>
+      <title>Create a model</title>
         <para>
           <programlisting>POST repository/models</programlisting>
         </para>
@@ -2128,7 +2128,7 @@
     </para>
         <para>
           <table>
-              <title>Update a model - Response codes</title>
+              <title>Create a model - Response codes</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
