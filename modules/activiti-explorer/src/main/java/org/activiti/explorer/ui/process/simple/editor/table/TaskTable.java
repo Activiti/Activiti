@@ -120,15 +120,16 @@ public class TaskTable extends Table implements TaskFormModelListener {
     // assignee
     ComboBox assigneeComboBox = new ComboBox();
     assigneeComboBox.setNullSelectionAllowed(true);
-    if (taskAssignee == null) {
-      assigneeComboBox.setValue(null);
-    } else {
-      assigneeComboBox.setValue(taskAssignee);
-    }
+   
     for (User user : ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().orderByUserFirstName().asc().list()) {
       assigneeComboBox.addItem(user.getId());
       assigneeComboBox.setItemCaption(user.getId(), user.getFirstName() + " " + user.getLastName());
     }
+    
+    if (taskAssignee != null) {
+      assigneeComboBox.select(taskAssignee);
+    }
+    
     newItem.getItemProperty(ID_ASSIGNEE).setValue(assigneeComboBox);
     
     // groups
