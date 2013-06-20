@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+	<title>Advanced</title>
+	
+	<para>
+	   The following sections cover advanced use cases of using Activiti, that go beyond typical execution of BPMN 2.0 processes.
+	   As such, a certain proficiency and experience with Activiti is advisable to understand the material here. 
+	</para>
+
+	<section id="advanced_parseHandlers">
+	
+	   <title>Hooking into process parsing</title>
+	
+	   <para>
+	       A bpmn 2.0 xml needs to be parsed to the Activiti internal model to be executed on the Activiti engine. This parsing
+	       happens during a deployment of the process or when a process is not found in memory, and the
+	       xml is fetched from the database. 
+	   </para>
+	   
+	   <para>
+	       For each of these processes, the <literal>BpmnParser</literal> class creates a new <literal>BpmnParse</literal> instance.
+	       This instance will be used as container for all things that are done during parsing. The parsing on itself is very simple:
+	       for each BPMN 2.0 element, there is a matching instance of the <literal>org.activiti.engine.parse.BpmnParseHandler</literal>
+	       available in the engine. As such, the parser has a map which basically maps an BPMN 2.0 element class to an instance of 
+	       <literal>BpmnParseHandler</literal>. By default, Activiti has <literal>BpmnParseHandler</literal> instances to handle
+	       all supported elements and also uses it to attach execution listeners to steps of the process for creating the history.
+	   </para>
+	   
+	   <para>
+	       It is possible to add custom instances of <literal>org.activiti.engine.parse.BpmnParseHandler</literal> to the Activiti engine.
+	       An often seen use case is for example to add execution listeners to certain steps that fire events to some queue for event processing.
+	       The history handling is done in such a way internally in Activiti.
+	       To add such custom handlers, the Activiti configuration needs to be tweaked:
+	       <programlisting>
+&lt;property name=&quot;preBpmnParseHandlers&quot;&gt;
+  &lt;list&gt;
+    &lt;bean class=&quot;org.activiti.parsing.MyFirstBpmnParseHandler&quot; /&gt;
+  &lt;/list&gt;
+&lt;/property&gt;
+	    
+&lt;property name=&quot;postBpmnParseHandlers&quot;&gt;
+  &lt;list&gt;
+    &lt;bean class=&quot;org.activiti.parsing.MySecondBpmnParseHandler&quot; /&gt;
+    &lt;bean class=&quot;org.activiti.parsing.MyThirdBpmnParseHandler&quot; /&gt;
+  &lt;/list&gt;
+&lt;/property&gt;    
+	       </programlisting>
+	       The list of <literal>BpmnParseHandler</literal> instances that is configured in the <literal>preBpmnParseHandlers</literal> property
+	       are added before any of the default handlers. Likewise, the <literal>postBpmnParseHandlers</literal> are added after those.
+	       This can be important if the order of things matter for the logic contained in the custom parse handlers.
+	   </para>
+	   
+	   <para>
+	       <literal>org.activiti.engine.parse.BpmnParseHandler</literal> is a simple interface:
+	       <programlisting>
+public interface BpmnParseHandler {
+  
+  Collection&lt;Class&gt;? extends BaseElement&gt;&gt; getHandledTypes();
+  
+  void parse(BpmnParse bpmnParse, BaseElement element);
+
+}	       
+	       </programlisting>
+	       The <literal>getHandledTypes()</literal> method returns a collection of all the types handled by this parser. 
+	       The possible types are a subclass of <literal>BaseElement</literal>, as directed by the generic type of the collection.
+	       You can also extend the <literal>AbstractBpmnParseHandler</literal> class and override the <literal>getHandledType()</literal>
+	       method, which only returns one Class and not a collection. This class contains also some helper methods
+	       shared by many of the default parse handlers. 
+	       The <literal>BpmnParseHandler</literal> instance will be called when the parser encounters any of the returned
+	       types by this method. In the following example, whenever a process contained in a BPMN 2.0 xml is encountered, it 
+	       will execute the logic in the <literal>executeParse</literal> method (which is a typecasted method that replaces
+	       the regular <literal>parse</literal> method on the <literal>BpmnParseHandler</literal> interface). 
+	       <programlisting>
+public class TestBPMNParseHandler extends AbstractBpmnParseHandler&lt;Process&gt; {
+
+  protected Class&lt;? extends BaseElement&gt; getHandledType() {
+    return Process.class;
+  }
+  
+  protected void executeParse(BpmnParse bpmnParse, Process element) {
+     ..
+  }
+
+}	       
+	       </programlisting>
+	   </para>
+	   
+	   <para>
+	       <emphasis role="bold">Important note:</emphasis> when writing custom parse handler, do not use any of the internal 
+	       classes that are used to parse the BPMN 2.0 constructs. This will cause difficult to find bugs. The safe way to implement
+	       a custom handler is to implement the <emphasis>BpmnParseHandler</emphasis> interface or extends the internal abstract class
+	       <emphasis>org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler</emphasis>.
+	   </para>
+	   
+	   <para>
+         It is possible (but less common) to replace the default <literal>BpmnParseHandler</literal> instances
+         that are responsible for the parsing of the BPMN 2.0 elements to the internal Activiti model.
+         This can be done by following snippet of logic:
+         <programlisting>
+&lt;property name=&quot;customDefaultBpmnParseHandlers&quot;&gt;
+  &lt;list&gt;
+    ...
+  &lt;/list&gt;
+&lt;/property&gt;         
+         </programlisting>
+         A simple example could for example be to force all of the service tasks to be asynchronous:
+         <programlisting>
+public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
+  
+  protected void executeParse(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    
+    // Do the regular stuff
+    super.executeParse(bpmnParse, serviceTask);
+    
+    // Make always async
+    ActivityImpl activity = findActivity(bpmnParse, serviceTask.getId());
+    activity.setAsync(true);
+  }
+
+}         
+         </programlisting>          
+	   </para>
+        
+	</section>
+	
+	<section id="advanced.uuid.generator">
+	
+	   <title>UUID id generator for high concurrency</title>
+	   
+	   <para>
+	       In some (very) high concurrency load cases, the default id generator may cause exceptions due to not being able
+	       to fetch new id blocks quickly enough. Every process engine has one id generator. The default id generator reserves
+	       a block of id's in the database, such that no other engine will be able to use id's from the same block. During 
+	       engine operations, when the default id generator notices that the id block is used up, a new transaction is started
+	       to fetch a new block. In (very) limited use cases this can cause problems when there is a real high load. For 
+	       most use cases the default id generator is more than sufficient. The default <literal>org.activiti.engine.impl.db.DbIdGenerator</literal>
+	       also has a property <literal>idBlockSize</literal> which can be configured to set the size of the reserved block of id's
+	       and to tweak the behavior of the id fetching. 
+	   </para>
+	   
+	   <para>
+	       The alternative to the default id generator is the <literal>org.activiti.engine.impl.persistence.StrongUuidGenerator</literal>,
+	       which generates a unique <ulink url="http://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</ulink> locally and uses that
+	       as identifier for all entities. Since the UUID is generated without the need for database access, it copes better with very high concurrency use cases.
+	       Do note that performance may differ from the default id generator (both positive and negative) depending on the machine.
+	   </para>
+	   
+	   <para>
+	       The UUID generator can be configured in the activiti configuration as follows:
+<programlisting>
+&lt;property name=&quot;idGenerator&quot;&gt;
+    &lt;bean class=&quot;org.activiti.engine.impl.persistence.StrongUuidGenerator&quot; /&gt;
+&lt;/property&gt;
+</programlisting>	       
+	   </para>
+	   
+	   <para>
+	       The use of the UUID id generator depends on the following extra dependency:
+	       <programlisting>
+ &lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.uuid&lt;/groupId&gt;
+    &lt;artifactId&gt;java-uuid-generator&lt;/artifactId&gt;
+    &lt;version&gt;3.1.3&lt;/version&gt;
+&lt;/dependency&gt;</programlisting>
+	   </para>
+	
+	</section>
+	
+	<section id="advanced.safe.bpmn.xml">
+	
+	   <title>Enable safe BPMN 2.0 xml</title>
+	   
+	   <para>
+	     In most cases the BPMN 2.0 processes that are being deployed to the Activiti engine are under tight control
+	     of eg. the development team. However, in some use cases it might be desirable to upload arbitrary BPMN 2.0 xml
+	     to the engine. In that case, take into consideration that a user with bad intentions can bring the server 
+	     down as described <ulink url="http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/">here</ulink>.
+	   </para>
+	   
+	   <para>
+	     To avoid the attacks described in the link above, a property <emphasis>enableSafeBpmnXml</emphasis> can be set on the process 
+	     engine configuration:
+	     <programlisting>&lt;property name=&quot;enableSafeBpmnXml&quot; value=&quot;true&quot;/&gt;</programlisting>
+	   </para>
+	   
+	   <para>
+	       <emphasis role="bold">By default this feature is disabled!</emphasis> The reason for this is that it relies on 
+	       the availability of the <ulink url="http://download.java.net/jdk7/archive/b123/docs/api/javax/xml/transform/stax/StAXSource.html">StaxSource</ulink>
+	       class. Unfortunately, on some platforms (eg. JDK 6, JBoss, etc.) this class is unavailable (due to older xml parser implementation)
+	       and thus the safe BPMN 2.0 xml feature cannot be enabled. 
+	   </para>
+	   
+	   <para>    
+	       If the platform on which Activti runs does support it, do enable this feature. 
+	   </para>
+	
+	</section>
+	
+</chapter>
