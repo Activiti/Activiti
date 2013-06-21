@@ -30,7 +30,7 @@ public class ProcessExport implements BpmnXMLConstants {
       xtw.writeAttribute(ATTRIBUTE_NAME, process.getName());
     }
     
-    xtw.writeAttribute(ATTRIBUTE_PROCESS_EXECUTABLE, ATTRIBUTE_VALUE_TRUE);
+    xtw.writeAttribute(ATTRIBUTE_PROCESS_EXECUTABLE, Boolean.toString(process.isExecutable()));
     
     if (process.getCandidateStarterUsers().size() > 0) {
       xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS, 

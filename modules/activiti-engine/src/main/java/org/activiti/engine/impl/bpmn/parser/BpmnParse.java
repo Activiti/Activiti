@@ -363,7 +363,9 @@ public class BpmnParse implements BpmnXMLConstants {
   protected void transformProcessDefinitions() {
     sequenceFlows = new HashMap<String, TransitionImpl>();
     for (Process process : bpmnModel.getProcesses()) {
-      bpmnParserHandlers.parseElement(this, process);
+      if (process.isExecutable()) {
+        bpmnParserHandlers.parseElement(this, process);
+      }
     }
 
     if (processDefinitions.size() > 0) {

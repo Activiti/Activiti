@@ -171,6 +171,10 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     if (StringUtils.isNotEmpty(mainProcess.getName())) {
       propertiesNode.put(PROPERTY_NAME, mainProcess.getName());
     }
+    if (mainProcess.isExecutable() == false) {
+      propertiesNode.put(PROPERTY_PROCESS_EXECUTABLE, PROPERTY_VALUE_NO);
+    }
+    
     if (StringUtils.isNotEmpty(mainProcess.getDocumentation())) {
       propertiesNode.put(PROPERTY_DOCUMENTATION, mainProcess.getDocumentation());
     }
@@ -298,17 +302,23 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     if (nonEmptyPoolFound == false) {
       
-      JsonNode processIdNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_PROCESS_ID);
+      JsonNode processIdNode = JsonConverterUtil.getProperty(PROPERTY_PROCESS_ID, modelNode);
       Process process = new Process();
       bpmnModel.getProcesses().add(process);
       if (processIdNode != null && StringUtils.isNotEmpty(processIdNode.asText())) {
         process.setId(processIdNode.asText());
       }
       
-      JsonNode processNameNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_NAME);
+      JsonNode processNameNode = JsonConverterUtil.getProperty(PROPERTY_NAME, modelNode);
       if (processNameNode != null && StringUtils.isNotEmpty(processNameNode.asText())) {
         process.setName(processNameNode.asText());
       }
+      
+      JsonNode processExecutableNode = JsonConverterUtil.getProperty(PROPERTY_PROCESS_EXECUTABLE, modelNode);
+      if (processExecutableNode != null && StringUtils.isNotEmpty(processExecutableNode.asText())) {
+        process.setExecutable(JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_PROCESS_EXECUTABLE, modelNode));
+      }
+      
       
       processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
     }
