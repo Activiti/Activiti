@@ -29,7 +29,7 @@ import org.apache.ibatis.type.TypeHandler;
 /**
  * @author Dave Syer
  */
-public class IbatisVariableTypeHandler implements TypeHandler<VariableType> {
+public class IbatisVariableTypeHandler implements TypeHandler {
 
   protected VariableTypes variableTypes;
 
@@ -51,8 +51,8 @@ public class IbatisVariableTypeHandler implements TypeHandler<VariableType> {
     return type;
   }
 
-  public void setParameter(PreparedStatement ps, int i, VariableType parameter, JdbcType jdbcType) throws SQLException {
-    String typeName = parameter.getTypeName();
+  public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {
+    String typeName = ((VariableType)parameter).getTypeName();
     ps.setString(i, typeName);
   }
 
