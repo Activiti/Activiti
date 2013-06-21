@@ -4712,6 +4712,12 @@ public void testExecutionListenerFieldInjection() {
                   and just before the task is deleted from the runtime data.
                 </para>
               </listitem>            
+              <listitem>
+                <para>
+                  <emphasis role="bold">delete</emphasis>: occurs just before the task is going to be deleted. 
+                  Notice that it will also be executed when task is normally finished via completeTask.
+                </para>
+              </listitem>            
             </itemizedlist>
           </para>
         </listitem>
