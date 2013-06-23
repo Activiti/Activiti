@@ -2,72 +2,72 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
 
 <chapter>
-  <title>Configuration</title>
-  
+  <title>配置</title>
+
   <section id="configuration">
-    <title>Creating a ProcessEngine</title>
-    
+    <title>创建ProcessEngine</title>
+
     <para>
-    The Activiti process engine is configured through an XML file called <literal>activiti.cfg.xml</literal>.
-    Note that this is <emphasis role="bold">not</emphasis> applicable if you're 
-    using <link linkend="springintegration">the Spring style of building a process engine</link>.
+    Activiti流程引擎是通过名叫<literal>activiti.cfg.xml</literal>的XML文件配置的。
+    注意这和使用<link linkend="springintegration">Spring方式创建流程引擎</link>
+    是<emphasis role="bold">不</emphasis>一样的。
     </para>
 
     <para>
-    The easiest way to obtain a <literal>ProcessEngine</literal>, is to use the 
-    <literal>org.activiti.engine.ProcessEngines</literal> class:
+    获得<literal>ProcessEngine</literal>最简单的办法是
+    使用<literal>org.activiti.engine.ProcessEngines</literal>类：
     <programlisting>ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine()</programlisting>
-    This will look for an <literal>activiti.cfg.xml</literal> file on the classpath and
-    construct an engine based on the configuration in that file.
-    The following snippet shows an example configuration. 
-    The following sections will give a detailed overview of the configuration properties.
-    <programlisting>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
+    它会在classpath下搜索<literal>activiti.cfg.xml</literal>，
+    并基于这个文件中的配置构建引擎。
+    下面代码展示了实例配置。
+    下面的章节会给出配置参数的详细介绍。
+    <programlisting>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
        xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
 
   &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration&quot;&gt;
-  
+
     &lt;property name=&quot;jdbcUrl&quot; value=&quot;jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000&quot; /&gt;
     &lt;property name=&quot;jdbcDriver&quot; value=&quot;org.h2.Driver&quot; /&gt;
     &lt;property name=&quot;jdbcUsername&quot; value=&quot;sa&quot; /&gt;
     &lt;property name=&quot;jdbcPassword&quot; value=&quot;&quot; /&gt;
-    
+
     &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;
-    
+
     &lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /&gt;
-    
-    &lt;property name=&quot;mailServerHost&quot; value=&quot;mail.my-corp.com&quot; /&gt; 
-    &lt;property name=&quot;mailServerPort&quot; value=&quot;5025&quot; /&gt;    
+
+    &lt;property name=&quot;mailServerHost&quot; value=&quot;mail.my-corp.com&quot; /&gt;
+    &lt;property name=&quot;mailServerPort&quot; value=&quot;5025&quot; /&gt;
   &lt;/bean&gt;
 
 &lt;/beans&gt;</programlisting>
-    </para> 
-    
-    <para>
-      Note that the configuration XML is in fact a Spring configuration.
-      <emphasis role="bold">This does not mean that Activiti can only be used in a Spring environment!</emphasis>
-      We are simply leveraging the parsing and dependency injection capabilities of Spring
-      internally for building up the engine.
     </para>
-    
+
     <para>
-      The ProcessEngineConfiguration object can also be created programmatically using the configuration file.
-      It is also possible to use a different bean id (e.g. see line 3).
+      注意配置XML文件其实是一个spring的配置文件。
+      <emphasis role="bold">但不是说Activiti只能用在Spring环境中！</emphasis>
+      我们只是利用了Spring的解析和依赖注入功能
+      来构建引擎。
+    </para>
+
+    <para>
+      配置文件中使用的ProcessEngineConfiguration也可以通过编程方式创建。
+      也可以使用不同的bean id（比如，第三行）。
       <programlisting>
 ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault();
 ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(String resource);
 ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(String resource, String beanName);
 ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(InputStream inputStream);
 ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(InputStream inputStream, String beanName);</programlisting>
-   It is also possible not to use a configuration file, and create a configuration based on 
-   defaults (see <link linkend="configurationClasses">the different supported classes</link> for more information).
+   也可以不使用配置文件，基于默认创建一个配置
+   （参考<link linkend="configurationClasses">各种支持类</link>）
    <programlisting>
 ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration();
 ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration();</programlisting>
-   All these <literal>ProcessEngineConfiguration.createXXX()</literal> methods return a 
-   <literal>ProcessEngineConfiguration</literal> that can further be tweaked if needed.
-   After calling the <literal>buildProcessEngine()</literal> operation, a <literal>ProcessEngine</literal>
-   is created:
+   所有这些<literal>ProcessEngineConfiguration.createXXX()</literal>方法都返回
+   <literal>ProcessEngineConfiguration</literal>，后续可以调整成所需的对象。
+   在调用<literal>buildProcessEngine()</literal>后，
+   就会创建一个<literal>ProcessEngine</literal>：
    <programlisting>
 ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration()
   .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
@@ -75,120 +75,120 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
   .setJobExecutorActivate(true)
   .buildProcessEngine();</programlisting>
     </para>
-     
-  </section>  
-    
+
+  </section>
+
   <section id="configurationRoot">
     <title>ProcessEngineConfiguration bean</title>
     <para>
-      The <literal>activiti.cfg.xml</literal> must contain a bean that has the id <literal>'processEngineConfiguration'</literal>.
+      <literal>activiti.cfg.xml</literal>必须包含一个id为<literal>'processEngineConfiguration'</literal>的bean。
       <programlisting> &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration&quot;&gt;</programlisting>
-      This bean is then used to construct the <literal>ProcessEngine</literal>. There are multiple
-      classes available that can be used to define the <literal>processEngineConfiguration</literal>.
-      These classes represent different environments, and set defaults accordingly. It's a best 
-      practice to select the class the matches (the most) your environment, to minimalise the
-      number of properties needed to configure the engine. The following classes are currently available
-      (more will follow in future releases):
+      这个bean会用来构建<literal>ProcessEngine</literal>。
+      有多个类可以用来定义<literal>processEngineConfiguration</literal>。
+      这些类对应不同的环境，并设置了对应的默认值。
+      最好选择（最）适用于你的环境的类，
+      这样可以少配置几个引擎的参数。
+      下面是目前可以使用的类（以后会包含更多）：
       <itemizedlist id="configurationClasses">
         <listitem>
           <para>
             <emphasis role="bold">org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration</emphasis>:
-            the process engine is used in a standalone way. Activiti will take care of the transactions.
-            By default, the database will only be checked when the engine boots (and an exception is thrown if there
-            is no Activiti schema or the schema version is incorrect). 
+            单独运行的流程引擎。Activiti会自己处理事务。
+            默认，数据库只在引擎启动时检测
+            （如果没有Activiti的表或者表结构不正确就会抛出异常）。
           </para>
         </listitem>
         <listitem>
           <para>
             <emphasis role="bold">org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration</emphasis>:
-            this is a convenience class for unit testing purposes. Activiti will take care of the transactions.
-            An H2 in-memory database is used by default. The database will be created and dropped when the engine boots and shuts down.
-            When using this, probably no additional configuration is needed (except when using for example the job executor or mail capabilities).
+            单元测试时的辅助类。Activiti会自己控制事务。
+            默认使用H2内存数据库。数据库表会在引擎启动时创建，关闭时删除。
+            使用它时，不需要其他配置（除非使用job执行器或邮件功能）。
           </para>
         </listitem>
         <listitem>
           <para>
             <emphasis role="bold">org.activiti.spring.SpringProcessEngineConfiguration</emphasis>:
-            To be used when the process engine is used in a Spring environment. 
-            See <link linkend="springintegration">the Spring integration section</link> for more information. 
+            在Spring环境下使用流程引擎。
+            参考<link linkend="springintegration">Spring集成章节</link>。
           </para>
         </listitem>
         <listitem>
           <para>
             <emphasis role="bold">org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration</emphasis>:
-            To be used when the engine runs in standalone mode, with JTA transactions.
+            单独运行流程引擎，并使用JTA事务。
           </para>
         </listitem>
       </itemizedlist>
     </para>
   </section>
-    
+
   <section id="databaseConfiguration">
-    <title>Database configuration</title>
+    <title>数据库配置</title>
     <para>
-      There are two ways to configure the database that the Activiti engine will use.
-      The first option is to define the JDBC properties of the database:
+      Activiti可能使用两种方式配置数据库。
+      第一种方式是定义数据库配置参数：
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">jdbcUrl</emphasis>: JDBC URL of the database.
+            <emphasis role="bold">jdbcUrl</emphasis>: 数据库的JDBC URL。
           </para>
         </listitem>
         <listitem>
            <para>
-            <emphasis role="bold">jdbcDriver</emphasis>: implementation of the driver for the specific database type.
+            <emphasis role="bold">jdbcDriver</emphasis>: 对应不同数据库类型的驱动。
           </para>
         </listitem>
         <listitem>
            <para>
-            <emphasis role="bold">jdbcUsername</emphasis>: username to connect to the database.
+            <emphasis role="bold">jdbcUsername</emphasis>: 连接数据库的用户名。
           </para>
         </listitem>
         <listitem>
            <para>
-            <emphasis role="bold">jdbcPassword</emphasis>: password to connect to the database.
+            <emphasis role="bold">jdbcPassword</emphasis>: 连接数据库的密码。
           </para>
         </listitem>
       </itemizedlist>
     </para>
-    
+
     <para>
-      The data source that is constructed based on the provided JDBC properties
-      will have the default <ulink url="http://www.mybatis.org/">MyBatis</ulink> connection pool
-      settings. The following attributes can optionally be set to tweak that connection pool (taken from the MyBatis documentation):
+      基于JDBC参数配置的数据库连接
+      会使用默认的<ulink url="http://www.mybatis.org/">MyBatis</ulink>连接池。
+      下面的参数可以用来配置连接池（来自MyBatis参数）：
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">jdbcMaxActiveConnections</emphasis>: The number of active connections
-            that the connection pool at maximum at any time can contain. Default is 10.
+            <emphasis role="bold">jdbcMaxActiveConnections</emphasis>:
+            连接池中处于被使用状态的连接的最大值。默认为10。
           </para>
         </listitem>
         <listitem>
            <para>
-            <emphasis role="bold">jdbcMaxIdleConnections</emphasis>: The number of idle connections
-            that the connection pool at maximum at any time can contain.
+            <emphasis role="bold">jdbcMaxIdleConnections</emphasis>:
+            连接池中处于空闲状态的连接的最大值。
           </para>
         </listitem>
         <listitem>
            <para>
-            <emphasis role="bold">jdbcMaxCheckoutTime</emphasis>: The amount of time in milliseconds a connection
-            can be 'checked out' from the connection pool before it is forcefully returned.
-            Default is 20000 (20 seconds).
+            <emphasis role="bold">jdbcMaxCheckoutTime</emphasis>:
+            连接被取出使用的最长时间，超过时间会被强制回收。
+            默认为20000（20秒）。
           </para>
         </listitem>
         <listitem>
            <para>
-            <emphasis role="bold">jdbcMaxWaitTime</emphasis>: This is a low level setting that gives the pool 
-            a chance to print a log status and re-attempt the acquisition of a connection in the 
-            case that it’s taking unusually long (to avoid failing silently forever if the pool is misconfigured)
-            Default is 20000 (20 seconds).
+            <emphasis role="bold">jdbcMaxWaitTime</emphasis>:
+            这是一个底层配置，让连接池可以在长时间无法获得连接时，
+            打印一条日志，并重新尝试获取一个连接。（避免因为错误配置导致沉默的操作失败）。
+            默认为20000（20秒）。
           </para>
         </listitem>
       </itemizedlist>
     </para>
-    
+
     <para>
-      Example database configuration:
+      示例数据库配置：
       <programlisting>
 &lt;property name=&quot;jdbcUrl&quot; value=&quot;jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000&quot; /&gt;
 &lt;property name=&quot;jdbcDriver&quot; value=&quot;org.h2.Driver&quot; /&gt;
@@ -196,10 +196,10 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
 &lt;property name=&quot;jdbcPassword&quot; value=&quot;&quot; /&gt;
       </programlisting>
     </para>
-    
+
     <para>
-      Alternatively, a <literal>javax.sql.DataSource</literal> implementation can be used 
-      (e.g. DBCP from <ulink url="http://commons.apache.org/dbcp/">Apache Commons</ulink>):
+      也可以使用<literal>javax.sql.DataSource</literal>。
+      （比如，<ulink url="http://commons.apache.org/dbcp/">Apache Commons</ulink>的DBCP）：
       <programlisting>
 &lt;bean id=&quot;dataSource&quot; class=&quot;org.apache.commons.dbcp.BasicDataSource&quot; &gt;
   &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot; /&gt;
@@ -207,55 +207,55 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
   &lt;property name=&quot;username&quot; value=&quot;activiti&quot; /&gt;
   &lt;property name=&quot;password&quot; value=&quot;activiti&quot; /&gt;
   &lt;property name=&quot;defaultAutoCommit&quot; value=&quot;false&quot; /&gt;
-&lt;/bean&gt;      
+&lt;/bean&gt;
 
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration&quot;&gt;
-  
+
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
     ...
       </programlisting>
-      Note that Activiti does not ship with a library that allows to define such a data source.
-      So you have to make sure that the libraries (e.g. from DBCP) are on your classpath.
+      注意，Activiti的发布包中没有这些类。
+      你要自己把对应的类（比如，从DBCP里）放到你的classpath下。
     </para>
-    
+
     <para>
-      The following properties can be set, regardless of whether you are using the JDBC or data source approach:
+      无论你使用JDBC还是DataSource的方式，都可以设置下面的配置：
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">databaseType</emphasis>: it's normally not necessary to 
-            specify this property as it is automatically analyzed from the database connection meta data.  
-            Should only be specified in case automatic detection fails.
-            Possible values: {h2, mysql, oracle, postgres, mssql, db2}.
-            <emphasis role="bold">This property is required when not using the default H2 database</emphasis>.
-            This setting will determine which create/drop scripts and queries will be used. See 
-            <link linkend="supporteddatabases">the 'supported databases' section</link> for 
-            an overview of which types are supported.
+            <emphasis role="bold">databaseType</emphasis>:
+            一般不用设置，因为可以自动通过数据库连接的元数据获取。
+            只有自动检测失败时才需要设置。
+            可能的值有：{h2, mysql, oracle, postgres, mssql, db2}。
+            <emphasis role="bold">如果没使用默认的H2数据库就必须设置这项</emphasis>。
+            这个配置会决定使用哪些创建/删除脚本和查询语句。
+            参考<link linkend="supporteddatabases">支持数据库章节</link>
+            了解支持哪些类型。
           </para>
         </listitem>
         <listitem>
           <para>
-            <emphasis role="bold">databaseSchemaUpdate</emphasis>: allows to set the strategy to handle
-            the database schema on process engine boot and shutdown.
+            <emphasis role="bold">databaseSchemaUpdate</emphasis>:
+            设置流程引擎启动和关闭时如何处理数据库表。
             <itemizedlist>
               <listitem>
                 <para>
-                  <literal>false</literal> (default): Checks the version of the DB schema against the
-                  library when the process engine is being created and throws an exception if the 
-                  versions don't match.
+                  <literal>false</literal>（默认）：检查数据库表的版本和依赖库的版本，
+                  如果版本不匹配就抛出异常。
+
                 </para>
               </listitem>
               <listitem>
                 <para>
-                  <literal>true</literal>: Upon building the process engine, a check is performed and 
-                  an update of the schema is performed if it is necessary. If the schema doesn't exist,
-                  it is created.
+                  <literal>true</literal>: 构建流程引擎时，执行检查，如果需要就执行更新。
+                  如果表不存在，就创建。
+
                 </para>
               </listitem>
                <listitem>
                 <para>
-                  <literal>create-drop</literal>: Creates the schema when the process engine is being created and 
-                  drops the schema when the process engine is being closed.
+                  <literal>create-drop</literal>: 构建流程引擎时创建数据库表，
+                  关闭流程引擎时删除这些表。
                 </para>
               </listitem>
             </itemizedlist>
@@ -264,19 +264,19 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
       </itemizedlist>
     </para>
   </section>
-  
+
   <section id="supporteddatabases">
-    <title>Supported databases</title>
-    <para>Listed below are the types (case sensitive!) that Activiti uses to refer to databases.</para>
+    <title>支持的数据库</title>
+    <para>下面列出Activiti使用的数据库类型（大小写敏感）。</para>
     <table id="databaseTypes">
-      <title>Supported databases</title>
+      <title>支持的数据库</title>
       <tgroup cols='3'>
         <thead>
           <row>
-            <entry>Activiti database type</entry>
-            <entry>Versions tested</entry>
-            <entry>Example JDBC URL</entry>
-            <entry>Notes</entry>
+            <entry>Activiti数据库类型</entry>
+            <entry>测试版本</entry>
+            <entry>JDBC URL实例</entry>
+            <entry>备注</entry>
           </row>
         </thead>
         <tbody>
@@ -284,13 +284,13 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
             <entry>h2</entry>
             <entry>1.3.168</entry>
             <entry>jdbc:h2:tcp://localhost/activiti</entry>
-            <entry>Default configured database</entry>
+            <entry>默认配置的数据库</entry>
           </row>
           <row>
             <entry>mysql</entry>
             <entry>5.1.21</entry>
             <entry>jdbc:mysql://localhost:3306/activiti?autoReconnect=true</entry>
-            <entry>Tested using mysql-connector-java database driver</entry>
+            <entry>使用mysql-connector-java驱动测试</entry>
           </row>
           <row>
             <entry>oracle</entry>
@@ -320,222 +320,222 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
       </tgroup>
     </table>
   </section>
-  
+
   <section id="creatingDatabaseTable">
-  
-    <title>Creating the database tables</title>
-    
+
+    <title>创建数据库表</title>
+
     <para>
-      The easiest way to create the database tables for your database is to:
+      下面是创建数据库表最简单的办法：
       <itemizedlist>
         <listitem>
-          <para>Add the activiti-engine jars to your classpath</para>
+          <para>把activiti-engine的jar放到classpath下</para>
         </listitem>
         <listitem>
-          <para>Add a suitable database driver</para>
+          <para>添加对应的数据库驱动</para>
         </listitem>
         <listitem>
-          <para>Add an Activiti configuration file (<emphasis>activiti.cfg.xml</emphasis>) to your classpath, 
-          pointing to your database (see <link linkend="databaseConfiguration">database configuration section</link>)</para>
+          <para>把Activiti配置文件 (<emphasis>activiti.cfg.xml</emphasis>) 放到 classpath下，
+          指向你的数据库（参考<link linkend="databaseConfiguration">数据库配置章节</link>）</para>
         </listitem>
         <listitem>
-          <para>Execute the main method of the <emphasis>DbSchemaCreate</emphasis> class</para>
+          <para>执行 <emphasis>DbSchemaCreate</emphasis> 类的main方法</para>
         </listitem>
       </itemizedlist>
     </para>
-    
+
     <para>
-      However, often only database administrators can execute DDL statements on a database.
-      The SQL DDL statements can be found on the Activiti downloads page or inside the Activiti distribution folder, in the <literal>database</literal> subdirectory. The scripts are also in 
-      the engine jar (<emphasis>activiti-engine-x.jar</emphasis>), in 
-      the package <emphasis>org/activiti/db/create</emphasis> (the <emphasis>drop</emphasis> folder contains the drop statements).
-      The SQL files are of the form
+      然而，只有数据库管理员可以执行DDL语句。
+      SQL DDL语句可以从Activiti下载页或Activiti发布目录里找到，在<literal>database</literal>子目录下。
+      脚本也包含在引擎的jar中(<emphasis>activiti-engine-x.jar</emphasis>)，
+      在<emphasis>org/activiti/db/create</emphasis>包下（<emphasis>drop</emphasis>目录里是删除语句）。
+      SQL文件的命名方式如下
       <programlisting>activiti.{db}.{create|drop}.{type}.sql</programlisting>
-      Where <emphasis>db</emphasis> is any of the <link linkend="supporteddatabases">supported databases</link>
-      and <emphasis>type</emphasis> is 
+      其中 <emphasis>db</emphasis> 是 <link linkend="supporteddatabases">支持的数据库</link>，
+       <emphasis>type</emphasis> 是
       <itemizedlist>
         <listitem>
-          <para><emphasis role="bold">engine:</emphasis> the tables needed for engine execution. Required.</para>
+          <para><emphasis role="bold">engine:</emphasis> 引擎执行的表。必须。</para>
         </listitem>
         <listitem>
-          <para><emphasis role="bold">identity:</emphasis> the tables containing users, groups and memberships of users to groups. These tables are optional and should be used when using 
-          the default identity management as shipped with the engine.</para>
+          <para><emphasis role="bold">identity:</emphasis> 包含用户，群组，用户与组之间的关系的表。
+          这些表是可选的，只有使用引擎自带的默认身份管理时才需要。</para>
         </listitem>
         <listitem>
-          <para><emphasis role="bold">history:</emphasis> the tables that contain the history and audit information. Optional: not needed when history level is set to <emphasis>none</emphasis>
-          Note that this will also disable some features (such as commenting on tasks) which store the data in the history database.</para>
+          <para><emphasis role="bold">history:</emphasis> 包含历史和审计信息的表。可选的：历史级别设为<emphasis>none</emphasis>时不会使用。
+          注意这也会引用一些需要把数据保存到历史表中的功能（比如任务的评论）。</para>
         </listitem>
       </itemizedlist>
     </para>
-  
+
   </section>
-  
+
   <section id="database.tables.explained">
-    <title>Database table names explained</title>
+    <title>理解数据库表的命名</title>
     <para>
-      The database names of Activiti all start with <emphasis role="bold">ACT_</emphasis>. The 
-      second part is a two-character identification of the use case of the table. This use case 
-      will also roughly match the service API.
+      Activiti的表都以<emphasis role="bold">ACT_</emphasis>开头。
+      第二部分是表示表的用途的两个字母标识。
+      用途也和服务的API对应。
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">ACT_RE_*</emphasis>: 'RE' stands for <literal>repository</literal>. 
-            Tables with this prefix contain 'static' information such as process definitions and
-            process resources (images, rules, etc.).
+            <emphasis role="bold">ACT_RE_*</emphasis>: 'RE'表示<literal>repository</literal>。
+            这个前缀的表包含了流程定义和流程静态资源
+            （图片，规则，等等）。
           </para>
         </listitem>
          <listitem>
           <para>
-            <emphasis role="bold">ACT_RU_*</emphasis>: 'RU' stands for <literal>runtime</literal>.
-            These are the runtime tables, that contain the runtime data of process instances,
-            user tasks, variables, jobs, etc. Activiti only stores the runtime data during process instance
-            execution, and removes the records when a process instance ends. This keeps 
-            the runtime tables small and fast.
+            <emphasis role="bold">ACT_RU_*</emphasis>: 'RU'表示<literal>runtime</literal>。
+            这些运行时的表，包含流程实例，任务，变量，异步任务，等运行中的数据。
+            Activiti只在流程实例执行过程中保存这些数据，
+            在流程结束时就会删除这些记录。
+            这样运行时表可以一直很小速度很快。
           </para>
         </listitem>
          <listitem>
           <para>
-            <emphasis role="bold">ACT_ID_*</emphasis>: 'ID' stands for <literal>identity</literal>.
-            These tables contain identity information, such as users, groups, etc.
+            <emphasis role="bold">ACT_ID_*</emphasis>: 'ID'表示<literal>identity</literal>。
+            这些表包含身份信息，比如用户，组等等。
           </para>
         </listitem>
          <listitem>
           <para>
-            <emphasis role="bold">ACT_HI_*</emphasis>: 'HI' stands for <literal>history</literal>.
-            These are the tables that contain historic data, such as past process instances,
-            variables, tasks, etc.
+            <emphasis role="bold">ACT_HI_*</emphasis>: 'HI'表示<literal>history</literal>。
+            这些表包含历史数据，比如历史流程实例，
+            变量，任务等等。
           </para>
         </listitem>
          <listitem>
           <para>
-            <emphasis role="bold">ACT_GE_*</emphasis>: <literal>general</literal> data, which is used
-            in various use cases.
+            <emphasis role="bold">ACT_GE_*</emphasis>: <literal>通用</literal>数据，
+            用于不同场景下。
           </para>
         </listitem>
       </itemizedlist>
     </para>
   </section>
-    
+
   <section id="databaseUpgrade">
-     <title>Database upgrade</title>
-     <para>Make sure you make a backup of your database 
-     (using your database backup capabilities) before you run an upgrade.
+     <title>数据库升级</title>
+     <para>在执行更新之前要先备份数据库
+     （使用数据库的备份功能）
      </para>
-     <para>By default, a version check will be performed each time a process engine is created.
-     This typically happens once at boot time of your application or of the Activiti webapps.
-     If the Activiti library notices a difference between the library version and the version  
-     of the Activiti database tables, then an exception is thrown.
-     </para> 
-     <para>To upgrade, you have to start with putting the following configuration property in your 
-     activiti.cfg.xml configuration file:
+     <para>默认，每次构建流程引擎时都会还行版本检测。
+     这一版都在应用启动或Activiti webapp启动时发生。
+     如果Activiti发现数据库表的版本与依赖库的版本不同，
+     就会抛出异常。
+     </para>
+     <para>要升级，你要把下面的配置
+     放到activiti.cfg.xml配置文件里：
      </para>
     <programlisting>&lt;beans ... &gt;
 
   &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration&quot;&gt;
     &lt;!-- ... --&gt;
-    &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;    
+    &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;
     &lt;!-- ... --&gt;
   &lt;/bean&gt;
 
 &lt;/beans&gt;</programlisting>
-     <para> <emphasis role="bold">Also, include a suitable database driver for your database to the classpath.</emphasis>
-     Upgrade the Activiti libraries in your application. Or start up a new version 
-     of Activiti and point it to a database that contains an older version.  With <literal>databaseSchemaUpdate</literal>
-     set to <literal>true</literal>, Activiti will automatically upgrade the DB schema to the newer version
-     the first time when it notices that libraries and DB schema are out of sync.
+     <para> <emphasis role="bold">依然，把对应的数据库驱动放到classpath里。</emphasis>
+     升级应用的Activiti依赖。启动一个新版本的Activiti
+     指向包含旧版本的数据库。将<literal>databaseSchemaUpdate</literal>设置为<literal>true</literal>，
+     Activiti会自动将数据库表升级到新版本，
+     当发现依赖和数据库表版本不通过时。
      </para>
-     <para> <emphasis role="bold">As an alternative you can also run the upgrade DDL statements.</emphasis>
-     It's also possible to run the upgrade database scripts, available on the Activiti downloads page.
+     <para> <emphasis role="bold">也可以执行更新升级DDL语句。</emphasis>
+     也可以执行数据库脚本，可以在Activiti下载页找到。
      </para>
    </section>
-  
+
   <section id="jobExecutorConfiguration">
-    <title>Job executor activation</title>
-    <para>The <literal>JobExecutor</literal> is a component that manages a couple of threads to fire timers (and later also asynchronous messages).
-    For unit testing scenarios, it is cumbersome to work with multiple threads. Therefore the API allows to query for 
-    (<literal>ManagementService.createJobQuery</literal>) and execute jobs (<literal>ManagementService.executeJob</literal>) through 
-    the API so that job execution can be controlled from within a unit test.  To avoid interference by the job executor, it can be turned off. 
+    <title>启用Job执行器</title>
+    <para><literal>JobExecutor</literal>是管理一系列线程的组件，可以触发定时器（也包含后续的异步消息）。
+    在单元测试场景下，很难使用多线程。因此API允许查询(<literal>ManagementService.createJobQuery</literal>)和执行job
+    (<literal>ManagementService.executeJob</literal>)，所以job可以在单元测试中控制。
+    要避免与job执行器冲突，可以关闭它。
     </para>
-    <para> 
-    By default, the <literal>JobExecutor</literal> is activated when the process engine boots. Specify
-    <programlisting>&lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /></programlisting>
-    when you don't want the <literal>JobExecutor</literal> to be activated upon booting the process engine.
+    <para>
+    默认，<literal>JobExecutor</literal>在流程引擎启动时就会激活。
+    如果不想在流程引擎启动后自动激活<literal>JobExecutor</literal>，可以设置
+   <programlisting>&lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /></programlisting>
     </para>
   </section>
-  
+
   <section id="mailServerConfiguration">
-    <title>Mail server configuration</title>
+    <title>配置邮件服务器</title>
     <para>
-      Configuring a mail server is optional. Activiti supports sending e-mails in business processes. To actually send an e-mail, a valid
-      SMTP mail server configuration is required. See the 
-      <link linkend="bpmnEmailTaskServerConfiguration">e-mail task</link> for the configuration options.
+      可以选择配置邮件服务器。Activiti支持在业务流程中发送邮件。
+      想真正的发送一个email，必须配置一个真实的SMTP邮件服务器。
+      参考<link linkend="bpmnEmailTaskServerConfiguration">e-mail任务</link>。
     </para>
   </section>
-  
+
   <section id="historyConfiguration">
-    <title>History configuration</title>
+    <title>配置历史</title>
     <para>
-      Customizing the configuration of history storage is optional. This allows you to tweak settings that influence the <link linkend="history">history capabilities</link>
-      of the engine. See <link linkend="historyConfig">history configuration</link> for more details.
+      可以选择定制历史存储的配置。你可以通过配置影响引擎的<link linkend="history">历史功能</link>。
+      参考<link linkend="historyConfig">历史配置</link>。
       <programlisting>&lt;property name=&quot;history&quot; value=&quot;audit&quot; /&gt;</programlisting>
     </para>
   </section>
-  
+
   <section id="exposingConfigurationBeans">
-    <title>Exposing configuration beans in expressions and scripts</title>
-    <para>By default, all beans that you specify in the <literal>activiti.cfg.xml</literal> configuration 
-    or in your own Spring configuration file are available to expressions and in the scripts.
-    If you want to limit the visibility of beans in your configuration file, you can 
-    configure a property called <literal>beans</literal> in your process engine configuration.
-    The beans property in <literal>ProcessEngineConfiguration</literal> is a map. When you specify that property,
-    only beans specified in that map will be visible to expressions and scripts.  The exposed beans 
-    will be exposed with the names as you specify in that map.  
+    <title>为表达式和脚本暴露配置</title>
+    <para>默认，<literal>activiti.cfg.xml</literal>和你自己的Spring配置文件中所有bean
+    都可以在表达式和脚本中使用。
+    如果你想限制配置文件中的bean的可见性，
+    可以配置流程引擎配置的beans配置。
+    <literal>ProcessEngineConfiguration</literal>的beans是一个map。当你指定了这个参数，
+    只有包含唉这个map中的bean可以在表达式和脚本中使用。
+    通过在map中指定的名称来决定暴露的bean。
     </para>
   </section>
   <section id="processDefinitionCacheConfiguration">
-    <title>Deployment cache configuration</title>
-    <para>All process definition are cached (after they're parsed) to avoid hitting
-    the database every time a process definition is needed and because process definition data doesn't change.
-    By default, there is no limit on this cache. To limit the process definition cache, add following property
+    <title>配置部署缓存</title>
+    <para>所有流程定义都被缓存了（解析之后）避免每次使用前都要访问数据库，
+    因为流程定义数据是不会改变的。
+    默认，不会限制这个缓存。如果想限制流程定义缓存，可以添加如下配置
     <programlisting>&lt;property name=&quot;processDefinitionCacheLimit&quot; value=&quot;10&quot; /&gt;</programlisting>
-    Setting this property will swap the default hashmap cache with a LRU cache that has the provided hard limit.
-    Of course, the 'best' value of this property depends on the total amount of process definitions stored and the number of
-    process definitions actually used at runtime by all the runtime process instances.</para>
-    <para>You can also inject your own cache implementation. This must be a bean that implements the
-    org.activiti.engine.impl.persistence.deploy.DeploymentCache interface:
+    这个配置会把默认的hashmap缓存替换成LRU缓存，来提供限制。
+    当然，这个配置的最佳值跟流程定义的总数有关，
+    实际使用中会具体使用多少流程定义也有关。</para>
+    <para>也你可以注入自己的缓存实现。这个bean必须实现
+    org.activiti.engine.impl.persistence.deploy.DeploymentCache接口：
     <programlisting>
 &lt;property name=&quot;processDefinitionCache&quot;&gt;
   &lt;bean class=&quot;org.activiti.MyCache&quot; />
 &lt;/property&gt;</programlisting></para>
-     <para>There is a similar property called <literal>knowledgeBaseCacheLimit</literal> and <literal>knowledgeBaseCache</literal> for configuring the rules cache.
-     This is only needed when you use the rules task in your processes.</para>
+     <para>有一个类似的配置叫<literal>knowledgeBaseCacheLimit</literal>和<literal>knowledgeBaseCache</literal>，
+     它们是配置规则缓存的。只有流程中使用规则任务时才会用到。</para>
     </section>
-  
-  <section id="loggingConfiguration">
-    <title>Logging</title>
-    <para>As of Activiti 5.12, SLF4J is used as logging framework, replacing the 
-    previous used java.util.logging. All logging (activiti, spring, mybatis, ...) is routed through SLF4J and allows for
-    selecting the logging-implementation of your choice.</para>
-    <para><emphasis role="bold">By default no SFL4J-binding jar is present in the activiti-engine dependencies, this should be added
-    in your project in order to use the logging framework of your choice.</emphasis> If no implementation jar is added, SLF4J will use a NOP-logger,
-     not logging anything at all, other than a warning that nothing will be logged. For more info on these bindings <ulink url="http://www.slf4j.org/codes.html#StaticLoggerBinder">http://www.slf4j.org/codes.html#StaticLoggerBinder</ulink>.</para>
 
-    <para>With Maven, add for example a dependency like this (here using log4j), note that you still need to add a version:
+  <section id="loggingConfiguration">
+    <title>日志</title>
+    <para>从Activiti 5.12开始，SLF4J被用作日志框架，替换了之前使用java.util.logging。
+    所有日志（activiti, spring, mybatis等等）都转发给SLF4J
+    允许使用你选择的日志实现。</para>
+    <para><emphasis role="bold">默认activiti-engine依赖中没有提供SLF4J绑定的jar，
+    需要根据你的实际需要使用日志框架。</emphasis>如果没有添加任何实现jar，SLF4J会使用NOP-logger，不使用任何日志，不会发出警告，而且什么日志都不会记录。
+    可以通过<ulink url="http://www.slf4j.org/codes.html#StaticLoggerBinder">http://www.slf4j.org/codes.html#StaticLoggerBinder</ulink>了解这些实现。</para>
+
+    <para>使用Maven，比如使用一个依赖（这里使用log4j），注意你还需要添加一个version：
     <programlisting>
 &lt;dependency&gt;
   &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
   &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;
 &lt;/dependency&gt;</programlisting></para>
-    
-    <para>The activiti-explorer and activiti-rest webapps are configured to use Log4j-binding. Log4j is also used when running the tests for all the activiti-* modules.</para>
-  
+
+    <para>activiti-explorer和activiti-rest应用都使用了Log4j绑定。执行所有activiti-*模块的单元测试页使用了Log4j。</para>
+
     <para>
-      <emphasis role="bold">Important note when using a container with commons-logging in the classpath:</emphasis>
-      In order to route the spring-logging through SLF4J, a bridge is used (see <ulink url="http://www.slf4j.org/legacy.html#jclOverSLF4J">http://www.slf4j.org/legacy.html#jclOverSLF4J</ulink>). If your container provides a commons-logging implementation,
-      please follow directions on this page: <ulink url="http://www.slf4j.org/codes.html#release">http://www.slf4j.org/codes.html#release</ulink> to ensure stability.
+      <emphasis role="bold">特别提醒如果容器classpath中存在commons-logging：</emphasis>
+	  为了把spring日志转发给SLF4J，需要使用桥接（参考<ulink url="http://www.slf4j.org/legacy.html#jclOverSLF4J">http://www.slf4j.org/legacy.html#jclOverSLF4J</ulink>）。
+	  如果你的容器提供了commons-logging实现，请参考下面网页：<ulink url="http://www.slf4j.org/codes.html#release">http://www.slf4j.org/codes.html#release</ulink>来确保稳定性。
     </para>
     <para>
-      Example when using Maven (version omitted):
+	  使用Maven的实例（忽略版本）：
       <programlisting>
 &lt;dependency&gt;
   &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
