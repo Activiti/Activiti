@@ -25,7 +25,7 @@ create table ACT_HI_ACTINST (
     CALL_PROC_INST_ID_ nvarchar(64),
     ACT_NAME_ nvarchar(255),
     ACT_TYPE_ nvarchar(255) not null,
-    ASSIGNEE_ nvarchar(64),
+    ASSIGNEE_ nvarchar(255),
     START_TIME_ datetime not null,
     END_TIME_ datetime,
     DURATION_ numeric(19,0),
