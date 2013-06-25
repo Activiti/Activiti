@@ -2,56 +2,49 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
 
 <chapter id="springintegration">
-  <title>Spring integration</title>
+  <title>Spring集成</title>
 
-  <para>While you can definitely use Activiti without Spring, we've provided some very nice integration features
-  that are explained in this chapter.  
+  <para>
+  虽然没有Spring你也一定可以使用Activiti，但是我们提供了一些非常不错的集成特性。这一章我们将介绍这些特性。
   </para>
-  
+
   <section>
     <title>ProcessEngineFactoryBean</title>
-    
+
     <para>
-      The <literal>ProcessEngine</literal> can be configured as a regular Spring bean.
-      The starting point of the integration is the class
-	    <literal>org.activiti.spring.ProcessEngineFactoryBean</literal>. That bean
-	    takes a process engine configuration and creates the process engine. 
-	    This means that the creation and configuration of properties for Spring is the same as documented in the <link linkend="configuration">configuration section</link>.
-	    For Spring integration the configuration and engine beans will look like this:    
+	 可以把流程引擎（<literal>ProcessEngine</literal>）作为一个普通的Spring bean进行配置。
+	 类 <literal>org.activiti.spring.ProcessEngineFactoryBean</literal>是集成的切入点。
+	 这个bean需要一个流程引擎配置来创建流程引擎。这也意味着在文档的<link linkend="configuration">配置这一章</link>的介绍属性的创建和配置对于Spring来说也是一样的。对于Spring集成的配置和流程引擎bean看起来像这样：
     <programlisting>
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
     ...
 &lt;/bean&gt;
-  
+
 &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
   &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
 &lt;/bean&gt;
   </programlisting>
-      Note that the <literal>processEngineConfiguration</literal> bean now uses the 
-      <literal>org.activiti.spring.SpringProcessEngineConfiguration</literal> class.
+	  注意现在使用的 <literal>processEngineConfiguration</literal> bean 是 <literal>org.activiti.spring.SpringProcessEngineConfiguration</literal> 类。
     </para>
   </section>
 
   <section>
-    <title>Transactions</title>
-    <para>We'll explain the <literal>SpringTransactionIntegrationTest</literal> found in the Spring examples
-    of the distribution step by step.  
-    Below is the Spring configuration file that we use in this example 
-    (you can find it in SpringTransactionIntegrationTest-context.xml). The section shown below 
-    contains the dataSource, transactionManager, processEngine and the Activiti
-    Engine services.
+    <title>事物</title>
+    <para>
+	我们将会一步一步地解释在Spring examples中公布的 <literal>SpringTransactionIntegrationTest</literal>
+	下面是我们使用这个例子的Spring配置文件（你可以在SpringTransactionIntegrationTest-context.xml找到它）以下展示的部分包括数据源（dataSource），
+	事务管理器（transactionManager），流程引擎（processEngine）和Activiti引擎服务。
+    </para>
+    <para>当把数据源（DataSource）传递给 <literal>SpringProcessEngineConfiguration</literal> （使用"dataSource"属性）之后，Activiti内部使用了一个<literal>org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy</literal>代理来封装传递进来的数据源（DataSource）。
+	这样做是为了确保从数据源（DataSource）获取的SQL连接能够与Spring的事物结合在一起发挥得更出色。这意味它不再需要在你的Spring配置中代理数据源（dataSource）了。
+	然而它仍然允许你传递一个<literal>TransactionAwareDataSourceProxy</literal>到<literal>SpringProcessEngineConfiguration</literal>中。在这个例子中并不会发生多余的包装。
     </para>
     <para>
-      When passing the DataSource to the <literal>SpringProcessEngineConfiguration</literal> (using property "dataSource"), Activiti uses a <literal>org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy</literal> internally, which wraps the passed DataSource.
-      This is done to make sure the SQL connections retrieved from the DataSource and the Spring transactions play well together.
-      This implies that it's no longer needed to proxy the dataSource yourself in Spring configuration, although it's still allowed to pass a <literal>TransactionAwareDataSourceProxy</literal> into the <literal>SpringProcessEngineConfiguration</literal>.
-      In this case no additional wrapping will occur.
-    </para>
-    <para>
-      <emphasis role="bold">Make sure when declaring a <literal>TransactionAwareDataSourceProxy</literal> in Spring configuration yourself, that you don't use it for resources that are already aware of Spring-transactions (e.g. DataSourceTransactionManager and JPATransactionManager need the un-proxied dataSource).</emphasis>
+      <emphasis role="bold">
+	  为了确保在你的Spring配置中申明的一个<literal>TransactionAwareDataSourceProxy</literal>，你不能把使用它的应用交给Spring事物控制的资源。（例如 DataSourceTransactionManager 和JPATransactionManager需要非代理的数据源 ）</emphasis>
     </para>
     <programlisting>
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
        xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
        xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
@@ -69,18 +62,18 @@
   &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
   &lt;/bean&gt;
-  
+
   &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
     &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
     &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;
     &lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /&gt;
   &lt;/bean&gt;
-  
+
   &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
     &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
   &lt;/bean&gt;
-  
+
   &lt;bean id=&quot;repositoryService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getRepositoryService&quot; /&gt;
   &lt;bean id=&quot;runtimeService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getRuntimeService&quot; /&gt;
   &lt;bean id=&quot;taskService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getTaskService&quot; /&gt;
@@ -88,10 +81,9 @@
   &lt;bean id=&quot;managementService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getManagementService&quot; /&gt;
 
 ...</programlisting>
-  <para>The remainder of that Spring configuration file contains the beans and configuration that we'll use in this particular
-  example:</para>
+  <para>Spring配置文件的其余部分包含beans和我们将要在这个特有的例子中的配置：</para>
   <programlisting>
-&lt;beans&gt;  
+&lt;beans&gt;
   ...
   &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;
 
@@ -102,17 +94,15 @@
   &lt;bean id=&quot;printer&quot; class=&quot;org.activiti.spring.test.Printer&quot; /&gt;
 
 &lt;/beans&gt;</programlisting>
-    <para>First the application context is created with any of the Spring ways to do that. In this 
-    example you could use a classpath XML resource to configure our Spring application context:
-    <programlisting>ClassPathXmlApplicationContext applicationContext = 
+    <para>
+	首先使用任意的一种Spring创建应用上下文的方式创建其Spring应用上下文。在这个例子中你可以使用类路径下面的XML资源来配置我们的Spring应用上下文：
+	<programlisting>ClassPathXmlApplicationContext applicationContext =
     new ClassPathXmlApplicationContext(&quot;org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml&quot;);</programlisting>
-    or, since it is a test:
+    或者, 如果它是一个测试的话:
     <programlisting>@ContextConfiguration(&quot;classpath:org/activiti/spring/test/transaction/SpringTransactionIntegrationTest-context.xml&quot;)</programlisting>
     </para>
-    <para>Then we can get the service beans and invoke methods on them.  The ProcessEngineFactoryBean will have 
-    added an extra interceptor to the services that applies Propagation.REQUIRED transaction semantics on 
-    the Activiti service methods.  So, for example, we can use the repositoryService to deploy
-    a process like this:  
+    <para>然后我们就可以得到Activiti的服务beans并且调用该服务上面的方法。ProcessEngineFactoryBean将会对该服务添加一些额外的拦截器，在Activiti服务上面的方法使用的是
+	Propagation.REQUIRED事物语义。所以，我们可以使用repositoryService去部署一个流程，如下所示：
     </para>
     <programlisting>RepositoryService repositoryService = (RepositoryService) applicationContext.getBean(&quot;repositoryService&quot;);
 String deploymentId = repositoryService
@@ -121,27 +111,26 @@ String deploymentId = repositoryService
   .deploy()
   .getId();
     </programlisting>
-    <para>The other way around also works.  In this case, the Spring transaction will 
-    be around the userBean.hello() method and the Activiti service method invocation will join that 
-    same transaction. 
+    <para>
+	其他相同的服务也是同样可以这么使用。在这个例子中，Spring的事物将会围绕在userBean.hello()上，并且调用Activiti服务的方法也会加入到这个事物中。
     </para>
     <programlisting>UserBean userBean = (UserBean) applicationContext.getBean(&quot;userBean&quot;);
 userBean.hello();</programlisting>
-    <para>The UserBean looks like this.  Remember from above in the Spring bean configuration we injected the 
-    repositoryService into the userBean.</para>
+    <para>
+	这个UserBean看起来像这样。记得在上面Spring bean的配置中我们把repositoryService注入到userBean中。</para>
     <programlisting>public class UserBean {
 
-  /** injected by Spring */
+  /** 由Spring注入 */
   private RuntimeService runtimeService;
 
   @Transactional
   public void hello() {
-    // here you can do transactional stuff in your domain model
-    // and it will be combined in the same transaction as 
-    // the startProcessInstanceByKey to the Activiti RuntimeService
+	//这里，你可以在你们的领域模型中做一些事物处理。
+	//当在调用Activiti RuntimeService的startProcessInstanceByKey方法时，
+	//它将会结合到同一个事物中。
     runtimeService.startProcessInstanceByKey(&quot;helloProcess&quot;);
   }
-  
+
   public void setRuntimeService(RuntimeService runtimeService) {
     this.runtimeService = runtimeService;
   }
@@ -149,13 +138,10 @@ userBean.hello();</programlisting>
   </section>
 
   <section id="springExpressions">
-    <title>Expressions</title>
-    <para>When using the ProcessEngineFactoryBean, by default, all <link linkend="apiExpressions">expressions</link> in the BPMN processes
-    will also 'see' all the Spring beans. It's possible to limit the beans you want to expose in expressions or even exposing no beans at all using a map that you can configure. 
-    The example below exposes a single bean (printer), available to use under the key "printer". 
-    <emphasis role="bold">To have NO beans exposed at all, just pass an empty list as 'beans' property on the SpringProcessEngineConfiguration. 
-    When no 'beans' property is set, all Spring beans in the context will be available. </emphasis>
-    </para>
+    <title>表达式</title>
+    <para>当使用ProcessEngineFactoryBean时候，默认情况下，在BPMN流程中的所有<link linkend="apiExpressions">表达式</link>都将会'看见'所有的Spring beans。
+	它可以限制你在表达式中暴露出的beans或者甚至可以在你的配置中使用一个Map不暴露任何beans。下面的例子暴露了一个单例bean（printer），可以把"printer"当作关键字使用.
+   <emphasis role="bold">想要不暴露任何beans，仅仅只需要在SpringProcessEngineConfiguration中传递一个空的list作为'beans'的属性。当不设置'beans'的属性时，在应用上下文中Spring beans都是可以使用的。</para>
     <programlisting>
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
   ...
@@ -165,36 +151,35 @@ userBean.hello();</programlisting>
     &lt;/map&gt;
   &lt;/property&gt;
 &lt;/bean&gt;
-  
+
   &lt;bean id=&quot;printer&quot; class=&quot;org.activiti.examples.spring.Printer&quot; /&gt;
     </programlisting>
-    
-    <para>Now the exposed beans can be used in expressions: for example, the SpringTransactionIntegrationTest <literal>hello.bpmn20.xml</literal>
-    shows how a method on a Spring bean can be invoked using a UEL method expression:
+
+    <para>现在暴露出来的beans就可以在表达式中使用：例如，在SpringTransactionIntegrationTest中的 <literal>hello.bpmn20.xml</literal>展示的是如何使用UEL方法表达式去调用Spring bean的方法：
     </para>
     <programlisting>&lt;definitions id=&quot;definitions&quot; ...>
-  
+
   &lt;process id=&quot;helloProcess&quot;&gt;
-  
+
     &lt;startEvent id=&quot;start&quot; /&gt;
     &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;start&quot; targetRef=&quot;print&quot; /&gt;
-    
+
     &lt;serviceTask id=&quot;print&quot; <emphasis role="bold">activiti:expression=&quot;#{printer.printMessage()}&quot;</emphasis> /&gt;
     &lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;print&quot; targetRef=&quot;end&quot; /&gt;
-    
+
     &lt;endEvent id=&quot;end&quot; /&gt;
-    
+
   &lt;/process&gt;
 
 &lt;/definitions&gt;</programlisting>
-    <para>Where <literal>Printer</literal> looks like this:</para>
+    <para>这里的 <literal>Printer</literal> 看起来像这样：</para>
     <programlisting>public class Printer {
 
   public void printMessage() {
     System.out.println(&quot;hello world&quot;);
   }
 }</programlisting>
-    <para>And the Spring bean configuration (also shown above) looks like this:</para>
+    <para>并且Spring bean的配置（如上文所示）看起来像这样：</para>
     <programlisting>&lt;beans ...>
   ...
 
@@ -204,66 +189,71 @@ userBean.hello();</programlisting>
   </section>
 
   <section>
-    <title>Automatic resource deployment</title>
-    <para>Spring integration also has a special feature for deploying resources.  In the process engine
-    configuration, you can specify a set of resources. When the process engine is created,
-    all those resources will be scanned and deployed.  There is filtering
-    in place that prevents duplicate deployments.  Only when the resources actually have changed, 
-    will new deployments be deployed to the Activiti DB. This makes sense in a lot of use case,
-    where the Spring container is rebooted often (e.g. testing).
+    <title>资源的自动部署</title>
+    <para>Spring的集成也有一个专门用于对资源部署的特性。在流程引擎的配置中，你可以指定一组资源。当流程引擎被创建的时候，
+	所有在这里的资源都将会被自动扫描与部署。在这里有过滤以防止资源重新部署，只有当这个资源真正发生改变的时候，它才会向Activiti使用的数据库创建新的部署。
+	这对于很多用例来说，当Spring容器经常重启的情况下（例如 测试），使用它是非常不错的选择。
     </para>
-    <para>Here's an example:</para>
+    <para>这里有一个例子：</para>
     <programlisting>
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
   ...
   <emphasis role="bold">&lt;property name=&quot;deploymentResources&quot; value=&quot;classpath*:/org/activiti/spring/test/autodeployment/autodeploy.*.bpmn20.xml&quot; /&gt;</emphasis>
 &lt;/bean&gt;
-  
+
 &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
   &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
 &lt;/bean&gt;</programlisting>
   </section>
-  
+
   <section id="springUnitTest">
-    <title>Unit testing</title>
+    <title>单元测试</title>
     <para>
-      When integrating with Spring, business processes can be tested very easily using the
-      standard <link linkend="apiUnitTesting">Activiti testing facilities</link>.
-      The following example shows how a business process is tested in a typical Spring-based unit test:
+	当集成Spring时，使用标准的<link linkend="apiUnitTesting">Activiti测试工具类</link>是非常容易的对业务流程进行测试。
+	下面的例子展示了如何在一个典型的基于Spring单元测试测试业务流程：
       <programlisting>
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(&quot;classpath:org/activiti/spring/test/junit4/springTypicalUsageTest-context.xml&quot;)
 public class MyBusinessProcessTest {
-  
+
   @Autowired
   private RuntimeService runtimeService;
-  
+
   @Autowired
   private TaskService taskService;
-  
+
   @Autowired
   @Rule
   public ActivitiRule activitiSpringRule;
-  
+
   @Test
   @Deployment
   public void simpleProcessTest() {
     runtimeService.startProcessInstanceByKey(&quot;simpleProcess&quot;);
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals(&quot;My Task&quot;, task.getName());
-  
+
     taskService.complete(task.getId());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-   
+
   }
-}      
+}
       </programlisting>
-      Note that for this to work, you need to define a <emphasis>org.activiti.engine.test.ActivitiRule</emphasis>
-      bean in the Spring configuration (which is injected by auto-wiring in the example above). 
+	  注意对于这种方式，你需要在Spring配置中（在上文的例子中它是自动注入的）定义一个<emphasis>org.activiti.engine.test.ActivitiRule</emphasis>bean
       <programlisting>
 &lt;bean id=&quot;activitiRule&quot; class=&quot;org.activiti.engine.test.ActivitiRule&quot;&gt;
   &lt;property name=&quot;processEngine&quot; ref=&quot;processEngine&quot; /&gt;
-&lt;/bean&gt;        
+&lt;/bean&gt;
+      </programlisting>
+    </para>
+  </section>
+</chapter>
+is to work, you need to define a <emphasis>org.activiti.engine.test.ActivitiRule</emphasis>
+      bean in the Spring configuration (which is injected by auto-wiring in the example above).
+      <programlisting>
+&lt;bean id=&quot;activitiRule&quot; class=&quot;org.activiti.engine.test.ActivitiRule&quot;&gt;
+  &lt;property name=&quot;processEngine&quot; ref=&quot;processEngine&quot; /&gt;
+&lt;/bean&gt;
       </programlisting>
     </para>
   </section>
