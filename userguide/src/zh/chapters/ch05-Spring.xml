@@ -7,10 +7,10 @@
   <para>
   虽然没有Spring你也一定可以使用Activiti，但是我们提供了一些非常不错的集成特性。这一章我们将介绍这些特性。
   </para>
-
+  
   <section>
     <title>ProcessEngineFactoryBean</title>
-
+    
     <para>
 	 可以把流程引擎（<literal>ProcessEngine</literal>）作为一个普通的Spring bean进行配置。
 	 类 <literal>org.activiti.spring.ProcessEngineFactoryBean</literal>是集成的切入点。
@@ -19,7 +19,7 @@
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
     ...
 &lt;/bean&gt;
-
+  
 &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
   &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
 &lt;/bean&gt;
@@ -31,7 +31,7 @@
   <section>
     <title>事物</title>
     <para>
-	我们将会一步一步地解释在Spring examples中公布的 <literal>SpringTransactionIntegrationTest</literal>
+	我们将会一步一步地解释在Spring examples中公布的 <literal>SpringTransactionIntegrationTest</literal> 
 	下面是我们使用这个例子的Spring配置文件（你可以在SpringTransactionIntegrationTest-context.xml找到它）以下展示的部分包括数据源（dataSource），
 	事务管理器（transactionManager），流程引擎（processEngine）和Activiti引擎服务。
     </para>
@@ -44,7 +44,7 @@
 	  为了确保在你的Spring配置中申明的一个<literal>TransactionAwareDataSourceProxy</literal>，你不能把使用它的应用交给Spring事物控制的资源。（例如 DataSourceTransactionManager 和JPATransactionManager需要非代理的数据源 ）</emphasis>
     </para>
     <programlisting>
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
        xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
        xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
@@ -62,18 +62,18 @@
   &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
   &lt;/bean&gt;
-
+  
   &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
     &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
     &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;
     &lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /&gt;
   &lt;/bean&gt;
-
+  
   &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
     &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
   &lt;/bean&gt;
-
+  
   &lt;bean id=&quot;repositoryService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getRepositoryService&quot; /&gt;
   &lt;bean id=&quot;runtimeService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getRuntimeService&quot; /&gt;
   &lt;bean id=&quot;taskService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getTaskService&quot; /&gt;
@@ -83,7 +83,7 @@
 ...</programlisting>
   <para>Spring配置文件的其余部分包含beans和我们将要在这个特有的例子中的配置：</para>
   <programlisting>
-&lt;beans&gt;
+&lt;beans&gt;  
   ...
   &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;
 
@@ -96,7 +96,7 @@
 &lt;/beans&gt;</programlisting>
     <para>
 	首先使用任意的一种Spring创建应用上下文的方式创建其Spring应用上下文。在这个例子中你可以使用类路径下面的XML资源来配置我们的Spring应用上下文：
-	<programlisting>ClassPathXmlApplicationContext applicationContext =
+	<programlisting>ClassPathXmlApplicationContext applicationContext = 
     new ClassPathXmlApplicationContext(&quot;org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml&quot;);</programlisting>
     或者, 如果它是一个测试的话:
     <programlisting>@ContextConfiguration(&quot;classpath:org/activiti/spring/test/transaction/SpringTransactionIntegrationTest-context.xml&quot;)</programlisting>
@@ -112,7 +112,7 @@ String deploymentId = repositoryService
   .getId();
     </programlisting>
     <para>
-	其他相同的服务也是同样可以这么使用。在这个例子中，Spring的事物将会围绕在userBean.hello()上，并且调用Activiti服务的方法也会加入到这个事物中。
+	其他相同的服务也是同样可以这么使用。在这个例子中，Spring的事物将会围绕在userBean.hello()上，并且调用Activiti服务的方法也会加入到这个事物中。 
     </para>
     <programlisting>UserBean userBean = (UserBean) applicationContext.getBean(&quot;userBean&quot;);
 userBean.hello();</programlisting>
@@ -130,7 +130,7 @@ userBean.hello();</programlisting>
 	//它将会结合到同一个事物中。
     runtimeService.startProcessInstanceByKey(&quot;helloProcess&quot;);
   }
-
+  
   public void setRuntimeService(RuntimeService runtimeService) {
     this.runtimeService = runtimeService;
   }
@@ -151,24 +151,24 @@ userBean.hello();</programlisting>
     &lt;/map&gt;
   &lt;/property&gt;
 &lt;/bean&gt;
-
+  
   &lt;bean id=&quot;printer&quot; class=&quot;org.activiti.examples.spring.Printer&quot; /&gt;
     </programlisting>
-
+    
     <para>现在暴露出来的beans就可以在表达式中使用：例如，在SpringTransactionIntegrationTest中的 <literal>hello.bpmn20.xml</literal>展示的是如何使用UEL方法表达式去调用Spring bean的方法：
     </para>
     <programlisting>&lt;definitions id=&quot;definitions&quot; ...>
-
+  
   &lt;process id=&quot;helloProcess&quot;&gt;
-
+  
     &lt;startEvent id=&quot;start&quot; /&gt;
     &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;start&quot; targetRef=&quot;print&quot; /&gt;
-
+    
     &lt;serviceTask id=&quot;print&quot; <emphasis role="bold">activiti:expression=&quot;#{printer.printMessage()}&quot;</emphasis> /&gt;
     &lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;print&quot; targetRef=&quot;end&quot; /&gt;
-
+    
     &lt;endEvent id=&quot;end&quot; /&gt;
-
+    
   &lt;/process&gt;
 
 &lt;/definitions&gt;</programlisting>
@@ -200,12 +200,12 @@ userBean.hello();</programlisting>
   ...
   <emphasis role="bold">&lt;property name=&quot;deploymentResources&quot; value=&quot;classpath*:/org/activiti/spring/test/autodeployment/autodeploy.*.bpmn20.xml&quot; /&gt;</emphasis>
 &lt;/bean&gt;
-
+  
 &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
   &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
 &lt;/bean&gt;</programlisting>
   </section>
-
+  
   <section id="springUnitTest">
     <title>单元测试</title>
     <para>
@@ -215,45 +215,35 @@ userBean.hello();</programlisting>
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(&quot;classpath:org/activiti/spring/test/junit4/springTypicalUsageTest-context.xml&quot;)
 public class MyBusinessProcessTest {
-
+  
   @Autowired
   private RuntimeService runtimeService;
-
+  
   @Autowired
   private TaskService taskService;
-
+  
   @Autowired
   @Rule
   public ActivitiRule activitiSpringRule;
-
+  
   @Test
   @Deployment
   public void simpleProcessTest() {
     runtimeService.startProcessInstanceByKey(&quot;simpleProcess&quot;);
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals(&quot;My Task&quot;, task.getName());
-
+  
     taskService.complete(task.getId());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-
+   
   }
-}
+}      
       </programlisting>
-	  注意对于这种方式，你需要在Spring配置中（在上文的例子中它是自动注入的）定义一个<emphasis>org.activiti.engine.test.ActivitiRule</emphasis>bean
+	  注意对于这种方式，你需要在Spring配置中（在上文的例子中它是自动注入的）定义一个<emphasis>org.activiti.engine.test.ActivitiRule</emphasis>bean 
       <programlisting>
 &lt;bean id=&quot;activitiRule&quot; class=&quot;org.activiti.engine.test.ActivitiRule&quot;&gt;
   &lt;property name=&quot;processEngine&quot; ref=&quot;processEngine&quot; /&gt;
-&lt;/bean&gt;
-      </programlisting>
-    </para>
-  </section>
-</chapter>
-is to work, you need to define a <emphasis>org.activiti.engine.test.ActivitiRule</emphasis>
-      bean in the Spring configuration (which is injected by auto-wiring in the example above).
-      <programlisting>
-&lt;bean id=&quot;activitiRule&quot; class=&quot;org.activiti.engine.test.ActivitiRule&quot;&gt;
-  &lt;property name=&quot;processEngine&quot; ref=&quot;processEngine&quot; /&gt;
-&lt;/bean&gt;
+&lt;/bean&gt;        
       </programlisting>
     </para>
   </section>

@@ -35,7 +35,7 @@
       </itemizedlist>
     </para>
   </section>
-
+  
    <section id="jpaconfiguration">
     <title>配置</title>
     <para>为了能够使用JPA的实体，引擎必须有一个对<literal>EntityManagerFactory</literal>的引用。
@@ -44,7 +44,7 @@
 		下面例子中的配置是使用jpaPersistenceUnitName：
         <programlisting>
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration&quot;&gt;
-
+  
     &lt;!-- 数据库的配置 --&gt;
     &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;
     &lt;property name=&quot;jdbcUrl&quot; value=&quot;jdbc:h2:mem:JpaVariableTest;DB_CLOSE_DELAY=1000&quot; /&gt;
@@ -52,14 +52,14 @@
     <emphasis role="bold">&lt;property name=&quot;jpaPersistenceUnitName&quot; value=&quot;activiti-jpa-pu&quot; /&gt;
     &lt;property name=&quot;jpaHandleTransaction&quot; value=&quot;true&quot; /&gt;
     &lt;property name=&quot;jpaCloseEntityManager&quot; value=&quot;true&quot; /&gt;</emphasis>
-
+    
     &lt;!-- job executor configurations --&gt;
     &lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /&gt;
-
+    
     &lt;!-- mail server configurations --&gt;
-    &lt;property name=&quot;mailServerPort&quot; value=&quot;5025&quot; /&gt;
+    &lt;property name=&quot;mailServerPort&quot; value=&quot;5025&quot; /&gt;    
 &lt;/bean&gt;
-        </programlisting>
+        </programlisting>  
 		接下来例子中的配置提供了一个我们自定义的<literal>EntityManagerFactory</literal>(在这个例子中，使用了OpenJPA 实体管理器)。注意该代码片段仅仅包含与例子相关的beans，去掉了其他beans。OpenJPA实体管理的完整并可以使用的例子可以在activiti-spring-examples(<literal>/activiti-spring/src/test/java/org/activiti/spring/test/jpa/JPASpringTest.java</literal>)中找到。
         <programlisting>
 &lt;bean id=&quot;entityManagerFactory&quot; class=&quot;org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean&quot;&gt;
@@ -125,7 +125,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration
       <title>简单例子</title>
       <para>
 	  使用JPA变量的例子可以在
-       <literal><ulink url="http://svn.codehaus.org/activiti/activiti/trunk/modules/activiti-engine/src/test/java/org/activiti/standalone/jpa/JPAVariableTest.java">JPAVariableTest</ulink></literal>中找到。我们将会一步一步的解释<literal>JPAVariableTest.testUpdateJPAEntityValues</literal>。
+       <literal><ulink url="http://svn.codehaus.org/activiti/activiti/trunk/modules/activiti-engine/src/test/java/org/activiti/standalone/jpa/JPAVariableTest.java">JPAVariableTest</ulink></literal>中找到。我们将会一步一步的解释<literal>JPAVariableTest.testUpdateJPAEntityValues</literal>。      
 	  </para>
       <para>
 		首先，我们需要创建一个基于<literal>META-INF/persistence.xml</literal>的<literal>EntityManagerFactory</literal>作为我们的持久化单元。它包含持久化单元中所有的类和一些供应商特定的配置。
@@ -161,7 +161,7 @@ public class FieldAccessJPAEntity {
   public void setValue(String value) {
     this.value = value;
   }
-}
+}       
         </programlisting>
       </para>
       <para>
@@ -169,14 +169,14 @@ public class FieldAccessJPAEntity {
         <programlisting>
 Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();
 variables.put("entityToUpdate", entityToUpdate);
-
+    
 ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("UpdateJPAValuesProcess", variables);
         </programlisting>
       </para>
       <para>
 		在我们的流程定义中的第一个节点是一个<literal>服务任务</literal>，它将会调用<literal>entityToUpdate</literal>上的<literal>setValue</literal>方法，它其实就是我们之前在启动流程实例时候设置的JPA变量并且它将会从当前流程引擎的上下文关联的<literal>EntityManager</literal>中加载。
         <programlisting>
-&lt;serviceTask id='theTask' name='updateJPAEntityTask' activiti:expression=&quot;${entityToUpdate.setValue('updatedValue')}&quot; /&gt;
+&lt;serviceTask id='theTask' name='updateJPAEntityTask' activiti:expression=&quot;${entityToUpdate.setValue('updatedValue')}&quot; /&gt;        
         </programlisting>
       </para>
       <para>
@@ -189,21 +189,21 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
         </programlisting>
       </para>
     </section>
-
+    
     <section>
       <title>查询JPA流程变量</title>
       <para>
 		你可以查询某一JPA实体作为变量的<literal>ProcessInstance</literal>s 和 <literal>Execution</literal>s 。
-        <emphasis role="bold">注意，在<literal>ProcessInstanceQuery</literal> 和 <literal>ExecutionQuery</literal>查询中仅仅<literal>variableValueEquals(name, entity)</literal>
+        <emphasis role="bold">注意，在<literal>ProcessInstanceQuery</literal> 和 <literal>ExecutionQuery</literal>查询中仅仅<literal>variableValueEquals(name, entity)</literal> 
 		支持JPA实体变量 </emphasis>。
-        方法 <literal>variableValueNotEquals</literal>, <literal>variableValueGreaterThan</literal>, <literal>variableValueGreaterThanOrEqual</literal>, <literal>variableValueLessThan</literal>
-        和 <literal>variableValueLessThanOrEqual</literal>并不被支持并且传递JPA实体值的时候会抛出一个<literal>ActivitiException</literal>。
+        方法 <literal>variableValueNotEquals</literal>, <literal>variableValueGreaterThan</literal>, <literal>variableValueGreaterThanOrEqual</literal>, <literal>variableValueLessThan</literal> 
+        和 <literal>variableValueLessThanOrEqual</literal>并不被支持并且传递JPA实体值的时候会抛出一个<literal>ActivitiException</literal>。 
         <programlisting>
  ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery", entityToQuery).singleResult();
         </programlisting>
       </para>
     </section>
-
+    
     <section>
       <title>使用Spring beans和JPA结合的高级例子</title>
       <para>
@@ -221,7 +221,7 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
                 <listitem>
                   <para>
 				  服务任务，创建一个新的贷款申请，使用已经存在的<literal>LoanRequestBean</literal> 接受启动流程时候的变量（例如 可以来自流程启动时候的表单）。
-				  使用<literal>activiti:resultVariable</literal>（它作为一个变量对表达式返回的结果进行存储）将创建出来的实体作为变量进行存储。
+				  使用<literal>activiti:resultVariable</literal>（它作为一个变量对表达式返回的结果进行存储）将创建出来的实体作为变量进行存储。 
                   </para>
                 </listitem>
                 <listitem><para>
@@ -244,39 +244,39 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
       <para>
         <programlisting>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;definitions id=&quot;taskAssigneeExample&quot;
+&lt;definitions id=&quot;taskAssigneeExample&quot; 
   xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
   xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
   xmlns:activiti=&quot;http://activiti.org/bpmn&quot;
   targetNamespace=&quot;org.activiti.examples&quot;&gt;
-
+  
   &lt;process id=&quot;LoanRequestProcess&quot; name=&quot;Process creating and handling loan request&quot;&gt;
     &lt;startEvent id='theStart' /&gt;
     &lt;sequenceFlow id='flow1' sourceRef='theStart' targetRef='createLoanRequest' /&gt;
-
-    &lt;serviceTask id='createLoanRequest' name='Create loan request'
-      activiti:expression=&quot;${loanRequestBean.newLoanRequest(customerName, amount)}&quot;
-      activiti:resultVariable=&quot;loanRequest&quot;/&gt;
+    
+    &lt;serviceTask id='createLoanRequest' name='Create loan request' 
+      activiti:expression=&quot;${loanRequestBean.newLoanRequest(customerName, amount)}&quot; 
+      activiti:resultVariable=&quot;loanRequest&quot;/&gt;    
     &lt;sequenceFlow id='flow2' sourceRef='createLoanRequest' targetRef='approveTask' /&gt;
-
+    
     &lt;userTask id=&quot;approveTask&quot; name=&quot;Approve request&quot; /&gt;
     &lt;sequenceFlow id='flow3' sourceRef='approveTask' targetRef='approveOrDissaprove' /&gt;
-
-    &lt;serviceTask id='approveOrDissaprove' name='Store decision'
+    
+    &lt;serviceTask id='approveOrDissaprove' name='Store decision' 
       activiti:expression=&quot;${loanRequest.setApproved(approvedByManager)}&quot; /&gt;
     &lt;sequenceFlow id='flow4' sourceRef='approveOrDissaprove' targetRef='exclusiveGw' /&gt;
-
-    &lt;exclusiveGateway id=&quot;exclusiveGw&quot; name=&quot;Exclusive Gateway approval&quot; /&gt;
+    
+    &lt;exclusiveGateway id=&quot;exclusiveGw&quot; name=&quot;Exclusive Gateway approval&quot; /&gt; 
     &lt;sequenceFlow id=&quot;endFlow1&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;theEnd&quot;&gt;
       &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${loanRequest.approved}&lt;/conditionExpression&gt;
     &lt;/sequenceFlow&gt;
     &lt;sequenceFlow id=&quot;endFlow2&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;sendRejectionLetter&quot;&gt;
       &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${!loanRequest.approved}&lt;/conditionExpression&gt;
     &lt;/sequenceFlow&gt;
-
+    
     &lt;userTask id=&quot;sendRejectionLetter&quot; name=&quot;Send rejection letter&quot; /&gt;
     &lt;sequenceFlow id='flow5' sourceRef='sendRejectionLetter' targetRef='theOtherEnd' /&gt;
-
+    
     &lt;endEvent id='theEnd' /&gt;
     &lt;endEvent id='theOtherEnd' /&gt;
   &lt;/process&gt;
@@ -287,25 +287,6 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
       </para>
       <para>虽然上面的例子非常的简单，但是它却展示了JPA结合Spring和参数化方法表达式的强大优势。这样所有的流程就不需要自定义java代码（当然，除了Spring bean之外）
 	  并且大幅度的加快了流程部署。
-      </para>
-    </section>
-  </section>
-</chapter>n&quot;&gt;${!loanRequest.approved}&lt;/conditionExpression&gt;
-    &lt;/sequenceFlow&gt;
-
-    &lt;userTask id=&quot;sendRejectionLetter&quot; name=&quot;Send rejection letter&quot; /&gt;
-    &lt;sequenceFlow id='flow5' sourceRef='sendRejectionLetter' targetRef='theOtherEnd' /&gt;
-
-    &lt;endEvent id='theEnd' /&gt;
-    &lt;endEvent id='theOtherEnd' /&gt;
-  &lt;/process&gt;
-
-&lt;/definitions&gt;
-
-        </programlisting>
-      </para>
-      <para>Although the example above is quite simple, it shows the power of using JPA combined with Spring and parametrized method-expressions. The process requires
-      no custom java-code at all (except for the Spring-bean off course) and speeds up development drastically.
       </para>
     </section>
   </section>
