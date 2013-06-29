@@ -54,16 +54,23 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   protected String deploymentName = "SpringAutoDeployment";
   protected Resource[] deploymentResources = new Resource[0];
   protected ApplicationContext applicationContext;
+  protected Integer transactionSynchronizationAdapterOrder = null;
+  
   
   public SpringProcessEngineConfiguration() {
     transactionsExternallyManaged = true;
   }
+  
   
   @Override
   public ProcessEngine buildProcessEngine() {
     ProcessEngine processEngine = super.buildProcessEngine();
     autoDeployResources(processEngine);
     return processEngine;
+  }
+  
+  public void setTransactionSynchronizationAdapterOrder(Integer transactionSynchronizationAdapterOrder) {
+    this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
   }
   
   protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
@@ -93,7 +100,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   @Override
   protected void initTransactionContextFactory() {
     if(transactionContextFactory == null && transactionManager != null) {
-      transactionContextFactory = new SpringTransactionContextFactory(transactionManager);
+      transactionContextFactory = new SpringTransactionContextFactory(transactionManager, transactionSynchronizationAdapterOrder);
     }
   }
   
