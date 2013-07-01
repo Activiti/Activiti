@@ -45,6 +45,9 @@
   
   <sql id="selectDeploymentsByQueryCriteriaSql">  
     from ${prefix}ACT_RE_DEPLOYMENT RES
+    <if test="processDefinitionKey != null or processDefinitionKeyLike != null">
+    	inner join ${prefix}ACT_RE_PROCDEF PROCDEF on RES.ID_ = PROCDEF.DEPLOYMENT_ID_
+    </if>
     <where>
       <if test="deploymentId != null">
         RES.ID_ = #{deploymentId}
@@ -60,6 +63,12 @@
       </if>
       <if test="categoryNotEquals != null">
         and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
+      </if>
+      <if test="processDefinitionKey != null">
+        and PROCDEF.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processDefinitionKeyLike != null">
+        and PROCDEF.KEY_ like #{processDefinitionKeyLike}
       </if>
     </where>
   </sql>
