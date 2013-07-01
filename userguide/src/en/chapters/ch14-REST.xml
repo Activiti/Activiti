@@ -5068,7 +5068,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
    <section>
       <title>Query for tasks</title>
         <para>
-          <programlisting>POST repository/tasks</programlisting>
+          <programlisting>POST query/tasks</programlisting>
         </para>
         <para>
           <emphasis role="bold">Request body:</emphasis>
