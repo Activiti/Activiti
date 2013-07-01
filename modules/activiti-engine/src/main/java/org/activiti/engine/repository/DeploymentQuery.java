@@ -48,6 +48,12 @@ public interface DeploymentQuery extends Query<DeploymentQuery, Deployment>{
   /** Only select deployments that have a different category then the given one. 
    * @see DeploymentBuilder#category(String) */
   DeploymentQuery deploymentCategoryNotEquals(String categoryNotEquals);
+  
+  /** Only select deployments with the given process definition key. */
+  DeploymentQuery processDefinitionKey(String key);
+  
+  /** Only select deployments with a process definition key like the given string. */
+  DeploymentQuery processDefinitionKeyLike(String keyLike);
 
   //sorting ////////////////////////////////////////////////////////
   

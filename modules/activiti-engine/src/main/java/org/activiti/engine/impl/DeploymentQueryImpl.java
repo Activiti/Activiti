@@ -35,7 +35,8 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   protected String nameLike;
   protected String category;
   protected String categoryNotEquals;
-
+  protected String processDefinitionKey;
+  protected String processDefinitionKeyLike;
 
   public DeploymentQueryImpl() {
   }
@@ -88,9 +89,25 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
     return this;
   }
 
+  public DeploymentQueryImpl processDefinitionKey(String key) {
+  	if (key == null) {
+  		throw new ActivitiIllegalArgumentException("key is null");
+  	}
+  	this.processDefinitionKey = key;
+  	return this;
+  }
+
+  public DeploymentQueryImpl processDefinitionKeyLike(String keyLike) {
+    if (keyLike == null) {
+      throw new ActivitiIllegalArgumentException("keyLike is null");
+    }
+    this.processDefinitionKeyLike = keyLike;
+    return this;
+  }
 
   //sorting ////////////////////////////////////////////////////////
   
+
   public DeploymentQuery orderByDeploymentId() {
     return orderBy(DeploymentQueryProperty.DEPLOYMENT_ID);
   }
