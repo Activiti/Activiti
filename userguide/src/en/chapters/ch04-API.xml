@@ -403,8 +403,9 @@ taskVariables.put(&quot;vacationApproved&quot;, &quot;false&quot;);
 taskVariables.put(&quot;managerMotivation&quot;, &quot;We have a tight deadline!&quot;);
 taskService.complete(task.getId(), taskVariables);            
             </programlisting>
-            The process instance will now continue to the next step. In this example, this will
-            be the first step again, because the task was not approved.
+            The process instance will now continue to the next step. In this example, the next step allows the employee 
+            to complete a form that adjusts their original vacation request. The employee can resubmit the vacation request which
+            will cause the process to loop back to the start task.
         </para>
     </section>
     
