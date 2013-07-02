@@ -2,27 +2,24 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
 
 <chapter id="chDeployment">
-  <title>Deployment</title>
+  <title>部署</title>
 
   <section>
-    <title>Business archives</title>
-    <para>To deploy processes, they have to be wrapped in a business archive.  A business archive is the unit 
-    of deployment to an Activiti Engine. A business archive is equivalent to a zip file.  It can contain 
-    BPMN 2.0 processes, task forms, rules and any other type of file.  In general, a business archive 
-    contains a collection of named resources.  
+    <title>业务文档</title>
+    <para>
+	为了部署流程，他们不得不包装在一个业务文档中。一个业务文档是Activiti引擎部署的单元。一个业务文档相当与一个压缩文件，它包含BPMN2.0流程，任务表单，规则和其他任意类型的文件。
+	大体上，业务文档是包含命名资源的容器。 
     </para>
-    <para>When a business archive is deployed, it is scanned for BPMN files with a <literal>.bpmn20.xml</literal> or <literal>.bpmn</literal> extension.
-    Each of those will be parsed and may contain multiple process definitions.  
+    <para>当一个业务文档被部署，它将会自动扫描以 <literal>.bpmn20.xml</literal> 或者<literal>.bpmn</literal>作为扩展名的BPMN文件。每个那样的文件都将会被解析并且可能会包含多个流程定义。
     </para>
     <note>
       <para>
-        Java classes present in the business archive <emphasis role="bold">will not be added to the classpath</emphasis>. All custom classes used in process definitions in the business archive (for example Java service tasks or event listener implementations) should be present
-        on the activiti-engine's classpath in order to run the processes. 
-      </para>
+		业务归档中的Java类<emphasis role="bold">将不能够添加到类路径下</emphasis>。为了能够让流程运行，必须把存在于业务归档程中的流程定义使用的所有自定义的类（例如：Java服务任务或者实现事件的监听器）放在activiti引擎的类路径下：
+        </para>
     </note>
 	  <section>
-	    <title>Deploying programmatically</title>
-	    <para>Deploying a business archive from a zip file can be done like this: 
+	    <title>编程式部署</title>
+	    <para>通过一个压缩文件（支持Zip和Bar）部署业务归档，它看起来像这样：
 	    </para>
 	    <programlisting>String barFileName = "path/to/process-one.bar";
 ZipInputStream inputStream = new ZipInputStream(new FileInputStream(barFileName));
@@ -32,18 +29,18 @@ repositoryService.createDeployment()
     .addZipInputStream(inputStream)
     .deploy();
 	</programlisting>
-	    <para>It's also possible to build a deployment from individual resources. 
-	    See the javadocs for more details.</para>
+	    <para>
+		它也可以通过一个独立资源（例如bpmn，xml等）构建部署。
+		详细信息请查看javadocs。
+		</para>
 	  </section>
 	  
     <section id="deploymentWithExplorer">
-      <title>Deploying with Activiti Explorer</title>
-      <para>
-        The Activiti Explorer webapp allows uploading bar files (and single <literal>bpmn20.xml</literal> files) through the webapp user interface.
-        Choose the <emphasis>Management tab</emphasis> and click on <emphasis>Deployment</emphasis>:
+      <title>通过Activiti Explorer控制台部署</title>
+      <para>Activiti web控制台允许你通过web界面的用户接口上传一个bar格式的压缩文件（或者一个<literal>bpmn20.xml</literal>格式的文件）。
+		选择<emphasis>Management 标签</emphasis> 和 点击 <emphasis>Deployment</emphasis>:
         <mediaobject><imageobject><imagedata align="center" fileref="images/deployment.explorer.png"/></imageobject></mediaobject>
-        A popup window now allows you to select a file from your computer, or you can simply drag and drop
-        to the designated area (if your browser supports it).
+        现在将会有一个弹出窗口允许你从电脑上面选择一个文件，或者你可以简单的拖拽到指定的区域（如果你的浏览器支持）。
         <mediaobject><imageobject><imagedata align="center" fileref="images/deployment.explorer.2.png"/></imageobject></mediaobject>
       </para>
     </section>
@@ -51,79 +48,65 @@ repositoryService.createDeployment()
   </section>
 
   <section>
-    <title>External resources</title>
-    <para>Process definitions live in the Activiti database. These process 
-    definitions can reference delegation classes when using Service Tasks or  
-    execution listeners or Spring beans from the Activiti configuration file.
-    These classes and the Spring configuration file have to be available 
-    to all process engines that may execute the process definitions.
+    <title>外部资源</title>
+    <para>流程定义保存在Activiti所支持的数据库中。当使用服务任务、执行监听器或者从Activiti配置文件中配置的Spring beans时，流程定义能够引用这些委托类。
+	这些类或者Spring配置文件对于所有流程引擎中可能执行的流程定义必须是可用的。
     </para>
     <section>
-      <title>Java classes</title>
-      <para>All custom classes that are used in your process (e.g. JavaDelegates used in Service Tasks or event-listeners, TaskListeners, ...) should be 
-      present on the engine's classpath when an instance of the process is started.</para>
-      <para>During deployment of a business archive however, those classes don't have to be present on the classpath.  
-      This means that your delegation classes don't have to be on the classpath when deploying a new 
-      business archive with Ant.
+      <title>Java类</title>
+      <para>
+	  当流程实例被启动的时候，在流程中被使用的所有自定义类（例如：服务任务中使用的JavaDelegates、事件监听器、任务监听器,...）应该存在与流程引擎的类路径下。</para>
+      <para>然后，在部署业务文档时，这些类不必都存在于类路径下。当使用Ant部署一个新的业务文档时，这意味着你的委托类不必存在与类路径下。
       </para>
-      <para>When you are using the demo setup and you want to add your custom classes, you should add a jar containing your classes to the activiti-explorer or activiti-rest webapp lib. Don't forget to include the dependencies of your custom classes (if any) as well. Alternatively, you can include your dependencies in the libraries directory of your Tomcat installation, <literal>${tomcat.home}/lib</literal>.
-      </para>
-    </section>
-    <section>
-      <title>Using Spring beans from a process</title>
-      <para>When expressions or scripts use Spring beans, those beans have to be available to the engine when executing the process definition.
-      If you are building your own webapp and you configure your process engine in your context as described in 
-      <link linkend="springintegration">the spring integration section</link>, that is straightforward.
-      But bear in mind that you also should update the Activiti rest webapp with that context if you use it.
-      You can do that by replacing the <literal>activiti.cfg.xml</literal> in the <literal>activiti-rest/lib/activiti-cfg.jar</literal> JAR file
-      with an <literal>activiti-context.xml</literal> file containing your Spring context configuration.
+      <para>
+	  当你使用示例设置并添加你自定义的类，你应该添加包含自定义类的jar包到activiti-explorer控制台或者activiti-rest 的webapp lib文件夹中。以及不要忽略包含你自定义类的依赖关系（如果有）。
+	  另外，你还可以包含你自己的依赖添加到你的Tomcat容器的安装目录中的<literal>${tomcat.home}/lib</literal>。
       </para>
     </section>
     <section>
-      <title>Creating a single app</title>
-      <para>Instead of making sure that all process engines have all the delegation classes 
-      on their classpath and use the right Spring configuration, you may consider including the Activiti rest webapp inside your own webapp so that there is only
-      a single <literal>ProcessEngine</literal>.
+      <title>在流程中使用Spring beans</title>
+      <para>当表达式或者脚本使用Spring beans时，这些beans对于引擎执行流程定义时必须是可用的。如果你将要构建你自己的web应用并且按照<link linkend="springintegration">Spring集成这一章</link>中描述那样在你的应用上下文配置流程引擎，这个看上去非常的简单。但是要记住，如果你也在使用 Activiti rest web应用，那么也应该更新 Activiti rest web应用的上下文。
+	  你可以把在<literal>activiti-rest/lib/activiti-cfg.jar</literal> 文件中的<literal>activiti.cfg.xml</literal>替换成你的Spring上下文配置的<literal>activiti-context.xml</literal>文件。</para>
+    </section>
+    <section>
+      <title>创建独立应用</title>
+      <para>你可以考虑把Activiti rest web 应用加入到你的web应用之中，因此，就仅仅只需要配置一个 <literal>ProcessEngine</literal>，从而不用确保所有的流程引擎的所有委托类在类路径下面并且是否使用正确的spring配置。
       </para>
     </section>
   </section>
     
   <section id="versioningOfProcessDefinitions">
-    <title>Versioning of process definitions</title>
-    <para>BPMN doesn't have a notion of versioning.  That is actually good because the executable BPMN process 
-    file will probably live in a version control system repository (e.g. Subversion, Git or Mercurial) as part of your development project.  Versions of process definitions
-    are created during deployment. During deployment, Activiti will assign a version to the <literal>ProcessDefinition</literal> 
-    before it is stored in the Activiti DB.
+    <title>流程定义的版本</title>
+    <para>BPMN中并没有版本的概念，没有版本也是不错的，因为可执行的BPMN流程作为你开发项目的一部分存在版本控制系统的知识库中（例如 SVN,Git 或者Mercurial）。
+	而在Activiti中，流程定义的版本是在部署的时候被创建。当部署的时候，流程定义被存储到Activiti使用的数据库之前，Activiti讲会自动给 <literal>流程定义</literal> 分配一个版本号。
     </para>
-    <para>For each process definition in a business archive the following steps are performed to 
-    initialize the properties <literal>key</literal>, <literal>version</literal>, <literal>name</literal> and <literal>id</literal>:
+    <para>对于业务文档中每一个的流程定义，都会通过下列部署执行初始化属性<literal>key</literal>, <literal>version</literal>, <literal>name</literal> and <literal>id</literal>:
     </para>
     
     <itemizedlist>
-      <listitem><para>The process definition <literal>id</literal> attribute in the XML file is used as the process definition <literal>key</literal> property.</para></listitem>
-      <listitem><para>The process definition <literal>name</literal> attribute in the XML file is used as the process definition <literal>name</literal> property.
-        If the name attribute is not specified, then id attribute is used as the name.
+      <listitem><para>
+	  XML文件中流程定义（流程模型）的 <literal>id</literal>属性被当做是流程定义的 <literal>key</literal>属性。
+	 </para></listitem>
+      <listitem><para>
+		XML文件中的流程模型的<literal>name</literal> 属性被当做是流程定义的 <literal>name</literal> 属性。如果该name属性并没有指定，那么id属性被当做是name。
       </para></listitem>
-      <listitem><para>The first time a process with a particular key is deployed, version 1 is assigned.  For all subsequent deployments of
-      process definitions with the same key, the version will be set 1 higher then the maximum currently deployed version. The key property
-      is used to distinguish process definitions.</para></listitem>
+      <listitem><para>带有特定key的流程定义在第一次部署的时候，将会自动分配版本号为1，对于之后部署相同key的流程定义时候，这次部署的版本号将会设置为比当前最大的版本号大1的值。该key属性被用来区别不同的流程定义。
+	  </para></listitem>
       <listitem>
         <para>
-          The id property is set to {processDefinitionKey}:{processDefinitionVersion}:{generated-id},
-          where <literal>generated-id</literal> is a unique number added to guarantee uniqueness
-          of the process id for the process definition caches in a clustered environment.
+		  流程定义中的id属性被设置为 {processDefinitionKey}:{processDefinitionVersion}:{generated-id},
+          这里的<literal>generated-id</literal>是一个唯一的数字被添加，用于确保在集群环境中缓存的流程定义的唯一性。
         </para>
       </listitem>
     </itemizedlist>
     
     <para>
-      Take for example the following process
+		举个流程的例子
 <programlisting>
 &lt;definitions id=&quot;myDefinitions&quot; &gt;
   &lt;process id=&quot;myProcess&quot; name=&quot;My important process&quot; &gt;
     ...      
-</programlisting>    
-      When deploying this process definition, the process definition in the database will look like this:
+</programlisting>当部署了这个流程定义之后，在数据库中的流程定义看起来像这样：
       <table>
         <title></title>
         <tgroup cols='4'>
@@ -144,10 +127,8 @@ repositoryService.createDeployment()
             </row>
           </tbody>
         </tgroup>
-      </table>
-      Suppose we now deploy an updated version of the same process (e.g. changing some user tasks),
-      but the <literal>id</literal> of the process definition remains the same. The process
-      definition table will now contain the following entries:
+      </table>假设我们现在部署用一个流程的最新版本号（例如 改变用户任务），但是流程定义的<literal>id</literal>保持不变。
+	  流程定义表将包含以下列表信息：      
        <table>
         <title></title>
         <tgroup cols='4'>
@@ -174,13 +155,11 @@ repositoryService.createDeployment()
           </tbody>
         </tgroup>
       </table> 
-      When the <literal>runtimeService.startProcessInstanceByKey("myProcess")</literal> is called,
-      it will now use the process definition with version <literal>2</literal>, as this is the 
-      latest version of the process definition.
-    </para>
+	  当 <literal>runtimeService.startProcessInstanceByKey("myProcess")</literal>方法被调用时，它将会使用流程定义版本号为2的，因为这是最新版本的流程定义。可以说每次流程定义创建流程实例时，都会默认使用最新版本的流程定义。
+	  </para>
 
     <para>
-      Should we create a second process, as defined below and deploy this to Activiti, a third row will be added to the table. 
+	   我们应该创建第二个流程，在Activiti中，如下,定义并且部署它，该流程定义会添加到流程定义表中。
     </para>
 <programlisting>
 &lt;definitions id=&quot;myNewDefinitions&quot; &gt;
@@ -189,7 +168,7 @@ repositoryService.createDeployment()
 </programlisting>
 
   <para>
-    The table will look like this:
+    这个表结构看起来像这样:
   </para>
 
   <table>
@@ -226,52 +205,43 @@ repositoryService.createDeployment()
   </table> 
 
   <para>
-    Note how the key for the new process is different from our first process. Even though the name is the same (we should probably have changed that too), Activiti only considers the <literal>id</literal> attribute when distinguishing processes. The new process is therefore deployed with version 1.
+	注意：为何新流程的key与我们的第一个流程是不同的？尽管流程定义的名称是相同的（当然，我们应该也是可以改变这一点的），Activiti仅仅只考虑<literal>id</literal>属性判断流程。因此，新的流程定义部署的版本号为1。
   </para>
     
   </section>
   
   <section id="providingProcessDiagram">
-    <title>Providing a process diagram</title>
+    <title>提供流程图片</title>
     <para>
-      A process diagram image can be added to a deployment. This image will be stored in 
-      the Activiti repository and is accessible through the API. This image is also used
-      to visualize the process in Activiti Explorer.
+	  流程定义的流程图可以被添加到部署中，该流程图将会持久化到Activiti所使用的数据库中并且可以通过Activiti的API进行访问。该流程图也可以被用来在Activiti Explorer控制台中的流程中进行显示。
     </para>
     <para>
-      Suppose we have a process on our classpath, <literal>org/activiti/expenseProcess.bpmn20.xml</literal> that has a process key 'expense'.
-      The following naming conventions for the process diagram image apply (in this specific order):
+	  如果在我们的类路径下面有一个流程，<literal>org/activiti/expenseProcess.bpmn20.xml</literal> ，该流程定义有一个流程key 'expense'。
+	 以下遵循流程定义图片的命名规范（按照这个特地顺序）：
       <itemizedlist>
         <listitem>
           <para>
-            If an image resource exists in the deployment that has a name of the BPMN 2.0 XML file name
-            concatenated with the process key and an image suffix, this image is used. In our example,
-            this would be <literal>org/activiti/expenseProcess.expense.png</literal> (or .jpg/gif).
-            In case you have multiple images defined in one BPMN 2.0 XML file, this approach 
-            makes most sense. Each diagram image will then have the process key in its file name.
+		    如果在部署时一个图片资源已经存在，它是BPMN2.0的XML文件名后面是流程定义的key并且是一个图片的后缀。那么该图片将被使用。在我们的例子中，
+		    这应该是 <literal>org/activiti/expenseProcess.expense.png</literal>（或者 jpg/gif）。如果你在一个BPMN2.0 XML文件中定义多个流程定义图片，这种方式更有意义。每个流程定义图片的文件名中都将会有一个流程定义key。
           </para>
         </listitem>
         <listitem>
           <para>
-            If no such image exists, am image resource in the deployment matching the name
-            of the BPMN 2.0 XML file is searched for. In our example this would be 
-            <literal>org/activiti/expenseProcess.png</literal>. Note that this means that
-            <emphasis role="bold">every process definition</emphasis> defined in the same 
-            BPMN 2.0 file has the same process diagram image. In case there is only one 
-            process definition in each BPMN 2.0 XML file, this is obviously not a problem.
+		    如果并没有这样的图片存在，部署的时候寻找与匹配BPMN2.0 XML 文件的名称的图片资源。在我们的例子中，这应该是<literal>org/activiti/expenseProcess.png</literal>.
+			注意：这意味着在同一个BPMN2.0 XML文件夹中的<emphasis role="bold">每个流程定义</emphasis>都会有相同的流程定义图片。因此，在每一个BPMN 2.0 XML文件夹中仅仅只有一个流程定义，这绝对是不会有问题的。
           </para>
         </listitem>
       </itemizedlist>
      </para>
      <para>
-      Example when deploying programmatically:
+     当使用编程式的部署方式：
       <programlisting>
 repositoryService.createDeployment()
   .name("expense-process.bar")
   .addClasspathResource("org/activiti/expenseProcess.bpmn20.xml")
   .addClasspathResource("org/activiti/expenseProcess.png")
   .deploy();</programlisting>
-       The image resource can be retrieved through the API afterwards:
+		接下来，可以通过API来获取流程定义图片资源：
        <programlisting>
   ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                                                          .processDefinitionKey("expense")
@@ -284,32 +254,26 @@ repositoryService.createDeployment()
   </section>
   
   <section id="generatingProcessDiagram">
-    <title>Generating a process diagram</title>
-    <para>
-      In case no image is provided in the deployment, as described in the <link linkend="providingProcessDiagram">previous section</link>,
-      the Activiti engine will generate a diagram image if the process definition
-      contains the necessary 'diagram interchange' information.
+    <title>自动生成流程图片</title>
+    <para>在部署的情况下没有提供图片，在 <link linkend="providingProcessDiagram">上一节</link>中描述,如果流程定义中包含必要的'图像交换'信息时，Activiti流程引擎竟会自动生成一个图像。
     </para>
     <para>
-      The resource can be retrieved in exactly the same way as when <link linkend="providingProcessDiagram">
-      an image is provided</link> in the deployment.
-      <mediaobject><imageobject><imagedata align="center" fileref="images/deployment.image.generation.png"/></imageobject></mediaobject>
+	  该资源可以按照部署时<link linkend="providingProcessDiagram">
+      提供流程图片</link>完全相同的方式获取。
+           <mediaobject><imageobject><imagedata align="center" fileref="images/deployment.image.generation.png"/></imageobject></mediaobject>
     </para>
     <para>
-      If, for some reason, it is not necessary or wanted to generate a diagram during deployment the 
-      <literal>isCreateDiagramOnDeploy</literal> property can be set on the process engine configuration:
-      <programlisting>&lt;property name=&quot;createDiagramOnDeploy&quot; value=&quot;false&quot; /&gt;</programlisting>
-      No diagram will be generated now.
+		如果，因为某种原因，在部署的时候，并不需要或者不必要生成流程定义图片，那么就需要在流程引擎配置的属性中使用<literal>isCreateDiagramOnDeploy</literal>：
+         <programlisting>&lt;property name=&quot;createDiagramOnDeploy&quot; value=&quot;false&quot; /&gt;</programlisting>
+    现在就不会生成流程定义图片。
     </para>
   </section>
 
   <section id="deploymentCategory">
-    <title>Category</title>
-    <para>
-    Both deployments and process definitions have user defined categories.  The process definition 
-    category is initialized value in attribute in the BPMN file: <literal>&lt;definitions ... targetNamespace=&quot;yourCategory&quot; ...</literal>
-    </para>
-    <para>The deployment category can be specified in the API like this:</para>
+    <title>类别</title>
+    <para>部署和流程定义都是用户定义的类别。流程定义类别在BPMN文件中属性的初始化的值<literal>&lt;definitions ... targetNamespace=&quot;yourCategory&quot; ...</literal>
+     </para>
+    <para>部署类别是可以直接使用API进行指定的看起来想这样：</para>
     <programlisting>repositoryService
     .createDeployment()
     .category(&quot;yourCategory&quot;)
