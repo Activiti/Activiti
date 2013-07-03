@@ -72,10 +72,9 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   }
 
   public Object getPersistentState() {
-    // properties of this entity are immutable
-    // so always the same value is returned
-    // so never will an update be issued for a DeploymentEntity
-    return DeploymentEntity.class;
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("category", this.category);
+    return persistentState;
   }
   
   // Deployed artifacts manipulation //////////////////////////////////////////

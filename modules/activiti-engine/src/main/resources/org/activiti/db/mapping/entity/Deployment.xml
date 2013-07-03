@@ -13,6 +13,12 @@
   
   <!-- DEPLOYMENT UPDATE -->
   
+  <update id="updateDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntity">
+    update ${prefix}ACT_RE_DEPLOYMENT set
+      CATEGORY_ = #{category, jdbcType=VARCHAR}
+    where ID_ = #{id, jdbcType=VARCHAR}
+  </update>
+  
   <!-- DEPLOYMENT DELETE -->
   
   <delete id="deleteDeployment" parameterType="string">
