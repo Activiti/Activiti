@@ -45,15 +45,6 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
    */
   protected Map<Class<?>, List<Object>> deployedArtifacts;
   
-  public Object getPersistentState() {
-    // properties of this entity are immutable
-    // so always the same value is returned
-    // so never will an update be issued for a DeploymentEntity
-    return DeploymentEntity.class;
-  }
-  
-  // lazy loading /////////////////////////////////////////////////////////////
-
   public ResourceEntity getResource(String resourceName) {
     return getResources().get(resourceName);
   }
@@ -65,6 +56,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     resources.put(resource.getName(), resource);
   }
 
+  // lazy loading /////////////////////////////////////////////////////////////
   public Map<String, ResourceEntity> getResources() {
     if (resources==null && id!=null) {
       List<ResourceEntity> resourcesList = Context
@@ -79,8 +71,13 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     return resources;
   }
 
-  // deployed artifacts manipulation //////////////////////////////////////////
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("category", this.category);
+    return persistentState;
+  }
   
+  // Deployed artifacts manipulation //////////////////////////////////////////
   public void addDeployedArtifact(Object deployedArtifact) {
     if (deployedArtifacts == null) {
       deployedArtifacts = new HashMap<Class<?>, List<Object>>();

@@ -65,6 +65,14 @@ public interface RepositoryService {
    * @param deploymentId id of the deployment, cannot be null.
    */
   void deleteDeployment(String deploymentId, boolean cascade);
+  
+  /**
+   * Sets the category of the deployment.
+   * Deployments can be queried by category: see {@link DeploymentQuery#deploymentCategory(String)}.
+   * 
+   * @throws ActivitiObjectNotFoundException if no deployment with the provided id can be found.
+   */
+  void setDeploymentCategory(String deploymentId, String category);
 
   /**
    * Retrieves a list of deployment resources for the given deployment, 

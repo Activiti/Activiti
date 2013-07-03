@@ -13,6 +13,10 @@
 
 package org.activiti.engine.impl;
 
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
@@ -36,6 +40,7 @@ import org.activiti.engine.impl.cmd.GetModelCmd;
 import org.activiti.engine.impl.cmd.GetModelEditorSourceCmd;
 import org.activiti.engine.impl.cmd.GetModelEditorSourceExtraCmd;
 import org.activiti.engine.impl.cmd.SaveModelCmd;
+import org.activiti.engine.impl.cmd.SetDeploymentCategoryCmd;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionCategoryCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
@@ -53,10 +58,6 @@ import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
-
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -84,6 +85,10 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   
   public void deleteDeployment(String deploymentId, boolean cascade) {
     commandExecutor.execute(new DeleteDeploymentCmd(deploymentId, cascade));
+  }
+  
+  public void setDeploymentCategory(String deploymentId, String category) {
+    commandExecutor.execute(new SetDeploymentCategoryCmd(deploymentId, category));
   }
 
   public ProcessDefinitionQuery createProcessDefinitionQuery() {
