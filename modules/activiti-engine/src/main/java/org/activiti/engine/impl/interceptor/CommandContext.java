@@ -20,6 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.JobNotFoundException;
+import org.activiti.engine.LogMDC;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
@@ -184,7 +185,9 @@ public class CommandContext {
     if (this.exception == null) {
       this.exception = exception;
     } else {
-      log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);
+    	LogMDC.putMDCExecution(Context.getExecutionContext().getExecution());    	    
+    	log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);    	
+    	LogMDC.clear();
     }
   }
 
