@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.parse.Problem;
 import org.activiti.bpmn.model.parse.Warning;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**

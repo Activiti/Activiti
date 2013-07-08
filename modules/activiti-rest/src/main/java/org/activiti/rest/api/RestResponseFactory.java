@@ -84,7 +84,7 @@ import org.activiti.rest.api.repository.ProcessDefinitionResponse;
 import org.activiti.rest.api.runtime.process.ExecutionResponse;
 import org.activiti.rest.api.runtime.process.ProcessInstanceResponse;
 import org.activiti.rest.api.runtime.task.TaskResponse;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.restlet.data.MediaType;
 
 

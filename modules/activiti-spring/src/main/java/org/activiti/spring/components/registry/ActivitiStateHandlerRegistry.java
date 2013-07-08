@@ -68,8 +68,8 @@ public class ActivitiStateHandlerRegistry extends ReceiveTaskActivityBehavior im
 	}
 
 	protected String registrationKey(String stateName, String processName) {
-		return (org.apache.commons.lang.StringUtils.defaultString(processName) +
-				":" + org.apache.commons.lang.StringUtils.defaultString(stateName)).toLowerCase();
+		return (org.apache.commons.lang3.StringUtils.defaultString(processName) +
+				":" + org.apache.commons.lang3.StringUtils.defaultString(stateName)).toLowerCase();
 	}
 
 	/**

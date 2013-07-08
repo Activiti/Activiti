@@ -22,7 +22,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.restlet.data.Status;
 import org.restlet.resource.Get;
 
