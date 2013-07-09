@@ -9,7 +9,7 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Assignment;
 import org.activiti.bpmn.model.DataAssociation;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class DataAssociationParser implements BpmnXMLConstants {
   
