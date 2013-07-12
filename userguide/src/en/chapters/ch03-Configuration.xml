@@ -542,25 +542,27 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
   &lt;artifactId&gt;jcl-over-slf4j&lt;/artifactId&gt;
 &lt;/dependency&gt;</programlisting>
     </para>
-	<para> As of Activiti 5.13, uses Mapped Diagnostic Contexts feature of sl4j. When an error happens in service task, is will be shown as an error in log file in default configuration.
+	<para> As of version 5.13, activiti uses Mapped Diagnostic Contexts feature of sl4j. When an error happens in the service task,  the  exception will be shown as an error in log file in default configuration.
      Now these basic information are passed to underlying logger:
       <itemizedlist>
         <listitem>
-		   processDefinition Id as mdcProcessDefinitionID		   
+			processDefinition Id as mdcProcessDefinitionID		   
 		</listitem>
-		   processInstance Id as mdcProcessInstanceID
+		  
         <listitem>
+			processInstance Id as mdcProcessInstanceID
 		</listitem>
-		   execution Id as mdcexecutionId
+		   
         <listitem>
+			execution Id as mdcexecutionId
 		</listitem>
       </itemizedlist>
-	  None of these information are logged in default configuration. But the logger can be configured to show them in desired format, extra to the usual comment.
+	  None of these information are logged by default. The logger can be configured to show them in desired format, extra to the usual comment.
 	  For example in log4j such a definition for layout may cause the logger to show these information:
-	  <para>
+	 <programlisting>
 	   log4j.appender.consoleAppender.layout.ConversionPattern =ProcessDefinitionId=%X{mdcProcessDefinitionID} executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdcBusinessKey=%X{mdcBusinessKey} %m%n"
-	  </para>
-	  This is extremely useful where the systems are mission critical and logges should be seriously checked, for example by means of a log analyzer.
+	  </programlisting>
+	  This is extremely useful where the systems are mission critical and logges should be seriously checked,  by means of a log analyzer for example.
 	
 	</para>
 	
