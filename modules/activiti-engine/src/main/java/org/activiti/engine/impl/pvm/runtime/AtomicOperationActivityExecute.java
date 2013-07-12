@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.pvm.runtime;
 
+import org.activiti.engine.LogMDC;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -45,6 +46,7 @@ public class AtomicOperationActivityExecute implements AtomicOperation {
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
+      LogMDC.putMDCExecution(execution);
       throw new PvmException("couldn't execute activity <"+activity.getProperty("type")+" id=\""+activity.getId()+"\" ...>: "+e.getMessage(), e);
     }
   }
