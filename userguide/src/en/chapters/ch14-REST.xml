@@ -9505,7 +9505,7 @@ Only the attachment name is required to create a new attachment.
   <section>
       <title>Execute a single job</title>
         <para>
-          <programlisting>PUT management/jobs/{jobId}</programlisting>
+          <programlisting>POST management/jobs/{jobId}</programlisting>
         </para>
         <para>
          <emphasis role="bold">Body JSON:</emphasis>

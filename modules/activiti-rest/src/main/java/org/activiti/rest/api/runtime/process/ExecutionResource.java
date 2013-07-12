@@ -46,7 +46,11 @@ public class ExecutionResource extends ExecutionBaseResource {
     Execution execution = getExecutionFromRequest();
     
     if(ExecutionActionRequest.ACTION_SIGNAL.equals(actionRequest.getAction())) {
-      ActivitiUtil.getRuntimeService().signal(execution.getId());
+      if(actionRequest.getVariables() != null) {
+        ActivitiUtil.getRuntimeService().signal(execution.getId(), getVariablesToSet(actionRequest));
+      } else {
+        ActivitiUtil.getRuntimeService().signal(execution.getId());
+      }
     } else if(ExecutionActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(actionRequest.getAction())) {
       if(actionRequest.getSignalName() == null) {
         throw new ActivitiIllegalArgumentException("Signal name is required");
