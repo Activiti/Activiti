@@ -17,7 +17,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.Process;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class LaneExport implements BpmnXMLConstants {
 
