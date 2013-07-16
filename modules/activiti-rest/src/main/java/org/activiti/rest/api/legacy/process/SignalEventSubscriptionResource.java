@@ -8,7 +8,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
