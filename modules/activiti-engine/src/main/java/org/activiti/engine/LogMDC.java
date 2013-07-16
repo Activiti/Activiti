@@ -12,7 +12,7 @@ import org.slf4j.MDC;
 public class LogMDC {
 
   public static final String LOG_MDC_PROCESSDEFINITION_ID = "mdcProcessDefinitionID";
-  public static final String LOG_MDC_EXECUTION_ID = "mdcexecutionId";
+  public static final String LOG_MDC_EXECUTION_ID = "mdcExecutionId";
   public static final String LOG_MDC_PROCESSINSTANCE_ID = "mdcProcessInstanceID";
   public static final String LOG_MDC_BUSINESS_KEY = "mdcBusinessKey";
   public static final String LOG_MDC_TASK_ID = "mdcTaskId";

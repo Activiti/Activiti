@@ -17,7 +17,7 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
 	List<Appender> appenders = null;
 	 
 	private void setCustomLogger() {
-		String PATTERN = "Modified Log *** ProcessDefinitionId=%X{mdcProcessDefinitionID} executionId=%X{executionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdcBusinessKey=%X{mdcBusinessKey} mdcTaskId=%X{mdcTaskId}  %m%n";
+		String PATTERN = "Modified Log *** ProcessDefinitionId=%X{mdcProcessDefinitionID} executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdcBusinessKey=%X{mdcBusinessKey} mdcTaskId=%X{mdcTaskId}  %m%n";
 		console.setLayout(new PatternLayout(PATTERN));
 		console.setThreshold(Level.INFO);
 		console.activateOptions();
