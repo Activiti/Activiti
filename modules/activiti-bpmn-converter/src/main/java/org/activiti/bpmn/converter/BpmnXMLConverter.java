@@ -138,7 +138,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     addConverter(AlfrescoUserTaskXMLConverter.getXMLType(), AlfrescoUserTaskXMLConverter.getBpmnElementType(), AlfrescoUserTaskXMLConverter.class);
   }
   
-  private static void addConverter(String elementName, Class<? extends BaseElement> elementClass, 
+  public static void addConverter(String elementName, Class<? extends BaseElement> elementClass, 
       Class<? extends BaseBpmnXMLConverter> converter) {
     
     convertersToBpmnMap.put(elementName, converter);
