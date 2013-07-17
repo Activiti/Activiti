@@ -82,6 +82,10 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       queryRequest.setExcludeSubprocesses(getQueryParameterAsBoolean("excludeSubprocesses", urlQuery));
     }
     
+    if(getQueryParameter("includeProcessVariables", urlQuery) != null) {
+      queryRequest.setIncludeProcessVariables(getQueryParameterAsBoolean("excludeSubprocesses", urlQuery));
+    }
+    
     return getQueryResponse(queryRequest, urlQuery);
   }
   
