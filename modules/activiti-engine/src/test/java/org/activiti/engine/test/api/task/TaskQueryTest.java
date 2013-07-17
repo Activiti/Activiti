@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -947,6 +948,33 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     
     // use parameters
     assertEquals(1, taskService.createNativeTaskQuery().sql("SELECT count(*) FROM " + managementService.getTableName(Task.class) + " T WHERE T.NAME_ = #{taskName}").parameter("taskName", "gonzoTask").count());
+  }
+  
+  /**
+   * Test confirming fix for ACT-1731
+   */
+  @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
+  public void testIncludeBinaryVariables() throws Exception {
+    // Start process with a binary variable
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", 
+            Collections.singletonMap("binaryVariable", (Object)"It is I, le binary".getBytes()));
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    taskService.setVariableLocal(task.getId(), "binaryTaskVariable", (Object)"It is I, le binary".getBytes());
+    
+    // Query task, including processVariables
+    task = taskService.createTaskQuery().taskId(task.getId()).includeProcessVariables().singleResult();
+    assertNotNull(task);
+    assertNotNull(task.getProcessVariables());
+    byte[] bytes = (byte[]) task.getProcessVariables().get("binaryVariable");
+    assertEquals("It is I, le binary", new String(bytes));
+    
+    // Query task, including taskVariables
+    task = taskService.createTaskQuery().taskId(task.getId()).includeTaskLocalVariables().singleResult();
+    assertNotNull(task);
+    assertNotNull(task.getTaskLocalVariables());
+    bytes = (byte[]) task.getTaskLocalVariables().get("binaryTaskVariable");
+    assertEquals("It is I, le binary", new String(bytes));
   }
   
   /**
