@@ -141,7 +141,7 @@ userBean.hello();</programlisting>
     <title>表达式</title>
     <para>当使用ProcessEngineFactoryBean时候，默认情况下，在BPMN流程中的所有<link linkend="apiExpressions">表达式</link>都将会'看见'所有的Spring beans。
 	它可以限制你在表达式中暴露出的beans或者甚至可以在你的配置中使用一个Map不暴露任何beans。下面的例子暴露了一个单例bean（printer），可以把"printer"当作关键字使用.
-   <emphasis role="bold">想要不暴露任何beans，仅仅只需要在SpringProcessEngineConfiguration中传递一个空的list作为'beans'的属性。当不设置'beans'的属性时，在应用上下文中Spring beans都是可以使用的。</para>
+   <emphasis role="bold">想要不暴露任何beans，仅仅只需要在SpringProcessEngineConfiguration中传递一个空的list作为'beans'的属性。当不设置'beans'的属性时，在应用上下文中Spring beans都是可以使用的。</emphasis></para>
     <programlisting>
 &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
   ...
