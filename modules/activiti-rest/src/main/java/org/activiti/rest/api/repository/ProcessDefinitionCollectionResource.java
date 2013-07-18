@@ -15,6 +15,7 @@ package org.activiti.rest.api.repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.impl.ProcessDefinitionQueryProperty;
 import org.activiti.engine.query.QueryProperty;
@@ -47,39 +48,40 @@ public class ProcessDefinitionCollectionResource extends SecuredResource {
 
     ProcessDefinitionQuery processDefinitionQuery = ActivitiUtil.getRepositoryService().createProcessDefinitionQuery();
     Form query = getQuery();
+    Set<String> names = query.getNames();
     
     // Populate filter-parameters
-    if(query.getNames().contains("category")) {
+    if(names.contains("category")) {
       processDefinitionQuery.processDefinitionCategory(getQueryParameter("category", query));
     }
-    if(query.getNames().contains("categoryLike")) {
+    if(names.contains("categoryLike")) {
       processDefinitionQuery.processDefinitionCategoryLike(getQueryParameter("categoryLike", query));
     }
-    if(query.getNames().contains("categoryNotEquals")) {
+    if(names.contains("categoryNotEquals")) {
       processDefinitionQuery.processDefinitionCategoryNotEquals(getQueryParameter("categoryNotEquals", query));
     }
-    if(query.getNames().contains("key")) {
+    if(names.contains("key")) {
       processDefinitionQuery.processDefinitionKey(getQueryParameter("key", query));
     }
-    if(query.getNames().contains("keyLike")) {
+    if(names.contains("keyLike")) {
       processDefinitionQuery.processDefinitionKeyLike(getQueryParameter("keyLike", query));
     }
-    if(query.getNames().contains("name")) {
+    if(names.contains("name")) {
       processDefinitionQuery.processDefinitionName(getQueryParameter("name", query));
     }
-    if(query.getNames().contains("nameLike")) {
+    if(names.contains("nameLike")) {
       processDefinitionQuery.processDefinitionNameLike(getQueryParameter("nameLike", query));
     }
-    if(query.getNames().contains("resourceName")) {
+    if(names.contains("resourceName")) {
       processDefinitionQuery.processDefinitionResourceName(getQueryParameter("resourceName", query));
     }
-    if(query.getNames().contains("resourceNameLike")) {
+    if(names.contains("resourceNameLike")) {
       processDefinitionQuery.processDefinitionResourceNameLike(getQueryParameter("resourceNameLike", query));
     }
-    if(query.getNames().contains("version")) {
+    if(names.contains("version")) {
       processDefinitionQuery.processDefinitionVersion(getQueryParameterAsInt("version", query));
     }
-    if(query.getNames().contains("suspended")) {
+    if(names.contains("suspended")) {
       Boolean suspended = getQueryParameterAsBoolean("suspended", query);
       if(suspended != null) {
         if(suspended) {
@@ -89,16 +91,16 @@ public class ProcessDefinitionCollectionResource extends SecuredResource {
         }
       }
     }
-    if(query.getNames().contains("latest")) {
+    if(names.contains("latest")) {
       Boolean latest = getQueryParameterAsBoolean("latest", query);
       if(latest != null && latest) {
         processDefinitionQuery.latestVersion();
       }
     }
-    if(query.getNames().contains("deploymentId")) {
+    if(names.contains("deploymentId")) {
       processDefinitionQuery.deploymentId(getQueryParameter("deploymentId", query));
     }
-    if(query.getNames().contains("startableByUser")) {
+    if(names.contains("startableByUser")) {
       processDefinitionQuery.startableByUser(getQueryParameter("startableByUser", query));
     }
     

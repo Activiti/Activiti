@@ -23,10 +23,10 @@ import javax.sql.DataSource;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
@@ -54,16 +54,23 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   protected String deploymentName = "SpringAutoDeployment";
   protected Resource[] deploymentResources = new Resource[0];
   protected ApplicationContext applicationContext;
+  protected Integer transactionSynchronizationAdapterOrder = null;
+  
   
   public SpringProcessEngineConfiguration() {
     transactionsExternallyManaged = true;
   }
+  
   
   @Override
   public ProcessEngine buildProcessEngine() {
     ProcessEngine processEngine = super.buildProcessEngine();
     autoDeployResources(processEngine);
     return processEngine;
+  }
+  
+  public void setTransactionSynchronizationAdapterOrder(Integer transactionSynchronizationAdapterOrder) {
+    this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
   }
   
   protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
@@ -93,7 +100,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   @Override
   protected void initTransactionContextFactory() {
     if(transactionContextFactory == null && transactionManager != null) {
-      transactionContextFactory = new SpringTransactionContextFactory(transactionManager);
+      transactionContextFactory = new SpringTransactionContextFactory(transactionManager, transactionSynchronizationAdapterOrder);
     }
   }
   
@@ -150,7 +157,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   }
   
   @Override
-  public ProcessEngineConfigurationImpl setDataSource(DataSource dataSource) {
+  public ProcessEngineConfiguration setDataSource(DataSource dataSource) {
     if(dataSource instanceof TransactionAwareDataSourceProxy) {
       return super.setDataSource(dataSource);
     } else {

@@ -22,6 +22,7 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 
 /**
@@ -51,5 +52,9 @@ public class LegacyProcessInstancesResource extends SecuredResource {
     
     DataResponse response = new LegacyProcessInstancesPaginateList().paginateList(getQuery(), query, "id", properties);
     return response;
+  }
+  
+  protected Status getAuthenticationFailureStatus() {
+    return Status.CLIENT_ERROR_FORBIDDEN;
   }
 }

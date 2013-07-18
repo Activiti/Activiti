@@ -27,7 +27,6 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
-import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -172,11 +171,17 @@ public class BpmnParse implements BpmnXMLConstants {
       BpmnXMLConverter converter = new BpmnXMLConverter();
       
       boolean enableSafeBpmnXml = false;
+      String encoding = null;
       if (Context.getProcessEngineConfiguration() != null) {
         enableSafeBpmnXml = Context.getProcessEngineConfiguration().isEnableSafeBpmnXml();
+        encoding = Context.getProcessEngineConfiguration().getXmlEncoding();
       }
       
-      bpmnModel = converter.convertToBpmnModel(streamSource, true, enableSafeBpmnXml);
+      if (encoding != null) {
+        bpmnModel = converter.convertToBpmnModel(streamSource, true, enableSafeBpmnXml, encoding);
+      } else {
+        bpmnModel = converter.convertToBpmnModel(streamSource, true, enableSafeBpmnXml);
+      }
       
       createImports();
       createItemDefinitions();

@@ -15,7 +15,6 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
@@ -32,6 +31,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
         HistoricVariableInstanceQuery {
 
   private static final long serialVersionUID = 1L;
+  protected String id;
   protected String taskId;
   protected String processInstanceId;
   protected String activityInstanceId;
@@ -50,8 +50,13 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   public HistoricVariableInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
+  
+  public HistoricVariableInstanceQuery id(String id) {
+    this.id = id;
+    return this;
+  }
 
-  public HistoricVariableInstanceQueryImpl processInstanceId(String processInstanceId) {
+  public HistoricVariableInstanceQuery processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
@@ -122,20 +127,23 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceCountByQueryCriteria(this);
+    return commandContext
+        .getHistoricVariableInstanceEntityManager()
+        .findHistoricVariableInstanceCountByQueryCriteria(this);
   }
 
   public List<HistoricVariableInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
+    
     List<HistoricVariableInstance> historicVariableInstances = commandContext
             .getHistoricVariableInstanceEntityManager()
             .findHistoricVariableInstancesByQueryCriteria(this, page);
-    if (historicVariableInstances!=null) {
-      for (HistoricVariableInstance historicVariableInstance: historicVariableInstances) {
-        if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
-          ((HistoricVariableInstanceEntity)historicVariableInstance).getByteArrayValue();
-        }
+    
+    for (HistoricVariableInstance historicVariableInstance: historicVariableInstances) {
+      // TODO what about JPAEntityVariableType? see HistoricDetailQueryImpl.executeList
+      if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
+        ((HistoricVariableInstanceEntity)historicVariableInstance).getBytes();
       }
     }
     return historicVariableInstances;

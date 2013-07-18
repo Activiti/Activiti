@@ -34,7 +34,7 @@ import java.util.Map;
  * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class UserEntityManager extends AbstractManager {
+public class UserEntityManager extends AbstractManager implements UserIdentityManager {
 
   public User createNewUser(String userId) {
     return new UserEntity(userId);
@@ -57,16 +57,14 @@ public class UserEntityManager extends AbstractManager {
   @SuppressWarnings("unchecked")
   public void deleteUser(String userId) {
     UserEntity user = findUserById(userId);
-    if (user!=null) {
-      if (user.getPictureByteArrayId()!=null) {
-        getByteArrayManager().deleteByteArrayById(user.getPictureByteArrayId());
-      }
+    if (user != null) {
       List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
       for (IdentityInfoEntity identityInfo: identityInfos) {
         getIdentityInfoManager().deleteIdentityInfo(identityInfo);
       }
       getDbSqlSession().delete("deleteMembershipsByUserId", userId);
-      getDbSqlSession().delete(user);
+
+      user.delete();
     }
   }
   
@@ -95,7 +93,7 @@ public class UserEntityManager extends AbstractManager {
     return (IdentityInfoEntity) getDbSqlSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);

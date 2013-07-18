@@ -20,12 +20,16 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
  */
 public class TaskCandidateTest extends PluggableActivitiTestCase {
 
+  private static Logger logger = LoggerFactory.getLogger(TaskCandidateTest.class);
+  
   private static final String KERMIT = "kermit";
 
   private static final String GONZO = "gonzo";

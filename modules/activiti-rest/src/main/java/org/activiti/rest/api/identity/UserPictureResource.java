@@ -13,42 +13,95 @@
 
 package org.activiti.rest.api.identity;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.Picture;
+import org.activiti.engine.identity.User;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
-import org.restlet.data.CacheDirective;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.io.IOUtils;
 import org.restlet.data.MediaType;
+import org.restlet.data.Status;
+import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.InputRepresentation;
+import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
+import org.restlet.resource.Put;
+import org.restlet.resource.ResourceException;
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
-public class UserPictureResource extends SecuredResource {
-  
-  @Get
-  public InputRepresentation getPicture() {
-    if(authenticate() == false) return null;
-    
-    String userId = (String) getRequest().getAttributes().get("userId");
-    if(userId == null) {
-      throw new ActivitiIllegalArgumentException("No userId provided");
-    }
-    Picture picture = ActivitiUtil.getIdentityService().getUserPicture(userId);
-    
-    String contentType = picture.getMimeType();
-    MediaType mediatType = MediaType.IMAGE_PNG;
-    if(contentType != null) {
-      if(contentType.contains(";")) {
-        contentType = contentType.substring(0, contentType.indexOf(";"));
-      }
-      mediatType = MediaType.valueOf(contentType);
-    }
-    InputRepresentation output = new InputRepresentation(picture.getInputStream(), mediatType);
-    getResponse().getCacheDirectives().add(CacheDirective.maxAge(28800));
-    
-    return output;
-  }
+public class UserPictureResource extends BaseUserResource {
 
+  @Get
+  public InputRepresentation getUserPicture() {
+    if(!authenticate())
+      return null;
+    
+    User user = getUserFromRequest();
+    Picture userPicture = ActivitiUtil.getIdentityService().getUserPicture(user.getId());
+    
+    if(userPicture == null) {
+      throw new ActivitiObjectNotFoundException("The user with id '" + user.getId() + "' does not have a picture.", Picture.class);
+    }
+    
+    MediaType mediaType = MediaType.IMAGE_JPEG;
+    if(userPicture.getMimeType() != null) {
+      mediaType = MediaType.valueOf(userPicture.getMimeType());
+    }
+    
+    return new InputRepresentation(userPicture.getInputStream(), mediaType);
+  }
+  
+  @Put
+  public void updateUserPicture(Representation representation) {
+    User user = getUserFromRequest();
+    
+    if(!MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {
+      throw new ResourceException(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(), "The request should be of type 'multipart/form-data'.", null, null);
+    }
+    
+    RestletFileUpload upload = new RestletFileUpload(new DiskFileItemFactory());
+    try {
+      FileItem uploadItem = null;
+      List<FileItem> items = upload.parseRepresentation(representation);
+      String mimeType = MediaType.IMAGE_JPEG.toString();
+      
+      for (FileItem fileItem : items) {
+        if(fileItem.isFormField()) {
+          if("mimeType".equals(fileItem.getFieldName())) {
+            mimeType = fileItem.getString("UTF-8");
+          }
+        } else  if(fileItem.getName() != null) {
+          uploadItem = fileItem;
+        }
+      }
+      
+      if(uploadItem == null) {
+        throw new ActivitiIllegalArgumentException("No file content was found in request body.");
+      }
+      
+      int size = ((Long) uploadItem.getSize()).intValue();
+      
+      // Copy file-body in a bytearray as the engine requires this
+      ByteArrayOutputStream bytesOutput = new ByteArrayOutputStream(size);
+      IOUtils.copy(uploadItem.getInputStream(), bytesOutput);
+      
+      Picture newPicture = new Picture(bytesOutput.toByteArray(), mimeType);
+      ActivitiUtil.getIdentityService().setUserPicture(user.getId(), newPicture);
+      
+    } catch (FileUploadException e) {
+      throw new ActivitiException("Error with uploaded file: " + e.getMessage(), e);
+    } catch (IOException e) {
+      throw new ActivitiException("Error while reading uploaded file: " + e.getMessage(), e);
+    }
+  }
 }

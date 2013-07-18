@@ -42,7 +42,7 @@ public class DeleteMembershipCmd implements Command<Void>, Serializable {
     }
     
     commandContext
-      .getMembershipEntityManager()
+      .getMembershipIdentityManager()
       .deleteMembership(userId, groupId);
     
     return null;    

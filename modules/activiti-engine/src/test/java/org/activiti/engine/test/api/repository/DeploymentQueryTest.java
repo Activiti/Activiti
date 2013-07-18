@@ -137,7 +137,26 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, query.count());
     assertNotNull(query.singleResult());
   }
+  
+  public void testQueryByProcessDefinitionKey() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKey("one");
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+    assertNotNull(query.singleResult());
+  }
 
+  public void testQueryByProcessDefinitionKeyLike() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("%o%");
+    assertEquals(2, query.list().size());
+    assertEquals(2, query.count());
+  }
+  
+  public void testQueryByInvalidProcessDefinitionKeyLike() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("invalid");
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+  }
+  
   public void testVerifyDeploymentProperties() {
     List<Deployment> deployments = repositoryService.createDeploymentQuery()
       .orderByDeploymentName()

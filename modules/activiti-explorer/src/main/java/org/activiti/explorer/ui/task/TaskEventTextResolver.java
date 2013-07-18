@@ -15,12 +15,13 @@ package org.activiti.explorer.ui.task;
 
 import java.io.Serializable;
 
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Event;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
-import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.Label;
@@ -43,20 +44,20 @@ public class TaskEventTextResolver implements Serializable {
   }
   
   public Label resolveText(Event event) {
-    UserCache userCache = ExplorerApp.get().getUserCache();
-    User user = userCache.findUser(event.getUserId());
+    IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    User user = identityService.createUserQuery().userId(event.getUserId()).singleResult();
     String eventAuthor = "<span class='" + ExplorerLayout.STYLE_TASK_EVENT_AUTHOR + "'>" 
           + user.getFirstName() + " " + user.getLastName() + "</span> ";
     
     String text = null;
     if (Event.ACTION_ADD_USER_LINK.equals(event.getAction())) {
-      User involvedUser = userCache.findUser(event.getMessageParts().get(0));
+      User involvedUser = identityService.createUserQuery().userId(event.getMessageParts().get(0)).singleResult();
       text = i18nManager.getMessage(Messages.EVENT_ADD_USER_LINK, 
               eventAuthor, 
               involvedUser.getFirstName() + " " + involvedUser.getLastName(),
               event.getMessageParts().get(1)); // second msg part = role
     } else if (Event.ACTION_DELETE_USER_LINK.equals(event.getAction())) {
-      User involvedUser = userCache.findUser(event.getMessageParts().get(0));
+      User involvedUser = identityService.createUserQuery().userId(event.getMessageParts().get(0)).singleResult();
       text = i18nManager.getMessage(Messages.EVENT_DELETE_USER_LINK, 
               eventAuthor, 
               involvedUser.getFirstName() + " " + involvedUser.getLastName(),

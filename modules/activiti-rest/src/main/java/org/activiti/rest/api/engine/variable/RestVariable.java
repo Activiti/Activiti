@@ -64,7 +64,11 @@ public class RestVariable {
     this.value = value;
   }
   public String getScope() {
-    return variableScope.name().toLowerCase();
+    String scope = null;
+    if (variableScope != null) {
+      scope = variableScope.name().toLowerCase();
+    }
+    return scope;
   }
   public void setScope(String scope) {
     setVariableScope(getScopeFromString(scope));

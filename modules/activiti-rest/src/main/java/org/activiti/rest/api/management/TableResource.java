@@ -13,25 +13,44 @@
 
 package org.activiti.rest.api.management;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.management.TableMetaData;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.resource.Get;
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
 public class TableResource extends SecuredResource {
   
   @Get
-  public TableMetaData getTableMetaData() {
-    if(authenticate(SecuredResource.ADMIN) == false) return null;
-    
-    String tableName = (String) getRequest().getAttributes().get("tableName");
+  public TableResponse getTable() {
+    if(authenticate() == false) return null;
+
+    String tableName = getAttribute("tableName");
     if(tableName == null) {
-      throw new ActivitiIllegalArgumentException("table name is required");
+      throw new ActivitiIllegalArgumentException("The tableName cannot be null");
     }
-    return ActivitiUtil.getManagementService().getTableMetaData(tableName);
+    
+   Map<String, Long> tableCounts = ActivitiUtil.getManagementService().getTableCount();
+
+   TableResponse response = null;
+   for(Entry<String, Long> entry : tableCounts.entrySet()) {
+     if(entry.getKey().equals(tableName)) {
+       response = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+               .createTableResponse(this, entry.getKey(), entry.getValue());
+       break;
+     }
+   }
+   
+   if(response == null) {
+     throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
+   }
+   return response;
   }
 }

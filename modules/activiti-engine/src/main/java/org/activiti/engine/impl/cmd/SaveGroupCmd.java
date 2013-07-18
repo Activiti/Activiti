@@ -38,11 +38,11 @@ public class SaveGroupCmd implements Command<Void>, Serializable {
     }
     if (group.getRevision()==0) {
       commandContext
-        .getGroupEntityManager()
+        .getGroupIdentityManager()
         .insertGroup(group);
     } else {
       commandContext
-        .getGroupEntityManager()
+        .getGroupIdentityManager()
         .updateGroup(group);
     }
     

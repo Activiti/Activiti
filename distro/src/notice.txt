@@ -1,7 +1,7 @@
 Activiti BPM Platform
 Copyright 2010-2011 Alfresco Software, Ltd.
 
-The following activiti software libraries are distributed under the Apache License Version 2.0 (the “License”):
+The following activiti software libraries are distributed under the Apache License Version 2.0 (the License):
  * activiti-cxf-<version>-sources.jar
  * activiti-cxf-<version>.jar
  * activiti-engine-<version>-sources.jar
@@ -10,23 +10,23 @@ The following activiti software libraries are distributed under the Apache Licen
  * activiti-spring-<version>.jar
 
 You may not use these files except in compliance with the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OR ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an AS IS BASIS, WITHOUT WARRANTIES OR CONDITIONS OR ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.
 This software package also includes third party components as listed below.
 This software package includes changed source code of the following libraries:
 
 JUEL
  * Location: http://juel.sourceforge.net/
- * Included in activiti-engine-5.12.jar in package org.activiti.engine.impl.juel
+ * Included in activiti-engine-5.14-SNAPSHOT.jar in package org.activiti.engine.impl.juel
  * License: Apache V2
  
 Quartz
  * Location: http://www.quartz-scheduler.org/
- * CronExpression is included in activiti-engine-5.12.jar in package org.activiti.engine.impl.calendar
+ * CronExpression is included in activiti-engine-5.14-SNAPSHOT.jar in package org.activiti.engine.impl.calendar
  * License: Apache V2
 
 JSON
  * Location: http://www.JSON.org/java
- * Included in activiti-engine-5.12.jar in package org.activiti.engine.impl.json
+ * Included in activiti-engine-5.14-SNAPSHOT.jar in package org.activiti.engine.impl.json
  * License:
 ===============================================================================
 Copyright (c) 2002 JSON.org
@@ -194,18 +194,12 @@ spring-expression-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0
 spring-expression-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 spring-jdbc-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 spring-orm-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-surf-1.0.0-RC2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-surf-api-1.0.0-RC2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-surf-core-1.0.0-RC2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-surf-core-configservice-1.0.0-RC2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 spring-test-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 spring-tx-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 spring-web-2.0.8.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 spring-web-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 spring-web-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 spring-webmvc-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-webscripts-1.0.0-RC2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-webscripts-api-1.0.0-RC2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 stax-api-1.0-2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 subethasmtp-smtp-1.2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 subethasmtp-wiser-1.2.jar : http://www.apache.org/licenses/LICENSE-2.0.html

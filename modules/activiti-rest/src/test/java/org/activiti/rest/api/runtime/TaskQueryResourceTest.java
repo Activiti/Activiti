@@ -356,7 +356,7 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
     variableArray = objectMapper.createArrayNode();
     variableNode = objectMapper.createObjectNode();
     variableArray.add(variableNode);
-    requestNode.put("processVariables", variableArray);
+    requestNode.put("processInstanceVariables", variableArray);
     
     // String equals
     variableNode.put("name", "stringVar");

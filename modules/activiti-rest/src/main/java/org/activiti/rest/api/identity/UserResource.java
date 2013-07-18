@@ -13,28 +13,55 @@
 
 package org.activiti.rest.api.identity;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
+import org.restlet.data.Status;
+import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Put;
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
-public class UserResource extends SecuredResource {
-  
-  @Get
-  public UserInfo getUser() {
-    if(authenticate() == false) return null;
-    
-    String userId = (String) getRequest().getAttributes().get("userId");
-    if(userId == null) {
-      throw new ActivitiIllegalArgumentException("No userId provided");
-    }
-    User user = ActivitiUtil.getIdentityService().createUserQuery().userId(userId).singleResult();
-    UserInfo response = new UserInfo(user);
-    return response;
-  }
+public class UserResource extends BaseUserResource {
 
+  @Get
+  public UserResponse getUser() {
+    if(!authenticate())
+      return null;
+    
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createUserResponse(this, getUserFromRequest(), false);
+  }
+  
+  @Put
+  public UserResponse updateUser(UserRequest request) {
+
+    User user = getUserFromRequest();
+    if(request.isEmailChanged()) {
+      user.setEmail(request.getEmail());
+    }
+    if(request.isFirstNameChanged()) {
+      user.setFirstName(request.getFirstName());
+    }
+    if(request.isLastNameChanged()) {
+      user.setLastName(request.getLastName());
+    }
+    if(request.isPasswordChanged()) {
+      user.setPassword(request.getPassword());
+    }
+    
+    ActivitiUtil.getIdentityService().saveUser(user);
+    
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createUserResponse(this, user, false);
+  }
+  
+  @Delete
+  public void deleteUser() {
+    User user = getUserFromRequest();
+    ActivitiUtil.getIdentityService().deleteUser(user.getId());
+    setStatus(Status.SUCCESS_NO_CONTENT);
+  }
 }

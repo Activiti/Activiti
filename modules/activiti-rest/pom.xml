@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.13-SNAPSHOT</version>
+    <version>5.14-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -35,7 +35,10 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-common-rest</artifactId>
     </dependency>
-    
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-json-converter</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-simple-workflow</artifactId>

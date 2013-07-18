@@ -65,6 +65,14 @@ public interface RepositoryService {
    * @param deploymentId id of the deployment, cannot be null.
    */
   void deleteDeployment(String deploymentId, boolean cascade);
+  
+  /**
+   * Sets the category of the deployment.
+   * Deployments can be queried by category: see {@link DeploymentQuery#deploymentCategory(String)}.
+   * 
+   * @throws ActivitiObjectNotFoundException if no deployment with the provided id can be found.
+   */
+  void setDeploymentCategory(String deploymentId, String category);
 
   /**
    * Retrieves a list of deployment resources for the given deployment, 
@@ -197,6 +205,14 @@ public interface RepositoryService {
    * @throws ActivitiException if the process definition is already in state active.
    */
   void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances,  Date activationDate);
+  
+  /**
+   * Sets the category of the process definition.
+   * Process definitions can be queried by category: see {@link ProcessDefinitionQuery#processDefinitionCategory(String)}.
+   * 
+   * @throws ActivitiObjectNotFoundException if no process defintion with the provided id can be found.
+   */
+  void setProcessDefinitionCategory(String processDefinitionId, String category);
 
   /**
    * Gives access to a deployed process model, e.g., a BPMN 2.0 XML file,

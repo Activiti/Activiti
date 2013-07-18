@@ -22,6 +22,8 @@ public interface ReadOnlyProcessDefinition extends PvmScope {
   
   String getName();
   
+  String getKey();
+  
   String getDescription();
 
   PvmActivity getInitial();

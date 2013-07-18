@@ -20,8 +20,8 @@ import org.apache.commons.lang.StringUtils;
 
 public class DefinitionsRootExport implements BpmnXMLConstants {
 
-  public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    xtw.writeStartDocument("UTF-8", "1.0");
+  public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw, String encoding) throws Exception {
+    xtw.writeStartDocument(encoding, "1.0");
 
     // start definitions root element
     xtw.writeStartElement(ELEMENT_DEFINITIONS);

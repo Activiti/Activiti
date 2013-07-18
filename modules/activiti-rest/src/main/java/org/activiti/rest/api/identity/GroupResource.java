@@ -16,47 +16,51 @@ package org.activiti.rest.api.identity;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
+import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Put;
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
-public class GroupResource extends SecuredResource {
+public class GroupResource extends BaseGroupResource {
 
   @Get
-  public Group getGroup() {
-    if (authenticate() == false)
+  public GroupResponse getUser() {
+    if(!authenticate())
       return null;
-
-    String groupId = (String) getRequest().getAttributes().get("groupId");
-    if (groupId == null) {
-      throw new ActivitiIllegalArgumentException("No groupId provided");
-    }
-    Group group = ActivitiUtil.getIdentityService().createGroupQuery()
-        .groupId(groupId).singleResult();
-    return group;
+    
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createGroupResponse(this, getGroupFromRequest());
   }
+  
+  @Put
+  public GroupResponse updateGroup(GroupRequest request) {
 
+    Group group = getGroupFromRequest();
+
+    if(request.getId() == null || request.getId().equals(group.getId())) {
+      if(request.isNameChanged()) {
+        group.setName(request.getName());
+      }
+      if(request.isTypeChanged()) {
+        group.setType(request.getType());
+      }
+      ActivitiUtil.getIdentityService().saveGroup(group);
+    } else {
+      throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
+    }
+    
+    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+            .createGroupResponse(this, group);
+  }
+  
   @Delete
-  public StateResponse deleteGroup() {
-    if (authenticate() == false)
-      return null;
-
-    String groupId = (String) getRequest().getAttributes().get("groupId");
-    if (groupId == null) {
-      setStatus(Status.CLIENT_ERROR_NOT_FOUND, "The group '" + groupId
-          + "' does not exist.");
-      return new StateResponse().setSuccess(false);
-    }
-    Group group = ActivitiUtil.getIdentityService().createGroupQuery()
-        .groupId(groupId).singleResult();
-    if (group != null) {
-      ActivitiUtil.getIdentityService().deleteGroup(groupId);
-      return new StateResponse().setSuccess(true);
-    }
-    return new StateResponse().setSuccess(false);
+  public void deleteGroup() {
+    Group group = getGroupFromRequest();
+    ActivitiUtil.getIdentityService().deleteGroup(group.getId());
+    setStatus(Status.SUCCESS_NO_CONTENT);
   }
 }

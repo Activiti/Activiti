@@ -212,6 +212,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected String superExecutionId;
   
   protected boolean forcedUpdate;
+  
+  protected List<VariableInstanceEntity> queryVariables;
 
   public ExecutionEntity() {
   }
@@ -278,7 +280,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public void initialize() {
     log.debug("initializing {}", this);
 
-    ScopeImpl scope = getScope();
+    ScopeImpl scope = getScopeObject();
     ensureParentInitialized();
 
     // initialize the lists of referenced objects (prevents db queries)
@@ -314,7 +316,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   public void start() {
-    if(startingExecution == null && isProcessInstance()) {
+    if(startingExecution == null && isProcessInstanceType()) {
       startingExecution = new StartingExecution(processDefinition.getInitial());
     }
     performOperation(AtomicOperation.PROCESS_START);
@@ -666,7 +668,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   protected void ensureProcessInstanceInitialized() {
     if ((processInstance == null) && (processInstanceId != null)) {
-      processInstance =  Context
+      processInstance = Context
         .getCommandContext()
         .getExecutionEntityManager()
         .findExecutionById(processInstanceId);
@@ -680,7 +682,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
   }
   
-  public boolean isProcessInstance() {
+  public boolean isProcessInstanceType() {
     return parentId == null;
   }
 
@@ -790,9 +792,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   // scopes ///////////////////////////////////////////////////////////////////
   
-  protected ScopeImpl getScope() {
+  protected ScopeImpl getScopeObject() {
     ScopeImpl scope = null;
-    if (isProcessInstance()) {
+    if (isProcessInstanceType()) {
       scope = getProcessDefinition();
     } else {
       scope = getActivity();
@@ -1064,7 +1066,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   // toString /////////////////////////////////////////////////////////////////
   
   public String toString() {
-    if (isProcessInstance()) {
+    if (isProcessInstanceType()) {
       return "ProcessInstance["+getToStringIdentity()+"]";
     } else {
       return (isConcurrent? "Concurrent" : "")+(isScope ? "Scope" : "")+"Execution["+getToStringIdentity()+"]";
@@ -1374,4 +1376,21 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return activityName;
   }
   
+  public Map<String, Object> getProcessVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (VariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public List<VariableInstanceEntity> getQueryVariables() {
+    return queryVariables;
+  }
+  public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
+    this.queryVariables = queryVariables;
+  }
 }

@@ -147,6 +147,17 @@ public class UserQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 2);
   }
   
+  public void testQueryByFullNameLike() {
+    UserQuery query = identityService.createUserQuery().userFullNameLike("%erm%");
+    verifyQueryResults(query, 1);
+    
+    query = identityService.createUserQuery().userFullNameLike("%ea%");
+    verifyQueryResults(query, 2);
+    
+    query = identityService.createUserQuery().userFullNameLike("%e%");
+    verifyQueryResults(query, 3);
+  }
+  
   public void testQueryByInvalidLastNameLike() {
     UserQuery query = identityService.createUserQuery().userLastNameLike("%invalid%");
     verifyQueryResults(query, 0);

@@ -92,16 +92,20 @@ public class LoginPage extends CustomLayout {
     private static final long serialVersionUID = 1L;
     
     public void onLogin(LoginEvent event) {
-      String userName = event.getLoginParameter("username"); // see the input field names in CustomLoginForm
-      String password = event.getLoginParameter("password");  // see the input field names in CustomLoginForm
-      // Delegate authentication to handler
-      LoggedInUser loggedInUser = loginHandler.authenticate(userName, password);
-      if (loggedInUser != null) {
-        ExplorerApp.get().setUser(loggedInUser);
-        viewManager.showDefaultPage();
-      } else {
-        refreshUi();
-        notificationManager.showErrorNotification(Messages.LOGIN_FAILED_HEADER, i18nManager.getMessage(Messages.LOGIN_FAILED_INVALID));
+      try {
+        String userName = event.getLoginParameter("username"); // see the input field names in CustomLoginForm
+        String password = event.getLoginParameter("password");  // see the input field names in CustomLoginForm
+        // Delegate authentication to handler
+        LoggedInUser loggedInUser = loginHandler.authenticate(userName, password);
+        if (loggedInUser != null) {
+          ExplorerApp.get().setUser(loggedInUser);
+          viewManager.showDefaultPage();
+        } else {
+          refreshUi();
+          notificationManager.showErrorNotification(Messages.LOGIN_FAILED_HEADER, i18nManager.getMessage(Messages.LOGIN_FAILED_INVALID));
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
       }
     }
   }

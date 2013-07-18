@@ -16,10 +16,8 @@ package org.activiti.rest.api.repository;
 import java.util.Date;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
 import org.restlet.resource.Get;
@@ -29,7 +27,7 @@ import org.restlet.resource.ResourceException;
 /**
  * @author Frederik Heremans
  */
-public class ProcessDefinitionResource extends SecuredResource {
+public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
   
   @Get
   public ProcessDefinitionResponse getProcessDefinition() {
@@ -51,20 +49,33 @@ public class ProcessDefinitionResource extends SecuredResource {
     
     ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
     
-    if(actionRequest.getAction() != null) {
-      if(ProcessDefinitionActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
-        return suspendProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
-      } else if(ProcessDefinitionActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
-        return activateProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
+    if(actionRequest.getCategory() != null) {
+      // Update of category required
+      ActivitiUtil.getRepositoryService().setProcessDefinitionCategory(processDefinition.getId(), actionRequest.getCategory());
+      
+      // No need to re-fetch the ProcessDefinition entity, just update category in response
+      ProcessDefinitionResponse response =  getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+              .createProcessDefinitionResponse(this, processDefinition);
+      response.setCategory(actionRequest.getCategory());
+      return response;
+      
+    } else {
+      // Actual action
+      if(actionRequest.getAction() != null) {
+        if(ProcessDefinitionActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
+          return suspendProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
+        } else if(ProcessDefinitionActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
+          return activateProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
+        }
       }
+      
+      throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
     }
-    
-    throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
   }
   
   protected ProcessDefinitionResponse activateProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
     if(!processDefinition.isSuspended()) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT, "Process definition with id '" + processDefinition.getId() + "'is already active");
+      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process definition with id '" + processDefinition.getId() + " ' is already active", null, null);
     }
     ActivitiUtil.getRepositoryService().activateProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
    
@@ -78,7 +89,7 @@ public class ProcessDefinitionResource extends SecuredResource {
 
   protected ProcessDefinitionResponse suspendProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
     if(processDefinition.isSuspended()) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT, "Process definition with id '" + processDefinition.getId() + "'is already suspended");
+      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process definition with id '" + processDefinition.getId() + " ' is already suspended", null, null);
     }
     ActivitiUtil.getRepositoryService().suspendProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
     
@@ -90,22 +101,4 @@ public class ProcessDefinitionResource extends SecuredResource {
     return response;
   }
 
-  /**
-   * Returns the {@link ProcessDefinition} that is requested. Throws the right exceptions
-   * when bad request was made or definition is not found.
-   */
-  protected ProcessDefinition getProcessDefinitionFromRequest() {
-    String processDefinitionId = getAttribute("processDefinitionId");
-    if(processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("The processDefinitionId cannot be null");
-    }
-    
-    ProcessDefinition processDefinition = ActivitiUtil.getRepositoryService().createProcessDefinitionQuery()
-            .processDefinitionId(processDefinitionId).singleResult();
-   
-   if(processDefinition == null) {
-     throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
-   }
-   return processDefinition;
-  }
 }

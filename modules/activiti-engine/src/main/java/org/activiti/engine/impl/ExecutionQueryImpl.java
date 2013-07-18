@@ -15,7 +15,6 @@ package org.activiti.engine.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -37,14 +36,17 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String processDefinitionKey;
   protected String activityId;
   protected String executionId;
+  protected String parentId;
   protected String processInstanceId;
   protected List<EventSubscriptionQueryValue> eventSubscriptions;
   
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
+  protected boolean excludeSubprocesses;
   protected SuspensionState suspensionState;
   protected String businessKey;
+  protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected boolean isActive;
   protected String involvedUser;
   
@@ -96,6 +98,19 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return this;
   }
   
+  public ExecutionQuery processInstanceBusinessKey(String processInstanceBusinessKey, boolean includeChildExecutions) {
+    if (!includeChildExecutions) {
+      return processInstanceBusinessKey(processInstanceBusinessKey);
+    } else {
+      if (processInstanceBusinessKey == null) {
+        throw new ActivitiIllegalArgumentException("Business key is null");
+      }
+      this.businessKey = processInstanceBusinessKey;
+      this.includeChildExecutionsWithBusinessKeyQuery = includeChildExecutions;
+      return this;
+    }
+  }
+  
   public ExecutionQueryImpl executionId(String executionId) {
     if (executionId == null) {
       throw new ActivitiIllegalArgumentException("Execution id is null");
@@ -110,6 +125,14 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     if (activityId != null) {
       isActive =  true;
     }
+    return this;
+  }
+  
+  public ExecutionQueryImpl parentId(String parentId) {
+    if (parentId == null) {
+      throw new ActivitiIllegalArgumentException("Parent id is null");
+    }
+    this.parentId = parentId;
     return this;
   }
   
@@ -206,18 +229,23 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   }
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
-  }  
+  }
+  public boolean isExcludeSubprocesses() {
+    return excludeSubprocesses;
+  }
   public SuspensionState getSuspensionState() {
     return suspensionState;
   }  
   public void setSuspensionState(SuspensionState suspensionState) {
     this.suspensionState = suspensionState;
   }  
-  
   public List<EventSubscriptionQueryValue> getEventSubscriptions() {
     return eventSubscriptions;
   }
-  
+  public boolean isIncludeChildExecutionsWithBusinessKeyQuery() {
+    return includeChildExecutionsWithBusinessKeyQuery;
+  }
+
   public void setEventSubscriptions(List<EventSubscriptionQueryValue> eventSubscriptions) {
     this.eventSubscriptions = eventSubscriptions;
   }
@@ -229,6 +257,9 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   }
   public void setInvolvedUser(String involvedUser) {
     this.involvedUser = involvedUser;
+  }
+  public String getParentId() {
+    return parentId;
   }
   
 }

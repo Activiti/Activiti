@@ -57,6 +57,14 @@ public class HistoricTaskInstanceEntityManager extends AbstractManager {
     return Collections.EMPTY_LIST;
   }
   
+  @SuppressWarnings("unchecked")
+  public List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery, Page page) {
+    if (getHistoryManager().isHistoryEnabled()) {
+      return getDbSqlSession().selectList("selectHistoricTaskInstancesWithVariablesByQueryCriteria", historicTaskInstanceQuery, page);
+    }
+    return Collections.EMPTY_LIST;
+  }
+  
   public HistoricTaskInstanceEntity findHistoricTaskInstanceById(String taskId) {
     if (taskId == null) {
       throw new ActivitiIllegalArgumentException("Invalid historic task id : null");

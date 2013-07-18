@@ -14,6 +14,7 @@
 package org.activiti.engine.history;
 
 import java.util.Date;
+import java.util.Map;
 
 
 /**
@@ -84,4 +85,9 @@ public interface HistoricTaskInstance {
   /** The parent task of this task, in case this task was a subtask */
   String getParentTaskId();
 
+  /** Returns the local task variables if requested in the task query */
+  Map<String, Object> getTaskLocalVariables();
+  
+  /** Returns the process variables if requested in the task query */
+  Map<String, Object> getProcessVariables();
 }

@@ -71,15 +71,14 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.insert(attachment);
     
-    if (content!=null) {
+    if (content != null) {
       byte[] bytes = IoUtil.readInputStream(content, attachmentName);
-      ByteArrayEntity byteArray = new ByteArrayEntity(bytes);
-      dbSqlSession.insert(byteArray);
+      ByteArrayEntity byteArray = ByteArrayEntity.createAndInsert(bytes);
       attachment.setContentId(byteArray.getId());
     }
 
     commandContext.getHistoryManager()
-     .createAttachmentComment(taskId, processInstanceId, attachmentName, true);
+      .createAttachmentComment(taskId, processInstanceId, attachmentName, true);
     
     return attachment;
   }

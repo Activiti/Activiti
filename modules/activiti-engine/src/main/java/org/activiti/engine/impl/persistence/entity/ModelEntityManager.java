@@ -13,6 +13,9 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
@@ -20,12 +23,9 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -38,12 +38,14 @@ public class ModelEntityManager extends AbstractManager {
   }
 
   public void insertModel(Model model) {
-    ((ModelEntity) model).setCreateTime(new Date());
+    ((ModelEntity) model).setCreateTime(ClockUtil.getCurrentTime());
+    ((ModelEntity) model).setLastUpdateTime(ClockUtil.getCurrentTime());
     getDbSqlSession().insert((PersistentObject) model);
   }
 
   public void updateModel(ModelEntity updatedModel) {
     CommandContext commandContext = Context.getCommandContext();
+    updatedModel.setLastUpdateTime(ClockUtil.getCurrentTime());
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.update(updatedModel);
   }
@@ -58,23 +60,11 @@ public class ModelEntityManager extends AbstractManager {
   public void insertEditorSourceForModel(String modelId, byte[] modelSource) {
     ModelEntity model = findModelById(modelId);
     if (model != null) {
-      ByteArrayEntity byteArrayValue = null;
-      if (model.getEditorSourceValueId() != null) {
-        Context
-          .getCommandContext()
-          .getByteArrayEntityManager()
-          .deleteByteArrayById(model.getEditorSourceValueId());
-      }
-      if (modelSource != null) {
-        byteArrayValue = new ByteArrayEntity(modelSource);
-        Context
-          .getCommandContext()
-          .getDbSqlSession()
-          .insert(byteArrayValue);
-      }
+      ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceValueId());
+      ref.setValue("source", modelSource);
       
-      if (byteArrayValue != null) {
-        model.setEditorSourceValueId(byteArrayValue.getId());
+      if (model.getEditorSourceValueId() == null) {
+        model.setEditorSourceValueId(ref.getId());
         updateModel(model);
       }
     }
@@ -82,38 +72,26 @@ public class ModelEntityManager extends AbstractManager {
   
   public void deleteEditorSource(ModelEntity model) {
     if (model.getEditorSourceValueId() != null) {
-      ByteArrayEntity data = getDbSqlSession().selectById(ByteArrayEntity.class, model.getEditorSourceValueId());
-      getDbSqlSession().delete(data);
+      ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceValueId());
+      ref.delete();
     }
   }
   
   public void deleteEditorSourceExtra(ModelEntity model) {
     if (model.getEditorSourceExtraValueId() != null) {
-      ByteArrayEntity data = getDbSqlSession().selectById(ByteArrayEntity.class, model.getEditorSourceExtraValueId());
-      getDbSqlSession().delete(data);
+      ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceExtraValueId());
+      ref.delete();
     }
   }
   
   public void insertEditorSourceExtraForModel(String modelId, byte[] modelSource) {
     ModelEntity model = findModelById(modelId);
     if (model != null) {
-      ByteArrayEntity byteArrayValue = null;
-      if (model.getEditorSourceExtraValueId() != null) {
-        Context
-          .getCommandContext()
-          .getByteArrayEntityManager()
-          .deleteByteArrayById(model.getEditorSourceExtraValueId());
-      }
-      if (modelSource != null) {
-        byteArrayValue = new ByteArrayEntity(modelSource);
-        Context
-          .getCommandContext()
-          .getDbSqlSession()
-          .insert(byteArrayValue);
-      }
+      ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceExtraValueId());
+      ref.setValue("source-extra", modelSource);
       
-      if (byteArrayValue != null) {
-        model.setEditorSourceExtraValueId(byteArrayValue.getId());
+      if (model.getEditorSourceExtraValueId() == null) {
+        model.setEditorSourceExtraValueId(ref.getId());
         updateModel(model);
       }
     }
@@ -137,33 +115,23 @@ public class ModelEntityManager extends AbstractManager {
   }
   
   public byte[] findEditorSourceByModelId(String modelId) {
-    byte[] bytes = null;
     ModelEntity model = findModelById(modelId);
-    if (model != null && model.getEditorSourceValueId() != null) {
-      ByteArrayEntity byteEntity = Context
-          .getCommandContext()
-          .getDbSqlSession()
-          .selectById(ByteArrayEntity.class, model.getEditorSourceValueId());
-      if (byteEntity != null) {
-        bytes = byteEntity.getBytes();
-      }
+    if (model == null || model.getEditorSourceValueId() == null) {
+      return null;
     }
-    return bytes;
+    
+    ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceValueId());
+    return ref.getBytes();
   }
   
   public byte[] findEditorSourceExtraByModelId(String modelId) {
-    byte[] bytes = null;
     ModelEntity model = findModelById(modelId);
-    if (model != null && model.getEditorSourceExtraValueId() != null) {
-      ByteArrayEntity byteEntity = Context
-          .getCommandContext()
-          .getDbSqlSession()
-          .selectById(ByteArrayEntity.class, model.getEditorSourceExtraValueId());
-      if (byteEntity != null) {
-        bytes = byteEntity.getBytes();
-      }
+    if (model == null || model.getEditorSourceExtraValueId() == null) {
+      return null;
     }
-    return bytes;
+    
+    ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceExtraValueId());
+    return ref.getBytes();
   }
 
   @SuppressWarnings("unchecked")

@@ -49,7 +49,7 @@ public class CommandContextInterceptor extends CommandInterceptor {
     	context = commandContextFactory.createCommandContext(command);    	
     }  
     else {
-    	log.debug("Valid context found. Reusing it for the current comment '{}'", command.getClass().getCanonicalName());
+    	log.debug("Valid context found. Reusing it for the current command '{}'", command.getClass().getCanonicalName());
     	contextReused = true;
     }
 

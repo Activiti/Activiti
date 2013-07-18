@@ -65,6 +65,11 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery subProcessInstanceId(String subProcessInstanceId);
   
   /**
+   * Exclude sub processes from the query result;
+   */
+  ProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses);
+  
+  /**
    * Select the process instances with which the user with the given id is involved. 
    */
   ProcessInstanceQuery involvedUser(String userId);
@@ -182,6 +187,11 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * are suspended.
    */
   ProcessInstanceQuery active();
+  
+  /**
+   * Include process variables in the process query result
+   */
+  ProcessInstanceQuery includeProcessVariables();
   
   //ordering /////////////////////////////////////////////////////////////////
   

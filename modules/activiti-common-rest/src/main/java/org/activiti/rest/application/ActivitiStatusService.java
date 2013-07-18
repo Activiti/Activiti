@@ -37,6 +37,10 @@ import org.restlet.service.StatusService;
  */
 public class ActivitiStatusService extends StatusService {
 
+  
+  protected static final String NEWLINE_REPLACE_REGEX = "\\r\\n|\\r|\\n";
+  
+  
   /**
    * Overriding this method to return a JSON-object representing the error that occurred instead of
    * the default HTML body Restlet provides.
@@ -73,20 +77,29 @@ public class ActivitiStatusService extends StatusService {
     
     if(throwable instanceof ActivitiObjectNotFoundException) {
       // 404 - Entity not found
-      status = new Status(Status.CLIENT_ERROR_NOT_FOUND.getCode(), throwable.getMessage(), null, null);
+      status = new Status(Status.CLIENT_ERROR_NOT_FOUND.getCode(), getSafeStatusName(throwable.getMessage()), null, null);
     } else if(throwable instanceof ActivitiIllegalArgumentException) {
       // 400 - Bad Request
-      status = new Status(Status.CLIENT_ERROR_BAD_REQUEST.getCode(), throwable.getMessage(), null, null);
+      status = new Status(Status.CLIENT_ERROR_BAD_REQUEST.getCode(), getSafeStatusName(throwable.getMessage()), null, null);
     } else if (throwable instanceof ActivitiOptimisticLockingException || throwable instanceof ActivitiTaskAlreadyClaimedException) {
       // 409 - Conflict
-      status = new Status(Status.CLIENT_ERROR_CONFLICT.getCode(), throwable.getMessage(), null, null);
+      status = new Status(Status.CLIENT_ERROR_CONFLICT.getCode(), getSafeStatusName(throwable.getMessage()), null, null);
     }  else if (throwable instanceof ResourceException) {
       ResourceException re = (ResourceException) throwable;
       status = re.getStatus();
+    } else if(throwable instanceof ActivitiException) {
+      status = new Status(Status.SERVER_ERROR_INTERNAL.getCode(), getSafeStatusName(throwable.getMessage()), null, null);;
     } else {
       status = null;
     }
     
     return status;
+  }
+  
+  protected String getSafeStatusName(String name) {
+    if(name != null) {
+      return name.replaceAll(NEWLINE_REPLACE_REGEX, " ");
+    }
+    return null;
   }
 }

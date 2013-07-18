@@ -240,12 +240,16 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createJobQuery().count());
     // the listener was not yet invoked:
     assertNull(runtimeService.getVariable(pid, "listener"));
+    // the task listener was not yet invoked:
+    assertNull(runtimeService.getVariable(pid, "taskListener"));
     // there is no usertask
     assertNull(taskService.createTaskQuery().singleResult());
         
     waitForJobExecutorToProcessAllJobs(10000L, 25L);
     // the listener was now invoked:
     assertNotNull(runtimeService.getVariable(pid, "listener"));
+    // the task listener was now invoked:
+    assertNotNull(runtimeService.getVariable(pid, "taskListener"));
     
     // there is a usertask
     assertNotNull(taskService.createTaskQuery().singleResult());

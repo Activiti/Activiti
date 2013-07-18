@@ -30,6 +30,7 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
 public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, HistoricDetail> implements HistoricDetailQuery {
 
   private static final long serialVersionUID = 1L;
+  protected String id;
   protected String taskId;
   protected String processInstanceId;
   protected String executionId;
@@ -49,6 +50,11 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
     super(commandExecutor);
   }
 
+  public HistoricDetailQuery id(String id) {
+    this.id = id;
+    return this;
+  }
+  
   public HistoricDetailQuery processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
     return this;
@@ -109,11 +115,12 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
           varUpdate = (HistoricDetailVariableInstanceUpdateEntity)historicDetail;
           
           // Touch byte-array to ensure initialized inside context
-          varUpdate.getByteArrayValue();
+          // TODO there should be a generic way to initialize variable values
+          varUpdate.getBytes();
           
           // ACT-863: EntityManagerFactorySession instance needed for fetching value, touch while inside context to store
           // cached value
-          if(varUpdate.getVariableType() instanceof JPAEntityVariableType) {
+          if (varUpdate.getVariableType() instanceof JPAEntityVariableType) {
             // Use HistoricJPAEntityVariableType to force caching of value to return from query
             varUpdate.setVariableType(HistoricJPAEntityVariableType.getSharedInstance());
             varUpdate.getValue();

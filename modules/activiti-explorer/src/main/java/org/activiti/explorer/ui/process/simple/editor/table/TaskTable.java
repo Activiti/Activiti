@@ -120,29 +120,30 @@ public class TaskTable extends Table implements TaskFormModelListener {
     // assignee
     ComboBox assigneeComboBox = new ComboBox();
     assigneeComboBox.setNullSelectionAllowed(true);
-    if (taskAssignee == null) {
-      assigneeComboBox.setValue(null);
-    } else {
-      assigneeComboBox.setValue(taskAssignee);
-    }
+   
     for (User user : ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().orderByUserFirstName().asc().list()) {
       assigneeComboBox.addItem(user.getId());
       assigneeComboBox.setItemCaption(user.getId(), user.getFirstName() + " " + user.getLastName());
     }
+    
+    if (taskAssignee != null) {
+      assigneeComboBox.select(taskAssignee);
+    }
+    
     newItem.getItemProperty(ID_ASSIGNEE).setValue(assigneeComboBox);
     
     // groups
     ComboBox groupComboBox = new ComboBox();
     groupComboBox.setNullSelectionAllowed(true);
-    if (taskGroups == null) {
-      groupComboBox.setValue(null);
-    } else {
-      groupComboBox.setValue(taskGroups);
-    }
-    for (Group group : ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().groupType("assignment").orderByGroupName().asc().list()) {
+    for (Group group : ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().orderByGroupName().asc().list()) {
       groupComboBox.addItem(group.getId());
       groupComboBox.setItemCaption(group.getId(), group.getName());
     }
+    
+    if (taskGroups != null) {
+      groupComboBox.select(taskGroups);
+    }
+    
     newItem.getItemProperty(ID_GROUPS).setValue(groupComboBox);
 
     // description

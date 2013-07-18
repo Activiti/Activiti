@@ -72,14 +72,12 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   }
 
   public Object getPersistentState() {
-    // properties of this entity are immutable
-    // so always the same value is returned
-    // so never will an update be issued for a DeploymentEntity
-    return DeploymentEntity.class;
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("category", this.category);
+    return persistentState;
   }
   
   // Deployed artifacts manipulation //////////////////////////////////////////
-  
   public void addDeployedArtifact(Object deployedArtifact) {
     if (deployedArtifacts == null) {
       deployedArtifacts = new HashMap<Class<?>, List<Object>>();
@@ -118,6 +116,14 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     this.name = name;
   }
   
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
   public void setResources(Map<String, ResourceEntity> resources) {
     this.resources = resources;
   }
@@ -138,11 +144,12 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     this.isNew = isNew;
   }
 
-  public String getCategory() {
-    return category;
-  }
+  
+  // common methods  //////////////////////////////////////////////////////////
 
-  public void setCategory(String category) {
-    this.category = category;
+  @Override
+  public String toString() {
+    return "DeploymentEntity[id=" + id + ", name=" + name + "]";
   }
+  
 }

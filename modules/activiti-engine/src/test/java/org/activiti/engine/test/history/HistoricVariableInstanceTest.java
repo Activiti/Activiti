@@ -13,16 +13,11 @@
 
 package org.activiti.engine.test.history;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableInstance;
@@ -98,6 +93,42 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
     
     assertEquals(5, historyService.createHistoricActivityInstanceQuery().count());
     assertEquals(3, historyService.createHistoricDetailQuery().count());
+  }
+  
+  @Deployment(resources={
+    "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"
+  })
+  public void testChangeType() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    TaskQuery taskQuery = taskService.createTaskQuery();
+    Task task = taskQuery.singleResult();
+    assertEquals("my task", task.getName());
+    
+    // no type change
+    runtimeService.setVariable(processInstance.getId(), "firstVar", "123");
+    assertEquals("123", getHistoricVariable("firstVar").getValue());
+    runtimeService.setVariable(processInstance.getId(), "firstVar", "456");
+    assertEquals("456", getHistoricVariable("firstVar").getValue());
+    runtimeService.setVariable(processInstance.getId(), "firstVar", "789");
+    assertEquals("789", getHistoricVariable("firstVar").getValue());
+
+    // type is changed from text to integer and back again. same result expected(?)
+    runtimeService.setVariable(processInstance.getId(), "secondVar", "123");
+    assertEquals("123", getHistoricVariable("secondVar").getValue());
+    runtimeService.setVariable(processInstance.getId(), "secondVar", 456);
+    // there are now 2 historic variables, so the following does not work
+//  assertEquals(456, getHistoricVariable("secondVar").getValue()); 
+    runtimeService.setVariable(processInstance.getId(), "secondVar", "789");
+    // there are now 3 historic variables, so the following does not work
+//  assertEquals("789", getHistoricVariable("secondVar").getValue());
+    
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(processInstance.getId());
+  }
+
+  private HistoricVariableInstance getHistoricVariable(String variableName) {
+    return historyService.createHistoricVariableInstanceQuery().variableName(variableName).singleResult();
   }
   
   @Deployment
@@ -217,7 +248,7 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
   @Deployment(resources={
           "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"
   })
-  public void testHidtoricProcessVariableOnDeletion() {
+  public void testHistoricProcessVariableOnDeletion() {
     HashMap<String, Object> variables = new HashMap<String,  Object>();
     variables.put("testVar", "Hallo Christian");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
@@ -312,6 +343,81 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
     count = historyService.createHistoricVariableInstanceQuery().count();
     assertEquals(2, count);
     
+  }
+
+  @Deployment(resources = "org/activiti/engine/test/history/HistoricVariableInstanceTest.testSimple.bpmn20.xml")
+  public void testNativeHistoricVariableInstanceQuery() {
+    assertEquals("ACT_HI_VARINST", managementService.getTableName(HistoricVariableInstance.class));
+    assertEquals("ACT_HI_VARINST", managementService.getTableName(HistoricVariableInstanceEntity.class));
+
+    String tableName = managementService.getTableName(HistoricVariableInstance.class);
+    String baseQuerySql = "SELECT * FROM " + tableName;
+
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("var1", "value1");
+    variables.put("var2", "value2");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc", variables);
+    assertNotNull(processInstance);
+
+    assertEquals(3, historyService.createNativeHistoricVariableInstanceQuery().sql(baseQuerySql).list().size());
+
+    String sqlWithConditions = baseQuerySql + " where NAME_ = #{name}";
+    assertEquals("test123", historyService.createNativeHistoricVariableInstanceQuery().sql(sqlWithConditions)
+        .parameter("name", "myVar").singleResult().getValue());
+
+    sqlWithConditions = baseQuerySql + " where NAME_ like #{name}";
+    assertEquals(2, historyService.createNativeHistoricVariableInstanceQuery().sql(sqlWithConditions)
+        .parameter("name", "var%").list().size());
+
+    // paging
+    assertEquals(3, historyService.createNativeHistoricVariableInstanceQuery().sql(baseQuerySql).listPage(0, 3).size());
+    assertEquals(2, historyService.createNativeHistoricVariableInstanceQuery().sql(baseQuerySql).listPage(1, 3).size());
+    assertEquals(2, historyService.createNativeHistoricVariableInstanceQuery().sql(sqlWithConditions)
+        .parameter("name", "var%").listPage(0, 2).size());
+
+  }
+
+  @Deployment(resources = "org/activiti/engine/test/history/HistoricVariableInstanceTest.testSimple.bpmn20.xml")
+  public void testNativeHistoricDetailQuery() {
+    assertEquals("ACT_HI_DETAIL", managementService.getTableName(HistoricDetail.class));
+    assertEquals("ACT_HI_DETAIL", managementService.getTableName(HistoricVariableUpdate.class));
+
+    String tableName = managementService.getTableName(HistoricDetail.class);
+    String baseQuerySql = "SELECT * FROM " + tableName;
+
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("var1", "value1");
+    variables.put("var2", "value2");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc", variables);
+    assertNotNull(processInstance);
+
+    assertEquals(3, historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).list().size());
+
+    String sqlWithConditions = baseQuerySql + " where NAME_ = #{name} and TYPE_ = #{type}";
+    assertNotNull(historyService.createNativeHistoricDetailQuery().sql(sqlWithConditions)
+        .parameter("name", "myVar").parameter("type", "VariableUpdate").singleResult());
+
+    sqlWithConditions = baseQuerySql + " where NAME_ like #{name}";
+    assertEquals(2, historyService.createNativeHistoricDetailQuery().sql(sqlWithConditions)
+        .parameter("name", "var%").list().size());
+
+    Task task = taskService.createTaskQuery().singleResult();
+    Map<String, String> formDatas = new HashMap<String, String>();
+    formDatas.put("field1", "field value 1");
+    formDatas.put("field2", "field value 2");
+    formService.submitTaskFormData(task.getId(), formDatas);
+
+    String countSql = "select count(*) from " + tableName + " where TYPE_ = #{type} and PROC_INST_ID_ = #{pid}";
+    assertEquals(2, historyService.createNativeHistoricDetailQuery().sql(countSql)
+        .parameter("type", "FormProperty").parameter("pid", processInstance.getId()).count());
+
+
+    // paging
+    assertEquals(3, historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).listPage(0, 3).size());
+    assertEquals(3, historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).listPage(1, 3).size());
+    sqlWithConditions = baseQuerySql + " where TYPE_ = #{type} and PROC_INST_ID_ = #{pid}";
+    assertEquals(2, historyService.createNativeHistoricDetailQuery().sql(sqlWithConditions)
+        .parameter("type", "FormProperty").parameter("pid", processInstance.getId()).listPage(0, 2).size());
   }
   
 }

@@ -40,6 +40,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected boolean unfinished = false;
   protected String startedBy;
   protected String superProcessInstanceId;
+  protected boolean excludeSubprocesses;
   protected List<String> processKeyNotIn;
   protected Date startedBefore;
   protected Date startedAfter;
@@ -48,6 +49,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String processDefinitionKey;
   protected Set<String> processInstanceIds;
   protected String involvedUser;
+  protected boolean includeProcessVariables;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -134,13 +136,23 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   
   public HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId) {
-   this.superProcessInstanceId = superProcessInstanceId;
-   return this;
+    this.superProcessInstanceId = superProcessInstanceId;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses) {
+    this.excludeSubprocesses = excludeSubprocesses;
+    return this;
   }
   
   @Override
   public HistoricProcessInstanceQuery involvedUser(String userId) {
     this.involvedUser = userId;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery includeProcessVariables() {
+    this.includeProcessVariables = true;
     return this;
   }
   
@@ -168,6 +180,14 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return orderBy(HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
   }
   
+  public String getMssqlOrDB2OrderBy() {
+    String specialOrderBy = super.getOrderBy();
+    if (specialOrderBy != null && specialOrderBy.length() > 0) {
+      specialOrderBy = specialOrderBy.replace("RES.", "TEMPRES_");
+    }
+    return specialOrderBy;
+  }
+  
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
@@ -179,9 +199,15 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext
-      .getHistoricProcessInstanceEntityManager()
-      .findHistoricProcessInstancesByQueryCriteria(this, page);
+    if (includeProcessVariables) {
+      return commandContext
+          .getHistoricProcessInstanceEntityManager()
+          .findHistoricProcessInstancesAndVariablesByQueryCriteria(this, page);
+    } else {
+      return commandContext
+          .getHistoricProcessInstanceEntityManager()
+          .findHistoricProcessInstancesByQueryCriteria(this, page);
+    }
   }
   
   public String getBusinessKey() {
@@ -211,10 +237,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public String getSuperProcessInstanceId() {
     return superProcessInstanceId;
   }
-  public void setSuperProcessInstanceId(String superProcessInstanceId) {
-    this.superProcessInstanceId = superProcessInstanceId;
+  public boolean isExcludeSubprocesses() {
+    return excludeSubprocesses;
   }
-  
   public List<String> getProcessKeyNotIn() {
     return processKeyNotIn;
   }
@@ -233,7 +258,6 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public String getInvolvedUser() {
     return involvedUser;
   }
- 
   
   // below is deprecated and to be removed in 5.12
   

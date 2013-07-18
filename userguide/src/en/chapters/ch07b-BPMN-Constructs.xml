@@ -1457,8 +1457,8 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		    	A compensation boundary event has a different activation policy from other boundary events. Other boundary events 
 		    	like for instance the signal boundary event are activated when the activity they are attached to is started. 
 		    	When the activity is left, they are deactivated and the corresponding event subscription is cancelled. 
-		    	The compensation boundary event is different. The compensation boundary is activated when the activity is attached
-		    	to <emphasis role="bold">completes successfully</emphasis>. At this point, the corresponding subscription to 
+		    	The compensation boundary event is different. The compensation boundary event is activated when the activity it is attached
+		    	to <emphasis role="bold">completes successfully</emphasis>. At this point, the corresponding subscription to the
 		    	compensation events is created. The subscription is removed either when a compensation event is triggered
 		    	or when the corresponding process instance ends. From this, it follows: 
 		    	<itemizedlist>
@@ -2781,8 +2781,8 @@ assertEquals("Ship Order", task.getName());</programlisting>
               <para>
                 There is an activity extension which allows you to specify an expression in your task-definition to set the initial due
                 date of a task when it is created. The expression <emphasis role="bold">should always resolve to a <literal>java.util.Date</literal>, 
-                <literal>java.util.String (ISO8601 formatted)</literal> or <literal>null</literal></emphasis>. 
-                For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task.
+                <literal>java.util.String (ISO8601 formatted)</literal>, ISO8601 time-duration (eg. PT50M) or <literal>null</literal></emphasis>. 
+                For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task. In case a time-duration is used, the due-date is calculated based on the current time, incremented by the given period. For example, when "PT30M" is used as dueDate, the task is due in thirty minutes from now.
               </para>
                <programlisting>
 &lt;userTask id=&quot;theTask&quot; name=&quot;Important task&quot; <emphasis role="bold">activiti:dueDate=&quot;${dateVariable}&quot;</emphasis>/&gt;</programlisting>

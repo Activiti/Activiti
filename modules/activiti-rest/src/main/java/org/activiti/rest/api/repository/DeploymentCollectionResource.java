@@ -16,6 +16,7 @@ package org.activiti.rest.api.repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.ActivitiException;
@@ -57,22 +58,22 @@ public class DeploymentCollectionResource extends SecuredResource {
   
   @Get
   public DataResponse getDeployments() {
-    if(authenticate() == false) return null;
-    
     DeploymentQuery deploymentQuery = ActivitiUtil.getRepositoryService().createDeploymentQuery();
     
     Form query = getQuery();
+    Set<String> names = query.getNames();
+    
     // Apply filters
-    if(getQuery().getNames().contains("name")) {
+    if(names.contains("name")) {
       deploymentQuery.deploymentName(getQueryParameter("name", query));
     }
-    if(getQuery().getNames().contains("nameLike")) {
+    if(names.contains("nameLike")) {
       deploymentQuery.deploymentNameLike(getQueryParameter("nameLike", query));
     }
-    if(getQuery().getNames().contains("category")) {
+    if(names.contains("category")) {
       deploymentQuery.deploymentCategory(getQueryParameter("category", query));
     }
-    if(getQuery().getNames().contains("categoryNotEquals")) {
+    if(names.contains("categoryNotEquals")) {
       deploymentQuery.deploymentCategoryNotEquals(getQueryParameter("categoryNotEquals", query));
     }
 
@@ -84,7 +85,6 @@ public class DeploymentCollectionResource extends SecuredResource {
   @Post
   public DeploymentResponse uploadDeployment(Representation entity) {
     try {
-      if(authenticate() == false) return null;
 
       if(entity == null || entity.getMediaType() == null || !MediaType.MULTIPART_FORM_DATA.isCompatible(entity.getMediaType())) {
         throw new ActivitiIllegalArgumentException("The request should be of type" + MediaType.MULTIPART_FORM_DATA  +".");

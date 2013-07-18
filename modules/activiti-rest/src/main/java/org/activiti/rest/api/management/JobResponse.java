@@ -13,71 +13,111 @@
 
 package org.activiti.rest.api.management;
 
-import org.activiti.engine.runtime.Job;
-import org.activiti.rest.api.RequestUtil;
+import java.util.Date;
+
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
 public class JobResponse {
 
-  String id;
-  String executionId;
-  String processInstanceId;
-  String dueDate;
-  int retries;
-  String exceptionMessage;
-  String stacktrace;
-  
-  public JobResponse(Job job) {
-    setId(job.getId());
-    setExecutionId(job.getExecutionId());
-    setProcessInstanceId(job.getProcessInstanceId());
-    setDueDate(RequestUtil.dateToString(job.getDuedate()));
-    setRetries(job.getRetries());
-    setExceptionMessage(job.getExceptionMessage());
-  }
+  protected String id;
+  protected String url;
+  protected String processInstanceId;
+  protected String processInstanceUrl;
+  protected String processDefinitionId;
+  protected String processDefinitionUrl;
+  protected String executionId;
+  protected String executionUrl;
+  protected Integer retries;
+  protected String exceptionMessage;
+  protected Date dueDate;
   
   public String getId() {
     return id;
   }
+  
   public void setId(String id) {
     this.id = id;
   }
-  public String getExecutionId() {
-    return executionId;
+  
+  public String getUrl() {
+    return url;
   }
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
+  
+  public void setUrl(String url) {
+    this.url = url;
   }
+  
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+  
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
-  public String getDueDate() {
-    return dueDate;
+  
+  public String getProcessInstanceUrl() {
+    return processInstanceUrl;
   }
-  public void setDueDate(String dueDate) {
-    this.dueDate = dueDate;
+  
+  public void setProcessInstanceUrl(String processInstanceUrl) {
+    this.processInstanceUrl = processInstanceUrl;
   }
-  public int getRetries() {
+  
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+  
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+  
+  public String getProcessDefinitionUrl() {
+    return processDefinitionUrl;
+  }
+  
+  public void setProcessDefinitionUrl(String processDefinitionUrl) {
+    this.processDefinitionUrl = processDefinitionUrl;
+  }
+  
+  public String getExecutionId() {
+    return executionId;
+  }
+  
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
+  
+  public String getExecutionUrl() {
+    return executionUrl;
+  }
+  
+  public void setExecutionUrl(String executionUrl) {
+    this.executionUrl = executionUrl;
+  }
+  
+  public Integer getRetries() {
     return retries;
   }
-  public void setRetries(int retries) {
+  
+  public void setRetries(Integer retries) {
     this.retries = retries;
   }
+  
   public String getExceptionMessage() {
     return exceptionMessage;
   }
+  
   public void setExceptionMessage(String exceptionMessage) {
     this.exceptionMessage = exceptionMessage;
   }
-  public String getStacktrace() {
-    return stacktrace;
+  
+  public Date getDueDate() {
+    return dueDate;
   }
-  public void setStacktrace(String stacktrace) {
-    this.stacktrace = stacktrace;
+  
+  public void setDueDate(Date dueDate) {
+    this.dueDate = dueDate;
   }
 }

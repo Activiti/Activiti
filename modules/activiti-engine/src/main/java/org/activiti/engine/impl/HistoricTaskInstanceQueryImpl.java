@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.context.Context;
@@ -61,6 +62,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected Date dueAfter;
   protected Date dueBefore;
   protected Date creationDate;
+  protected boolean includeTaskLocalVariables = false;
+  protected boolean includeProcessVariables = false;
 
   public HistoricTaskInstanceQueryImpl() {
   }
@@ -82,9 +85,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   public List<HistoricTaskInstance> executeList(CommandContext commandContext, Page page) {
     ensureVariablesInitialized();
     checkQueryOk();
-    return commandContext
-      .getHistoricTaskInstanceEntityManager()
-      .findHistoricTaskInstancesByQueryCriteria(this, page);
+    if (includeTaskLocalVariables || includeProcessVariables) {
+      return commandContext
+          .getHistoricTaskInstanceEntityManager()
+          .findHistoricTaskInstancesAndVariablesByQueryCriteria(this, page);
+    } else {
+      return commandContext
+          .getHistoricTaskInstanceEntityManager()
+          .findHistoricTaskInstancesByQueryCriteria(this, page);
+    }
   }
 
 
@@ -122,12 +131,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     this.taskId = taskId;
     return this;
   }
-  public HistoricTaskInstanceQueryImpl taskName(String taskName) {
+  public HistoricTaskInstanceQuery taskName(String taskName) {
     this.taskName = taskName;
     return this;
   }
 
-  public HistoricTaskInstanceQueryImpl taskNameLike(String taskNameLike) {
+  public HistoricTaskInstanceQuery taskNameLike(String taskNameLike) {
     this.taskNameLike = taskNameLike;
     return this;
   }
@@ -137,63 +146,115 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     return this;
   }
 
-  public HistoricTaskInstanceQueryImpl taskDescription(String taskDescription) {
+  public HistoricTaskInstanceQuery taskDescription(String taskDescription) {
     this.taskDescription = taskDescription;
     return this;
   }
 
-  public HistoricTaskInstanceQueryImpl taskDescriptionLike(String taskDescriptionLike) {
+  public HistoricTaskInstanceQuery taskDescriptionLike(String taskDescriptionLike) {
     this.taskDescriptionLike = taskDescriptionLike;
     return this;
   }
 
-  public HistoricTaskInstanceQueryImpl taskDeleteReason(String taskDeleteReason) {
+  public HistoricTaskInstanceQuery taskDeleteReason(String taskDeleteReason) {
     this.taskDeleteReason = taskDeleteReason;
     return this;
   }
   
-  public HistoricTaskInstanceQueryImpl taskDeleteReasonLike(String taskDeleteReasonLike) {
+  public HistoricTaskInstanceQuery taskDeleteReasonLike(String taskDeleteReasonLike) {
     this.taskDeleteReasonLike = taskDeleteReasonLike;
     return this;
   }
   
-  public HistoricTaskInstanceQueryImpl taskAssignee(String taskAssignee) {
+  public HistoricTaskInstanceQuery taskAssignee(String taskAssignee) {
     this.taskAssignee = taskAssignee;
     return this;
   }
 
-  public HistoricTaskInstanceQueryImpl taskAssigneeLike(String taskAssigneeLike) {
+  public HistoricTaskInstanceQuery taskAssigneeLike(String taskAssigneeLike) {
     this.taskAssigneeLike = taskAssigneeLike;
     return this;
   }
   
-  public HistoricTaskInstanceQueryImpl taskOwner(String taskOwner) {
+  public HistoricTaskInstanceQuery taskOwner(String taskOwner) {
     this.taskOwner = taskOwner;
     return this;
   }
 
-  public HistoricTaskInstanceQueryImpl taskOwnerLike(String taskOwnerLike) {
+  public HistoricTaskInstanceQuery taskOwnerLike(String taskOwnerLike) {
     this.taskOwnerLike = taskOwnerLike;
     return this;
   }
   
-  public HistoricTaskInstanceQueryImpl finished() {
+  public HistoricTaskInstanceQuery finished() {
     this.finished = true;
     return this;
   }
   
-  public HistoricTaskInstanceQueryImpl unfinished() {
+  public HistoricTaskInstanceQuery unfinished() {
     this.unfinished = true;
     return this;
   }
   
-  public HistoricTaskInstanceQueryImpl taskVariableValueEquals(String variableName, Object variableValue) {
+  public HistoricTaskInstanceQuery taskVariableValueEquals(String variableName, Object variableValue) {
     variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true));
     return this;
   }
   
+  public HistoricTaskInstanceQuery taskVariableValueEquals(Object variableValue) {
+    variables.add(new TaskQueryVariableValue(null, variableValue, QueryOperator.EQUALS, true));
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiIllegalArgumentException("value is null");
+    }
+    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, true));
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery taskVariableValueNotEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiIllegalArgumentException("value is null");
+    }
+    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, true));
+    return this;
+  }
+
+  public HistoricTaskInstanceQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
+    variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, true));
+    return this;
+  }
+
   public HistoricTaskInstanceQuery processVariableValueEquals(String variableName, Object variableValue) {
     variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, false));
+    return this;
+  }
+
+  public HistoricTaskInstanceQuery processVariableValueNotEquals(String variableName, Object variableValue) {
+    variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, false));
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery processVariableValueEquals(Object variableValue) {
+    variables.add(new TaskQueryVariableValue(null, variableValue, QueryOperator.EQUALS, false));
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery processVariableValueEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiIllegalArgumentException("value is null");
+    }
+    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, false));
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
+    if(value == null) {
+      throw new ActivitiIllegalArgumentException("value is null");
+    }
+    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, false));
     return this;
   }
   
@@ -247,6 +308,16 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   @Override
   public HistoricTaskInstanceQuery taskInvolvedUser(String involvedUser) {
     this.involvedUser = involvedUser;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery includeTaskLocalVariables() {
+    this.includeTaskLocalVariables = true;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery includeProcessVariables() {
+    this.includeProcessVariables = true;
     return this;
   }
 
@@ -336,6 +407,14 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   public HistoricTaskInstanceQuery orderByTaskPriority() {
     orderBy(HistoricTaskInstanceQueryProperty.TASK_PRIORITY);
     return this;
+  }
+  
+  public String getMssqlOrDB2OrderBy() {
+    String specialOrderBy = super.getOrderBy();
+    if (specialOrderBy != null && specialOrderBy.length() > 0) {
+      specialOrderBy = specialOrderBy.replace("RES.", "TEMPRES_");
+    }
+    return specialOrderBy;
   }
 
   // getters and setters //////////////////////////////////////////////////////

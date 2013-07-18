@@ -91,14 +91,6 @@ public class ProcessDefinitionEntityManager extends AbstractManager {
     return   new ProcessDefinitionQueryImpl().startableByUser(user).list();
   }
   
-  public List<User> findProcessDefinitionPotentialStarterUsers() {
-    return null;
-  }
-  
-  public List<Group> findProcessDefinitionPotentialStarterGroups() {
-    return null;
-  }
-
   @SuppressWarnings("unchecked")
   public List<ProcessDefinition> findProcessDefinitionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
     return getDbSqlSession().selectListWithRawParameter("selectProcessDefinitionByNativeQuery", parameterMap, firstResult, maxResults);

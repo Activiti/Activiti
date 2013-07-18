@@ -13,89 +13,77 @@
 
 package org.activiti.rest.api.management;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.activiti.engine.management.TableMetaData;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.management.TablePageQuery;
 import org.activiti.rest.api.ActivitiUtil;
-import org.activiti.rest.api.RequestUtil;
+import org.activiti.rest.api.DataResponse;
 import org.activiti.rest.api.SecuredResource;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Form;
 import org.restlet.resource.Get;
 
 /**
- * @author Tijs Rademakers
+ * @author Frederik Heremans
  */
 public class TableDataResource extends SecuredResource {
   
+  protected static final Integer DEFAULT_RESULT_SIZE = 10;
+
   @Get
-  public ObjectNode getTableData() {
-    if(authenticate(SecuredResource.ADMIN) == false) return null;
-    
-    String tableName = (String) getRequest().getAttributes().get("tableName");
-    int start = RequestUtil.getInteger(getQuery(), "start", 0);
-    int size = RequestUtil.getInteger(getQuery(), "size", 10);
-    String order = getQuery().getValues("order");
-    if(order == null) {
-      order = "asc";
-    }
-    String sort = getQuery().getValues("sort");
+  public DataResponse getTableData() {
+    if(authenticate() == false) return null;
 
-    if (sort == null) {
-      TableMetaData tmd = ActivitiUtil.getManagementService().getTableMetaData(tableName);
-      List<String> columnNames = tmd.getColumnNames();
-      if (columnNames.size() > 0) {
-        sort = columnNames.get(0);
-      }
-      else {
-        sort = null;
-      }
-    }
-
-    TablePageQuery query = ActivitiUtil.getManagementService()
-      .createTablePageQuery()
-      .tableName(tableName);
-    if (sort != null) {
-      if (order.equals("asc")) {
-        query.orderAsc(sort);
-      }
-      else {
-        query.orderDesc(sort);
-      }
-    }
-
-    TablePage tablePage = query.listPage(start, size);
-    
-    ObjectNode responseJSON = new ObjectMapper().createObjectNode();
-    responseJSON.put("sort", sort);
-    responseJSON.put("order", order);
-    responseJSON.put("start", tablePage.getFirstResult());
-    responseJSON.put("size", tablePage.getSize());
-    responseJSON.put("total", tablePage.getTotal());
-    
-    ArrayNode tableArray = new ObjectMapper().createArrayNode();
-    
-    for (Map<String, Object> row : tablePage.getRows()) {
-      ObjectNode columnJSON = new ObjectMapper().createObjectNode();
-      for (String name : row.keySet()) {
-        if(row.get(name) instanceof byte[]) {
-          columnJSON.put(name, ((byte[]) row.get(name)).length);
-        } else if(row.get(name) instanceof Date) {
-          columnJSON.put(name, RequestUtil.dateToString((Date) row.get(name)));
-        } else {
-          columnJSON.put(name, row.get(name).toString());
-        }
-      }
-      tableArray.add(columnJSON);
+    String tableName = getAttribute("tableName");
+    if(tableName == null) {
+      throw new ActivitiIllegalArgumentException("The tableName cannot be null");
     }
     
-    responseJSON.put("data", tableArray);
+    // Check if table exists before continuing
+    if(ActivitiUtil.getManagementService().getTableMetaData(tableName) == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
+    }
     
-    return responseJSON;
+    Form queryForm = getQuery();
+    String orderAsc = getQueryParameter("orderAscendingColumn", queryForm);
+    String orderDesc = getQueryParameter("orderDescendingColumn", queryForm);
+    
+    if(orderAsc != null && orderDesc != null) {
+      throw new ActivitiIllegalArgumentException("Only one of 'orderAscendingColumn' or 'orderDescendingColumn' can be supplied.");
+    }
+    
+    Integer start = getQueryParameterAsInt("start", queryForm);
+    if(start == null) {
+      start = 0;
+    }
+    Integer size = getQueryParameterAsInt("size", queryForm);
+    if(size == null) {
+      size = DEFAULT_RESULT_SIZE;
+    }
+    
+    DataResponse response = new DataResponse();
+    
+    TablePageQuery tablePageQuery = ActivitiUtil.getManagementService().createTablePageQuery()
+            .tableName(tableName);
+    
+    if(orderAsc != null) {
+      tablePageQuery.orderAsc(orderAsc);
+      response.setOrder("asc");
+      response.setSort(orderAsc);
+    }
+    
+    if(orderDesc != null) {
+      tablePageQuery.orderDesc(orderDesc);
+      response.setOrder("desc");
+      response.setSort(orderDesc);
+    }
+    
+    TablePage listPage = tablePageQuery.listPage(start, size);
+    response.setSize(((Long)listPage.getSize()).intValue());
+    response.setStart(((Long)listPage.getFirstResult()).intValue());
+    response.setTotal(listPage.getTotal());
+    response.setData(listPage.getRows());
+    
+   return response;
   }
 }

@@ -180,6 +180,11 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * instance. {@link ProcessInstance) ids and {@link HistoricProcessInstance}
    * ids match. */
   HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId);
+  
+  /**
+   * Exclude sub processes from the query result;
+   */
+  HistoricProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses);
 
   // below is deprecated and should be removed in 5.12
 
@@ -200,4 +205,9 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /** Only select historic process instances that were finished on provided date.
    * @deprecated will be removed in 5.12, use {@link #startedAfter(Date)} and {@link #startedBefore(Date)} instead */
   HistoricProcessInstanceQuery finishDateOn(Date date);
+  
+  /**
+   * Include process variables in the process query result
+   */
+  HistoricProcessInstanceQuery includeProcessVariables();
 }

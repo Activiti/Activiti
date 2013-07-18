@@ -55,7 +55,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
       .findMessageStartEventSubscriptionByName(messageName);
     
     if(messageEventSubscription == null) {
-      throw new ActivitiException("Cannot start process instance by message: no subscription to message with name '"+messageName+"' found.");
+      throw new ActivitiObjectNotFoundException("Cannot start process instance by message: no subscription to message with name '"+messageName+"' found.", MessageEventSubscriptionEntity.class);
     }
     
     String processDefinitionId = messageEventSubscription.getConfiguration();

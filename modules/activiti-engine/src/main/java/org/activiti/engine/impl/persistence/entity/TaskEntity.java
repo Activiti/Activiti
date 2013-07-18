@@ -46,6 +46,7 @@ import org.activiti.engine.task.Task;
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Falko Menge
+ * @author Tijs Rademakers
  */ 
 public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject, HasRevision {
 
@@ -86,6 +87,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected boolean isDeleted;
   
   protected String eventName;
+  
+  protected List<VariableInstanceEntity> queryVariables;
   
   public TaskEntity() {
   }
@@ -696,5 +699,84 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   public boolean isSuspended() {
     return suspensionState == SuspensionState.SUSPENDED.getStateCode();
+  }
+  public Map<String, Object> getTaskLocalVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (VariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getId() != null && variableInstance.getTaskId() != null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public Map<String, Object> getProcessVariables() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    if (queryVariables != null) {
+      for (VariableInstanceEntity variableInstance: queryVariables) {
+        if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
+        }
+      }
+    }
+    return variables;
+  }
+  public List<VariableInstanceEntity> getQueryVariables() {
+    if(queryVariables == null && Context.getCommandContext() != null) {
+      queryVariables = new VariableInitializingList();
+    }
+    return queryVariables;
+  }
+  
+  public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
+    this.queryVariables = queryVariables;
+  }
+  
+  /**
+   * List that initialized binary variable values if command-context is active.
+   * 
+   * @author Frederik Heremans
+   */
+  private class VariableInitializingList extends ArrayList<VariableInstanceEntity> {
+
+    private static final long serialVersionUID = 1L;
+    
+    @Override
+    public void add(int index, VariableInstanceEntity e) {
+      super.add(index, e);
+      initializeBinaryVariable(e);
+    }
+    
+    @Override
+    public boolean add(VariableInstanceEntity e) {
+      initializeBinaryVariable(e);
+      return super.add(e);
+    }
+    @Override
+    public boolean addAll(Collection< ? extends VariableInstanceEntity> c) {
+      for(VariableInstanceEntity e : c) {
+        initializeBinaryVariable(e);
+      }
+      return super.addAll(c);
+    }
+    @Override
+    public boolean addAll(int index, Collection< ? extends VariableInstanceEntity> c) {
+      for(VariableInstanceEntity e : c) {
+        initializeBinaryVariable(e);
+      }
+      return super.addAll(index, c);
+    }
+
+    /**
+     * If the passed {@link VariableInstanceEntity} is a binary variable and the command-context is active,
+     * the variable value is fetched to ensure the byte-array is populated.
+     */
+    @SuppressWarnings("deprecation")
+    protected void initializeBinaryVariable(VariableInstanceEntity e) {
+      if(Context.getCommandContext() != null && e != null && e.getByteArrayValueId() != null) {
+        e.getValue();
+      }
+    }
   }
 }

@@ -42,6 +42,13 @@ public interface UserQuery extends Query<UserQuery, User> {
    */
   UserQuery userLastNameLike(String lastNameLike);
   
+  /**
+   * Only select {@link User}s where the full name matches the given parameters.
+   * Both the first name and last name will be tried, ie in semi-sql:
+   * where firstName like xxx or lastname like xxx
+   */
+  UserQuery userFullNameLike(String fullNameLike);
+  
   /** Only those {@link User}s with the given email addres. */
   UserQuery userEmail(String email);
   
