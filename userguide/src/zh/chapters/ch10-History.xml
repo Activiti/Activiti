@@ -137,7 +137,7 @@ historyService.createHistoricTaskInstanceQuery()
     </section>      
 </section>
   <section id="historyConfig">
-    <title>History configuration</title>
+    <title>历史配置</title>
 	  <para>历史级别可以用编写代码的方法配置, 用枚举类型org.activiti.engine.impl.history.HistoryLevel (或者在5.11之前定义在<literal>ProcessEngineConfiguration</literal>中的常量 <literal>HISTORY_*</literal>):</para>
       <programlisting>
 ProcessEngine processEngine = ProcessEngineConfiguration
