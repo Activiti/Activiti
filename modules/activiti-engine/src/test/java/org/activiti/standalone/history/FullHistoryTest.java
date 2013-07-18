@@ -209,6 +209,28 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals(123456789L, historicVariable.getValue());
   }
   
+  /**
+   * Test for ACT-815
+   */
+  @Deployment(resources={"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+  public void testHistoricDetailsActivityInstanceId() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    runtimeService.setVariable(processInstance.getId(), "variableSetinProcess", "Hello world");
+    
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.complete(task.getId(), Collections.singletonMap("variableSetInTask", (Object)"Activiti rocks"));
+    
+    // Check historic details
+    List<HistoricDetail> details = historyService.createHistoricDetailQuery()
+              .processInstanceId(processInstance.getId())
+              .list();
+    assertEquals(2, details.size());
+    
+    // Activity-ID should be set for both details
+    assertNotNull(details.get(0).getActivityInstanceId());
+    assertNotNull(details.get(1).getActivityInstanceId());
+  }
+  
   @Deployment(resources={"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
   public void testHistoricVariableInstanceQueryTaskVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
@@ -1358,3 +1380,4 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     
    }
 }
+
