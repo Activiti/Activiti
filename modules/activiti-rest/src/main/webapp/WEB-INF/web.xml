@@ -6,7 +6,8 @@
                  http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">  
   
   <display-name>Activiti REST</display-name>
-   
+  <distributable />
+  
   <listener>
     <listener-class>org.activiti.rest.servlet.ActivitiServletContextListener</listener-class>
   </listener> 

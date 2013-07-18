@@ -4,7 +4,9 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="WebApp_ID" version="2.5">
 	<display-name>Vaadin Web Application</display-name>
-
+    <distributable />
+    
+    
 	<context-param>
 		<description>Vaadin production mode</description>
 		<param-name>productionMode</param-name>
@@ -71,6 +73,7 @@
 	<session-config>
 		<session-timeout>480</session-timeout>
 	</session-config>
+  
 
 
 </web-app>
