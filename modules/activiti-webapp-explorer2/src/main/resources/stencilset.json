@@ -671,7 +671,14 @@
       "value" : "",
       "description" : "Initiator of the process.",
       "popular" : true
-    } ]
+    }, {
+      "id" : "formkeydefinition",
+      "type" : "String",
+      "title" : "Form key",
+      "value" : "",
+      "description" : "Form key of the start event.",
+      "popular" : true
+    }]
   }, {
     "name" : "textannotationbase",
     "properties" : [ {
