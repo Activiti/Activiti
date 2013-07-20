@@ -609,6 +609,27 @@
       } ]
     } ]
   }, {
+    "name" : "cancelactivityattribute",
+    "properties" : [ {
+      "id" : "cancelactivity",
+      "type" : "Choice",
+      "title" : "Cancel activity",
+      "value" : "yes",
+      "description" : "Define activity cancelation",
+      "popular" : true,
+      "items" : [ {
+        "id" : "yes",
+        "title" : "Yes",
+        "title_de" : "Yes",
+        "value" : "yes"
+      }, {
+        "id" : "no",
+        "title" : "No",
+        "title_de" : "No",
+        "value" : "no"
+      } ]
+    } ]
+  }, {
     "name" : "timerdefinition",
     "properties" : [ {
       "id" : "timerdurationdefinition",
@@ -1131,7 +1152,7 @@
     "view" : "intermediateevent/timer.svg",
     "icon" : "catching/timer.png",
     "groups" : [ "Boundary Events" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "timerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "timerdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
     "type" : "node",

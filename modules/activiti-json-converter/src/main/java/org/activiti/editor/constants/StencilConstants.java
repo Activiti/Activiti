@@ -76,6 +76,8 @@ public interface StencilConstants {
 	final String PROPERTY_PROCESS_AUTHOR = "process_author";
 	final String PROPERTY_PROCESS_NAMESPACE = "process_namespace";
 	
+	final String PROPERTY_CANCEL_ACTIVITY = "cancelactivity";
+        
 	final String PROPERTY_TIMER_DURATON = "timerdurationdefinition";
 	final String PROPERTY_TIMER_DATE = "timerdatedefinition";
 	final String PROPERTY_TIMER_CYCLE = "timercycledefinition";
