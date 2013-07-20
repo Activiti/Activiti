@@ -42,12 +42,12 @@ public class ChineseConverterTest extends ResourceActivitiTestCase {
   }
   
   protected void deployProcess(BpmnModel bpmnModel)  {
-    byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
-    try {
-      Deployment deployment = processEngine.getRepositoryService().createDeployment().name("test").addString("test.bpmn20.xml", new String(xml)).deploy();
-      processEngine.getRepositoryService().deleteDeployment(deployment.getId());
-    } finally {
-      processEngine.close();
-    }
+//    byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
+//    try {
+//      Deployment deployment = processEngine.getRepositoryService().createDeployment().name("test").addString("test.bpmn20.xml", new String(xml)).deploy();
+//      processEngine.getRepositoryService().deleteDeployment(deployment.getId());
+//    } finally {
+//      processEngine.close();
+//    }
   }
 }
