@@ -6,7 +6,7 @@
 
 <section id="license">
   <title>协议</title>
-  <para>Activiti是基于<ulink url="../../license.txt">the Apache V2 license</ulink>发布的。</para>
+  <para>Activiti使用<ulink url="../../license.txt">Apache V2协议</ulink>。</para>
 </section>
 
 <section id="download">
@@ -17,8 +17,8 @@
 <section id="sources">
   <title>源码</title>
   <para>发布包里已经提供了大部分源码的jar包。
-  要是想完全从代码构建，请参考
-  <ulink url="http://docs.codehaus.org/display/ACT/Developers+Guide#DevelopersGuide-Buildingthedistribution">wiki '构建发布包'</ulink>。
+  要是从代码重新构建，请参考
+  <ulink url="http://docs.codehaus.org/display/ACT/Developers+Guide#DevelopersGuide-Buildingthedistribution">wiki “构建发布包”</ulink>。
   </para>
 </section>
 
