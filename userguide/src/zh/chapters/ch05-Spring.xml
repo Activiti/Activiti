@@ -29,7 +29,7 @@
   </section>
 
   <section>
-    <title>事物</title>
+    <title>事务</title>
     <para>
 	我们将会一步一步地解释在Spring examples中公布的 <literal>SpringTransactionIntegrationTest</literal> 
 	下面是我们使用这个例子的Spring配置文件（你可以在SpringTransactionIntegrationTest-context.xml找到它）以下展示的部分包括数据源（dataSource），
