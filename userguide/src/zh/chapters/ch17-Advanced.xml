@@ -2,162 +2,162 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
 
 <chapter>
-	<title>Advanced</title>
-	
+	<title>高级功能</title>
+
 	<para>
-	   The following sections cover advanced use cases of using Activiti, that go beyond typical execution of BPMN 2.0 processes.
-	   As such, a certain proficiency and experience with Activiti is advisable to understand the material here. 
+	   下面内容将介绍使用Activiti的高级用例，它会超越BPMN 2.0流程的范畴。
+	   因此，对于Activiti的明确目标和经验有利于理解这里的内容。
 	</para>
 
 	<section id="advanced_parseHandlers">
-	
-	   <title>Hooking into process parsing</title>
-	
+
+	   <title>监听流程解析</title>
+
 	   <para>
-	       A bpmn 2.0 xml needs to be parsed to the Activiti internal model to be executed on the Activiti engine. This parsing
-	       happens during a deployment of the process or when a process is not found in memory, and the
-	       xml is fetched from the database. 
+		   bpmn 2.0 xml文件需要被解析为Activiti内部模型，然后才能在Activiti引擎中运行。
+		   解析过程发生在发布流程或在内存中找不到对应流程的时候，
+		   这时会从数据库查询对应的xml。
 	   </para>
-	   
+
 	   <para>
-	       For each of these processes, the <literal>BpmnParser</literal> class creates a new <literal>BpmnParse</literal> instance.
-	       This instance will be used as container for all things that are done during parsing. The parsing on itself is very simple:
-	       for each BPMN 2.0 element, there is a matching instance of the <literal>org.activiti.engine.parse.BpmnParseHandler</literal>
-	       available in the engine. As such, the parser has a map which basically maps an BPMN 2.0 element class to an instance of 
-	       <literal>BpmnParseHandler</literal>. By default, Activiti has <literal>BpmnParseHandler</literal> instances to handle
-	       all supported elements and also uses it to attach execution listeners to steps of the process for creating the history.
+		   对于每个流程，<literal>BpmnParser</literal>类都会创建一个新的<literal>BpmnParse</literal>实例。
+		   这个实例会作为解析过程中的容器来使用。解析过程很简单：
+		   对于每个BPMN 2.0元素，引擎中都会有一个对应的<literal>org.activiti.engine.parse.BpmnParseHandler</literal>实例。
+		   这样，解析器会保存一个BPMN 2.0元素与<literal>BpmnParseHandler</literal>实例的映射。
+		   默认，Activiti使用<literal>BpmnParseHandler</literal>来处理所有支持的元素，
+		   也使用它来提供执行监听器，以支持流程历史。
 	   </para>
-	   
+
 	   <para>
-	       It is possible to add custom instances of <literal>org.activiti.engine.parse.BpmnParseHandler</literal> to the Activiti engine.
-	       An often seen use case is for example to add execution listeners to certain steps that fire events to some queue for event processing.
-	       The history handling is done in such a way internally in Activiti.
-	       To add such custom handlers, the Activiti configuration needs to be tweaked:
+		   可以向Activiti引擎中添加自定义的<literal>org.activiti.engine.parse.BpmnParseHandler</literal>实例。
+		   经常看到的用例是把执行监听器添加到对应的环节，来处理一些事件队列。
+		   Activiti在内部就是这样进行历史处理的。
+		   要想添加这种自定义处理器，需要为Activiti添加如下配置：
 	       <programlisting>
 &lt;property name=&quot;preBpmnParseHandlers&quot;&gt;
   &lt;list&gt;
     &lt;bean class=&quot;org.activiti.parsing.MyFirstBpmnParseHandler&quot; /&gt;
   &lt;/list&gt;
 &lt;/property&gt;
-	    
+
 &lt;property name=&quot;postBpmnParseHandlers&quot;&gt;
   &lt;list&gt;
     &lt;bean class=&quot;org.activiti.parsing.MySecondBpmnParseHandler&quot; /&gt;
     &lt;bean class=&quot;org.activiti.parsing.MyThirdBpmnParseHandler&quot; /&gt;
   &lt;/list&gt;
-&lt;/property&gt;    
+&lt;/property&gt;
 	       </programlisting>
-	       The list of <literal>BpmnParseHandler</literal> instances that is configured in the <literal>preBpmnParseHandlers</literal> property
-	       are added before any of the default handlers. Likewise, the <literal>postBpmnParseHandlers</literal> are added after those.
-	       This can be important if the order of things matter for the logic contained in the custom parse handlers.
+		   配置到<literal>preBpmnParseHandlers</literal>的<literal>BpmnParseHandler</literal>实例
+		   会添加在默认处理器的前面。与之类似，<literal>postBpmnParseHandlers</literal>会加在后面。
+		   当自定义处理器内部逻辑对处理顺序有要求时就很重要了。
 	   </para>
-	   
+
 	   <para>
-	       <literal>org.activiti.engine.parse.BpmnParseHandler</literal> is a simple interface:
+	       <literal>org.activiti.engine.parse.BpmnParseHandler</literal>是一个很简单的接口：
 	       <programlisting>
 public interface BpmnParseHandler {
-  
+
   Collection&lt;Class&gt;? extends BaseElement&gt;&gt; getHandledTypes();
-  
+
   void parse(BpmnParse bpmnParse, BaseElement element);
 
-}	       
+}
 	       </programlisting>
-	       The <literal>getHandledTypes()</literal> method returns a collection of all the types handled by this parser. 
-	       The possible types are a subclass of <literal>BaseElement</literal>, as directed by the generic type of the collection.
-	       You can also extend the <literal>AbstractBpmnParseHandler</literal> class and override the <literal>getHandledType()</literal>
-	       method, which only returns one Class and not a collection. This class contains also some helper methods
-	       shared by many of the default parse handlers. 
-	       The <literal>BpmnParseHandler</literal> instance will be called when the parser encounters any of the returned
-	       types by this method. In the following example, whenever a process contained in a BPMN 2.0 xml is encountered, it 
-	       will execute the logic in the <literal>executeParse</literal> method (which is a typecasted method that replaces
-	       the regular <literal>parse</literal> method on the <literal>BpmnParseHandler</literal> interface). 
+		   <literal>getHandledTypes()</literal>方法会翻译这个解析器处理的所有类型的集合。
+		   它们都是<literal>BaseElement</literal>的子类，返回集合的泛型限制也说明了这一点。
+		   你也可以继承<literal>AbstractBpmnParseHandler</literal>类并重写<literal>getHandledType()</literal>方法，
+		   这样就只需要返回一个类型，而不是一个集合。这个类也包含了需要
+		   默认解析处理器所需要的帮助方法。
+		   <literal>BpmnParseHandler</literal>实例只有在解析器访问到这个方法返回的类型时才会被调用。
+		   在下面的例子中， 当BPMN 2.0 xml包含process元素时，
+		   就会执行<literal>executeParse</literal>方法中的逻辑（这是一个已经完成类型转换的方法，
+		   它替换了<literal>BpmnParseHandler</literal>接口中的<literal>parse</literal>方法。）
 	       <programlisting>
 public class TestBPMNParseHandler extends AbstractBpmnParseHandler&lt;Process&gt; {
 
   protected Class&lt;? extends BaseElement&gt; getHandledType() {
     return Process.class;
   }
-  
+
   protected void executeParse(BpmnParse bpmnParse, Process element) {
      ..
   }
 
-}	       
+}
 	       </programlisting>
 	   </para>
-	   
+
 	   <para>
-	       <emphasis role="bold">Important note:</emphasis> when writing custom parse handler, do not use any of the internal 
-	       classes that are used to parse the BPMN 2.0 constructs. This will cause difficult to find bugs. The safe way to implement
-	       a custom handler is to implement the <emphasis>BpmnParseHandler</emphasis> interface or extends the internal abstract class
-	       <emphasis>org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler</emphasis>.
+	       <emphasis role="bold">重要提示：</emphasis>在编写自定义解析处理器时，
+		   不要使用任何解析BPMN 2.0结构的内部类。这会很难找到问题。
+		   安全的方法是实现<emphasis>BpmnParseHandler</emphasis>接口或集成内部抽象类
+		   <emphasis>org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler</emphasis>。
 	   </para>
-	   
+
 	   <para>
-         It is possible (but less common) to replace the default <literal>BpmnParseHandler</literal> instances
-         that are responsible for the parsing of the BPMN 2.0 elements to the internal Activiti model.
-         This can be done by following snippet of logic:
+	     可以（但不常用）替换默认的<literal>BpmnParseHandler</literal>实例
+		 把解析BPMN 2.0元素解析为Activiti内部模型。
+		 可以通过下面的代码来实现：
          <programlisting>
 &lt;property name=&quot;customDefaultBpmnParseHandlers&quot;&gt;
   &lt;list&gt;
     ...
   &lt;/list&gt;
-&lt;/property&gt;         
+&lt;/property&gt;
          </programlisting>
-         A simple example could for example be to force all of the service tasks to be asynchronous:
+		 举个简单的例子，强行把所有服务任务都设置为异步的：
          <programlisting>
 public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
-  
+
   protected void executeParse(BpmnParse bpmnParse, ServiceTask serviceTask) {
-    
+
     // Do the regular stuff
     super.executeParse(bpmnParse, serviceTask);
-    
+
     // Make always async
     ActivityImpl activity = findActivity(bpmnParse, serviceTask.getId());
     activity.setAsync(true);
   }
 
-}         
-         </programlisting>          
+}
+         </programlisting>
 	   </para>
-        
+
 	</section>
-	
+
 	<section id="advanced.uuid.generator">
-	
-	   <title>UUID id generator for high concurrency</title>
-	   
+
+	   <title>支持高并发的UUID id生成器</title>
+
 	   <para>
-	       In some (very) high concurrency load cases, the default id generator may cause exceptions due to not being able
-	       to fetch new id blocks quickly enough. Every process engine has one id generator. The default id generator reserves
-	       a block of id's in the database, such that no other engine will be able to use id's from the same block. During 
-	       engine operations, when the default id generator notices that the id block is used up, a new transaction is started
-	       to fetch a new block. In (very) limited use cases this can cause problems when there is a real high load. For 
-	       most use cases the default id generator is more than sufficient. The default <literal>org.activiti.engine.impl.db.DbIdGenerator</literal>
-	       also has a property <literal>idBlockSize</literal> which can be configured to set the size of the reserved block of id's
-	       and to tweak the behavior of the id fetching. 
+		   在一些（非常）高并发的场景，默认的id生成器可能因为无法很快的获取新id区域而导致异常。
+		   所有流程引擎都有一个id生成器。默认的id生成器会在数据库划取一块id范围，
+		   这样其他引擎就不能使用相同范围的id。
+		   在引擎奥做期间，当默认的id生成器发现已经越过id范围时，就会启动一个新事务来获得新范围。
+		   在（非常）极限的情况下，这会在非常高负载的情况下导致问题。
+		   对于大部分情况，默认id生成就足够了。默认的<literal>org.activiti.engine.impl.db.DbIdGenerator</literal>
+		   也有一个<literal>idBlockSize</literal>属性，可以配置获取id范围的大小，
+		   这样可以改变获取id的行为。
 	   </para>
-	   
+
 	   <para>
-	       The alternative to the default id generator is the <literal>org.activiti.engine.impl.persistence.StrongUuidGenerator</literal>,
-	       which generates a unique <ulink url="http://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</ulink> locally and uses that
-	       as identifier for all entities. Since the UUID is generated without the need for database access, it copes better with very high concurrency use cases.
-	       Do note that performance may differ from the default id generator (both positive and negative) depending on the machine.
+		   另一个可以选用的默认id生成器是<literal>org.activiti.engine.impl.persistence.StrongUuidGenerator</literal>，
+		   它会在本地生成一个唯一的<ulink url="http://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</ulink>，
+		   把它作为所有实体的标识。因为生成UUID不需要访问数据库，所以它在高并发环境下的表现比较好。
+		   要注意默认id生成器的性能（无论好坏）都依赖于运行硬件。
 	   </para>
-	   
+
 	   <para>
-	       The UUID generator can be configured in the activiti configuration as follows:
+		   UUID生成器可以像下面这样配置到activiti中：
 <programlisting>
 &lt;property name=&quot;idGenerator&quot;&gt;
     &lt;bean class=&quot;org.activiti.engine.impl.persistence.StrongUuidGenerator&quot; /&gt;
 &lt;/property&gt;
-</programlisting>	       
+</programlisting>
 	   </para>
-	   
+
 	   <para>
-	       The use of the UUID id generator depends on the following extra dependency:
+		   使用UUID id生成器需要以下依赖：
 	       <programlisting>
  &lt;dependency&gt;
     &lt;groupId&gt;com.fasterxml.uuid&lt;/groupId&gt;
@@ -165,37 +165,36 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
     &lt;version&gt;3.1.3&lt;/version&gt;
 &lt;/dependency&gt;</programlisting>
 	   </para>
-	
+
 	</section>
-	
+
 	<section id="advanced.safe.bpmn.xml">
-	
-	   <title>Enable safe BPMN 2.0 xml</title>
-	   
+
+	   <title>启用安全的BPMN 2.0 xml</title>
+
 	   <para>
-	     In most cases the BPMN 2.0 processes that are being deployed to the Activiti engine are under tight control
-	     of eg. the development team. However, in some use cases it might be desirable to upload arbitrary BPMN 2.0 xml
-	     to the engine. In that case, take into consideration that a user with bad intentions can bring the server 
-	     down as described <ulink url="http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/">here</ulink>.
+	     大多数情况下，BPMN 2.0流程发布到Activiti引擎是在严格的控制下的，比如开发团队。
+		 然后，一些情况下，可能需要把比较随意的BPMN 2.0 xml上传到引擎。
+		 这种情况，要考虑恶意用户会攻击服务器，
+		 参考<ulink url="http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/">这里</ulink>。
 	   </para>
-	   
+
 	   <para>
-	     To avoid the attacks described in the link above, a property <emphasis>enableSafeBpmnXml</emphasis> can be set on the process 
-	     engine configuration:
+	     为了避免上面链接描述的攻击，
+		 可以在引擎配置中设置：<emphasis>enableSafeBpmnXml</emphasis>：
 	     <programlisting>&lt;property name=&quot;enableSafeBpmnXml&quot; value=&quot;true&quot;/&gt;</programlisting>
 	   </para>
-	   
+
 	   <para>
-	       <emphasis role="bold">By default this feature is disabled!</emphasis> The reason for this is that it relies on 
-	       the availability of the <ulink url="http://download.java.net/jdk7/archive/b123/docs/api/javax/xml/transform/stax/StAXSource.html">StaxSource</ulink>
-	       class. Unfortunately, on some platforms (eg. JDK 6, JBoss, etc.) this class is unavailable (due to older xml parser implementation)
-	       and thus the safe BPMN 2.0 xml feature cannot be enabled. 
+	       <emphasis role="bold">默认这个功能没有开启！</emphasis>这样做的原因是它需要使用 <ulink url="http://download.java.net/jdk7/archive/b123/docs/api/javax/xml/transform/stax/StAXSource.html">StaxSource</ulink>类。
+	       不幸的是，一些平台（比如，JDK 6，JBoss，等等）不能用这个类（因为老的xml解析实现）
+		   所以不能启用安全BPMN 2.0 xml。
 	   </para>
-	   
-	   <para>    
-	       If the platform on which Activti runs does support it, do enable this feature. 
+
+	   <para>
+		   如果Activiti运行的平台支持这项功能，请打开这个功能。
 	   </para>
-	
+
 	</section>
-	
+
 </chapter>
