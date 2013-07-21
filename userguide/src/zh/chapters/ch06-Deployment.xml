@@ -7,8 +7,8 @@
   <section>
     <title>业务文档</title>
     <para>
-	为了部署流程，他们不得不包装在一个业务文档中。一个业务文档是Activiti引擎部署的单元。一个业务文档相当与一个压缩文件，它包含BPMN2.0流程，任务表单，规则和其他任意类型的文件。
-	大体上，业务文档是包含命名资源的容器。 
+	为了部署流程，它们不得不包装在一个业务文档中。一个业务文档是Activiti引擎部署的单元。一个业务文档相当与一个压缩文件，它包含BPMN2.0流程，任务表单，规则和其他任意类型的文件。
+	大体上，业务文档是包含命名资源的容器。
     </para>
     <para>当一个业务文档被部署，它将会自动扫描以 <literal>.bpmn20.xml</literal> 或者<literal>.bpmn</literal>作为扩展名的BPMN文件。每个那样的文件都将会被解析并且可能会包含多个流程定义。
     </para>
@@ -23,7 +23,7 @@
 	    </para>
 	    <programlisting>String barFileName = "path/to/process-one.bar";
 ZipInputStream inputStream = new ZipInputStream(new FileInputStream(barFileName));
-    
+
 repositoryService.createDeployment()
     .name("process-one.bar")
     .addZipInputStream(inputStream)
@@ -34,7 +34,7 @@ repositoryService.createDeployment()
 		详细信息请查看javadocs。
 		</para>
 	  </section>
-	  
+
     <section id="deploymentWithExplorer">
       <title>通过Activiti Explorer控制台部署</title>
       <para>Activiti web控制台允许你通过web界面的用户接口上传一个bar格式的压缩文件（或者一个<literal>bpmn20.xml</literal>格式的文件）。
@@ -74,15 +74,15 @@ repositoryService.createDeployment()
       </para>
     </section>
   </section>
-    
+
   <section id="versioningOfProcessDefinitions">
     <title>流程定义的版本</title>
     <para>BPMN中并没有版本的概念，没有版本也是不错的，因为可执行的BPMN流程作为你开发项目的一部分存在版本控制系统的知识库中（例如 SVN,Git 或者Mercurial）。
-	而在Activiti中，流程定义的版本是在部署的时候被创建。当部署的时候，流程定义被存储到Activiti使用的数据库之前，Activiti讲会自动给 <literal>流程定义</literal> 分配一个版本号。
+	而在Activiti中，流程定义的版本是在部署时创建的。在部署的时候，流程定义被存储到Activiti使用的数据库之前，Activiti讲会自动给 <literal>流程定义</literal> 分配一个版本号。
     </para>
-    <para>对于业务文档中每一个的流程定义，都会通过下列部署执行初始化属性<literal>key</literal>, <literal>version</literal>, <literal>name</literal> and <literal>id</literal>:
+    <para>对于业务文档中每一个的流程定义，都会通过下列部署执行初始化属性<literal>key</literal>, <literal>version</literal>, <literal>name</literal> 和 <literal>id</literal>:
     </para>
-    
+
     <itemizedlist>
       <listitem><para>
 	  XML文件中流程定义（流程模型）的 <literal>id</literal>属性被当做是流程定义的 <literal>key</literal>属性。
@@ -99,13 +99,13 @@ repositoryService.createDeployment()
         </para>
       </listitem>
     </itemizedlist>
-    
+
     <para>
 		举个流程的例子
 <programlisting>
 &lt;definitions id=&quot;myDefinitions&quot; &gt;
   &lt;process id=&quot;myProcess&quot; name=&quot;My important process&quot; &gt;
-    ...      
+    ...
 </programlisting>当部署了这个流程定义之后，在数据库中的流程定义看起来像这样：
       <table>
         <title></title>
@@ -128,7 +128,7 @@ repositoryService.createDeployment()
           </tbody>
         </tgroup>
       </table>假设我们现在部署用一个流程的最新版本号（例如 改变用户任务），但是流程定义的<literal>id</literal>保持不变。
-	  流程定义表将包含以下列表信息：      
+	  流程定义表将包含以下列表信息：
        <table>
         <title></title>
         <tgroup cols='4'>
@@ -154,7 +154,7 @@ repositoryService.createDeployment()
             </row>
           </tbody>
         </tgroup>
-      </table> 
+      </table>
 	  当 <literal>runtimeService.startProcessInstanceByKey("myProcess")</literal>方法被调用时，它将会使用流程定义版本号为2的，因为这是最新版本的流程定义。可以说每次流程定义创建流程实例时，都会默认使用最新版本的流程定义。
 	  </para>
 
@@ -164,7 +164,7 @@ repositoryService.createDeployment()
 <programlisting>
 &lt;definitions id=&quot;myNewDefinitions&quot; &gt;
   &lt;process id=&quot;myNewProcess&quot; name=&quot;My important process&quot; &gt;
-    ...      
+    ...
 </programlisting>
 
   <para>
@@ -202,14 +202,14 @@ repositoryService.createDeployment()
         </row>
       </tbody>
     </tgroup>
-  </table> 
+  </table>
 
   <para>
 	注意：为何新流程的key与我们的第一个流程是不同的？尽管流程定义的名称是相同的（当然，我们应该也是可以改变这一点的），Activiti仅仅只考虑<literal>id</literal>属性判断流程。因此，新的流程定义部署的版本号为1。
   </para>
-    
+
   </section>
-  
+
   <section id="providingProcessDiagram">
     <title>提供流程图片</title>
     <para>
@@ -246,13 +246,13 @@ repositoryService.createDeployment()
   ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                                                          .processDefinitionKey("expense")
                                                          .singleResult();
-  
+
   <emphasis role="bold">String diagramResourceName = processDefinition.getDiagramResourceName();</emphasis>
   InputStream imageStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), diagramResourceName);
        </programlisting>
      </para>
   </section>
-  
+
   <section id="generatingProcessDiagram">
     <title>自动生成流程图片</title>
     <para>在部署的情况下没有提供图片，在 <link linkend="providingProcessDiagram">上一节</link>中描述,如果流程定义中包含必要的'图像交换'信息时，Activiti流程引擎竟会自动生成一个图像。
