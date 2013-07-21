@@ -6,7 +6,7 @@
 
 <section id="license">
   <title>协议</title>
-  <para>Activiti使用<ulink url="../../license.txt">Apache V2协议</ulink>。</para>
+  <para>Activiti是基于<ulink url="../../license.txt">Apache V2协议</ulink>发布的。</para>
 </section>
 
 <section id="download">
@@ -16,21 +16,21 @@
 
 <section id="sources">
   <title>源码</title>
-  <para>发布包里已经提供了大部分源码的jar包。
-  要是从代码重新构建，请参考
+  <para>从发布包里可以找到已经打好jar包的源码。
+  如果想从代码重新构建，请参考
   <ulink url="http://docs.codehaus.org/display/ACT/Developers+Guide#DevelopersGuide-Buildingthedistribution">wiki “构建发布包”</ulink>。
   </para>
 </section>
 
 <section id="required.software">
-  <title>必须的软件</title>
+  <title>必要的软件</title>
   <section>
     <title>JDK 6+</title>
-    <para>Activiti需要运行在JDK 6或以上版本。
+    <para>Activiti需要运行在JDK 6或以上版本上。
     进入 <ulink url="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle Java SE 下载页</ulink>
-    点击 "下载 JDK"按钮。那个页面上也提供安装的方法。
-    为了确认安装是否成功，在命令行中执行 <literal>java -version</literal>。
-	应该会打印你安装的JDK的版本。
+    点击 "下载 JDK"按钮。页面上也提供了安装的方法。
+    要想确认安装是否成功，可以在命令行中执行 <literal>java -version</literal>。
+	这就会打印出安装的JDK的版本。
     </para>
   </section>
   <section>
