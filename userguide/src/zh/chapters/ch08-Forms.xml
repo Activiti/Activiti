@@ -4,36 +4,33 @@
 <chapter id="forms">
 
 	<title>表单</title>
-	
-	<para>Activiti提供了一种方便而且灵活的方式在业务流程中以手工步骤添加表单。我们对表单的支持有2种方式：
-	通过表单属性对表单进行渲染和外置表单进行渲染。
-	 Activiti provides a convenient and flexible way to add forms for the manual steps of 
-	 your business processes.  We support two strategies to work with forms:
-	 Build-in form rendering with form properties and external form rendering.
+
+	<para>Activiti提供了一种方便而且灵活的方式在业务流程中以手工方式添加表单。我们对表单的支持有2种方式：
+	通过表单属性对内置表单进行渲染和外置表单进行渲染。
 	</para>
 
 <!-- 已过时，但是包含一个很不错的例子。
 Deprecated, but contains good examples. We should do the same for the form properties.
-  
+
    <section id="buildInFormRendering">
-  
+
     <title>Build-in form rendering</title>
 
     <para>
-      Build-in form rendering is the simplest to get started with.  We'll explain it 
+      Build-in form rendering is the simplest to get started with.  We'll explain it
       with an example.
     </para>
-    
+
     <para>
-      The demo setup script installs the <emphasis>vacationRequest</emphasis> business process 
+      The demo setup script installs the <emphasis>vacationRequest</emphasis> business process
       as an example of using task forms through Activiti Explorer. Please check the example
       for the complete source code. The business process diagram looks like this:
-      
+
       <mediaobject><imageobject><imagedata align="center" fileref="images/taskform.vacation.request.model.png"/></imageobject></mediaobject>
-      
-      To use the build-in rendering, the form files have to be included in the deployment.  
+
+      To use the build-in rendering, the form files have to be included in the deployment.
       That can be done programmatically like this:
-      
+
       <programlisting>Deployment deployment = repositoryService.createDeployment()
   .addClasspathResource("org/activiti/examples/taskforms/VacationRequest.bpmn20.xml")
   .addClasspathResource("org/activiti/examples/taskforms/approve.form")
@@ -41,52 +38,52 @@ Deprecated, but contains good examples. We should do the same for the form prope
   .addClasspathResource("org/activiti/examples/taskforms/adjustRequest.form")
   .deploy();
 </programlisting>
-      
+
       Other ways of deploying your processes/forms, can be found in chapter <link linkend="chDeployment">Deployment</link>.
       </para>
-      <para> 
-      The BPMN 2.0 specification does not specify how tasks or task forms should be rendered, 
-      as such forms are defined using Activiti specific constructs.  
-      There is the attribute <literal>activiti:formKey</literal> that can be specified on 
+      <para>
+      The BPMN 2.0 specification does not specify how tasks or task forms should be rendered,
+      as such forms are defined using Activiti specific constructs.
+      There is the attribute <literal>activiti:formKey</literal> that can be specified on
       <literal>startEvent</literal>s and <literal>userTask</literal>s.
-      
-      <programlisting>&lt;startEvent id=&quot;request&quot; 
+
+      <programlisting>&lt;startEvent id=&quot;request&quot;
             <emphasis role="bold">activiti:formKey=&quot;org/activiti/examples/taskforms/request.form</emphasis>&quot; /&gt;
 
 &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;request&quot; targetRef=&quot;handleRequest&quot; /&gt;
-    
+
 &lt;userTask id=&quot;handleRequest&quot; name=&quot;Handle vacation request&quot;
           <emphasis role="bold">activiti:formKey=&quot;org/activiti/examples/taskforms/approve.form&quot;</emphasis> &gt;
   &lt;documentation&gt;
      Vacation request by ${employeeName}
-  &lt;/documentation&gt; 
-  ...        
+  &lt;/documentation&gt;
+  ...
  &lt;/userTask&gt;</programlisting>
 
-      The <literal>activiti:formKey</literal> attribute can contain any text value which you use to identify your form in case 
-      you do your own form rendering.  But the build-in form rendering 
-      expects the <literal>activiti:formKey</literal> to be a reference to a resource in the 
+      The <literal>activiti:formKey</literal> attribute can contain any text value which you use to identify your form in case
+      you do your own form rendering.  But the build-in form rendering
+      expects the <literal>activiti:formKey</literal> to be a reference to a resource in the
       same business archive (= deployment). The resource is identify by it's full path within the deployment. In our case,
       the form <literal>request.form</literal> was deployed within a Business-acrhive, in folder <literal>org/activiti/examples/taskforms/</literal>.
     </para>
-      
+
     <para>
-      Activiti Explorer uses the build-in form rendering engines.  Currently, there is 
-	    only one form rendering engine configured, which is Juel.  So it resolves resource files as 
-	    <ulink url="http://download.oracle.com/javaee/5/tutorial/doc/bnahq.html">a Juel expression</ulink> and 
-	    the resulting HTML String is sent to the client.  In the future, we 
+      Activiti Explorer uses the build-in form rendering engines.  Currently, there is
+	    only one form rendering engine configured, which is Juel.  So it resolves resource files as
+	    <ulink url="http://download.oracle.com/javaee/5/tutorial/doc/bnahq.html">a Juel expression</ulink> and
+	    the resulting HTML String is sent to the client.  In the future, we
 	    hope to add a FreeMarker form engine, but that will require more library dependencies
 	    so we opt for Juel as the default form engine.
 	  </para>
-	  
+
 	  <para>
-      Here is the rendered form defined in resource <literal>org/activiti/examples/taskforms/request.form</literal>.  
+      Here is the rendered form defined in resource <literal>org/activiti/examples/taskforms/request.form</literal>.
       Its a form to capture the data necessary to start a new process instance.
 
       <mediaobject><imageobject><imagedata align="center" fileref="images/taskform.example.png"/></imageobject></mediaobject>
-      
+
       And here is the contents of that form file:
-      
+
       <programlisting>
 &lt;h1&gt;Vacation Request&lt;/h1&gt;
 &lt;table&gt;
@@ -100,7 +97,7 @@ Deprecated, but contains good examples. We should do the same for the form prope
       &lt;/label&gt;&lt;br/&gt;
     &lt;/td&gt;
   &lt;/tr&gt;
-  &lt;tr&gt;  
+  &lt;tr&gt;
     &lt;td&gt;
       &lt;label&gt;
         Number of days:&lt;br/&gt;
@@ -146,17 +143,17 @@ Deprecated, but contains good examples. We should do the same for the form prope
 &lt;/table&gt;
 </programlisting>
     </para>
-    
+
     <para><link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link>
     The mechanism of using hidden fields to provide extra information such as type and required
-    will be changed in one of the subsequent releases.  In the future this type of metadata will 
-    be based on <literal>FormService.getStartFormData</literal> and <literal>FormService.getTaskFormData</literal> 
+    will be changed in one of the subsequent releases.  In the future this type of metadata will
+    be based on <literal>FormService.getStartFormData</literal> and <literal>FormService.getTaskFormData</literal>
     </para>
-    <para> 
-      The hidden 
+    <para>
+      The hidden
 	    fields provide extra information to the Activiti Explorer client application.
-	    So the Javascript in the browser will use the hidden fields and enhance the corresponding 
-	    input fields.  For example, it's possible to specify that a certain text field is a date 
+	    So the Javascript in the browser will use the hidden fields and enhance the corresponding
+	    input fields.  For example, it's possible to specify that a certain text field is a date
 	    and Activiti Explorer will add a date picker.
       <itemizedlist>
          <listitem>
@@ -181,42 +178,42 @@ Deprecated, but contains good examples. We should do the same for the form prope
         </listitem>
         <listitem>
           <para>
-             In Activiti-Explorer, the <emphasis>Date</emphasis> type validates to ISO 8601 (<emphasis>YYYY-MM-DD</emphasis>). This field will also use any native date picker 
-             tools in the browser (using the HTML5 <emphasis>input type="date"</emphasis>) and fall back on a pop-up date picker using the YUI calendar widget. It is, 
+             In Activiti-Explorer, the <emphasis>Date</emphasis> type validates to ISO 8601 (<emphasis>YYYY-MM-DD</emphasis>). This field will also use any native date picker
+             tools in the browser (using the HTML5 <emphasis>input type="date"</emphasis>) and fall back on a pop-up date picker using the YUI calendar widget. It is,
              of course still possible to manually enter your own date, which is validated as you type.
-          </para> 
+          </para>
         </listitem>
         <listitem>
           <para>
-             The Integer form field in the demo has also been enhanced to make use of HTML5 <emphasis>input type=number</emphasis>, which provides native validation and custom input 
+             The Integer form field in the demo has also been enhanced to make use of HTML5 <emphasis>input type=number</emphasis>, which provides native validation and custom input
          fields in the supported browser(s), although Activiti-Explorer provides client side validation as well.
-          </para> 
+          </para>
         </listitem>
       </itemizedlist>
-    
+
       It is expected that Activiti Explorer in the future will use <literal>FormService.getStartFormData</literal>
-      instead of these hidden field values to enhance the form input fields.  
-	    That's why the 
+      instead of these hidden field values to enhance the form input fields.
+	    That's why the
 	    hidden fields part is marked as experimental.  <link linkend="experimental"><emphasis role="bold">&lt;/EXPERIMENTAL&gt;</emphasis></link>
     </para>
-    
-    
+
+
     <para>Use <literal>FormService.getRenderedStartForm</literal> to get the rendered form string with the API, using the default form engine (JUEL):</para>
-    
+
     <programlisting>String FormService.getRenderedStartForm(String processDefinitionId)</programlisting>
-  
-    <para>Use <literal>FormService.submitStartFormData</literal> to start a new process instance with 
+
+    <para>Use <literal>FormService.submitStartFormData</literal> to start a new process instance with
     the properties that the user provided as input for the form:</para>
-    
+
     <programlisting>ProcessDefinition FormService.submitStartFormData(String processDefinitionId, Map&lt;String, String&gt; properties)</programlisting>
-    
-    <para>To learn about the difference between starting a new process instance with this <literal>FormService</literal> method 
-    in comparison with the <literal>ProcessInstance RuntimeService.startProcessInstanceById(String processDefinitionId)</literal>, 
+
+    <para>To learn about the difference between starting a new process instance with this <literal>FormService</literal> method
+    in comparison with the <literal>ProcessInstance RuntimeService.startProcessInstanceById(String processDefinitionId)</literal>,
     read <xref linkend="formProperties" /> </para>
-  
+
     <para>
       After submitting the form, a process instance is started and now someone of the
-      management team needs to handle the request.   
+      management team needs to handle the request.
       <mediaobject><imageobject><imagedata align="center" fileref="images/taskform.vacation.request.management.group.png"/></imageobject></mediaobject>
       The corresponding user task has a task form attached to it, which uses the
       variables which were given as input by the employee in the start form. These variables
@@ -243,20 +240,20 @@ Deprecated, but contains good examples. We should do the same for the form prope
   &lt;/label&gt;
 &lt;/p&gt;</programlisting>
     </para>
-    
+
     <para>
       The manager will now indicate in the form whether the vacation request is approved or not,
-      by selecting the appropriate input in the form. 
+      by selecting the appropriate input in the form.
       <mediaobject><imageobject><imagedata align="center" fileref="images/taskform.vacation.request.approve.form.png"/></imageobject></mediaobject>
       The result is stored in as a process variable,
       which is then used in the exclusive gateway after the form is submitted.
       <programlisting>
 &lt;sequenceFlow id=&quot;flow5&quot; sourceRef=&quot;requestApprovedDecision&quot; targetRef=&quot;adjustVacationRequestTask&quot;&gt;
   &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${!<emphasis role="bold">vacationApproved</emphasis>}&lt;/conditionExpression&gt;
-&lt;/sequenceFlow&gt;    
+&lt;/sequenceFlow&gt;
       </programlisting>
     </para>
-    
+
     <para>
       Depending on the input of the manager in the user task, the employee will now
       get a new task in his personal task list, stating that the vacation request was
@@ -278,29 +275,29 @@ Deprecated, but contains good examples. We should do the same for the form prope
 ...</programlisting>
     </para>
   </section>
-    
+
     -->
-    
-    
+
+
   <section id="formProperties">
     <title>表单属性</title>
-    
+
     <para>
 	业务流程相关联的所有信息要么是包含自身的流程变量，要么是通过流程变量的引用。Activiti支持存储复杂的Java对象作为流程变量，如 <literal>序列化</literal>对象，
 	Jpa实体对象或者整个XML文档作为<literal>字符串</literal>。
     </para>
-    
+
     <para>
 	用户是在启动一个流程和完成用户任务时，与流程进行交互的。表单需要某个UI技术渲染之后才能够与用户进行交互。为了能够使用不同UI技术变得容易，流程定义包含一个对流程变量中复杂的Java类型对象到一个<emphasis role="bold">'properties'</emphasis>的<literal>Map&lt;String,String&gt;</literal>类型的转换逻辑。
     </para>
-    
+
     <para>
 	使用Activiti API的方法查看公开的属性信息。然后，任意UI技术都能够在这些属性上面构建一个表单。该属性专门（并且更多局限性）为流程变量提供了一个视图。
 	表单所需要显示的属性可以从下面例子中的返回值<emphasis role="bold">FormData</emphasis>中获取。
     <programlisting>StartFormData FormService.getStartFormData(String processDefinitionId)</programlisting>
     or <programlisting>TaskFormdata FormService.getTaskFormData(String taskId)</programlisting>.
     </para>
-    
+
     <para>
 	在默认情况下，内置的表单引擎，'sees'这些变量就像对待流程变量一样。如果任务表单属性和流程变量是一对一的关系，那么任务表单属性就不需要进行申明了，例如，下面的申明：
     <programlisting>&lt;startEvent id=&quot;start&quot; /&gt;</programlisting>
@@ -318,16 +315,16 @@ Deprecated, but contains good examples. We should do the same for the form prope
 
     <para>类似的，用户提交的表单属性应该作为流程变量进行存储或者使用UEL值表达式将其作为流程变量的一个嵌套属性进行存储，例如<literal>#{address.street}</literal>。
     </para>
-    
+
     <para>同样的，提交的表单属性默认的行为是作为流程变量进行存储，除非一个 <literal>formProperty</literal> 申明了其他的规则。
 	</para>
 
     <para>
 	类型转换同样也可以应用于表单数据和流程变量之间处理的一部分。
 	</para>
-    
+
     <para>例如:</para>
-    
+
     <programlisting>&lt;userTask id=&quot;task&quot;&gt;
   &lt;extensionElements&gt;
     &lt;activiti:formProperty id=&quot;room&quot; /&gt;
@@ -361,11 +358,11 @@ Deprecated, but contains good examples. We should do the same for the form prope
 		  </para>
 	  </listitem>
     </itemizedlist>
-    
+
     <para>
 	表单数据也可以作为FormData的一部分提供类型元数据。该FormData可以从<literal>StartFormData FormService.getStartFormData(String processDefinitionId)</literal>和<literal>TaskFormdata FormService.getTaskFormData(String taskId)</literal>方法的返回值中获取。
 	</para>
-    
+
     <para>我们支持以下的几种表单属性类型：</para>
     <itemizedlist>
       <listitem><para><literal>string</literal> (org.activiti.engine.impl.form.StringFormType)</para></listitem>
@@ -379,11 +376,11 @@ Deprecated, but contains good examples. We should do the same for the form prope
 	对于申明每一个表单属性，以下的<literal>FormProperty</literal>信息可以通过<literal>List&lt;FormProperty&gt; formService.getStartFormData(String processDefinitionId).getFormProperties()</literal>
     和 <literal>List&lt;FormProperty&gt; formService.getTaskFormData(String taskId).getFormProperties()</literal>获取。
     </para>
-    
+
     <programlisting>public interface FormProperty {
-  /** 
-  
-  the key used to submit the property in {@link FormService#submitStartFormData(String, java.util.Map)} 
+  /**
+
+  the key used to submit the property in {@link FormService#submitStartFormData(String, java.util.Map)}
    * or {@link FormService#submitTaskFormData(String, java.util.Map)} */
   String getId();
   /** the display label */
@@ -392,7 +389,7 @@ Deprecated, but contains good examples. We should do the same for the form prope
   FormType getType();
   /** optional value that should be used to display in this property */
   String getValue();
-  /** is this property read to be displayed in the form and made accessible with the methods 
+  /** is this property read to be displayed in the form and made accessible with the methods
    * {@link FormService#getStartFormData(String)} and {@link FormService#getTaskFormData(String)}. */
   boolean isReadable();
   /** is this property expected when a user submits the form? */
@@ -401,17 +398,17 @@ Deprecated, but contains good examples. We should do the same for the form prope
   boolean isRequired();
 }</programlisting>
 
-    <para>例子:</para>    
+    <para>例子:</para>
 
     <programlisting>&lt;startEvent id=&quot;start&quot;&gt;
   &lt;extensionElements&gt;
-    &lt;activiti:formProperty id=&quot;speaker&quot; 
+    &lt;activiti:formProperty id=&quot;speaker&quot;
       name=&quot;Speaker&quot;
-      variable=&quot;SpeakerName&quot; 
+      variable=&quot;SpeakerName&quot;
       type=&quot;string&quot; /&gt;
 
-    &lt;activiti:formProperty id=&quot;start&quot; 
-      type=&quot;date&quot; 
+    &lt;activiti:formProperty id=&quot;start&quot;
+      type=&quot;date&quot;
       datePattern=&quot;dd-MMM-yyyy&quot; /&gt;
 
     &lt;activiti:formProperty id=&quot;direction&quot; type=&quot;enum&quot;&gt;
@@ -420,7 +417,7 @@ Deprecated, but contains good examples. We should do the same for the form prope
       &lt;activiti:value id=&quot;up&quot; name=&quot;Go Up&quot; /&gt;
       &lt;activiti:value id=&quot;down&quot; name=&quot;Go Down&quot; /&gt;
     &lt;/activiti:formProperty&gt;
-    
+
   &lt;/extensionElements&gt;
 &lt;/startEvent&gt;</programlisting>
 
@@ -445,11 +442,11 @@ Deprecated, but contains good examples. We should do the same for the form prope
     </para>
 
   </section>
-  
+
   <section id="externalFormRendering">
-  
+
     <title>外置表单的渲染</title>
-    
+
     <para>
 	该API同样也允许你执行Activiti流程引擎之外的方式渲染你自己的任务表单。这些步骤说明你可以用你自己的方式对任务表单进行渲染。
 	</para>
@@ -457,26 +454,26 @@ Deprecated, but contains good examples. We should do the same for the form prope
     <para>
 	本质上，所有需要渲染的表单属性都是通过2个服务方法中的一个进行装配的：
     <literal>StartFormData FormService.getStartFormData(String processDefinitionId)</literal>
-    和 <literal>TaskFormdata FormService.getTaskFormData(String taskId)</literal>. 
+    和 <literal>TaskFormdata FormService.getTaskFormData(String taskId)</literal>.
     </para>
-    
+
     <para>
 	表单属性可以通过 <literal>ProcessInstance FormService.submitStartFormData(String processDefinitionId, Map&lt;String,String&gt; properties)</literal>
     and <literal>void FormService.submitStartFormData(String taskId, Map&lt;String,String&gt; properties)</literal>2种方式进行提交。
 	</para>
-    
+
     <para>
 	想要了解更多表单属性如何映射为流程变量，可以查看 <xref linkend="formProperties"/>
 	 </para>
-    
+
     <para>
 	你可以将任何表单模版资源放进你要部署的业务文档之中（如果你想要将它们按照流程的版本进行存储）。它将会在部署中作为一种可用的资源。你可以使用<literal>String ProcessDefinition.getDeploymentId()</literal> 和 <literal>InputStream RepositoryService.getResourceAsStream(String deploymentId, String resourceName);</literal>
 	获取部署上去的表单模版。这样就可以获取你的表单模版定义文件 ，那么你就可以在你自己的应用中渲染/显示你的表单。
     </para>
-    
+
     <para>
 	你也可以使用该功能获取任务表单之外的其他的部署资源用于其他的目的。</para>
-    
+
     <para>
 	属性<literal>&lt;userTask activiti:formKey=&quot;...&quot;</literal>通过API   <literal>String FormService.getStartFormData(String processDefinitionId).getFormKey()</literal>
     和 <literal>String FormService.getTaskFormData(String taskId).getFormKey()</literal>暴露出来的。
@@ -484,7 +481,7 @@ Deprecated, but contains good examples. We should do the same for the form prope
 	例如，你可以在表单属性中存储一个通用的key，然后运用一种算法或者换转去得到你实际使用的模版。当你想要通过不同UI技术渲染不能的表单，这可能更加方便，例如，使用正常屏幕大小的web应用程序的表单，
 	移动手机小屏幕的表单和甚至可能是IM表单和email表单模版。
     </para>
-    
+
   </section>
 
 </chapter>
