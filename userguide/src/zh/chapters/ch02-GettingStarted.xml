@@ -7,8 +7,8 @@
   <section id="demo.setup.one.minute.version">
     <title>一分钟入门</title>
     <para>
-	  从<ulink url="http://www.activiti.org">Activiti网站</ulink>下载Activiti Explorer的WAR后文件后，
-	  按照下列步骤以默认配置运行样例。
+	  从<ulink url="http://www.activiti.org">Activiti网站</ulink>下载Activiti Explorer的WAR文件后，
+	  可以按照下列步骤以默认配置运行样例。
 	  你需要一个<ulink url="http://java.sun.com/javase/downloads/index.jsp">Java 运行环境</ulink>和
 	  <ulink url="http://tomcat.apache.org/download-70.cgi">Apache Tomcat</ulink>
 	  （其实，任何提供了servlet功能的web容器都可以正常运行。但是我们主要是使用tomcat进行的测试）。
@@ -26,8 +26,8 @@
           </para>
         </listitem>
       </itemizedlist>
-	  就是这样了！Activiti Explorer默认使用H2内存数据库，如果你想使用其他数据库
-	  请参考<link linkend="activiti.setup">此处</link>。
+	  这样就好了！Activiti Explorer默认使用H2内存数据库，如果你想使用其他数据库
+	  请参考<link linkend="activiti.setup">这里</link>。
     </para>
   </section>
 
@@ -36,7 +36,7 @@
     <para>要安装Activiti你需要一个
     <ulink url="http://java.sun.com/javase/downloads/index.jsp">Java运行环境</ulink> 和
     <ulink url="http://tomcat.apache.org/download-70.cgi">Apache Tomcat</ulink>。
-    还要确认设置好了<emphasis>JAVA_HOME</emphasis>系统变量。
+    还要确认设置好<emphasis>JAVA_HOME</emphasis>系统变量。
 	不同的操作系统下的设置方法是不同的。
     </para>
     <para>要运行Activiti Explorer和REST web应用，你要从Activiti的下载页下载WAR文件，
