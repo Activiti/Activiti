@@ -8,8 +8,8 @@
     <title>创建ProcessEngine</title>
 
     <para>
-    Activiti流程引擎是通过名叫<literal>activiti.cfg.xml</literal>的XML文件配置的。
-    注意这和使用<link linkend="springintegration">Spring方式创建流程引擎</link>
+    Activiti流程引擎的配置文件是名为<literal>activiti.cfg.xml</literal>的XML文件。
+    注意这与使用<link linkend="springintegration">Spring方式创建流程引擎</link>
     是<emphasis role="bold">不</emphasis>一样的。
     </para>
 
@@ -20,7 +20,7 @@
     它会在classpath下搜索<literal>activiti.cfg.xml</literal>，
     并基于这个文件中的配置构建引擎。
     下面代码展示了实例配置。
-    下面的章节会给出配置参数的详细介绍。
+    后面的章节会给出配置参数的详细介绍。
     <programlisting>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
        xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
@@ -51,15 +51,15 @@
     </para>
 
     <para>
-      配置文件中使用的ProcessEngineConfiguration也可以通过编程方式创建。
-      也可以使用不同的bean id（比如，第三行）。
+      配置文件中使用的ProcessEngineConfiguration可以通过编程方式创建。
+      可以配置不同的bean id（比如，第三行）。
       <programlisting>
 ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault();
 ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(String resource);
 ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(String resource, String beanName);
 ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(InputStream inputStream);
 ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(InputStream inputStream, String beanName);</programlisting>
-   也可以不使用配置文件，基于默认创建一个配置
+   也可以不使用配置文件，基于默认创建配置
    （参考<link linkend="configurationClasses">各种支持类</link>）
    <programlisting>
 ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration();
