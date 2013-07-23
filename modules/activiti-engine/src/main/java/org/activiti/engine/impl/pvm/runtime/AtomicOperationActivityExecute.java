@@ -12,10 +12,10 @@
  */
 package org.activiti.engine.impl.pvm.runtime;
 
-import org.activiti.engine.LogMDC;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.logging.LogMDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
