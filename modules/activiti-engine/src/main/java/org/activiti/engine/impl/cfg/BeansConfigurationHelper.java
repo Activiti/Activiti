@@ -16,25 +16,26 @@ package org.activiti.engine.impl.cfg;
 import java.io.InputStream;
 
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
-
 /**
- * @author Tom Baeyens
+ * @author Tom Baeyens, Willem Salembier
  */
 public class BeansConfigurationHelper {
 
   public static ProcessEngineConfiguration parseProcessEngineConfiguration(Resource springResource, String beanName) {
-    DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
-    XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
+    GenericApplicationContext ctx = new GenericApplicationContext();
+    XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(ctx);
     xmlBeanDefinitionReader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_XSD);
     xmlBeanDefinitionReader.loadBeanDefinitions(springResource);
-    ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) beanFactory.getBean(beanName);
-    processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(beanFactory));
+    ctx.refresh();
+
+    ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ctx.getBean(beanName);
+    processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(ctx));
     return processEngineConfiguration;
   }
 
