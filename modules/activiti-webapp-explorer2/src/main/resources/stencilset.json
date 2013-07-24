@@ -137,7 +137,7 @@
     "name" : "formdefinition",
     "properties" : [ {
       "id" : "formproperties",
-      "type" : "Complex",
+      "type" : "multiplecomplex",
       "title" : "Form properties",
       "value" : "",
       "description" : "Definition of the form with a list of form properties",
@@ -189,10 +189,16 @@
           "value" : "long",
           "refToView" : ""
         }, {
-          "id" : "c3",
+          "id" : "c4",
           "title" : "Boolean",
           "title_de" : "Boolean",
           "value" : "boolean",
+          "refToView" : ""
+        }, {
+          "id" : "c5",
+          "title" : "Enum",
+          "title_de" : "Enum",
+          "value" : "enum",
           "refToView" : ""
         } ]
       }, {
@@ -215,6 +221,79 @@
         "value" : "",
         "width" : 200,
         "optional" : false
+      }, {
+        "id" : "formproperty_required",
+        "name" : "Required",
+        "name_de" : "Typ",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 100,
+        "optional" : false,
+        "items" : [ {
+          "id" : "yes",
+          "title" : "Yes",
+          "value" : "Yes"
+        }, {
+          "id" : "no",
+          "title" : "No",
+          "value" : "No"
+        } ]
+      }, {
+        "id" : "formproperty_readable",
+        "name" : "Readable",
+        "name_de" : "Typ",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 100,
+        "optional" : false,
+        "items" : [ {
+          "id" : "yes",
+          "title" : "Yes",
+          "value" : "Yes"
+        }, {
+          "id" : "no",
+          "title" : "No",
+          "value" : "No"
+        } ]
+      }, {
+        "id" : "formproperty_writeable",
+        "name" : "Writeable",
+        "name_de" : "Typ",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 100,
+        "optional" : false,
+        "items" : [ {
+          "id" : "yes",
+          "title" : "Yes",
+          "value" : "Yes"
+        }, {
+          "id" : "no",
+          "title" : "No",
+          "value" : "No"
+        } ]
+      }, {
+        "id" : "formproperty_formvalues",
+        "name" : "Form values",
+        "name_de" : "Typ",
+        "type" : "Complex",
+        "width" : 300,
+        "optional" : false,
+        "complexItems" : [ {
+          "id" : "formproperty_formvalue_id",
+          "name" : "Id",
+          "type" : "String",
+          "value" : "",
+          "width" : 100,
+          "optional" : false
+        }, {
+          "id" : "formproperty_formvalue_name",
+          "name" : "Name",
+          "type" : "String",
+          "value" : "",
+          "width" : 200,
+          "optional" : false
+        } ]
       } ]
     } ]
   }, {
@@ -606,6 +685,27 @@
         "value" : "Conditional",
         "icon" : "connector/list/type.expression.png",
         "refToView" : "conditional"
+      } ]
+    } ]
+  }, {
+    "name" : "cancelactivityattribute",
+    "properties" : [ {
+      "id" : "cancelactivity",
+      "type" : "Choice",
+      "title" : "Cancel activity",
+      "value" : "yes",
+      "description" : "Define activity cancelation",
+      "popular" : true,
+      "items" : [ {
+        "id" : "yes",
+        "title" : "Yes",
+        "title_de" : "Yes",
+        "value" : "yes"
+      }, {
+        "id" : "no",
+        "title" : "No",
+        "title_de" : "No",
+        "value" : "no"
       } ]
     } ]
   }, {
@@ -1138,7 +1238,7 @@
     "view" : "intermediateevent/timer.svg",
     "icon" : "catching/timer.png",
     "groups" : [ "Boundary Events" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "timerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "timerdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
     "type" : "node",
