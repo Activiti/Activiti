@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.ActivitiListener;
+
 import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
@@ -30,6 +32,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
@@ -315,6 +318,11 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         process.setDocumentation(processDocumentationNode.asText());
       }
       
+      JsonNode processExecutionListenerNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_EXECUTION_LISTENERS);
+      if (processExecutionListenerNode != null && StringUtils.isNotEmpty(processExecutionListenerNode.asText())){
+         process.setExecutionListeners(convertJsonToListeners(processExecutionListenerNode));
+      }
+      
       processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
     }
     
@@ -370,6 +378,40 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         }
       }
     }
+  }
+  
+  private List<ActivitiListener> convertJsonToListeners(JsonNode listenersNode) {
+    List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
+    
+    try {
+      listenersNode = objectMapper.readTree(listenersNode.asText());
+    } catch (Exception e) {
+      LOGGER.info("Listeners node can not be read", e);
+    }
+      
+    JsonNode itemsArrayNode = listenersNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+    if (itemsArrayNode != null) {
+      for (JsonNode itemNode : itemsArrayNode) {
+        JsonNode typeNode = itemNode.get(PROPERTY_EXECUTION_LISTENER_EVENT);
+        if (typeNode != null && StringUtils.isNotEmpty(typeNode.asText())) {
+
+          ActivitiListener listener = new ActivitiListener();
+          listener.setEvent(typeNode.asText());
+          if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_EXECUTION_LISTENER_CLASS).asText())) {
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+            listener.setImplementation(itemNode.get(PROPERTY_EXECUTION_LISTENER_CLASS).asText());
+          } else if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_EXECUTION_LISTENER_EXPRESSION).asText())) {
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION);
+            listener.setImplementation(itemNode.get(PROPERTY_EXECUTION_LISTENER_EXPRESSION).asText());
+          } else if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION).asText())) {
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
+            listener.setImplementation(itemNode.get(PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION).asText());
+          }
+          executionListeners.add(listener);
+        }
+      }
+    }
+    return executionListeners;
   }
   
   private void fillSubShapes(Map<String, SubProcess> subShapesMap, SubProcess subProcess) {
@@ -428,7 +470,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       }
     }
   }
-  
+   
   private Activity retrieveAttachedRefObject(String attachedToRefId, Collection<FlowElement> flowElementList) {
     for (FlowElement flowElement : flowElementList) {
       if (attachedToRefId.equals(flowElement.getId())) {
