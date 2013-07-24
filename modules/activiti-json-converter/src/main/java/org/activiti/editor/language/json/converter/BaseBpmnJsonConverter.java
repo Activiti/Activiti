@@ -28,6 +28,7 @@ import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.FormProperty;
+import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Lane;
@@ -351,7 +352,17 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     
     JsonNode formPropertiesNode = getProperty(PROPERTY_FORM_PROPERTIES, objectNode);
     if (formPropertiesNode != null) {
+      if (formPropertiesNode.isValueNode() && StringUtils.isNotEmpty(formPropertiesNode.asText())) {
+        try {
+          formPropertiesNode = objectMapper.readTree(formPropertiesNode.asText());
+        } catch (Exception e) {
+          LOGGER.info("Form properties node can not be read", e);
+        }
+      }
       JsonNode itemsArrayNode = formPropertiesNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+      String readWriteReqNode = null;
+      JsonNode formValuesNode = null;
+      JsonNode formValuesArrayNode = null;
       if (itemsArrayNode != null) {
         for (JsonNode formNode : itemsArrayNode) {
           JsonNode formIdNode = formNode.get(PROPERTY_FORM_ID);
@@ -363,6 +374,38 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             formProperty.setType(getValueAsString(PROPERTY_FORM_TYPE, formNode));
             formProperty.setExpression(getValueAsString(PROPERTY_FORM_EXPRESSION, formNode));
             formProperty.setVariable(getValueAsString(PROPERTY_FORM_VARIABLE, formNode));
+            readWriteReqNode = getValueAsString(PROPERTY_FORM_REQUIRED, formNode);
+            if (PROPERTY_VALUE_YES.equalsIgnoreCase(readWriteReqNode))
+              formProperty.setRequired(true);
+            readWriteReqNode = getValueAsString(PROPERTY_FORM_READABLE, formNode);
+            if (PROPERTY_VALUE_NO.equalsIgnoreCase(readWriteReqNode))
+              formProperty.setReadable(false);
+            readWriteReqNode = getValueAsString(PROPERTY_FORM_WRITEABLE, formNode);
+            if (PROPERTY_VALUE_NO.equalsIgnoreCase(readWriteReqNode))
+                formProperty.setWriteable(false);
+            
+            formValuesNode = formNode.get(PROPERTY_FORM_FORM_VALUES);
+            if (formValuesNode != null && StringUtils.isNotEmpty(formValuesNode.asText()) && !("undefined".equals(formValuesNode.asText()))) {
+              if (formValuesNode.isValueNode()) {
+                try {
+                  formValuesNode = objectMapper.readTree(formValuesNode.asText());
+                } catch (Exception e) {
+                  LOGGER.info("Form properties values node can not be read", e);
+                }
+              }
+              formValuesArrayNode = formValuesNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+              List<FormValue> formValues = new ArrayList<FormValue>();
+              for (JsonNode valueNode : formValuesArrayNode) {
+                JsonNode valueIdNode = valueNode.get(PROPERTY_FORM_FORM_VALUE_ID);
+                if (valueIdNode != null && StringUtils.isNotEmpty(valueIdNode.asText())) {
+                  FormValue formValue = new FormValue();
+                  formValue.setId(valueIdNode.asText());
+                  formValue.setName(getValueAsString(PROPERTY_FORM_FORM_VALUE_NAME, valueNode));
+                  formValues.add(formValue);
+                }
+              }
+              formProperty.setFormValues(formValues);
+            }
             
             if (element instanceof StartEvent) {
               ((StartEvent) element).getFormProperties().add(formProperty);
