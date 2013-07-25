@@ -60,6 +60,7 @@ public interface StencilConstants {
   final String STENCIL_EVENT_THROW_NONE = "ThrowNoneEvent";
   
   final String STENCIL_SEQUENCE_FLOW = "SequenceFlow";
+  final String STENCIL_MESSAGE_FLOW = "MessageFlow";
   
   final String STENCIL_TEXT_ANNOTATION = "TextAnnotation";
 	

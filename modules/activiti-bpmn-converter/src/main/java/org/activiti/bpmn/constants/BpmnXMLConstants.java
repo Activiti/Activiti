@@ -172,6 +172,8 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_FLOW_SOURCE_REF = "sourceRef";
   public static final String ATTRIBUTE_FLOW_TARGET_REF = "targetRef";
   
+  public static final String ELEMENT_MESSAGE_FLOW = "messageFlow";
+  
   public static final String ELEMENT_TEXT_ANNOTATION = "textAnnotation";
   public static final String ATTRIBUTE_TEXTFORMAT = "textFormat";
   public static final String ELEMENT_TEXT_ANNOTATION_TEXT = "text";

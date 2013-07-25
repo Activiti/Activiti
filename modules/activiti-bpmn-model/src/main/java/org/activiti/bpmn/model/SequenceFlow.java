@@ -16,31 +16,14 @@ package org.activiti.bpmn.model;
 /**
  * @author Tijs Rademakers
  */
-public class SequenceFlow extends FlowElement {
+public class SequenceFlow extends ConnectionFlow {
 
   protected String conditionExpression;
-  protected String sourceRef;
-  protected String targetRef;
-
+  
   public String getConditionExpression() {
     return conditionExpression;
   }
   public void setConditionExpression(String conditionExpression) {
     this.conditionExpression = conditionExpression;
-  }
-  public String getSourceRef() {
-    return sourceRef;
-  }
-  public void setSourceRef(String sourceRef) {
-    this.sourceRef = sourceRef;
-  }
-  public String getTargetRef() {
-    return targetRef;
-  }
-  public void setTargetRef(String targetRef) {
-    this.targetRef = targetRef;
-  }
-  public String toString() {
-    return sourceRef + " --> " + targetRef;
   }
 }

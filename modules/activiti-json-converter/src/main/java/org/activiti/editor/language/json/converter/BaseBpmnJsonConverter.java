@@ -21,6 +21,7 @@ import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ConnectionFlow;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
@@ -32,6 +33,7 @@ import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.MessageFlow;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -113,6 +115,13 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       FlowNode flowNode = (FlowNode) flowElement;
       for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
         outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(sequenceFlow.getId()));
+      }
+      
+      // additionally - add message flows into outgoing array
+      for (MessageFlow messageFlow : model.getMessageFlows()) {
+    	  if (StringUtils.equals(flowNode.getId(), messageFlow.getSourceRef())) {
+    		  outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(messageFlow.getId()));
+    	  }
       }
     }
     
@@ -433,7 +442,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             if (element instanceof Process) {
               ((Process) element).getExecutionListeners().add(listener);
             } else if (element instanceof SequenceFlow) {
-              ((SequenceFlow) element).getExecutionListeners().add(listener);
+              ((ConnectionFlow) element).getExecutionListeners().add(listener);
             } else if (element instanceof UserTask) {
               ((UserTask) element).getTaskListeners().add(listener);
             } else if (element instanceof Activity) {

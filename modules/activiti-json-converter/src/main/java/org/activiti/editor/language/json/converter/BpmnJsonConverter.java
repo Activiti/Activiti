@@ -27,10 +27,12 @@ import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ConnectionFlow;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Lane;
+import org.activiti.bpmn.model.MessageFlow;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -69,6 +71,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     // connectors
     SequenceFlowJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
+    MessageFlowJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     
     // task types
     BusinessRuleTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
@@ -76,6 +79,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     ManualTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ReceiveTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ScriptTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
+    SendTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ServiceTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     UserTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     CallActivityJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
@@ -132,6 +136,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     DI_RECTANGLES.add(STENCIL_TASK_MANUAL);
     DI_RECTANGLES.add(STENCIL_TASK_RECEIVE);
     DI_RECTANGLES.add(STENCIL_TASK_SCRIPT);
+    DI_RECTANGLES.add(STENCIL_TASK_SEND);
     DI_RECTANGLES.add(STENCIL_TASK_SERVICE);
     DI_RECTANGLES.add(STENCIL_TASK_USER);
     
@@ -195,44 +200,114 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         
         ArrayNode laneShapesArrayNode = objectMapper.createArrayNode();
         poolNode.put(EDITOR_CHILD_SHAPES, laneShapesArrayNode);
+        // outgoing is required by oryx
+        poolNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
         
         Process process = model.getProcess(pool.getId());
         if (process != null) {
-          for (Lane lane : process.getLanes()) {
-            GraphicInfo laneGraphicInfo = model.getGraphicInfo(lane.getId());
-            ObjectNode laneNode = BpmnJsonConverterUtil.createChildShape(lane.getId(), STENCIL_LANE, 
-                laneGraphicInfo.getX() + laneGraphicInfo.getWidth(), laneGraphicInfo.getY() + laneGraphicInfo.getHeight(), 
-                laneGraphicInfo.getX(), laneGraphicInfo.getY());
-            laneShapesArrayNode.add(laneNode);
-            ObjectNode lanePropertiesNode = objectMapper.createObjectNode();
-            lanePropertiesNode.put(PROPERTY_OVERRIDE_ID, lane.getId());
-            if (StringUtils.isNotEmpty(lane.getName())) {
-              lanePropertiesNode.put(PROPERTY_NAME, lane.getName());
-            }
-            laneNode.put(EDITOR_SHAPE_PROPERTIES, lanePropertiesNode);
-            
-            ArrayNode elementShapesArrayNode = objectMapper.createArrayNode();
-            laneNode.put(EDITOR_CHILD_SHAPES, elementShapesArrayNode);
-            
-            for (FlowElement flowElement : process.getFlowElements()) {
-              if (lane.getFlowReferences().contains(flowElement.getId())) {
-                Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
-                if (converter != null) {
-                  try {
-                    converter.newInstance().convertToJson(flowElement, this, model, elementShapesArrayNode, 
-                        laneGraphicInfo.getX(), laneGraphicInfo.getY());
-                  } catch (Exception e) {
-                    LOGGER.error("Error converting {}", flowElement, e);
-                  }
-                }
-              }
-            }
+          if (process.getLanes().size() == 0) {
+              // it may happens process inside pool has no lanes.
+        	  // in this case we should add one
+        	  
+        	  String laneId = "lane_" + process.getId();
+        	  ObjectNode laneNode = BpmnJsonConverterUtil.createChildShape(laneId, STENCIL_LANE, 
+        			  graphicInfo.getWidth(), graphicInfo.getHeight(), 
+        			  0, 0);
+        	  
+        	  	laneShapesArrayNode.add(laneNode);
+	            ObjectNode lanePropertiesNode = objectMapper.createObjectNode();
+	            lanePropertiesNode.put(PROPERTY_OVERRIDE_ID, laneId);
+	            laneNode.put(EDITOR_SHAPE_PROPERTIES, lanePropertiesNode);
+	            
+	            ArrayNode elementShapesArrayNode = objectMapper.createArrayNode();
+	            laneNode.put(EDITOR_CHILD_SHAPES, elementShapesArrayNode);
+	            // outgoing is required by oryx
+	            laneNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
+	            
+	            for (FlowElement flowElement : process.getFlowElements()) {
+	            	// filter out sequenceFlows, since they will be stored separatelly under the whole Diagram
+	                if (!(flowElement instanceof SequenceFlow)) {
+		                Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
+		                if (converter != null) {
+		                  try {
+		                    converter.newInstance().convertToJson(flowElement, this, model, elementShapesArrayNode, 
+		                        graphicInfo.getX(), graphicInfo.getY());
+		                  } catch (Exception e) {
+		                    LOGGER.error("Error converting {}", flowElement, e);
+		                  }
+		                }
+	                }
+	              
+	            }
+          } else {
+	          for (Lane lane : process.getLanes()) {
+	            GraphicInfo laneGraphicInfo = model.getGraphicInfo(lane.getId());
+	            
+	            double laneX = laneGraphicInfo.getX() - graphicInfo.getX();
+	            double laneY = laneGraphicInfo.getY() - graphicInfo.getY();
+	            
+	            ObjectNode laneNode = BpmnJsonConverterUtil.createChildShape(lane.getId(), STENCIL_LANE, 
+	            		laneX + laneGraphicInfo.getWidth(), laneY + laneGraphicInfo.getHeight(), 
+	            		laneX, laneY);
+	            laneShapesArrayNode.add(laneNode);
+	            ObjectNode lanePropertiesNode = objectMapper.createObjectNode();
+	            lanePropertiesNode.put(PROPERTY_OVERRIDE_ID, lane.getId());
+	            if (StringUtils.isNotEmpty(lane.getName())) {
+	              lanePropertiesNode.put(PROPERTY_NAME, lane.getName());
+	            }
+	            laneNode.put(EDITOR_SHAPE_PROPERTIES, lanePropertiesNode);
+	            
+	            ArrayNode elementShapesArrayNode = objectMapper.createArrayNode();
+	            laneNode.put(EDITOR_CHILD_SHAPES, elementShapesArrayNode);
+	            // outgoing is required by oryx
+	            laneNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
+	            
+	            for (FlowElement flowElement : process.getFlowElements()) {
+	              if (lane.getFlowReferences().contains(flowElement.getId())) {
+	                Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
+	                if (converter != null) {
+	                  try {
+	                    converter.newInstance().convertToJson(flowElement, this, model, elementShapesArrayNode, 
+	                        laneGraphicInfo.getX(), laneGraphicInfo.getY());
+	                  } catch (Exception e) {
+	                    LOGGER.error("Error converting {}", flowElement, e);
+	                  }
+	                }
+	              }
+	            }
+	          }
+          }
+          
+          // sequence flows are stored outside lanes (in the process) - lets read them
+          for (FlowElement flowElement : process.getFlowElements()) {
+        	  GraphicInfo poolGraphicInfo = model.getGraphicInfo(pool.getId());
+        	  
+        	  if (flowElement instanceof SequenceFlow) {
+        		  Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
+                  if (converter != null) {
+                    try {
+                      converter.newInstance().convertToJson(flowElement, this, model, shapesArrayNode, 
+                    		  poolGraphicInfo.getX(), poolGraphicInfo.getY());
+                    } catch (Exception e) {
+                      LOGGER.error("Error converting {}", flowElement, e);
+                    }
+                  } 
+        	  }
+        	  
+        	  
           }
         }
         
       }
     } else {
       processFlowElements(model.getMainProcess().getFlowElements(), model, shapesArrayNode, 0.0, 0.0);
+    }
+    
+    
+    // process all message flows
+    for (MessageFlow messageFlow : model.getMessageFlows()) {
+    	MessageFlowJsonConverter converter = new MessageFlowJsonConverter();
+    	converter.convertToJson(messageFlow, this, model, shapesArrayNode, 0, 0);
     }
     
     modelNode.put(EDITOR_CHILD_SHAPES, shapesArrayNode);
@@ -321,6 +396,56 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       
       
       processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
+    } else {
+      // sequence flow in case we are using pools still stored on top-level
+      // so, we should process them
+      // also we should process message flows, also stored as children for whole model - not a specific process
+      for (JsonNode shapeNode : shapesArrayNode) {
+          String stencilId = BpmnJsonConverterUtil.getStencilId(shapeNode);
+    	  if (STENCIL_SEQUENCE_FLOW.equals(stencilId)) {
+    		  Class<? extends BaseBpmnJsonConverter> converterClass = convertersToBpmnMap.get(BpmnJsonConverterUtil.getStencilId(shapeNode));
+    	      if (converterClass != null) {
+    	        try {
+    	        	// convert sequenceFlow Element
+    	        	BaseBpmnJsonConverter converter = converterClass.newInstance();
+    	            FlowElement flowElement = converter.convertJsonToElement(shapeNode, modelNode, shapeMap);
+    	            flowElement.setId(BpmnJsonConverterUtil.getElementId(shapeNode));
+    	            flowElement.setName(converter.getPropertyValueAsString(PROPERTY_NAME, shapeNode));
+    	            flowElement.setDocumentation(converter.getPropertyValueAsString(PROPERTY_DOCUMENTATION, shapeNode));
+
+    	            // in case we are using pools, sequence flows placed into diagram, 
+    	            // so, we should attach them to same process as source of sequence used.
+    	            ConnectionFlow sequenceFlow = (ConnectionFlow)flowElement;
+    	            Process sourceProcess = bpmnModel.getProcessForFlowElement(sequenceFlow.getSourceRef());
+    	            if (sourceProcess != null) {
+    	            	sourceProcess.addFlowElement(flowElement);
+    	            } else {
+    	            	LOGGER.warn("Cannot find parent process for element " + sequenceFlow.getSourceRef());
+    	            }
+    	            
+    	        } catch (Exception e) {
+    	          LOGGER.error("Error converting {}", BpmnJsonConverterUtil.getStencilId(shapeNode), e);
+    	        }
+    	      }
+    	  } else if (STENCIL_MESSAGE_FLOW.equals(stencilId)) {
+    		  // process message flows
+    		  Class<? extends BaseBpmnJsonConverter> converterClass = convertersToBpmnMap.get(BpmnJsonConverterUtil.getStencilId(shapeNode));
+    	      if (converterClass != null) {
+    	        try {
+    	        	// convert sequenceFlow Element
+    	        	BaseBpmnJsonConverter converter = converterClass.newInstance();
+    	            FlowElement flowElement = converter.convertJsonToElement(shapeNode, modelNode, shapeMap);
+    	            flowElement.setId(BpmnJsonConverterUtil.getElementId(shapeNode));
+    	            flowElement.setName(converter.getPropertyValueAsString(PROPERTY_NAME, shapeNode));
+    	            flowElement.setDocumentation(converter.getPropertyValueAsString(PROPERTY_DOCUMENTATION, shapeNode));
+
+    	            bpmnModel.getMessageFlows().add((MessageFlow)flowElement);
+    	        } catch (Exception e) {
+    	          LOGGER.error("Error converting {}", BpmnJsonConverterUtil.getStencilId(shapeNode), e);
+    	        }
+    	      }
+    	  }
+      }
     }
     
     // sequence flows are now all on root level
@@ -334,7 +459,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       if (subShapesMap.size() > 0) {
         List<String> removeSubFlowsList = new ArrayList<String>();
         for (FlowElement flowElement : process.findFlowElementsOfType(SequenceFlow.class)) {
-          SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
+          ConnectionFlow sequenceFlow = (ConnectionFlow) flowElement;
           if (subShapesMap.containsKey(sequenceFlow.getSourceRef())) {
             SubProcess subProcess = subShapesMap.get(sequenceFlow.getSourceRef());
             subProcess.addFlowElement(sequenceFlow);
@@ -348,7 +473,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     }
     
     // Add flows to map for later processing
-    Map<String, SequenceFlow> flowSourceMap = new HashMap<String, SequenceFlow>();
+    Map<String, List<SequenceFlow>> flowSourceMap = new HashMap<String, List<SequenceFlow>>();
     Map<String, SequenceFlow> flowTargetMap = new HashMap<String, SequenceFlow>();
     for (Process process : bpmnModel.getProcesses()) {
       addAllSequenceFlows(process.getFlowElements(), flowSourceMap, flowTargetMap);
@@ -389,12 +514,17 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   }
   
   private void addAllSequenceFlows(Collection<FlowElement> flowElementList,
-      Map<String, SequenceFlow> flowSourceMap, Map<String, SequenceFlow> flowTargetMap) {
+      Map<String, List<SequenceFlow>> flowSourceMap, Map<String, SequenceFlow> flowTargetMap) {
     
     for (FlowElement flowElement : flowElementList) {
       if (flowElement instanceof SequenceFlow) {
-        SequenceFlow flow = (SequenceFlow) flowElement;
-        flowSourceMap.put(flow.getSourceRef(), flow);
+    	  SequenceFlow flow = (SequenceFlow) flowElement;
+        
+        if (!flowSourceMap.containsKey(flow.getSourceRef())) {
+        	flowSourceMap.put(flow.getSourceRef(), new ArrayList<SequenceFlow>());
+        }
+        flowSourceMap.get(flow.getSourceRef()).add(flow);
+        
         flowTargetMap.put(flow.getTargetRef(), flow);
       } else if (flowElement instanceof SubProcess) {
         SubProcess subProcess = (SubProcess) flowElement;
@@ -404,13 +534,13 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   }
   
   private void postProcessElements(Process process, Collection<FlowElement> flowElementList,
-      Map<String, SequenceFlow> flowSourceMap, Map<String, SequenceFlow> flowTargetMap) {
+      Map<String, List<SequenceFlow>> flowSourceMap, Map<String, SequenceFlow> flowTargetMap) {
     
     for (FlowElement flowElement : flowElementList) {
       
       if (flowElement instanceof FlowNode) {
         if (flowSourceMap.containsKey(flowElement.getId())) {
-          ((FlowNode) flowElement).getOutgoingFlows().add(flowSourceMap.get(flowElement.getId()));
+          ((FlowNode) flowElement).getOutgoingFlows().addAll(flowSourceMap.get(flowElement.getId()));
         }
         if (flowTargetMap.containsKey(flowElement.getId())) {
           ((FlowNode) flowElement).getIncomingFlows().add(flowTargetMap.get(flowElement.getId()));
@@ -456,7 +586,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       for (JsonNode jsonChildNode : objectNode.get(EDITOR_CHILD_SHAPES)) {
         
         String stencilId = BpmnJsonConverterUtil.getStencilId(jsonChildNode);
-        if (STENCIL_SEQUENCE_FLOW.equals(stencilId) == false) {
+        if (STENCIL_SEQUENCE_FLOW.equals(stencilId) == false &&
+            STENCIL_MESSAGE_FLOW.equals(stencilId) == false) {
           
           GraphicInfo graphicInfo = new GraphicInfo();
           
@@ -502,7 +633,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         if (STENCIL_SUB_PROCESS.equals(stencilId)) {
           filterAllEdges(childNode, edgeMap, sourceAndTargetMap, shapeMap, sourceRefMap);
           
-        } else if (STENCIL_SEQUENCE_FLOW.equals(stencilId)) {
+        } else if (STENCIL_SEQUENCE_FLOW.equals(stencilId) || 
+        		   STENCIL_MESSAGE_FLOW.equals(stencilId)) {
           
           String childEdgeId = BpmnJsonConverterUtil.getElementId(childNode);
           String targetRefId = childNode.get("target").get(EDITOR_SHAPE_ID).asText();

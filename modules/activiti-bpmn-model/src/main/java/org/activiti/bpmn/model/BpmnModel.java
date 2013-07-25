@@ -44,6 +44,9 @@ public class BpmnModel {
 	protected List<Problem> problems = new ArrayList<Problem>();
 	protected List<Warning> warnings = new ArrayList<Warning>();
 	protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
+	
+	protected List<MessageFlow> messageFlows = new ArrayList<MessageFlow>();
+	
 	protected String targetNamespace;
 	protected int nextFlowIdCounter = 1;
 
@@ -142,6 +145,32 @@ public class BpmnModel {
 	  
 	  return foundFlowElement;
 	}
+	
+	/** Returns process, owned specific element
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Process getProcessForFlowElement(String id) {
+	  // try to find in process itself	
+	  for (Process process : processes) {
+	    if (process.getFlowElement(id) != null) {
+	    	return process;
+	    }
+	  }
+	  
+	  // try to find in subprocesses
+     for (Process process : processes) {
+       for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
+	     if (getFlowElementInSubProcess(id, (SubProcess) flowElement) != null) {
+		     return process;
+		 }
+	   }
+	 }
+	
+     return null; 
+	}
+	
 	
 	protected FlowElement getFlowElementInSubProcess(String id, SubProcess subProcess) {
 	  FlowElement foundFlowElement = subProcess.getFlowElement(id);
@@ -299,6 +328,10 @@ public class BpmnModel {
   
   public boolean containsMessageId(String messageId) {
     return messageMap.containsKey(messageId);
+  }
+  
+  public List<MessageFlow> getMessageFlows() {
+	  return messageFlows;
   }
   
   public Map<String, String> getErrors() {
