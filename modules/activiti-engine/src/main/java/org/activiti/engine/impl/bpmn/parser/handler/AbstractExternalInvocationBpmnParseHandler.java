@@ -26,7 +26,7 @@ import org.activiti.engine.impl.bpmn.data.TransformationDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataInputAssociation;
 import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataOutputAssociation;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**

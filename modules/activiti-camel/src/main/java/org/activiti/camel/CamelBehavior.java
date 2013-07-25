@@ -30,7 +30,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultExchange;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
 * This abstract class takes the place of the now-deprecated CamelBehaviour class (which can still be used for legacy compatibility)
