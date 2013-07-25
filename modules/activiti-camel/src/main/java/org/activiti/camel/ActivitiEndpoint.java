@@ -39,6 +39,10 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   
   private boolean copyVariablesFromProperties;
 
+  private boolean copyVariablesFromHeader;
+  
+  private boolean copyCamelBodyToBodyAsString;
+
   public ActivitiEndpoint(String uri, CamelContext camelContext, RuntimeService runtimeService) {
     super();
     setCamelContext(camelContext);
@@ -104,8 +108,25 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     this.copyVariablesFromProperties = copyVariablesFromProperties;
   }
 
+  public boolean isCopyVariablesFromHeader() {
+    return this.copyVariablesFromHeader;
+  }
+
+  public void setCopyVariablesFromHeader(boolean copyVariablesFromHeader) {
+    this.copyVariablesFromHeader = copyVariablesFromHeader;
+  }
+  
+  public boolean isCopyCamelBodyToBodyAsString() {
+    return copyCamelBodyToBodyAsString;
+  }
+  
+  public void setCopyCamelBodyToBodyAsString(boolean copyCamelBodyToBodyAsString) {
+    this.copyCamelBodyToBodyAsString = copyCamelBodyToBodyAsString;
+  }
+  
   @Override
   public boolean isLenientProperties() {
     return true;
   }
+
 }
