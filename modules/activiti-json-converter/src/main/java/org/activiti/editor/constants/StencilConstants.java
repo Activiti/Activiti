@@ -72,6 +72,7 @@ public interface StencilConstants {
 	final String PROPERTY_DOCUMENTATION = "documentation";
 	
 	final String PROPERTY_PROCESS_ID = "process_id";
+	final String PROPERTY_PROCESS_EXECUTABLE = "process_executable";
 	final String PROPERTY_PROCESS_VERSION = "process_version";
 	final String PROPERTY_PROCESS_AUTHOR = "process_author";
 	final String PROPERTY_PROCESS_NAMESPACE = "process_namespace";

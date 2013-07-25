@@ -35,6 +35,7 @@ public class SimpleConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
     assertEquals("simpleProcess", model.getMainProcess().getId());
     assertEquals("Simple process", model.getMainProcess().getName());
+    assertEquals(true, model.getMainProcess().isExecutable());
     
     FlowElement flowElement = model.getMainProcess().getFlowElement("flow1");
     assertNotNull(flowElement);

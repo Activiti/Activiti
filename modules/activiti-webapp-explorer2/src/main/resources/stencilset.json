@@ -47,6 +47,22 @@
       "description" : "Author of the process definition.",
       "popular" : false
     }, {
+      "id" : "process_executable",
+	  "type" : "Choice",
+	  "title" : "Executable",
+	  "value" : "Yes",
+	  "description" : "Define if the process is executable.",
+	  "popular" : true,
+	  "items" : [ {
+	    "id" : "no",
+	    "title" : "No",
+	    "value" : "No"
+	  }, {
+	    "id" : "yes",
+	    "title" : "Yes",
+	    "value" : "Yes"
+	  }]
+    }, {
       "id" : "process_version",
       "type" : "String",
       "title" : "Process version string (documentation only)",
