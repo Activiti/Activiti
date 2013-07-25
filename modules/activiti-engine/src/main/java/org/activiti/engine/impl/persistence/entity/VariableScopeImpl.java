@@ -263,11 +263,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   public Object setVariableLocal(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
     ensureVariableInstancesInitialized();
     VariableInstanceEntity variableInstance = variableInstances.get(variableName);
-    if ((variableInstance != null) && (!variableInstance.getType().isAbleToStore(value))) {
-      // delete variable
-      removeVariable(variableName);
-      variableInstance = null;
-    }
     if (variableInstance == null) {
       createVariableLocal(variableName, value);
     } else {
@@ -344,6 +339,17 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   }
 
   protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
+	
+      // type should be changed
+	 if ((variableInstance != null) && (!variableInstance.getType().isAbleToStore(value))) {
+		    VariableTypes variableTypes = Context
+		    	      .getProcessEngineConfiguration()
+		    	      .getVariableTypes();
+		    VariableType newType = variableTypes.findVariableType(value);
+		    variableInstance.setValue(null);
+		    variableInstance.setType(newType);
+		    variableInstance.forceUpdate();
+	  }
     variableInstance.setValue(value);
 
     Context.getCommandContext().getHistoryManager()

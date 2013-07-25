@@ -76,7 +76,12 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   public void setExecution(ExecutionEntity execution) {
     this.executionId = execution.getId();
     this.processInstanceId = execution.getProcessInstanceId();
-    this.forcedUpdate = true;
+    forceUpdate();
+  }
+  
+  public void forceUpdate() {
+	    forcedUpdate = true;
+	  
   }
 
   public void delete() {
