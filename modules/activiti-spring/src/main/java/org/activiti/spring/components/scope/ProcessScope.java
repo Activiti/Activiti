@@ -104,7 +104,7 @@ public class ProcessScope implements Scope, InitializingBean, BeanFactoryPostPro
 			}
 			return createDirtyCheckingProxy(name, scopedObject);
 		} catch (Throwable th) {
-			logger.warn("couldn't return value from process scope! {}",ExceptionUtils.getFullStackTrace(th));
+			logger.warn("couldn't return value from process scope! {}",ExceptionUtils.getStackTrace(th));
 		} finally {
 			if (executionEntity != null) {
 				logger.debug("set variable '{}' on executionEntity#{}", name, executionEntity.getId());

@@ -23,9 +23,9 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -96,10 +96,10 @@ public class HistoricDetailQueryResourceTest extends BaseRestTestCase {
     Iterator<JsonNode> it = dataNode.iterator();
     while(it.hasNext()) {
       JsonNode variableNode = it.next().get("variable");
-      String name = variableNode.get("name").getTextValue();
+      String name = variableNode.get("name").textValue();
       if ("byteVar".equals(name)) {
         byteVarFound = true;
-        String valueUrl = variableNode.get("valueUrl").getTextValue();
+        String valueUrl = variableNode.get("valueUrl").textValue();
         client.release();
         client = new ClientResource(valueUrl);
         client.setChallengeResponse(ChallengeScheme.HTTP_BASIC, "kermit", "kermit");
@@ -130,7 +130,7 @@ public class HistoricDetailQueryResourceTest extends BaseRestTestCase {
       Iterator<JsonNode> it = dataNode.iterator();
       while(it.hasNext()) {
         JsonNode variableNode = it.next().get("variable");
-        String name = variableNode.get("name").getTextValue();
+        String name = variableNode.get("name").textValue();
         if (variableName.equals(name)) {
           variableFound = true;
           if (variableValue instanceof Boolean) {

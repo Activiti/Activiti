@@ -16,8 +16,8 @@ package org.activiti.rest.api.legacy.deployment;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.SecuredResource;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 

@@ -36,7 +36,7 @@ import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinitionContainer;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

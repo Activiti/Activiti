@@ -17,8 +17,8 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -50,9 +50,9 @@ public class GroupMembershipResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("testuser", responseNode.get("userId").getTextValue());
-      assertEquals("testgroup", responseNode.get("groupId").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertEquals("testuser", responseNode.get("userId").textValue());
+      assertEquals("testgroup", responseNode.get("groupId").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_GROUP_MEMBERSHIP, testGroup.getId(), testUser.getId())));      
       
       Group createdGroup  = identityService.createGroupQuery().groupId("testgroup").singleResult();

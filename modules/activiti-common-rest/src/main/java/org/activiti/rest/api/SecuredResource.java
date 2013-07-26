@@ -26,8 +26,8 @@ import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.application.ActivitiRestApplication;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.util.ISO8601DateFormat;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
@@ -79,7 +79,7 @@ public class SecuredResource extends ServerResource {
   /**
    * Get a request attribute value, decoded. 
    */
-  protected String getAttribute(String name) {
+  public String getAttribute(String name) {
     return decode((String) getRequest().getAttributes().get(name));
   }
   
@@ -201,24 +201,24 @@ public class SecuredResource extends ServerResource {
   protected Map<String, Object> retrieveVariables(JsonNode jsonNode) {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (jsonNode != null) {
-      Iterator<String> itName = jsonNode.getFieldNames();
+      Iterator<String> itName = jsonNode.fieldNames();
       while(itName.hasNext()) {
         String name = itName.next();
         JsonNode valueNode = jsonNode.path(name);
         if (valueNode.isBoolean()) {
-          variables.put(name, valueNode.getBooleanValue());
+          variables.put(name, valueNode.asBoolean());
         } else if (valueNode.isInt()) {
-          variables.put(name, valueNode.getIntValue());
+          variables.put(name, valueNode.asInt());
         } else if (valueNode.isLong()) {
-          variables.put(name, valueNode.getLongValue());
+          variables.put(name, valueNode.asLong());
         } else if (valueNode.isDouble()) {
-          variables.put(name, valueNode.getDoubleValue());
+          variables.put(name, valueNode.asDouble());
         } else if (valueNode.isTextual()) {
-          variables.put(name, valueNode.getTextValue());
+          variables.put(name, valueNode.asText());
         } else {
           // Not using asText() due to the fact we expect a null-value to be returned rather than en emtpy string
           // when node is not a simple value-node
-          variables.put(name, valueNode.getValueAsText());
+          variables.put(name, valueNode.textValue());
         }
       }
     }

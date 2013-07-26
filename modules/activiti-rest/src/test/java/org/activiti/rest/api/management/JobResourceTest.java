@@ -8,8 +8,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -44,13 +44,13 @@ public class JobResourceTest extends BaseRestTestCase {
     
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals(timerJob.getId(), responseNode.get("id").getTextValue());
-    assertEquals(timerJob.getExceptionMessage(), responseNode.get("exceptionMessage").getTextValue());
-    assertEquals(timerJob.getExecutionId(), responseNode.get("executionId").getTextValue());
-    assertEquals(timerJob.getProcessDefinitionId(), responseNode.get("processDefinitionId").getTextValue());
-    assertEquals(timerJob.getProcessInstanceId(), responseNode.get("processInstanceId").getTextValue());
-    assertEquals(timerJob.getRetries(), responseNode.get("retries").getIntValue());
-    assertEquals(timerJob.getDuedate(), getDateFromISOString(responseNode.get("dueDate").getTextValue()));
+    assertEquals(timerJob.getId(), responseNode.get("id").textValue());
+    assertEquals(timerJob.getExceptionMessage(), responseNode.get("exceptionMessage").textValue());
+    assertEquals(timerJob.getExecutionId(), responseNode.get("executionId").textValue());
+    assertEquals(timerJob.getProcessDefinitionId(), responseNode.get("processDefinitionId").textValue());
+    assertEquals(timerJob.getProcessInstanceId(), responseNode.get("processInstanceId").textValue());
+    assertEquals(timerJob.getRetries(), responseNode.get("retries").intValue());
+    assertEquals(timerJob.getDuedate(), getDateFromISOString(responseNode.get("dueDate").textValue()));
   }
   
   /**

@@ -25,8 +25,8 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -104,7 +104,7 @@ public class HistoricActivityInstanceCollectionResourceTest extends BaseRestTest
       List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedActivityIds));
       Iterator<JsonNode> it = dataNode.iterator();
       while(it.hasNext()) {
-        String activityId = it.next().get("activityId").getTextValue();
+        String activityId = it.next().get("activityId").textValue();
         toBeFound.remove(activityId);
       }
       assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());

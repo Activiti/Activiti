@@ -17,8 +17,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -61,17 +61,17 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseRestTestCase {
       ObjectNode link = (ObjectNode) responseNode.get(i);
       assertNotNull(link);
       if (!link.get("user").isNull()) {
-        if (link.get("user").getTextValue().equals("john")) {
-          assertEquals("customType", link.get("type").getTextValue());
+        if (link.get("user").textValue().equals("john")) {
+          assertEquals("customType", link.get("type").textValue());
           assertTrue(link.get("group").isNull());
-          assertTrue(link.get("url").getTextValue()
+          assertTrue(link.get("url").textValue()
                   .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, processInstance.getId(), "john", "customType")));
           johnFound = true;
         } else {
-          assertEquals("paul", link.get("user").getTextValue());
-          assertEquals("candidate", link.get("type").getTextValue());
+          assertEquals("paul", link.get("user").textValue());
+          assertEquals("candidate", link.get("type").textValue());
           assertTrue(link.get("group").isNull());
-          assertTrue(link.get("url").getTextValue()
+          assertTrue(link.get("url").textValue()
                   .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, processInstance.getId(), "paul", "candidate")));
           paulFound = true;
         }
@@ -101,10 +101,10 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseRestTestCase {
 
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals("kermit", responseNode.get("user").getTextValue());
-    assertEquals("myType", responseNode.get("type").getTextValue());
+    assertEquals("kermit", responseNode.get("user").textValue());
+    assertEquals("myType", responseNode.get("type").textValue());
     assertTrue(responseNode.get("group").isNull());
-    assertTrue(responseNode.get("url").getTextValue()
+    assertTrue(responseNode.get("url").textValue()
             .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, processInstance.getId(), "kermit", "myType")));
 
     // Test with unexisting process
@@ -172,10 +172,10 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseRestTestCase {
 
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals("kermit", responseNode.get("user").getTextValue());
-    assertEquals("myType", responseNode.get("type").getTextValue());
+    assertEquals("kermit", responseNode.get("user").textValue());
+    assertEquals("myType", responseNode.get("type").textValue());
     assertTrue(responseNode.get("group").isNull());
-    assertTrue(responseNode.get("url").getTextValue().endsWith(
+    assertTrue(responseNode.get("url").textValue().endsWith(
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, processInstance.getId(), "kermit", "myType")));
 
     // Test with unexisting process

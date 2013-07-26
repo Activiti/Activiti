@@ -13,7 +13,7 @@
 
 package org.activiti.rest.api.repository;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**

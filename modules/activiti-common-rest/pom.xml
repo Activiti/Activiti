@@ -56,31 +56,19 @@
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.jackson</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-core-asl</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-mapper-asl</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <!-- set Jackson version to be compatible with Restlet 2.2-M3 -->
+      <version>2.1.0</version>
     </dependency>
     
     <!-- Testing -->
-	  <dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	  </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
     
   </dependencies>
   

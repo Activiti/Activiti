@@ -12,7 +12,7 @@ import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.HttpMultipartRepresentation;
 import org.activiti.rest.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -44,11 +44,11 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       // Check deployment
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       
-      String deploymentId = responseNode.get("id").getTextValue();
-      String name = responseNode.get("name").getTextValue();
-      String category = responseNode.get("category").getTextValue();
-      String deployTime = responseNode.get("deploymentTime").getTextValue();
-      String url = responseNode.get("url").getTextValue();
+      String deploymentId = responseNode.get("id").textValue();
+      String name = responseNode.get("name").textValue();
+      String category = responseNode.get("category").textValue();
+      String deployTime = responseNode.get("deploymentTime").textValue();
+      String url = responseNode.get("url").textValue();
       
       assertNotNull(deploymentId);
       assertEquals(1L, repositoryService.createDeploymentQuery().deploymentId(deploymentId).count());
@@ -112,11 +112,11 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       // Check deployment
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       
-      String deploymentId = responseNode.get("id").getTextValue();
-      String name = responseNode.get("name").getTextValue();
-      String category = responseNode.get("category").getTextValue();
-      String deployTime = responseNode.get("deploymentTime").getTextValue();
-      String url = responseNode.get("url").getTextValue();
+      String deploymentId = responseNode.get("id").textValue();
+      String name = responseNode.get("name").textValue();
+      String category = responseNode.get("category").textValue();
+      String deployTime = responseNode.get("deploymentTime").textValue();
+      String url = responseNode.get("url").textValue();
       
       assertNotNull(deploymentId);
       assertEquals(1L, repositoryService.createDeploymentQuery().deploymentId(deploymentId).count());
@@ -179,11 +179,11 @@ public class DeploymentResourceTest extends BaseRestTestCase {
     
     JsonNode responseNode = objectMapper.readTree(response.getStream());
      
-    String deploymentId = responseNode.get("id").getTextValue();
-    String name = responseNode.get("name").getTextValue();
-    String category = responseNode.get("category").getTextValue();
-    String deployTime = responseNode.get("deploymentTime").getTextValue();
-    String url = responseNode.get("url").getTextValue();
+    String deploymentId = responseNode.get("id").textValue();
+    String name = responseNode.get("name").textValue();
+    String category = responseNode.get("category").textValue();
+    String deployTime = responseNode.get("deploymentTime").textValue();
+    String url = responseNode.get("url").textValue();
     
     assertNotNull(deploymentId);
     assertEquals(existingDeployment.getId(), deploymentId);

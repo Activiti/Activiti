@@ -19,8 +19,8 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -58,10 +58,10 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       assertEquals(1, responseNode.size());
       
       ObjectNode commentNode = (ObjectNode) responseNode.get(0);
-      assertEquals("kermit", commentNode.get("author").getTextValue());
-      assertEquals("This is a comment...", commentNode.get("message").getTextValue());
-      assertEquals(comment.getId(), commentNode.get("id").getTextValue());
-      assertTrue(commentNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertEquals("kermit", commentNode.get("author").textValue());
+      assertEquals("This is a comment...", commentNode.get("message").textValue());
+      assertEquals(comment.getId(), commentNode.get("id").textValue());
+      assertTrue(commentNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
       
       // Test with unexisting task
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, "unexistingtask"));
@@ -104,10 +104,10 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("kermit", responseNode.get("author").getTextValue());
-      assertEquals("This is a comment...", responseNode.get("message").getTextValue());
-      assertEquals(commentsOnTask.get(0).getId(), responseNode.get("id").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), commentsOnTask.get(0).getId())));
+      assertEquals("kermit", responseNode.get("author").textValue());
+      assertEquals("This is a comment...", responseNode.get("message").textValue());
+      assertEquals(commentsOnTask.get(0).getId(), responseNode.get("id").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), commentsOnTask.get(0).getId())));
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -140,10 +140,10 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
       
-      assertEquals("kermit", responseNode.get("author").getTextValue());
-      assertEquals("This is a comment...", responseNode.get("message").getTextValue());
-      assertEquals(comment.getId(), responseNode.get("id").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertEquals("kermit", responseNode.get("author").textValue());
+      assertEquals("This is a comment...", responseNode.get("message").textValue());
+      assertEquals(comment.getId(), responseNode.get("id").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
       
       // Test with unexisting task
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, "unexistingtask", "123"));
