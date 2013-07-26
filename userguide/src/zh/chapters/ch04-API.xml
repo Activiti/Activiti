@@ -211,7 +211,7 @@ FormService formService = processEngine.getFormService();</programlisting>
   <section id="api.services">
     <title>使用Activiti的服务</title>
     <para>
-		向上面介绍的那样，要想操作Activiti引擎，需要通过
+		像上面介绍的那样，要想操作Activiti引擎，需要通过
 		<literal>org.activiti.engine.ProcessEngine</literal>实例暴露的服务。
 		下面的代码假设你已经拥有了一个可以运行的Activiti环境。
 		你就可以操作一个<literal>org.activiti.engine.ProcessEngine</literal>。

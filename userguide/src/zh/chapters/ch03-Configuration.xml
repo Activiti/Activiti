@@ -488,7 +488,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     如果你想限制配置文件中的bean的可见性，
     可以配置流程引擎配置的beans配置。
     <literal>ProcessEngineConfiguration</literal>的beans是一个map。当你指定了这个参数，
-    只有包含唉这个map中的bean可以在表达式和脚本中使用。
+    只有包含这个map中的bean可以在表达式和脚本中使用。
     通过在map中指定的名称来决定暴露的bean。
     </para>
   </section>
