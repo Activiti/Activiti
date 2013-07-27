@@ -52,7 +52,7 @@ public class SimpleProcessTest extends SpringActivitiTestCase {
     assertProcessEnded(instanceId);
 
     service1.assertIsSatisfied();
-    Map m = service2.getExchanges().get(0).getIn().getBody(Map.class);
+    Map<?, ?> m = service2.getExchanges().get(0).getIn().getBody(Map.class);
     assertEquals("ala", m.get("var1"));
     assertEquals("var2", m.get("var2"));
 

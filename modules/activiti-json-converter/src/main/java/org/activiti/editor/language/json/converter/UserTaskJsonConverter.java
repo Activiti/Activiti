@@ -86,10 +86,10 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
     }
     
     if (userTask.getPriority() != null) {
-      setPropertyValue(PROPERTY_USERTASK_PRIORITY, userTask.getPriority().toString(), propertiesNode);
+      setPropertyValue(PROPERTY_PRIORITY, userTask.getPriority().toString(), propertiesNode);
     }
-    setPropertyValue(PROPERTY_USERTASK_FORMKEY, userTask.getFormKey(), propertiesNode);
-    setPropertyValue(PROPERTY_USERTASK_DUEDATE, userTask.getDueDate(), propertiesNode);
+    setPropertyValue(PROPERTY_FORMKEY, userTask.getFormKey(), propertiesNode);
+    setPropertyValue(PROPERTY_DUEDATE, userTask.getDueDate(), propertiesNode);
     
     addFormProperties(userTask.getFormProperties(), propertiesNode);
   }
@@ -97,9 +97,9 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
   @Override
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     UserTask task = new UserTask();
-    task.setPriority(getPropertyValueAsString(PROPERTY_USERTASK_PRIORITY, elementNode));
-    task.setFormKey(getPropertyValueAsString(PROPERTY_USERTASK_FORMKEY, elementNode));
-    task.setDueDate(getPropertyValueAsString(PROPERTY_USERTASK_DUEDATE, elementNode));
+    task.setPriority(getPropertyValueAsString(PROPERTY_PRIORITY, elementNode));
+    task.setFormKey(getPropertyValueAsString(PROPERTY_FORMKEY, elementNode));
+    task.setDueDate(getPropertyValueAsString(PROPERTY_DUEDATE, elementNode));
     
     JsonNode assignmentNode = getProperty(PROPERTY_USERTASK_ASSIGNMENT, elementNode);
     if (assignmentNode != null) {

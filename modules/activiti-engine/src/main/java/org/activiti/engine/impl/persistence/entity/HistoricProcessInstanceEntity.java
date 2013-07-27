@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -114,8 +115,12 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   }
   
   public List<HistoricVariableInstanceEntity> getQueryVariables() {
+    if(queryVariables == null && Context.getCommandContext() != null) {
+      queryVariables = new HistoricVariableInitializingList();
+    }
     return queryVariables;
   }
+  
   public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }

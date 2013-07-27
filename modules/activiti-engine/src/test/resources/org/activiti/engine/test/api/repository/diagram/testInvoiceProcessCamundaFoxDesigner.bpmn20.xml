@@ -3,6 +3,7 @@
   <collaboration id="collaboration_1">
     <participant id="Process_Engine_1" name="invoice-inbound" processRef="invoice"/>
   </collaboration>
+  <message id="messageId" name="messageName"/>
   <process id="invoice" name="invoice-inbound" isExecutable="false">
     <laneSet id="laneSet_109">
       <lane id="Freigebender_105" name="Freigebender">
@@ -34,7 +35,7 @@
     </exclusiveGateway>
     <startEvent id="Rechnung_eingegangen_138" name="Rechnung&#xA;eingegangen">
       <outgoing>sequenceFlow_187</outgoing>
-      <messageEventDefinition id="messageEventDefinition_146"/>
+      <messageEventDefinition id="messageEventDefinition_146" messageRef="messageId"/>
     </startEvent>
     <userTask id="Freigebenden_zuordnen_143" activiti:assignee="kermit" activiti:formKey="assignApprover" name="Freigebenden zuordnen">
       <incoming>sequenceFlow_187</incoming>

@@ -138,7 +138,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     addConverter(AlfrescoUserTaskXMLConverter.getXMLType(), AlfrescoUserTaskXMLConverter.getBpmnElementType(), AlfrescoUserTaskXMLConverter.class);
   }
   
-  private static void addConverter(String elementName, Class<? extends BaseElement> elementClass, 
+  public static void addConverter(String elementName, Class<? extends BaseElement> elementClass, 
       Class<? extends BaseBpmnXMLConverter> converter) {
     
     convertersToBpmnMap.put(elementName, converter);
@@ -369,7 +369,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 						new MultiInstanceParser().parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1), model);
 					  
 					} else if (convertersToBpmnMap.containsKey(xtr.getLocalName())) {
-					  if (activeProcess != null && activeProcess.isExecutable()) {
+					  if (activeProcess != null) {
   					  Class<? extends BaseBpmnXMLConverter> converterClass = convertersToBpmnMap.get(xtr.getLocalName());
   					  BaseBpmnXMLConverter converter = converterClass.newInstance();
   					  if (userTaskFormTypes != null && ELEMENT_TASK_USER.equals(xtr.getLocalName())) {

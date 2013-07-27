@@ -85,6 +85,7 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
     if (STENCIL_EVENT_BOUNDARY_TIMER.equals(stencilId)) {
       convertJsonToTimerDefinition(elementNode, boundaryEvent);
+      boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
     } else if (STENCIL_EVENT_BOUNDARY_ERROR.equals(stencilId)) {
       convertJsonToErrorDefinition(elementNode, boundaryEvent);
     } else if (STENCIL_EVENT_BOUNDARY_SIGNAL.equals(stencilId)) {

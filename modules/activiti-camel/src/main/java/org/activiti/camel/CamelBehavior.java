@@ -122,7 +122,7 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
   }
   
   protected void copyVariablesToBody(Map<String, Object> variables, Exchange exchange) {
-    Object camelBody = variables.get("camelBody");
+    Object camelBody = variables.get(ExchangeUtils.CAMELBODY);
     if(camelBody != null) {
       exchange.getIn().setBody(camelBody);
     }

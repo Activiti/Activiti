@@ -72,10 +72,13 @@ public interface StencilConstants {
 	final String PROPERTY_DOCUMENTATION = "documentation";
 	
 	final String PROPERTY_PROCESS_ID = "process_id";
+	final String PROPERTY_PROCESS_EXECUTABLE = "process_executable";
 	final String PROPERTY_PROCESS_VERSION = "process_version";
 	final String PROPERTY_PROCESS_AUTHOR = "process_author";
 	final String PROPERTY_PROCESS_NAMESPACE = "process_namespace";
 	
+	final String PROPERTY_CANCEL_ACTIVITY = "cancelactivity";
+        
 	final String PROPERTY_TIMER_DURATON = "timerdurationdefinition";
 	final String PROPERTY_TIMER_DATE = "timerdatedefinition";
 	final String PROPERTY_TIMER_CYCLE = "timercycledefinition";
@@ -114,9 +117,6 @@ public interface StencilConstants {
 	final String PROPERTY_PRIORITY = "prioritydefinition";
 	
 	final String PROPERTY_USERTASK_ASSIGNMENT = "usertaskassignment";
-	final String PROPERTY_USERTASK_FORMKEY = "formkeydefinition";
-	final String PROPERTY_USERTASK_PRIORITY = "prioritydefinition";
-	final String PROPERTY_USERTASK_DUEDATE = "duedatedefinition";
   final String PROPERTY_USERTASK_ASSIGNMENT_TYPE = "assignment_type";
   final String PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION = "resourceassignmentexpr";
   final String PROPERTY_USERTASK_ASSIGNEE = "assignee";
@@ -138,7 +138,13 @@ public interface StencilConstants {
   final String PROPERTY_FORM_TYPE = "formproperty_type";
   final String PROPERTY_FORM_EXPRESSION = "formproperty_expression";
   final String PROPERTY_FORM_VARIABLE = "formproperty_variable";
-  
+  final String PROPERTY_FORM_REQUIRED = "formproperty_required";
+  final String PROPERTY_FORM_READABLE = "formproperty_readable";
+  final String PROPERTY_FORM_WRITEABLE = "formproperty_writeable";
+  final String PROPERTY_FORM_FORM_VALUES = "formproperty_formvalues";
+  final String PROPERTY_FORM_FORM_VALUE_ID = "formproperty_formvalue_id";
+  final String PROPERTY_FORM_FORM_VALUE_NAME = "formproperty_formvalue_name";
+
 	final String PROPERTY_SCRIPT_FORMAT = "scriptformat";
 	final String PROPERTY_SCRIPT_TEXT = "scripttext";
 	
