@@ -5,29 +5,35 @@
 
   <title>REST API</title>
   <section>
-    <title>General Activiti REST principles</title>
+    <title>通用Activiti REST原则</title>
     <section>
-      <title>Installation and Authentication</title>
-      
-      <para>Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. However, it can also be used in another web-application by including the servlet and it's mapping in your application and add all activiti-rest dependencies to the classpath.</para>
-      <para>By default the Activiti Engine will connect to an in-memory H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).</para>
-      <para>All REST-resources require a valid Activiti-user to be authenticated by default. Basic HTTP access authentication is used, so you should always include a <literal>Authorization: Basic ...==</literal> HTTP-header when performing requests or include the username and password in the request-url (eg. <literal>http://username:password@localhost...</literal>).
+      <title>安装与认证</title>
+
+      <para>activiti包含了一个activiti引擎的REST API，把activiti-rest.war部署到像Apache Tomcat这样的servlet容器就可以使用。
+	  不过，它也可以使用在其他web应用中，把activiti-rest的依赖都加入classpath，添加servlet，并映射到你的应用中。</para>
+      <para>默认情况下，activiti引擎会连接内存数据库H2。你可以修改WEB-INF/classes目录下的db.properties来修改数据库设置。REST API使用JSON格式
+	  （http://www.json.org），它是基于Restlet（http://www.restlet.org）开发的。</para>
+      <para>默认所有REST资源都需要先使用有效的activiti用户认证后才能使用。会使用Basic HTTP认证，所以你要一直在请求的HTTP头中包含一个
+	  <literal>Authorization: Basic ...==</literal>属性，或在请求url中包含用户名和密码（比如： <literal>http://username:password@localhost...</literal>）。
       </para>
-      <para><emphasis role="bold">It's recommended to use Basic Authentication in combination with HTTPS.</emphasis></para>
-      <para>It's possible to remove authentication from certain resources or adding additional authorisation on top of being an authenticated user (eg. being part of group X allows a user to execute request with URL Y). 
-      This can be achieved by using an implementation of <literal>org.activiti.rest.filter.RestAuthenticator</literal> which has 2 methods:
+      <para><emphasis role="bold">建议把Basic认证与HTTPS一起使用。</emphasis></para>
+      <para>可以从删除对应资源的认证，或添加额外的授权给一个认证的用户
+	  （比如，把用户加入一个组，让它可以执行URL Y）。
+	  可以使用<literal>org.activiti.rest.filter.RestAuthenticator</literal>的实现，它有两个方法：
       <itemizedlist>
-        <listitem><para><emphasis><literal>boolean requestRequiresAuthentication(Request request)</literal></emphasis>: Called before a request is checked for authentication (valid username and password is passed in header). If this method returns true, the method needs authentication. If false is returned, the request will be done regardless of the request being authenticated. If false is returned, <literal>isRequestAuthorized</literal> will not be called either for this request.</para></listitem>
-        <listitem><para><emphasis><literal>boolean isRequestAuthorized(Request request)</literal></emphasis>: Called after a user is successfully authenticated against the Activiti identity-management but before the request is actually executed. Can be used to check if a certain request is valid for the authenticated user. If true is returned, the request is considered authorised and is executed. When false is returned, the request is not executed and the client gets an appropriate error.</para></listitem>
+        <listitem><para><emphasis><literal>boolean requestRequiresAuthentication(Request request)</literal></emphasis>：在请求认证检查之前调用
+		（通过头部传递合法的账号和密码）。如果方法返回true，这个方法就需要认证才能访问。如果返回false，无论请求是否认证都可以访问。
+		如果返回false，就不会为这个方法调用<literal>isRequestAuthorized</literal>。</para></listitem>
+        <listitem><para><emphasis><literal>boolean isRequestAuthorized(Request request)</literal></emphasis>：在用户已经通过activiti账号管理认证后，但是再请求实际之前调用。可以用来检查认证用户是否可以访问对应请求。如果返回true，会允许请求执行。如果返回true，请求不会执行，客户端会收到对应的错误。</para></listitem>
       </itemizedlist>
       </para>
-      <para>The custom RestAuthenticator should be set on the <literal>org.activiti.rest.application.ActivitiRestServicesApplication</literal>that is used in the RestletServlet. 
-      The easiest way for this to create a subclass of the <literal>ActivitiRestServicesApplication</literal> and use the custom implementation classname in the servlet-mapping:</para>
-      
+      <para>自定义的RestAuthenticator应该设置到RestletServlet的<literal>org.activiti.rest.application.ActivitiRestServicesApplication</literal>中。
+	  最简单的方法是创建<literal>ActivitiRestServicesApplication</literal>的子类，并在servlet-mapping中设置自定义的类名：</para>
+
       <programlisting>
-<![CDATA[   <!-- Restlet adapter -->  
-  <servlet>  
-    <servlet-name>RestletServlet</servlet-name>  
+<![CDATA[   <!-- Restlet adapter -->
+  <servlet>
+    <servlet-name>RestletServlet</servlet-name>
     <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
     <init-param>
       <!-- Application class name -->
@@ -36,102 +42,102 @@
     </init-param>
   </servlet>]]></programlisting>
     </section>
-    
+
      <section id="restUsageInTomcat">
-      <title>Usage in Tomcat</title>
-      <para>Due to <ulink url="http://tomcat.apache.org/tomcat-7.0-doc/security-howto.html"> default security properties on Tomcat</ulink>, <emphasis role="bold">escaped forward slashes (<literal>%2F</literal> and <literal>%5C</literal>) are not allowed by default (400-result is returned).</emphasis>
-      This may have an impact on the deployment resources and their data-URL, as the URL can potentially contain escaped forward slashes.
-      
-      <emphasis role="bold">When issues are experienced with unexpected 400-results, set the following system-property: <literal>-Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true.</literal></emphasis></para>
+      <title>使用Tomcat</title>
+      <para>根据<ulink url="http://tomcat.apache.org/tomcat-7.0-doc/security-howto.html">Tomcat的默认安全配置</ulink>，默认<emphasis role="bold">转码的前斜线（<literal>%2F</literal>和<literal>%5C</literal>）都不允许使用（返回400）。</emphasis>
+      这可能对部署资源和它们的数据URL造成影响，URL可能会包含转移的前斜线。
+
+      <emphasis role="bold">当出现预期外的400问题，设置下面这个系统参数：<literal>-Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true.</literal></emphasis></para>
     </section>
-    
+
      <section>
-      <title>Methods and return-codes</title>
+      <title>方法和返回值</title>
       <table>
-        <title>HTTP-methods and corresponding operations</title>
+        <title>HTTP方法和对应操作</title>
         <tgroup cols="2">
           <thead>
             <row>
-              <entry>Method</entry>
-              <entry>Operations</entry>
+              <entry>方法</entry>
+              <entry>操作</entry>
             </row>
           </thead>
           <tbody>
             <row>
               <entry><literal>GET</literal></entry>
-              <entry>Get a single resource or get a collection of resources.</entry>
+              <entry>获得一个资源或或获得多个资源</entry>
             </row>
             <row>
               <entry><literal>POST</literal></entry>
-              <entry>Create a new resource. Also used for executing resource-queries which have a too complex request-structure to fit in the query-URL of a GET-request.</entry>
+              <entry>创建一个新资源。当请求结果太复杂，无法放到GET请求的URL中，也用来查询资源。</entry>
             </row>
             <row>
               <entry><literal>PUT</literal></entry>
-              <entry>Update properties of an existing resource. Also used for invoking actions on an existing resource.</entry>
+              <entry>更新已有资源的属性。也用来调用现存资源的功能。</entry>
             </row>
             <row>
               <entry><literal>DELETE</literal></entry>
-              <entry>Delete an existing resource.</entry>
+              <entry>删除现存资源。</entry>
             </row>
           </tbody>
         </tgroup>
-      </table>     
+      </table>
       <table>
-        <title>HTTP-methods response codes</title>
+        <title>HTTP方法响应代码</title>
         <tgroup cols="2">
           <thead>
             <row>
-              <entry>Response</entry>
-              <entry>Description</entry>
+              <entry>响应</entry>
+              <entry>描述</entry>
             </row>
           </thead>
           <tbody>
             <row>
               <entry><literal>200 - Ok</literal></entry>
-              <entry>The operation was successful and a response has been returned (<literal>GET</literal> and <literal>PUT</literal> requests).</entry>
+              <entry>操作成功，响应返回（<literal>GET</literal>和<literal>PUT</literal>请求）。</entry>
             </row>
             <row>
               <entry><literal>201 - Created</literal></entry>
-              <entry>The operation was successful and the entity has been created and is returned in the response-body (<literal>POST</literal> request).</entry>
+              <entry>操作成功，实体已创建，并返回到响应体中（<literal>POST</literal>请求）。</entry>
             </row>
             <row>
               <entry><literal>204 - No content</literal></entry>
-              <entry>The operation was successful and entity has been deleted and therefore there is no response-body returned (<literal>DELETE</literal> request).</entry>
+              <entry>操作成功，实体已删除，不会返回响应体（<literal>DELETE</literal>请求）。</entry>
             </row>
             <row>
               <entry><literal>401 - Unauthorized</literal></entry>
-              <entry>The operation failed. The operation requires an Authentication header to be set. If this was present in the request, the supplied credentials are not valid or the user is not authorized to perform this operation.</entry>
+              <entry>操作失败。操作要求设置Authentication头部。如果请求中已经设置了头部，对应的凭证是无效的或者用户不允许执行这个操作。</entry>
             </row>
             <row>
               <entry><literal>403 - Forbidden</literal></entry>
-              <entry>The operation is forbidden and should not be re-attempted. This does not imply an issue with authentication not authorization, it's an operation that is not allowed. Example: deleting a task that is part of a running process is not allowed and will never be allowed, regardless of the user or process/task state.</entry>
+              <entry>禁止操作，不要重试。这不是认证和授权的问题，这是禁止操作。比如：删除一个执行中流程的任务是不允许的，无论用户或流程任务的状态。</entry>
             </row>
             <row>
               <entry><literal>404 - Not found</literal></entry>
-              <entry>The operation failed.The requested resource was not found.</entry>
+              <entry>操作失败。找不到请求的资源。</entry>
             </row>
             <row>
               <entry><literal>405 - Method not allowed</literal></entry>
-              <entry>The operation failed. The used method is not allowed for this resource. Eg. trying to update (PUT) a deployment-resource will result in a <literal>405</literal> status.</entry>
+              <entry>操作失败。使用的资源方法不允许调用。比如：想更新（PUT）已部署的资源会返回<literal>405</literal>结果。</entry>
             </row>
             <row>
               <entry><literal>409 - Conflict</literal></entry>
-              <entry>The operation failed. The operation causes an update of a resource that has been updated by another operation, which makes the update no longer valid. Can also indicate a resource that is being created in a collection where a resource with that identifier already exists.</entry>
+              <entry>操作失败。更新其他操作应更新的资源，会导致更新不合法。也可以表示一个结合中新创建的资源的id已经存在了。</entry>
             </row>
             <row>
               <entry><literal>415 - Unsupported Media Type</literal></entry>
-              <entry>The operation failed. The request body contains an unsupported media type. Also occurs when the request-body JSON contains an unknown attribute or value that doesn't have the right format/type to be accepted.</entry>
+              <entry>操作失败。请求体包含了不支持的媒体类型。当请求体的JSON中包含未知的属性或值时，也会返回这个响应，一般是因为无法处理的错误格式或类型。</entry>
             </row>
             <row>
               <entry><literal>500 - Internal server error</literal></entry>
-              <entry>The operation failed. An unexpected exception occured while executing the operation. The response-body contains details about the error.</entry>
+              <entry>操作失败。执行操作时出现了预期外的异常。响应体中包含错误的细节。</entry>
             </row>
           </tbody>
         </tgroup>
-      </table>     
+      </table>
         <para>
-        The media-type of the HTTP-responses is always <literal>application/json</literal> unless binary content is requested (eg. deployment resource data), the media-type of the content is used. 
-        </para> 
+		media-type和HTTP响应永远都是<literal>application/json</literal>，除非需要使用二进制内容（比如：发布资源数据），会使用内容的media-type。
+        </para>
     </section>
     <section>
       <title>Error response body</title>
@@ -152,13 +158,13 @@
             frameworks have this functionality built in, but it should be taken into account. Especially for segments that can contains forward-slashes (eg. deployment resource), this is required.
         </para>
       </section>
-      
+
       <section>
         <title>Rest URL query parameters</title>
         <para>
             Parameters added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?name=Deployment</literal>) can have the folowing types and are
             mentioned in the corresponding REST-API documentation:
-            
+
             <table>
               <title>URL query parameter types</title>
               <tgroup cols="2">
@@ -272,12 +278,12 @@
             </table>
         </para>
       </section>
-      
+
       <section id="restQueryVariable">
         <title>JSON query variable format</title>
         <para>
             <programlisting>
-{ 
+{
   "name" : "variableName",
   "value" : "variableValue",
   "operator" : "equals",
@@ -361,20 +367,20 @@
             </table>
         </para>
       </section>
-      
+
       <section id="restVariables">
         <title>Variable representation</title>
         <para>
           When working with variables (execution/process and task), the REST-api uses some common principles and JSON-format for both reading and writing. The JSON representation of a variable looks like this:
            <programlisting>
-{ 
+{
   "name" : "variableName",
   "value" : "variableValue",
   "valueUrl" : "http://...",
   "scope" : "local",
   "type" : "string"
 }</programlisting>
-          
+
            <table>
               <title>Variable JSON attributes</title>
               <tgroup cols="2">
@@ -468,7 +474,7 @@
         </para>
        </section>
     </section>
-      
+
   </section>
   <section>
     <title>Deployment</title>
@@ -572,7 +578,7 @@
 }</programlisting>
     </para>
     </section>
-    
+
     <section>
       <title>Get a deployment</title>
         <para>
@@ -636,7 +642,7 @@
 }</programlisting>
     </para>
     </section>
-    
+
     <section>
       <title>Create a new deployment</title>
         <para>
@@ -917,8 +923,8 @@
         </listitem>
       </itemizedlist>
     </para>
-  </section>  
-  
+  </section>
+
    <section>
       <title>Get a deployment resource content</title>
         <para>
@@ -983,11 +989,11 @@
       The response body will contain the binary resource-content for the requested resource. The response content-type will be the same as the type returned in the resources 'mimeType' property. Also, a content-disposition header is set,
       allowing browsers to dowload the file instead of displaying it.
     </para>
-  </section>  
+  </section>
  </section>
  <section>
   <title>Process Definitions</title>
-  
+
    <section>
       <title>List of process definitions</title>
         <para>
@@ -1131,7 +1137,7 @@
             <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "oneTaskProcess:1:4",
       "url" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
       "version" : 1,
@@ -1221,7 +1227,7 @@
     <para>
        <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "id" : "oneTaskProcess:1:4",
   "url" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
   "version" : 1,
@@ -1250,7 +1256,7 @@
       </itemizedlist>
     </para>
     </section>
-    
+
     <section>
       <title>Update category for a process definition</title>
         <para>
@@ -1259,7 +1265,7 @@
         <para>
          <emphasis role="bold">Body JSON:</emphasis>
            <programlisting>
-{ 
+{
   "category" : "updatedcategory"
 }</programlisting>
         </para>
@@ -1328,8 +1334,8 @@
     <para>
       Exactly the same response codes/boy as <literal>GET repository/deployment/{deploymentId}/resourcedata/{resourceId}</literal>.
     </para>
-  </section>  
-  
+  </section>
+
    <section>
       <title>Get a process definition BPMN model</title>
         <para>
@@ -1397,19 +1403,19 @@
          "name":"The One Task Process",
          "executable":true,
          "documentation":"One task process description",
-         
+
          ...
-    ], 
-    
+    ],
+
     ...
 }
 </programlisting>
     </para>
     <para>
-     
+
     </para>
-  </section>  
- 
+  </section>
+
   <section>
       <title>Suspend a process definition</title>
         <para>
@@ -1418,7 +1424,7 @@
         <para>
          <emphasis role="bold">Body JSON:</emphasis>
            <programlisting>
-{ 
+{
   "action" : "suspend",
   "includeProcessInstances" : "false",
   "date" : "2013-04-15T00:42:12Z"
@@ -1492,7 +1498,7 @@
         <para>
          <emphasis role="bold">Body JSON:</emphasis>
            <programlisting>
-{ 
+{
   "action" : "activate",
   "includeProcessInstances" : "true",
   "date" : "2013-04-15T00:42:12Z"
@@ -1531,7 +1537,7 @@
        <emphasis role="bold">Success response body:</emphasis> see response for <literal>repository/process-definitions/{processDefinitionId}</literal>.
       </para>
  </section>
- 
+
   <section>
       <title>Get all candidate starters for a process-definition</title>
         <para>
@@ -1678,7 +1684,7 @@
 }</programlisting>
     </para>
  </section>
- 
+
   <section>
       <title>Delete a candidate starter from a process definition</title>
       <para>
@@ -1753,7 +1759,7 @@
 }</programlisting>
     </para>
     </section>
-    
+
      <section>
       <title>Get a candidate starter from a process definition</title>
       <para>
@@ -1828,12 +1834,12 @@
 }</programlisting>
     </para>
     </section>
- 
+
  </section>
- 
+
  <section>
   <title>Models</title>
-  
+
    <section>
       <title>Get a list of models</title>
         <para>
@@ -1972,9 +1978,9 @@
          "lastUpdateTime":"2013-06-12T14:31:08.612+0000",
          "deploymentUrl":"http://localhost:8182/repository/deployments/7"
       },
-      
+
       ...
-      
+
    ],
    "total":2,
    "start":0,
@@ -1984,7 +1990,7 @@
 }</programlisting>
     </para>
     </section>
-    
+
     <section>
       <title>Get a model</title>
         <para>
@@ -2054,7 +2060,7 @@
 }</programlisting>
     </para>
     </section>
-    
+
  <section>
       <title>Update a model</title>
         <para>
@@ -2114,7 +2120,7 @@
 }</programlisting>
     </para>
     </section>
-    
+
     <section>
       <title>Create a model</title>
         <para>
@@ -2170,7 +2176,7 @@
 }</programlisting>
     </para>
     </section>
-    
+
       <section>
       <title>Delete a model</title>
         <para>
@@ -2223,7 +2229,7 @@
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Get the editor source for a model</title>
         <para>
@@ -2280,7 +2286,7 @@
        Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
     </para>
     </section>
-    
+
     <section>
       <title>Set the editor source for a model</title>
          <para>
@@ -2341,7 +2347,7 @@
        Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
     </para>
   </section>
-    
+
       <section>
       <title>Get the extra editor source for a model</title>
         <para>
@@ -2398,7 +2404,7 @@
        Reponse body contains the model's raw extra editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the extra source.
     </para>
     </section>
-    
+
     <section>
       <title>Set the extra editor source for a model</title>
          <para>
@@ -2459,12 +2465,12 @@
        Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
     </para>
   </section>
-    
+
  </section>
- 
+
  <section>
   <title>Process Instances</title>
-  
+
    <section>
       <title>Get a process instance</title>
         <para>
@@ -2674,8 +2680,8 @@
         "name":"myVar",
         "value":"This is a variable",
       },
-      
-      ... 
+
+      ...
    ]
 }</programlisting>
     </para>
@@ -2690,8 +2696,8 @@
         "name":"myVar",
         "value":"This is a variable",
       },
-      
-      ... 
+
+      ...
    ]
 }</programlisting>
     </para>
@@ -2706,8 +2712,8 @@
         "name":"myVar",
         "value":"This is a variable",
       },
-      
-      ... 
+
+      ...
    ]
 }</programlisting>
     </para>
@@ -2879,7 +2885,7 @@
          "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
          "activityId":"processTask"
       },
-      
+
       ...
    ],
    "total":2,
@@ -2890,7 +2896,7 @@
 }</programlisting>
     </para>
     </section>
-    
+
     <section>
       <title>Query process instances</title>
         <para>
@@ -2901,7 +2907,7 @@
             <programlisting>
 {
   "processDefinitionKey":"oneTaskProcess",
-  "variables": 
+  "variables":
   [
     {
         "name" : "myVariable",
@@ -2954,7 +2960,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
          "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
          "activityId":"processTask"
       },
-      
+
       ...
    ],
    "total":2,
@@ -2965,7 +2971,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 }</programlisting>
     </para>
     </section>
-    
+
     <section>
       <title>Get diagram for a process instance</title>
         <para>
@@ -3034,7 +3040,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 }</programlisting>
     </para>
 </section>
-    
+
      <section>
       <title>Get involved people for process instance</title>
         <para>
@@ -3328,10 +3334,10 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
       "valueUrl":"http://localhost:8182/runtime/process-instances/5/variables/byteArrayProcVar/data",
       "scope":"local"
    },
-   
+
    ...
 ]</programlisting>
-In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
+In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
 Note that only <literal>local</literal> scoped variables are returned, as there is no <literal>global</literal> scope for process-instance variables.</para>
 </section>
 
@@ -3405,11 +3411,11 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
       "value":123,
       "scope":"local"
    }</programlisting>
-    In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
+    In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
     Note that only <literal>local</literal> scoped variables are returned, as there is no <literal>global</literal> scope for process-instance variables.</para>
   </section>
-  
-  
+
+
   <section>
       <title>Create (or update) variables on a process instance</title>
         <para>
@@ -3418,7 +3424,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
           When using <literal>POST</literal>, all variables that are passed are created. In case one of the variables already exists on the process instance, the request results in an error (409 - CONFLICT). When <literal>PUT</literal> is used,
-          unexisting variables are created on the process-instance and existing ones are overridden without any error. 
+          unexisting variables are created on the process-instance and existing ones are overridden without any error.
             <table>
               <title>Create (or update) variables on a process instance - URL parameters</title>
               <tgroup cols='3'>
@@ -3450,7 +3456,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
       "type":"integer"
       "value":123
    },
-   
+
    ...
 ]</programlisting>
         Any number of variables can be passed into the request body array. More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that scope is ignored, only <literal>local</literal> variables can be set in a process instance.
@@ -3496,13 +3502,13 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
       "value":123,
       "scope":"local"
    },
-   
+
    ...
-   
+
 ]</programlisting>
   </para>
   </section>
-  
+
   <section>
       <title>Update a single variable on a process instance</title>
         <para>
@@ -3579,11 +3585,11 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
       "value":123,
       "scope":"local"
    }</programlisting>
-  In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
+  In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
   Note that only <literal>local</literal> scoped variables are returned, as there is no <literal>global</literal> scope for process-instance variables.
   </para>
   </section>
-  
+
    <section>
       <title>Create a new binary variable on a process-instance</title>
         <para>
@@ -3627,7 +3633,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "name" : "binaryVariable",
   "scope" : "local",
   "type" : "binary",
@@ -3669,7 +3675,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Update an existing binary variable on a process-instance</title>
         <para>
@@ -3713,7 +3719,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "name" : "binaryVariable",
   "scope" : "local",
   "type" : "binary",
@@ -3753,10 +3759,10 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
   </section>
 
 </section>
- 
+
   <section>
   <title>Executions</title>
-  
+
    <section>
       <title>Get an execution</title>
         <para>
@@ -3924,7 +3930,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
 }</programlisting>
     </para>
   </section>
-  
+
   <section>
       <title>Get active activities in an execution</title>
         <para>
@@ -3988,7 +3994,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
 ]</programlisting>
     </para>
   </section>
-  
+
   <section id="restExecutionsGet">
       <title>List of executions</title>
         <para>
@@ -4119,7 +4125,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
 }</programlisting>
     </para>
     </section>
-    
+
     <section>
       <title>Query executions</title>
         <para>
@@ -4130,7 +4136,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
             <programlisting>
 {
   "processDefinitionKey":"oneTaskProcess",
-  "variables": 
+  "variables":
   [
     {
         "name" : "myVariable",
@@ -4140,7 +4146,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
     },
     ...
   ],
-  "processInstanceVariables": 
+  "processInstanceVariables":
   [
     {
         "name" : "processVariable",
@@ -4214,8 +4220,8 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 }</programlisting>
     </para>
     </section>
-    
-    
+
+
     <section>
       <title>List of variables for an execution</title>
         <para>
@@ -4290,11 +4296,11 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
       "valueUrl":"http://localhost:8182/runtime/process-instances/5/variables/byteArrayProcVar/data",
       "scope":"local"
    },
-   
+
    ...
 ]</programlisting>
 In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
-</para> 
+</para>
 </section>
 
   <section>
@@ -4374,10 +4380,10 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
       "scope":"local"
    }</programlisting>
     In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
-    </para> 
+    </para>
   </section>
-  
-  
+
+
   <section>
       <title>Create (or update) variables on an execution</title>
         <para>
@@ -4386,7 +4392,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
           When using <literal>POST</literal>, all variables that are passed are created. In case one of the variables already exists on the execution in the requested scope, the request results in an error (409 - CONFLICT). When <literal>PUT</literal> is used,
-          unexisting variables are created on the execution and existing ones are overridden without any error. 
+          unexisting variables are created on the execution and existing ones are overridden without any error.
             <table>
               <title>Create (or update) variables on an execution - URL parameters</title>
               <tgroup cols='3'>
@@ -4419,7 +4425,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
       "value":123,
       "scope":"local"
    },
-   
+
    ...
 ]</programlisting>
         <emphasis role="bold">Note that you can only provide variables that have the same scope. If the request-body array contains variables from mixed scopes, the request results in an error (400 - BAD REQUEST).</emphasis>Any number of variables can be passed into the request body array. More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that scope is ignored, only <literal>local</literal> variables can be set in a process instance.
@@ -4465,13 +4471,13 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
       "value":123,
       "scope":"local"
    },
-   
+
    ...
-   
+
 ]</programlisting>
   </para>
   </section>
-  
+
   <section>
       <title>Update a variable on an execution</title>
         <para>
@@ -4549,10 +4555,10 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
       "value":123,
       "scope":"global"
    }</programlisting>
-  In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
+  In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
   </para>
   </section>
-  
+
    <section>
       <title>Create a new binary variable on an execution</title>
         <para>
@@ -4599,7 +4605,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "name" : "binaryVariable",
   "scope" : "local",
   "type" : "binary",
@@ -4641,7 +4647,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Update an existing binary variable on a process-instance</title>
          <para>
@@ -4694,7 +4700,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "name" : "binaryVariable",
   "scope" : "local",
   "type" : "binary",
@@ -4733,7 +4739,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
   </section>
 </section>
- 
+
   <section>
   <title>Tasks</title>
       <section>
@@ -4790,7 +4796,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
     <para>
        <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "assignee" : "kermit",
   "createTime" : "2013-04-17T10:17:43.902+0000",
   "delegationState" : "pending",
@@ -4815,7 +4821,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
       </itemizedlist>
     </para>
     </section>
- 
+
   <section id="restTasksGet">
       <title>List of tasks</title>
         <para>
@@ -5037,7 +5043,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
             <programlisting>
 {
   "data": [
-    { 
+    {
       "assignee" : "kermit",
       "createTime" : "2013-04-17T10:17:43.902+0000",
       "delegationState" : "pending",
@@ -5064,7 +5070,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
 }</programlisting>
     </para>
     </section>
-    
+
    <section>
       <title>Query for tasks</title>
         <para>
@@ -5076,9 +5082,9 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
 {
   "name" : "My task",
   "description" : "The task description",
-  
+
   ...
-  
+
   "taskVariables" : [
     {
       "name" : "myVariable",
@@ -5087,14 +5093,14 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
       "type" : "long"
     }
   ],
-    
+
     "processInstanceVariables" : [
       {
-         ... 
+         ...
       }
     ]
   ]
-}</programlisting> 
+}</programlisting>
         </para>
         <para>
           All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
@@ -5128,7 +5134,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
             <programlisting>
 {
   "data": [
-    { 
+    {
       "assignee" : "kermit",
       "createTime" : "2013-04-17T10:17:43.902+0000",
       "delegationState" : "pending",
@@ -5155,7 +5161,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
 }</programlisting>
     </para>
     </section>
-      
+
   <section>
       <title>Update a task</title>
         <para>
@@ -5164,7 +5170,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         <para>
          <emphasis role="bold">Body JSON:</emphasis>
            <programlisting>
-{ 
+{
   "assignee" : "assignee",
   "delegationState" : "resolved",
   "description" : "New task description",
@@ -5215,7 +5221,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         <para>
          <emphasis role="bold">Complete a task - Body JSON:</emphasis>
            <programlisting>
-{ 
+{
   "action" : "complete",
   "variables" : ...
 }</programlisting>
@@ -5224,7 +5230,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
        <para>
          <emphasis role="bold">Claim a task - Body JSON:</emphasis>
            <programlisting>
-{ 
+{
   "action" : "claim",
   "assignee" : "userWhoClaims"
 }</programlisting>
@@ -5233,7 +5239,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
        <para>
          <emphasis role="bold">Delegate a task - Body JSON:</emphasis>
            <programlisting>
-{ 
+{
   "action" : "delegate",
   "assignee" : "userToDelegateTo"
 }</programlisting>
@@ -5242,7 +5248,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
        <para>
          <emphasis role="bold">Resolve a task - Body JSON:</emphasis>
            <programlisting>
-{ 
+{
   "action" : "resolve"
 }</programlisting>
 Resolves the task delegation. The task is assigned back to the task owner (if any).
@@ -5350,7 +5356,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
           </table>
         </para>
   </section>
-  
+
    <section>
       <title>Get all variables for a task</title>
         <para>
@@ -5412,7 +5418,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
        <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
 [
-  { 
+  {
     "name" : "doubleTaskVar",
     "scope" : "local",
     "type" : "double",
@@ -5424,15 +5430,15 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
     "type" : "string",
     "value" : "This is a ProcVariable"
   },
-  
+
   ...
-  
+
 ]</programlisting>
 
-      The variables are returned as a JSON array. Full response description can be found in the general <link linkend="restVariables">REST-variables section</link>. 
+      The variables are returned as a JSON array. Full response description can be found in the general <link linkend="restVariables">REST-variables section</link>.
     </para>
   </section>
-  
+
    <section>
       <title>Get a variable from a task</title>
         <para>
@@ -5499,16 +5505,16 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         <para>
        <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "name" : "myTaskVariable",
   "scope" : "local",
   "type" : "string",
   "value" : "Hello my friend"
 }</programlisting>
-      Full response body description can be found in the general <link linkend="restVariables">REST-variables section</link>. 
+      Full response body description can be found in the general <link linkend="restVariables">REST-variables section</link>.
     </para>
   </section>
-  
+
   <section>
       <title>Get the binary data for a variable</title>
         <para>
@@ -5574,10 +5580,10 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
        <emphasis role="bold">Success response body:</emphasis>
-      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type.
     </para>
   </section>
-  
+
   <section>
       <title>Create new variables on a task</title>
         <para>
@@ -5610,7 +5616,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
        <emphasis role="bold">Request body for creating simple (non-binary) variables:</emphasis>
             <programlisting>
 [
-  { 
+  {
     "name" : "myTaskVariable",
     "scope" : "local",
     "type" : "string",
@@ -5641,7 +5647,7 @@ The request body should be an array containing one or more JSON-objects represen
         <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
 [
-  { 
+  {
     "name" : "myTaskVariable",
     "scope" : "local",
     "type" : "string",
@@ -5728,7 +5734,7 @@ The request body should be an array containing one or more JSON-objects represen
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "name" : "binaryVariable",
   "scope" : "local",
   "type" : "binary",
@@ -5807,7 +5813,7 @@ The request body should be an array containing one or more JSON-objects represen
          <para>
        <emphasis role="bold">Request body for updating simple (non-binary) variables:</emphasis>
             <programlisting>
-{ 
+{
   "name" : "myTaskVariable",
   "scope" : "local",
   "type" : "string",
@@ -5832,7 +5838,7 @@ The request body should be an array containing one or more JSON-objects represen
         <para>
         <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "name" : "myTaskVariable",
   "scope" : "local",
   "type" : "string",
@@ -5917,7 +5923,7 @@ The request body should be an array containing one or more JSON-objects represen
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "name" : "binaryVariable",
   "scope" : "local",
   "type" : "binary",
@@ -6126,7 +6132,7 @@ The request body should be an array containing one or more JSON-objects represen
        <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
 [
-  { 
+  {
     "userId" : "kermit",
     "groupId" : null,
     "type" : "candidate",
@@ -6138,12 +6144,12 @@ The request body should be an array containing one or more JSON-objects represen
     "type" : "candidate",
     "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/groups/sales/candidate"
   },
-  
+
   ...
 ]</programlisting>
     </para>
   </section>
-  
+
    <section>
       <title>Get all identitylinks for a task for either groups or users</title>
         <para>
@@ -6234,7 +6240,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 }</programlisting>
   </para>
 </section>
-    
+
   <section>
     <title>Create an identity link on a task</title>
       <para>
@@ -6313,8 +6319,8 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 }</programlisting>
     </para>
     </section>
-    
-    
+
+
      <section>
       <title>Delete an identity link on a task</title>
          <para>
@@ -6385,7 +6391,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Create a new comment on a task</title>
         <para>
@@ -6417,14 +6423,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
          <para>
        <emphasis role="bold">Request body:</emphasis>
         <programlisting>
-{ 
+{
   "message" : "This is a comment on the task."
 }</programlisting>
         </para>
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "id" : "123",
   "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
   "message" : "This is a comment on the task.",
@@ -6489,13 +6495,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
 [
-  { 
+  {
     "id" : "123",
     "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
     "message" : "This is a comment on the task.",
     "author" : "kermit"
   },
-  { 
+  {
     "id" : "456",
     "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/456",
     "message" : "This is another comment on the task.",
@@ -6562,7 +6568,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "id" : "123",
   "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
   "message" : "This is a comment on the task.",
@@ -6679,7 +6685,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
 [
-  { 
+  {
     "action" : "AddUserLink",
     "id" : "4",
     "message" : [ "gonzo", "contributor" ],
@@ -6688,7 +6694,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     "url" : "http://localhost:8182/runtime/tasks/2/events/4",
     "userId" : null
   },
-  
+
   ...
 
 ]</programlisting>
@@ -6752,7 +6758,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "action" : "AddUserLink",
   "id" : "4",
   "message" : [ "gonzo", "contributor" ],
@@ -6784,8 +6790,8 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           </table>
         </para>
   </section>
-  
-  
+
+
     <section>
       <title>Create a new attachment on a task, containing a link to an external resource</title>
         <para>
@@ -6817,7 +6823,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
          <para>
        <emphasis role="bold">Request body:</emphasis>
         <programlisting>
-{ 
+{
   "name":"Simple attachment",
   "description":"Simple attachment description",
   "type":"simpleType",
@@ -7089,7 +7095,7 @@ Only the attachment name is required to create a new attachment.
       </para>
     </listitem>
   </itemizedlist>
-   
+
         </para>
         <para>
           <table>
@@ -7174,7 +7180,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
        <emphasis role="bold">Success response body:</emphasis>
-      The response body contains the binary content. By default, the content-type of the response is set to <literal>application/octet-stream</literal> unless the attachment type contains a valid Content-type. 
+      The response body contains the binary content. By default, the content-type of the response is set to <literal>application/octet-stream</literal> unless the attachment type contains a valid Content-type.
     </para>
   </section>
   <section>
@@ -7269,7 +7275,7 @@ Only the attachment name is required to create a new attachment.
         <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "5",
       "businessKey" : "myKey",
       "processDefinitionId" : "oneTaskProcess%3A1%3A4",
@@ -7431,7 +7437,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "5",
       "businessKey" : "myKey",
       "processDefinitionId" : "oneTaskProcess%3A1%3A4",
@@ -7473,7 +7479,7 @@ Only the attachment name is required to create a new attachment.
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
   ...
-  
+
   "variables" : [
     {
       "name" : "myVariable",
@@ -7482,7 +7488,7 @@ Only the attachment name is required to create a new attachment.
       "type" : "long"
     }
   ]
-}</programlisting> 
+}</programlisting>
       </para>
       <para>
         All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricProcessInstancesGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
@@ -7516,7 +7522,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "5",
       "businessKey" : "myKey",
       "processDefinitionId" : "oneTaskProcess%3A1%3A4",
@@ -7650,7 +7656,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
       <emphasis role="bold">Success response body:</emphasis>
-      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type.
     </para>
   </section>
     <section>
@@ -7938,7 +7944,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "5",
       "processDefinitionId" : "oneTaskProcess%3A1%3A4",
       "processDefinitionUrl" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
@@ -7996,7 +8002,7 @@ Only the attachment name is required to create a new attachment.
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
   ...
-  
+
   "variables" : [
     {
       "name" : "myVariable",
@@ -8005,7 +8011,7 @@ Only the attachment name is required to create a new attachment.
       "type" : "long"
     }
   ]
-}</programlisting> 
+}</programlisting>
       </para>
       <para>
         All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricTaskInstancesGet">getting a collection of historic task instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
@@ -8039,7 +8045,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "5",
       "processDefinitionId" : "oneTaskProcess%3A1%3A4",
       "processDefinitionUrl" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
@@ -8189,7 +8195,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <emphasis role="bold">Success response body:</emphasis>
-        The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+        The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type.
       </para>
     </section>
     <section id="restHistoricActivityInstancesGet">
@@ -8299,7 +8305,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "5",
       "activityId" : "4",
       "activityName" : "My user task",
@@ -8335,7 +8341,7 @@ Only the attachment name is required to create a new attachment.
         <programlisting>
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4"
-}</programlisting> 
+}</programlisting>
       </para>
       <para>
         All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricTaskInstancesGet">getting a collection of historic task instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long.
@@ -8368,7 +8374,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "5",
       "activityId" : "4",
       "activityName" : "My user task",
@@ -8477,7 +8483,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "14",
       "processInstanceId" : "5",
       "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/5",
@@ -8508,7 +8514,7 @@ Only the attachment name is required to create a new attachment.
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
   ...
-  
+
   "variables" : [
     {
       "name" : "myVariable",
@@ -8517,7 +8523,7 @@ Only the attachment name is required to create a new attachment.
       "type" : "long"
     }
   ]
-}</programlisting> 
+}</programlisting>
       </para>
       <para>
         All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricVariableInstancesGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
@@ -8551,7 +8557,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "14",
       "processInstanceId" : "5",
       "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/5",
@@ -8601,7 +8607,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
       <emphasis role="bold">Success response body:</emphasis>
-      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type.
     </para>
   </section>
     <section id="restHistoricDetailGet">
@@ -8699,7 +8705,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "26",
       "processInstanceId" : "5",
       "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/5",
@@ -8737,7 +8743,7 @@ Only the attachment name is required to create a new attachment.
         <programlisting>
 {
   "processInstanceId" : "5",
-}</programlisting> 
+}</programlisting>
       </para>
       <para>
         All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricDetailGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long.
@@ -8770,7 +8776,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "id" : "26",
       "processInstanceId" : "5",
       "processInstanceUrl" : "http://localhost:8182/history/historic-process-instances/5",
@@ -8828,7 +8834,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         <emphasis role="bold">Success response body:</emphasis>
-        The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
+        The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type.
       </para>
     </section>
   </section>
@@ -8896,7 +8902,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>
 {
   "data": [
-    { 
+    {
       "formKey" : null,
       "deploymentId" : "2",
       "processDefinitionId" : "3",
@@ -8951,7 +8957,7 @@ Only the attachment name is required to create a new attachment.
       "value" : "normal"
     }
   ]
-}</programlisting> 
+}</programlisting>
       </para>
       <para>
         <emphasis role="bold">Request body for start event form:</emphasis>
@@ -8965,7 +8971,7 @@ Only the attachment name is required to create a new attachment.
       "value" : "normal"
     }
   ]
-}</programlisting> 
+}</programlisting>
       </para>
       <para>
         <table>
@@ -9045,13 +9051,13 @@ Only the attachment name is required to create a new attachment.
       "url":"http://localhost:8182/management/tables/ACT_RU_EVENT_SUBSCR",
       "count":3
    },
-   
+
    ...
-   
+
 ]</programlisting>
     </para>
     </section>
-    
+
     <section>
       <title>Get a single table</title>
         <para>
@@ -9182,7 +9188,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Get row data for a single table</title>
         <para>
@@ -9261,7 +9267,7 @@ Only the attachment name is required to create a new attachment.
    "sort":null,
    "order":null,
    "size":3,
-   
+
    "data":[
       {
          "TASK_ID_":"2",
@@ -9274,7 +9280,7 @@ Only the attachment name is required to create a new attachment.
       },
       ...
    ]
- 
+
 }</programlisting>
           <table>
               <title>Get row data for a single table - Response codes</title>
@@ -9299,7 +9305,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-    
+
 </section>
 
 
@@ -9377,8 +9383,8 @@ Only the attachment name is required to create a new attachment.
         </para>
   </section>
  </section>
- 
- 
+
+
 <section>
     <title>Jobs</title>
     <section>
@@ -9448,7 +9454,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Delete a job</title>
         <para>
@@ -9501,7 +9507,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Execute a single job</title>
         <para>
@@ -9510,7 +9516,7 @@ Only the attachment name is required to create a new attachment.
         <para>
          <emphasis role="bold">Body JSON:</emphasis>
            <programlisting>
-{ 
+{
   "action" : "execute"
 }</programlisting>
         <table>
@@ -9561,7 +9567,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
  </section>
- 
+
  <section>
       <title>Get the exception stacktrace for a job</title>
         <para>
@@ -9612,7 +9618,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
  </section>
- 
+
  <section>
       <title>Get a list of jobs</title>
         <para>
@@ -9720,7 +9726,7 @@ Only the attachment name is required to create a new attachment.
          "exceptionMessage":"Can't find scripting engine for 'unexistinglanguage'",
          "dueDate":"2013-06-07T10:00:24.653+0000"
       },
-      
+
       ...
    ],
    "total":2,
@@ -9752,12 +9758,12 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
  </section>
-    
+
 </section>
 
 <section>
   <title>Users</title>
-  
+
   <section>
       <title>Get a single user</title>
         <para>
@@ -9819,7 +9825,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Get a list of users</title>
         <para>
@@ -9946,7 +9952,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
  </section>
- 
+
   <section>
       <title>Update a user</title>
         <para>
@@ -9993,7 +9999,7 @@ Only the attachment name is required to create a new attachment.
        <emphasis role="bold">Success response body:</emphasis> see response for <literal>identity/users/{userId}</literal>.
       </para>
   </section>
-  
+
    <section>
       <title>Create a user</title>
         <para>
@@ -10036,7 +10042,7 @@ Only the attachment name is required to create a new attachment.
        <emphasis role="bold">Success response body:</emphasis> see response for <literal>identity/users/{userId}</literal>.
       </para>
   </section>
-  
+
   <section>
       <title>Delete a user</title>
          <para>
@@ -10143,7 +10149,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Updating a user's picture</title>
          <para>
@@ -10205,7 +10211,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>List a user's info</title>
          <para>
@@ -10270,7 +10276,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Get a user's info</title>
          <para>
@@ -10336,7 +10342,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Update a user's info</title>
          <para>
@@ -10413,7 +10419,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
    <section>
       <title>Create a new user's info entry</title>
          <para>
@@ -10489,7 +10495,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Delete a user's info</title>
          <para>
@@ -10548,7 +10554,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
 </section>
 <section>
   <title>Groups</title>
@@ -10612,7 +10618,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
   </section>
-  
+
   <section>
       <title>Get a list of groups</title>
         <para>
@@ -10711,7 +10717,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
  </section>
- 
+
   <section>
       <title>Update a group</title>
         <para>
@@ -10757,7 +10763,7 @@ Only the attachment name is required to create a new attachment.
        <emphasis role="bold">Success response body:</emphasis> see response for <literal>identity/groups/{groupId}</literal>.
       </para>
   </section>
-  
+
    <section>
       <title>Create a group</title>
         <para>
@@ -10799,7 +10805,7 @@ Only the attachment name is required to create a new attachment.
        <emphasis role="bold">Success response body:</emphasis> see response for <literal>identity/groups/{groupId}</literal>.
       </para>
   </section>
-  
+
   <section>
       <title>Delete a group</title>
          <para>
@@ -10999,7 +11005,7 @@ Only the attachment name is required to create a new attachment.
 }</programlisting>
        </para>
   </section>
-  
+
 </section>
 
 <!-- Legacy -->
@@ -11132,7 +11138,7 @@ Only the attachment name is required to create a new attachment.
         </listitem>
       </itemizedlist>
     </section>
-    
+
     <section>
       <title>Get Deployment Resources</title>
       <para>
@@ -11346,7 +11352,7 @@ Only the attachment name is required to create a new attachment.
       "diagramResourceName": "org/activiti/examples/bpmn/usertask/FinancialReportProcess.png",
       "deploymentId": "10",
       "startFormResourceKey": null,
-      "isGraphicNotationDefined": true                 
+      "isGraphicNotationDefined": true
     }
   ],
   "total": 1,
@@ -11359,7 +11365,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      
+
       <section>
         <title>Get Process Definition Form Properties</title>
         <para>
@@ -11390,7 +11396,7 @@ Only the attachment name is required to create a new attachment.
       "type": "String",
       "required": false,
       "readable": true,
-      "writeable": true               
+      "writeable": true
     }
   ]
               </programlisting>
@@ -11425,7 +11431,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      
+
       <section>
           <title>Get Process Definition Diagram</title>
           <para>
@@ -11539,7 +11545,7 @@ Only the attachment name is required to create a new attachment.
             </listitem>
           </itemizedlist>
         </section>
-        
+
         <section>
           <title>Get Process Instance Details</title>
           <para>
@@ -11606,13 +11612,13 @@ Only the attachment name is required to create a new attachment.
         "time": "2010-10-13T14:53:26.750+02:00"
       }
     ]
-    
+
   }</programlisting>
               </para>
             </listitem>
           </itemizedlist>
         </section>
-        
+
         <section>
             <title>Get Process Instance Diagram</title>
             <para>
@@ -11639,7 +11645,7 @@ Only the attachment name is required to create a new attachment.
               </listitem>
             </itemizedlist>
         </section>
-        
+
         <section>
             <title>Get open tasks for a process instance</title>
             <para>
@@ -12018,7 +12024,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      	  
+
 	  <section>
         <title>List Form Properties</title>
         <para>
@@ -12058,7 +12064,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-    
+
     <section>
         <title>Add attachment to a task</title>
         <para>
@@ -12091,7 +12097,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      
+
       <section>
           <title>Get task attachment</title>
           <para>
@@ -12117,8 +12123,8 @@ Only the attachment name is required to create a new attachment.
               </para>
             </listitem>
           </itemizedlist>
-      </section>    
-    
+      </section>
+
     <section>
         <title>Add url to a task</title>
         <para>
@@ -12267,7 +12273,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      
+
       <section>
         <title>Search users</title>
         <para>
@@ -12308,7 +12314,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      
+
       <section>
         <title>Create user</title>
         <para>
@@ -12347,7 +12353,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      
+
       <section>
         <title>Add user to groups</title>
         <para>
@@ -12380,7 +12386,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      
+
       <section>
         <title>Remove user from group</title>
         <para>
@@ -12410,7 +12416,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      
+
       <section>
           <title>Get user picture</title>
           <para>
@@ -12509,7 +12515,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-    
+
     <section>
         <title>Search groups</title>
         <para>
@@ -12548,7 +12554,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-    
+
     <section>
         <title>Create group</title>
         <para>
@@ -12585,7 +12591,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      
+
       <section>
         <title>Add users to a group</title>
         <para>
@@ -12618,7 +12624,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
         </itemizedlist>
       </section>
-      
+
       <section>
         <title>Remove user from group</title>
         <para>
@@ -12917,5 +12923,5 @@ Only the attachment name is required to create a new attachment.
       </section>
 
     </section>
-    
+
 </chapter>
