@@ -91,6 +91,23 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     // this will fail with a "DB NOT CLEAN" if the identity links are not removed
   }
   
+
+  /**
+   * Test for ACT-1686
+   */
+  @Deployment(resources={
+  "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
+  public void testUserMultipleTimesinvolvedWithProcessInstance() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    // Add 2 links of a different type for the same user
+    runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "type1");
+    runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "type2");
+    
+    assertEquals(1L, runtimeService.createProcessInstanceQuery().involvedUser("kermit").count());
+  }
+
+  
   private void assertNoInvolvement(String userId) {
     assertEquals(0L, runtimeService.createProcessInstanceQuery().involvedUser(userId).count());
   }

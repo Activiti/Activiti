@@ -78,7 +78,11 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     this.textValue2 = variableInstance.getTextValue2();
     this.doubleValue = variableInstance.getDoubleValue();
     this.longValue = variableInstance.getLongValue();
-    this.setBytes(variableInstance.getBytes());
+    
+    this.variableType = variableInstance.getType();
+    if (variableInstance.getByteArrayValueId()!=null) {
+      setByteArrayValue(variableInstance.getByteArrayValue().getBytes());
+    }
   }
 
   public void delete() {

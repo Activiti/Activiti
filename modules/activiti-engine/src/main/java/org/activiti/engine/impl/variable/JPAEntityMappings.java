@@ -50,7 +50,7 @@ public class JPAEntityMappings {
     return false;
   }
   
-  private EntityMetaData getEntityMetaData(Class<?> clazz) {
+  public EntityMetaData getEntityMetaData(Class<?> clazz) {
     EntityMetaData metaData = classMetaDatamap.get(clazz.getName());
     if (metaData == null) {
       // Class not present in meta-data map, create metaData for it and add
@@ -87,7 +87,7 @@ public class JPAEntityMappings {
     return getIdString(idValue);
   }
 
-  private Object getIdValue(Object value, EntityMetaData metaData) {
+  public Object getIdValue(Object value, EntityMetaData metaData) {
     try {
       if (metaData.getIdMethod() != null) {
         return metaData.getIdMethod().invoke(value);

@@ -70,9 +70,10 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
   
   protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
     StartEvent startEvent = (StartEvent) flowElement;
-    if (StringUtils.isNotEmpty(startEvent.getInitiator())) {
-    	propertiesNode.put(PROPERTY_NONE_STARTEVENT_INITIATOR, startEvent.getInitiator());
-    }
+
+    setPropertyValue(PROPERTY_NONE_STARTEVENT_INITIATOR, startEvent.getInitiator(), propertiesNode);
+    setPropertyValue(PROPERTY_FORMKEY, startEvent.getFormKey(), propertiesNode);
+    
     addFormProperties(startEvent.getFormProperties(), propertiesNode);
     addEventProperties(startEvent, propertiesNode);
   }
@@ -80,6 +81,7 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     StartEvent startEvent = new StartEvent();
     startEvent.setInitiator(getPropertyValueAsString(PROPERTY_NONE_STARTEVENT_INITIATOR, elementNode));
+    startEvent.setFormKey(getPropertyValueAsString(PROPERTY_FORMKEY, elementNode));
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
     if (STENCIL_EVENT_START_NONE.equals(stencilId)) {
       convertJsonToFormProperties(elementNode, startEvent);
