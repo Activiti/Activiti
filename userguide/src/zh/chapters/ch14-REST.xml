@@ -140,8 +140,9 @@
         </para>
     </section>
     <section>
-      <title>Error response body</title>
-      <para>When an error occurs (both client and server, 4XX and 5XX status-codes) the response body contains an object describing the error that occurred. An example for a 404-status when a task is not found:</para>
+      <title>错误响应体</title>
+      <para>当发生错误时（包括客户端和服务端，4XX和5XX状态码），响应体会包含描述发生的错误的描述。
+	  下面是任务不存在时出现的404状态：</para>
                   <programlisting>
 {
   "statusCode" : 404,
@@ -149,51 +150,52 @@
 }</programlisting>
     </section>
     <section>
-      <title>Request parameters</title>
+      <title>请求参数</title>
       <section>
-        <title>URL fragments</title>
+        <title>URL片段</title>
         <para>
-            Parameters that are part of the url (eg. the deploymentId parameter in <literal>http://host/actviti-rest/service/repository/deployments/{deploymentId}</literal>)
-            need to be properly escaped (see <ulink url="https://en.wikipedia.org/wiki/Percent-encoding">URL-encoding or Percent-encoding</ulink>) in case the segment contains special characters. Most
-            frameworks have this functionality built in, but it should be taken into account. Especially for segments that can contains forward-slashes (eg. deployment resource), this is required.
+			url上的参数（比如<literal>http://host/actviti-rest/service/repository/deployments/{deploymentId}</literal>上的deploymentId）
+			都需要转义（参考<ulink url="https://en.wikipedia.org/wiki/Percent-encoding">URL编码或百分号编码</ulink>来解决特殊字符问题）。
+			大多数框架都有这种内置功能，但我们也要把这个问题考虑在内。特别是对于可能包含前斜线（比如，部署资源）的情况，这就是必须的。
         </para>
       </section>
 
       <section>
-        <title>Rest URL query parameters</title>
+        <title>Rest URL查询参数</title>
         <para>
-            Parameters added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?name=Deployment</literal>) can have the folowing types and are
-            mentioned in the corresponding REST-API documentation:
+			设置在URL中的查询参数（比如，<literal>http://host/activiti-rest/service/deployments?name=Deployment</literal>中的name参数）
+			可以使用以下类型，它们对应着以下REST-API文档：
 
             <table>
-              <title>URL query parameter types</title>
+              <title>URL查询参数类型</title>
               <tgroup cols="2">
                 <thead>
                   <row>
-                    <entry>Type</entry>
-                    <entry>Format</entry>
+                    <entry>类型</entry>
+                    <entry>格式</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>String</entry>
-                    <entry>Plain text parameters. Can contain any valid characters that are allowed in URL's. In case of a <literal>XXXLike</literal> parameter, the string should contain the wildcard characted <literal>%</literal> (properly url-encoded). This allows to specify the intent of the like-search. Eg. '<literal>Tas%</literal>' matches all values, starting with 'Tas'.</entry>
+                    <entry>纯文本参数。可以包含任何URL允许的合法的字符。对于<literal>XXXLike</literal>参数，字符串应该包含通配符<literal>%</literal>（还要通过url编码）。这可以指定模糊搜索的意图。比如'<literal>Tas%</literal>'匹配所有以'Tas'开头的值。</entry>
                   </row>
                   <row>
                     <entry>Integer</entry>
-                    <entry>Parameter representing an integer value. Can only contain numeric non-decmimal values, between -2.147.483.648 and 2.147.483.647.</entry>
+                    <entry>整数参数。只能包含非小数的整数值，在-2.147.483.648与2.147.483.647之间。</entry>
                   </row>
                   <row>
                     <entry>Long</entry>
-                    <entry>Parameter representing a long value. Can only contain numeric non-decmimal values, between -9.223.372.036.854.775.808 and 9.223.372.036.854.775.807.</entry>
+                    <entry>长整形参数。只能包含非小树的长整形值，在-9.223.372.036.854.775.808与9.223.372.036.854.775.807之间。</entry>
                   </row>
                   <row>
                     <entry>Boolean</entry>
-                    <entry>Parameter representing a boolean value. Can be eiter <literal>true</literal> or <literal>false</literal>. All other values other than these two, will cause a '<literal>405 - Bad request</literal>' response.</entry>
+                    <entry>布尔类型参数。可以是<literal>true</literal>或<literal>false</literal>。如果使用了其他值，会返回'<literal>405 - Bad request</literal>'响应。</entry>
                   </row>
                   <row>
                     <entry>Date</entry>
-                    <entry>Parameter representing a date value. Use the ISO-8601 date-format (see <ulink url="http://en.wikipedia.org/wiki/ISO_8601">ISO-8601 on wikipedia</ulink>) using both time and date-components (eg. <literal>2013-04-03T23:45Z</literal>).</entry>
+                    <entry>日期类型。使用ISO-8601日期格式（参考<ulink url="http://en.wikipedia.org/wiki/ISO_8601">维基百科上的ISO-8601</ulink>），
+					用于时间和日期组件（比如<literal>2013-04-03T23:45Z</literal>）。</entry>
                   </row>
                 </tbody>
               </tgroup>
@@ -201,37 +203,38 @@
         </para>
       </section>
       <section id="restJsonBody">
-        <title>JSON body parameters</title>
+        <title>JSON内容参数</title>
         <para>
             <table>
-              <title>JSON parameter types</title>
+              <title>JSON参数类型</title>
               <tgroup cols="2">
                 <thead>
                   <row>
-                    <entry>Type</entry>
-                    <entry>Format</entry>
+                    <entry>类型</entry>
+                    <entry>格式</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>String</entry>
-                    <entry>Plain text parameters. In case of a <literal>XXXLike</literal> parameter, the string should contain the wildcard characted <literal>%</literal>. This allows to specify the intent of the like-search. Eg. '<literal>Tas%</literal>' matches all values, starting with 'Tas'.</entry>
+                    <entry>纯文本参数。可以包含任何URL允许的合法的字符。对于<literal>XXXLike</literal>参数，字符串应该包含通配符<literal>%</literal>（还要通过url编码）。这可以指定模糊搜索的意图。比如'<literal>Tas%</literal>'匹配所有以'Tas'开头的值。</entry>
                   </row>
                   <row>
                     <entry>Integer</entry>
-                    <entry>Parameter representing an integer value, using a JSON number. Can only contain numeric non-decmimal values, between -2.147.483.648 and 2.147.483.647.</entry>
+                    <entry>整数参数，JSON数字。只能包含非小数的整数值，在-2.147.483.648与2.147.483.647之间。</entry>
                   </row>
                   <row>
                     <entry>Long</entry>
-                    <entry>Parameter representing a long value, using a JSON number. Can only contain numeric non-decmimal values, between -9.223.372.036.854.775.808 and 9.223.372.036.854.775.807.</entry>
+                    <entry>长整形参数，JSON数字。只能包含非小树的长整形值，在-9.223.372.036.854.775.808与9.223.372.036.854.775.807之间。</entry>
                   </row>
                   <row>
                     <entry>Boolean</entry>
-                    <entry>Parameter representing a boolean value, using a JSON boolean. Can be eiter <literal>true</literal> or <literal>false</literal>. All other values other than these two, will cause a '<literal>405 - Bad request</literal>' response.</entry>
+                    <entry>布尔类型参数，JSON布尔。可以是<literal>true</literal>或<literal>false</literal>。如果使用了其他值，会返回'<literal>405 - Bad request</literal>'响应。</entry>
                   </row>
                   <row>
                     <entry>Date</entry>
-                    <entry>Parameter representing a date value, using a JSON text. Use the ISO-8601 date-format (see <ulink url="http://en.wikipedia.org/wiki/ISO_8601">ISO-8601 on wikipedia</ulink>) using both time and date-components (eg. <literal>2013-04-03T23:45Z</literal>).</entry>
+                    <entry>日期类型，JSON文本。使用ISO-8601日期格式（参考<ulink url="http://en.wikipedia.org/wiki/ISO_8601">维基百科上的ISO-8601</ulink>），
+					用于时间和日期组件（比如<literal>2013-04-03T23:45Z</literal>）。</entry>
                   </row>
                 </tbody>
               </tgroup>
@@ -239,39 +242,39 @@
         </para>
       </section>
       <section id="restPagingAndSort">
-        <title>Paging and sorting</title>
+        <title>分页与排序</title>
         <para>
-            Paging and order parameters can be added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?sort=name</literal>).
+			分页与排序参数可以添加到URL的query-string中（比如<literal>http://host/activiti-rest/service/deployments?sort=name</literal>中的name参数）。
             <table>
-              <title>Variable query JSON parameters</title>
+              <title>查询JSON参数</title>
               <tgroup cols="2">
                 <thead>
                   <row>
-                    <entry>Parameter</entry>
-                    <entry>Default value</entry>
-                    <entry>Description</entry>
+                    <entry>参数</entry>
+                    <entry>默认值</entry>
+                    <entry>描述</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>sort</entry>
-                    <entry>different per query implementation</entry>
-                    <entry>Name of the sort key, for which the default value and the allowed values are different per query implementation.</entry>
+                    <entry>根据查询实现而不同</entry>
+                    <entry>查询的名称，对于不同的查询实现，默认值也不同。</entry>
                   </row>
                   <row>
                     <entry>order</entry>
                     <entry>asc</entry>
-                    <entry>Sorting order which can be 'asc' or 'desc'.</entry>
+                    <entry>排序的方式，可以为'asc'或'desc'。</entry>
                   </row>
                   <row>
                     <entry>start</entry>
                     <entry>0</entry>
-                    <entry>Parameter to allow for paging of the result. By default the result will start at 0.</entry>
+                    <entry>分页查询开始的值，默认从0开始。</entry>
                   </row>
                   <row>
                     <entry>size</entry>
                     <entry>10</entry>
-                    <entry>Parameter to allow for paging of the result. By default the size will be 10.</entry>
+                    <entry>分页查询每页显示的记录数。默认为10。</entry>
                   </row>
                 </tbody>
               </tgroup>
@@ -280,7 +283,7 @@
       </section>
 
       <section id="restQueryVariable">
-        <title>JSON query variable format</title>
+        <title>JSON查询变量格式</title>
         <para>
             <programlisting>
 {
@@ -290,77 +293,77 @@
   "type" : "string"
 }</programlisting>
             <table>
-              <title>Variable query JSON parameters</title>
+              <title>查询JSON参数</title>
               <tgroup cols="2">
                 <thead>
                   <row>
-                    <entry>Parameter</entry>
-                    <entry>Required</entry>
-                    <entry>Description</entry>
+                    <entry>参数</entry>
+                    <entry>是否必须</entry>
+                    <entry>描述</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>name</entry>
-                    <entry>No</entry>
-                    <entry>Name of the variable to include in a query. Can be empty in case '<literal>equals</literal>' is used in some queries to query for resources that have <emphasis role="bold">any variable name</emphasis> with the given value.</entry>
+                    <entry>否</entry>
+                    <entry>查询包含的变量名称。在一些查询中使用'<literal>equals</literal>'查询对应资源的<emphasis role="bold">所有值</emphasis>时，可以为空。</entry>
                   </row>
                   <row>
                     <entry>value</entry>
-                    <entry>Yes</entry>
-                    <entry>Value of the variable included in the query, should include a correct format for the given type.</entry>
+                    <entry>是</entry>
+                    <entry>查询包含的变量值，要包含给定类型的正确格式。</entry>
                   </row>
                   <row>
                     <entry>operator</entry>
-                    <entry>Yes</entry>
-                    <entry>Operator to use in query, can have the folowing values: <literal>equals, notEquals, equalsIgnoreCase, notEqualsIgnoreCase, lessThan, greaterThan, lessThanOrEquals, greaterThanOrEquals</literal> and <literal>like</literal>.</entry>
+                    <entry>是</entry>
+                    <entry>查询使用的参数，可以是以下值： <literal>equals, notEquals, equalsIgnoreCase, notEqualsIgnoreCase, lessThan, greaterThan, lessThanOrEquals, greaterThanOrEquals</literal>和<literal>like</literal>。</entry>
                   </row>
                   <row>
                     <entry>type</entry>
-                    <entry>No</entry>
-                    <entry>Type of variable to use. When omitted, the type will be deducted from the <literal>value</literal> parameter. Any JSON text-values will be considered of type <literal>string</literal>, JSON booleans of type <literal>boolean</literal>, JSON numbers of type <literal>long</literal> or <literal>integer</literal> depending on the size of the number. It's recommended to include an explicit type when in doubt. Types supported out of the box are listed below.
+                    <entry>否</entry>
+                    <entry>使用的变量的类型。如果省略，类型会根据<literal>value</literal>参数决定。所以JSON文本值都会认为是<literal>string</literal>类型，JSON布尔对应<literal>boolean</literal>，JSON数字根据数字的长度对应<literal>long</literal>或<literal>integer</literal>。在不确定时，建议使用精确的类型。下面列出了不稳定支持的其他类型。
                     </entry>
                   </row>
                 </tbody>
               </tgroup>
             </table>
              <table>
-              <title>Default query JSON types</title>
+              <title>默认查询JSON类型</title>
               <tgroup cols="2">
                 <thead>
                   <row>
-                    <entry>Type name</entry>
-                    <entry>Description</entry>
+                    <entry>类型名称</entry>
+                    <entry>描述</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>string</entry>
-                    <entry>Value is threaded as and converted to a <literal>java.lang.String</literal>.</entry>
+                    <entry>对应<literal>java.lang.String</literal>.</entry>
                   </row>
                   <row>
                     <entry>short</entry>
-                    <entry>Value is threaded as and converted to a <literal>java.lang.Integer</literal>.</entry>
+                    <entry>对应<literal>java.lang.Integer</literal>.</entry>
                   </row>
                   <row>
                     <entry>integer</entry>
-                    <entry>Value is threaded as and converted to a <literal>java.lang.Integer</literal>.</entry>
+                    <entry>对应<literal>java.lang.Integer</literal>.</entry>
                   </row>
                   <row>
                     <entry>long</entry>
-                    <entry>Value is threaded as and converted to a <literal>java.lang.Long</literal>.</entry>
+                    <entry>对应<literal>java.lang.Long</literal>.</entry>
                   </row>
                   <row>
                     <entry>double</entry>
-                    <entry>Value is threaded as and converted to a <literal>java.lang.Double</literal>.</entry>
+                    <entry>对应<literal>java.lang.Double</literal>.</entry>
                   </row>
                   <row>
                     <entry>boolean</entry>
-                    <entry>Value is threaded as and converted to a <literal>java.lang.Boolean</literal>.</entry>
+                    <entry>对应<literal>java.lang.Boolean</literal>.</entry>
                   </row>
                   <row>
                     <entry>date</entry>
-                    <entry>Value is treated as and converted to a <literal>java.util.Date</literal>. The JSON string will be converted using ISO-8601 date format.</entry>
+                    <entry>对应<literal>java.util.Date</literal>。JSON字符串会使用ISO-8601格式进行转换。</entry>
                   </row>
                 </tbody>
               </tgroup>
