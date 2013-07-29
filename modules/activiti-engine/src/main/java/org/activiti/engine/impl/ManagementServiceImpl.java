@@ -15,6 +15,7 @@ package org.activiti.engine.impl;
 import java.sql.Connection;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.cmd.DeleteJobCmd;
 import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
@@ -90,6 +91,13 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
         return dbSqlSession.dbSchemaUpdate();
       }
     });
+  }
+  
+  public <T> T executeCommand(Command<T> command) {
+    if (command == null) {
+      throw new ActivitiIllegalArgumentException("The command is null");
+    }
+    return commandExecutor.execute(command);
   }
 
 }
