@@ -32,7 +32,7 @@
 		</para>
 
 		<para>
-		  BPMN 2.0根节点是<literal>definitions</literal>与阿奴。
+		  BPMN 2.0根节点是<literal>definitions</literal>节点。
 		  这个元素中，可以定义多个流程定义（不过我们建议每个文件只包含一个流程定义，
 		  可以简化开发过程中的维护难度）。
 		  一个空的流程定义看起来像下面这样。注意，<literal>definitions</literal>元素
@@ -70,7 +70,7 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
 		        ProcessDefinition</literal>对象的<emphasis role="bold">key</emphasis>属性。
 				‘<literal>id</literal>可以用来启动流程定义的流程实例，
 				通过<literal>RuntimeService</literal>的<literal>startProcessInstanceByKey</literal>方法。
-				这个方法会一直使用<emphasis role="bold">最新发布版本</emphasis>的流程定义。
+				这个方法会一直使用<emphasis role="bold">最新发布版本</emphasis>的流程定义(译者注：实际中一般都使用这种方式启动流程)。
 		        <programlisting>ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProcess");</programlisting>
 		        注意，它和<literal>startProcessInstanceById</literal>方法不同。
 				这个方法期望使用Activiti引擎在发布时自动生成的id。，
@@ -288,7 +288,7 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
 	    现在我们可以启动一个新流程实例，
 		使用我们定义在流程定义里的<literal>id</literal>（对应XML文件中的process元素）。
 		注意这里的<literal>id</literal>对于Activiti来说，
-		应该叫做<emphasis role="bold">key</emphasis>。
+		应该叫做<emphasis role="bold">key</emphasis>（译者注：一般在流程模型中使用的ID，在Activiti中都是Key，比如任务ID等...）。
         <programlisting>ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");</programlisting>
 		这会创建一个流程实例，首先进入开始事件。
 		开始事件之后，它会沿着所有的外出连线（这里只有一条）执行，
