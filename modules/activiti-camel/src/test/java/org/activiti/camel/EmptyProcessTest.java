@@ -60,6 +60,6 @@ public class EmptyProcessTest extends SpringActivitiTestCase {
     assertProcessEnded(instanceId);
     HistoricVariableInstance var = processEngine.getHistoryService().createHistoricVariableInstanceQuery().variableName("camelBody").singleResult();
     assertNotNull(var);
-    assertEquals(expectedObj.toString(), var.getValue());
+    assertEquals(expectedObj.toString(), var.getValue().toString());
   }
 }
