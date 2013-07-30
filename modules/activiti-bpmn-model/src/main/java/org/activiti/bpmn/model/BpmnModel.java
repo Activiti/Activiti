@@ -56,7 +56,7 @@ public class BpmnModel {
 	  for (Process process : processes) {
 	    boolean foundPool = false;
 	    for (Pool pool : pools) {
-        if(pool.getProcessRef().equalsIgnoreCase(process.getId())) {
+        if (StringUtils.isNotEmpty(pool.getProcessRef()) && pool.getProcessRef().equalsIgnoreCase(process.getId())) {
           
           if(poolRef != null) {
             if(pool.getId().equalsIgnoreCase(poolRef)) {
