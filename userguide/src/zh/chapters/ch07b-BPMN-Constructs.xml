@@ -12,7 +12,7 @@
 	    <title>自定义扩展</title>
 
 	    <para>
-		  BPMN 2.0标准对于各方都是一个好东西。自重用户不用担心会绑死在
+		  BPMN 2.0标准对于各方都是一个好东西。最终用户不用担心会绑死在
 		  供应商提供的专有解决方案上。
 		  框架，特别是activiti这样的开源框架，可以提供相同功能
 		  （甚至是更好的实现），足以和大的供应商媲美。
@@ -145,7 +145,7 @@
                   </listitem>
                   <listitem>
                       <para>
-                        <emphasis role="bold">timeDuration</emphasis>。指定定时器之前之前要等待多长时间，
+                        <emphasis role="bold">timeDuration</emphasis>。指定定时器之前要等待多长时间，
 						<emphasis>timeDuration</emphasis>可以设置为<emphasis>timerEventDefinition</emphasis>的子元素。
 						使用<ulink url="http://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8601</ulink>规定的格式
 						（由BPMN 2.0规定）。示例（等待10天）。
@@ -161,7 +161,7 @@
 						  可以用来定期启动流程实例，或为超时时间发送多个提醒。
 						  timeCycle元素可以使用两种格式。第一种是
 						  <ulink url="http://en.wikipedia.org/wiki/ISO_8601#Repeating_intervals">ISO 8601</ulink>
-						  标准的格式。示例（重复3此，每次间隔10小时）：
+						  标准的格式。示例（重复3次，每次间隔10小时）：
                           <programlisting>
 &lt;timerEventDefinition&gt;
     &lt;timeCycle&gt;R3/PT10H&lt;/timeCycle&gt;
@@ -183,7 +183,7 @@
               </itemizedlist>
           </para>
           <para>
-		    你可以在定时器事件定义中使用表达式，这样你就可以通过流程变量来英系那个定时器定义。
+		    你可以在定时器事件定义中使用表达式，这样你就可以通过流程变量来影响那个定时器定义。
 			流程定义必须包含ISO 8601（或cron）格式的字符串，以匹配对应的时间类型。
   <programlisting>
   &lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;true&quot; attachedToRef=&quot;firstLineSupport&quot;&gt;
