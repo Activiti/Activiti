@@ -372,9 +372,10 @@
       </section>
 
       <section id="restVariables">
-        <title>Variable representation</title>
+        <title>变量格式</title>
         <para>
-          When working with variables (execution/process and task), the REST-api uses some common principles and JSON-format for both reading and writing. The JSON representation of a variable looks like this:
+		  在使用变量时（执行，流程和任务），REST-api使用一些通用原则和JSON格式实现读写。
+		  变量的JSON格式看起来如下所示：
            <programlisting>
 {
   "name" : "variableName",
@@ -385,95 +386,96 @@
 }</programlisting>
 
            <table>
-              <title>Variable JSON attributes</title>
+              <title>变量JSON属性</title>
               <tgroup cols="2">
                 <thead>
                   <row>
-                    <entry>Parameter</entry>
-                    <entry>Required</entry>
-                    <entry>Description</entry>
+                    <entry>参数</entry>
+                    <entry>是否必须</entry>
+                    <entry>描述</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>name</entry>
-                    <entry>Yes</entry>
-                    <entry>Name of the variable.</entry>
+                    <entry>是</entry>
+                    <entry>变量名称。</entry>
                   </row>
                   <row>
                     <entry>value</entry>
-                    <entry>No</entry>
-                    <entry>Value of the variable. When writing a variable and <literal>value</literal> is omitted, <literal>null</literal> will be used as value.</entry>
+                    <entry>否</entry>
+                    <entry>变量值。写入变量时，如果没有设置<literal>value</literal>，会认为值是<literal>null</literal>。</entry>
                   </row>
                   <row>
                     <entry>valueUrl</entry>
-                    <entry>No</entry>
-                    <entry>When reading a variable of type <literal>binary</literal> or <literal>serializable</literal>, this attribute will point to the URL where the raw binary data can be fetched from.</entry>
+                    <entry>否</entry>
+                    <entry>当读取变量的类型为<literal>binary</literal>或<literal>serializable</literal>时，这个属性会指向获取原始二进制数据的URL。</entry>
                   </row>
                   <row>
                     <entry>scope</entry>
-                    <entry>No</entry>
-                    <entry>Scope of the variable. If '<literal>local</literal>', the variable is explicitally defined on the resource it's requested from. When '<literal>global</literal>', the variable is defined on the parent (or any parent in the parent-tree) of the resource it's requested from. When writing a variable and the scope is omitted, <literal>global</literal> is assumed.</entry>
+                    <entry>否</entry>
+                    <entry>变量的范围。如果为'<literal>local</literal>'，变量会对应到请求的资源。如果为'<literal>global</literal>'，变量会定义到请求资源的上级（或上级树的任何上级）。当写入变量，没有设置scope时，假设使用<literal>global</literal>。</entry>
                   </row>
                   <row>
                     <entry>type</entry>
-                    <entry>No</entry>
-                    <entry>Type of the variable. See table below for additional information on types. When writing a variable and this value is omitted, the type will be deducted from the raw JSON-attribute request type and is limited to either <literal>string</literal>, <literal>double</literal>, <literal>integer</literal> and <literal>boolean</literal>. It's advised to always include a type to make sure no wrong assumption about the type can be done.</entry>
+                    <entry>否</entry>
+                    <entry>变量类型。参考下面的表格对类型的描述。当写入变量，没有设置类型时，会根据请求的JSON属性来推断它的类型，限制为<literal>string</literal>，<literal>double</literal>，<literal>integer</literal>和<literal>boolean</literal>。如果不确定会用到的类型，建议还是要设置一个类型。</entry>
                   </row>
                 </tbody>
               </tgroup>
             </table>
             <table>
-              <title>Variable Types</title>
+              <title>变量类型</title>
               <tgroup cols="2">
                 <thead>
                   <row>
-                    <entry>Type name</entry>
-                    <entry>Description</entry>
+                    <entry>类型名</entry>
+                    <entry>描述</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>string</entry>
-                    <entry>Value is threaded as a <literal>java.lang.String</literal>. Raw JSON-text value is used when writing a variable.</entry>
+                    <entry>对应<literal>java.lang.String</literal>。写入时使用JSON文本。</entry>
                   </row>
                   <row>
                     <entry>integer</entry>
-                    <entry>Value is threaded as a <literal>java.lang.Integer</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                    <entry>对应<literal>java.lang.Integer</literal>。写入时，先使用JSON数进行字转换，如果失败就使用JSON文本。</entry>
                   </row>
                   <row>
                     <entry>short</entry>
-                    <entry>Value is threaded as a <literal>java.lang.Short</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                    <entry>对应<literal>java.lang.Short</literal>。写入时，先使用JSON数字进行转换，如果失败就使用JSON文本。</entry>
                   </row>
                   <row>
                     <entry>long</entry>
-                    <entry>Value is threaded as a <literal>java.lang.Long</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                    <entry>对应<literal>java.lang.Long</literal>。写入时，先使用JSON数字进行转换，如果失败就使用JSON文本。</entry>
                   </row>
                   <row>
                     <entry>double</entry>
-                    <entry>Value is threaded as a <literal>java.lang.Double</literal>. When writing, JSON number value is used as base for conversion, falls back to JSON text.</entry>
+                    <entry>对应<literal>java.lang.Double</literal>。写入时，先使用JSON数字进行转换，如果失败就使用JSON文本。</entry>
                   </row>
                   <row>
                     <entry>boolean</entry>
-                    <entry>Value is threaded as a <literal>java.lang.Boolean</literal>. When writing, JSON boolean value is used for conversion.</entry>
+                    <entry>对应<literal>java.lang.Boolean</literal>。写入时，使用JSON布尔进行转换。</entry>
                   </row>
                   <row>
                     <entry>date</entry>
-                    <entry>Value is treated as a <literal>java.util.Date</literal>. When writing, the JSON text will be converted using ISO-8601 date format.</entry>
+                    <entry>对应<literal>java.util.Date</literal>。写入时，使用ISO-8601日期格式转换为JSON文本。</entry>
                   </row>
                   <row>
                     <entry>binary</entry>
-                    <entry>Binary variable, threated as an array of bytes. The <literal>value</literal> attribute is null, the <literal>valueUrl</literal> contains an URL pointing to the raw binary stream.</entry>
+                    <entry>二进制变量，对应字节数组。<literal>value</literal>属性为null，<literal>valueUrl</literal>包含指向原始二进制流的URL。</entry>
                   </row>
                   <row>
                     <entry>serializable</entry>
-                    <entry>Serialized representation of a Serializable Java-object. As with the <literal>binary</literal> type, the <literal>value</literal> attribute is null, the <literal>valueUrl</literal> contains an URL pointing to the raw binary stream. All serializable variables (which are not of any of the above types) will be exposed as a variable of this type.</entry>
+                    <entry>可序列化的Java对象序列化后的结果。和<literal>binary</literal>类型相同，<literal>value</literal>属性为null，<literal>valueUrl</literal>包含指向原始二进制流的URL。所有可以序列化变量（上面不包含的类型）都会使用这个类型。</entry>
                   </row>
                 </tbody>
               </tgroup>
             </table>
-            It's possible to support additional variable-types with a custom JSON representation (either simple value or complex/nested JSON object). By extending the <literal>initializeVariableConverters()</literal> method on <literal>org.activiti.rest.api.RestResponseFactory</literal>,
-            you can add additional <literal>org.activiti.rest.api.engine.variable.RestVariableConverter</literal> classes to support converting your POJO's to a format suitable for transerring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
+			可以通过自定义JSON格式来支持更多变量类型（无论是简单数值或复杂/内嵌JSON对象）。
+			扩展<literal>org.activiti.rest.api.RestResponseFactory</literal>的<literal>initializeVariableConverters()</literal>方法，
+			你可以添加自定义的<literal>org.activiti.rest.api.engine.variable.RestVariableConverter</literal>类来支持POJO与对应REST数据的相互转换。实际的JSON转换是通过Jackson实现的。
         </para>
        </section>
     </section>
