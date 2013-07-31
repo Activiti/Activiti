@@ -14,6 +14,7 @@ package org.activiti.engine.test.api.history;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -138,6 +140,32 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
       assertEquals("someVariable", variableMap.get("testVar"));
       assertNotNull(variableMap.get("testVar2"));
       assertEquals(123, variableMap.get("testVar2"));
+    }
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
+  public void testWithoutDueDateQuery() throws Exception {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).withoutTaskDueDate().singleResult();
+      assertNotNull(historicTask);
+      assertNull(historicTask.getDueDate());
+      
+      // Set due-date on task
+      Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+      Date dueDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("01/02/2003 01:12:13");
+      task.setDueDate(dueDate);
+      taskService.saveTask(task);
+
+      assertEquals(0, historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).withoutTaskDueDate().count());
+      
+      task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+      
+      // Clear due-date on task
+      task.setDueDate(null);
+      taskService.saveTask(task);
+      
+      assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).withoutTaskDueDate().count());
     }
   }
   

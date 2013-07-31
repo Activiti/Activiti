@@ -872,6 +872,27 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueAfter(oneHourAgo.getTime()).count());
   }
   
+  @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
+  public void testTaskWithoutDueDate() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).withoutDueDate().singleResult();
+    
+    // Set due-date on task
+    Date dueDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("01/02/2003 01:12:13");
+    task.setDueDate(dueDate);
+    taskService.saveTask(task);
+
+    assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).withoutDueDate().count());
+    
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    
+    // Clear due-date on task
+    task.setDueDate(null);
+    taskService.saveTask(task);
+    
+    assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).withoutDueDate().count());
+  }
+  
   public void testQueryPaging() {
     TaskQuery query = taskService.createTaskQuery().taskCandidateUser("kermit");
     
