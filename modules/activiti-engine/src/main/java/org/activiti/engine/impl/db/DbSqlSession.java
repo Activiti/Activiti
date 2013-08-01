@@ -260,10 +260,18 @@ public class DbSqlSession implements Session {
       return selectList(statement, parameter, 0, Integer.MAX_VALUE);
     }
   }
-  
+
+  /**
+   * @param page in fact overrides the firstResult/maxResults setting that may be passed in your {@link ListQueryParameterObject} argument.
+   * if null, settings from the 'parameter' argument is used.
+   */
   @SuppressWarnings("rawtypes")
-  public List selectList(String statement, ListQueryParameterObject parameter, Page page) {   
-    return selectList(statement, parameter.getParameter(), page.getFirstResult(), page.getMaxResults());
+  public List selectList(String statement, ListQueryParameterObject parameter, Page page) {
+    if (page!=null) {
+      return selectListWithRawParameter(statement, parameter.getParameter(), page.getFirstResult(), page.getMaxResults());
+    } else {
+      return selectList(statement, parameter);
+    }
   }
 
   @SuppressWarnings("rawtypes")
