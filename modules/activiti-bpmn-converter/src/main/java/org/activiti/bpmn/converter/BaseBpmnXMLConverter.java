@@ -210,8 +210,10 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         didWriteExtensionStartElement = true;
       }
       Map<String, String> namespaceMap = new HashMap<String, String>();
-      for (ExtensionElement extensionElement : baseElement.getExtensionElements().values()) {
-        writeExtensionElement(extensionElement, namespaceMap, xtw);
+      for (List<ExtensionElement> extensionElements : baseElement.getExtensionElements().values()) {
+        for (ExtensionElement extensionElement : extensionElements) {
+          writeExtensionElement(extensionElement, namespaceMap, xtw);
+        }
       }
     }
     
@@ -353,6 +355,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   
   protected void writeExtensionElement(ExtensionElement extensionElement, Map<String, String> namespaceMap, XMLStreamWriter xtw) throws Exception {
     if (StringUtils.isNotEmpty(extensionElement.getName())) {
+      Map<String, String> localNamespaceMap = new HashMap<String, String>();
       if (StringUtils.isNotEmpty(extensionElement.getNamespace())) {
         if (StringUtils.isNotEmpty(extensionElement.getNamespacePrefix())) {
           xtw.writeStartElement(extensionElement.getNamespacePrefix(), extensionElement.getName(), extensionElement.getNamespace());
@@ -362,6 +365,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
             
             xtw.writeNamespace(extensionElement.getNamespacePrefix(), extensionElement.getNamespace());
             namespaceMap.put(extensionElement.getNamespacePrefix(), extensionElement.getNamespace());
+            localNamespaceMap.put(extensionElement.getNamespacePrefix(), extensionElement.getNamespace());
           }
         } else {
           xtw.writeStartElement(extensionElement.getNamespace(), extensionElement.getName());
@@ -370,24 +374,26 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeStartElement(extensionElement.getName());
       }
       
-      for (ExtensionAttribute attribute : extensionElement.getAttributes().values()) {
-        if (StringUtils.isNotEmpty(attribute.getName()) && attribute.getValue() != null) {
-          if (StringUtils.isNotEmpty(attribute.getNamespace())) {
-            if (StringUtils.isNotEmpty(attribute.getNamespacePrefix())) {
-              
-              if (namespaceMap.containsKey(attribute.getNamespacePrefix()) == false ||
-                  namespaceMap.get(attribute.getNamespacePrefix()).equals(attribute.getNamespace()) == false) {
+      for (List<ExtensionAttribute> attributes : extensionElement.getAttributes().values()) {
+        for (ExtensionAttribute attribute : attributes) {
+          if (StringUtils.isNotEmpty(attribute.getName()) && attribute.getValue() != null) {
+            if (StringUtils.isNotEmpty(attribute.getNamespace())) {
+              if (StringUtils.isNotEmpty(attribute.getNamespacePrefix())) {
                 
-                xtw.writeNamespace(attribute.getNamespacePrefix(), attribute.getNamespace());
-                namespaceMap.put(attribute.getNamespacePrefix(), attribute.getNamespace());
+                if (namespaceMap.containsKey(attribute.getNamespacePrefix()) == false ||
+                    namespaceMap.get(attribute.getNamespacePrefix()).equals(attribute.getNamespace()) == false) {
+                  
+                  xtw.writeNamespace(attribute.getNamespacePrefix(), attribute.getNamespace());
+                  namespaceMap.put(attribute.getNamespacePrefix(), attribute.getNamespace());
+                }
+                
+                xtw.writeAttribute(attribute.getNamespacePrefix(), attribute.getNamespace(), attribute.getName(), attribute.getValue());
+              } else {
+                xtw.writeAttribute(attribute.getNamespace(), attribute.getName(), attribute.getValue());
               }
-              
-              xtw.writeAttribute(attribute.getNamespacePrefix(), attribute.getNamespace(), attribute.getName(), attribute.getValue());
             } else {
-              xtw.writeAttribute(attribute.getNamespace(), attribute.getName(), attribute.getValue());
+              xtw.writeAttribute(attribute.getName(), attribute.getValue());
             }
-          } else {
-            xtw.writeAttribute(attribute.getName(), attribute.getValue());
           }
         }
       }
@@ -395,9 +401,15 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       if (extensionElement.getElementText() != null) {
         xtw.writeCharacters(extensionElement.getElementText());
       } else {
-        for (ExtensionElement childElement : extensionElement.getChildElements().values()) {
-          writeExtensionElement(childElement, namespaceMap, xtw);
+        for (List<ExtensionElement> childElements : extensionElement.getChildElements().values()) {
+          for (ExtensionElement childElement : childElements) {
+            writeExtensionElement(childElement, namespaceMap, xtw);
+          }
         }
+      }
+      
+      for (String prefix : localNamespaceMap.keySet()) {
+        namespaceMap.remove(prefix);
       }
       
       xtw.writeEndElement();
