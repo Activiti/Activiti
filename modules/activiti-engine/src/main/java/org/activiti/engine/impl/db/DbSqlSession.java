@@ -290,7 +290,7 @@ public class DbSqlSession implements Session {
     if (firstResult == -1 ||  maxResults == -1) {
       return Collections.EMPTY_LIST;
     }
-    if (firstResult == 0 || maxResults == 0) {
+    if (firstResult == 0 && maxResults == 0) {
       // unbounded select
       List loadedObjects = sqlSession.selectList(statement, parameter);
       return filterLoadedObjects(loadedObjects);
