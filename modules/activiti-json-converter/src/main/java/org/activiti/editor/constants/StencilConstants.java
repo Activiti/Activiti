@@ -104,12 +104,21 @@ public interface StencilConstants {
   final String PROPERTY_TASK_LISTENER_CLASS = "task_listener_class";
   final String PROPERTY_TASK_LISTENER_EXPRESSION = "task_listener_expression";
   final String PROPERTY_TASK_LISTENER_DELEGATEEXPRESSION = "task_listener_delegate_expression";
+  final String PROPERTY_TASK_LISTENER_FIELDS = "task_listener_fields";
+  final String PROPERTY_TASK_LISTENER_FIELD_NAME = "task_listener_field_name";
+  final String PROPERTY_TASK_LISTENER_FIELD_VALUE = "task_listener_field_value";
+  final String PROPERTY_TASK_LISTENER_FIELD_EXPRESSION = "task_listener_field_expression";
 	
 	final String PROPERTY_EXECUTION_LISTENERS = "executionlisteners";
 	final String PROPERTY_EXECUTION_LISTENER_EVENT = "execution_listener_event_type";
 	final String PROPERTY_EXECUTION_LISTENER_CLASS = "execution_listener_class";
 	final String PROPERTY_EXECUTION_LISTENER_EXPRESSION = "execution_listener_expression";
 	final String PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION = "execution_listener_delegate_expression";
+        
+        final String PROPERTY_EXECUTION_LISTENER_FIELDS = "execution_listener_fields";
+        final String PROPERTY_EXECUTION_LISTENER_FIELD_NAME = "execution_listener_field_name";
+        final String PROPERTY_EXECUTION_LISTENER_FIELD_VALUE = "execution_listener_field_value";
+        final String PROPERTY_EXECUTION_LISTENER_FIELD_EXPRESSION = "execution_listener_field_expression";
 	
 	final String PROPERTY_FORMKEY = "formkeydefinition";
 	final String PROPERTY_DUEDATE = "duedatedefinition";
