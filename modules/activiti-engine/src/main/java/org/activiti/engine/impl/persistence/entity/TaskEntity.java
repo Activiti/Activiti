@@ -293,6 +293,18 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         .getIdentityLinkEntityManager()
         .deleteIdentityLink(identityLink, true);
     }
+    
+	// fix deleteCandidate() in create TaskListener
+	List<IdentityLinkEntity> removedIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
+    for (IdentityLinkEntity identityLinkEntity : this.getIdentityLinks()) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLinkEntity.getType())) {
+		  if ((userId != null && identityLinkEntity.getUserId().equals(userId))
+			  || (groupId != null && identityLinkEntity.getGroupId().equals(groupId))) {
+			  removedIdentityLinkEntities.add(identityLinkEntity);
+		  }
+      }
+    }
+	getIdentityLinks().removeAll(removedIdentityLinkEntities);
   }
   
   public Set<IdentityLink> getCandidates() {
