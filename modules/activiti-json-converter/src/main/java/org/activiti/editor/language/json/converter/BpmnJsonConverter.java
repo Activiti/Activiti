@@ -42,10 +42,10 @@ import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.activiti.editor.language.json.converter.util.JsonConverterUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -578,8 +578,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       }
       
       JsonNode dockersNode = edgeNode.get(EDITOR_DOCKERS);
-      double sourceDockersX = dockersNode.get(0).get(EDITOR_BOUNDS_X).getDoubleValue();
-      double sourceDockersY = dockersNode.get(0).get(EDITOR_BOUNDS_Y).getDoubleValue();
+      double sourceDockersX = dockersNode.get(0).get(EDITOR_BOUNDS_X).asDouble();
+      double sourceDockersY = dockersNode.get(0).get(EDITOR_BOUNDS_Y).asDouble();
       
       GraphicInfo sourceInfo = bpmnModel.getGraphicInfo(BpmnJsonConverterUtil.getElementId(sourceRefNode));
       GraphicInfo targetInfo = bpmnModel.getGraphicInfo(BpmnJsonConverterUtil.getElementId(targetRefNode));
@@ -598,8 +598,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       double nextPointInLineX;
       double nextPointInLineY;
       
-      nextPointInLineX = dockersNode.get(1).get(EDITOR_BOUNDS_X).getDoubleValue();
-      nextPointInLineY = dockersNode.get(1).get(EDITOR_BOUNDS_Y).getDoubleValue();
+      nextPointInLineX = dockersNode.get(1).get(EDITOR_BOUNDS_X).asDouble();
+      nextPointInLineY = dockersNode.get(1).get(EDITOR_BOUNDS_Y).asDouble();
       if (dockersNode.size() == 2) {
         nextPointInLineX += targetInfo.getX();
         nextPointInLineY += targetInfo.getY();
@@ -639,16 +639,16 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       
       if (dockersNode.size() > 2) {
         for(int i = 1; i < dockersNode.size() - 1; i++) {
-          double x = dockersNode.get(i).get(EDITOR_BOUNDS_X).getDoubleValue();
-          double y = dockersNode.get(i).get(EDITOR_BOUNDS_Y).getDoubleValue();
+          double x = dockersNode.get(i).get(EDITOR_BOUNDS_X).asDouble();
+          double y = dockersNode.get(i).get(EDITOR_BOUNDS_Y).asDouble();
           graphicInfoList.add(createGraphicInfo(x, y));
         }
         
-        double startLastLineX = dockersNode.get(dockersNode.size() - 2).get(EDITOR_BOUNDS_X).getDoubleValue();
-        double startLastLineY = dockersNode.get(dockersNode.size() - 2).get(EDITOR_BOUNDS_Y).getDoubleValue();
+        double startLastLineX = dockersNode.get(dockersNode.size() - 2).get(EDITOR_BOUNDS_X).asDouble();
+        double startLastLineY = dockersNode.get(dockersNode.size() - 2).get(EDITOR_BOUNDS_Y).asDouble();
         
-        double endLastLineX = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_X).getDoubleValue();
-        double endLastLineY = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_Y).getDoubleValue();
+        double endLastLineX = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_X).asDouble();
+        double endLastLineY = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_Y).asDouble();
         
         endLastLineX += targetInfo.getX();
         endLastLineY += targetInfo.getY();
@@ -668,8 +668,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         
       } else if (DI_CIRCLES.contains(targetRefStencilId)) {
         
-        double targetDockersX = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_X).getDoubleValue();
-        double targetDockersY = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_Y).getDoubleValue();
+        double targetDockersX = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_X).asDouble();
+        double targetDockersY = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_Y).asDouble();
         
         Circle2D eventCircle = new Circle2D(targetInfo.getX() + targetDockersX, 
             targetInfo.getY() + targetDockersY, targetDockersX);

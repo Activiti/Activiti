@@ -27,10 +27,10 @@ import org.activiti.workflow.simple.definition.ScriptStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinitionContainer;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Joram Barrez
@@ -154,14 +154,14 @@ public class JsonConverter {
         ArrayNode userArray = getArray(assigneeNode, HUMAN_STEP_ASSIGNEE_USERS, true);
         List<String> users = new ArrayList<String>();
         for (JsonNode userNode : userArray) {
-          users.add(userNode.getTextValue());
+          users.add(userNode.textValue());
         }
         humanStepDefinition.setCandidateUsers(users);
       } else if (type.equals(HUMAN_STEP_ASSIGNEE_TYPE_GROUPS)) {
         ArrayNode groupArray = getArray(assigneeNode, HUMAN_STEP_ASSIGNEE_GROUPS, true);
         List<String> groups = new ArrayList<String>();
         for (JsonNode groupNode : groupArray) {
-          groups.add(groupNode.getTextValue());
+          groups.add(groupNode.textValue());
         }
         humanStepDefinition.setCandidateGroups(groups);
       } else if (type.equals(HUMAN_STEP_ASSIGNEE_TYPE_INITIATOR)) {
@@ -228,7 +228,7 @@ public class JsonConverter {
   protected String getStringFieldValue(JsonNode json, String field, boolean mandatory) {
     if (json.has(field)) {
       JsonNode fieldNode = json.get(field);
-      return fieldNode.getTextValue();
+      return fieldNode.textValue();
     } else {
       if (mandatory) {
         throw new ActivitiException("Could not convert json: " + field + " is mandatory on " + json.toString());
@@ -284,7 +284,7 @@ public class JsonConverter {
     if (arrayNode != null) {
       List<String> list = new ArrayList<String>(arrayNode.size());
       for (JsonNode jsonNode : arrayNode) {
-        list.add(jsonNode.getTextValue());
+        list.add(jsonNode.textValue());
       }
       return list;
     }

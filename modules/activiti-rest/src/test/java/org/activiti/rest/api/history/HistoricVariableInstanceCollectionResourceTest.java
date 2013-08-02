@@ -22,8 +22,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -96,7 +96,7 @@ public class HistoricVariableInstanceCollectionResourceTest extends BaseRestTest
       while(it.hasNext()) {
         JsonNode dataElementNode = it.next();
         JsonNode variableNode = dataElementNode.get("variable");
-        String name = variableNode.get("name").getTextValue();
+        String name = variableNode.get("name").textValue();
         if (variableName.equals(name)) {
           variableFound = true;
           if (variableValue instanceof Boolean) {

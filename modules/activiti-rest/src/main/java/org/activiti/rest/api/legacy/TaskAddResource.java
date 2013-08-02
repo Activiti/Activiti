@@ -19,8 +19,8 @@ import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RequestUtil;
 import org.activiti.rest.api.SecuredResource;
 import org.activiti.rest.api.legacy.task.LegacyTaskResponse;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Put;
 
@@ -37,36 +37,36 @@ public class TaskAddResource extends SecuredResource {
       String taskParams = entity.getText();
       JsonNode taskJSON = new ObjectMapper().readTree(taskParams);
       
-      String name = taskJSON.path("taskName").getTextValue();
+      String name = taskJSON.path("taskName").textValue();
       
       String description = null;
       if(taskJSON.path("description") != null) {
-        description = taskJSON.path("description").getTextValue();
+        description = taskJSON.path("description").textValue();
       }
       
       String assignee = null;
       if(taskJSON.path("assignee") != null) {
-        assignee = taskJSON.path("assignee").getTextValue();
+        assignee = taskJSON.path("assignee").textValue();
       }
       
       String owner = null;
       if(taskJSON.path("owner") != null) {
-        owner = taskJSON.path("owner").getTextValue();
+        owner = taskJSON.path("owner").textValue();
       }
       
       String priority = null;
       if(taskJSON.path("priority") != null) {
-        priority = taskJSON.path("priority").getTextValue();
+        priority = taskJSON.path("priority").textValue();
       }
       
       String dueDate = null;
       if(taskJSON.path("dueDate") != null) {
-        dueDate = taskJSON.path("dueDate").getTextValue();
+        dueDate = taskJSON.path("dueDate").textValue();
       }
       
       String parentTaskId = null;
       if(taskJSON.path("parentTaskId") != null) {
-        parentTaskId = taskJSON.path("parentTaskId").getTextValue();
+        parentTaskId = taskJSON.path("parentTaskId").textValue();
       }
       
       Task newTask = ActivitiUtil.getTaskService().newTask();

@@ -16,8 +16,8 @@ package org.activiti.rest.api.runtime.process;
 import java.util.List;
 
 import org.activiti.rest.api.engine.variable.QueryVariable;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 
 /**

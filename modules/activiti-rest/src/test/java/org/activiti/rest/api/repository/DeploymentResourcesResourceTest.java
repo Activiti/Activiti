@@ -6,7 +6,7 @@ import java.util.List;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -45,7 +45,7 @@ public class DeploymentResourcesResourceTest extends BaseRestTestCase {
       // Since resources can be returned in any arbitrary order, find the right one to check
       JsonNode txtNode = null;
       for(int i=0; i< responseNode.size(); i++) {
-        if("test.txt".equals(responseNode.get(i).get("id").getTextValue())) {
+        if("test.txt".equals(responseNode.get(i).get("id").textValue())) {
           txtNode = responseNode.get(i);
           break;
         }
@@ -53,12 +53,12 @@ public class DeploymentResourcesResourceTest extends BaseRestTestCase {
       
       // Check URL's for the resource
       assertNotNull(txtNode);
-      assertTrue(txtNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertTrue(txtNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_DEPLOYMENT_RESOURCE, deployment.getId(), "test.txt")));
-      assertTrue(txtNode.get("contentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertTrue(txtNode.get("contentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deployment.getId(), "test.txt")));
       assertTrue(txtNode.get("mediaType").isNull());
-      assertEquals("resource", txtNode.get("type").getTextValue());
+      assertEquals("resource", txtNode.get("type").textValue());
       
     } finally {
       // Always cleanup any created deployments, even if the test failed

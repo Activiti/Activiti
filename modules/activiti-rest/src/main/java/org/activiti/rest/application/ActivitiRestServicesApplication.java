@@ -13,12 +13,12 @@
 
 package org.activiti.rest.application;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.List;
-
 import org.activiti.rest.api.DefaultResource;
 import org.activiti.rest.api.RestResponseFactory;
+import org.activiti.rest.application.jackson.ISO8601JacksonConverter;
 import org.activiti.rest.filter.JsonpFilter;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.restlet.Restlet;
 import org.restlet.engine.Engine;
 import org.restlet.engine.converter.ConverterHelper;
@@ -41,7 +41,7 @@ public class ActivitiRestServicesApplication extends ActivitiRestApplication {
   @Override
   public synchronized Restlet createInboundRoot() {
     initializeAuthentication();
-    
+        
     Router router = new Router(getContext());
     router.attachDefault(DefaultResource.class);
     RestServicesInit.attachResources(router);
@@ -50,13 +50,16 @@ public class ActivitiRestServicesApplication extends ActivitiRestApplication {
     authenticator.setNext(jsonpFilter);
     jsonpFilter.setNext(router);
 
-    // Get hold of JSONConverter and enable ISO-date format by default
+    // Replace standard JacksonConverter with ISO8601JacksonConverter to enable ISO-date format by default
     List<ConverterHelper> registeredConverters = Engine.getInstance().getRegisteredConverters();
-    for(ConverterHelper helper : registeredConverters) {
-      if(helper instanceof JacksonConverter) {
-        JacksonConverter jacksonConverter = (JacksonConverter) helper;
-        jacksonConverter.getObjectMapper().configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
+    int index = -1;
+    for(int i = 0; i < registeredConverters.size(); i++) {
+      if(registeredConverters.get(i) instanceof JacksonConverter) {
+          index = i;
       }
+    }
+    if (index != -1) {
+        registeredConverters.set(index, new ISO8601JacksonConverter());
     }
     return authenticator;
   }

@@ -41,7 +41,7 @@ public class ActivitiStatusServiceTest extends TestCase {
     Status status = statusService.getStatus(new ActivitiException("This is a\n newline"), null);
     
     assertNotNull(status);
-    assertEquals("This is a  newline", status.getName());
+    assertEquals("This is a  newline", status.getReasonPhrase());
   }
   
   public void test404WhenNotFound() throws Exception {

@@ -7,8 +7,8 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.BaseRestTestCase;
 import org.activiti.rest.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -50,17 +50,17 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
       ObjectNode link = (ObjectNode) responseNode.get(i);
       assertNotNull(link);
       if(!link.get("user").isNull()) {
-          assertEquals("kermit", link.get("user").getTextValue());
-          assertEquals("candidate", link.get("type").getTextValue());
+          assertEquals("kermit", link.get("user").textValue());
+          assertEquals("candidate", link.get("type").textValue());
           assertTrue(link.get("group").isNull());
-          assertTrue(link.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+          assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
                   encode(processDefinition.getId()), "users", "kermit")));
           userCandidateFound = true;
       } else if(!link.get("group").isNull()) {
-        assertEquals("admin", link.get("group").getTextValue());
-        assertEquals("candidate", link.get("type").getTextValue());
+        assertEquals("admin", link.get("group").textValue());
+        assertEquals("candidate", link.get("type").textValue());
         assertTrue(link.get("user").isNull());
-        assertTrue(link.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+        assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
                 encode(processDefinition.getId()), "groups", "admin")));
         groupCandidateFound = true;
       }
@@ -95,10 +95,10 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
 
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals("kermit", responseNode.get("user").getTextValue());
-    assertEquals("candidate", responseNode.get("type").getTextValue());
+    assertEquals("kermit", responseNode.get("user").textValue());
+    assertEquals("candidate", responseNode.get("type").textValue());
     assertTrue(responseNode.get("group").isNull());
-    assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+    assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
             encode(processDefinition.getId()), "users", "kermit")));
     
     List<IdentityLink> createdLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
@@ -117,10 +117,10 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
 
     responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals("admin", responseNode.get("group").getTextValue());
-    assertEquals("candidate", responseNode.get("type").getTextValue());
+    assertEquals("admin", responseNode.get("group").textValue());
+    assertEquals("candidate", responseNode.get("type").textValue());
     assertTrue(responseNode.get("user").isNull());
-    assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+    assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
             encode(processDefinition.getId()), "groups", "admin")));
     
     createdLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
@@ -160,10 +160,10 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
 
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals("kermit", responseNode.get("user").getTextValue());
-    assertEquals("candidate", responseNode.get("type").getTextValue());
+    assertEquals("kermit", responseNode.get("user").textValue());
+    assertEquals("candidate", responseNode.get("type").textValue());
     assertTrue(responseNode.get("group").isNull());
-    assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+    assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
             encode(processDefinition.getId()), "users", "kermit")));
     
     // Get group candidate
@@ -174,10 +174,10 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
 
     responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals("admin", responseNode.get("group").getTextValue());
-    assertEquals("candidate", responseNode.get("type").getTextValue());
+    assertEquals("admin", responseNode.get("group").textValue());
+    assertEquals("candidate", responseNode.get("type").textValue());
     assertTrue(responseNode.get("user").isNull());
-    assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+    assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
             encode(processDefinition.getId()), "groups", "admin")));
   }
   

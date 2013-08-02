@@ -1,7 +1,7 @@
 package org.activiti.rest.api.legacy;
 
 import org.activiti.rest.BaseRestTestCase;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 

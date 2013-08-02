@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.rest.api.RestError;
-import org.codehaus.jackson.map.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Status;
@@ -50,7 +50,7 @@ public class ActivitiStatusService extends StatusService {
     if(status != null && status.isError()) {
       RestError error = new RestError();
       error.setStatusCode(status.getCode());
-      error.setErrorMessage(status.getName());
+      error.setErrorMessage(status.getReasonPhrase());
       return new JacksonRepresentation<RestError>(error);
     } else {
       return super.getRepresentation(status, request, response);
@@ -61,11 +61,15 @@ public class ActivitiStatusService extends StatusService {
   public Status getStatus(Throwable throwable, Request request, Response response) {
     Status status = null;
     if(throwable instanceof JsonMappingException && throwable.getCause() != null) {
-      // Possible that the Jackson-unmarchalling has a more specific cause. if no specific exception caused
+      // Possible that the Jackson-unmarshalling has a more specific cause. if no specific exception caused
       // the throwable, it will be handled as a normal exception
       status = getSpecificStatus(throwable.getCause(), request, response);
     }
     
+    if(status == null && throwable instanceof ResourceException && throwable.getCause() != null) {
+      status = getSpecificStatus(throwable.getCause(), request, response);
+    }
+
     if(status == null) {
       status = getSpecificStatus(throwable, request, response);
     }
