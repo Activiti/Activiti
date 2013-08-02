@@ -1,6 +1,8 @@
 package org.activiti.bpmn.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,8 +13,8 @@ public class ExtensionElement {
   protected String namespacePrefix;
   protected String namespace;
   protected String elementText;
-  protected Map<String, ExtensionElement> childElements = new LinkedHashMap<String, ExtensionElement>();
-  protected Map<String, ExtensionAttribute> attributes = new LinkedHashMap<String, ExtensionAttribute>();
+  protected Map<String, List<ExtensionElement>> childElements = new LinkedHashMap<String, List<ExtensionElement>>();
+  protected Map<String, List<ExtensionAttribute>> attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
   
   public String getElementText() {
     return elementText;
@@ -38,26 +40,36 @@ public class ExtensionElement {
   public void setNamespace(String namespace) {
     this.namespace = namespace;
   }
-  public Map<String, ExtensionElement> getChildElements() {
+  public Map<String, List<ExtensionElement>> getChildElements() {
     return childElements;
   }
   public void addChildElement(ExtensionElement childElement) {
     if (childElement != null && StringUtils.isNotEmpty(childElement.getName())) {
-      this.childElements.put(childElement.getName(), childElement);
+      List<ExtensionElement> elementList = null;
+      if (this.childElements.containsKey(childElement.getName()) == false) {
+        elementList = new ArrayList<ExtensionElement>();
+        this.childElements.put(childElement.getName(), elementList);
+      }
+      this.childElements.get(childElement.getName()).add(childElement);
     }
   }
-  public void setChildElements(Map<String, ExtensionElement> childElements) {
+  public void setChildElements(Map<String, List<ExtensionElement>> childElements) {
     this.childElements = childElements;
   }
-  public Map<String, ExtensionAttribute> getAttributes() {
+  public Map<String, List<ExtensionAttribute>> getAttributes() {
     return attributes;
   }
   public void addAttribute(ExtensionAttribute attribute) {
     if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
-      this.attributes.put(attribute.getName(), attribute);
+      List<ExtensionAttribute> attributeList = null;
+      if (this.attributes.containsKey(attribute.getName()) == false) {
+        attributeList = new ArrayList<ExtensionAttribute>();
+        this.attributes.put(attribute.getName(), attributeList);
+      }
+      this.attributes.get(attribute.getName()).add(attribute);
     }
   }
-  public void setAttributes(Map<String, ExtensionAttribute> attributes) {
+  public void setAttributes(Map<String, List<ExtensionAttribute>> attributes) {
     this.attributes = attributes;
   }
 }

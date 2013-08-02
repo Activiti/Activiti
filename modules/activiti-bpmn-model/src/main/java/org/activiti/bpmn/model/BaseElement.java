@@ -12,7 +12,9 @@
  */
 package org.activiti.bpmn.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +27,7 @@ public class BaseElement {
   protected String id;
   protected int xmlRowNumber;
   protected int xmlColumnNumber;
-  protected Map<String, ExtensionElement> extensionElements = new LinkedHashMap<String, ExtensionElement>();
+  protected Map<String, List<ExtensionElement>> extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
 
   public String getId() {
     return id;
@@ -51,17 +53,22 @@ public class BaseElement {
     this.xmlColumnNumber = xmlColumnNumber;
   }
 
-  public Map<String, ExtensionElement> getExtensionElements() {
+  public Map<String, List<ExtensionElement>> getExtensionElements() {
     return extensionElements;
   }
   
   public void addExtensionElement(ExtensionElement extensionElement) {
     if (extensionElement != null && StringUtils.isNotEmpty(extensionElement.getName())) {
-      this.extensionElements.put(extensionElement.getName(), extensionElement);
+      List<ExtensionElement> elementList = null;
+      if (this.extensionElements.containsKey(extensionElement.getName()) == false) {
+        elementList = new ArrayList<ExtensionElement>();
+        this.extensionElements.put(extensionElement.getName(), elementList);
+      }
+      this.extensionElements.get(extensionElement.getName()).add(extensionElement);
     }
   }
 
-  public void setExtensionElements(Map<String, ExtensionElement> extensionElements) {
+  public void setExtensionElements(Map<String, List<ExtensionElement>> extensionElements) {
     this.extensionElements = extensionElements;
   }
 }

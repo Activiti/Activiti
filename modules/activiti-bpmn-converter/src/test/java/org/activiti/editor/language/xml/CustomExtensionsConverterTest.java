@@ -71,33 +71,51 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     assertEquals("${delegateExpression}", listener.getImplementation());
     assertEquals("start", listener.getEvent());
     
-    Map<String, ExtensionElement> extensionElementMap = serviceTask.getExtensionElements();
+    Map<String, List<ExtensionElement>> extensionElementMap = serviceTask.getExtensionElements();
     assertEquals(1, extensionElementMap.size());
-    ExtensionElement extensionElement = extensionElementMap.get("test");
+    
+    List<ExtensionElement> extensionElements = extensionElementMap.get("test");
+    assertEquals(2, extensionElements.size());
+    
+    ExtensionElement extensionElement = extensionElements.get(0);
     assertNotNull(extensionElement);
     assertEquals("test", extensionElement.getName());
     assertEquals("custom", extensionElement.getNamespacePrefix());
     assertEquals("http://custom.org/bpmn", extensionElement.getNamespace());
     assertEquals(2, extensionElement.getAttributes().size());
-    ExtensionAttribute attribute = extensionElement.getAttributes().get("id");
+    
+    List<ExtensionAttribute> attributes = extensionElement.getAttributes().get("id");
+    assertEquals(1, attributes.size());
+    ExtensionAttribute attribute = attributes.get(0);
     assertNotNull(attribute);
     assertEquals("id", attribute.getName());
     assertEquals("test", attribute.getValue());
     assertNull(attribute.getNamespace());
     assertNull(attribute.getNamespacePrefix());
-    attribute = extensionElement.getAttributes().get("name");
+    
+    attributes = extensionElement.getAttributes().get("name");
+    assertEquals(1, attributes.size());
+    attribute = attributes.get(0);
     assertNotNull(attribute);
     assertEquals("name", attribute.getName());
     assertEquals("test", attribute.getValue());
+    
     assertEquals(2, extensionElement.getChildElements().size());
-    ExtensionElement childExtension = extensionElement.getChildElements().get("name");
+    List<ExtensionElement> childExtensions = extensionElement.getChildElements().get("name");
+    assertEquals(2, childExtensions.size());
+    
+    ExtensionElement childExtension = childExtensions.get(0);
     assertNotNull(childExtension);
     assertEquals("name", childExtension.getName());
     assertEquals("custom", childExtension.getNamespacePrefix());
     assertEquals("http://custom.org/bpmn", childExtension.getNamespace());
     assertEquals(0, childExtension.getAttributes().size());
     assertEquals(1, childExtension.getChildElements().size());
-    childExtension = childExtension.getChildElements().get("test");
+    
+    List<ExtensionElement> subChildExtensions = childExtension.getChildElements().get("test");
+    assertEquals(1, subChildExtensions.size());
+    
+    childExtension = subChildExtensions.get(0);
     assertNotNull(childExtension);
     assertEquals("test", childExtension.getName());
     assertEquals("custom", childExtension.getNamespacePrefix());
@@ -105,15 +123,42 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     assertEquals(0, childExtension.getAttributes().size());
     assertEquals(0, childExtension.getChildElements().size());
     assertEquals("test", childExtension.getElementText());
-    childExtension = extensionElement.getChildElements().get("description");
+    
+    childExtensions = extensionElement.getChildElements().get("description");
+    assertEquals(1, childExtensions.size());
+    childExtension = childExtensions.get(0);
     assertNotNull(childExtension);
     assertEquals("description", childExtension.getName());
     assertEquals(1, childExtension.getAttributes().size());
-    attribute = childExtension.getAttributes().get("id");
+    attributes = childExtension.getAttributes().get("id");
+    attribute = attributes.get(0);
     assertNotNull(attribute);
     assertEquals("id", attribute.getName());
     assertEquals("test", attribute.getValue());
     assertEquals("custom2", attribute.getNamespacePrefix());
     assertEquals("http://custom2.org/bpmn", attribute.getNamespace());
+    
+    extensionElement = extensionElements.get(1);
+    assertNotNull(extensionElement);
+    assertEquals("test", extensionElement.getName());
+    assertEquals("custom", extensionElement.getNamespacePrefix());
+    assertEquals("http://custom.org/bpmn", extensionElement.getNamespace());
+    assertEquals(2, extensionElement.getAttributes().size());
+    
+    attributes = extensionElement.getAttributes().get("id");
+    assertEquals(1, attributes.size());
+    attribute = attributes.get(0);
+    assertNotNull(attribute);
+    assertEquals("id", attribute.getName());
+    assertEquals("test2", attribute.getValue());
+    assertNull(attribute.getNamespace());
+    assertNull(attribute.getNamespacePrefix());
+    
+    attributes = extensionElement.getAttributes().get("name");
+    assertEquals(1, attributes.size());
+    attribute = attributes.get(0);
+    assertNotNull(attribute);
+    assertEquals("name", attribute.getName());
+    assertEquals("test2", attribute.getValue());
   }
 }

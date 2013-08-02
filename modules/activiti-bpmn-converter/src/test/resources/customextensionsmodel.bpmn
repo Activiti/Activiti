@@ -17,8 +17,10 @@
         	<custom:name>
         		<custom:test>test</custom:test>
         	</custom:name>
+          <custom:name id="customName" />
         	<custom:description xmlns:custom2="http://custom2.org/bpmn" custom2:id="test" />
         </custom:test>
+        <custom:test xmlns:custom="http://custom.org/bpmn" id="test2" name="test2" />
       </extensionElements>
     </serviceTask>
     <startEvent id="sid-F62B554B-FF4F-475E-94FF-A3F44EDA6A6A"></startEvent>

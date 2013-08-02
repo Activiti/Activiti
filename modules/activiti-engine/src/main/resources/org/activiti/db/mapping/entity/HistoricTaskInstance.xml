@@ -338,6 +338,9 @@
       <if test="dueAfter != null">
         and RES.DUE_DATE_ &gt; #{dueAfter}
       </if>
+      <if test="withoutDueDate">
+        and RES.DUE_DATE_ is null
+      </if>
       <if test="creationDate != null">
         and RES.START_TIME_ = #{creationDate}
       </if>

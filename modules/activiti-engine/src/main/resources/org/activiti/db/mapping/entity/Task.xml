@@ -314,6 +314,9 @@
       <if test="dueAfter != null">
         and RES.DUE_DATE_ &gt; #{dueAfter}
       </if>
+      <if test="withoutDueDate">
+        and RES.DUE_DATE_ is null
+      </if>
       <if test="dueDate != null || dueBefore != null || dueAfter != null">
         and RES.DUE_DATE_ is not null
       </if>
