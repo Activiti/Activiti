@@ -15,8 +15,9 @@ package org.activiti.engine.test.cfg;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
+import org.activiti.engine.impl.interceptor.CommandInvoker;
 import org.activiti.engine.impl.interceptor.RetryInterceptor;
 
 import junit.framework.TestCase;
@@ -35,11 +36,11 @@ public class RetryInterceptorTest extends TestCase {
 
   public void testRetryInterceptor() {
     RetryInterceptor retryInterceptor = new RetryInterceptor();
-    retryInterceptor.setNext(new CommandExecutorImpl());
+    retryInterceptor.setNext(new CommandInvoker());
     try {
-      retryInterceptor.execute(new CommandThrowingOptimisticLockingException());
+      retryInterceptor.execute(new CommandConfig(), new CommandThrowingOptimisticLockingException());
       fail("ActivitiException expected.");
-    }catch (ActivitiException e) {
+    } catch (ActivitiException e) {
       assertTrue(e.getMessage().contains(retryInterceptor.getNumOfRetries()+" retries failed"));
     }
   }

@@ -28,6 +28,7 @@ import org.activiti.engine.impl.cmd.SetJobRetriesCmd;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePageQuery;
@@ -98,6 +99,16 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
       throw new ActivitiIllegalArgumentException("The command is null");
     }
     return commandExecutor.execute(command);
+  }
+  
+  public <T> T executeCommand(CommandConfig config, Command<T> command) {
+    if (config == null) {
+      throw new ActivitiIllegalArgumentException("The config is null");
+    }
+    if (command == null) {
+      throw new ActivitiIllegalArgumentException("The command is null");
+    }
+    return commandExecutor.execute(config, command);
   }
 
 }

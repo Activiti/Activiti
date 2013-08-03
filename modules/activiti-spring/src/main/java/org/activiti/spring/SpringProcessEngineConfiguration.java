@@ -14,9 +14,6 @@
 package org.activiti.spring;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.zip.ZipInputStream;
 
 import javax.sql.DataSource;
@@ -27,9 +24,8 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
-import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
-import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.beans.BeansException;
@@ -40,7 +36,6 @@ import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 
 
 /**
@@ -61,7 +56,6 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     transactionsExternallyManaged = true;
   }
   
-  
   @Override
   public ProcessEngine buildProcessEngine() {
     ProcessEngine processEngine = super.buildProcessEngine();
@@ -72,31 +66,22 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   public void setTransactionSynchronizationAdapterOrder(Integer transactionSynchronizationAdapterOrder) {
     this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
   }
-  
-  protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
+
+  @Override
+  protected CommandConfig createCommandConfigTxRequired() {
+    return new CommandConfig()
+      .setContextReusePossible(true);
+  }
+
+  @Override
+  protected CommandInterceptor createTransactionInterceptor() {
     if (transactionManager==null) {
       throw new ActivitiException("transactionManager is required property for SpringProcessEngineConfiguration, use "+StandaloneProcessEngineConfiguration.class.getName()+" otherwise");
     }
     
-    List<CommandInterceptor> defaultCommandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
-    defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
-    defaultCommandInterceptorsTxRequired.add(new SpringTransactionInterceptor(transactionManager, TransactionTemplate.PROPAGATION_REQUIRED));
-    CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor(commandContextFactory, this);
-    commandContextInterceptor.setContextReusePossible(true);
-    defaultCommandInterceptorsTxRequired.add(commandContextInterceptor);
-    return defaultCommandInterceptorsTxRequired;
+    return new SpringTransactionInterceptor(transactionManager);
   }
-  
-  protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequiresNew() {
-    List<CommandInterceptor> defaultCommandInterceptorsTxRequiresNew = new ArrayList<CommandInterceptor>();
-    defaultCommandInterceptorsTxRequiresNew.add(new LogInterceptor());
-    defaultCommandInterceptorsTxRequiresNew.add(new SpringTransactionInterceptor(transactionManager, TransactionTemplate.PROPAGATION_REQUIRES_NEW));
-    CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor(commandContextFactory, this);
-    commandContextInterceptor.setContextReusePossible(false);
-    defaultCommandInterceptorsTxRequiresNew.add(commandContextInterceptor);
-    return defaultCommandInterceptorsTxRequiresNew;
-  }
-  
+
   @Override
   protected void initTransactionContextFactory() {
     if(transactionContextFactory == null && transactionManager != null) {

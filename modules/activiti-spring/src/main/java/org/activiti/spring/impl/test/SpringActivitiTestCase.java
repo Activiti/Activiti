@@ -31,7 +31,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
  * @author Joram Barrez
  */
 @TestExecutionListeners(DependencyInjectionTestExecutionListener.class)
-public class SpringActivitiTestCase extends AbstractActivitiTestCase implements ApplicationContextAware {
+public abstract class SpringActivitiTestCase extends AbstractActivitiTestCase implements ApplicationContextAware {
 
   protected static Map<String, ProcessEngine> cachedProcessEngines = new HashMap<String, ProcessEngine>();
   
