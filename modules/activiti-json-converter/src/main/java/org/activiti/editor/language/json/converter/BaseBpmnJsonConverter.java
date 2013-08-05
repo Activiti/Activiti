@@ -426,6 +426,13 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     String listenerClass = null;
     String listenerExpression = null;
     String listenerDelegateExpression = null;
+    String listenerFields = null;
+    String listenerFieldName = null;
+    String listenerFieldValue = null;
+    String listenerFieldExpression = null;
+    
+    JsonNode listenerFieldsNode = null;
+    JsonNode listenerFieldsArrayNode = null;
     
     if (element instanceof UserTask) {
       propertyName = PROPERTY_TASK_LISTENERS;
@@ -433,6 +440,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       listenerClass = PROPERTY_TASK_LISTENER_CLASS;
       listenerExpression = PROPERTY_TASK_LISTENER_EXPRESSION;
       listenerDelegateExpression = PROPERTY_TASK_LISTENER_DELEGATEEXPRESSION;
+      listenerFields = PROPERTY_TASK_LISTENER_FIELDS;
+      listenerFieldName = PROPERTY_TASK_LISTENER_FIELD_NAME;
+      listenerFieldValue = PROPERTY_TASK_LISTENER_FIELD_VALUE;
+      listenerFieldExpression = PROPERTY_TASK_LISTENER_EXPRESSION;
       
     } else {
       propertyName = PROPERTY_EXECUTION_LISTENERS;
@@ -440,6 +451,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       listenerClass = PROPERTY_EXECUTION_LISTENER_CLASS;
       listenerExpression = PROPERTY_EXECUTION_LISTENER_EXPRESSION;
       listenerDelegateExpression = PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION;
+      listenerFields = PROPERTY_EXECUTION_LISTENER_FIELDS;
+      listenerFieldName = PROPERTY_EXECUTION_LISTENER_FIELD_NAME;
+      listenerFieldValue = PROPERTY_EXECUTION_LISTENER_FIELD_VALUE;
+      listenerFieldExpression = PROPERTY_EXECUTION_LISTENER_EXPRESSION;
     }
     
     listenersNode = getProperty(propertyName, objectNode);
@@ -472,6 +487,30 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
               listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
               listener.setImplementation(getValueAsString(listenerDelegateExpression, itemNode));
             }
+            
+            listenerFieldsNode = itemNode.get(listenerFields);
+            if (listenerFieldsNode != null && StringUtils.isNotEmpty(listenerFieldsNode.asText()) && !("undefined".equals(listenerFieldsNode.asText()))){
+              if(listenerFieldsNode.isValueNode()){
+                try{
+                  listenerFieldsNode = objectMapper.readTree(listenerFieldsNode.asText());
+                } catch(Exception e){
+                  LOGGER.info("Listener fields node can not be read", e);
+                }
+              }
+            }
+            listenerFieldsArrayNode = listenerFieldsNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+            List<FieldExtension> fields = new ArrayList<FieldExtension>();
+            for (JsonNode fieldNode : listenerFieldsArrayNode){
+              JsonNode fieldNameNode = fieldNode.get(listenerFieldName);
+              if (fieldNameNode != null && StringUtils.isNotEmpty(fieldNameNode.asText())){
+                FieldExtension field = new FieldExtension();
+                field.setFieldName(fieldNameNode.asText());
+                field.setStringValue(getValueAsString(listenerFieldValue, fieldNode));
+                field.setExpression(getValueAsString(listenerFieldExpression, fieldNode));
+                fields.add(field);
+              }
+            }
+            listener.setFieldExtensions(fields);
             
             if (element instanceof Process) {
               ((Process) element).getExecutionListeners().add(listener);
