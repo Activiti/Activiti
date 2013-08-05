@@ -498,19 +498,23 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                 }
               }
             }
-            listenerFieldsArrayNode = listenerFieldsNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
-            List<FieldExtension> fields = new ArrayList<FieldExtension>();
-            for (JsonNode fieldNode : listenerFieldsArrayNode){
-              JsonNode fieldNameNode = fieldNode.get(listenerFieldName);
-              if (fieldNameNode != null && StringUtils.isNotEmpty(fieldNameNode.asText())){
-                FieldExtension field = new FieldExtension();
-                field.setFieldName(fieldNameNode.asText());
-                field.setStringValue(getValueAsString(listenerFieldValue, fieldNode));
-                field.setExpression(getValueAsString(listenerFieldExpression, fieldNode));
-                fields.add(field);
+            if (listenerFieldsNode != null) {
+              listenerFieldsArrayNode = listenerFieldsNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+              List<FieldExtension> fields = new ArrayList<FieldExtension>();
+              if (listenerFieldsArrayNode != null) {
+                for (JsonNode fieldNode : listenerFieldsArrayNode){
+                  JsonNode fieldNameNode = fieldNode.get(listenerFieldName);
+                  if (fieldNameNode != null && StringUtils.isNotEmpty(fieldNameNode.asText())){
+                    FieldExtension field = new FieldExtension();
+                    field.setFieldName(fieldNameNode.asText());
+                    field.setStringValue(getValueAsString(listenerFieldValue, fieldNode));
+                    field.setExpression(getValueAsString(listenerFieldExpression, fieldNode));
+                    fields.add(field);
+                  }
+                }
               }
+              listener.setFieldExtensions(fields);
             }
-            listener.setFieldExtensions(fields);
             
             if (element instanceof Process) {
               ((Process) element).getExecutionListeners().add(listener);
