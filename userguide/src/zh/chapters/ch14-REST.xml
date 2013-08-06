@@ -841,13 +841,13 @@
     </para>
   </section>
   <section>
-      <title>Get a deployment resource</title>
+      <title>获取部署资源</title>
         <para>
           <programlisting>GET repository/deployments/{deploymentId}/resources/{resourceId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a deployment resource - URL参数</title>
+              <title>获取部署资源 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -862,13 +862,13 @@
                     <entry>deploymentId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the deployment the requested resource is part of.</entry>
+                    <entry>部署ID是请求资源的一部分。</entry>
                   </row>
                    <row>
                     <entry>resourceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the resource to get. <emphasis role="bold">Make sure you URL-encode the resourceId in case it contains forward slashes. Eg: use 'diagrams%2Fmy-process.bpmn20.xml' instead of 'diagrams/Fmy-process.bpmn20.xml'.</emphasis></entry>
+                    <entry>获取资源的ID <emphasis role="bold">确保URL对资源ID进行编码的情况下，包含斜杠，例如：使用'diagrams%2Fmy-process.bpmn20.xml' 代替 'diagrams/Fmy-process.bpmn20.xml'。</emphasis></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -876,7 +876,7 @@
         </para>
         <para>
           <table>
-              <title>Get a deployment resource - 响应码</title>
+              <title>获取部署资源 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -887,11 +887,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates both deployment and resource have been found and the resource has been returned.</entry>
+                    <entry>表示部署和资源都已经找到并且部署的资源已经成功返回。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information.</entry>
+                    <entry>表示请求的部署并没有找到或者目前的部署对象并没有该资源ID。状态描述还包含一些额外信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -910,19 +910,19 @@
 
       <itemizedlist>
         <listitem>
-          <para><literal>mediaType</literal>: Contains the media-type the resource has. This is resolved using a (pluggable) <literal>MediaTypeResolver</literal> and contains, by default, a limited number of mime-type mappings.</para>
+		  <para><literal>mediaType</literal>：包含资源的media-type。这是使用（可插拔的）<literal>MediaTypeResolver</literal>处理的，默认已经支持了一些有限的mime-type映射。</para>
         </listitem>
          <listitem>
-          <para><literal>type</literal>: Type of resource, possible values:</para>
+          <para><literal>type</literal>: 资源类型，可能的值</para>
            <itemizedlist>
             <listitem>
-              <para><literal>resource</literal>: Plain old resource.</para>
+              <para><literal>resource</literal>: 原始资源.</para>
             </listitem>
              <listitem>
-              <para><literal>processDefinition</literal>: Resource that contains one or more process-definitions. This resource is picked up by the deployer.</para>
+              <para><literal>processDefinition</literal>: 包含一个或多个流程定义的资源。它会被发布器处理。</para>
             </listitem>
              <listitem>
-              <para><literal>processImage</literal>: Resource that represents a deployed process definition's graphical layout.</para>
+              <para><literal>processImage</literal>: 展示一个已发布流程定义的图形布局。</para>
             </listitem>
           </itemizedlist>
         </listitem>
@@ -931,13 +931,13 @@
   </section>
 
    <section>
-      <title>Get a deployment resource content</title>
+      <title>获取部署资源的内容</title>
         <para>
           <programlisting>GET repository/deployments/{deploymentId}/resourcedata/{resourceId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a deployment resource content - URL参数</title>
+              <title>获取部署资源的内容 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -952,13 +952,13 @@
                     <entry>deploymentId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the deployment the requested resource is part of.</entry>
+                    <entry>部署ID是请求资源的一部分。</entry>
                   </row>
                    <row>
                     <entry>resourceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the resource to get the data for. <emphasis role="bold">Make sure you URL-encode the resourceId in case it contains forward slashes. Eg: use 'diagrams%2Fmy-process.bpmn20.xml' instead of 'diagrams/Fmy-process.bpmn20.xml'.</emphasis></entry>
+                    <entry>资源ID获取数据 <emphasis role="bold">确保URL对资源ID进行编码的情况下，包含斜杠，例如：使用'diagrams%2Fmy-process.bpmn20.xml' 代替 'diagrams/Fmy-process.bpmn20.xml'</emphasis></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -966,7 +966,7 @@
         </para>
         <para>
           <table>
-              <title>Get a deployment resource content - 响应码</title>
+              <title>获取部署资源的内容 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -977,11 +977,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates both deployment and resource have been found and the resource data has been returned.</entry>
+                    <entry>表示部署和资源都已经找到并且部署的资源已经成功返回。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information.</entry>
+                    <entry>表示请求的部署并没有找到或者目前的部署对象并没有该资源ID。状态描述还包含一些额外信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -990,14 +990,13 @@
     <para>
        <emphasis role="bold">成功响应体：</emphasis>
     </para>
-    <para>
-      The response body will contain the binary resource-content for the requested resource. The response content-type will be the same as the type returned in the resources 'mimeType' property. Also, a content-disposition header is set,
-      allowing browsers to dowload the file instead of displaying it.
+    <para>根据请求的资源响应体将包含二进制的资源内容。响应体的content-type的'mimeType'属性将会和资源的返回类型相同。同样，响应头设置content-disposition，允许浏览器下载该文件而不是去显示它。
     </para>
   </section>
  </section>
  <section>
-  <title>Process Definitions</title>
+
+  <title>流程定义</title>
 
    <section>
       <title>List of process definitions</title>
