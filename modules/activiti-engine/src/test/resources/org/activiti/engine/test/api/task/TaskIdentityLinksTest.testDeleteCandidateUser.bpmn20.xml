@@ -17,7 +17,7 @@
           <formalExpression>user(user),user(admin)</formalExpression>
         </resourceAssignmentExpression>
       </potentialOwner>
-	</userTask>
+    </userTask>
     <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
     <endEvent id="theEnd" />
 
