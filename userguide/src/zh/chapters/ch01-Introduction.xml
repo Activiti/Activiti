@@ -16,8 +16,8 @@
 
 <section id="sources">
   <title>源码</title>
-  <para>从发布包里可以找到已经打好jar包的源码。
-  如果想从代码重新构建，请参考
+  <para>发布包里包含大部分的已经打好jar包的源码。
+  如果想找到并构建完整的源码库，请参考
   <ulink url="http://docs.codehaus.org/display/ACT/Developers+Guide#DevelopersGuide-Buildingthedistribution">wiki “构建发布包”</ulink>。
   </para>
 </section>
@@ -27,17 +27,20 @@
   <section>
     <title>JDK 6+</title>
     <para>Activiti需要运行在JDK 6或以上版本上。
-    进入 <ulink url="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle Java SE 下载页</ulink>
+    进入 <ulink url="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle Java SE 下载页面</ulink>
     点击 "下载 JDK"按钮。页面上也提供了安装的方法。
-    要想确认安装是否成功，可以在命令行中执行 <literal>java -version</literal>。
-	这就会打印出安装的JDK的版本。
+    为了验证是否安装成功，可以在命令行中执行 <literal>java -version</literal>。
+	它将会打印出安装的JDK的版本。
     </para>
   </section>
   <section>
     <title>Eclipse Indigo 和 Juno</title>
-    <para>在<ulink url="http://www.eclipse.org/downloads/">Eclipse下载页</ulink>下载你选择的eclipse发布包。
+    <para>
+	（译者注：Eclipse 3.7 版本代号 Indigo 靛青，
+    Eclipse 4.2 版本代号 Juno 朱诺）。
+	在<ulink url="http://www.eclipse.org/downloads/">Eclipse下载页面</ulink>下载你选择的eclipse发布包。
 	解压下载文件，你就可以通过<literal>eclipse</literal>目录下的eclipse文件启动它。
-	在这个文档后面，专门有一章介绍<link linkend="eclipseDesignerInstallation">安装eclipse设计器插件</link>。
+	此外，在该用户指南后面，专门有一章介绍<link linkend="eclipseDesignerInstallation">安装eclipse设计器插件</link>。
     </para>
   </section>
 </section>
@@ -45,7 +48,7 @@
 <section id="reporting.problems">
   <title>报告问题</title>
   <para>任何一个自觉的开发者都应该看看
-  <ulink url="http://www.catb.org/~esr/faqs/smart-questions.html">如果聪明的提问</ulink>。
+  <ulink url="http://www.catb.org/~esr/faqs/smart-questions.html">如何聪明的提出问题</ulink>。
   </para>
   <para>看完之后，你可以在<ulink url="http://forums.activiti.org/en/viewforum.php?f=3">用户论坛</ulink>上进行提问和评论，
   或者在<ulink url="http://jira.codehaus.org/browse/ACT">JIRA问题跟踪系统</ulink>中创建问题。
@@ -63,8 +66,8 @@
   <para>那些标记着 <emphasis role="bold">[EXPERIMENTAL]</emphasis> 的章节表示功能尚未稳定。
 
   </para>
-  <para>包名中包含 <literal>.impl.</literal> 的类都是内部实现类，都是不保证稳定的。
-  不过，如果用户手册把哪些类列为配置项，那么它们可以认为是稳定不变的。
+  <para>所有包名中包含 <literal>.impl.</literal> 的类都是内部实现类，都是不保证稳定的。
+  不过，如果用户指南把哪些类列为配置项，那么它们可以认为是稳定不变的。
 
   </para>
 </section>
@@ -72,8 +75,7 @@
 <section id="internal">
   <title>内部实现类</title>
   <para>在jar包中，所有包名中包含<literal>.impl.</literal>（比如：<literal>org.activiti.engine.impl.pvm.delegate</literal>）的类都是实现类，
-  它们都是内部类。这些类和接口都是不保证稳定不变的。
-
+  它们应该被视为流程引擎内部的类。对于这些类和接口都不能够保证其稳定性。
   </para>
 </section>
 
