@@ -60,6 +60,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.DeserializedObject;
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -259,15 +260,23 @@ public class DbSqlSession implements Session {
       return selectList(statement, parameter, 0, Integer.MAX_VALUE);
     }
   }
-  
+
+  /**
+   * @param page in fact overrides the firstResult/maxResults setting that may be passed in your {@link ListQueryParameterObject} argument.
+   * if null, settings from the 'parameter' argument is used.
+   */
   @SuppressWarnings("rawtypes")
-  public List selectList(String statement, ListQueryParameterObject parameter, Page page) {   
-    return selectList(statement, parameter);
+  public List selectList(String statement, ListQueryParameterObject parameter, Page page) {
+    if (page!=null) {
+      return selectListWithRawParameter(statement, parameter.getParameter(), page.getFirstResult(), page.getMaxResults());
+    } else {
+      return selectList(statement, parameter);
+    }
   }
 
   @SuppressWarnings("rawtypes")
   public List selectList(String statement, Object parameter, int firstResult, int maxResults) {   
-    return selectList(statement, new ListQueryParameterObject(parameter, firstResult, maxResults));
+    return selectListWithRawParameter(statement, parameter, firstResult, maxResults);
   }
   
   @SuppressWarnings("rawtypes")
@@ -280,8 +289,15 @@ public class DbSqlSession implements Session {
     statement = dbSqlSessionFactory.mapStatement(statement);    
     if (firstResult == -1 ||  maxResults == -1) {
       return Collections.EMPTY_LIST;
-    }    
-    List loadedObjects = sqlSession.selectList(statement, parameter);
+    }
+    if (firstResult == 0 && maxResults == 0) {
+      // unbounded select
+      List loadedObjects = sqlSession.selectList(statement, parameter);
+      return filterLoadedObjects(loadedObjects);
+    }
+
+    // select with paging
+    List loadedObjects = sqlSession.selectList(statement, parameter, new RowBounds( firstResult, maxResults ));
     return filterLoadedObjects(loadedObjects);
   }  
 
