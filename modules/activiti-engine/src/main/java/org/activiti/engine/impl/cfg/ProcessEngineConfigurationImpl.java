@@ -236,24 +236,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
   
-  // Command executor and interceptor stack
-  /** the configurable list which will be {@link #initInterceptorChain(java.util.List) processed} to build the {@link #commandExecutorTxRequired} */
-  protected List<CommandInterceptor> customPreCommandInterceptorsTxRequired;
-  protected List<CommandInterceptor> customPostCommandInterceptorsTxRequired;
+  protected CommandConfig defaultCommandConfig;
+
+  protected CommandInterceptor commandInvoker;
   
-  protected List<CommandInterceptor> commandInterceptorsTxRequired;
+  /** the configurable list which will be {@link #initInterceptorChain(java.util.List) processed} to build the {@link #commandExecutor} */
+  protected List<CommandInterceptor> customPreCommandInterceptors;
+  protected List<CommandInterceptor> customPostCommandInterceptors;
+  
+  protected List<CommandInterceptor> commandInterceptors;
 
   /** this will be initialized during the configurationComplete() */
-  protected CommandExecutor commandExecutorTxRequired;
-  
-  /** the configurable list which will be {@link #initInterceptorChain(List) processed} to build the {@link #commandExecutorTxRequiresNew} */
-  protected List<CommandInterceptor> customPreCommandInterceptorsTxRequiresNew;
-  protected List<CommandInterceptor> customPostCommandInterceptorsTxRequiresNew;
-
-  protected List<CommandInterceptor> commandInterceptorsTxRequiresNew;
-
-  /** this will be initialized during the configurationComplete() */
-  protected CommandExecutor commandExecutorTxRequiresNew;
+  protected CommandExecutor commandExecutor;
   
   // SESSION FACTORIES ////////////////////////////////////////////////////////
 
@@ -291,13 +285,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected SqlSessionFactory sqlSessionFactory;
   protected TransactionFactory transactionFactory;
 
-
   // ID GENERATOR /////////////////////////////////////////////////////////////
+  
   protected IdGenerator idGenerator;
   protected DataSource idGeneratorDataSource;
   protected String idGeneratorDataSourceJndiName;
   
-  // Bpmn parser
+  // BPMN PARSER //////////////////////////////////////////////////////////////
+  
   protected List<BpmnParseHandler> preBpmnParseHandlers;
   protected List<BpmnParseHandler> postBpmnParseHandlers;
   protected List<BpmnParseHandler> customDefaultBpmnParseHandlers;
@@ -306,6 +301,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected BpmnParseFactory bpmnParseFactory;
 
   // OTHER ////////////////////////////////////////////////////////////////////
+  
   protected List<FormEngine> customFormEngines;
   protected Map<String, FormEngine> formEngines;
 
@@ -332,8 +328,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected DelegateInterceptor delegateInterceptor;
 
-  protected CommandInterceptor commandInvoker;
-  
   protected RejectedJobsHandler customRejectedJobsHandler;
   
   protected Map<String, EventHandler> eventHandlers;
@@ -345,7 +339,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * Set this to true if you want to have extra checks on the BPMN xml that is parsed.
    * See http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/
    * 
-   * Unfortuantely, this feature is not available on some platforms (JDK 6, JBoss),
+   * Unfortunately, this feature is not available on some platforms (JDK 6, JBoss),
    * hence the reason why it is disabled by default. If your platform allows 
    * the use of StaxSource during XML parsing, do enable it.
    */
@@ -408,42 +402,32 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // command executors ////////////////////////////////////////////////////////
   
   protected void initCommandExecutors() {
+    this.defaultCommandConfig = createDefaultCommandConfig();
+    
     initCommandInvoker();
-    initCommandInterceptorsTxRequired();
-    initCommandExecutorTxRequired();
-    initCommandInterceptorsTxRequiresNew();
-    initCommandExecutorTxRequiresNew();
+    initCommandInterceptors();
+    initCommandExecutor();
+  }
+
+  protected CommandConfig createDefaultCommandConfig() {
+    return new CommandConfig();
   }
 
   protected void initCommandInvoker() {
     commandInvoker = new CommandInvoker();
   }
 
-  protected void initCommandInterceptorsTxRequired() {
-    if (commandInterceptorsTxRequired==null) {
-      commandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
-      if (customPreCommandInterceptorsTxRequired!=null) {
-        commandInterceptorsTxRequired.addAll(customPreCommandInterceptorsTxRequired);
+  protected void initCommandInterceptors() {
+    if (commandInterceptors==null) {
+      commandInterceptors = new ArrayList<CommandInterceptor>();
+      if (customPreCommandInterceptors!=null) {
+        commandInterceptors.addAll(customPreCommandInterceptors);
       }
-      commandInterceptorsTxRequired.addAll(getDefaultCommandInterceptors());
-      if (customPostCommandInterceptorsTxRequired!=null) {
-        commandInterceptorsTxRequired.addAll(customPostCommandInterceptorsTxRequired);
+      commandInterceptors.addAll(getDefaultCommandInterceptors());
+      if (customPostCommandInterceptors!=null) {
+        commandInterceptors.addAll(customPostCommandInterceptors);
       }
-      commandInterceptorsTxRequired.add(commandInvoker);
-    }
-  }
-
-  protected void initCommandInterceptorsTxRequiresNew() {
-    if (commandInterceptorsTxRequiresNew==null) {
-      commandInterceptorsTxRequiresNew = new ArrayList<CommandInterceptor>();
-      if (customPreCommandInterceptorsTxRequiresNew!=null) {
-        commandInterceptorsTxRequiresNew.addAll(customPreCommandInterceptorsTxRequiresNew);
-      }
-      commandInterceptorsTxRequiresNew.addAll(getDefaultCommandInterceptors());
-      if (customPostCommandInterceptorsTxRequiresNew!=null) {
-        commandInterceptorsTxRequiresNew.addAll(customPostCommandInterceptorsTxRequiresNew);
-      }
-      commandInterceptorsTxRequiresNew.add(commandInvoker);
+      commandInterceptors.add(commandInvoker);
     }
   }
 
@@ -460,27 +444,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return interceptors;
   }
 
-  protected void initCommandExecutorTxRequired() {
-    if (commandExecutorTxRequired==null) {
-      commandExecutorTxRequired = new CommandExecutorImpl(createCommandConfigTxRequired(), initInterceptorChain(commandInterceptorsTxRequired));
+  protected void initCommandExecutor() {
+    if (commandExecutor==null) {
+      CommandInterceptor first = initInterceptorChain(commandInterceptors);
+      commandExecutor = new CommandExecutorImpl(getDefaultCommandConfig(), first);
     }
   }
 
-  protected void initCommandExecutorTxRequiresNew() {
-    if (commandExecutorTxRequiresNew==null) {
-      commandExecutorTxRequiresNew = new CommandExecutorImpl(createCommandConfigTxRequiresNew(), initInterceptorChain(commandInterceptorsTxRequiresNew));
-    }
-  }
-
-  protected CommandConfig createCommandConfigTxRequired() {
-    return new CommandConfig();
-  }
-
-  protected CommandConfig createCommandConfigTxRequiresNew() {
-    return new CommandConfig()
-      .setTransactionPropagation(TransactionPropagation.REQUIRES_NEW);
-  }
-  
   protected CommandInterceptor initInterceptorChain(List<CommandInterceptor> chain) {
     if (chain==null || chain.isEmpty()) {
       throw new ActivitiException("invalid command interceptor chain configuration: "+chain);
@@ -507,7 +477,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected void initService(Object service) {
     if (service instanceof ServiceImpl) {
-      ((ServiceImpl)service).setCommandExecutor(commandExecutorTxRequired);
+      ((ServiceImpl)service).setCommandExecutor(commandExecutor);
     }
   }
   
@@ -952,7 +922,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
 
-    jobExecutor.setCommandExecutor(commandExecutorTxRequired);
+    jobExecutor.setCommandExecutor(commandExecutor);
     jobExecutor.setAutoActivate(jobExecutorActivate);
     
     if(jobExecutor.getRejectedJobsHandler() == null) {
@@ -981,20 +951,21 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         processEngineConfiguration.setDataSource(idGeneratorDataSource);
         processEngineConfiguration.setDatabaseSchemaUpdate(DB_SCHEMA_UPDATE_FALSE);
         processEngineConfiguration.init();
-        idGeneratorCommandExecutor = processEngineConfiguration.getCommandExecutorTxRequiresNew();
+        idGeneratorCommandExecutor = processEngineConfiguration.getCommandExecutor();
       } else if (idGeneratorDataSourceJndiName!=null) {
         ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneProcessEngineConfiguration();
         processEngineConfiguration.setDataSourceJndiName(idGeneratorDataSourceJndiName);
         processEngineConfiguration.setDatabaseSchemaUpdate(DB_SCHEMA_UPDATE_FALSE);
         processEngineConfiguration.init();
-        idGeneratorCommandExecutor = processEngineConfiguration.getCommandExecutorTxRequiresNew();
+        idGeneratorCommandExecutor = processEngineConfiguration.getCommandExecutor();
       } else {
-        idGeneratorCommandExecutor = commandExecutorTxRequiresNew;
+        idGeneratorCommandExecutor = getCommandExecutor();
       }
       
       DbIdGenerator dbIdGenerator = new DbIdGenerator();
       dbIdGenerator.setIdBlockSize(idBlockSize);
       dbIdGenerator.setCommandExecutor(idGeneratorCommandExecutor);
+      dbIdGenerator.setCommandConfig(getDefaultCommandConfig().transactionRequiresNew());
       idGenerator = dbIdGenerator;
     }
   }
@@ -1156,78 +1127,46 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   // getters and setters //////////////////////////////////////////////////////
   
-  public List<CommandInterceptor> getCustomPreCommandInterceptorsTxRequired() {
-    return customPreCommandInterceptorsTxRequired;
+  public CommandConfig getDefaultCommandConfig() {
+    return defaultCommandConfig;
   }
   
-  public ProcessEngineConfigurationImpl setCustomPreCommandInterceptorsTxRequired(List<CommandInterceptor> customPreCommandInterceptorsTxRequired) {
-    this.customPreCommandInterceptorsTxRequired = customPreCommandInterceptorsTxRequired;
+  public List<CommandInterceptor> getCustomPreCommandInterceptors() {
+    return customPreCommandInterceptors;
+  }
+  
+  public ProcessEngineConfigurationImpl setCustomPreCommandInterceptors(List<CommandInterceptor> customPreCommandInterceptors) {
+    this.customPreCommandInterceptors = customPreCommandInterceptors;
     return this;
   }
   
-  public List<CommandInterceptor> getCustomPostCommandInterceptorsTxRequired() {
-    return customPostCommandInterceptorsTxRequired;
+  public List<CommandInterceptor> getCustomPostCommandInterceptors() {
+    return customPostCommandInterceptors;
   }
   
-  public ProcessEngineConfigurationImpl setCustomPostCommandInterceptorsTxRequired(List<CommandInterceptor> customPostCommandInterceptorsTxRequired) {
-    this.customPostCommandInterceptorsTxRequired = customPostCommandInterceptorsTxRequired;
+  public ProcessEngineConfigurationImpl setCustomPostCommandInterceptors(List<CommandInterceptor> customPostCommandInterceptors) {
+    this.customPostCommandInterceptors = customPostCommandInterceptors;
     return this;
   }
   
-  public List<CommandInterceptor> getCommandInterceptorsTxRequired() {
-    return commandInterceptorsTxRequired;
+  public List<CommandInterceptor> getCommandInterceptors() {
+    return commandInterceptors;
   }
   
-  public ProcessEngineConfigurationImpl setCommandInterceptorsTxRequired(List<CommandInterceptor> commandInterceptorsTxRequired) {
-    this.commandInterceptorsTxRequired = commandInterceptorsTxRequired;
+  public ProcessEngineConfigurationImpl setCommandInterceptors(List<CommandInterceptor> commandInterceptors) {
+    this.commandInterceptors = commandInterceptors;
     return this;
   }
   
-  public CommandExecutor getCommandExecutorTxRequired() {
-    return commandExecutorTxRequired;
+  public CommandExecutor getCommandExecutor() {
+    return commandExecutor;
   }
   
-  public ProcessEngineConfigurationImpl setCommandExecutorTxRequired(CommandExecutor commandExecutorTxRequired) {
-    this.commandExecutorTxRequired = commandExecutorTxRequired;
+  public ProcessEngineConfigurationImpl setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
     return this;
   }
-  
-  public List<CommandInterceptor> getCustomPreCommandInterceptorsTxRequiresNew() {
-    return customPreCommandInterceptorsTxRequiresNew;
-  }
-  
-  public ProcessEngineConfigurationImpl setCustomPreCommandInterceptorsTxRequiresNew(List<CommandInterceptor> customPreCommandInterceptorsTxRequiresNew) {
-    this.customPreCommandInterceptorsTxRequiresNew = customPreCommandInterceptorsTxRequiresNew;
-    return this;
-  }
-  
-  public List<CommandInterceptor> getCustomPostCommandInterceptorsTxRequiresNew() {
-    return customPostCommandInterceptorsTxRequiresNew;
-  }
-  
-  public ProcessEngineConfigurationImpl setCustomPostCommandInterceptorsTxRequiresNew(List<CommandInterceptor> customPostCommandInterceptorsTxRequiresNew) {
-    this.customPostCommandInterceptorsTxRequiresNew = customPostCommandInterceptorsTxRequiresNew;
-    return this;
-  }
-  
-  public List<CommandInterceptor> getCommandInterceptorsTxRequiresNew() {
-    return commandInterceptorsTxRequiresNew;
-  }
-  
-  public ProcessEngineConfigurationImpl setCommandInterceptorsTxRequiresNew(List<CommandInterceptor> commandInterceptorsTxRequiresNew) {
-    this.commandInterceptorsTxRequiresNew = commandInterceptorsTxRequiresNew;
-    return this;
-  }
-  
-  public CommandExecutor getCommandExecutorTxRequiresNew() {
-    return commandExecutorTxRequiresNew;
-  }
-  
-  public ProcessEngineConfigurationImpl setCommandExecutorTxRequiresNew(CommandExecutor commandExecutorTxRequiresNew) {
-    this.commandExecutorTxRequiresNew = commandExecutorTxRequiresNew;
-    return this;
-  }
-  
+
   public RepositoryService getRepositoryService() {
     return repositoryService;
   }

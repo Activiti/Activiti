@@ -28,6 +28,7 @@ import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
@@ -51,6 +52,8 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected ManagementService managementService;
   protected String databaseSchemaUpdate;
   protected JobExecutor jobExecutor;
+  protected CommandConfig defaultCommandConfig;
+  protected CommandConfig schemaCommandConfig;
   protected CommandExecutor commandExecutor;
   protected Map<Class<?>, SessionFactory> sessionFactories;
   protected ExpressionManager expressionManager;
@@ -69,11 +72,13 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.managementService = processEngineConfiguration.getManagementService();
     this.databaseSchemaUpdate = processEngineConfiguration.getDatabaseSchemaUpdate();
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
-    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    this.defaultCommandConfig = processEngineConfiguration.getDefaultCommandConfig();
+    this.schemaCommandConfig = defaultCommandConfig.transactionNotSupported();
+    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
     this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
     
-    commandExecutor.execute(new SchemaOperationsProcessEngineBuild());
+    commandExecutor.execute(schemaCommandConfig, new SchemaOperationsProcessEngineBuild());
 
     if (name == null) {
       log.info("default activiti ProcessEngine created");
@@ -87,8 +92,7 @@ public class ProcessEngineImpl implements ProcessEngine {
       jobExecutor.start();
     }
     
-    if(processEngineConfiguration.getProcessEngineLifecycleListener() != null)
-    {
+    if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
       processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineBuilt(this);
     }
   }
@@ -99,7 +103,7 @@ public class ProcessEngineImpl implements ProcessEngine {
       jobExecutor.shutdown();
     }
 
-    commandExecutor.execute(new SchemaOperationProcessEngineClose());
+    commandExecutor.execute(schemaCommandConfig, new SchemaOperationProcessEngineClose());
     
     if(processEngineConfiguration.getProcessEngineLifecycleListener() != null)
     {

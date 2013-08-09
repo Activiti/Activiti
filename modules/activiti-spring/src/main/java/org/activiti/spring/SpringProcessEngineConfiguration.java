@@ -68,7 +68,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   }
 
   @Override
-  protected CommandConfig createCommandConfigTxRequired() {
+  protected CommandConfig createDefaultCommandConfig() {
     return new CommandConfig()
       .setContextReusePossible(true);
   }

@@ -22,10 +22,8 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   @Override
-  protected CommandConfig createCommandConfigTxRequired() {
-    return new CommandConfig()
-      .setTransactionPropagation(TransactionPropagation.REQUIRED)
-      .setContextReusePossible(true);
+  protected CommandConfig createDefaultCommandConfig() {
+    return new CommandConfig().transactionRequired();
   }
   
   @Override

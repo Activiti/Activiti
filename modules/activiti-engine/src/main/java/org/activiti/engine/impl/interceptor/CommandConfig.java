@@ -5,6 +5,8 @@ import org.activiti.engine.impl.cfg.TransactionPropagation;
 /**
  * Configuration settings for the command interceptor chain.
  * 
+ * Instances of this class are immutable, and thus thread- and share-safe.
+ * 
  * @author Marcus Klimstra (CGI)
  */
 public class CommandConfig {
@@ -17,22 +19,40 @@ public class CommandConfig {
     this.propagation = TransactionPropagation.REQUIRED;
   }
   
+  protected CommandConfig(CommandConfig commandConfig) {
+    this.contextReusePossible = commandConfig.contextReusePossible;
+    this.propagation = commandConfig.propagation;
+  }
+
   public boolean isContextReusePossible() {
     return contextReusePossible;
-  }
-  
-  public CommandConfig setContextReusePossible(boolean contextReusePossible) {
-    this.contextReusePossible = contextReusePossible;
-    return this;
   }
   
   public TransactionPropagation getTransactionPropagation() {
     return propagation;
   }
 
-  public CommandConfig setTransactionPropagation(TransactionPropagation propagation) {
-    this.propagation = propagation;
-    return this;
+  public CommandConfig setContextReusePossible(boolean contextReusePossible) {
+    CommandConfig config = new CommandConfig(this);
+    config.contextReusePossible = contextReusePossible;
+    return config;
+  }
+  
+  public CommandConfig transactionRequired() {
+    CommandConfig config = new CommandConfig(this);
+    config.propagation = TransactionPropagation.REQUIRED;
+    return config;
   }
 
+  public CommandConfig transactionRequiresNew() {
+    CommandConfig config = new CommandConfig(this);
+    config.propagation = TransactionPropagation.REQUIRES_NEW;
+    return config;
+  }
+
+  public CommandConfig transactionNotSupported() {
+    CommandConfig config = new CommandConfig(this);
+    config.propagation = TransactionPropagation.NOT_SUPPORTED;
+    return config;
+  }
 }
