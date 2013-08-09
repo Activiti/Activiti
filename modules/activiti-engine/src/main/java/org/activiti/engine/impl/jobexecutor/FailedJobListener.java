@@ -40,7 +40,7 @@ public class FailedJobListener implements TransactionListener {
   
   public void execute(CommandContext commandContext) {
     try {
-      CommandConfig commandConfig = new CommandConfig().transactionRequiresNew();
+      CommandConfig commandConfig = commandExecutor.getDefaultConfig().transactionRequiresNew();
       Command<Object> failedJobCommand = commandContext.getFailedJobCommandFactory().getCommand(jobId, exception);
       commandExecutor.execute(commandConfig, failedJobCommand);
     } catch (Throwable t) {

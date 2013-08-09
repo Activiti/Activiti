@@ -25,10 +25,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
@@ -50,10 +47,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected TaskService taskService;
   protected FormService formService;
   protected ManagementService managementService;
-  protected String databaseSchemaUpdate;
   protected JobExecutor jobExecutor;
-  protected CommandConfig defaultCommandConfig;
-  protected CommandConfig schemaCommandConfig;
   protected CommandExecutor commandExecutor;
   protected Map<Class<?>, SessionFactory> sessionFactories;
   protected ExpressionManager expressionManager;
@@ -70,15 +64,12 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.taskService = processEngineConfiguration.getTaskService();
     this.formService = processEngineConfiguration.getFormService();
     this.managementService = processEngineConfiguration.getManagementService();
-    this.databaseSchemaUpdate = processEngineConfiguration.getDatabaseSchemaUpdate();
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
-    this.defaultCommandConfig = processEngineConfiguration.getDefaultCommandConfig();
-    this.schemaCommandConfig = defaultCommandConfig.transactionNotSupported();
     this.commandExecutor = processEngineConfiguration.getCommandExecutor();
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
     this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
     
-    commandExecutor.execute(schemaCommandConfig, new SchemaOperationsProcessEngineBuild());
+    commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationsProcessEngineBuild());
 
     if (name == null) {
       log.info("default activiti ProcessEngine created");
@@ -103,18 +94,13 @@ public class ProcessEngineImpl implements ProcessEngine {
       jobExecutor.shutdown();
     }
 
-    commandExecutor.execute(schemaCommandConfig, new SchemaOperationProcessEngineClose());
+    commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationProcessEngineClose());
     
-    if(processEngineConfiguration.getProcessEngineLifecycleListener() != null)
-    {
+    if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
       processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineClosed(this);
     }
   }
 
-  public DbSqlSessionFactory getDbSqlSessionFactory() {
-    return (DbSqlSessionFactory) sessionFactories.get(DbSqlSession.class);
-  }
-  
   // getters and setters //////////////////////////////////////////////////////
 
   public String getName() {

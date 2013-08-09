@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 
 /**
@@ -21,11 +20,6 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
  */
 public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
-  @Override
-  protected CommandConfig createDefaultCommandConfig() {
-    return new CommandConfig().transactionRequired();
-  }
-  
   @Override
   protected CommandInterceptor createTransactionInterceptor() {
     return null;

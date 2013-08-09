@@ -237,7 +237,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
   
   protected CommandConfig defaultCommandConfig;
-
+  protected CommandConfig schemaCommandConfig;
+  
   protected CommandInterceptor commandInvoker;
   
   /** the configurable list which will be {@link #initInterceptorChain(java.util.List) processed} to build the {@link #commandExecutor} */
@@ -402,21 +403,31 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // command executors ////////////////////////////////////////////////////////
   
   protected void initCommandExecutors() {
-    this.defaultCommandConfig = createDefaultCommandConfig();
-    
+    initDefaultCommandConfig();
+    initSchemaCommandConfig();
     initCommandInvoker();
     initCommandInterceptors();
     initCommandExecutor();
   }
 
-  protected CommandConfig createDefaultCommandConfig() {
-    return new CommandConfig();
+  protected void initDefaultCommandConfig() {
+    if (defaultCommandConfig==null) {
+      defaultCommandConfig = new CommandConfig();
+    }
+  }
+
+  private void initSchemaCommandConfig() {
+    if (schemaCommandConfig==null) {
+      schemaCommandConfig = new CommandConfig().transactionNotSupported();
+    }
   }
 
   protected void initCommandInvoker() {
-    commandInvoker = new CommandInvoker();
+    if (commandInvoker==null) {
+      commandInvoker = new CommandInvoker();
+    }
   }
-
+  
   protected void initCommandInterceptors() {
     if (commandInterceptors==null) {
       commandInterceptors = new ArrayList<CommandInterceptor>();
@@ -539,7 +550,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
   
   protected static Properties databaseTypeMappings = getDefaultDatabaseTypeMappings();
-  
+
   protected static Properties getDefaultDatabaseTypeMappings() {
     Properties databaseTypeMappings = new Properties();
     databaseTypeMappings.setProperty("H2","h2");
@@ -1131,6 +1142,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return defaultCommandConfig;
   }
   
+  public void setDefaultCommandConfig(CommandConfig defaultCommandConfig) {
+    this.defaultCommandConfig = defaultCommandConfig;
+  }
+  
+  public CommandConfig getSchemaCommandConfig() {
+    return schemaCommandConfig;
+  }
+  
+  public void setSchemaCommandConfig(CommandConfig schemaCommandConfig) {
+    this.schemaCommandConfig = schemaCommandConfig;
+  }
+
+  public CommandInterceptor getCommandInvoker() {
+    return commandInvoker;
+  }
+  
+  public void setCommandInvoker(CommandInterceptor commandInvoker) {
+    this.commandInvoker = commandInvoker;
+  }
+
   public List<CommandInterceptor> getCustomPreCommandInterceptors() {
     return customPreCommandInterceptors;
   }
