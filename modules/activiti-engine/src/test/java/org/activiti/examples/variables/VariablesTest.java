@@ -20,11 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.persistence.entity.VariableScopeImpl;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -147,10 +146,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
   
   
   public String getVariableInstanceId(String executionId, String name) {
-	    return historyService.createNativeHistoricVariableInstanceQuery().sql("select id_ from act_ru_variable where EXECUTION_ID_=#{id} and NAME_=#{name}")
-    			.parameter("id", executionId).parameter("name", name).singleResult().getId();
-
-	  
+    HistoricVariableInstance variable = historyService.createHistoricVariableInstanceQuery().processInstanceId(executionId).variableName(name).singleResult();
+	  return variable.getId();
   }
   
   // test case for ACT-1082
@@ -190,10 +187,10 @@ public class VariablesTest extends PluggableActivitiTestCase {
     
     
     
-    // check if the id of the varible is the same or not
+    // check if the id of the variable is the same or not
    
-    String oldSerializableVarId =   getVariableInstanceId(processInstance.getId(), "serializableVar");
-    String oldLongVar =   getVariableInstanceId(processInstance.getId(), "longVar");
+    String oldSerializableVarId = getVariableInstanceId(processInstance.getId(), "serializableVar");
+    String oldLongVar = getVariableInstanceId(processInstance.getId(), "longVar");
     
 
     // Change type of serializableVar from serializable to Short
@@ -203,7 +200,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     variables = runtimeService.getVariables(processInstance.getId());
     assertEquals((short) 222, variables.get("serializableVar"));
     
-    String newSerializableVarId =   getVariableInstanceId(processInstance.getId(), "serializableVar");
+    String newSerializableVarId = getVariableInstanceId(processInstance.getId(), "serializableVar");
     
     assertEquals(oldSerializableVarId, newSerializableVarId);
 
@@ -215,7 +212,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     variables = runtimeService.getVariables(processInstance.getId());
     assertEquals((short) 123, variables.get("longVar"));
     
-    String newLongVar =   getVariableInstanceId(processInstance.getId(), "longVar");
+    String newLongVar = getVariableInstanceId(processInstance.getId(), "longVar");
     assertEquals(oldLongVar, newLongVar);
 
     
