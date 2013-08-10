@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  * @author Guillaume Nodet
  */
 public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
-
   private static final Logger LOGGER = LoggerFactory.getLogger(JtaTransactionInterceptor.class);
 
   private final TransactionManager transactionManager;
@@ -43,6 +42,8 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
   }
 
   public <T> T execute(CommandConfig config, Command<T> command) {
+    LOGGER.debug("Running command with propagation {}", config.getTransactionPropagation());
+    
     if (config.getTransactionPropagation() == TransactionPropagation.NOT_SUPPORTED) {
       return next.execute(config, command);
     }

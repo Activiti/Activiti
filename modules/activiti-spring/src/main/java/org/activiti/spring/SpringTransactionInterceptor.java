@@ -13,9 +13,11 @@
 package org.activiti.spring;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.interceptor.AbstractCommandInterceptor;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
-import org.activiti.engine.impl.interceptor.AbstractCommandInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -26,6 +28,7 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @author Tom Baeyens
  */
 public class SpringTransactionInterceptor extends AbstractCommandInterceptor {
+  private static final Logger LOGGER = LoggerFactory.getLogger(SpringTransactionInterceptor.class);
   
   protected PlatformTransactionManager transactionManager;
   
@@ -34,6 +37,8 @@ public class SpringTransactionInterceptor extends AbstractCommandInterceptor {
   }
   
   public <T> T execute(final CommandConfig config, final Command<T> command) {
+    LOGGER.debug("Running command with propagation {}", config.getTransactionPropagation());
+
     TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
     transactionTemplate.setPropagationBehavior(getPropagation(config));
     

@@ -25,6 +25,10 @@ import org.activiti.engine.impl.interceptor.JtaTransactionInterceptor;
 public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   protected TransactionManager transactionManager;
+  
+  public JtaProcessEngineConfiguration() {
+    this.transactionsExternallyManaged = true;
+  }
 
   @Override
   protected CommandInterceptor createTransactionInterceptor() {

@@ -53,7 +53,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   
   
   public SpringProcessEngineConfiguration() {
-    transactionsExternallyManaged = true;
+    this.transactionsExternallyManaged = true;
   }
   
   @Override
@@ -68,9 +68,10 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   }
 
   @Override
-  protected CommandConfig createDefaultCommandConfig() {
-    return new CommandConfig()
-      .setContextReusePossible(true);
+  protected void initDefaultCommandConfig() {
+    if (defaultCommandConfig==null) {
+      defaultCommandConfig = new CommandConfig().setContextReusePossible(true);
+    }
   }
 
   @Override
