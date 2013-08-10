@@ -312,7 +312,6 @@ public class HistoricTaskDetailPanel extends DetailPanel {
     List<Attachment> attachments = new ArrayList<Attachment>();
     attachments.addAll(taskService.getTaskAttachments(historicTask.getId()));
     if (historicTask.getProcessInstanceId() != null) {
-      System.out.println("BIEP : " + taskService.getProcessInstanceAttachments(historicTask.getProcessInstanceId()).size());
       attachments.addAll(taskService.getProcessInstanceAttachments(historicTask.getProcessInstanceId()));
     }
     
