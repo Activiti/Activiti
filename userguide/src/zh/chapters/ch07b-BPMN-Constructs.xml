@@ -5505,7 +5505,7 @@ public class MyTaskCreateListener implements TaskListener {
     </para>
 
     <para>
-		有的时候，这不是我们先想要的。有时我们需哟自己控制流程中事务的边界，为了能把业务逻辑包裹在一起。
+		有的时候，这不是我们想要的。有时我们需要自己控制流程中事务的边界，这样就能把业务逻辑包裹在一起。
 		这就需要使用异步执行了。参考下面的流程（判断）：
 
         <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.async.example.async.PNG"/></imageobject></mediaobject>
