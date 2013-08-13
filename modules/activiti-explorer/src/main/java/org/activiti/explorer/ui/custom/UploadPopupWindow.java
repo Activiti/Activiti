@@ -52,7 +52,9 @@ public class UploadPopupWindow extends PopupWindow {
 
   // UI initialisation ----------------------------------------------------------------------------
   protected void init(String caption, String description, Receiver receiver) {
-    uploadComponent = new UploadComponent(description, receiver);
+    uploadComponent = ExplorerApp.get().getComponentFactory(UploadComponentFactory.class).create();
+    uploadComponent.setReceiver(receiver);
+    uploadComponent.setDescription(description);
     uploadComponent.setSizeFull();
     initWindow(caption);
   }
