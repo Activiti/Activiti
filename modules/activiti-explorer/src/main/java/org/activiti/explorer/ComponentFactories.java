@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.explorer.ui.ComponentFactory;
+import org.activiti.explorer.ui.custom.UploadComponentFactory;
 import org.activiti.explorer.ui.mainlayout.MainMenuBarFactory;
 import org.activiti.explorer.ui.management.ManagementMenuBarFactory;
 
@@ -41,6 +42,7 @@ public class ComponentFactories implements Serializable {
     // Add custom component factories to this list
     factories.put(MainMenuBarFactory.class, new MainMenuBarFactory());
     factories.put(ManagementMenuBarFactory.class, new ManagementMenuBarFactory());
+    factories.put(UploadComponentFactory.class, new UploadComponentFactory());
   }
   
   public <T> ComponentFactory<T> get(Class<? extends ComponentFactory<T>> clazz) {
