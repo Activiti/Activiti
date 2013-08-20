@@ -85,13 +85,16 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
     this.receiver = receiver;
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.notificationManager = ExplorerApp.get().getNotificationManager();
-    
     init();
+    setDescription(description);
   }
   
   public UploadComponent(boolean enableDrop) {
-    this(null, null);
-    enableDrop = true;
+    this.enableDrop = enableDrop;
+    
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
+    init();
   }
   
   public void setDescription(String description) {
