@@ -101,6 +101,10 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     if (taskDefinition.getAssigneeExpression() != null) {
       task.setAssignee((String) taskDefinition.getAssigneeExpression().getValue(execution));
     }
+    
+    if (taskDefinition.getOwnerExpression() != null) {
+      task.setOwner((String) taskDefinition.getOwnerExpression().getValue(execution));
+    }
 
     if (!taskDefinition.getCandidateGroupIdExpressions().isEmpty()) {
       for (Expression groupIdExpr : taskDefinition.getCandidateGroupIdExpressions()) {
