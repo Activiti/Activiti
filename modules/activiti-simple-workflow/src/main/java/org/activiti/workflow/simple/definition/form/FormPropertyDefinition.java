@@ -10,21 +10,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.definition;
-
-import java.io.Serializable;
+package org.activiti.workflow.simple.definition.form;
 
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 
 /**
- * Marker interface for all 'patterns' that are known by the simple workflow API.
+ * Defines one property in a {@link FormDefinition}.
  * 
  * @author Joram Barrez
  * @author Frederik Heremans
  */
 @JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="type")
-public interface StepDefinition extends Serializable {
+public abstract class FormPropertyDefinition {
+
+  protected String name;
+  protected boolean mandatory;
+  protected boolean writable;
   
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String propertyName) {
+    this.name = propertyName;
+  }
+
+  public boolean isMandatory() {
+    return mandatory;
+  }
+
+  public void setMandatory(boolean required) {
+    this.mandatory = required;
+  }
+  
+  public boolean isWritable() {
+	  return writable;
+  }
+  
+  public void setWritable(boolean writable) {
+	  this.writable = writable;
+  }
 }

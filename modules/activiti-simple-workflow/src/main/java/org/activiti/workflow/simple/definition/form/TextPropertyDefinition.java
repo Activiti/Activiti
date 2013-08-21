@@ -10,36 +10,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.definition;
+package org.activiti.workflow.simple.definition.form;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 
-
 /**
- * @author Joram Barrez
+ * A form-property with a value that is represented as a simple text.
+ *  
+ * @author Frederik Heremans
  */
-@JsonTypeName("script-step")
-public class ScriptStepDefinition extends AbstractNamedStepDefinition {
+@JsonTypeName("text")
+public class TextPropertyDefinition extends FormPropertyDefinition {
+	
+	protected boolean multiline = false;
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String script;
-  protected String scriptLanguage;
-
-  public String getScript() {
-    return script;
+	/**
+	 * Creates a single-lined text-property.
+	 */
+	public TextPropertyDefinition() {
+		this(false);
+  }
+	
+	public TextPropertyDefinition(boolean multiline) {
+	  this.multiline = multiline;
   }
 
-  public void setScript(String script) {
-    this.script = script;
+	public void setMultiline(boolean multiline) {
+	  this.multiline = multiline;
   }
-
-  public String getScriptLanguage() {
-    return scriptLanguage;
+	
+	public boolean isMultiline() {
+	  return multiline;
   }
-
-  public void setScriptLanguage(String scriptLanguage) {
-    this.scriptLanguage = scriptLanguage;
-  }
-  
 }

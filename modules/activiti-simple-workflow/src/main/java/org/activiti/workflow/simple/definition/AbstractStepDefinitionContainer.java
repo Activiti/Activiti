@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * @author Joram Barrez
  */
@@ -34,6 +36,7 @@ public abstract class AbstractStepDefinitionContainer<T> implements StepDefiniti
     steps.add(stepDefinition);
   }
 
+  @JsonSerialize(contentAs=StepDefinition.class)
   public List<StepDefinition> getSteps() {
     return steps;
   }
@@ -81,8 +84,8 @@ public abstract class AbstractStepDefinitionContainer<T> implements StepDefiniti
     if (assignee != null) {
       humanStepDefinition.setAssignee(assignee);
     }
-
-    humanStepDefinition.setAssigneeIsInitiator(initiator);
+// TODO
+  //  humanStepDefinition.setAssigneeIsInitiator(initiator);
 
     addStep(humanStepDefinition);
     return humanStepDefinition;

@@ -15,6 +15,7 @@ package org.activiti.workflow.simple.definition;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
 
 /**
  * Allows to create simple workflows through an easy, fluent Java API.
@@ -50,10 +51,13 @@ import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
  */
 public class WorkflowDefinition extends AbstractStepDefinitionContainer<WorkflowDefinition> {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String id;
   protected String key;
   protected String name;
   protected String description;
+  protected FormDefinition startFormDefinition;
   protected ParallelStepsDefinition currentParallelStepsDefinition;
 
   public String getName() {
@@ -113,5 +117,17 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
     addStep(currentParallelStepsDefinition);
     return currentParallelStepsDefinition;
   }
+
+  public FormDefinition getStartFormDefinition() {
+	  return startFormDefinition;
+  }
   
+  public void setStartFormDefinition(FormDefinition startFormDefinition) {
+	  this.startFormDefinition = startFormDefinition;
+  }
+  
+  public WorkflowDefinition startFormdefinition(FormDefinition startFormDefinition) {
+  	this.startFormDefinition = startFormDefinition;
+  	return this;
+  }
 }

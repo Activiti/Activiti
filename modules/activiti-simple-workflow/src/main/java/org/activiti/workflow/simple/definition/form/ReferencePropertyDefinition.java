@@ -10,36 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.definition;
+package org.activiti.workflow.simple.definition.form;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 
-
 /**
- * @author Joram Barrez
+ * A form-property with a value that represents a reference to another entity.
+ *  
+ * @author Frederik Heremans
  */
-@JsonTypeName("script-step")
-public class ScriptStepDefinition extends AbstractNamedStepDefinition {
-
-  private static final long serialVersionUID = 1L;
-  
-  protected String script;
-  protected String scriptLanguage;
-
-  public String getScript() {
-    return script;
+@JsonTypeName("reference")
+public class ReferencePropertyDefinition extends FormPropertyDefinition {
+	
+	protected String type;
+	
+	public void setType(String type) {
+	  this.type = type;
   }
-
-  public void setScript(String script) {
-    this.script = script;
+	
+	/**
+	 * @return the type of object that is referenced.
+	 */
+	public String getType() {
+	  return type;
   }
-
-  public String getScriptLanguage() {
-    return scriptLanguage;
-  }
-
-  public void setScriptLanguage(String scriptLanguage) {
-    this.scriptLanguage = scriptLanguage;
-  }
-  
 }

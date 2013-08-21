@@ -15,6 +15,9 @@ package org.activiti.workflow.simple.definition;
 import java.util.List;
 
 import org.activiti.workflow.simple.converter.step.FeedbackStepDefinitionConverter;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.codehaus.jackson.annotate.JsonTypeName;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 
 /**
@@ -38,9 +41,12 @@ import org.activiti.workflow.simple.converter.step.FeedbackStepDefinitionConvert
  * 
  * @author Joram Barrez
  */
+@JsonTypeName("feedback-step")
 public class FeedbackStepDefinition extends AbstractNamedStepDefinition {
   
-  /**
+  private static final long serialVersionUID = 1L;
+
+	/**
    * The person who want to collect feedback.
    */
   protected String feedbackInitiator;
@@ -69,6 +75,7 @@ public class FeedbackStepDefinition extends AbstractNamedStepDefinition {
     this.feedbackInitiator = feedbackInitiator;
   }
 
+  @JsonSerialize(contentAs=String.class)
   public List<String> getFeedbackProviders() {
     return feedbackProviders;
   }

@@ -34,7 +34,9 @@ import org.activiti.workflow.simple.util.BpmnModelUtil;
  */
 public class ParallelStepsDefinitionConverter extends BaseStepDefinitionConverter<ParallelStepsDefinition, ParallelGateway> {
   
-  private static final String PARALLEL_GATEWAY_PREFIX = "parallelGateway";
+  private static final long serialVersionUID = 1L;
+  
+	private static final String PARALLEL_GATEWAY_PREFIX = "parallelGateway";
 
   public Class< ? extends StepDefinition> getHandledClass() {
     return ParallelStepsDefinition.class;

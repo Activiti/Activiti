@@ -12,8 +12,6 @@
  */
 package org.activiti.rest.api.repository;
 
-import java.io.IOException;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -22,12 +20,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
-import org.activiti.workflow.simple.converter.json.JsonConverter;
+import org.activiti.workflow.simple.converter.json.SimpleWorkflowJsonConverter;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.restlet.data.Status;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
@@ -39,39 +33,26 @@ public class SimpleWorkflowResource extends ServerResource {
   
   @Post
   public SimpleWorkflowSuccessResponse createWorkflow(String json) {
+    // Convert json to simple workflow definition
+    SimpleWorkflowJsonConverter jsonConverter = new SimpleWorkflowJsonConverter();
+    WorkflowDefinition workflowDefinition = jsonConverter.readWorkflowDefinition(json.getBytes());
     
-    try {
-      
-      // Convert json to simple workflow definition
-      ObjectMapper objectMapper = new ObjectMapper();
-      JsonNode jsonNode = objectMapper.readTree(json);
+    WorkflowDefinitionConversionFactory conversionFactory = new WorkflowDefinitionConversionFactory();
+    WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(workflowDefinition);
+    conversion.convert();
     
-      JsonConverter jsonConverter = new JsonConverter();
-      WorkflowDefinition workflowDefinition = jsonConverter.convertFromJson(jsonNode);
-      
-      WorkflowDefinitionConversionFactory conversionFactory = new WorkflowDefinitionConversionFactory();
-      WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(workflowDefinition);
-      conversion.convert();
-      
-      // Deploy process
-      ProcessEngine processEngine = ActivitiUtil.getProcessEngine();
-      RepositoryService repositoryService = processEngine.getRepositoryService();
-      BpmnModel bpmnModel = conversion.getBpmnModel();
-      Deployment deployment =repositoryService.createDeployment()
-        .addBpmnModel(bpmnModel.getProcesses().get(0).getName() + ".bpmn20.xml", bpmnModel)
-        .deploy();
-      
-      // Fetch process definition id
-      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-              .deploymentId(deployment.getId()).singleResult();
-      return new SimpleWorkflowSuccessResponse(processDefinition.getId());
-      
-    } catch (JsonProcessingException e) {
-      setStatus(Status.SERVER_ERROR_INTERNAL, e);
-    } catch (IOException e) {
-      setStatus(Status.SERVER_ERROR_INTERNAL, e);
-    }
-    return null;
+    // Deploy process
+    ProcessEngine processEngine = ActivitiUtil.getProcessEngine();
+    RepositoryService repositoryService = processEngine.getRepositoryService();
+    BpmnModel bpmnModel = conversion.getBpmnModel();
+    Deployment deployment =repositoryService.createDeployment()
+      .addBpmnModel(bpmnModel.getProcesses().get(0).getName() + ".bpmn20.xml", bpmnModel)
+      .deploy();
+    
+    // Fetch process definition id
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+            .deploymentId(deployment.getId()).singleResult();
+    return new SimpleWorkflowSuccessResponse(processDefinition.getId());
   }
   
   static class SimpleWorkflowSuccessResponse {

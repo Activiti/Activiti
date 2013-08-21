@@ -29,6 +29,7 @@ import org.activiti.explorer.ui.form.FormPropertyRendererManager;
 import org.activiti.explorer.ui.login.LoginHandler;
 import org.activiti.explorer.ui.variable.VariableRendererManager;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
+import org.activiti.workflow.simple.converter.json.SimpleWorkflowJsonConverter;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -55,6 +56,7 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   protected LoginHandler loginHandler;
   protected ComponentFactories componentFactories;
   protected WorkflowDefinitionConversionFactory workflowDefinitionConversionFactory;
+  protected SimpleWorkflowJsonConverter simpleWorkflowJsonConverter;
   
   // Flag to see if the session has been invalidated, when the application was closed
   protected boolean invalidatedSession = false;
@@ -292,6 +294,12 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   }
   public void setUserGroups(List<String> userGroups) {
     this.userGroups = userGroups;
+  }
+  public SimpleWorkflowJsonConverter getSimpleWorkflowJsonConverter() {
+	  return simpleWorkflowJsonConverter;
+  }
+  public void setSimpleWorkflowJsonConverter(SimpleWorkflowJsonConverter simpleWorkflowJsonConverter) {
+	  this.simpleWorkflowJsonConverter = simpleWorkflowJsonConverter;
   }
   
 }

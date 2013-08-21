@@ -10,36 +10,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.definition;
+package org.activiti.workflow.simple.definition.form;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 
-
 /**
- * @author Joram Barrez
+ * A form-property with a value that is represented as a date.
+ *  
+ * @author Frederik Heremans
  */
-@JsonTypeName("script-step")
-public class ScriptStepDefinition extends AbstractNamedStepDefinition {
-
-  private static final long serialVersionUID = 1L;
-  
-  protected String script;
-  protected String scriptLanguage;
-
-  public String getScript() {
-    return script;
+@JsonTypeName("date")
+public class DatePropertyDefinition extends FormPropertyDefinition {
+	
+	protected boolean showTime = false;
+	
+	/**
+	 * Creates a new field, showing both time and date components.
+	 */
+	public DatePropertyDefinition() {
+	  this(true);
   }
 
-  public void setScript(String script) {
-    this.script = script;
+	public DatePropertyDefinition(boolean showTime) {
+	  this.showTime = showTime;
   }
 
-  public String getScriptLanguage() {
-    return scriptLanguage;
+	public boolean isShowTime() {
+	  return showTime;
   }
-
-  public void setScriptLanguage(String scriptLanguage) {
-    this.scriptLanguage = scriptLanguage;
+	
+	public void setShowTime(boolean showTime) {
+	  this.showTime = showTime;
   }
-  
 }

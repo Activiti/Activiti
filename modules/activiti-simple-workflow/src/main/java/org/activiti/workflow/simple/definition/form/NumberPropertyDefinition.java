@@ -10,28 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.definition;
+package org.activiti.workflow.simple.definition.form;
 
-import org.activiti.workflow.simple.converter.step.DefaultFormPropertyTypes;
-
+import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
- * @author Joram Barrez
+ * A form-property with a value that is represented as a number.
+ *  
+ * @author Frederik Heremans
  */
-public class FormPropertyReferenceDefinition extends FormPropertyDefinition {
-  
-  protected String reference;
-  
-  public FormPropertyReferenceDefinition() {
-    this.type = DefaultFormPropertyTypes.REFERENCE;
-  }
-
-  public String getReference() {
-    return reference;
-  }
-
-  public void setReference(String reference) {
-    this.reference = reference;
-  }
-
+@JsonTypeName("number")
+public class NumberPropertyDefinition extends FormPropertyDefinition {
+	
 }

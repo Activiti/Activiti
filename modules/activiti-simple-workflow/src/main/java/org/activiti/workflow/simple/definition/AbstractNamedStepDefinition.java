@@ -19,7 +19,9 @@ package org.activiti.workflow.simple.definition;
  */
 public abstract class AbstractNamedStepDefinition implements StepDefinition {
 
-  protected String name;
+  private static final long serialVersionUID = 1L;
+  
+	protected String name;
   protected String description;
   protected boolean startsWithPrevious;
 
@@ -46,5 +48,4 @@ public abstract class AbstractNamedStepDefinition implements StepDefinition {
   public void setStartsWithPrevious(boolean startsWithPrevious) {
     this.startsWithPrevious = startsWithPrevious;
   }
-
 }

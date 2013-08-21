@@ -17,9 +17,7 @@ import org.activiti.explorer.ui.custom.PopupWindow;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.simple.editor.SimpleTableEditorConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
-import org.activiti.workflow.simple.converter.json.JsonConverter;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -61,12 +59,7 @@ public class EditModelClickListener implements ClickListener {
 
   protected WorkflowDefinition loadWorkflowDefinition() throws JsonProcessingException, IOException {
     RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    JsonNode jsonNode = objectMapper.readTree(repositoryService.getModelEditorSource(model.getId()));
-    
-    JsonConverter jsonConverter = new JsonConverter();
-    return jsonConverter.convertFromJson(jsonNode);
+    return ExplorerApp.get().getSimpleWorkflowJsonConverter().readWorkflowDefinition(repositoryService.getModelEditorSource(model.getId()));
   }
   
   protected void showSelectEditorPopupWindow() {

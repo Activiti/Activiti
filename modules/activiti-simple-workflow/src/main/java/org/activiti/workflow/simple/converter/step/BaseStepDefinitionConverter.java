@@ -23,9 +23,13 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
-import org.activiti.workflow.simple.definition.FormDefinition;
-import org.activiti.workflow.simple.definition.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
+import org.activiti.workflow.simple.definition.form.DatePropertyDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
+import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
+import org.activiti.workflow.simple.definition.form.ListPropertyEntry;
+import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
 
 /**
  * Base class that can be used for {@link StepDefinitionConverter}, contains utility-methods.
@@ -41,7 +45,9 @@ import org.activiti.workflow.simple.definition.StepDefinition;
  */
 public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> implements StepDefinitionConverter {
   
-  @SuppressWarnings("unchecked")
+  private static final long serialVersionUID = 1L;
+
+	@SuppressWarnings("unchecked")
   public void convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
     U typedStepDefinition = (U) stepDefinition;
     T processArtifact = createProcessArtifact(typedStepDefinition, conversion);
@@ -118,33 +124,33 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
       FormProperty formProperty = new FormProperty();
       formProperties.add(formProperty);
       
-      formProperty.setId(propertyDefinition.getPropertyName());
-      formProperty.setName(propertyDefinition.getPropertyName());
-      formProperty.setRequired(propertyDefinition.isRequired());
+      formProperty.setId(propertyDefinition.getName());
+      formProperty.setName(propertyDefinition.getName());
+      formProperty.setRequired(propertyDefinition.isMandatory());
       
       String type = null;
-      if (DefaultFormPropertyTypes.NUMBER.equalsIgnoreCase(propertyDefinition.getType())) {
+      if (propertyDefinition instanceof NumberPropertyDefinition) {
         type = "long";
-      } else if (DefaultFormPropertyTypes.DATE.equalsIgnoreCase(propertyDefinition.getType())) {
+      } else if (propertyDefinition instanceof DatePropertyDefinition) {
         type = "date";
-      } else if (DefaultFormPropertyTypes.LIST.equalsIgnoreCase(propertyDefinition.getType())) {
+      } else if (propertyDefinition instanceof ListPropertyDefinition) {
         
         type = "enum";
+        ListPropertyDefinition listDefinition = (ListPropertyDefinition) propertyDefinition;
         
-        if (!propertyDefinition.getValues().isEmpty()) {
-          List<FormValue> formValues = new ArrayList<FormValue>(propertyDefinition.getValues().size());
-          for (String formValueString : propertyDefinition.getValues()) {
+        if (listDefinition.getEntries().size() > 0) {
+          List<FormValue> formValues = new ArrayList<FormValue>(listDefinition.getEntries().size());
+          for (ListPropertyEntry entry : listDefinition.getEntries()) {
             FormValue formValue = new FormValue();
             // We're using same value for id and name for the moment
-            formValue.setId(formValueString);
-            formValue.setName(formValueString);
+            formValue.setId(entry.getValue());
+            formValue.setName(entry.getName());
             formValues.add(formValue);
           }
         }
-      } else if (DefaultFormPropertyTypes.TEXT.equalsIgnoreCase(propertyDefinition.getType())){
-        type = "string";
       } else {
-        type = propertyDefinition.getType(); // just copy whatever the user provided
+      	// Fallback to simple text
+        type = "string";
       }
       formProperty.setType(type);
     }

@@ -13,15 +13,19 @@
 package org.activiti.workflow.simple.definition;
 
 import org.activiti.engine.ActivitiException;
+import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
  * Defines a block of steps that all must be executed in parallel.
  * 
  * @author Joram Barrez
  */
+@JsonTypeName("parallel-step")
 public class ParallelStepsDefinition extends AbstractStepDefinitionContainer<ParallelStepsDefinition> implements StepDefinition {
 
-  protected WorkflowDefinition workflowDefinition;
+  private static final long serialVersionUID = 1L;
+  
+	protected WorkflowDefinition workflowDefinition;
   
   public ParallelStepsDefinition() {
     

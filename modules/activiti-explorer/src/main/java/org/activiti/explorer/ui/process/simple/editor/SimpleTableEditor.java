@@ -12,8 +12,10 @@
  */
 package org.activiti.explorer.ui.process.simple.editor;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,14 +31,12 @@ import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.simple.editor.table.TaskTable;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
-import org.activiti.workflow.simple.converter.json.JsonConverter;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinitionContainer;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -296,9 +296,10 @@ public class SimpleTableEditor extends AbstractPage {
 //      
 //      repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
     
-      JsonConverter jsonConverter = new JsonConverter();
-      ObjectNode json = jsonConverter.convertToJson(workflowDefinition);
-      repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
+    	// Write JSON to byte-array and set as editor-source
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	ExplorerApp.get().getSimpleWorkflowJsonConverter().writeWorkflowDefinition(workflowDefinition, new OutputStreamWriter(baos));
+      repositoryService.addModelEditorSource(model.getId(), baos.toByteArray());
       
       // Store process image
       // TODO: we should really allow the service to take an inputstream as input. Now we load it into memory ...
