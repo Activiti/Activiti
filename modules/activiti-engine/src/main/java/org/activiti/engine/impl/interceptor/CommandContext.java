@@ -53,6 +53,7 @@ import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.activiti.engine.logging.LogMDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,7 +137,7 @@ public class CommandContext {
               // reduce log level, as normally we're not interested in logging this exception
               log.debug("Optimistic locking exception : " + exception);
             } else {
-              log.debug("Error while closing command context", exception);
+              log.error("Error while closing command context", exception);
             }
 
             transactionContext.rollback();
@@ -184,7 +185,9 @@ public class CommandContext {
     if (this.exception == null) {
       this.exception = exception;
     } else {
-      log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);
+    	LogMDC.putMDCExecution(Context.getExecutionContext().getExecution());    	    
+    	log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);    	
+    	LogMDC.clear();
     }
   }
 
