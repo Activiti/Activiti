@@ -380,7 +380,8 @@ public class BaseRestTestCase extends PvmTestCase {
     
     // Check status and size
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    JsonNode rootNode = objectMapper.readTree(response.getStream());
+    JsonNode dataNode = rootNode.get("data");
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's

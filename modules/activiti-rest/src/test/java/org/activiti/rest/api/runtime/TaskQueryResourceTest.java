@@ -13,7 +13,9 @@
 
 package org.activiti.rest.api.runtime;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -418,6 +420,54 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
     assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
-    
+  }
+  
+  /**
+  * Test querying tasks.
+  * GET runtime/tasks
+  */
+  public void testQueryTasksWithPaging() throws Exception {
+    try {
+      Calendar adhocTaskCreate = Calendar.getInstance();
+      adhocTaskCreate.set(Calendar.MILLISECOND, 0);
+       
+      ClockUtil.setCurrentTime(adhocTaskCreate.getTime());
+      List<String> taskIdList = new ArrayList<String>();
+      for (int i = 0; i < 10; i++) {
+        Task adhocTask = taskService.newTask();
+        adhocTask.setAssignee("gonzo");
+        adhocTask.setOwner("owner");
+        adhocTask.setDelegationState(DelegationState.PENDING);
+        adhocTask.setDescription("Description one");
+        adhocTask.setName("Name one");
+        adhocTask.setDueDate(adhocTaskCreate.getTime());
+        adhocTask.setPriority(100);
+        taskService.saveTask(adhocTask);
+        taskService.addUserIdentityLink(adhocTask.getId(), "misspiggy", IdentityLinkType.PARTICIPANT);
+        taskIdList.add(adhocTask.getId());
+      }
+      Collections.sort(taskIdList);
+       
+      // Check filter-less to fetch all tasks
+      String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_QUERY);
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      String[] taskIds = new String[] {taskIdList.get(0), taskIdList.get(1), taskIdList.get(2)};
+      assertResultsPresentInDataResponse(url + "?size=3&sort=id&order=asc", requestNode, taskIds);
+      
+      taskIds = new String[] {taskIdList.get(4), taskIdList.get(5), taskIdList.get(6), taskIdList.get(7)};
+      assertResultsPresentInDataResponse(url + "?start=4&size=4&sort=id&order=asc", requestNode, taskIds);
+      
+      taskIds = new String[] {taskIdList.get(8), taskIdList.get(9)};
+      assertResultsPresentInDataResponse(url + "?start=8&size=10&sort=id&order=asc", requestNode, taskIds);
+      
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for(Task task : tasks) {
+        if(task.getExecutionId() == null) {
+          taskService.deleteTask(task.getId(), true);
+        }
+      }
+    }
   }
 }
