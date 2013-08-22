@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.context.Context;
@@ -47,6 +48,7 @@ public class TaskEntityManager extends AbstractManager {
 
   public void deleteTask(TaskEntity task, String deleteReason, boolean cascade) {
     if (!task.isDeleted()) {
+    	 task.fireEvent(TaskListener.EVENTNAME_DELETE);
       task.setDeleted(true);
       
       CommandContext commandContext = Context.getCommandContext();
