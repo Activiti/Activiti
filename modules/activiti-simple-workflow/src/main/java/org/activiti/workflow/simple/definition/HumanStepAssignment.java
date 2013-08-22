@@ -2,7 +2,7 @@ package org.activiti.workflow.simple.definition;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -63,7 +63,7 @@ public class HumanStepAssignment {
 				}
 			}
 			
-			throw new ActivitiIllegalArgumentException("Invalid assignment type for human step: " + name);
+			throw new SimpleWorkflowException("Invalid assignment type for human step: " + name);
 		}
 	}
 	

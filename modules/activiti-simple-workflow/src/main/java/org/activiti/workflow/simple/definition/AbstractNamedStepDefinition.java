@@ -21,9 +21,18 @@ public abstract class AbstractNamedStepDefinition implements StepDefinition {
 
   private static final long serialVersionUID = 1L;
   
+  protected String id;
 	protected String name;
   protected String description;
   protected boolean startsWithPrevious;
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 
   public String getName() {
     return name;

@@ -12,12 +12,10 @@
  */
 package org.activiti.workflow.simple.converter.json;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.workflow.simple.definition.FeedbackStepDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
@@ -28,8 +26,7 @@ import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ReferencePropertyDefinition;
 import org.activiti.workflow.simple.definition.form.TextPropertyDefinition;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -50,14 +47,10 @@ public class SimpleWorkflowJsonConverter {
 	 * @return The workflow definition instance, read from the given input-stream.
 	 * @throws ActivitiException when an error occurs while reading or parsing the definition.
 	 */
-	public WorkflowDefinition readWorkflowDefinition(InputStream inputStream) throws ActivitiException {
+	public WorkflowDefinition readWorkflowDefinition(InputStream inputStream) throws SimpleWorkflowException {
 		try {
 	    return getObjectMapper().readValue(inputStream, WorkflowDefinition.class);
-    } catch (JsonParseException e) {
-    	throw wrapExceptionRead(e);
-    } catch (JsonMappingException e) {
-    	throw wrapExceptionRead(e);
-    } catch (IOException e) {
+    } catch (Exception e) {
     	throw wrapExceptionRead(e);
     }
 	}
@@ -67,14 +60,10 @@ public class SimpleWorkflowJsonConverter {
 	 * @return The workflow definition instance, parsed from the given array.
 	 * @throws ActivitiException when an error occurs while parsing the definition.
 	 */
-	public WorkflowDefinition readWorkflowDefinition(byte[] bytes) throws ActivitiException {
+	public WorkflowDefinition readWorkflowDefinition(byte[] bytes) throws SimpleWorkflowException {
 		try {
 	    return getObjectMapper().readValue(bytes, WorkflowDefinition.class);
-    } catch (JsonParseException e) {
-    	throw wrapExceptionRead(e);
-    } catch (JsonMappingException e) {
-    	throw wrapExceptionRead(e);
-    } catch (IOException e) {
+    } catch (Exception e) {
     	throw wrapExceptionRead(e);
     }
 	}
@@ -82,11 +71,7 @@ public class SimpleWorkflowJsonConverter {
 	public void writeWorkflowDefinition(WorkflowDefinition definition, Writer writer) {
 		try {
 	    getObjectMapper().writeValue(writer, definition);
-    } catch (JsonParseException e) {
-    	throw wrapExceptionWrite(e);
-    } catch (JsonMappingException e) {
-    	throw wrapExceptionWrite(e);
-    } catch (IOException e) {
+    } catch (Exception e) {
     	throw wrapExceptionWrite(e);
     }
 	}
@@ -95,16 +80,16 @@ public class SimpleWorkflowJsonConverter {
 	 * @param e exception to wrap
 	 * @return an {@link ActivitiException} to throw, wrapping the given exception.
 	 */
-	protected ActivitiException wrapExceptionRead(Exception e) {
-	  return new ActivitiException("Error while parsing JSON", e);
+	protected SimpleWorkflowException wrapExceptionRead(Exception e) {
+	  return new SimpleWorkflowException("Error while parsing JSON", e);
   }
 	
 	/**
 	 * @param e exception to wrap
 	 * @return an {@link ActivitiException} to throw, wrapping the given exception.
 	 */
-	protected ActivitiException wrapExceptionWrite(Exception e) {
-		return new ActivitiException("Error while writing JSON", e);
+	protected SimpleWorkflowException wrapExceptionWrite(Exception e) {
+		return new SimpleWorkflowException("Error while writing JSON", e);
 	}
 
 	protected ObjectMapper getObjectMapper() {

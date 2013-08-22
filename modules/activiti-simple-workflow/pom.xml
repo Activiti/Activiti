@@ -14,10 +14,6 @@
 	</parent>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-engine</artifactId>
-		</dependency>
 		<!-- BPMN model conversion -->
 		<dependency>
 			<groupId>org.activiti</groupId>
@@ -60,6 +56,11 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

@@ -15,7 +15,7 @@ package org.activiti.workflow.simple.definition.form;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
@@ -52,7 +52,7 @@ public class FormPropertyGroup {
 	
 	public FormPropertyGroup addFormPropertyDefinition(FormPropertyDefinition definition) {
 		if(definition == null) {
-			throw new ActivitiIllegalArgumentException("Definition to add cannot be null");
+			throw new SimpleWorkflowException("Definition to add cannot be null");
 		}
 		
 		formPropertyDefinitions.add(definition);

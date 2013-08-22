@@ -26,5 +26,7 @@ import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
  */
 @JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="type")
 public interface StepDefinition extends Serializable {
+  String getId();
   
+  void setId(String id);
 }

@@ -311,7 +311,7 @@ public class WorkflowConversionTest {
     WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(workflowDefinition);
     conversion.convert();
     
-    log.info("Converted process : " + conversion.getbpm20Xml());
+    log.info("Converted process : " + conversion.getBpmn20Xml());
     
 //    InputStream is = conversion.getWorkflowDiagramImage();
 //    try {
@@ -347,7 +347,7 @@ public class WorkflowConversionTest {
     long nrOfDeployments = countNrOfDeployments();
     
     activitiRule.getRepositoryService().createDeployment()
-      .addString(conversion.getProcess().getId() + ".bpmn20.xml", conversion.getbpm20Xml())
+      .addString(conversion.getProcess().getId() + ".bpmn20.xml", conversion.getBpmn20Xml())
       .deploy();
     
     assertEquals(nrOfDeployments + 1, countNrOfDeployments());

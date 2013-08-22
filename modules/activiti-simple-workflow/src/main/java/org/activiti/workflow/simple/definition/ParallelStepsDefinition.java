@@ -12,7 +12,7 @@
  */
 package org.activiti.workflow.simple.definition;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
@@ -37,7 +37,7 @@ public class ParallelStepsDefinition extends AbstractStepDefinitionContainer<Par
   
   public WorkflowDefinition endParallel() {
     if (workflowDefinition == null) {
-      throw new ActivitiException("Can only call endParallel when inParallel was called on a workflow definition first");
+      throw new SimpleWorkflowException("Can only call endParallel when inParallel was called on a workflow definition first");
     }
     return workflowDefinition;
   }
