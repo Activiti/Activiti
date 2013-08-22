@@ -18,9 +18,6 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener;
-import org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener.RecordedEvent;
-
 
 /**
  * @author Joram Barrez
@@ -94,27 +91,28 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
 	  
 	  List<Task> tasks = taskService.createTaskQuery().list();
 	  assertNotNull(tasks);
-	  assertEquals(2, tasks.size());
+	  assertEquals(1, tasks.size());
 	  
-	  Task task2 = taskService.createTaskQuery().taskName("User Task 2").singleResult();
-	  assertNotNull(task2);
+	  Task task = taskService.createTaskQuery().taskName("User Task 1").singleResult();
+	  assertNotNull(task);
 
 	  assertEquals(0, TaskDeleteListener.getCurrentMessages().size());
-
-	  	  
-	  taskService.complete(task2.getId());
+	  assertEquals(0, TaskSimpleCompleteListener.getCurrentMessages().size());
+	  
+	  taskService.complete(task.getId());
 	  
 	  tasks = taskService.createTaskQuery().list();
 	  
 	  assertNotNull(tasks);
 	  assertEquals(0, tasks.size());
 	   
-
 	  assertEquals(1, TaskDeleteListener.getCurrentMessages().size());
 	  assertEquals("Delete Task Listener executed.", TaskDeleteListener.getCurrentMessages().get(0));
-
-	 
-	    }
+	  
+	  assertEquals(1, TaskSimpleCompleteListener.getCurrentMessages().size());
+    assertEquals("Complete Task Listener executed.", TaskSimpleCompleteListener.getCurrentMessages().get(0));
+  }
+  
   @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.testTaskListenersOnDelete.bpmn20.xml"})
   public void testTaskListenersOnDeleteByDeleteProcessInstance() {
     TaskDeleteListener.clear();
@@ -122,27 +120,24 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     
     List<Task> tasks = taskService.createTaskQuery().list();
     assertNotNull(tasks);
-    assertEquals(2, tasks.size());
+    assertEquals(1, tasks.size());
     
-    Task task2 = taskService.createTaskQuery().taskName("User Task 2").singleResult();
-    assertNotNull(task2);
+    Task task = taskService.createTaskQuery().taskName("User Task 1").singleResult();
+    assertNotNull(task);
 
     assertEquals(0, TaskDeleteListener.getCurrentMessages().size());
+    assertEquals(0, TaskSimpleCompleteListener.getCurrentMessages().size());
 
     runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
-
     
     tasks = taskService.createTaskQuery().list();
     
     assertNotNull(tasks);
     assertEquals(0, tasks.size());
      
-
     assertEquals(1, TaskDeleteListener.getCurrentMessages().size());
     assertEquals("Delete Task Listener executed.", TaskDeleteListener.getCurrentMessages().get(0));
-
-   
-      }
-  
-
+    
+    assertEquals(0, TaskSimpleCompleteListener.getCurrentMessages().size());
+  }
 }

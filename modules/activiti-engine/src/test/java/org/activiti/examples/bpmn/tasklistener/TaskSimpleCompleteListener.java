@@ -8,10 +8,10 @@ import org.activiti.engine.delegate.TaskListener;
 
 
 /**
- * @author Saeid Mirzaei
+ * @author Tijs Rademakers
  */
 
-public class TaskDeleteListener implements TaskListener {
+public class TaskSimpleCompleteListener implements TaskListener {
 
   private static final long serialVersionUID = 1L;
   private static List<String> messages = new ArrayList<String>();
@@ -26,6 +26,6 @@ public class TaskDeleteListener implements TaskListener {
 
 	@Override
 	public void notify(DelegateTask delegateTask) {
-		messages.add("Delete Task Listener executed.");
+		messages.add("Complete Task Listener executed.");
 	}
 }
