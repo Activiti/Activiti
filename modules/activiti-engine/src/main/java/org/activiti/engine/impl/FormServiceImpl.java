@@ -79,7 +79,6 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
   }
   
   public void saveFormData(String taskId, Map<String, String> properties) {
-	commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties, false));
+    commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties, false));
   }
-
 }
