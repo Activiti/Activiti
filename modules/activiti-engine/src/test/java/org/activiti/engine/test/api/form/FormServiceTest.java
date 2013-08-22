@@ -415,5 +415,58 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     assertNotNull(task);
     assertEquals("test", formService.getTaskFormData(task.getId()).getFormKey());
   }
-
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testSubmitTaskFormData() {
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
+    assertEquals(1, processDefinitions.size());
+    ProcessDefinition processDefinition = processDefinitions.get(0);
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinition.getKey());
+    assertNotNull(processInstance);
+    
+    Task task = null;
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("room", "5b");
+    
+    formService.submitTaskFormData(task.getId(), properties);
+    
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNull(task);
+    
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testSaveFormData() {
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
+    assertEquals(1, processDefinitions.size());
+    ProcessDefinition processDefinition = processDefinitions.get(0);
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinition.getKey());
+    assertNotNull(processInstance);
+    
+    Task task = null;
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    
+    String taskId = task.getId();
+    
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("room", "5b");
+    
+    Map<String, String> expectedVariables = new HashMap<String, String>();
+    expectedVariables.put("room", "5b");
+    
+    formService.saveFormData(task.getId(), properties);
+    
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals(taskId, task.getId());
+    
+    Map<String, Object> variables = taskService.getVariables(taskId);
+    assertEquals(expectedVariables, variables);
+    
+  }
 }
