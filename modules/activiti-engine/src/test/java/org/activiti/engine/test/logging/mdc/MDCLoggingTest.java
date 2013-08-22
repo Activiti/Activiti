@@ -59,12 +59,12 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
 
 		try {
 			runtimeService.startProcessInstanceByKey("testLoggerProcess");
+			fail("Expected exception");
 		} catch (Exception e) {
-
+		  // expected exception
 		}
-    String messages=console.toString();
+    String messages = console.toString();
     
-
 		assertTrue(messages.contains(
 				"ProcessDefinitionId=" + TestService.processDefinitionId));
 		assertTrue(messages.contains(
@@ -80,14 +80,11 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
 		
 		try {
 			runtimeService.startProcessInstanceByKey("testLoggerProcess");
+			fail("Expected exception");
 		} catch (Exception e) {
-
+		// expected exception
 		}
 		assertFalse(console.toString().contains(
 				"ProcessDefinitionId=" + TestService.processDefinitionId));
-		
-
-		
-		
 	}
 }
