@@ -149,6 +149,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_TASK_SERVICE_EXTENSIONID = "extensionId";
   
   public static final String ATTRIBUTE_TASK_USER_ASSIGNEE = "assignee";
+  public static final String ATTRIBUTE_TASK_USER_OWNER = "owner";
   public static final String ATTRIBUTE_TASK_USER_CANDIDATEUSERS = "candidateUsers";
   public static final String ATTRIBUTE_TASK_USER_CANDIDATEGROUPS = "candidateGroups";
   public static final String ATTRIBUTE_TASK_USER_DUEDATE = "dueDate";

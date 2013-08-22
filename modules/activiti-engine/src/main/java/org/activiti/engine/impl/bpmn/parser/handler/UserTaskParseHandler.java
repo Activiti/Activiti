@@ -71,6 +71,9 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
     if (StringUtils.isNotEmpty(userTask.getAssignee())) {
       taskDefinition.setAssigneeExpression(expressionManager.createExpression(userTask.getAssignee()));
     }
+    if (StringUtils.isNotEmpty(userTask.getOwner())) {
+      taskDefinition.setOwnerExpression(expressionManager.createExpression(userTask.getOwner()));
+    }
     for (String candidateUser : userTask.getCandidateUsers()) {
       taskDefinition.addCandidateUserIdExpression(expressionManager.createExpression(candidateUser));
     }

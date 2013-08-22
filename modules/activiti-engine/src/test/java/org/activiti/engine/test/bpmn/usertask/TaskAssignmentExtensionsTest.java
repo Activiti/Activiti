@@ -69,6 +69,17 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
       // Exception is to be expected
     }
   }
+  
+  @Deployment
+  public void testOwnerExtension() {
+    runtimeService.startProcessInstanceByKey("ownerExtension");
+    List<Task> tasks = taskService
+      .createTaskQuery()
+      .taskOwner("gonzo")
+      .list();
+    assertEquals(1, tasks.size());
+    assertEquals("my task", tasks.get(0).getName());
+  }
 
   @Deployment
   public void testCandidateUsersExtension() {
