@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
@@ -242,7 +243,7 @@ public class SimpleTableEditor extends AbstractPage {
       public InputStream getStream() {
         WorkflowDefinitionConversion workflowDefinitionConversion =
                 ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(createWorkflow());
-        return workflowDefinitionConversion.getWorkflowDiagramImage();
+        return ProcessDiagramGenerator.generatePngDiagram(workflowDefinitionConversion.getBpmnModel());
       }
     };
     
@@ -303,7 +304,8 @@ public class SimpleTableEditor extends AbstractPage {
       
       // Store process image
       // TODO: we should really allow the service to take an inputstream as input. Now we load it into memory ...
-      repositoryService.addModelEditorSourceExtra(model.getId(), IOUtils.toByteArray(conversion.getWorkflowDiagramImage()));
+      repositoryService.addModelEditorSourceExtra(model.getId(), IOUtils.toByteArray(
+          ProcessDiagramGenerator.generatePngDiagram(conversion.getBpmnModel())));
     } catch (IOException e) {
       logger.warn("Could not generate process image. Image is not stored and will not be shown.", e);
     }

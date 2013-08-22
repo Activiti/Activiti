@@ -243,7 +243,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
               filename = workflowDefinition.getName();
               WorkflowDefinitionConversion conversion = 
                       ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
-              bpmnBytes = conversion.getbpm20Xml().getBytes("utf-8");
+              bpmnBytes = conversion.getBpmn20Xml().getBytes("utf-8");
             } else {
             	JsonNode editorNode = new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
               BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
@@ -309,7 +309,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
         // Deploy to database
         byte[] bpmnBytes = null;
         try {
-          bpmnBytes = conversion.getbpm20Xml().getBytes("utf-8");
+          bpmnBytes = conversion.getBpmn20Xml().getBytes("utf-8");
           
           String processName = modelData.getName() + ".bpmn20.xml";
           Deployment deployment = repositoryService.createDeployment()
