@@ -28,7 +28,7 @@ public class SpringJobExecutorTest extends SpringActivitiTestCase{
 	TaskService taskService;
 	
 	@Test
-	public void testHappyJobExecutorPath()throws Exception {
+	public void testHappyJobExecutorPath() throws Exception {
 		
 		ProcessInstance instance = runtimeService.startProcessInstanceByKey("process1");
 		
@@ -41,7 +41,7 @@ public class SpringJobExecutorTest extends SpringActivitiTestCase{
 	}
 	
 	@Test
-	public void testRollbackJobExecutorPath()throws Exception {
+	public void testRollbackJobExecutorPath() throws Exception {
 		
 		ProcessInstance instance = runtimeService.startProcessInstanceByKey("errorProcess1");
 		
@@ -53,8 +53,7 @@ public class SpringJobExecutorTest extends SpringActivitiTestCase{
 		assertTrue(activeTasks.size() == 1);
 	}
 	
-	private void waitForTasksToExpire()throws Exception
-	{
+	private void waitForTasksToExpire() throws Exception {
 		Thread.sleep(2000L);
 	}
 	

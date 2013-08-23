@@ -36,7 +36,7 @@ public class MetaDataTest extends PluggableActivitiTestCase {
   public void testMetaData() {
     ((ProcessEngineImpl)processEngine)
       .getProcessEngineConfiguration()
-      .getCommandExecutorTxRequired()
+      .getCommandExecutor()
       .execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {
           // PRINT THE TABLE NAMES TO CHECK IF WE CAN USE METADATA INSTEAD

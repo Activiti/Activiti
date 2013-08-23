@@ -28,7 +28,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 public class JobExecutorTest extends JobExecutorTestCase {
 
   public void testBasicJobExecutorOperation() throws Exception {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();

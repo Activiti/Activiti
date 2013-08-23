@@ -105,7 +105,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
 
     // Returns a set of local variablenames of pi
     List<String> result = processEngineConfiguration.
-            getCommandExecutorTxRequired().
+            getCommandExecutor().
             execute(new GetVariableNamesCommand(pi.getProcessInstanceId(), true));
     
     // pi contains local the variablenames "test", "helloWorld" and "mainProcessLocalVariable" but not "subProcessLocalVariable"
@@ -116,7 +116,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     
     // Returns a set of global variablenames of pi
     result = processEngineConfiguration.
-            getCommandExecutorTxRequired().
+            getCommandExecutor().
             execute(new GetVariableNamesCommand(pi.getProcessInstanceId(), false));
 
     // pi contains global the variablenames "test", "helloWorld" and "mainProcessLocalVariable" but not "subProcessLocalVariable"
@@ -127,7 +127,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     
     // Returns a set of local variablenames of subProcessTask execution
     result = processEngineConfiguration.
-            getCommandExecutorTxRequired().
+            getCommandExecutor().
             execute(new GetVariableNamesCommand(subProcessTask.getExecutionId(), true));
     
     // subProcessTask execution contains local the variablenames "test", "subProcessLocalVariable" but not "helloWorld" and "mainProcessLocalVariable"
@@ -138,7 +138,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
 
     // Returns a set of global variablenames of subProcessTask execution
     result = processEngineConfiguration.
-            getCommandExecutorTxRequired().
+            getCommandExecutor().
             execute(new GetVariableNamesCommand(subProcessTask.getExecutionId(), false));
     
     // subProcessTask execution contains global all defined variablenames    

@@ -12,8 +12,12 @@
  */
 package org.activiti.spring;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.interceptor.AbstractCommandInterceptor;
 import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandInterceptor;
+import org.activiti.engine.impl.interceptor.CommandConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -23,25 +27,40 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @author Dave Syer
  * @author Tom Baeyens
  */
-public class SpringTransactionInterceptor extends CommandInterceptor {
+public class SpringTransactionInterceptor extends AbstractCommandInterceptor {
+  private static final Logger LOGGER = LoggerFactory.getLogger(SpringTransactionInterceptor.class);
   
   protected PlatformTransactionManager transactionManager;
-  protected int transactionPropagation;
   
-  public SpringTransactionInterceptor(PlatformTransactionManager transactionManager, int transactionPropagation) {
+  public SpringTransactionInterceptor(PlatformTransactionManager transactionManager) {
     this.transactionManager = transactionManager;
-    this.transactionPropagation = transactionPropagation;
   }
   
-  @SuppressWarnings("unchecked")
-  public <T> T execute(final Command<T> command) {
+  public <T> T execute(final CommandConfig config, final Command<T> command) {
+    LOGGER.debug("Running command with propagation {}", config.getTransactionPropagation());
+
     TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-    transactionTemplate.setPropagationBehavior(transactionPropagation);
-    T result = (T) transactionTemplate.execute(new TransactionCallback() {
-      public Object doInTransaction(TransactionStatus status) {
-        return next.execute(command);
+    transactionTemplate.setPropagationBehavior(getPropagation(config));
+    
+    T result = transactionTemplate.execute(new TransactionCallback<T>() {
+      public T doInTransaction(TransactionStatus status) {
+        return next.execute(config, command);
       }
     });
+    
     return result;
+  }
+
+  private int getPropagation(CommandConfig config) {
+    switch (config.getTransactionPropagation()) {
+      case NOT_SUPPORTED:
+        return TransactionTemplate.PROPAGATION_NOT_SUPPORTED;
+      case REQUIRED:
+        return TransactionTemplate.PROPAGATION_REQUIRED;
+      case REQUIRES_NEW:
+        return TransactionTemplate.PROPAGATION_REQUIRES_NEW;
+      default:
+        throw new ActivitiIllegalArgumentException("Unsupported transaction propagation: " + config.getTransactionPropagation());
+    }
   }
 }

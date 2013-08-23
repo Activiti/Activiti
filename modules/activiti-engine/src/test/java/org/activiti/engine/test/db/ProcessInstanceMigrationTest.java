@@ -75,7 +75,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
   }
 
   public void testSetProcessDefinitionVersionNonExistingPI() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     try {
       commandExecutor.execute(new SetProcessDefinitionVersionCmd("42", 23));    
       fail("ActivitiException expected");
@@ -93,7 +93,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     Execution execution = runtimeService.createExecutionQuery()
       .activityId("receivePayment")
       .singleResult();
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     SetProcessDefinitionVersionCmd command = new SetProcessDefinitionVersionCmd(execution.getId(), 1);
     try {
       commandExecutor.execute(command);
@@ -108,7 +108,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     // start process instance
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
 
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     try {
       commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 23));    
       fail("ActivitiException expected");
@@ -137,7 +137,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
     // migrate process instance to new process definition version
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     SetProcessDefinitionVersionCmd setProcessDefinitionVersionCmd = new SetProcessDefinitionVersionCmd(pi.getId(), 2);
     try {
       commandExecutor.execute(setProcessDefinitionVersionCmd);
@@ -170,7 +170,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
     // migrate process instance to new process definition version
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
 
     // signal process instance
@@ -216,7 +216,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
     // migrate process instance to new process definition version
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
 
     // check that all executions of the instance now use the new process definition version
@@ -256,7 +256,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("parentProcess").count());
 
     // migrate process instance to new process definition version
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
 
     // signal process instance
@@ -288,7 +288,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").processDefinitionVersion(2).singleResult();
 
     // migrate process instance to new process definition version
-    processEngineConfiguration.getCommandExecutorTxRequired().execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
+    processEngineConfiguration.getCommandExecutor().execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
     
     // check UserTask
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();

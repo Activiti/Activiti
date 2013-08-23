@@ -21,7 +21,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
   public void setUp() throws Exception {
     processEngineConfiguration.getJobHandlers().put(tweetExceptionHandler.getType(), tweetExceptionHandler);
-    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
   }
 
   public void tearDown() throws Exception {

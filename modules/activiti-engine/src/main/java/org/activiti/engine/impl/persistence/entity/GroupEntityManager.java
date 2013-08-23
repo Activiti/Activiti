@@ -23,7 +23,6 @@ import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +55,7 @@ public class GroupEntityManager extends AbstractManager implements GroupIdentity
   }
 
   public GroupQuery createNewGroupQuery() {
-    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
+    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
   }
 
   @SuppressWarnings("unchecked")

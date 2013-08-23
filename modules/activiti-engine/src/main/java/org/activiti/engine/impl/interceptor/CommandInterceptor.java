@@ -13,20 +13,15 @@
 
 package org.activiti.engine.impl.interceptor;
 
-
 /**
  * @author Tom Baeyens
  */
-public abstract class CommandInterceptor implements CommandExecutor {
+public interface CommandInterceptor {
 
-  /** will be initialized by the {@link CommandInterceptorChains} */
-  protected CommandExecutor next;
+  <T> T execute(CommandConfig config, Command<T> command);
+ 
+  CommandInterceptor getNext();
 
-  public CommandExecutor getNext() {
-    return next;
-  }
-  
-  public void setNext(CommandExecutor next) {
-    this.next = next;
-  }
+  void setNext(CommandInterceptor next);
+
 }

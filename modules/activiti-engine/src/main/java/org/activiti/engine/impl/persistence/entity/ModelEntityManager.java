@@ -98,7 +98,7 @@ public class ModelEntityManager extends AbstractManager {
   }
 
   public ModelQuery createNewModelQuery() {
-    return new ModelQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
+    return new ModelQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
   }
 
   @SuppressWarnings("unchecked")
