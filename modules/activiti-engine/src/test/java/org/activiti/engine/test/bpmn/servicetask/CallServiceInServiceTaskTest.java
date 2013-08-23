@@ -55,6 +55,7 @@ public class CallServiceInServiceTaskTest extends PluggableActivitiTestCase {
     Exception expectedException = null;
     try {
       runtimeService.startProcessInstanceByKey("startProcessFromDelegate");
+      fail("expected exception");
     } catch (Exception e) {
       expectedException = e;
     }

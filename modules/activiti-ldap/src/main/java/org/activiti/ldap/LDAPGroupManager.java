@@ -77,7 +77,7 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
 
   @Override
   public GroupQuery createNewGroupQuery() {
-    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
+    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
   }
 
   @Override

@@ -182,7 +182,7 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
 
   @Override
   public UserQuery createNewUserQuery() {
-    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
+    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
   }
 
 

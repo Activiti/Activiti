@@ -15,7 +15,7 @@ public class CommandConfig {
   private TransactionPropagation propagation;
   
   public CommandConfig() {
-    this.contextReusePossible = false;
+    this.contextReusePossible = true;
     this.propagation = TransactionPropagation.REQUIRED;
   }
   
@@ -46,12 +46,14 @@ public class CommandConfig {
 
   public CommandConfig transactionRequiresNew() {
     CommandConfig config = new CommandConfig(this);
+    config.contextReusePossible = false;
     config.propagation = TransactionPropagation.REQUIRES_NEW;
     return config;
   }
 
   public CommandConfig transactionNotSupported() {
     CommandConfig config = new CommandConfig(this);
+    config.contextReusePossible = false;
     config.propagation = TransactionPropagation.NOT_SUPPORTED;
     return config;
   }
