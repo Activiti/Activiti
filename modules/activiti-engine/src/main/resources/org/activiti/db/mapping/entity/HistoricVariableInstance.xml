@@ -86,7 +86,7 @@
   </select>
   
   <select id="selectHistoricVariableInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricVariableInstanceQueryImpl" resultType="long">
-    select count(RES.*)
+    select count(RES.ID_)
     <include refid="selectHistoricVariableInstanceByQueryCriteriaSql"/>
   </select>
   

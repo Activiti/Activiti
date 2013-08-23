@@ -168,7 +168,7 @@
   </select>
   
   <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">
-    select count(*)
+    select count(RES.ID_)
     <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
   </select>
   
