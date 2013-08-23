@@ -93,7 +93,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return null;
   }
   
-  public Object getVariableLocal(Object variableName) {
+  public Object getVariableLocal(String variableName) {
     ensureVariableInstancesInitialized();
     VariableInstanceEntity variableInstance = variableInstances.get(variableName);
     if (variableInstance!=null) {

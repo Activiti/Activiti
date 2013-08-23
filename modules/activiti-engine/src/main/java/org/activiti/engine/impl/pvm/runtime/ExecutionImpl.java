@@ -513,6 +513,7 @@ public class ExecutionImpl implements
          && (concurrentActiveExecutions.isEmpty())
        ) {
 
+      @SuppressWarnings("rawtypes")
       List<ExecutionImpl> recyclableExecutionImpls = (List) recyclableExecutions;
       for (ExecutionImpl prunedExecution: recyclableExecutionImpls) {
         // End the pruned executions if necessary.
@@ -797,7 +798,7 @@ public class ExecutionImpl implements
   public void createVariablesLocal(Map<String, ? extends Object> variables) {
   }
 
-  public Object getVariableLocal(Object variableName) {
+  public Object getVariableLocal(String variableName) {
     return null;
   }
 
