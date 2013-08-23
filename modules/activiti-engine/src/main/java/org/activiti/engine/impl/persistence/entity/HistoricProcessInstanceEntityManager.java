@@ -50,6 +50,7 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
     }
   }
   
+  @SuppressWarnings("unchecked")
   public void deleteHistoricProcessInstanceById(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryEnabled()) {
       CommandContext commandContext = Context.getCommandContext();
@@ -75,6 +76,15 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
         .deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
 
       getDbSqlSession().delete(historicProcessInstance);
+      
+      // Also delete any sub-processes that may be active (ACT-821)
+      HistoricProcessInstanceQueryImpl subProcessesQueryImpl = new HistoricProcessInstanceQueryImpl();
+      subProcessesQueryImpl.superProcessInstanceId(historicProcessInstanceId);
+      
+      List<HistoricProcessInstance> selectList = getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", subProcessesQueryImpl);
+      for(HistoricProcessInstance child : selectList) {
+      	deleteHistoricProcessInstanceById(child.getId());
+      }
     }
   }
   
