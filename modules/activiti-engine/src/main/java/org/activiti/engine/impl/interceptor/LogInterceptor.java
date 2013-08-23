@@ -21,20 +21,20 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Tom Baeyens
  */
-public class LogInterceptor extends CommandInterceptor {
+public class LogInterceptor extends AbstractCommandInterceptor {
   
   private static Logger log = LoggerFactory.getLogger(LogInterceptor.class);
 
-  public <T> T execute(Command<T> command) {
+  public <T> T execute(CommandConfig config, Command<T> command) {
     if (!log.isDebugEnabled()) {
       // do nothing here if we cannot log
-      return next.execute(command);
+      return next.execute(config, command);
     }
     log.debug("                                                                                                    ");
     log.debug("--- starting {} --------------------------------------------------------", command.getClass().getSimpleName());
     try {
 
-      return next.execute(command);
+      return next.execute(config, command);
 
     } finally {
       log.debug("--- {} finished --------------------------------------------------------", command.getClass().getSimpleName());

@@ -202,7 +202,7 @@ public class BaseRestTestCase extends PvmTestCase {
       
       log.info("dropping and recreating db");
       
-      CommandExecutor commandExecutor = ((ProcessEngineImpl)processEngine).getProcessEngineConfiguration().getCommandExecutorTxRequired();
+      CommandExecutor commandExecutor = ((ProcessEngineImpl)processEngine).getProcessEngineConfiguration().getCommandExecutor();
       commandExecutor.execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {
           DbSqlSession session = commandContext.getSession(DbSqlSession.class);

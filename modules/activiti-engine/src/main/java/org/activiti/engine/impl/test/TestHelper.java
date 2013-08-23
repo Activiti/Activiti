@@ -155,8 +155,7 @@ public abstract class TestHelper {
       log.error(outputMessage.toString());
 
       ((ProcessEngineImpl)processEngine)
-        .getProcessEngineConfiguration()
-        .getCommandExecutorTxRequired()
+      .getProcessEngineConfiguration().getCommandExecutor()
         .execute(new Command<Object>() {
           public Object execute(CommandContext commandContext) {
             DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);

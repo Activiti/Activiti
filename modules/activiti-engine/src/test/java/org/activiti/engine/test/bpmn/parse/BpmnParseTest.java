@@ -76,7 +76,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   public void testParseDiagramInterchangeElements() {
 
     // Graphical information is not yet exposed publicly, so we need to do some plumbing
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
       public ProcessDefinitionEntity execute(CommandContext commandContext) {
         return Context
@@ -137,7 +137,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testParseNamespaceInConditionExpressionType() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
       public ProcessDefinitionEntity execute(CommandContext commandContext) {
         return Context

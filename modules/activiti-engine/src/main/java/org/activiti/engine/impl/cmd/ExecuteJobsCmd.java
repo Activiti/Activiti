@@ -45,7 +45,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
 
   public Object execute(CommandContext commandContext) {
     
-    if(jobId == null) {
+    if (jobId == null) {
       throw new ActivitiIllegalArgumentException("jobId is null");
     }
     
@@ -62,7 +62,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     }
     
     JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
-    if(jobExecutorContext != null) { // if null, then we are not called by the job executor     
+    if (jobExecutorContext != null) { // if null, then we are not called by the job executor     
       jobExecutorContext.setCurrentJob(job);
     }
     
@@ -72,7 +72,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       // When transaction is rolled back, decrement retries
       CommandExecutor commandExecutor = Context
         .getProcessEngineConfiguration()
-        .getCommandExecutorTxRequiresNew();
+        .getCommandExecutor();
       
       commandContext.getTransactionContext().addTransactionListener(
         TransactionState.ROLLED_BACK, 
@@ -81,7 +81,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       // throw the original exception to indicate the ExecuteJobCmd failed
       throw exception;
     } finally {
-      if(jobExecutorContext != null) {
+      if (jobExecutorContext != null) {
         jobExecutorContext.setCurrentJob(null);
       }
     }

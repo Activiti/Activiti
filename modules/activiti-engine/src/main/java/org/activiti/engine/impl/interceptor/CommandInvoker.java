@@ -14,13 +14,24 @@ package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.impl.context.Context;
 
-
 /**
  * @author Tom Baeyens
  */
-public class CommandExecutorImpl extends CommandInterceptor {
+public class CommandInvoker extends AbstractCommandInterceptor {
 
-  public <T> T execute(Command<T> command) {
+  @Override
+  public <T> T execute(CommandConfig config, Command<T> command) {
     return command.execute(Context.getCommandContext());
   }
+
+  @Override
+  public CommandInterceptor getNext() {
+    return null;
+  }
+
+  @Override
+  public void setNext(CommandInterceptor next) {
+    throw new UnsupportedOperationException("CommandInvoker must be the last interceptor in the chain");
+  }
+
 }

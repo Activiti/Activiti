@@ -10,19 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.engine.impl.interceptor.CommandInterceptor;
-
 /**
- * @author Tom Baeyens
+ * Enumeration that represents the transaction propagation behaviours supported by the command executor. 
+ * 
+ * @author Marcus Klimstra (CGI)
  */
-public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
-
-  @Override
-  protected CommandInterceptor createTransactionInterceptor() {
-    return null;
-  }
+public enum TransactionPropagation {
+  
+  REQUIRED,
+  REQUIRES_NEW,
+  NOT_SUPPORTED,
   
 }
