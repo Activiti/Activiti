@@ -130,7 +130,7 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
   }
 
   private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
-    return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired());
+    return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
   }
 
 }

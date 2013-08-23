@@ -146,7 +146,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
       repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/parse/BpmnParseTest.testParseDiagramInterchangeElements.bpmn20.xml").deploy();
 
       // Graphical information is not yet exposed publicly, so we need to do some plumbing
-      CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+      CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
       ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
         public ProcessDefinitionEntity execute(CommandContext commandContext) {
           return Context.getProcessEngineConfiguration()

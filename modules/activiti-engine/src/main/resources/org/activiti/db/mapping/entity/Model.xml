@@ -114,7 +114,7 @@
         and RES.DEPLOYMENT_ID_ is not null
       </if>
       <if test="latest">
-        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_MODEL RES where KEY_ = RES.KEY_)
+        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_MODEL where KEY_ = RES.KEY_)
       </if>
     </where>
   </sql>

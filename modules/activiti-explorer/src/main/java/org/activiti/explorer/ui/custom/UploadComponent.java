@@ -104,6 +104,7 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
   }
   
   public void setReceiver(Receiver receiver) {
+  	this.receiver = receiver;
     upload.setReceiver(receiver);
   }
 

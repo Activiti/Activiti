@@ -106,7 +106,7 @@ public class RestResponseFactory {
   public static final String BYTE_ARRAY_VARIABLE_TYPE = "binary";
   public static final String SERIALIZABLE_VARIABLE_TYPE = "serializable";
   
-  private List<RestVariableConverter> variableConverters = new ArrayList<RestVariableConverter>();
+  protected List<RestVariableConverter> variableConverters = new ArrayList<RestVariableConverter>();
   
   public RestResponseFactory() {
     initializeVariableConverters();
@@ -753,6 +753,14 @@ public class RestResponseFactory {
     }
     
     return response;
+  }
+  
+  /**
+   * @return list of {@link RestVariableConverter} which are used by this factory. Additional
+   * converters can be added and existing ones replaced ore removed.
+   */
+  public List<RestVariableConverter> getVariableConverters() {
+	  return variableConverters;
   }
   
   /**

@@ -10,19 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.engine.impl.cfg;
-
-import org.activiti.engine.impl.interceptor.CommandInterceptor;
+package org.activiti.engine.impl.interceptor;
 
 /**
  * @author Tom Baeyens
  */
-public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
+public abstract class AbstractCommandInterceptor implements CommandInterceptor {
+
+  /** will be initialized by the {@link org.activiti.engine.ProcessEngineConfiguration ProcessEngineConfiguration} */
+  protected CommandInterceptor next;
 
   @Override
-  protected CommandInterceptor createTransactionInterceptor() {
-    return null;
+  public CommandInterceptor getNext() {
+    return next;
   }
   
+  @Override
+  public void setNext(CommandInterceptor next) {
+    this.next = next;
+  }
 }

@@ -94,7 +94,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     ClockUtil.setCurrentTime(tomorrow.getTime());
     
     // Check if timer is eligable to be executed, when process in not yet suspended
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     List<TimerEntity> jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(ClockUtil.getCurrentTime(), new Page(0, 1)));
     assertEquals(1, jobs.size());
     
@@ -112,7 +112,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
   }
 
   protected void makeSureJobDue(final Job job) {
-    processEngineConfiguration.getCommandExecutorTxRequired()
+    processEngineConfiguration.getCommandExecutor()
       .execute(new Command<Void>() {
         public Void execute(CommandContext commandContext) {
           Date currentTime = ClockUtil.getCurrentTime();
@@ -126,7 +126,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
   }
 
   private AcquiredJobs executeAcquireJobsCommand() {
-    return processEngineConfiguration.getCommandExecutorTxRequired()
+    return processEngineConfiguration.getCommandExecutor()
       .execute(new AcquireJobsCmd(processEngineConfiguration.getJobExecutor()));
   }
     

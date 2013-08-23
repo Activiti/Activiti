@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.management.TablePageQuery;
@@ -108,10 +109,18 @@ public interface ManagementService {
   String databaseSchemaUpgrade(Connection connection, String catalog, String schema);
   
   /**
-   * Executes a given command
+   * Executes a given command with the default {@link CommandConfig}.
    * @param command the command, cannot be null.
    * @return the result of command execution
    */
   <T> T executeCommand(Command<T> command);
+
+  /**
+   * Executes a given command with the specified {@link CommandConfig}.
+   * @param config the command execution configuration, cannot be null.
+   * @param command the command, cannot be null.
+   * @return the result of command execution
+   */
+  <T> T executeCommand(CommandConfig config, Command<T> command);
   
 }

@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -268,6 +269,35 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	    
 	    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
   }
+  
+  /**
+   * Test added to validate UUID variable type + querying (ACT-1665)
+   */
+	@Deployment
+	public void testUUIDVariableAndQuery() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+		assertNotNull(processInstance);
+		
+		// Check UUID variable type query on task
+		Task task = taskService.createTaskQuery().singleResult();
+		assertNotNull(task);
+		UUID randomUUID = UUID.randomUUID();
+		taskService.setVariableLocal(task.getId(), "conversationId", randomUUID);
+		
+		Task resultingTask = taskService.createTaskQuery().taskVariableValueEquals("conversationId", randomUUID).singleResult();
+		assertNotNull(resultingTask);
+		assertEquals(task.getId(), resultingTask.getId());
+		
+		randomUUID = UUID.randomUUID();
+		
+		// Check UUID variable type query on process
+		runtimeService.setVariable(processInstance.getId(), "uuidVar", randomUUID);
+		ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueEquals("uuidVar", randomUUID).singleResult();
+		
+		assertNotNull(result);
+		assertEquals(processInstance.getId(), result.getId());
+	}
+
 }
 
 class CustomType {

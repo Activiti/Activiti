@@ -104,7 +104,7 @@
         and G.ID_ = #{groupId}
       </if>
       <if test="procDefId != null">
-        and exists (select ID_ from ${prefix} ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and USER_ID_=RES.ID_ )
+        and exists (select ID_ from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and USER_ID_=RES.ID_ )
       </if>
       
     </where>
