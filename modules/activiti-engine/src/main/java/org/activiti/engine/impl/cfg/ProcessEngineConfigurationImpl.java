@@ -188,6 +188,7 @@ import org.activiti.engine.impl.variable.NullType;
 import org.activiti.engine.impl.variable.SerializableType;
 import org.activiti.engine.impl.variable.ShortType;
 import org.activiti.engine.impl.variable.StringType;
+import org.activiti.engine.impl.variable.UUIDType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.parse.BpmnParseHandler;
@@ -1008,6 +1009,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new LongType());
       variableTypes.addType(new DateType());
       variableTypes.addType(new DoubleType());
+      variableTypes.addType(new UUIDType());
       variableTypes.addType(new ByteArrayType());
       variableTypes.addType(new SerializableType());
       variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
