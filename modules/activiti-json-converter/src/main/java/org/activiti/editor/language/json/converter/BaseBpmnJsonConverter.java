@@ -242,6 +242,16 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         propertyItemNode.putNull(PROPERTY_FORM_VARIABLE);
       }
       
+      if (property.isRequired()) {
+        propertyItemNode.put(PROPERTY_FORM_REQUIRED, PROPERTY_VALUE_YES);
+      } 
+      if (!property.isReadable()) {
+        propertyItemNode.put(PROPERTY_FORM_READABLE, PROPERTY_VALUE_NO);
+      } 
+      if (!property.isWriteable()) {
+        propertyItemNode.put(PROPERTY_FORM_WRITEABLE, PROPERTY_VALUE_NO);
+      } 
+      
       itemsNode.add(propertyItemNode);
     }
     
