@@ -40,11 +40,13 @@ import org.activiti.engine.impl.cmd.GetProcessInstanceAttachmentsCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceCommentsCmd;
 import org.activiti.engine.impl.cmd.GetSubTasksCmd;
 import org.activiti.engine.impl.cmd.GetTaskAttachmentsCmd;
+import org.activiti.engine.impl.cmd.GetTaskCommentsByTypeCmd;
 import org.activiti.engine.impl.cmd.GetTaskCommentsCmd;
 import org.activiti.engine.impl.cmd.GetTaskEventCmd;
 import org.activiti.engine.impl.cmd.GetTaskEventsCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
+import org.activiti.engine.impl.cmd.GetTypeCommentsCmd;
 import org.activiti.engine.impl.cmd.HasTaskVariableCmd;
 import org.activiti.engine.impl.cmd.RemoveTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.ResolveTaskCmd;
@@ -277,6 +279,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
   }
   
+  public Comment addComment(String taskId, String processInstance, String type, String message) {
+    return commandExecutor.execute(new AddCommentCmd(taskId, processInstance, type, message));
+  }
+  
   @Override
   public Comment getComment(String commentId) {
     return commandExecutor.execute(new GetCommentCmd(commentId));
@@ -289,6 +295,14 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public List<Comment> getTaskComments(String taskId) {
     return commandExecutor.execute(new GetTaskCommentsCmd(taskId));
+  }
+  
+  public List<Comment> getTaskComments(String taskId, String type) {
+    return commandExecutor.execute(new GetTaskCommentsByTypeCmd(taskId, type));
+  }
+  
+  public List<Comment> getCommentsByType(String type) {
+    return commandExecutor.execute(new GetTypeCommentsCmd(type));
   }
 
   public List<Event> getTaskEvents(String taskId) {
