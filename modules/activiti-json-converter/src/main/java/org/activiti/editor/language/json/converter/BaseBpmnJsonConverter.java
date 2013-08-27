@@ -244,13 +244,33 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       
       if (property.isRequired()) {
         propertyItemNode.put(PROPERTY_FORM_REQUIRED, PROPERTY_VALUE_YES);
-      } 
-      if (!property.isReadable()) {
+      } else {
+        propertyItemNode.put(PROPERTY_FORM_REQUIRED, PROPERTY_VALUE_NO);
+      }
+      if (property.isReadable()) {
+        propertyItemNode.put(PROPERTY_FORM_READABLE, PROPERTY_VALUE_YES);
+      } else {
         propertyItemNode.put(PROPERTY_FORM_READABLE, PROPERTY_VALUE_NO);
       } 
-      if (!property.isWriteable()) {
+      if (property.isWriteable()) {
+        propertyItemNode.put(PROPERTY_FORM_WRITEABLE, PROPERTY_VALUE_YES);
+      } else {
         propertyItemNode.put(PROPERTY_FORM_WRITEABLE, PROPERTY_VALUE_NO);
-      } 
+      }
+      
+      if (property.getFormValues().size() > 0) {
+        ObjectNode formValueNode = objectMapper.createObjectNode();
+        ArrayNode formValueItemNode = objectMapper.createArrayNode();
+        for (FormValue formValue : property.getFormValues()) {
+          ObjectNode propertyFormValueNode = objectMapper.createObjectNode();
+          propertyFormValueNode.put(PROPERTY_FORM_FORM_VALUE_ID, formValue.getId());
+          propertyFormValueNode.put(PROPERTY_FORM_FORM_VALUE_NAME, formValue.getName());
+          formValueItemNode.add(propertyFormValueNode);
+        }
+        formValueNode.put("totalCount", formValueItemNode.size());
+        formValueNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, formValueItemNode);
+        propertyItemNode.put(PROPERTY_FORM_FORM_VALUES, formValueNode.toString());
+      }
       
       itemsNode.add(propertyItemNode);
     }
