@@ -12,6 +12,7 @@
  */
 package org.activiti.workflow.simple.definition.form;
 
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
@@ -42,4 +43,24 @@ public class TextPropertyDefinition extends FormPropertyDefinition {
 	public boolean isMultiline() {
 	  return multiline;
   }
+	
+	@Override
+	public FormPropertyDefinition clone() {
+		TextPropertyDefinition clone = new TextPropertyDefinition();
+		clone.setValues(this);
+	  return clone;
+	}
+	
+	@Override
+	public void setValues(FormPropertyDefinition otherDefinition) {
+		if(!(otherDefinition instanceof TextPropertyDefinition)) {
+			throw new SimpleWorkflowException("An instance of TextPropertyDefinition is required to set values");
+		}
+		
+		TextPropertyDefinition textDefinition = (TextPropertyDefinition) otherDefinition;
+		setName(textDefinition.getName());
+		setMandatory(textDefinition.isMandatory());
+		setWritable(textDefinition.isWritable());
+		setMultiline(textDefinition.isMultiline());
+	}
 }

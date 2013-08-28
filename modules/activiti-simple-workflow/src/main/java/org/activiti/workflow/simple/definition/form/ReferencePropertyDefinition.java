@@ -12,6 +12,7 @@
  */
 package org.activiti.workflow.simple.definition.form;
 
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
@@ -34,4 +35,24 @@ public class ReferencePropertyDefinition extends FormPropertyDefinition {
 	public String getType() {
 	  return type;
   }
+	
+	@Override
+	public FormPropertyDefinition clone() {
+		ReferencePropertyDefinition clone = new ReferencePropertyDefinition();
+		clone.setValues(this);
+	  return clone;
+	}
+	
+	@Override
+	public void setValues(FormPropertyDefinition otherDefinition) {
+		if(!(otherDefinition instanceof ReferencePropertyDefinition)) {
+			throw new SimpleWorkflowException("An instance of ReferencePropertyDefinition is required to set values");
+		}
+		
+		ReferencePropertyDefinition referenceDefinition = (ReferencePropertyDefinition) otherDefinition;
+		setName(referenceDefinition.getName());
+		setMandatory(referenceDefinition.isMandatory());
+		setWritable(referenceDefinition.isWritable());
+		setType(referenceDefinition.getType());
+	}
 }

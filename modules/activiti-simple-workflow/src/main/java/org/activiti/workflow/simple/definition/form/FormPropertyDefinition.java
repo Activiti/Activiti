@@ -12,6 +12,7 @@
  */
 package org.activiti.workflow.simple.definition.form;
 
+import org.activiti.engine.repository.ProcessDefinition;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
@@ -52,4 +53,15 @@ public abstract class FormPropertyDefinition {
   public void setWritable(boolean writable) {
 	  this.writable = writable;
   }
+  
+  /**
+   * Create a close of this {@link FormPropertyDefinition} instance.
+   */
+  public abstract FormPropertyDefinition clone();
+  
+  /**
+   * Sets the properties of this {@link ProcessDefinition} instance based in the
+   * properties present in the given definition. 
+   */
+  public abstract void setValues(FormPropertyDefinition otherDefinition);
 }

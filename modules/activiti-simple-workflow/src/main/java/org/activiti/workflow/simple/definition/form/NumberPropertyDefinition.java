@@ -12,6 +12,7 @@
  */
 package org.activiti.workflow.simple.definition.form;
 
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
@@ -22,4 +23,20 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 @JsonTypeName("number")
 public class NumberPropertyDefinition extends FormPropertyDefinition {
 	
+	@Override
+	public FormPropertyDefinition clone() {
+		NumberPropertyDefinition clone = new NumberPropertyDefinition();
+		clone.setValues(this);
+	  return clone;
+	}
+	
+	@Override
+	public void setValues(FormPropertyDefinition otherDefinition) {
+		if(!(otherDefinition instanceof NumberPropertyDefinition)) {
+			throw new SimpleWorkflowException("An instance of NumberPropertyDefinition is required to set values");
+		}
+		setName(otherDefinition.getName());
+		setMandatory(otherDefinition.isMandatory());
+		setWritable(otherDefinition.isWritable());
+	}
 }

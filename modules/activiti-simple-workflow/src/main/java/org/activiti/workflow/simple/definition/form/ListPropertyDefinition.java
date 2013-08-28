@@ -15,6 +15,7 @@ package org.activiti.workflow.simple.definition.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -40,5 +41,36 @@ public class ListPropertyDefinition extends FormPropertyDefinition {
 	
 	public void addEntry(ListPropertyEntry entry) {
 		entries.add(entry);
+	}
+	
+	@Override
+	public FormPropertyDefinition clone() {
+		ListPropertyDefinition clone = new ListPropertyDefinition();
+		clone.setValues(this);
+	  return clone;
+	}
+	
+	@Override
+	public void setValues(FormPropertyDefinition otherDefinition) {
+		if(!(otherDefinition instanceof ListPropertyDefinition)) {
+			throw new SimpleWorkflowException("An instance of ListPropertyDefinition is required to set values");
+		}
+		
+		ListPropertyDefinition datePropertyDefinition = (ListPropertyDefinition) otherDefinition;
+		setName(datePropertyDefinition.getName());
+		setMandatory(datePropertyDefinition.isMandatory());
+		setWritable(datePropertyDefinition.isWritable());
+		
+		// Copy the entries from the other definition
+		if(entries == null) {
+			entries = new ArrayList<ListPropertyEntry>();
+		}
+		if(datePropertyDefinition.getEntries() != null) {
+			ListPropertyEntry newEntry = null;
+			for(ListPropertyEntry entry : datePropertyDefinition.getEntries()) {
+				newEntry = new ListPropertyEntry(entry.getValue(), entry.getName());
+				entries.add(newEntry);
+			}
+		}
 	}
 }

@@ -12,6 +12,7 @@
  */
 package org.activiti.workflow.simple.definition.form;
 
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
@@ -42,4 +43,24 @@ public class DatePropertyDefinition extends FormPropertyDefinition {
 	public void setShowTime(boolean showTime) {
 	  this.showTime = showTime;
   }
+	
+	@Override
+	public FormPropertyDefinition clone() {
+		DatePropertyDefinition clone = new DatePropertyDefinition();
+		clone.setValues(this);
+	  return clone;
+	}
+	
+	@Override
+	public void setValues(FormPropertyDefinition otherDefinition) {
+		if(!(otherDefinition instanceof DatePropertyDefinition)) {
+			throw new SimpleWorkflowException("An instance of DatePropertyDefinition is required to set values");
+		}
+		
+		DatePropertyDefinition datePropertyDefinition = (DatePropertyDefinition) otherDefinition;
+		setName(datePropertyDefinition.getName());
+		setMandatory(datePropertyDefinition.isMandatory());
+		setWritable(datePropertyDefinition.isWritable());
+		setShowTime(datePropertyDefinition.isShowTime());
+	}
 }
