@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -24,6 +25,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.InstanceLocks;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -125,6 +127,25 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     assertEquals("var", runtimeService.getVariable(processInstance.getId(), "var"));
   }
   
+  
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testStartProcessInstanceSynchronous() throws InterruptedException {
+
+    DelayedTaskSubmitter delayedTaskSubmitter = new DelayedTaskSubmitter();
+    delayedTaskSubmitter.setServices(runtimeService, taskService);
+    delayedTaskSubmitter.start();
+  
+    ProcessInstance processInstance = runtimeService.SynchronStartProcessInstanceByKey("oneTaskProcess");
+    assertNotNull(processInstance);
+
+    delayedTaskSubmitter.join();
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+
+   
+
+  }
+
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testNonUniqueBusinessKey() {

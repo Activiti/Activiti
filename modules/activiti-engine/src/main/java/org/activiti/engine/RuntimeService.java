@@ -538,4 +538,12 @@ public interface RuntimeService {
    */
   void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables);
 
+  /** 
+   * Starts a new process instance in the latest version of the process definition with the given key
+   * and waits for it to be finished.
+   * @param processDefinitionKey key of process definition, cannot be null.
+   * @throws ActivitiObjectNotFoundException when no process definition is deployed with the given key.
+   */
+ ProcessInstance SynchronStartProcessInstanceByKey(String processDefinitionKey);
+
 }

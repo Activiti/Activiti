@@ -17,7 +17,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.form.FormData;
@@ -254,6 +256,31 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables) {
     commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, processVariables));
+  }
+
+  @Override
+  public ProcessInstance SynchronStartProcessInstanceByKey(String processDefinitionKey) {
+    ProcessInstance processInstance = null;
+
+    processInstance = commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, null));
+    ConcurrentHashMap<String, String> instanceLocks = InstanceLocks.getLocks();
+
+    try {
+
+      synchronized (instanceLocks) {
+
+        while (instanceLocks.get(processInstance.getId()) == null) {
+          instanceLocks.wait();
+        }
+        instanceLocks.remove(processInstance.getId());
+      }
+    } catch (InterruptedException e) {
+      
+      throw new ActivitiException("error for process instance to end. ProcessInstanceId=" + processInstance.getId());
+    }
+
+
+    return processInstance;
   }
 
 }

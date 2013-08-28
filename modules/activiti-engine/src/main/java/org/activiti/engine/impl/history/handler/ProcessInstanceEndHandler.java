@@ -13,10 +13,14 @@
 
 package org.activiti.engine.impl.history.handler;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.impl.InstanceLocks;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.test.api.runtime.DelayedTaskSubmitter;
 
 
 /**
@@ -27,5 +31,14 @@ public class ProcessInstanceEndHandler implements ExecutionListener {
   public void notify(DelegateExecution execution) {
     Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(
             execution.getProcessInstanceId(), ((ExecutionEntity) execution).getDeleteReason(), ((ExecutionEntity) execution).getActivityId());
+    
+    String passedProcessInstanceId = ((ExecutionEntity) execution).getProcessInstance().getId();
+    ConcurrentHashMap<String, String> instanceLocks = InstanceLocks.getLocks();
+    
+    synchronized (instanceLocks) {
+      instanceLocks.put(passedProcessInstanceId,"");
+      instanceLocks.notify();
+    }
+    
   }
 }
