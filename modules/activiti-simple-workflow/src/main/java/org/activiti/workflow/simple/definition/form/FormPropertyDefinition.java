@@ -12,7 +12,6 @@
  */
 package org.activiti.workflow.simple.definition.form;
 
-import org.activiti.engine.repository.ProcessDefinition;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
