@@ -40,6 +40,7 @@ import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.WaitforFinishCmd;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.runtime.NativeProcessInstanceQuery;
@@ -258,29 +259,53 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, processVariables));
   }
 
-  @Override
+  
   public ProcessInstance SynchronStartProcessInstanceByKey(String processDefinitionKey) {
-    ProcessInstance processInstance = null;
-
-    processInstance = commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, null));
-    ConcurrentHashMap<String, String> instanceLocks = InstanceLocks.getLocks();
-
-    try {
-
-      synchronized (instanceLocks) {
-
-        while (instanceLocks.get(processInstance.getId()) == null) {
-          instanceLocks.wait();
-        }
-        instanceLocks.remove(processInstance.getId());
-      }
-    } catch (InterruptedException e) {
-      
-      throw new ActivitiException("error for process instance to end. ProcessInstanceId=" + processInstance.getId());
-    }
-
-
+    ProcessInstance processInstance =  commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, null));
+    commandExecutor.execute(new WaitforFinishCmd(processInstance.getId()));
     return processInstance;
+  }
+  
+  public ProcessInstance SynchronStartProcessInstanceByKey(String processDefinitionKey, String businessKey) {    
+    ProcessInstance processInstance =  commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, businessKey, null));
+    commandExecutor.execute(new WaitforFinishCmd(processInstance.getId()));
+    return processInstance;    
+  }
+  
+  public ProcessInstance SynchronStartProcessInstanceByKey(String processDefinitionKey, Map<String, Object> variables) {
+    ProcessInstance processInstance =  commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, variables));
+    commandExecutor.execute(new WaitforFinishCmd(processInstance.getId()));
+    return processInstance;    
+  }
+  
+  public ProcessInstance SynchronStartProcessInstanceByKey(String processDefinitionKey, String businessKey, Map<String, Object> variables) {    
+    ProcessInstance processInstance =  commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, businessKey, variables));
+    commandExecutor.execute(new WaitforFinishCmd(processInstance.getId()));
+    return processInstance;    
+  }
+  
+  public ProcessInstance SynchronStartProcessInstanceById(String processDefinitionId) {
+    ProcessInstance processInstance =  commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, null, null));
+    commandExecutor.execute(new WaitforFinishCmd(processInstance.getId()));
+    return processInstance;    
+  }
+  
+  public ProcessInstance SynchronStartProcessInstanceById(String processDefinitionId, String businessKey) {    
+    ProcessInstance processInstance =  commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, businessKey, null));
+    commandExecutor.execute(new WaitforFinishCmd(processInstance.getId()));
+    return processInstance;    
+  }
+
+  public ProcessInstance SynchronStartProcessInstanceById(String processDefinitionId, Map<String, Object> variables) {    
+    ProcessInstance processInstance =  commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, null, variables));
+    commandExecutor.execute(new WaitforFinishCmd(processInstance.getId()));
+    return processInstance;    
+  }
+  
+  public ProcessInstance SynchronStartProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables) {    
+    ProcessInstance processInstance =  commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, businessKey, variables));
+    commandExecutor.execute(new WaitforFinishCmd(processInstance.getId()));
+    return processInstance;    
   }
 
 }
