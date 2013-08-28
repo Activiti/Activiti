@@ -16,6 +16,10 @@
         <activiti:formProperty id="age" name="age" type="long" variable="age" writable="false"/>
         <activiti:formProperty id="isMan" name="isMan" type="boolean" variable="isMan" readable="false"/>
         <activiti:formProperty id="remove" name="remove" type="boolean" variable="remove" required="true"/>
+		<activiti:formProperty id="testeEnum" name="testeEnum" type="enum" variable="testeEnum">
+          <activiti:value id="enum1" name="enum1"/>
+          <activiti:value id="enum2" name="enum2"/>
+        </activiti:formProperty>
       </extensionElements>
     </userTask>
     <exclusiveGateway id="sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6"/>
