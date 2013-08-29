@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.workflow.simple.definition.FeedbackStepDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
@@ -101,7 +100,7 @@ public class SimpleWorkflowJsonConverter {
 	
 	/**
 	 * @param e exception to wrap
-	 * @return an {@link ActivitiException} to throw, wrapping the given exception.
+	 * @return an {@link SimpleWorkflowException} to throw, wrapping the given exception.
 	 */
 	protected SimpleWorkflowException wrapExceptionRead(Exception e) {
 	  return new SimpleWorkflowException("Error while parsing JSON", e);
@@ -109,7 +108,7 @@ public class SimpleWorkflowJsonConverter {
 	
 	/**
 	 * @param e exception to wrap
-	 * @return an {@link ActivitiException} to throw, wrapping the given exception.
+	 * @return an {@link SimpleWorkflowException} to throw, wrapping the given exception.
 	 */
 	protected SimpleWorkflowException wrapExceptionWrite(Exception e) {
 		return new SimpleWorkflowException("Error while writing JSON", e);
