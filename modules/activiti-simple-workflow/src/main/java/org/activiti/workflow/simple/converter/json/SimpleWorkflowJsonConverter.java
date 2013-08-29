@@ -16,12 +16,14 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.workflow.simple.definition.FeedbackStepDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.ScriptStepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.definition.form.DatePropertyDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ReferencePropertyDefinition;
@@ -45,7 +47,7 @@ public class SimpleWorkflowJsonConverter {
 	/**
 	 * @param inputStream the stream to read the JSON from.
 	 * @return The workflow definition instance, read from the given input-stream.
-	 * @throws ActivitiException when an error occurs while reading or parsing the definition.
+	 * @throws SimpleWorkflowException when an error occurs while reading or parsing the definition.
 	 */
 	public WorkflowDefinition readWorkflowDefinition(InputStream inputStream) throws SimpleWorkflowException {
 		try {
@@ -58,7 +60,7 @@ public class SimpleWorkflowJsonConverter {
 	/**
 	 * @param bytes array representing the definition JSON.
 	 * @return The workflow definition instance, parsed from the given array.
-	 * @throws ActivitiException when an error occurs while parsing the definition.
+	 * @throws SimpleWorkflowException when an error occurs while parsing the definition.
 	 */
 	public WorkflowDefinition readWorkflowDefinition(byte[] bytes) throws SimpleWorkflowException {
 		try {
@@ -69,6 +71,27 @@ public class SimpleWorkflowJsonConverter {
 	}
 	
 	public void writeWorkflowDefinition(WorkflowDefinition definition, Writer writer) {
+		try {
+	    getObjectMapper().writeValue(writer, definition);
+    } catch (Exception e) {
+    	throw wrapExceptionWrite(e);
+    }
+	}
+	
+	/**
+	 * @param inputStream the stream to read the JSON from.
+	 * @return The workflow definition instance, read from the given input-stream.
+	 * @throws SimpleWorkflowException when an error occurs while reading or parsing the definition.
+	 */
+	public FormDefinition readFormDefinition(InputStream inputStream) {
+		try {
+	    return getObjectMapper().readValue(inputStream, FormDefinition.class);
+    } catch (Exception e) {
+    	throw wrapExceptionRead(e);
+    }
+	}
+	
+	public void writeFormDefinition(FormDefinition definition, Writer writer) {
 		try {
 	    getObjectMapper().writeValue(writer, definition);
     } catch (Exception e) {
