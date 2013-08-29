@@ -1388,7 +1388,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 
 		    <para>
 		    	<emphasis role="bold">注意：</emphasis>如果取消边界子流程对应的事务子流程配置为多实例，
-				乳沟一个实例触发了取消，就会取消所有实例。
+				如果一个实例触发了取消，就会取消所有实例。
 		    	instances.
 		    </para>
 
