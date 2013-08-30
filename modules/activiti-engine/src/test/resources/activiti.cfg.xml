@@ -11,6 +11,8 @@
     <property name="jdbcDriver" value="org.h2.Driver" />
     <property name="jdbcUsername" value="sa" />
     <property name="jdbcPassword" value="" />
+    
+     <property name="jobExecutorActivate" value="false" />
 
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="drop-create" />
