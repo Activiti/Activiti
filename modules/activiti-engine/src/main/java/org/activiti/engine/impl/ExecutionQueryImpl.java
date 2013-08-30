@@ -161,6 +161,27 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     eventSubscriptions.add(new EventSubscriptionQueryValue(eventName, eventType));
     return this;
   }
+  
+  public ExecutionQuery processVariableValueEquals(String variableName, Object variableValue) {
+    return variableValueEquals(variableName, variableValue, false);
+  }
+
+  public ExecutionQuery processVariableValueEquals(Object variableValue) {
+    return variableValueEquals(variableValue, false);
+  }
+
+  public ExecutionQuery processVariableValueNotEquals(String variableName, Object variableValue) {
+    return variableValueNotEquals(variableName, variableValue, false);
+  }
+
+  public ExecutionQuery processVariableValueEqualsIgnoreCase(String name, String value) {
+    return variableValueEqualsIgnoreCase(name, value, false);
+  }
+
+  @Override
+  public ExecutionQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
+    return variableValueNotEqualsIgnoreCase(name, value, false);
+  }
 
   //ordering ////////////////////////////////////////////////////
   
@@ -261,5 +282,4 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public String getParentId() {
     return parentId;
   }
-  
 }
