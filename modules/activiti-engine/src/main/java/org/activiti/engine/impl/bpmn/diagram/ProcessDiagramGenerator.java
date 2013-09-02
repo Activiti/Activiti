@@ -523,7 +523,7 @@ public class ProcessDiagramGenerator {
       GraphicInfo labelGraphicInfo = bpmnModel.getLabelGraphicInfo(sequenceFlow.getId());
       if (labelGraphicInfo != null) {
         GraphicInfo lineCenter = getLineCenter(graphicInfoList);
-        processDiagramCanvas.drawLabel(sequenceFlow.getName(), (int)lineCenter.getX() + 10, (int)(lineCenter.getY() - labelGraphicInfo.getHeight()),
+        processDiagramCanvas.drawLabel(sequenceFlow.getName(), (int)lineCenter.getX() + (int)labelGraphicInfo.getX(), (int)(lineCenter.getY() + (int)labelGraphicInfo.getY() - labelGraphicInfo.getHeight()),
         		(int) labelGraphicInfo.getWidth(), (int) labelGraphicInfo.getHeight(), false);
       }
     }
