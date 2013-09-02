@@ -39,6 +39,9 @@ public interface Comment {
 
   /** reference to the process instance on which this comment was made */ 
   String getProcessInstanceId();
+  
+  /** reference to the type given to the comment */
+  String getType();
 
   /** the full comment message the user had related to the task and/or process instance
    * @see TaskService#getTaskComments(String) */ 
