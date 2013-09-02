@@ -120,7 +120,7 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
     
     List<FormProperty> formProperties = new ArrayList<FormProperty>();
     
-    for (FormPropertyDefinition propertyDefinition : formDefinition.getFormProperties()) {
+    for (FormPropertyDefinition propertyDefinition : formDefinition.getFormPropertyDefinitions()) {
       FormProperty formProperty = new FormProperty();
       formProperties.add(formProperty);
       

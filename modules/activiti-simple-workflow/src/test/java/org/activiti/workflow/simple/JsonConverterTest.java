@@ -132,13 +132,13 @@ public class JsonConverterTest {
 				// Encountered step with form attached to it, should be last step
 				assertEquals(3, index);
 				assertEquals("123", humanStep.getForm().getFormKey());
-				assertEquals(originalStep.getForm().getFormProperties().size(), 
-						humanStep.getForm().getFormProperties().size());
+				assertEquals(originalStep.getForm().getFormPropertyDefinitions().size(), 
+						humanStep.getForm().getFormPropertyDefinitions().size());
 				
 				// Check form-fields, generic fields
-				for(int i=0; i<originalStep.getForm().getFormProperties().size(); i++) {
-					FormPropertyDefinition origDef = originalStep.getForm().getFormProperties().get(i);
-					FormPropertyDefinition parsedDef = humanStep.getForm().getFormProperties().get(i);
+				for(int i=0; i<originalStep.getForm().getFormPropertyDefinitions().size(); i++) {
+					FormPropertyDefinition origDef = originalStep.getForm().getFormPropertyDefinitions().get(i);
+					FormPropertyDefinition parsedDef = humanStep.getForm().getFormPropertyDefinitions().get(i);
 					
 					assertEquals(origDef.getName(), parsedDef.getName());
 					assertEquals(origDef.isMandatory(), parsedDef.isMandatory());

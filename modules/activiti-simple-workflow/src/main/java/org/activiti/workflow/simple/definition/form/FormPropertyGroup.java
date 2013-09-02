@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
@@ -23,7 +24,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * 
  * @author Frederik Heremans
  */
-public class FormPropertyGroup {
+public class FormPropertyGroup implements FormPropertyDefinitionContainer {
 	
 	protected String title;
 	protected String id;
@@ -42,9 +43,19 @@ public class FormPropertyGroup {
   }
 	
 	@JsonSerialize(contentAs=FormPropertyDefinition.class)
+  @JsonProperty(value="formProperties")
 	public List<FormPropertyDefinition> getFormPropertyDefinitions() {
 	  return formPropertyDefinitions;
   }
+	
+	@Override
+	public void addFormProperty(FormPropertyDefinition definition) {
+		formPropertyDefinitions.add(definition);
+	}
+	@Override
+	public boolean removeFormProperty(FormPropertyDefinition definition) {
+		return formPropertyDefinitions.remove(definition);
+	}
 	
 	public void setFormPropertyDefinitions(List<FormPropertyDefinition> formPropertyDefinitions) {
 	  this.formPropertyDefinitions = formPropertyDefinitions;

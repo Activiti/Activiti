@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
@@ -27,7 +28,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public class FormDefinition {
+public class FormDefinition implements FormPropertyDefinitionContainer {
 
 	protected String formKey;
   protected List<FormPropertyDefinition> formProperties = new ArrayList<FormPropertyDefinition>();
@@ -37,11 +38,12 @@ public class FormDefinition {
    * @return All {@link FormPropertyDefinition}s that are not part of any {@link FormPropertyGroup}.
    */
   @JsonSerialize(contentAs=FormPropertyDefinition.class)
-  public List<FormPropertyDefinition> getFormProperties() {
+  @JsonProperty(value="formProperties")
+  public List<FormPropertyDefinition> getFormPropertyDefinitions() {
     return formProperties;
   }
 
-  public void setFormProperties(List<FormPropertyDefinition> formProperties) {
+  public void getFormPropertyDefinitions(List<FormPropertyDefinition> formProperties) {
     this.formProperties = formProperties;
   }
 
@@ -49,8 +51,13 @@ public class FormDefinition {
    * Adds a form property to the form, not part of any group.
    * @param formProperty the property to add.
    */
-  public void addFormProperty(FormPropertyDefinition formProperty) {
-    formProperties.add(formProperty);
+  public void addFormProperty(FormPropertyDefinition definition) {
+    formProperties.add(definition);
+  }
+  
+  @Override
+  public boolean removeFormProperty(FormPropertyDefinition definition) {
+    return formProperties.remove(definition);
   }
   
   @JsonSerialize(contentAs=FormPropertyGroup.class)
