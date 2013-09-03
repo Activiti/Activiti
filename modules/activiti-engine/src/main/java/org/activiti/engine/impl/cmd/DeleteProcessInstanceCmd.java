@@ -34,8 +34,13 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
   }
 
   public Void execute(CommandContext commandContext) { 
-    if(processInstanceId == null) {
+    if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
+    }
+    
+    // fill default reason if none provided
+    if (deleteReason == null) {
+      deleteReason = "ACTIVITI_DELETED";
     }
     
     commandContext

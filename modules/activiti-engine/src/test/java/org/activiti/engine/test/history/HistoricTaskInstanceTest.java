@@ -120,7 +120,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     
     // First instance is finished
     ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest", "myBusinessKey");
-    ClockUtil.setCurrentTime(null);
+    ClockUtil.reset();
     
     // Set priority to non-default value
     Task task = taskService.createTaskQuery().processInstanceId(finishedInstance.getId()).singleResult();

@@ -22,6 +22,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
+import org.activiti.engine.task.TaskQuery;
 
 
 /**
@@ -64,6 +65,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected Date dueDate;
   protected Date dueAfter;
   protected Date dueBefore;
+  protected boolean withoutDueDate = false;
   protected Date creationDate;
   protected Date creationAfterDate;
   protected Date creationBeforeDate;
@@ -343,16 +345,24 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery taskDueDate(Date dueDate) {
     this.dueDate = dueDate;
+    this.withoutDueDate = false;
     return this;
   }
   
   public HistoricTaskInstanceQuery taskDueAfter(Date dueAfter) {
     this.dueAfter = dueAfter;
+    this.withoutDueDate = false;
     return this;
   }
   
   public HistoricTaskInstanceQuery taskDueBefore(Date dueBefore) {
     this.dueBefore = dueBefore;
+    this.withoutDueDate = false;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery withoutTaskDueDate() {
+    this.withoutDueDate = true;
     return this;
   }
   

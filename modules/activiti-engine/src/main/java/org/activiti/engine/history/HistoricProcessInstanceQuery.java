@@ -28,6 +28,7 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInstanceQuery, HistoricProcessInstance> {
 
@@ -57,6 +58,12 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
 
   /** Only select historic process instance that are not yet finished. */
   HistoricProcessInstanceQuery unfinished();
+  
+  /** Only select historic process instances that are deleted. */
+  HistoricProcessInstanceQuery deleted();
+
+  /** Only select historic process instance that are not deleted. */
+  HistoricProcessInstanceQuery notDeleted();
 
   /** Only select the historic process instances with which the user with the given id is involved. */
   HistoricProcessInstanceQuery involvedUser(String userId);

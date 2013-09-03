@@ -263,7 +263,13 @@
         and RES.END_TIME_ IS NULL
       </if>
       <if test="finished">
-        and RES.END_TIME_ is not NULL
+        and RES.END_TIME_ IS NOT NULL
+      </if>
+      <if test="notDeleted">
+        and RES.DELETE_REASON_ IS NULL
+      </if>
+      <if test="deleted">
+        and RES.DELETE_REASON_ IS NOT NULL
       </if>
       <if test="involvedUser != null">
         and (

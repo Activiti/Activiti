@@ -360,6 +360,11 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery dueAfter(Date dueDate);
   
   /**
+   * Only select tasks with no due date.
+   */
+  TaskQuery withoutDueDate();
+  
+  /**
    * Only selects tasks which are suspended, because its process instance was suspended.
    */
   TaskQuery suspended();

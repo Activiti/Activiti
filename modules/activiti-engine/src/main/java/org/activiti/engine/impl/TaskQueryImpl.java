@@ -72,6 +72,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected Date dueDate;
   protected Date dueBefore;
   protected Date dueAfter;
+  protected boolean withoutDueDate = false;
   protected SuspensionState suspensionState;
   protected boolean excludeSubtasks = false;
   protected boolean includeTaskLocalVariables = false;
@@ -411,16 +412,24 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   
   public TaskQuery dueDate(Date dueDate) {
     this.dueDate = dueDate;
+    this.withoutDueDate = false;
     return this;
   }
   
   public TaskQuery dueBefore(Date dueBefore) {
     this.dueBefore = dueBefore;
+    this.withoutDueDate = false;
     return this;
   }
   
   public TaskQuery dueAfter(Date dueAfter) {
     this.dueAfter = dueAfter;
+    this.withoutDueDate = false;
+    return this;
+  }
+  
+  public TaskQuery withoutDueDate() {
+    this.withoutDueDate = true;
     return this;
   }
 

@@ -193,6 +193,11 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    * Only select select historic task instances which have a due date before the given date.
    */
   HistoricTaskInstanceQuery taskDueBefore(Date dueDate);
+  
+  /**
+   * Only select historic tasks instances with no due date.
+   */
+  HistoricTaskInstanceQuery withoutTaskDueDate();
 
   /**
    * Only select select historic task instances which have a due date after the given date.
