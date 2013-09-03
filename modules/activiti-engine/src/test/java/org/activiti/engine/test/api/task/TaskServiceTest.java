@@ -186,8 +186,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       
       List<Comment> taskTypeComments = taskService.getTaskComments(taskId, customType1);
       assertEquals(2, taskTypeComments.size());
-      assertEquals("This is another Type1 comment", taskTypeComments.get(0).getFullMessage());
-      assertEquals("This is a custom comment of type Type1", taskTypeComments.get(1).getFullMessage());
       
       // Clean up
       taskService.deleteTask(taskId, true);
