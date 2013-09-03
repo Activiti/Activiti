@@ -327,6 +327,7 @@ public interface Messages {
   String DEPLOYMENT_HEADER_RESOURCES = "deployment.header.resources";
   String DEPLOYMENT_UPLOAD = "deployment.upload";
   String DEPLOYMENT_UPLOAD_DESCRIPTION = "deployment.upload.description";
+  String DEPLOYMENT_UPLOAD_DESCRIPTION_NO_DROP = "deployment.upload.description.nodrop";
   String DEPLOYMENT_UPLOAD_FAILED = "deployment.upload.failed";
   String DEPLOYMENT_UPLOAD_INVALID_FILE = "deployment.upload.invalid.file";
   String DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION = "deployment.upload.invalid.file.explanation";

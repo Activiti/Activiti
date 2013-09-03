@@ -171,6 +171,10 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
   
   // File upload event handling -------------------------------------------------------------------
   
+  public boolean isEnableDrop() {
+	  return enableDrop;
+  }
+  
   public void uploadStarted(StartedEvent event) {
     removeAllComponents(); // Visible components are replaced by a progress bar
     

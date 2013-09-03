@@ -14,6 +14,7 @@ package org.activiti.explorer.ui.custom;
 
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
+import org.activiti.explorer.Messages;
 
 import com.vaadin.ui.Upload.FailedListener;
 import com.vaadin.ui.Upload.FinishedEvent;
@@ -56,6 +57,11 @@ public class UploadPopupWindow extends PopupWindow {
     uploadComponent.setReceiver(receiver);
     uploadComponent.setDescription(description);
     uploadComponent.setSizeFull();
+    
+    if(!uploadComponent.isEnableDrop() && description != null) {
+    	// Since drop is disabled, we need to show an alternative description
+    	uploadComponent.setDescription(i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_DESCRIPTION_NO_DROP));
+    }
     initWindow(caption);
   }
 
