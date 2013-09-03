@@ -280,7 +280,7 @@
 { 
   "name" : "variableName",
   "value" : "variableValue",
-  "operator" : "equals",
+  "operation" : "equals",
   "type" : "string"
 }</programlisting>
             <table>
@@ -2906,7 +2906,7 @@
     {
         "name" : "myVariable",
         "value" : 1234,
-        "operator" : "equals",
+        "operation" : "equals",
         "type" : "long"
     },
     ...
@@ -4135,7 +4135,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
     {
         "name" : "myVariable",
         "value" : 1234,
-        "operator" : "equals",
+        "operation" : "equals",
         "type" : "long"
     },
     ...
@@ -4145,7 +4145,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
     {
         "name" : "processVariable",
         "value" : "some string",
-        "operator" : "equals",
+        "operation" : "equals",
         "type" : "string"
     },
     ...
@@ -5083,7 +5083,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ],
@@ -7478,7 +7478,7 @@ Only the attachment name is required to create a new attachment.
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ]
@@ -8001,7 +8001,7 @@ Only the attachment name is required to create a new attachment.
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ]
@@ -8513,7 +8513,7 @@ Only the attachment name is required to create a new attachment.
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ]
