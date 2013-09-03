@@ -999,13 +999,13 @@
   <title>流程定义</title>
 
    <section>
-      <title>List of process definitions</title>
+      <title>流程定义列表</title>
         <para>
           <programlisting>GET repository/process-definitions</programlisting>
         </para>
         <para>
             <table>
-              <title>List of process definitions - URL参数</title>
+              <title>流程定义列表 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1018,96 +1018,96 @@
                 <tbody>
                   <row>
                     <entry>version</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>integer</entry>
-                    <entry>Only return process definitions with the given version.</entry>
+                    <entry>只返回给定版本的流程定义。</entry>
                   </row>
                   <row>
                     <entry>name</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions with the given name.</entry>
+                    <entry>只返回给定名称的流程定义。</entry>
                   </row>
                   <row>
                     <entry>nameLike</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions with a name like the given name.</entry>
+                    <entry>只返回与给定名称匹配的流程定义。</entry>
                   </row>
                   <row>
                     <entry>key</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions with the given key.</entry>
+                    <entry>只返回给定key的流程定义。</entry>
                   </row>
                   <row>
                     <entry>keyLike</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions with a name like the given key.</entry>
+                    <entry>只返回与给定key匹配的流程定义。</entry>
                   </row>
                   <row>
                     <entry>resourceName</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions with the given resource name.</entry>
+                    <entry>只返回给定资源名称的流程定义。</entry>
                   </row>
                   <row>
                     <entry>resourceNameLike</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions with a name like the given resource name.</entry>
+                    <entry>只返回与给定资源名称匹配的流程定义。</entry>
                   </row>
                   <row>
                     <entry>category</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions with the given category.</entry>
+                    <entry>只返回给定分类的流程定义。</entry>
                   </row>
                   <row>
                     <entry>categoryLike</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions with a category like the given name.</entry>
+                    <entry>只返回与给定分类匹配的流程定义。</entry>
                   </row>
                   <row>
                     <entry>categoryNotEquals</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions which don't have the given category.</entry>
+                    <entry>只返回非给定分类的流程定义。</entry>
                   </row>
                   <row>
                     <entry>deploymentId</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions which are part of a deployment with the given id.</entry>
+                    <entry>只返回包含在与给定id一致的部署中的流程定义。</entry>
                   </row>
                   <row>
                     <entry>startableByUser</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return process definitions which can be started by the given user.</entry>
+                    <entry>只返回给定用户可以启动的流程定义。</entry>
                   </row>
                   <row>
                     <entry>latest</entry>
                     <entry>No</entry>
                     <entry>Boolean</entry>
-                    <entry>Only return the latest process definition versions. Can only be used toghether with 'key' and 'keyLike' parameters, using any other parameter will result in a 400-response.</entry>
+                    <entry>只返回最新的流程定义版本。只能与'key'或'keyLike'参数一起使用，如果使用了其他参数会返回400的响应。</entry>
                   </row>
                   <row>
                     <entry>suspended</entry>
                     <entry>No</entry>
                     <entry>Boolean</entry>
-                    <entry>If <literal>true</literal>, only returns process definitions which are suspended. If <literal>false</literal>, only active process definitions (which are not suspended) are returned.</entry>
+                    <entry>如果为<literal>true</literal>，只返回挂起的流程定义。如果为<literal>false</literal>，只返回活动的（未挂起）的流程定义。</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
                     <entry>No</entry>
-                    <entry>'name' (default), 'id', 'key', 'category', 'deploymentId' and 'version'</entry>
-                    <entry>Property to sort on, to be used toghether with the 'order'.</entry>
+                    <entry>'name'（默认），'id'，'key'，'category'，'deploymentId'和'version'</entry>
+                    <entry>排序的属性，可以与'order'一起使用。</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c4"><para>也可以使用通用的<link linkend="restPagingAndSort">分页与排序查询参数</link>。</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1115,7 +1115,7 @@
         </para>
         <para>
           <table>
-              <title>List of process definitions - 响应码</title>
+              <title>流程定义列表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1126,11 +1126,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates request was successful and the process-definitions are returned</entry>
+                    <entry>表示请求成功，流程定义已返回。</entry>
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates a parameter was passed in the wrong format or that 'latest' is used with other parameters other than 'key' and 'keyLike'. The status-message contains additional information.</entry>
+                    <entry>表示传递的参数格式错误，或'latest'与'key'，'keyLike'之外的其他参数一起使用了。状态信息包含更多信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1166,13 +1166,13 @@
 }</programlisting>
       <itemizedlist>
           <listitem>
-            <para><literal>graphicalNotationDefined</literal>: Indicates the process definition contains graphical information (BPMN DI).</para>
+            <para><literal>graphicalNotationDefined</literal>：表示流程定义包含图形信息（BPMN DI）。</para>
           </listitem>
           <listitem>
-            <para><literal>resource</literal>: Contains the actual deployed BPMN 2.0 xml.</para>
+            <para><literal>resource</literal>：包含实际部署的BPMN 2.0 xml。</para>
           </listitem>
           <listitem>
-            <para><literal>diagramResource</literal>: Contains a graphical representation of the process, null when no diagram is available.</para>
+            <para><literal>diagramResource</literal>：包含流程的图形内容，如果没有图形就返回null。</para>
           </listitem>
       </itemizedlist>
     </para>
