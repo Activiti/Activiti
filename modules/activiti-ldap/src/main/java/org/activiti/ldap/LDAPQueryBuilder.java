@@ -58,7 +58,8 @@ public class LDAPQueryBuilder {
           
           String userDnSearch = buildQueryByUserId(ldapConfigurator, userId);
           try {
-            NamingEnumeration< ? > namingEnum = initialDirContext.search(ldapConfigurator.getBaseDn(), userDnSearch, createSearchControls(ldapConfigurator));
+        	String baseDn = ldapConfigurator.getUserBaseDn() != null ? ldapConfigurator.getUserBaseDn() : ldapConfigurator.getBaseDn();
+            NamingEnumeration< ? > namingEnum = initialDirContext.search(baseDn, userDnSearch, createSearchControls(ldapConfigurator));
             while (namingEnum.hasMore()) { // Should be only one
               SearchResult result = (SearchResult) namingEnum.next();
               return result.getNameInNamespace();

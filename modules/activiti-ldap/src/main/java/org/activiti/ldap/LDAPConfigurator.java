@@ -53,6 +53,8 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
   
   // Query configuration
   protected String baseDn;
+  protected String userBaseDn;
+  protected String groupBaseDn;
   protected int searchTimeLimit = 0; // Default '0' == wait forever
 
   protected String queryUserByUserId;
@@ -213,11 +215,36 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
   
   /**
    * The base 'distinguished name' (DN) from which the searches for users and groups are started.
+   * 
+   * Use {@link #setUserBaseDn(String)} or {@link #setGroupBaseDn(String)} when needing to
+   * differentiate between user and group base DN.
    */
   public void setBaseDn(String baseDn) {
     this.baseDn = baseDn;
   }
   
+  public String getUserBaseDn() {
+	return userBaseDn;
+  }
+
+  /**
+   * The base 'distinguished name' (DN) from which the searches for users are started.
+   */
+  public void setUserBaseDn(String userBaseDn) {
+    this.userBaseDn = userBaseDn;
+  }
+	
+  public String getGroupBaseDn() {
+	return groupBaseDn;
+  }
+	
+  /**
+   * The base 'distinguished name' (DN) from which the searches for groups are started.
+   */
+  public void setGroupBaseDn(String groupBaseDn) {
+	this.groupBaseDn = groupBaseDn;
+  }
+	
   public int getSearchTimeLimit() {
     return searchTimeLimit;
   }

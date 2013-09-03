@@ -182,6 +182,18 @@
                             <entry></entry>
                         </row>     
                          <row>
+                            <entry>userBaseDn</entry>
+                            <entry>The base 'distinguished name' (DN) from which the searches for users are started. If not provided, baseDn (see above) will be used</entry>
+                            <entry>String</entry>
+                            <entry></entry>
+                        </row> 
+                        <row>
+                            <entry>groupBaseDn</entry>
+                            <entry>The base 'distinguished name' (DN) from which the searches for groups are started. If not provided, baseDn (see above) will be used</entry>
+                            <entry>String</entry>
+                            <entry></entry>
+                        </row>     
+                         <row>
                             <entry>searchTimeLimit</entry>
                             <entry>The timeout that is used when doing a search in LDAP in milliseconds</entry>
                             <entry>long</entry>
