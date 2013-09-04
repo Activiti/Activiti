@@ -1178,13 +1178,13 @@
     </para>
     </section>
    <section>
-      <title>Get a process definition</title>
+      <title>获得一个流程定义</title>
         <para>
           <programlisting>GET repository/process-definitions/{processDefinitionId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a process definition - URL参数</title>
+              <title>获得一个流程定义 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1199,7 +1199,7 @@
                     <entry>processDefinitionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process definition to get.</entry>
+                    <entry>希望获取的流程定义的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1207,7 +1207,7 @@
         </para>
         <para>
           <table>
-              <title>Get a process definition - 响应码</title>
+              <title>获得一个流程定义 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1218,11 +1218,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process definition was found and returned.</entry>
+                    <entry>表示找到了流程定义，并返回了结果。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process definition was not found.</entry>
+                    <entry>表示找不到请求的流程定义。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1249,25 +1249,25 @@
 }</programlisting>
       <itemizedlist>
           <listitem>
-            <para><literal>graphicalNotationDefined</literal>: Indicates the process definition contains graphical information (BPMN DI).</para>
+            <para><literal>graphicalNotationDefined</literal>：表示流程定义包含图形信息（BPMN DI）。</para>
           </listitem>
           <listitem>
-            <para><literal>resource</literal>: Contains the actual deployed BPMN 2.0 xml.</para>
+            <para><literal>resource</literal>：包含实际部署的BPMN 2.0 xml。</para>
           </listitem>
           <listitem>
-            <para><literal>diagramResource</literal>: Contains a graphical representation of the process, null when no diagram is available.</para>
+            <para><literal>diagramResource</literal>：包含流程的图形内容，如果没有图形就返回null。</para>
           </listitem>
       </itemizedlist>
     </para>
     </section>
 
     <section>
-      <title>Update category for a process definition</title>
+      <title>更新流程定义的分类</title>
         <para>
           <programlisting>PUT repository/process-definitions/{processDefinitionId}</programlisting>
         </para>
         <para>
-         <emphasis role="bold">Body JSON:</emphasis>
+         <emphasis role="bold">请求的JSON：</emphasis>
            <programlisting>
 {
   "category" : "updatedcategory"
@@ -1275,7 +1275,7 @@
         </para>
         <para>
           <table>
-              <title>Update category for a process definition - 响应码</title>
+              <title>更新流程定义的分类 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1286,32 +1286,32 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process was category was altered.</entry>
+                    <entry>表示已经修改了流程的分类。</entry>
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates no category was defined in the request body.</entry>
+                    <entry>表示请求体中没有传递分类。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process definition was not found.</entry>
+                    <entry>表示找不到请求的流程定义。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">成功响应体：</emphasis> see response for <literal>repository/process-definitions/{processDefinitionId}</literal>.
+       <emphasis role="bold">成功响应体：</emphasis>参考<literal>repository/process-definitions/{processDefinitionId}</literal>.
       </para>
  </section>
      <section>
-      <title>Get a process definition resource content</title>
+      <title>获得一个流程定义的资源内容</title>
         <para>
           <programlisting>GET repository/process-definitions/{processDefinitionId}/resourcedata</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a process definition resource content - URL参数</title>
+              <title>获得一个流程定义的资源内容 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1326,28 +1326,28 @@
                     <entry>processDefinitionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process definition to get the resource data for.</entry>
+                    <entry>期望获得资源数据的流程定义的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">Response:</emphasis>
+       <emphasis role="bold">响应：</emphasis>
     </para>
     <para>
-      Exactly the same 响应码/boy as <literal>GET repository/deployment/{deploymentId}/resourcedata/{resourceId}</literal>.
+      与 <literal>GET repository/deployment/{deploymentId}/resourcedata/{resourceId}</literal>的响应码和响应体完全一致。
     </para>
   </section>
 
    <section>
-      <title>Get a process definition BPMN model</title>
+      <title>获得流程定义的BPMN模型</title>
         <para>
           <programlisting>GET repository/process-definitions/{processDefinitionId}/model</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a process definition BPMN model - URL参数</title>
+              <title>获得流程定义的BPMN模型 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1362,7 +1362,7 @@
                     <entry>processDefinitionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process definition to get the model for.</entry>
+                    <entry>期望获得模型的流程定义的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1370,7 +1370,7 @@
         </para>
         <para>
           <table>
-              <title>Get a process definition BPMN model - 响应码</title>
+              <title>获得流程定义的BPMN模型 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1381,19 +1381,19 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process definition was found and the model is returned.</entry>
+                    <entry>表示已找到流程定义，并返回了模型。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process definition was not found.</entry>
+                    <entry>表示找不到请求的流程定义。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">Response body:</emphasis>
-       The response body is a JSON representation of the <literal>org.activiti.bpmn.model.BpmnModel</literal> and contains the full process definition model.
+       <emphasis role="bold">响应体：</emphasis>
+       响应体是一个转换为JSON格式的<literal>org.activiti.bpmn.model.BpmnModel</literal>，包含整个流程定义模型。
 <programlisting>
 {
    "processes":[
@@ -1421,12 +1421,12 @@
   </section>
 
   <section>
-      <title>Suspend a process definition</title>
+      <title>暂停流程定义</title>
         <para>
           <programlisting>PUT repository/process-definitions/{processDefinitionId}</programlisting>
         </para>
         <para>
-         <emphasis role="bold">Body JSON:</emphasis>
+         <emphasis role="bold">请求JSON体：</emphasis>
            <programlisting>
 {
   "action" : "suspend",
@@ -1434,30 +1434,30 @@
   "date" : "2013-04-15T00:42:12Z"
 }</programlisting>
         <table id="processDefinitionActionBodyParameters">
-              <title>Suspend a process definition - JSON Body parameters</title>
+              <title>暂停流程定义 - 请求的JSON参数</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
-                    <entry>Parameter</entry>
-                    <entry>Description</entry>
-                    <entry>Required</entry>
+                    <entry>参数</entry>
+                    <entry>描述</entry>
+                    <entry>是否必须</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>action</entry>
-                    <entry>Action to perform. Either <literal>activate</literal> or <literal>suspend</literal>.</entry>
+                    <entry>执行的动作。<literal>activate</literal> 或 <literal>suspend</literal>。</entry>
                     <entry>是</entry>
                   </row>
                   <row>
                     <entry>includeProcessInstances</entry>
-                    <entry>Wether or not to suspend/activate running process-instances for this process-definition. If omitted, the process-instances are left in the state they are.</entry>
-                    <entry>No</entry>
+                    <entry>是否把流程定义下正在运行的流程时也暂停或激活。如果忽略，就不改变流程实例的状态。</entry>
+                    <entry>否</entry>
                   </row>
                   <row>
                     <entry>date</entry>
-                    <entry>Date (ISO-8601) when the suspension/activation should be executed. If omitted, the suspend/activation is effective immediatly.</entry>
-                    <entry>No</entry>
+                    <entry>执行暂停或激活的日期（ISO-8601格式）。如果忽略，会立即执行暂停或激活。</entry>
+                    <entry>否</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1465,7 +1465,7 @@
         </para>
         <para>
           <table>
-              <title>Suspend a process definition - 响应码</title>
+              <title>暂停流程定义 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1476,31 +1476,31 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process was suspended.</entry>
+                    <entry>表示暂停流程成功。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process definition was not found.</entry>
+                    <entry>表示找不到请求的流程定义。</entry>
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the requested process definition is already suspended.</entry>
+                    <entry>表示请求的流程定义已经暂停了。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">成功响应体：</emphasis> see response for <literal>repository/process-definitions/{processDefinitionId}</literal>.
+       <emphasis role="bold">成功响应体：</emphasis> 参考 <literal>repository/process-definitions/{processDefinitionId}</literal>的响应。
       </para>
  </section>
    <section>
-      <title>Activate a process definition</title>
+      <title>激活流程定义</title>
         <para>
           <programlisting>PUT repository/process-definitions/{processDefinitionId}</programlisting>
         </para>
         <para>
-         <emphasis role="bold">Body JSON:</emphasis>
+         <emphasis role="bold">请求JSON体：</emphasis>
            <programlisting>
 {
   "action" : "activate",
@@ -1508,11 +1508,11 @@
   "date" : "2013-04-15T00:42:12Z"
 }</programlisting>
 
-        See suspend process definition <link linkend="processDefinitionActionBodyParameters">JSON Body parameters</link>.
+        参考暂停流程定义的 <link linkend="processDefinitionActionBodyParameters">JSON参数</link>。
         </para>
         <para>
           <table>
-              <title>Activate a process definition - 响应码</title>
+              <title>激活流程定义 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1523,33 +1523,33 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process was activated.</entry>
+                    <entry>表示激活流程成功。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process definition was not found.</entry>
+                    <entry>表示找不到请求的流程定义</entry>
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the requested process definition is already active.</entry>
+                    <entry>表示请求的流程定义已经激活了。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">成功响应体：</emphasis> see response for <literal>repository/process-definitions/{processDefinitionId}</literal>.
+       <emphasis role="bold">成功响应体：</emphasis> 参考 <literal>repository/process-definitions/{processDefinitionId}</literal>的响应。
       </para>
  </section>
 
   <section>
-      <title>Get all candidate starters for a process-definition</title>
+      <title>获得流程定义的所有候选启动者</title>
         <para>
           <programlisting>GET repository/process-definitions/{processDefinitionId}/identitylinks</programlisting>
         </para>
         <para>
             <table>
-              <title>Get all candidate starters for a process-definition - URL参数</title>
+              <title>获得流程定义的所有候选启动者 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1564,7 +1564,7 @@
                     <entry>processDefinitionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process definition to get the identity links for.</entry>
+                    <entry>期望获得IdentityLink的流程定义id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1572,7 +1572,7 @@
         </para>
         <para>
           <table>
-              <title>Get all candidate starters for a process-definition - 响应码</title>
+              <title>获得流程定义的所有候选启动者 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1583,11 +1583,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process definition was found and the requested identity links are returned.</entry>
+                    <entry>表示已找到流程定义，并返回了请求的IdentityLink。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process definition was not found.</entry>
+                    <entry>表示找不到请求的流程定义。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1613,20 +1613,20 @@
     </para>
   </section>
   <section>
-      <title>Add a candidate starter to a process definition</title>
+      <title>为流程定义添加一个候选启动者</title>
       <para>
         <programlisting>POST repository/process-definitions/{processDefinitionId}/identitylinks</programlisting>
       </para>
       <para>
           <table>
-            <title>Add a candidate starter to a process definition - URL参数</title>
+            <title>为流程定义添加一个候选启动者 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -1634,21 +1634,21 @@
                   <entry>processDefinitionId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the process definition.</entry>
+                  <entry>流程定义的id。</entry>
                 </row>
               </tbody>
            </tgroup>
         </table>
       </para>
       <para>
-       <emphasis role="bold">Request body (user):</emphasis>
+       <emphasis role="bold">请求体（用户）：</emphasis>
             <programlisting>
 {
   "userId" : "kermit"
 }</programlisting>
     </para>
     <para>
-       <emphasis role="bold">Request body (group):</emphasis>
+       <emphasis role="bold">请求体（组）：</emphasis>
             <programlisting>
 {
   "groupId" : "sales"
@@ -1656,22 +1656,22 @@
     </para>
       <para>
         <table>
-            <title>Add a candidate starter to a process definition - 响应码</title>
+            <title>为流程定义添加一个候选启动者 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
                 <row>
                   <entry>201</entry>
-                  <entry>Indicates the process definition was found and the identity link was created.</entry>
+                  <entry>表示找到了流程定义，并创建了IdentityLink。</entry>
                 </row>
                  <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested process definition was not found.</entry>
+                  <entry>表示找不到请求的流程定义。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -1690,20 +1690,20 @@
  </section>
 
   <section>
-      <title>Delete a candidate starter from a process definition</title>
+      <title>删除流程定义的候选启动者</title>
       <para>
         <programlisting>DELETE repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}</programlisting>
       </para>
       <para>
           <table>
-            <title>Delete a candidate starter from a process definition - URL参数</title>
+            <title>删除流程定义的候选启动者 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -1711,19 +1711,19 @@
                   <entry>processDefinitionId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the process definition.</entry>
+                  <entry>流程定义的id。</entry>
                 </row>
                 <row>
                   <entry>family</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>Either <literal>users</literal> or <literal>groups</literal>, depending on the type of identity link.</entry>
+                  <entry><literal>users</literal> 或 <literal>groups</literal>，依赖IdentityLink的类型。</entry>
                 </row>
                 <row>
                   <entry>identityId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>Either the userId or groupId of the identity to remove as candidate starter.</entry>
+                  <entry>需要删除的候选创建者的身份的userId 或 groupId。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -1731,22 +1731,22 @@
       </para>
       <para>
         <table>
-            <title>Delete a candidate starter from a process definition - 响应码</title>
+            <title>删除流程定义的候选启动者 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
                 <row>
                   <entry>204</entry>
-                  <entry>Indicates the process definition was found and the identity link was removed. The response body is intentionally empty.</entry>
+                  <entry>表示找到了流程定义，并删除了IdentityLink。响应体为空。</entry>
                 </row>
                  <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested process definition was not found or the process definition doesn't have an identity-link that matches the url.</entry>
+                  <entry>表示找不到请求的流程定义，或者在流程定义中找不到与url匹配的IdentityLink。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -1765,20 +1765,20 @@
     </section>
 
      <section>
-      <title>Get a candidate starter from a process definition</title>
+      <title>获得流程定义的一个候选启动者</title>
       <para>
         <programlisting>GET repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}</programlisting>
       </para>
       <para>
           <table>
-            <title>Get a candidate starter from a process definition - URL参数</title>
+            <title>获得流程定义的一个候选启动者 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -1786,19 +1786,19 @@
                   <entry>processDefinitionId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the process definition.</entry>
+                  <entry>流程定义的id。</entry>
                 </row>
                 <row>
                   <entry>family</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>Either <literal>users</literal> or <literal>groups</literal>, depending on the type of identity link.</entry>
+                  <entry><literal>users</literal> 或 <literal>groups</literal>，依赖IdentityLink的类型。</entry>
                 </row>
                 <row>
                   <entry>identityId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>Either the userId or groupId of the identity to get as candidate starter.</entry>
+                  <entry>用来获得候选启动者的身份的userId 或 groupId。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -1806,22 +1806,22 @@
       </para>
       <para>
         <table>
-            <title>Get a candidate starter from a process definition - 响应码</title>
+            <title>获得流程定义的一个候选启动者 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates the process definition was found and the identity link was returned.</entry>
+                  <entry>表示找到了流程定义，并返回了IdentityLink。</entry>
                 </row>
                  <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested process definition was not found or the process definition doesn't have an identity-link that matches the url.</entry>
+                  <entry>表示找不到请求的流程定义，或者在流程定义中找不到与url匹配的IdentityLink。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -2302,10 +2302,10 @@
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -2420,10 +2420,10 @@
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -5172,7 +5172,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
           <programlisting>PUT runtime/tasks/{taskId}</programlisting>
         </para>
         <para>
-         <emphasis role="bold">Body JSON:</emphasis>
+         <emphasis role="bold">请求JSON体：</emphasis>
            <programlisting>
 {
   "assignee" : "assignee",
@@ -6175,10 +6175,10 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -6216,8 +6216,8 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -6256,10 +6256,10 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -6295,8 +6295,8 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -6336,10 +6336,10 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -6640,8 +6640,8 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -7226,8 +7226,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -7315,10 +7315,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='4'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -7419,8 +7419,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -7504,8 +7504,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -7568,8 +7568,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -7597,8 +7597,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -7641,8 +7641,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -7732,10 +7732,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='4'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -7926,8 +7926,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8027,8 +8027,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8107,8 +8107,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8136,8 +8136,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8180,8 +8180,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8213,10 +8213,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='4'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8287,8 +8287,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8356,8 +8356,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8415,10 +8415,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='4'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8465,8 +8465,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8539,8 +8539,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8592,8 +8592,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8625,10 +8625,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='4'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8687,8 +8687,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8758,8 +8758,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8819,8 +8819,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8855,10 +8855,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='4'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8884,8 +8884,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -8983,8 +8983,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -9028,8 +9028,8 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='2'>
               <thead>
                 <row>
-                  <entry>Response code</entry>
-                  <entry>Description</entry>
+                  <entry>响应码</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -9518,13 +9518,13 @@ Only the attachment name is required to create a new attachment.
           <programlisting>PUT management/jobs/{jobId}</programlisting>
         </para>
         <para>
-         <emphasis role="bold">Body JSON:</emphasis>
+         <emphasis role="bold">请求JSON体：</emphasis>
            <programlisting>
 {
   "action" : "execute"
 }</programlisting>
         <table>
-              <title>Execute a single job - JSON Body parameters</title>
+              <title>Execute a single job - 请求的JSON参数</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9963,7 +9963,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>PUT identity/users/{userId}</programlisting>
         </para>
         <para>
-         <emphasis role="bold">Body JSON:</emphasis>
+         <emphasis role="bold">请求JSON体：</emphasis>
            <programlisting>
 {
   "firstName":"Tijs",
@@ -10010,7 +10010,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>POST identity/users</programlisting>
         </para>
         <para>
-         <emphasis role="bold">Body JSON:</emphasis>
+         <emphasis role="bold">请求JSON体：</emphasis>
            <programlisting>
 {
   "id":"tijs",
@@ -10058,10 +10058,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -10110,10 +10110,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -10128,7 +10128,7 @@ Only the attachment name is required to create a new attachment.
         </table>
       </para>
         <para>
-          <emphasis role="bold">Response Body:</emphasis>
+          <emphasis role="bold">响应体：</emphasis>
           The response body contains the raw picture data, representing the user's picture. The Content-type of the response corresponds to the mimeType that was set when creating the picture.
           <table>
               <title>Get a user's picture - 响应码</title>
@@ -10165,10 +10165,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -10227,10 +10227,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -10245,7 +10245,7 @@ Only the attachment name is required to create a new attachment.
         </table>
       </para>
         <para>
-          <emphasis role="bold">Response Body:</emphasis>
+          <emphasis role="bold">响应体：</emphasis>
 <programlisting>
 [
    {
@@ -10292,10 +10292,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -10316,7 +10316,7 @@ Only the attachment name is required to create a new attachment.
         </table>
       </para>
         <para>
-          <emphasis role="bold">Response Body:</emphasis>
+          <emphasis role="bold">响应体：</emphasis>
 <programlisting>
 {
    "key":"key1",
@@ -10358,10 +10358,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -10389,7 +10389,7 @@ Only the attachment name is required to create a new attachment.
 }</programlisting>
       </para>
         <para>
-          <emphasis role="bold">Response Body:</emphasis>
+          <emphasis role="bold">响应体：</emphasis>
 <programlisting>
 {
    "key":"key1",
@@ -10435,10 +10435,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -10461,7 +10461,7 @@ Only the attachment name is required to create a new attachment.
 }</programlisting>
       </para>
         <para>
-          <emphasis role="bold">Response Body:</emphasis>
+          <emphasis role="bold">响应体：</emphasis>
 <programlisting>
 {
    "key":"key1",
@@ -10511,10 +10511,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -10728,7 +10728,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>PUT identity/groups/{groupId}</programlisting>
         </para>
         <para>
-         <emphasis role="bold">Body JSON:</emphasis>
+         <emphasis role="bold">请求JSON体：</emphasis>
            <programlisting>
 {
    "name":"Test group",
@@ -10774,7 +10774,7 @@ Only the attachment name is required to create a new attachment.
           <programlisting>POST identity/groups</programlisting>
         </para>
         <para>
-         <emphasis role="bold">Body JSON:</emphasis>
+         <emphasis role="bold">请求JSON体：</emphasis>
            <programlisting>
 {
    "id":"testgroup",
@@ -10821,10 +10821,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -10877,10 +10877,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -10895,7 +10895,7 @@ Only the attachment name is required to create a new attachment.
         </table>
       </para>
        <para>
-         <emphasis role="bold">Body JSON:</emphasis>
+         <emphasis role="bold">请求JSON体：</emphasis>
            <programlisting>
 {
    "userId":"kermit"
@@ -10933,7 +10933,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
         <para>
-         <emphasis role="bold">Response Body:</emphasis>
+         <emphasis role="bold">响应体：</emphasis>
            <programlisting>
 {
    "userId":"kermit",
@@ -10953,10 +10953,10 @@ Only the attachment name is required to create a new attachment.
             <tgroup cols='3'>
               <thead>
                 <row>
-                  <entry>Parameter</entry>
-                  <entry>Required</entry>
-                  <entry>Value</entry>
-                  <entry>Description</entry>
+                  <entry>参数</entry>
+                  <entry>是否必填</entry>
+                  <entry>数据</entry>
+                  <entry>描述</entry>
                 </row>
               </thead>
               <tbody>
@@ -11000,7 +11000,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
         <para>
-         <emphasis role="bold">Response Body:</emphasis>
+         <emphasis role="bold">响应体：</emphasis>
            <programlisting>
 {
    "userId":"kermit",
@@ -11088,7 +11088,7 @@ Only the attachment name is required to create a new attachment.
         </listitem>
         <listitem>
           <para>
-            <emphasis role="bold">Response:</emphasis>
+            <emphasis role="bold">响应：</emphasis>
             <programlisting>
 {
   "id": "10",
@@ -11121,7 +11121,7 @@ Only the attachment name is required to create a new attachment.
         </listitem>
         <listitem>
           <para>
-            <emphasis role="bold">Response:</emphasis>
+            <emphasis role="bold">响应：</emphasis>
             <programlisting>
 {
   "data": [
@@ -11164,7 +11164,7 @@ Only the attachment name is required to create a new attachment.
         </listitem>
         <listitem>
           <para>
-            <emphasis role="bold">Response:</emphasis>
+            <emphasis role="bold">响应：</emphasis>
             <programlisting>
 {
   "id": "10",
@@ -11199,7 +11199,7 @@ Only the attachment name is required to create a new attachment.
         </listitem>
         <listitem>
           <para>
-            <emphasis role="bold">Response:</emphasis>
+            <emphasis role="bold">响应：</emphasis>
             <programlisting>I.e a .bpmn20.xml file, an image or whatever type of file the deployment resource contained.</programlisting>
           </para>
         </listitem>
@@ -11226,7 +11226,7 @@ Only the attachment name is required to create a new attachment.
         </listitem>
         <listitem>
           <para>
-            <emphasis role="bold">Response:</emphasis>
+            <emphasis role="bold">响应：</emphasis>
             <programlisting>
 {
   "success": true
@@ -11260,7 +11260,7 @@ Only the attachment name is required to create a new attachment.
         </listitem>
         <listitem>
           <para>
-            <emphasis role="bold">Response:</emphasis>
+            <emphasis role="bold">响应：</emphasis>
             <programlisting>
 {
   "success": true
@@ -11299,7 +11299,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "name": "default",
@@ -11390,7 +11390,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
                 "data": [
     {
@@ -11429,7 +11429,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>&lt;user-defined-response&gt;</programlisting>
             </para>
           </listitem>
@@ -11456,7 +11456,7 @@ Only the attachment name is required to create a new attachment.
             </listitem>
             <listitem>
               <para>
-                <emphasis role="bold">Response:</emphasis>
+                <emphasis role="bold">响应：</emphasis>
                 <programlisting>Png diagram of the process definition.</programlisting>
               </para>
             </listitem>
@@ -11493,7 +11493,7 @@ Only the attachment name is required to create a new attachment.
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Response:</emphasis>
+            <para><emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "id": "217",
@@ -11570,7 +11570,7 @@ Only the attachment name is required to create a new attachment.
             </listitem>
             <listitem>
               <para>
-                <emphasis role="bold">Response:</emphasis>
+                <emphasis role="bold">响应：</emphasis>
                 <programlisting>
   {
     "id": "2",
@@ -11643,7 +11643,7 @@ Only the attachment name is required to create a new attachment.
               </listitem>
               <listitem>
                 <para>
-                  <emphasis role="bold">Response:</emphasis>
+                  <emphasis role="bold">响应：</emphasis>
                   <programlisting>Png diagram of process with highlighted active executions.</programlisting>
                 </para>
               </listitem>
@@ -11727,7 +11727,7 @@ Only the attachment name is required to create a new attachment.
               </listitem>
               <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -11762,7 +11762,7 @@ Only the attachment name is required to create a new attachment.
               </listitem>
               <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -11803,7 +11803,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "assigned": {
@@ -11907,7 +11907,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
       "id": "127",
@@ -11980,7 +11980,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>&lt;user-defined-response&gt;</programlisting>
             </para>
           </listitem>
@@ -12019,7 +12019,7 @@ Only the attachment name is required to create a new attachment.
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Response:</emphasis>
+            <para><emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -12049,7 +12049,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "data": [
@@ -12088,7 +12088,7 @@ Only the attachment name is required to create a new attachment.
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Response:</emphasis>
+            <para><emphasis role="bold">响应：</emphasis>
               <programlisting>
         {
           "id": "130",
@@ -12122,7 +12122,7 @@ Only the attachment name is required to create a new attachment.
             </listitem>
             <listitem>
               <para>
-                <emphasis role="bold">Response:</emphasis>
+                <emphasis role="bold">响应：</emphasis>
                 <programlisting>The attachment.</programlisting>
               </para>
             </listitem>
@@ -12148,7 +12148,7 @@ Only the attachment name is required to create a new attachment.
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Response:</emphasis>
+            <para><emphasis role="bold">响应：</emphasis>
               <programlisting>
         {
           "id": "130",
@@ -12196,7 +12196,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -12226,7 +12226,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "id": "kermit",
@@ -12297,7 +12297,7 @@ Only the attachment name is required to create a new attachment.
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Response:</emphasis>
+            <para><emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   data: [
@@ -12348,7 +12348,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -12381,7 +12381,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -12411,7 +12411,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -12441,7 +12441,7 @@ Only the attachment name is required to create a new attachment.
             </listitem>
             <listitem>
               <para>
-                <emphasis role="bold">Response:</emphasis>
+                <emphasis role="bold">响应：</emphasis>
                 <programlisting>The user picture.</programlisting>
               </para>
             </listitem>
@@ -12468,7 +12468,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "id": "admin",
@@ -12538,7 +12538,7 @@ Only the attachment name is required to create a new attachment.
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Response:</emphasis>
+            <para><emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   data: [
@@ -12586,7 +12586,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -12619,7 +12619,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -12649,7 +12649,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -12734,7 +12734,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "id": "212",
@@ -12771,7 +12771,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -12805,7 +12805,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "success": true
@@ -12835,7 +12835,7 @@ Only the attachment name is required to create a new attachment.
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "data": [
@@ -12868,7 +12868,7 @@ Only the attachment name is required to create a new attachment.
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Response:</emphasis>
+            <para><emphasis role="bold">响应：</emphasis>
               <programlisting>
 {
   "tableName": "ACT_GE_PROPERTY",
