@@ -20,10 +20,8 @@ public class ParallelCamelRoute extends RouteBuilder {
   @Override
   public void configure() throws Exception {
 
-    from("activiti:parallelCamelProcess:serviceTaskAsync1").to("seda:parallelQueue");
-    from("seda:parallelQueue").to("bean:sleepBean?method=sleep");
+    from("activiti:parallelCamelProcess:serviceTaskAsync1").to("bean:sleepBean?method=sleep");
     
-    from("activiti:parallelCamelProcess:serviceTaskAsync2").to("seda:parallelQueue2");
-    from("seda:parallelQueue2").to("bean:sleepBean?method=sleep");
+    from("activiti:parallelCamelProcess:serviceTaskAsync2").to("bean:sleepBean?method=sleep");
   }
 }

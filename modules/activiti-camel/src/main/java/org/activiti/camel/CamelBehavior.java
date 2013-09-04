@@ -90,9 +90,8 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
                 public Void call() {
                    try {
                     endpoint.process(exchange);
-                  } catch (Exception e) {
-  
-                    e.printStackTrace();
+                  } catch (Exception e) {  
+                    throw new RuntimeException("Unable to process camel endpint asynchronously.");
                   }
                   return null;
               }});
