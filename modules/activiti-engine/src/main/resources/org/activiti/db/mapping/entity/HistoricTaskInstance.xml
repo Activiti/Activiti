@@ -240,13 +240,13 @@
   </sql>
   
   <sql id="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
-    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null">
+    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null">
       inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
     </if>
-    <if test="processDefinitionKey != null || processDefinitionName != null">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionName != null || processDefinitionNameLike != null">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
-    <foreach collection="variables" index="index" item="var">
+    <foreach collection="queryVariableValues" index="index" item="var">
       <choose>
         <when test="var.local">
           inner join ${prefix}ACT_HI_VARINST A${index} on RES.ID_ = A${index}.TASK_ID_ 
@@ -266,8 +266,14 @@
       <if test="processDefinitionKey != null">
         and D.KEY_ = #{processDefinitionKey}
       </if>
+      <if test="processDefinitionKeyLike != null">
+        and D.KEY_ like #{processDefinitionKeyLike}
+      </if>
       <if test="processDefinitionName != null">
         and D.NAME_ = #{processDefinitionName}
+      </if>
+      <if test="processDefinitionNameLike != null">
+        and D.NAME_ like #{processDefinitionNameLike}
       </if>
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
@@ -275,8 +281,14 @@
       <if test="processInstanceBusinessKey != null">
         and HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}
       </if>
+      <if test="processInstanceBusinessKeyLike != null">
+        and HPI.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}
+      </if>
       <if test="taskDefinitionKey != null">
         and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
+      </if>
+      <if test="taskDefinitionKeyLike != null">
+        and RES.TASK_DEF_KEY_ like #{taskDefinitionKeyLike}
       </if>
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
@@ -317,6 +329,12 @@
       <if test="taskPriority != null">
         and RES.PRIORITY_ = #{taskPriority}
       </if>
+      <if test="taskMinPriority != null">
+        and RES.PRIORITY_ &gt;= #{taskMinPriority}
+      </if>
+      <if test="taskMaxPriority != null">
+        and RES.PRIORITY_ &lt;= #{taskMaxPriority}
+      </if>
       <if test="unfinished">
         and RES.END_TIME_ is null
       </if>
@@ -344,6 +362,21 @@
       <if test="creationDate != null">
         and RES.START_TIME_ = #{creationDate}
       </if>
+      <if test="creationBeforeDate != null">
+        and RES.START_TIME_ &lt; #{creationBeforeDate}
+      </if>
+      <if test="creationAfterDate != null">
+        and RES.START_TIME_ &gt; #{creationAfterDate}
+      </if>
+      <if test="completedDate != null">
+        and RES.END_TIME_ = #{completedDate}
+      </if>
+      <if test="completedBeforeDate != null">
+        and RES.END_TIME_ &lt; #{completedBeforeDate}
+      </if>
+      <if test="completedAfterDate != null">
+        and RES.END_TIME_ &gt; #{completedAfterDate}
+      </if>
       <if test="involvedUser != null">
         and (
           exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
@@ -351,7 +384,7 @@
           or RES.OWNER_ = #{involvedUser}
           )
       </if>
-      <foreach item="queryVar" collection="variables" index="index">
+      <foreach item="queryVar" collection="queryVariableValues" index="index">
         <if test="!queryVar.local">
           <!-- When process instance variable is queried for, taskId should be null -->
           and A${index}.TASK_ID_ is null

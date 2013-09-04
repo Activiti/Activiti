@@ -16,6 +16,7 @@ package org.activiti.engine.test.history;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -205,6 +206,12 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskPriority(1234).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskPriority(5678).count());
     
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskMinPriority(1234).count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskMinPriority(1000).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskMinPriority(1300).count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskMaxPriority(1234).count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskMaxPriority(1300).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskMaxPriority(1000).count());
     
     // Due date
     Calendar anHourAgo = Calendar.getInstance();
@@ -227,9 +234,27 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDueAfter(anHourAgo.getTime()).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDueAfter(anHourLater.getTime()).count());
     
+    anHourAgo = new GregorianCalendar();
+    anHourAgo.setTime(start.getTime());
+    anHourAgo.add(Calendar.HOUR, -1);
+    
+    anHourLater = Calendar.getInstance();
+    anHourLater.setTime(start.getTime());
+    anHourLater.add(Calendar.HOUR, 1);
+    
     // Start date
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskCreatedOn(start.getTime()).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskCreatedOn(anHourAgo.getTime()).count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskCreatedAfter(anHourAgo.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskCreatedAfter(anHourLater.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskCreatedBefore(anHourAgo.getTime()).count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskCreatedBefore(anHourLater.getTime()).count());
+    
+    // Completed date
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskCompletedAfter(anHourAgo.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskCompletedAfter(anHourLater.getTime()).count());
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskCompletedBefore(anHourAgo.getTime()).count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskCompletedBefore(anHourLater.getTime()).count());
     
     // Filter based on identity-links
     // Assignee is involved
