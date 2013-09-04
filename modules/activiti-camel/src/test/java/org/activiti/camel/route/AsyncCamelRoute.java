@@ -20,12 +20,9 @@ public class AsyncCamelRoute extends RouteBuilder {
   @Override
   public void configure() throws Exception {
 
-    from("activiti:asyncCamelProcess:serviceTaskAsync1").setHeader("destination", constant("activiti:asyncCamelProcess:receive1")).to("seda:asyncQueue");
-    from("seda:asyncQueue").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
+    from("activiti:asyncCamelProcess:serviceTaskAsync1").to("bean:sleepBean?method=sleep").to("activiti:asyncCamelProcess:receive1");
     
-    from("activiti:asyncCamelProcess:serviceTaskAsync2").setHeader("destination", constant("activiti:asyncCamelProcess:receive2")).to("seda:asyncQueue2");
-    from("seda:asyncQueue2").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
-    
-    from("seda:receiveQueue").recipientList(header("destination"));
+    from("activiti:asyncCamelProcess:serviceTaskAsync2").to("bean:sleepBean?method=sleep").to("bean:sleepBean?method=sleep").to("activiti:asyncCamelProcess:receive2");    
+
   }
 }

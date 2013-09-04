@@ -12,7 +12,6 @@
     <property name="jdbcUsername" value="sa" />
     <property name="jdbcPassword" value="" />
     
-     <property name="jobExecutorActivate" value="false" />
 
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="drop-create" />

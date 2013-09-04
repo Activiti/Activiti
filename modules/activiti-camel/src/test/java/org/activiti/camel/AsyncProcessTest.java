@@ -31,10 +31,13 @@ public class AsyncProcessTest extends SpringActivitiTestCase {
 
   @Deployment(resources = {"process/async.bpmn20.xml"})
   public void testRunProcess() throws Exception {
+
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncCamelProcess");
     List<Execution> executionList = runtimeService.createExecutionQuery().list();
     assertEquals(3, executionList.size());
-    Thread.sleep(4000);
+    waitForJobExecutorToProcessAllJobs(3000, 100);
+    Thread.sleep(1000);
+    
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
   }
 }
