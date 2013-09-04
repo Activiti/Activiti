@@ -103,6 +103,8 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
       instanceList = historyService.createHistoricProcessInstanceQuery()
           .variableValueEquals("test", "test")
           .includeProcessVariables()
+          .orderByProcessInstanceId()
+          .asc()
           .listPage(0, 50);
       assertEquals(4, instanceList.size());
     }
