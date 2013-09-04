@@ -215,11 +215,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     if (includeProcessVariables) {
       return commandContext
           .getHistoricProcessInstanceEntityManager()
-          .findHistoricProcessInstancesAndVariablesByQueryCriteria(this, page);
+          .findHistoricProcessInstancesAndVariablesByQueryCriteria(this);
     } else {
       return commandContext
           .getHistoricProcessInstanceEntityManager()
-          .findHistoricProcessInstancesByQueryCriteria(this, page);
+          .findHistoricProcessInstancesByQueryCriteria(this);
     }
   }
   

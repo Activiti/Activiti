@@ -192,11 +192,11 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     if (includeProcessVariables) {
       return commandContext
           .getExecutionEntityManager()
-          .findProcessInstanceAndVariablesByQueryCriteria(this, page);
+          .findProcessInstanceAndVariablesByQueryCriteria(this);
     } else {
       return commandContext
           .getExecutionEntityManager()
-          .findProcessInstanceByQueryCriteria(this, page);
+          .findProcessInstanceByQueryCriteria(this);
     }
   }
   

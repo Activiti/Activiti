@@ -22,7 +22,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
-import org.activiti.engine.task.TaskQuery;
 
 
 /**
@@ -98,11 +97,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     if (includeTaskLocalVariables || includeProcessVariables) {
       return commandContext
           .getHistoricTaskInstanceEntityManager()
-          .findHistoricTaskInstancesAndVariablesByQueryCriteria(this, page);
+          .findHistoricTaskInstancesAndVariablesByQueryCriteria(this);
     } else {
       return commandContext
           .getHistoricTaskInstanceEntityManager()
-          .findHistoricTaskInstancesByQueryCriteria(this, page);
+          .findHistoricTaskInstancesByQueryCriteria(this);
     }
   }
 

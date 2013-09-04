@@ -72,7 +72,7 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
       List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().list();
       assertEquals(3, tasks.size());
       
-      task = (HistoricTaskInstance) historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskAssignee("gonzo").singleResult();
+      task = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskAssignee("gonzo").singleResult();
       assertEquals(0, task.getProcessVariables().size());
       assertEquals(0, task.getTaskLocalVariables().size());
       
@@ -80,7 +80,7 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
       startMap.put("processVar", true);
       runtimeService.startProcessInstanceByKey("oneTaskProcess", startMap);
       
-      task = (HistoricTaskInstance) historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskAssignee("kermit").singleResult();
+      task = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskAssignee("kermit").singleResult();
       assertEquals(1, task.getProcessVariables().size());
       assertEquals(0, task.getTaskLocalVariables().size());
       assertTrue((Boolean) task.getProcessVariables().get("processVar"));
@@ -88,12 +88,12 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
       taskService.setVariable(task.getId(), "anotherProcessVar", 123);
       taskService.setVariableLocal(task.getId(), "localVar", "test");
       
-      task = (HistoricTaskInstance) historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().taskAssignee("kermit").singleResult();
+      task = historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().taskAssignee("kermit").singleResult();
       assertEquals(0, task.getProcessVariables().size());
       assertEquals(1, task.getTaskLocalVariables().size());
       assertEquals("test", task.getTaskLocalVariables().get("localVar"));
       
-      task = (HistoricTaskInstance) historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskAssignee("kermit").singleResult();
+      task = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskAssignee("kermit").singleResult();
       assertEquals(2, task.getProcessVariables().size());
       assertEquals(0, task.getTaskLocalVariables().size());
       assertEquals(true, task.getProcessVariables().get("processVar"));
@@ -110,27 +110,27 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
       assertEquals(0, tasks.get(0).getProcessVariables().size());
       assertEquals(0, tasks.get(0).getTaskLocalVariables().size());
       
-      task = (HistoricTaskInstance) historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().taskAssignee("kermit").taskVariableValueEquals("localVar", "test").singleResult();
+      task = historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().taskAssignee("kermit").taskVariableValueEquals("localVar", "test").singleResult();
       assertEquals(0, task.getProcessVariables().size());
       assertEquals(1, task.getTaskLocalVariables().size());
       assertEquals("test", task.getTaskLocalVariables().get("localVar"));
       
-      task = (HistoricTaskInstance) historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskAssignee("kermit").taskVariableValueEquals("localVar", "test").singleResult();
+      task = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskAssignee("kermit").taskVariableValueEquals("localVar", "test").singleResult();
       assertEquals(2, task.getProcessVariables().size());
       assertEquals(0, task.getTaskLocalVariables().size());
       assertEquals(true, task.getProcessVariables().get("processVar"));
       assertEquals(123, task.getProcessVariables().get("anotherProcessVar"));
       
-      task = (HistoricTaskInstance) historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().includeProcessVariables().taskAssignee("kermit").singleResult();
+      task = historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().includeProcessVariables().taskAssignee("kermit").singleResult();
       assertEquals(2, task.getProcessVariables().size());
       assertEquals(1, task.getTaskLocalVariables().size());
       assertEquals("test", task.getTaskLocalVariables().get("localVar"));
       assertEquals(true, task.getProcessVariables().get("processVar"));
       assertEquals(123, task.getProcessVariables().get("anotherProcessVar"));
       
-      task = (HistoricTaskInstance) historyService.createHistoricTaskInstanceQuery().taskAssignee("gonzo").singleResult();
+      task = historyService.createHistoricTaskInstanceQuery().taskAssignee("gonzo").singleResult();
       taskService.complete(task.getId());
-      task = (HistoricTaskInstance) historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().finished().singleResult();
+      task = historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().finished().singleResult();
       variableMap = task.getTaskLocalVariables();
       assertEquals(2, variableMap.size());
       assertEquals(0, task.getProcessVariables().size());
@@ -139,6 +139,55 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
       assertNotNull(variableMap.get("testVar2"));
       assertEquals(123, variableMap.get("testVar2"));
     }
+  }
+  
+  public void testQueryWithPagingAndVariables() {
+    List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery()
+        .includeProcessVariables()
+        .includeTaskLocalVariables()
+        .orderByTaskPriority()
+        .desc()
+        .listPage(0, 1);
+    assertEquals(1, tasks.size());
+    HistoricTaskInstance task = tasks.get(0);
+    Map<String, Object> variableMap = task.getTaskLocalVariables();
+    assertEquals(2, variableMap.size());
+    assertEquals("someVariable", variableMap.get("testVar"));
+    assertEquals(123, variableMap.get("testVar2"));
+    
+    tasks = historyService.createHistoricTaskInstanceQuery()
+        .includeProcessVariables()
+        .includeTaskLocalVariables()
+        .orderByTaskPriority()
+        .asc()
+        .listPage(1, 2);
+    assertEquals(2, tasks.size());
+    task = tasks.get(1);
+    variableMap = task.getTaskLocalVariables();
+    assertEquals(2, variableMap.size());
+    assertEquals("someVariable", variableMap.get("testVar"));
+    assertEquals(123, variableMap.get("testVar2"));
+    
+    tasks = historyService.createHistoricTaskInstanceQuery()
+        .includeProcessVariables()
+        .includeTaskLocalVariables()
+        .orderByTaskPriority()
+        .asc()
+        .listPage(2, 4);
+    assertEquals(1, tasks.size());
+    task = tasks.get(0);
+    variableMap = task.getTaskLocalVariables();
+    assertEquals(2, variableMap.size());
+    assertEquals("someVariable", variableMap.get("testVar"));
+    assertEquals(123, variableMap.get("testVar2"));
+    
+    tasks = historyService.createHistoricTaskInstanceQuery()
+        .includeProcessVariables()
+        .includeTaskLocalVariables()
+        .orderByTaskPriority()
+        .asc()
+        .listPage(4, 2);
+    assertEquals(0, tasks.size());
   }
   
   /**

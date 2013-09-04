@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,13 +109,40 @@ public class ExecutionEntityManager extends AbstractManager {
   }
   
   @SuppressWarnings("unchecked")
-  public List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery, Page page) {
-    return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery, page);
+  public List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
+    return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery);
   }
   
   @SuppressWarnings("unchecked")
-  public List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery, Page page) {
-    return getDbSqlSession().selectList("selectProcessInstanceWithVariablesByQueryCriteria", executionQuery, page);
+  public List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
+    // paging doesn't work for combining process instances and variables due to an outer join, so doing it in-memory
+    if (executionQuery.getFirstResult() < 0 || executionQuery.getMaxResults() <= 0) {
+      return Collections.EMPTY_LIST;
+    }
+    
+    int firstResult = executionQuery.getFirstResult();
+    int maxResults = executionQuery.getMaxResults();
+    
+    // setting max results, limit to 20000 results for performance reasons
+    executionQuery.setMaxResults(20000);
+    executionQuery.setFirstResult(0);
+    
+    List<ProcessInstance> instanceList = getDbSqlSession().selectList("selectProcessInstanceWithVariablesByQueryCriteria", executionQuery);
+    
+    if (instanceList != null && instanceList.size() > 0) {
+      if (firstResult > 0) {
+        if (firstResult <= instanceList.size()) {
+          int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
+          return instanceList.subList(firstResult, toIndex);
+        } else {
+          return Collections.EMPTY_LIST;
+        }
+      } else {
+        int toIndex = Math.min(maxResults, instanceList.size());
+        return instanceList.subList(0, toIndex);
+      }
+    }
+    return Collections.EMPTY_LIST;
   }
 
   @SuppressWarnings("unchecked")

@@ -96,6 +96,57 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
           assertEquals(2, variableMap.size());
           assertEquals("test", variableMap.get("test"));
           assertEquals("test2", variableMap.get("test2"));
+          
+          instanceList = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().listPage(0, 50);
+          assertEquals(5, instanceList.size());
+          
+          instanceList = historyService.createHistoricProcessInstanceQuery()
+              .variableValueEquals("test", "test")
+              .includeProcessVariables()
+              .listPage(0, 50);
+          assertEquals(4, instanceList.size());
+          
+          instanceList = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().listPage(0, 50);
+          assertEquals(5, instanceList.size());
+          
+          instanceList = historyService.createHistoricProcessInstanceQuery()
+              .variableValueEquals("test", "test")
+              .includeProcessVariables()
+              .listPage(0, 1);
+          assertEquals(1, instanceList.size());
+          processInstance = instanceList.get(0);
+          variableMap = processInstance.getProcessVariables();
+          assertEquals(2, variableMap.size());
+          assertEquals("test", variableMap.get("test"));
+          assertEquals("test2", variableMap.get("test2"));
+          
+          instanceList = historyService.createHistoricProcessInstanceQuery()
+              .includeProcessVariables()
+              .processDefinitionKey(PROCESS_DEFINITION_KEY)
+              .listPage(1, 2);
+          assertEquals(2, instanceList.size());
+          processInstance = instanceList.get(0);
+          variableMap = processInstance.getProcessVariables();
+          assertEquals(2, variableMap.size());
+          assertEquals("test", variableMap.get("test"));
+          assertEquals("test2", variableMap.get("test2"));
+          
+          instanceList = historyService.createHistoricProcessInstanceQuery()
+              .includeProcessVariables()
+              .processDefinitionKey(PROCESS_DEFINITION_KEY)
+              .listPage(3, 4);
+          assertEquals(1, instanceList.size());
+          processInstance = instanceList.get(0);
+          variableMap = processInstance.getProcessVariables();
+          assertEquals(2, variableMap.size());
+          assertEquals("test", variableMap.get("test"));
+          assertEquals("test2", variableMap.get("test2"));
+          
+          instanceList = historyService.createHistoricProcessInstanceQuery()
+              .includeProcessVariables()
+              .processDefinitionKey(PROCESS_DEFINITION_KEY)
+              .listPage(4, 2);
+          assertEquals(0, instanceList.size());
     }
   }
 }

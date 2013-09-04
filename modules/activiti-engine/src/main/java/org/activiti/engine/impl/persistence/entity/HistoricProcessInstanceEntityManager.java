@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
-import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -86,17 +85,44 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
-  public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery, Page page) {
+  public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      return getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
+      return getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery);
     }
     return Collections.EMPTY_LIST;
   }
   
   @SuppressWarnings("unchecked")
-  public List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery, Page page) {
+  public List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      return getDbSqlSession().selectList("selectHistoricProcessInstancesWithVariablesByQueryCriteria", historicProcessInstanceQuery, page);
+      
+      // paging doesn't work for combining process instances and variables due to an outer join, so doing it in-memory
+      if (historicProcessInstanceQuery.getFirstResult() < 0 || historicProcessInstanceQuery.getMaxResults() <= 0) {
+        return Collections.EMPTY_LIST;
+      }
+      
+      int firstResult = historicProcessInstanceQuery.getFirstResult();
+      int maxResults = historicProcessInstanceQuery.getMaxResults();
+      
+      // setting max results, limit to 20000 results for performance reasons
+      historicProcessInstanceQuery.setMaxResults(20000);
+      historicProcessInstanceQuery.setFirstResult(0);
+      
+      List<HistoricProcessInstance> instanceList = getDbSqlSession().selectList("selectHistoricProcessInstancesWithVariablesByQueryCriteria", historicProcessInstanceQuery);
+      
+      if (instanceList != null && instanceList.size() > 0) {
+        if (firstResult > 0) {
+          if (firstResult <= instanceList.size()) {
+            int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
+            return instanceList.subList(firstResult, toIndex);
+          } else {
+            return Collections.EMPTY_LIST;
+          }
+        } else {
+          int toIndex = Math.min(maxResults, instanceList.size());
+          return instanceList.subList(0, toIndex);
+        }
+      }
     }
     return Collections.EMPTY_LIST;
   }
