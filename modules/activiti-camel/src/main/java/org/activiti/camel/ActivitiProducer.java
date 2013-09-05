@@ -12,6 +12,11 @@
  */
 package org.activiti.camel;
 
+/**
+ * @author Saeid Mirzaei  
+ * @author Maciej Próchniak
+ */
+
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -89,7 +94,10 @@ public class ActivitiProducer extends DefaultProducer {
     
     
     Execution execution = null;
-    while (firstTime || (activitiTimeout != null && (System.currentTimeMillis()-initialTime  < activitiTimeout))) {
+    while (firstTime || (activitiTimeout != null 
+                            && activitiTimeout != 0 
+                            && (System.currentTimeMillis()-initialTime  < activitiTimeout))
+                         ) {
        execution = runtimeService.createExecutionQuery()
           .processDefinitionKey(processKey)
           .processInstanceId(processInstanceId)
@@ -102,6 +110,7 @@ public class ActivitiProducer extends DefaultProducer {
         firstTime = false;
         if (execution != null)
             break;
+
     }
     if (execution == null) {
       throw new RuntimeException("Couldn't find activity "+activity+" for processId " + processInstanceId + " in defined timeout.");
