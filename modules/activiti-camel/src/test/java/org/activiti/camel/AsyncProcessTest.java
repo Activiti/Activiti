@@ -36,7 +36,7 @@ public class AsyncProcessTest extends SpringActivitiTestCase {
     List<Execution> executionList = runtimeService.createExecutionQuery().list();
     assertEquals(3, executionList.size());
     waitForJobExecutorToProcessAllJobs(3000, 100);
-    Thread.sleep(1000);
+    Thread.sleep(1500);
     
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
   }

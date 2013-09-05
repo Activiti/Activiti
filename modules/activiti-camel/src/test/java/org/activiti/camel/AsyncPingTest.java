@@ -29,7 +29,7 @@ public class AsyncPingTest extends SpringActivitiTestCase {
     assertEquals(1, executionList.size());
 
     waitForJobExecutorToProcessAllJobs(3000, 100);
-    Thread.sleep(500);
+    Thread.sleep(8000);
     
     executionList = runtimeService.createExecutionQuery().list();
     assertEquals(0, executionList.size());

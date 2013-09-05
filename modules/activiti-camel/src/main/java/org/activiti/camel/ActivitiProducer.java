@@ -25,7 +25,18 @@ public class ActivitiProducer extends DefaultProducer {
   public static final String PROCESS_KEY_PROPERTY = "PROCESS_KEY_PROPERTY";
 
   public static final String PROCESS_ID_PROPERTY = "PROCESS_ID_PROPERTY";
+  
+  public static final String ACTIVITI_TIMEOUT_PROPERTY = "ACTIVITI_JOIN_TIMEOUT";
 
+  public static final String ACTIVITI_TIMEOUT_RESOLUTION_PROPERTY = "ACTIVITI_JOIN_RESOLUTION";
+
+  public static final Integer DEFAULT_TIMEOUT_RESOLUTION = 100;
+  
+  
+  public static final Integer DEFAULT_TIMEOUT = 5000;
+  
+  
+  
   private String processKey = null;
 
   private String activity = null;
@@ -54,16 +65,49 @@ public class ActivitiProducer extends DefaultProducer {
     return activity == null;
   }
 
+  
+  private Integer getPropertyWithDefault(Exchange exchange, String propertyName, int defaultValue) {    
+    Object integerObject =  exchange.getProperty(propertyName);
+    
+    if   (integerObject != null) 
+      return  Integer.parseInt((String) integerObject);
+    else
+      return  defaultValue;
+    
+  }
+  
   private void signal(Exchange exchange) {
     String processInstanceId = findProcessInstanceId(exchange);
-    Execution execution = runtimeService.createExecutionQuery()
-        .processDefinitionKey(processKey)
-        .processInstanceId(processInstanceId)
-        .activityId(activity).singleResult();
-
-    if (execution == null) {
-      throw new RuntimeException("Couldn't find activity "+activity+" for processId " + processInstanceId);
+    
+    
+    Integer activitiTimeout =   getPropertyWithDefault(exchange, ACTIVITI_TIMEOUT_PROPERTY, DEFAULT_TIMEOUT);   
+    Integer timeRsolution   =   getPropertyWithDefault(exchange, ACTIVITI_TIMEOUT_RESOLUTION_PROPERTY, DEFAULT_TIMEOUT_RESOLUTION);   
+            
+    boolean firstTime = true;
+    
+    long initialTime  = System.currentTimeMillis();
+    
+    
+    Execution execution = null;
+    while (firstTime || (activitiTimeout != null && (System.currentTimeMillis()-initialTime  < activitiTimeout))) {
+       execution = runtimeService.createExecutionQuery()
+          .processDefinitionKey(processKey)
+          .processInstanceId(processInstanceId)
+          .activityId(activity).singleResult();
+        try {
+          Thread.sleep(timeRsolution);
+        } catch (InterruptedException e) {
+          throw new RuntimeException("error occured while waiting for activiti=" + activity + " for processInstanceId=" + processInstanceId);
+        }
+        firstTime = false;
+        if (execution != null)
+            break;
     }
+    if (execution == null) {
+      throw new RuntimeException("Couldn't find activity "+activity+" for processId " + processInstanceId + " in defined timeout.");
+    }
+    
+
     runtimeService.setVariables(execution.getId(), ExchangeUtils.prepareVariables(exchange, getActivitiEndpoint()));
     runtimeService.signal(execution.getId());
 
