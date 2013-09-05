@@ -31,14 +31,9 @@ public class ActivitiProducer extends DefaultProducer {
 
   public static final String PROCESS_ID_PROPERTY = "PROCESS_ID_PROPERTY";
   
-  public static final String ACTIVITI_TIMEOUT_PROPERTY = "ACTIVITI_JOIN_TIMEOUT";
+  private final long timeout;
 
-  public static final String ACTIVITI_TIMEOUT_RESOLUTION_PROPERTY = "ACTIVITI_JOIN_RESOLUTION";
-
-  public static final Integer DEFAULT_TIMEOUT_RESOLUTION = 100;
-  
-  
-  public static final Integer DEFAULT_TIMEOUT = 5000;
+  private final long timeResolution;
   
   
   
@@ -46,7 +41,7 @@ public class ActivitiProducer extends DefaultProducer {
 
   private String activity = null;
 
-  public ActivitiProducer(ActivitiEndpoint endpoint, RuntimeService runtimeService) {
+  public ActivitiProducer(ActivitiEndpoint endpoint, RuntimeService runtimeService, long timeout, long timeResolution) {
     super(endpoint);
     this.runtimeService = runtimeService;
     String[] path = endpoint.getEndpointKey().split(":");
@@ -54,6 +49,8 @@ public class ActivitiProducer extends DefaultProducer {
     if (path.length > 2) {
       activity = path[2];
     }
+    this.timeout = timeout;
+    this.timeResolution = timeResolution;
   }
 
   public void process(Exchange exchange) throws Exception {
@@ -85,8 +82,6 @@ public class ActivitiProducer extends DefaultProducer {
     String processInstanceId = findProcessInstanceId(exchange);
     
     
-    Integer activitiTimeout =   getPropertyWithDefault(exchange, ACTIVITI_TIMEOUT_PROPERTY, DEFAULT_TIMEOUT);   
-    Integer timeRsolution   =   getPropertyWithDefault(exchange, ACTIVITI_TIMEOUT_RESOLUTION_PROPERTY, DEFAULT_TIMEOUT_RESOLUTION);   
             
     boolean firstTime = true;
     
@@ -94,16 +89,15 @@ public class ActivitiProducer extends DefaultProducer {
     
     
     Execution execution = null;
-    while (firstTime || (activitiTimeout != null 
-                            && activitiTimeout != 0 
-                            && (System.currentTimeMillis()-initialTime  < activitiTimeout))
+    while (firstTime || (timeout > 0 
+                            && (System.currentTimeMillis()-initialTime  < timeout))
                          ) {
        execution = runtimeService.createExecutionQuery()
           .processDefinitionKey(processKey)
           .processInstanceId(processInstanceId)
           .activityId(activity).singleResult();
         try {
-          Thread.sleep(timeRsolution);
+          Thread.sleep(timeResolution);
         } catch (InterruptedException e) {
           throw new RuntimeException("error occured while waiting for activiti=" + activity + " for processInstanceId=" + processInstanceId);
         }
