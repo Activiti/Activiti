@@ -196,7 +196,7 @@
   </sql>
   
   <sql id="commonSelectHistoricProcessInstancesByQueryCriteriaSql">
-    <if test="processKeyNotIn != null || processDefinitionKey != null || processDefinitionKeyLike != null">
+    <if test="processKeyNotIn != null || processDefinitionKey != null">
       inner join ${prefix}ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
@@ -216,7 +216,7 @@
         and RES.PROC_DEF_ID_ = #{processDefinitionId}
       </if>
       <if test="processDefinitionKey != null">
-        and RES.PROC_DEF_ID_ like #{processDefinitionIdLike}
+        and DEF.KEY_ like #{processDefinitionKey}
       </if>
       <if test="businessKey != null">
         and RES.BUSINESS_KEY_ = #{businessKey}
