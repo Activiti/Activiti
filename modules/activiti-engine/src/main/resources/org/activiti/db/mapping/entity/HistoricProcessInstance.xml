@@ -216,7 +216,7 @@
         and RES.PROC_DEF_ID_ = #{processDefinitionId}
       </if>
       <if test="processDefinitionKey != null">
-        and DEF.KEY_ like #{processDefinitionKey}
+        and DEF.KEY_ = #{processDefinitionKey}
       </if>
       <if test="businessKey != null">
         and RES.BUSINESS_KEY_ = #{businessKey}
