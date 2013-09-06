@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -186,9 +187,14 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     }
     return variables;
   }
+  
   public List<HistoricVariableInstanceEntity> getQueryVariables() {
+    if(queryVariables == null && Context.getCommandContext() != null) {
+      queryVariables = new HistoricVariableInitializingList();
+    }
     return queryVariables;
   }
+  
   public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }

@@ -1387,9 +1387,14 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
     return variables;
   }
+  
   public List<VariableInstanceEntity> getQueryVariables() {
+    if(queryVariables == null && Context.getCommandContext() != null) {
+      queryVariables = new VariableInitializingList();
+    }
     return queryVariables;
   }
+  
   public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
