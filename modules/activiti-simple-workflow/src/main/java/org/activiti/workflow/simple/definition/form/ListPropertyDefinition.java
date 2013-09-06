@@ -64,7 +64,10 @@ public class ListPropertyDefinition extends FormPropertyDefinition {
 		// Copy the entries from the other definition
 		if(entries == null) {
 			entries = new ArrayList<ListPropertyEntry>();
+		} else {
+			entries.clear();
 		}
+		
 		if(datePropertyDefinition.getEntries() != null) {
 			ListPropertyEntry newEntry = null;
 			for(ListPropertyEntry entry : datePropertyDefinition.getEntries()) {
