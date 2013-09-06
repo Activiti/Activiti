@@ -69,17 +69,43 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
   protected Expression camelContext;
   protected CamelContext camelContextObj;
   protected SpringProcessEngineConfiguration springConfiguration;
+
+  protected abstract void setPropertTargetVariable(ActivitiEndpoint endpoint);
   
-  protected abstract void modifyActivitiComponent(ActivitiComponent component);
+  public enum TargetType {
+    BODY_AS_MAP, BODY, PROPERTIES
+  }
   
-  protected abstract void copyVariables(Map<String, Object> variables, Exchange exchange, ActivitiEndpoint endpoint);
+  protected TargetType toTargetType=null;
+
+  
+  protected void updateTargetVariables(ActivitiEndpoint endpoint) {
+    toTargetType = null;
+    if (endpoint.isCopyVariablesToBodyAsMap())
+      toTargetType = TargetType.BODY_AS_MAP;
+    else if (endpoint.isCopyCamelBodyToBody())
+      toTargetType = TargetType.BODY;
+    else if (endpoint.isCopyVariablesToProperties())
+      toTargetType = TargetType.PROPERTIES;
+      
+    if (toTargetType == null)
+         setPropertTargetVariable(endpoint);  
+  }
+  protected void copyVariables(Map<String, Object> variables, Exchange exchange, ActivitiEndpoint endpoint) {
+    switch (toTargetType) {
+      case BODY_AS_MAP: copyVariablesToBodyAsMap(variables, exchange);
+        break;
+        
+      case BODY: copyVariablesToBody(variables, exchange);
+        break;
+        
+      case PROPERTIES: copyVariablesToProperties(variables, exchange);
+    }
+  }
 
   public void execute(ActivityExecution execution) throws Exception {
     setAppropriateCamelContext(execution);
-    //Retrieve the ActivitiComponent object.
-    ActivitiComponent component = camelContextObj.getComponent("activiti", ActivitiComponent.class);
-    modifyActivitiComponent(component);
-    
+
     final ActivitiEndpoint endpoint = createEndpoint(execution);
     final Exchange exchange = createExchange(execution, endpoint);
     
@@ -125,6 +151,7 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
     Exchange ex = new DefaultExchange(camelContextObj);
     ex.setProperty(ActivitiProducer.PROCESS_ID_PROPERTY, activityExecution.getProcessInstanceId());
     Map<String, Object> variables = activityExecution.getVariables();
+    updateTargetVariables(endpoint);
     copyVariables(variables, ex, endpoint);
     return ex;
   }

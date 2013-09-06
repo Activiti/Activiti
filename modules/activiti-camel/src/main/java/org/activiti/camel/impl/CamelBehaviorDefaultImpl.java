@@ -13,12 +13,9 @@
 
 package org.activiti.camel.impl;
 
-import java.util.Map;
-
-import org.activiti.camel.ActivitiComponent;
 import org.activiti.camel.ActivitiEndpoint;
 import org.activiti.camel.CamelBehavior;
-import org.apache.camel.Exchange;
+import org.activiti.camel.CamelBehavior.TargetType;
 
 /**
  * This implementation of the CamelBehavior abstract class works just like CamelBehaviour does; it copies variables 
@@ -29,23 +26,9 @@ import org.apache.camel.Exchange;
 public class CamelBehaviorDefaultImpl extends CamelBehavior {
 	
 	private static final long serialVersionUID = 003L;
-	
-	@Override
-	protected void modifyActivitiComponent(ActivitiComponent component) {
-		//Set the copy method for new endpoints created using this component.
-		component.setCopyVariablesToProperties(true);
-		component.setCopyVariablesToBodyAsMap(false);
-		component.setCopyCamelBodyToBody(false);
-	}
-	
-	@Override
-  protected void copyVariables(Map<String, Object> variables, Exchange exchange, ActivitiEndpoint endpoint) {
-	  if (endpoint.isCopyVariablesToBodyAsMap()) {
-	    copyVariablesToBodyAsMap(variables, exchange);
-	  } else if (endpoint.isCopyCamelBodyToBody()) {
-	    copyVariablesToBody(variables, exchange);
-	  } else {
-	    copyVariablesToProperties(variables, exchange);
-	  }
-	}
+
+  @Override
+  protected void setPropertTargetVariable(ActivitiEndpoint endpoint) {
+    toTargetType = TargetType.PROPERTIES;    
+  }	
 }
