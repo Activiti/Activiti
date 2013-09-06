@@ -98,12 +98,15 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
                   return null;
               }});
       executor.submit(future);
-    } else
+      handleCamelException(exchange);
+
+    } else {
         endpoint.process(exchange);
+        handleCamelException(exchange);
+        execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
+    }
           
     
-    handleCamelException(exchange);
-    execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
     performDefaultOutgoingBehavior(execution);
   }
 
