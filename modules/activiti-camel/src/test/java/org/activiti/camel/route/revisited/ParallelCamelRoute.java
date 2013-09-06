@@ -11,21 +11,17 @@
  * limitations under the License.
  */
 
-package org.activiti.camel.route;
+package org.activiti.camel.route.revisited;
 
 import org.apache.camel.builder.RouteBuilder;
 
-public class AsyncCamelRoute extends RouteBuilder {
+public class ParallelCamelRoute extends RouteBuilder {
 
   @Override
   public void configure() throws Exception {
 
-    from("activiti:asyncCamelProcess:serviceTaskAsync1").setHeader("destination", constant("activiti:asyncCamelProcess:receive1")).to("seda:asyncQueue");
-    from("seda:asyncQueue").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
+    from("activiti:parallelCamelProcessRevisited:serviceTaskAsync1").to("bean:sleepBean?method=sleep");
     
-    from("activiti:asyncCamelProcess:serviceTaskAsync2").setHeader("destination", constant("activiti:asyncCamelProcess:receive2")).to("seda:asyncQueue2");
-    from("seda:asyncQueue2").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
-    
-    from("seda:receiveQueue").recipientList(header("destination"));
+    from("activiti:parallelCamelProcessRevisited:serviceTaskAsync2").to("bean:sleepBean?method=sleep");
   }
 }

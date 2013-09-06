@@ -11,29 +11,24 @@
  * limitations under the License.
  */
 
-package org.activiti.camel;
-
-import java.util.List;
+package org.activiti.camel.revisited;
 
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration("classpath:camel-activiti-context.xml")
-public class AsyncProcessTest extends SpringActivitiTestCase {
+@ContextConfiguration("classpath:camel-activiti-context-revisited.xml")
+public class ParallelProcessRevisitedTest extends SpringActivitiTestCase {
 
   @Autowired
   RuntimeService runtimeService;
 
-  @Deployment(resources = {"process/async.bpmn20.xml"})
+  @Deployment(resources = {"process/revisited/parallel-revisited.bpmn20.xml"})
   public void testRunProcess() throws Exception {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncCamelProcess");
-    List<Execution> executionList = runtimeService.createExecutionQuery().list();
-    assertEquals(3, executionList.size());
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("parallelCamelProcessRevisited");
     Thread.sleep(4000);
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
   }
