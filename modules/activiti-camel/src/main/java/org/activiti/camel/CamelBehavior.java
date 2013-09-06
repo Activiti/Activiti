@@ -14,10 +14,6 @@
 package org.activiti.camel;
 
 
-/**
- * @author Saeid Mirzaei  
- * @author Maciej Próchniak
- */
 
 
 import java.util.HashMap;
@@ -64,7 +60,7 @@ import org.apache.commons.lang3.StringUtils;
 * copy the Camel body to the "camelBody" variable if it is of type java.lang.String, OR it will copy the Camel body to
 * individual variables within Activiti if it is of type Map<String,Object>.
 * 
-* @author Ryan Johnston (@rjfsu), Tijs Rademakers
+* @author Ryan Johnston (@rjfsu), Tijs Rademakers, Saeid Mirzaei
 * @version 5.12
 */
 public abstract class CamelBehavior extends BpmnActivityBehavior implements ActivityBehavior {
