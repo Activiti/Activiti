@@ -2473,16 +2473,16 @@
  </section>
 
  <section>
-  <title>Process Instances</title>
+  <title>流程实例</title>
 
    <section>
-      <title>Get a process instance</title>
+      <title>获得流程实例</title>
         <para>
           <programlisting>GET runtime/process-instances/{processInstanceId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a process instance - URL参数</title>
+              <title>获得流程实例 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2497,7 +2497,7 @@
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to get.</entry>
+                    <entry>流程实例id</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2505,7 +2505,7 @@
         </para>
         <para>
           <table>
-              <title>Get a process instance - 响应码</title>
+              <title>获得流程实例 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2516,11 +2516,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process instance was found and returned.</entry>
+                    <entry>表示找到了流程实例并成功返回。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found.</entry>
+                    <entry>表示找不到请求的流程实例</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2541,13 +2541,13 @@
 </section>
 
  <section>
-      <title>Delete a process instance</title>
+      <title>删除流程实例</title>
         <para>
           <programlisting>DELETE runtime/process-instances/{processInstanceId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Delete a process instance - URL参数</title>
+              <title>删除流程实例 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2562,7 +2562,7 @@
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to delete.</entry>
+                    <entry>希望删除的流程实例id</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2570,7 +2570,7 @@
         </para>
         <para>
           <table>
-              <title>Delete a process instance - 响应码</title>
+              <title>删除流程实例 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2581,11 +2581,11 @@
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the process instance was found and deleted. Response body is left empty intentionally.</entry>
+                    <entry>表示找到了流程实例并已删除。响应内容为空。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found.</entry>
+                    <entry>表示找不到请求的流程实例</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2594,13 +2594,13 @@
 </section>
 
 <section>
-      <title>Activate or suspend a process instance</title>
+      <title>激活或挂起流程实例</title>
         <para>
           <programlisting>PUT runtime/process-instances/{processInstanceId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Activate or suspend a process instance - URL参数</title>
+              <title>激活或挂起流程实例 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2615,21 +2615,21 @@
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to activate/suspend.</entry>
+                    <entry>希望激活或挂起的流程实例id</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request response body (suspend):</emphasis>
+       <emphasis role="bold">请求响应体（挂起）：</emphasis>
             <programlisting>
 {
    "action":"suspend"
 }</programlisting>
     </para>
      <para>
-       <emphasis role="bold">Request response body (activate):</emphasis>
+       <emphasis role="bold">请求响应体（激活）：</emphasis>
             <programlisting>
 {
    "action":"activate"
@@ -2637,7 +2637,7 @@
     </para>
         <para>
           <table>
-              <title>Activate or suspend a process instance - 响应码</title>
+              <title>激活或挂起流程实例 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2648,19 +2648,19 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process instance was found and action was executed.</entry>
+                    <entry>表示找到了流程实例并执行了对应操作。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates an invalid action was supplied.</entry>
+                    <entry>表示提供的操作不合法。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found.</entry>
+                    <entry>表示找不到请求的流程实例</entry>
                   </row>
                    <row>
                     <entry>409</entry>
-                    <entry>Indicates the requested process instance action cannot be executed since the process-instance is already activated/suspended.</entry>
+                    <entry>表示无法执行请求的流程实例操作，因为流程实例已经激活或挂起了。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2669,12 +2669,12 @@
 </section>
 
 <section>
-      <title>Start a process instance</title>
+      <title>启动流程实例</title>
         <para>
           <programlisting>POST runtime/process-instances</programlisting>
         </para>
         <para>
-       <emphasis role="bold">Request body (start by process definition id):</emphasis>
+       <emphasis role="bold">请求体（使用流程定义id启动）：</emphasis>
             <programlisting>
 {
    "processDefinitionId":"oneTaskProcess:1:158",
@@ -2690,7 +2690,7 @@
 }</programlisting>
     </para>
     <para>
-       <emphasis role="bold">Request body (start by process definition key):</emphasis>
+       <emphasis role="bold">请求体（使用流程定义key启动）：</emphasis>
             <programlisting>
 {
    "processDefinitionKey":"oneTaskProcess",
@@ -2706,7 +2706,7 @@
 }</programlisting>
     </para>
     <para>
-       <emphasis role="bold">Request body (start by message):</emphasis>
+       <emphasis role="bold">请求体（使用message启动）：</emphasis>
             <programlisting>
 {
    "processDefinitionKey":"newOrderMessage",
@@ -2722,12 +2722,12 @@
 }</programlisting>
     </para>
     <para>
-    Only one of <literal>processDefinitionId</literal>, <literal>processDefinitionKey</literal> or <literal>message</literal> can be used in the request body. Both <literal>businessKey</literal> and <literal>variables</literal> are optional.
-    More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that the variable-scope that is supplied is ignored, process-variables are always <literal>local</literal>.
+	请求体中只能使用<literal>processDefinitionId</literal>，<literal>processDefinitionKey</literal>或<literal>message</literal>三者之一。<literal>businessKey</literal>和<literal>variables</literal>都是可选的。
+	可以在<link linkend="restVariables">REST变量章节</link>了解更多关于变量格式的信息。注意忽略变量作用域，流程变量总是<literal>local</literal>。
     </para>
         <para>
           <table>
-              <title>Start a process instance - 响应码</title>
+              <title>启动流程实例 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2738,11 +2738,11 @@
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the process instance was created.</entry>
+                    <entry>表示成功启动了流程实例。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates either the process-definition was not found (based on id or key), no process is started by sending the given message or an invalid variable has been passed. Status description contains additional information about the error.</entry>
+                    <entry>表示要么找到不到流程定义（基于id或key），要么指定的message不会启动流程，要么传递了非法的变量。状态描述中包含了错误相关的额外信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2763,13 +2763,13 @@
 </section>
 
 <section id="restProcessInstancesGet">
-      <title>List of process instances</title>
+      <title>显示流程实例列表</title>
         <para>
           <programlisting>GET runtime/process-instances</programlisting>
         </para>
         <para>
             <table>
-              <title>List of process instances - URL参数</title>
+              <title>显示流程实例列表 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2782,72 +2782,72 @@
                 <tbody>
                   <row>
                     <entry>id</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return process instance with the given id.</entry>
+                    <entry>只返回指定id的流程实例。</entry>
                   </row>
                   <row>
                     <entry>processDefinitionKey</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return process instances with the given process definition key.</entry>
+                    <entry>只返回指定流程定义key的流程实例。</entry>
                   </row>
                   <row>
                     <entry>processDefinitionId</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return process instances with the given process definition id.</entry>
+                    <entry>只返回指定流程定义id的流程实例。</entry>
                   </row>
                   <row>
                     <entry>businessKey</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return process instances with the given businessKey.</entry>
+                    <entry>只返回指定businessKey的流程实例。</entry>
                   </row>
                   <row>
                     <entry>involvedUser</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return process instances in which the given user is involved.</entry>
+                    <entry>只返回指定用户参与过的流程实例。</entry>
                   </row>
                   <row>
                     <entry>suspended</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
-                    <entry>If <literal>true</literal>, only return process instance which are suspended. If <literal>false</literal>, only return process instances which are not suspended (active).</entry>
+                    <entry>如果为 <literal>true</literal>，只返回挂起的流程实例。如果为 <literal>false</literal>，只返回未挂起（激活）的流程实例。</entry>
                   </row>
                   <row>
                     <entry>superProcessInstanceId</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return process instances which have the given super process-instance id (for processes that have a call-activities).</entry>
+                    <entry>只返回指定上级流程实例id的流程实例（对应call-activity）。</entry>
                   </row>
                   <row>
                     <entry>subProcessInstanceId</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return process instances which have the given sub process-instance id (for processes started as a call-activity).</entry>
+                    <entry>只返回指定子流程id的流程实例（对方call-activity）。</entry>
                   </row>
                   <row>
                     <entry>excludeSubprocesses</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
-                    <entry>Return only process instances which aren't sub processes.</entry>
+                    <entry>只返回非子流程的流程实例。</entry>
                   </row>
                   <row>
                     <entry>includeProcessVariables</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
-                    <entry>Indication to include process variables in the result.</entry>
+                    <entry>表示结果中包含流程变量。</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Sort field, should be either one of <literal>id</literal> (default), <literal>processDefinitionId</literal> or <literal>processDefinitionKey</literal>.</entry>
+                    <entry>排序字段，应该为<literal>id</literal>（默认），<literal>processDefinitionId</literal> 或 <literal>processDefinitionKey</literal>三者之一。</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c4"><para>可以使用通用的<link linkend="restPagingAndSort">分页和排序查询参数</link>。</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2855,7 +2855,7 @@
         </para>
         <para>
           <table>
-              <title>List of process instances - 响应码</title>
+              <title>显示流程实例列表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2866,11 +2866,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates request was successful and the process-instances are returned</entry>
+                    <entry>表示请求成功，并返回了流程实例。</entry>
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates a parameter was passed in the wrong format . The status-message contains additional information.</entry>
+                    <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2902,7 +2902,7 @@
     </section>
 
     <section>
-      <title>Query process instances</title>
+      <title>查询流程实例</title>
         <para>
           <programlisting>POST query/process-instances</programlisting>
         </para>
@@ -2924,13 +2924,12 @@
   ...
 }</programlisting>
 
-The request body can contain all possible filters that can be used in the <link linkend="restProcessInstancesGet">List process instances</link> URL query. On top of these, it's possible to provide an array of variables
-to include in the query, with their format <link linkend="restQueryVariable"> described here</link>.
+请求体可以包含所有用于<link linkend="restProcessInstancesGet">显示流程实例列表</link>中的查询参数。除此之外，查询条件中也可以使用变量列表，格式<link linkend="restQueryVariable">在此</link>。
     </para>
-    <para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para>
+    <para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link>。</para>
         <para>
           <table>
-              <title>Query process instances - 响应码</title>
+              <title>查询流程实例 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2941,11 +2940,11 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates request was successful and the process-instances are returned</entry>
+                    <entry>表示请求成功，并返回了流程实例。</entry>
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates a parameter was passed in the wrong format . The status-message contains additional information.</entry>
+                    <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2977,13 +2976,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
     </section>
 
     <section>
-      <title>Get diagram for a process instance</title>
+      <title>获得流程实例的流程图</title>
         <para>
           <programlisting>GET runtime/process-instances/{processInstanceId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get diagram for a process instance - URL参数</title>
+              <title>获得流程实例的流程图 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2998,7 +2997,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to get the diagram for.</entry>
+                    <entry>希望获得流程图的流程实例id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3006,7 +3005,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
         </para>
         <para>
           <table>
-              <title>Get diagram for a process instance - 响应码</title>
+              <title>获得流程实例的流程图 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3017,15 +3016,15 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process instance was found and the diagram was returned.</entry>
+                    <entry>表示找到了流程实例，并返回了流程图。</entry>
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates the requested process instance was not found but the process doesn't contain any graphical information (BPMN:DI) and no diagram can be created.</entry>
+                    <entry>表示找不到请求的流程实例，流程不包含挺信息（BPMN:DI），所以没有创建图片。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found.</entry>
+                    <entry>表示找不到请求的流程实例</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3046,13 +3045,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 </section>
 
      <section>
-      <title>Get involved people for process instance</title>
+      <title>获得流程实例的参与者</title>
         <para>
           <programlisting>GET runtime/process-instances/{processInstanceId}/identitylinks</programlisting>
         </para>
         <para>
             <table>
-              <title>Get involved people for process instance - URL参数</title>
+              <title>获得流程实例的参与者 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3067,7 +3066,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to the links for.</entry>
+                    <entry>关联的流程实例id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3075,7 +3074,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
         </para>
         <para>
           <table>
-              <title>Get involved people for process instance - 响应码</title>
+              <title>获得流程实例的参与者 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3086,11 +3085,11 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process instance was found and links are returned.</entry>
+                    <entry>表示找到了流程实例，并返回了IdentityLink。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found.</entry>
+                    <entry>表示找不到请求的流程实例</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3113,18 +3112,18 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
       "type":"candidate"
    }
 ]</programlisting>
-Note that the <literal>groupId</literal> will always be null, as it's only possible to involve users with a process-instance.
+注意<literal>groupId</literal>总是null，因为只有用户才能实际参与到流程实例中。
     </para>
 </section>
 
 <section>
-      <title>Add an involved user to a process instance</title>
+      <title>为流程实例添加一个参与者</title>
         <para>
           <programlisting>POST runtime/process-instances/{processInstanceId}/identitylinks</programlisting>
         </para>
         <para>
             <table>
-              <title>Add an involved user to a process instance - URL参数</title>
+              <title>为流程实例添加一个参与者 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3139,7 +3138,7 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to the links for.</entry>
+                    <entry>关联的流程实例id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3152,11 +3151,11 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
   "userId":"kermit",
   "type":"participant"
 }</programlisting>
-Both <literal>userId</literal> and <literal>type</literal> are required.
+<literal>userId</literal> 和 <literal>type</literal> 都是必填项。
     </para>
         <para>
           <table>
-              <title>Add an involved user to a process instance - 响应码</title>
+              <title>为流程实例添加一个参与者 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3167,15 +3166,15 @@ Both <literal>userId</literal> and <literal>type</literal> are required.
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the process instance was found and the link is created.</entry>
+                    <entry>表示找到了流程实例，并创建了关联。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the requested body did not contain a userId or a type.</entry>
+                    <entry>表示请求体没有包含userId或type。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found.</entry>
+                    <entry>表示找不到请求的流程实例</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3190,18 +3189,18 @@ Both <literal>userId</literal> and <literal>type</literal> are required.
    "group":null,
    "type":"customType"
 }</programlisting>
-Note that the <literal>groupId</literal> will always be null, as it's only possible to involve users with a process-instance.
+注意<literal>groupId</literal>总是null，因为只有用户才能实际参与到流程实例中。
     </para>
 </section>
 
 <section>
-      <title>Remove an involved user to from process instance</title>
+      <title>删除一个流程实例的参与者</title>
         <para>
           <programlisting>DELETE runtime/process-instances/{processInstanceId}/identitylinks/users/{userId}/{type}</programlisting>
         </para>
         <para>
             <table>
-              <title>Remove an involved user to from process instance - URL参数</title>
+              <title>删除一个流程实例的参与者 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3216,19 +3215,19 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance.</entry>
+                    <entry>流程实例id</entry>
                   </row>
                   <row>
                     <entry>userId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the user to delete link for.</entry>
+                    <entry>要删除关联的用户id</entry>
                   </row>
                   <row>
                     <entry>type</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>Type of link to delete.</entry>
+                    <entry>删除的关联类型</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3236,7 +3235,7 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
         </para>
         <para>
           <table>
-              <title>Remove an involved user to from process instance - 响应码</title>
+              <title>删除一个流程实例的参与者 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3247,11 +3246,11 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the process instance was found and the link has been deleted. Response body is left empty intentionally.</entry>
+                    <entry>表示找到了流程实例，并删除了关联。响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found or the link to delete doesn't exist. The response status contains additional information about the error.</entry>
+                    <entry>表示找不到请求的流程实例，或找不到期望删除的关联。响应状态包含了错误的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3266,18 +3265,18 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
    "group":null,
    "type":"customType"
 }</programlisting>
-Note that the <literal>groupId</literal> will always be null, as it's only possible to involve users with a process-instance.
+注意<literal>groupId</literal>总是null，因为只有用户才能实际参与到流程实例中。
     </para>
 </section>
 
  <section>
-      <title>List of variables for a process instance</title>
+      <title>列出流程实例的变量</title>
         <para>
           <programlisting>GET runtime/process-instances/{processInstanceId}/variables</programlisting>
         </para>
         <para>
             <table>
-              <title>List of variables for a process instance - URL参数</title>
+              <title>列出流程实例的变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3292,7 +3291,7 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to the variables for.</entry>
+                    <entry>变量对应的流程实例id</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3300,7 +3299,7 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
         </para>
         <para>
           <table>
-              <title>List of variables for a process instance - 响应码</title>
+              <title>列出流程实例的变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3311,11 +3310,11 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the process instance was found and variables are returned.</entry>
+                    <entry>表示找到了流程实例，并返回了变量。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found.</entry>
+                    <entry>表示找不到请求的流程实例</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3341,18 +3340,18 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
 
    ...
 ]</programlisting>
-In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
-Note that only <literal>local</literal> scoped variables are returned, as there is no <literal>global</literal> scope for process-instance variables.</para>
+当变量为二进制或序列化类型时，<literal>valueUrl</literal>给出了获得原始数据的URL。如果是普通变量，变量值就会直接包含在响应中。
+注意只会返回<literal>local</literal>作用域的变量，因为流程实例变量没有<literal>global</literal>作用域。</para>
 </section>
 
   <section>
-      <title>Get a variable for a process instance</title>
+      <title>获得流程实例的一个变量</title>
         <para>
           <programlisting>GET runtime/process-instances/{processInstanceId}/variables/{variableName}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a variable for a process instance - URL参数</title>
+              <title>获得流程实例的一个变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3367,13 +3366,13 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to the variables for.</entry>
+                    <entry>变量对应的流程实例id</entry>
                   </row>
                   <row>
                     <entry>variableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>Name of the variable to get.</entry>
+                    <entry>获取变量的名称</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3381,7 +3380,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
           <table>
-              <title>Get a variable for a process instance - 响应码</title>
+              <title>获得流程实例的一个变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3392,15 +3391,15 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates both the process instance and variable were found and variable is returned.</entry>
+                    <entry>表示找到了流程实例和变量，并返回了变量。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error.</entry>
+                    <entry>表示请求体不完全，或包含非法值。状态描述包含对应错误的详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error.</entry>
+                    <entry>表示找不到请求的流程实例，或流程实例中不包含指定名称的变量。状态描述中包含对应错误的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3415,22 +3414,22 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
       "value":123,
       "scope":"local"
    }</programlisting>
-    In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
-    Note that only <literal>local</literal> scoped variables are returned, as there is no <literal>global</literal> scope for process-instance variables.</para>
+    当变量为二进制或序列化类型时，<literal>valueUrl</literal>给出了获得原始数据的URL。如果是普通变量，变量值就会直接包含在响应中。
+    注意只会返回<literal>local</literal>作用域的变量，因为流程实例变量没有<literal>global</literal>作用域。</para>
   </section>
 
 
   <section>
-      <title>Create (or update) variables on a process instance</title>
+      <title>创建（或更新）流程实例变量</title>
         <para>
           <programlisting>POST runtime/process-instances/{processInstanceId}/variables</programlisting>
           <programlisting>PUT runtime/process-instances/{processInstanceId}/variables</programlisting>
         </para>
         <para>
-          When using <literal>POST</literal>, all variables that are passed are created. In case one of the variables already exists on the process instance, the request results in an error (409 - CONFLICT). When <literal>PUT</literal> is used,
-          unexisting variables are created on the process-instance and existing ones are overridden without any error.
+		  使用<literal>POST</literal>时，会创建所有传递的变量。如果流程实例中已经存在了其中一个变量，就会返回一个错误（409 - CONFLICT）。使用<literal>PUT</literal>时，
+		  流程实例中不存在的变量会被创建，已存在的变量会被更新，不会有任何错误。
             <table>
-              <title>Create (or update) variables on a process instance - URL参数</title>
+              <title>创建（或更新）流程实例变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3445,7 +3444,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to the variables for.</entry>
+                    <entry>变量对应的流程实例id</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3463,11 +3462,11 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
 
    ...
 ]</programlisting>
-        Any number of variables can be passed into the request body array. More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that scope is ignored, only <literal>local</literal> variables can be set in a process instance.
+        请求体的数组中可以包含任意多个变量。关于变量格式的更多信息可以参考<link linkend="restVariables">REST变量章节</link>。注意此处忽略作用域，流程实例只能设置<literal>local</literal>作用域。
         </para>
         <para>
           <table>
-              <title>Create (or update) variables on a process instance - 响应码</title>
+              <title>创建（或更新）流程实例变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3478,19 +3477,19 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the process instance was found and variable is created.</entry>
+                    <entry>表示找到了流程实例，并创建了变量。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error.</entry>
+                    <entry>表示请求体不完整，或包含非法值。状态描述包含对应错误的详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found.</entry>
+                    <entry>表示找不到请求的流程实例</entry>
                   </row>
                    <row>
                     <entry>409</entry>
-                    <entry>Indicates the process instance was found but already contains a variable with the given name (only thrown when POST method is used). Use the update-method instead.</entry>
+                    <entry>表示找到了流程实例，但是已经存在一个相同名称的变量（只在使用POST方法时抛出）。可以使用更新方法替代。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3514,13 +3513,13 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
   </section>
 
   <section>
-      <title>Update a single variable on a process instance</title>
+      <title>更新一个流程实例变量</title>
         <para>
           <programlisting>PUT runtime/process-instances/{processInstanceId}/variables/{variableName}</programlisting>
         </para>
         <para>
             <table>
-              <title>Update a single variable on a process instance - URL参数</title>
+              <title>更新一个流程实例变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3535,13 +3534,13 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to the variables for.</entry>
+                    <entry>变量对应的流程实例id</entry>
                   </row>
                   <row>
                     <entry>variableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>Name of the variable to get.</entry>
+                    <entry>希望获得的变量名称</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3555,11 +3554,11 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
     "type":"integer"
     "value":123
  }</programlisting>
-        More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that scope is ignored, only <literal>local</literal> variables can be set in a process instance.
+        请求体的数组中可以包含任意多个变量。关于变量格式的更多信息可以参考<link linkend="restVariables">REST变量章节</link>。注意此处忽略作用域，流程实例只能设置<literal>local</literal>作用域。
         </para>
         <para>
           <table>
-              <title>Update a single variable on a process instance - 响应码</title>
+              <title>更新一个流程实例变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3570,11 +3569,11 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates both the process instance and variable were found and variable is updated.</entry>
+                    <entry>表示找到了流程实例和变量，并更新了变量。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error.</entry>
+                    <entry>表示找不到请求的流程实例，或找不到给定名称的流程实例变量。状态描述包含对应错误的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3589,19 +3588,19 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
       "value":123,
       "scope":"local"
    }</programlisting>
-  In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
-  Note that only <literal>local</literal> scoped variables are returned, as there is no <literal>global</literal> scope for process-instance variables.
+  当变量为二进制或序列化类型时，<literal>valueUrl</literal>给出了获得原始数据的URL。如果是普通变量，变量值就会直接包含在响应中。
+  注意只会返回<literal>local</literal>作用域的变量，因为流程实例变量没有<literal>global</literal>作用域。
   </para>
   </section>
 
    <section>
-      <title>Create a new binary variable on a process-instance</title>
+      <title>创建一个新的二进制流程变量</title>
         <para>
           <programlisting>POST runtime/process-instances/{processInstanceId}/variables</programlisting>
         </para>
         <para>
             <table>
-              <title>Create a new binary variable on a process-instance - URL参数</title>
+              <title>创建一个新的二进制流程变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3616,7 +3615,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to create the new variable for.</entry>
+                    <entry>创建新变量对应的流程实例id</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3624,13 +3623,13 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
          <para>
        <emphasis role="bold">请求体：</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+           请求应该是<literal>multipart/form-data</literal>类型。应该只有一个文件区域，包含源码的二进制内容。除此之外，需要提供以下表单域：
       <itemizedlist>
           <listitem>
-            <para><literal>name</literal>: Required name of the variable.</para>
+            <para><literal>name</literal>：必须的变量名称。</para>
           </listitem>
           <listitem>
-            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+            <para><literal>type</literal>：创建的变量类型。如果忽略，会假设使用<literal>binary</literal>，请求的二进制数据会当做二进制数组保存起来。</para>
           </listitem>
       </itemizedlist>
         </para>
@@ -3645,7 +3644,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
   "valueUrl" : "http://.../runtime/process-instances/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Create a new binary variable on a process-instance - 响应码</title>
+              <title>创建一个新的二进制流程变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3656,23 +3655,23 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the variable was created and the result is returned.</entry>
+                    <entry>表示成功创建了变量，并返回了结果</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of the variable to create was missing. Status message provides additional information.</entry>
+                    <entry>表示没有提供希望创建的变量名称。状态消息包含详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found.</entry>
+                    <entry>表示找不到请求的流程实例</entry>
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the process instance already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                    <entry>表示流程实例中已经包含了给定名称的变量。可以使用PUT方法来更新变量。</entry>
                   </row>
                   <row>
                     <entry>415</entry>
-                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
+                    <entry>表示序列化数据包含的对象的类并不在运行Activiti引擎的JVM中，所以无法反序列化。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3681,13 +3680,13 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
   </section>
 
   <section>
-      <title>Update an existing binary variable on a process-instance</title>
+      <title>更新一个二进制的流程实例变量</title>
         <para>
           <programlisting>PUT runtime/process-instances/{processInstanceId}/variables</programlisting>
         </para>
         <para>
             <table>
-              <title>Update an existing binary variable on a process-instance - URL参数</title>
+              <title>更新一个二进制的流程实例变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3702,7 +3701,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                     <entry>processInstanceId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the process instance to create the new variable for.</entry>
+                    <entry>创建新变量对应的流程实例id</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3710,13 +3709,13 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
          <para>
        <emphasis role="bold">请求体：</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+           请求应该是<literal>multipart/form-data</literal>类型。应该只有一个文件区域，包含源码的二进制内容。除此之外，需要提供以下表单域：
       <itemizedlist>
           <listitem>
-            <para><literal>name</literal>: Required name of the variable.</para>
+            <para><literal>name</literal>：必须的变量名称。</para>
           </listitem>
           <listitem>
-            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+            <para><literal>type</literal>：创建的变量类型。如果忽略，会假设使用<literal>binary</literal>，请求的二进制数据会当做二进制数组保存起来。</para>
           </listitem>
       </itemizedlist>
         </para>
@@ -3731,7 +3730,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
   "valueUrl" : "http://.../runtime/process-instances/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Update an existing binary variable on a process-instance - 响应码</title>
+              <title>更新一个二进制的流程实例变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3742,19 +3741,19 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the variable was udpated and the result is returned.</entry>
+                    <entry>表示成功更新了变量，并返回了结果。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of the variable to update was missing. Status message provides additional information.</entry>
+                    <entry>表示未提供希望更新的变量名称。状态消息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found or the process instance does not have a variable with the given name.</entry>
+                    <entry>表示找不到请求的流程实例id，或找不到指定名称的流程实例变量。</entry>
                   </row>
                   <row>
                     <entry>415</entry>
-                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
+                    <entry>表示序列化数据包含的对象的类并不在运行Activiti引擎的JVM中，所以无法反序列化。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4303,7 +4302,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 
    ...
 ]</programlisting>
-In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
+当变量为二进制或序列化类型时，<literal>valueUrl</literal>给出了获得原始数据的URL。如果是普通变量，变量值就会直接包含在响应中。
 </para>
 </section>
 
