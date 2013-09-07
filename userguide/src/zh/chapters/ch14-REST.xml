@@ -1842,16 +1842,16 @@
  </section>
 
  <section>
-  <title>Models</title>
+  <title>模型</title>
 
    <section>
-      <title>Get a list of models</title>
+      <title>获得模型列表</title>
         <para>
           <programlisting>GET repository/models</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a list of models - URL query parameters</title>
+              <title>获得模型列表 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -1864,78 +1864,78 @@
                 <tbody>
                   <row>
                     <entry>id</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return models with the given id.</entry>
+                    <entry>指返回指定id的模型。</entry>
                   </row>
                   <row>
                     <entry>category</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return models with the given category.</entry>
+                    <entry>只返回指定分类的模型。</entry>
                   </row>
                    <row>
                     <entry>categoryLike</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return models with a category like the given value. Use the <literal>%</literal> character as wildcard.</entry>
+                    <entry>只返回与给定分类匹配的模型。使用<literal>%</literal>作为通配符。</entry>
                   </row>
                    <row>
                     <entry>categoryNotEquals</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return models without the given category.</entry>
+                    <entry>只返回非指定分类的模型。</entry>
                   </row>
                   <row>
                     <entry>name</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return models with the given name.</entry>
+                    <entry>只返回指定名称的模型。</entry>
                   </row>
                    <row>
                     <entry>nameLike</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return models with a name like the given value. Use the <literal>%</literal> character as wildcard.</entry>
+                    <entry>只返回与指定名称匹配的模型。使用<literal>%</literal>作为通配符。</entry>
                   </row>
                   <row>
                     <entry>key</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return models with the given key.</entry>
+                    <entry>只返回指定key的模型。</entry>
                   </row>
                   <row>
                     <entry>deploymentId</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return models which are deployed in the given deployment.</entry>
+                    <entry>只返回包含在指定部署包中的模型。</entry>
                   </row>
                   <row>
                     <entry>version</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Integer</entry>
-                    <entry>Only return models with the given version.</entry>
+                    <entry>只返回指定版本的模型。</entry>
                   </row>
                   <row>
                     <entry>latestVersion</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
-                    <entry>If <literal>true</literal>, only return models which are the latest version. Best used in combination with <literal>key</literal>. If <literal>false</literal> is passed in as value, this is ignored and all versions are returned.</entry>
+                    <entry>如果为 <literal>true</literal>，只返回最新版本的模型。最好与<literal>key</literal>一起使用。如果为 <literal>false</literal>，就会返回所有版本。</entry>
                   </row>
                   <row>
                     <entry>deployed</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
-                    <entry>If <literal>true</literal>, only deployed models are returned. If <literal>false</literal>, only undeployed models are returned (deploymentId is null).</entry>
+                    <entry>如果为 <literal>true</literal>，只返回已部署的模型。如果为 <literal>false</literal>，只返回未部署的模型（deploymentId为null）。</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
-                    <entry>No</entry>
-                    <entry>'id' (default), 'category', 'createTime', 'key', 'lastUpdateTime', 'name' and 'version'</entry>
-                    <entry>Property to sort on, to be used toghether with the 'order'.</entry>
+                    <entry>否</entry>
+                    <entry>'id' (默认), 'category', 'createTime', 'key', 'lastUpdateTime', 'name' 和 'version'</entry>
+                    <entry>排序的字段，和'order'一起使用。</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link>。</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1943,7 +1943,7 @@
         </para>
         <para>
           <table>
-              <title>Get a list of models - 响应码</title>
+              <title>获得模型列表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -1954,11 +1954,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates request was successful and the models are returned</entry>
+                    <entry>表示请求成功，并返回了模型</entry>
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates a parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                    <entry>表示传递的参数格式错误。状态信息中包含更多信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -1996,13 +1996,13 @@
     </section>
 
     <section>
-      <title>Get a model</title>
+      <title>获得一个模型</title>
         <para>
           <programlisting>GET repository/models/{modelId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a model - URL参数</title>
+              <title>获得一个模型 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2017,7 +2017,7 @@
                     <entry>modelId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the model to get.</entry>
+                    <entry>希望获得的模型id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2025,7 +2025,7 @@
         </para>
         <para>
           <table>
-              <title>Get a model - 响应码</title>
+              <title>获得一个模型 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2036,11 +2036,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the model was found and returned.</entry>
+                    <entry>表示找到了模型并成功返回了。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested model was not found.</entry>
+                    <entry>表示找不到请求的模型。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2066,12 +2066,12 @@
     </section>
 
  <section>
-      <title>Update a model</title>
+      <title>更新模型</title>
         <para>
           <programlisting>PUT repository/models/{modelId}</programlisting>
         </para>
          <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
             <programlisting>
 {
    "name":"Model name",
@@ -2081,11 +2081,11 @@
    "metaInfo":"Model metainfo",
    "deploymentId":"2"
 }</programlisting>
-   All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only updating the name of the model, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the model-value will be updated to null. Example: <literal>{"metaInfo" : null}</literal> will clear the metaInfo of the model).
+   所有请求参数都是可选的。比如，你可以只在请求体的JSON对象中包含'name'属性，只更新模型的名称，这样其他的字段都不会受到影响。如果显示包含了一个属性，并设置为null，模型值会被更新为null。比如：<literal>{"metaInfo" : null}</literal>会清空模型的metaInfo。
     </para>
         <para>
           <table>
-              <title>Update a model - 响应码</title>
+              <title>更新模型 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2096,11 +2096,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the model was found and updated.</entry>
+                    <entry>表示找到了模型，并成功更新。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested model was not found.</entry>
+                    <entry>表示找不到请求的模型。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2126,12 +2126,12 @@
     </section>
 
     <section>
-      <title>Create a model</title>
+      <title>新建模型</title>
         <para>
           <programlisting>POST repository/models</programlisting>
         </para>
          <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
             <programlisting>
 {
    "name":"Model name",
@@ -2145,7 +2145,7 @@
     </para>
         <para>
           <table>
-              <title>Create a model - 响应码</title>
+              <title>新建模型 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2156,7 +2156,7 @@
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the model was created.</entry>
+                    <entry>表示成功创建了模型。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2182,13 +2182,13 @@
     </section>
 
       <section>
-      <title>Delete a model</title>
+      <title>删除模型</title>
         <para>
           <programlisting>DELETE repository/models/{modelId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Delete a model - URL参数</title>
+              <title>删除模型 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2203,7 +2203,7 @@
                     <entry>modelId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the model to delete.</entry>
+                    <entry>希望删除的模型id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2211,7 +2211,7 @@
         </para>
         <para>
           <table>
-              <title>Delete a model - 响应码</title>
+              <title>删除模型 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2222,11 +2222,11 @@
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the model was found and has been deleted. Response-body is intentionally empty.</entry>
+                    <entry>表示找到了模型并成功删除。响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested model was not found.</entry>
+                    <entry>表示找不到请求的模型。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2235,13 +2235,13 @@
   </section>
 
   <section>
-      <title>Get the editor source for a model</title>
+      <title>获得模型的可编译源码</title>
         <para>
           <programlisting>GET repository/models/{modelId}/source</programlisting>
         </para>
         <para>
             <table>
-              <title>Get the editor source for a model - URL参数</title>
+              <title>获得模型的可编译源码 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2256,7 +2256,7 @@
                     <entry>modelId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the model.</entry>
+                    <entry>模型id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2264,7 +2264,7 @@
         </para>
         <para>
           <table>
-              <title>Get the editor source for a model - 响应码</title>
+              <title>获得模型的可编译源码 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2275,11 +2275,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the model was found and source is returned.</entry>
+                    <entry>表示找到了模型并返回了源码。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested model was not found.</entry>
+                    <entry>表示找不到请求的模型。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2287,18 +2287,18 @@
         </para>
     <para>
        <emphasis role="bold">成功响应体：</emphasis>
-       Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
+       响应体包含了模型的原始可编译源码。无论源码的内容是什么，响应的content-type都设置为<literal>application/octet-stream</literal>。
     </para>
     </section>
 
     <section>
-      <title>Set the editor source for a model</title>
+      <title>设置模型的可编辑源码</title>
          <para>
         <programlisting>PUT repository/models/{modelId}/source</programlisting>
       </para>
       <para>
           <table>
-            <title>Set the editor source for a model - URL参数</title>
+            <title>设置模型的可编辑源码 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -2313,19 +2313,19 @@
                   <entry>modelId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the model.</entry>
+                  <entry>模型的id。</entry>
                 </row>
               </tbody>
            </tgroup>
         </table>
       </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the source.
+       <emphasis role="bold">请求体：</emphasis>
+           请求应该是<literal>multipart/form-data</literal>类型。应该只有一个文件区域，包含源码的二进制内容。
         </para>
         <para>
           <table>
-              <title>Set the editor source for a model - 响应码</title>
+              <title>设置模型的可编辑源码 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2336,11 +2336,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the model was found and the source has been updated.</entry>
+                    <entry>表示找到了模型并更新了源码。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested model was not found.</entry>
+                    <entry>表示找不到请求的模型。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2348,18 +2348,18 @@
         </para>
          <para>
        <emphasis role="bold">成功响应体：</emphasis>
-       Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
+       响应体包含了模型的原始可编译源码。无论源码的内容是什么，响应的content-type都设置为<literal>application/octet-stream</literal>。
     </para>
   </section>
 
       <section>
-      <title>Get the extra editor source for a model</title>
+      <title>获得模型的附加可编辑源码</title>
         <para>
           <programlisting>GET repository/models/{modelId}/source-extra</programlisting>
         </para>
         <para>
             <table>
-              <title>Get the extra editor source for a model - URL参数</title>
+              <title>获得模型的附加可编辑源码 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2374,7 +2374,7 @@
                     <entry>modelId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the model.</entry>
+                    <entry>模型id</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2382,7 +2382,7 @@
         </para>
         <para>
           <table>
-              <title>Get the extra editor source for a model - 响应码</title>
+              <title>获得模型的附加可编辑源码 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2393,11 +2393,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the model was found and source is returned.</entry>
+                    <entry>表示找到了模型并返回了源码。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested model was not found.</entry>
+                    <entry>表示找不到请求的模型。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2405,18 +2405,18 @@
         </para>
     <para>
        <emphasis role="bold">成功响应体：</emphasis>
-       Reponse body contains the model's raw extra editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the extra source.
+       响应体包含了模型的原始可编译源码。无论附加源码的内容是什么，响应的content-type都设置为<literal>application/octet-stream</literal>。
     </para>
     </section>
 
     <section>
-      <title>Set the extra editor source for a model</title>
+      <title>设置模型的附加可编辑源码</title>
          <para>
         <programlisting>PUT repository/models/{modelId}/source-extra</programlisting>
       </para>
       <para>
           <table>
-            <title>Set the extra editor source for a model - URL参数</title>
+            <title>设置模型的附加可编辑源码 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -2431,19 +2431,19 @@
                   <entry>modelId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the model.</entry>
+                  <entry>模型id</entry>
                 </row>
               </tbody>
            </tgroup>
         </table>
       </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the extra source.
+       <emphasis role="bold">请求体：</emphasis>
+           请求应该是<literal>multipart/form-data</literal>类型。应该只有一个文件区域，包含源码的二进制内容
         </para>
         <para>
           <table>
-              <title>Set the extra editor source for a model - 响应码</title>
+              <title>设置模型的附加可编辑源码 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -2454,11 +2454,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the model was found and the extra source has been updated.</entry>
+                    <entry>表示找到了模型并更新了附加源码。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested model was not found.</entry>
+                    <entry>表示找不到请求的模型。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2466,7 +2466,7 @@
         </para>
          <para>
        <emphasis role="bold">成功响应体：</emphasis>
-       Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
+       响应体包含了模型的原始可编译源码。无论附加源码的内容是什么，响应的content-type都设置为<literal>application/octet-stream</literal>。
     </para>
   </section>
 
@@ -2769,7 +2769,7 @@
         </para>
         <para>
             <table>
-              <title>List of process instances - URL query parameters</title>
+              <title>List of process instances - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -2847,7 +2847,7 @@
                     <entry>Sort field, should be either one of <literal>id</literal> (default), <literal>processDefinitionId</literal> or <literal>processDefinitionKey</literal>.</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -2907,7 +2907,7 @@
           <programlisting>POST query/process-instances</programlisting>
         </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
             <programlisting>
 {
   "processDefinitionKey":"oneTaskProcess",
@@ -2927,7 +2927,7 @@
 The request body can contain all possible filters that can be used in the <link linkend="restProcessInstancesGet">List process instances</link> URL query. On top of these, it's possible to provide an array of variables
 to include in the query, with their format <link linkend="restQueryVariable"> described here</link>.
     </para>
-    <para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para>
+    <para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para>
         <para>
           <table>
               <title>Query process instances - 响应码</title>
@@ -3146,7 +3146,7 @@ Note that the <literal>groupId</literal> will always be null, as it's only possi
           </table>
         </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
             <programlisting>
 {
   "userId":"kermit",
@@ -3452,7 +3452,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
           </table>
         </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
             <programlisting>
 [
    {
@@ -3548,7 +3548,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
           </table>
         </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
             <programlisting>
  {
     "name":"intProcVar"
@@ -3623,7 +3623,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
            The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
       <itemizedlist>
           <listitem>
@@ -3709,7 +3709,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
            The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
       <itemizedlist>
           <listitem>
@@ -4006,7 +4006,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
         <para>
             <table>
-              <title>List of executions - URL query parameters</title>
+              <title>List of executions - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4066,7 +4066,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                     <entry>Sort field, should be either one of <literal>processInstanceId</literal> (default), <literal>processDefinitionId</literal> or <literal>processDefinitionKey</literal>.</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4136,7 +4136,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
           <programlisting>POST query/executions</programlisting>
         </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
             <programlisting>
 {
   "processDefinitionKey":"oneTaskProcess",
@@ -4166,7 +4166,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
 The request body can contain all possible filters that can be used in the <link linkend="restExecutionsGet">List executions</link> URL query. On top of these, it's possible to provide an array of <literal>variables</literal> and <literal>processInstanceVariables</literal>
 to include in the query, with their format <link linkend="restQueryVariable"> described here</link>.
     </para>
-    <para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para>
+    <para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para>
         <para>
           <table>
               <title>Query executions - 响应码</title>
@@ -4420,7 +4420,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
           </table>
         </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
             <programlisting>
 [
    {
@@ -4517,7 +4517,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
           </table>
         </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
             <programlisting>
  {
     "name":"intProcVar"
@@ -4592,7 +4592,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
            The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
       <itemizedlist>
           <listitem>
@@ -4687,7 +4687,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
            The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
       <itemizedlist>
           <listitem>
@@ -4833,7 +4833,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
             <table>
-              <title>List of tasks - URL query parameters</title>
+              <title>List of tasks - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5013,7 +5013,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Indication to include process variables in the result.</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5081,7 +5081,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
           <programlisting>POST repository/tasks</programlisting>
         </para>
         <para>
-          <emphasis role="bold">Request body:</emphasis>
+          <emphasis role="bold">请求体：</emphasis>
           <programlisting>
 {
   "name" : "My task",
@@ -5721,7 +5721,7 @@ The request body should be an array containing one or more JSON-objects represen
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
            The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
       <itemizedlist>
           <listitem>
@@ -5910,7 +5910,7 @@ The request body should be an array containing one or more JSON-objects represen
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
            The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
       <itemizedlist>
           <listitem>
@@ -6425,7 +6425,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
         <programlisting>
 {
   "message" : "This is a comment on the task."
@@ -6825,7 +6825,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
         <programlisting>
 {
   "name":"Simple attachment",
@@ -6905,7 +6905,7 @@ Only the attachment name is required to create a new attachment.
           </table>
         </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
            The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
       <itemizedlist>
           <listitem>
@@ -7407,7 +7407,7 @@ Only the attachment name is required to create a new attachment.
                   <entry>An indication if the historic process instance variables should be returned as well.</entry>
                 </row>
                 <row>
-                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7478,7 +7478,7 @@ Only the attachment name is required to create a new attachment.
         <programlisting>POST query/historic-process-instances</programlisting>
       </para>
       <para>
-        <emphasis role="bold">Request body:</emphasis>
+        <emphasis role="bold">请求体：</emphasis>
         <programlisting>
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
@@ -7914,7 +7914,7 @@ Only the attachment name is required to create a new attachment.
                   <entry>An indication if the historic task instance global variables should be returned as well.</entry>
                 </row>
                 <row>
-                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8275,7 +8275,7 @@ Only the attachment name is required to create a new attachment.
                   <entry>The process definition id of the historic activity instance.</entry>
                 </row>
                 <row>
-                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8341,7 +8341,7 @@ Only the attachment name is required to create a new attachment.
         <programlisting>POST query/historic-activity-instances</programlisting>
       </para>
       <para>
-        <emphasis role="bold">Request body:</emphasis>
+        <emphasis role="bold">请求体：</emphasis>
         <programlisting>
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4"
@@ -8453,7 +8453,7 @@ Only the attachment name is required to create a new attachment.
                   <entry>The variable name using the 'like' operator for the historic variable instance.</entry>
                 </row>
                 <row>
-                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8513,7 +8513,7 @@ Only the attachment name is required to create a new attachment.
         <programlisting>POST query/historic-variable-instances</programlisting>
       </para>
       <para>
-        <emphasis role="bold">Request body:</emphasis>
+        <emphasis role="bold">请求体：</emphasis>
         <programlisting>
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
@@ -8675,7 +8675,7 @@ Only the attachment name is required to create a new attachment.
                   <entry>Indication to only return variable updates in the result.</entry>
                 </row>
                 <row>
-                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8743,7 +8743,7 @@ Only the attachment name is required to create a new attachment.
         <programlisting>POST query/historic-detail</programlisting>
       </para>
       <para>
-        <emphasis role="bold">Request body:</emphasis>
+        <emphasis role="bold">请求体：</emphasis>
         <programlisting>
 {
   "processInstanceId" : "5",
@@ -9223,7 +9223,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
             <table>
-              <title>Get row data for a single table - URL query parameters</title>
+              <title>Get row data for a single table - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9630,7 +9630,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
         <table>
-              <title>Get a list of jobs - URL query parameters</title>
+              <title>Get a list of jobs - URL参数</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9706,7 +9706,7 @@ Only the attachment name is required to create a new attachment.
                     <entry>String</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9837,7 +9837,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
         <table>
-              <title>Get a list of users - URL query parameters</title>
+              <title>Get a list of users - URL参数</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9898,7 +9898,7 @@ Only the attachment name is required to create a new attachment.
                     <entry>String</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10183,7 +10183,7 @@ Only the attachment name is required to create a new attachment.
         </table>
       </para>
         <para>
-       <emphasis role="bold">Request body:</emphasis>
+       <emphasis role="bold">请求体：</emphasis>
            The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the picture. On top of that, the folowing additionl form-fields can be present:
         <itemizedlist>
             <listitem>
@@ -10382,7 +10382,7 @@ Only the attachment name is required to create a new attachment.
         </table>
       </para>
        <para>
-          <emphasis role="bold">Request Body:</emphasis>
+          <emphasis role="bold">请求体：</emphasis>
 <programlisting>
 {
    "value":"The updated value"
@@ -10453,7 +10453,7 @@ Only the attachment name is required to create a new attachment.
         </table>
       </para>
        <para>
-          <emphasis role="bold">Request Body:</emphasis>
+          <emphasis role="bold">请求体：</emphasis>
 <programlisting>
 {
    "key":"key1",
@@ -10630,7 +10630,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
         <table>
-              <title>Get a list of groups - URL query parameters</title>
+              <title>Get a list of groups - URL参数</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10676,7 +10676,7 @@ Only the attachment name is required to create a new attachment.
                     <entry>String</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
                   </row>
                 </tbody>
              </tgroup>
