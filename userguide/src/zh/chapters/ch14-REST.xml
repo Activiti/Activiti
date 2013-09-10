@@ -1030,79 +1030,79 @@
                   </row>
                   <row>
                     <entry>nameLike</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>只返回与给定名称匹配的流程定义。</entry>
                   </row>
                   <row>
                     <entry>key</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>只返回给定key的流程定义。</entry>
                   </row>
                   <row>
                     <entry>keyLike</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>只返回与给定key匹配的流程定义。</entry>
                   </row>
                   <row>
                     <entry>resourceName</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>只返回给定资源名称的流程定义。</entry>
                   </row>
                   <row>
                     <entry>resourceNameLike</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>只返回与给定资源名称匹配的流程定义。</entry>
                   </row>
                   <row>
                     <entry>category</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>只返回给定分类的流程定义。</entry>
                   </row>
                   <row>
                     <entry>categoryLike</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>只返回与给定分类匹配的流程定义。</entry>
                   </row>
                   <row>
                     <entry>categoryNotEquals</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>只返回非给定分类的流程定义。</entry>
                   </row>
                   <row>
                     <entry>deploymentId</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>只返回包含在与给定id一致的部署中的流程定义。</entry>
                   </row>
                   <row>
                     <entry>startableByUser</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>只返回给定用户可以启动的流程定义。</entry>
                   </row>
                   <row>
                     <entry>latest</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
                     <entry>只返回最新的流程定义版本。只能与'key'或'keyLike'参数一起使用，如果使用了其他参数会返回400的响应。</entry>
                   </row>
                   <row>
                     <entry>suspended</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
                     <entry>如果为<literal>true</literal>，只返回挂起的流程定义。如果为<literal>false</literal>，只返回活动的（未挂起）的流程定义。</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>'name'（默认），'id'，'key'，'category'，'deploymentId'和'version'</entry>
                     <entry>排序的属性，可以与'order'一起使用。</entry>
                   </row>
@@ -3764,16 +3764,16 @@
 </section>
 
   <section>
-  <title>Executions</title>
+  <title>分支</title>
 
    <section>
-      <title>Get an execution</title>
+      <title>获取一个分支</title>
         <para>
           <programlisting>GET runtime/executions/{executionId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get an execution - URL参数</title>
+              <title>获取一个分支 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3788,7 +3788,7 @@
                     <entry>executionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the execution to get.</entry>
+                    <entry>获取分支的id</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3796,7 +3796,7 @@
         </para>
         <para>
           <table>
-              <title>Get an execution - 响应码</title>
+              <title>获取一个分支 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3807,11 +3807,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the execution was found and returned.</entry>
+                    <entry>表示找到了分支，并成功返回。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the execution was not found.</entry>
+                    <entry>表示找不到分支</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3833,13 +3833,13 @@
     </para>
   </section>
  <section>
-      <title>Execute an action on an execution</title>
+      <title>对分支执行操作</title>
         <para>
           <programlisting>PUT runtime/executions/{executionId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Execute an action on an execution - URL参数</title>
+              <title>对分支执行操作 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3854,42 +3854,42 @@
                     <entry>executionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the execution to execute action on.</entry>
+                    <entry>希望执行操作的分支id</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body (signal an execution):</emphasis>
+       <emphasis role="bold">请求体（继续执行分支）：</emphasis>
             <programlisting>
 {
   "action":"signal"
 }</programlisting>
     </para>
      <para>
-       <emphasis role="bold">Request body (signal event received for execution):</emphasis>
+       <emphasis role="bold">请求体（分支接收了信号事件）：</emphasis>
             <programlisting>
 {
   "action":"signalEventReceived",
   "signalName":"mySignal"
   "variables": [ ... ]
 }</programlisting>
- Notifies the execution that a signal event has been received, requires a <literal>signalName</literal> parameter. Optional <literal>variables</literal> can be passed that are set on the execution before the action is executed.
+ 提醒分支接收了一个信号事件，要使用一个<literal>signalName</literal>参数。还可以传递<literal>variables</literal>参数，它会在执行操作之前设置到分支中。
     </para>
      <para>
-       <emphasis role="bold">Request body (signal event received for execution):</emphasis>
+       <emphasis role="bold">请求体（分支接收了消息事件）：</emphasis>
             <programlisting>
 {
   "action":"messageEventReceived",
   "messageName":"myMessage"
   "variables": [ ... ]
 }</programlisting>
- Notifies the execution that a message event has been received, requires a <literal>messageName</literal> parameter. Optional <literal>variables</literal> can be passed that are set on the execution before the action is executed.
+ 提醒分支接收了一个消息事件，要使用一个<literal>messageName</literal>参数。还可以传递<literal>variables</literal>参数，它会在执行操作之前设置到分支中。
     </para>
         <para>
           <table>
-              <title>Execute an action on an execution - 响应码</title>
+              <title>对分支执行操作 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3900,26 +3900,26 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the execution was found and the action is performed.</entry>
+                    <entry>表示找到了分支，并执行了操作。</entry>
                   </row>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the execution was found, the action was performed and the action caused the execution to end.</entry>
+                    <entry>表示找到了分支，执行了操作，并且操作导致分支结束了。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates an illegal action was requested, required parameters are missing in the resuest body or illegal variables are passed in. Status description contains additional information about the error.</entry>
+                    <entry>表示请求的操作不合法，请求中缺少必须的参数，或传递了非法的变量。状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the execution was not found.</entry>
+                    <entry>表示找不到分支</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">Success response body (in case execution is not ended due to action):</emphasis>
+       <emphasis role="bold">成功响应体（当操作没有导致分支结束的情况）：</emphasis>
             <programlisting>
 {
    "id":"5",
@@ -3935,16 +3935,16 @@
   </section>
 
   <section>
-      <title>Get active activities in an execution</title>
+      <title>获得一个分支的所有活动节点</title>
         <para>
           <programlisting>GET runtime/executions/{executionId}/activities</programlisting>
         </para>
         <para>
-          Returns all activities which are active in the execution and in all child-executions (and their children, recursively), if any.
+		  返回分支以及子分支当前所有活动的节点（递归所有下级）。
         </para>
         <para>
             <table>
-              <title>Get active activities in an execution - URL参数</title>
+              <title>获得一个分支的所有活动节点 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -3959,7 +3959,7 @@
                     <entry>executionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the execution to get activities for.</entry>
+                    <entry>获取节点对应的分支id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3967,7 +3967,7 @@
         </para>
         <para>
           <table>
-              <title>Get active activities in an execution - 响应码</title>
+              <title>获得一个分支的所有活动节点 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -3978,11 +3978,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the execution was found and activities are returned.</entry>
+                    <entry>表示找到了分支，并返回了节点。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the execution was not found.</entry>
+                    <entry>表示找不到分支</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -3999,13 +3999,13 @@
   </section>
 
   <section id="restExecutionsGet">
-      <title>List of executions</title>
+      <title>获取分支列表</title>
         <para>
           <programlisting>GET repository/executions</programlisting>
         </para>
         <para>
             <table>
-              <title>List of executions - URL参数</title>
+              <title>获取分支列表 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4018,54 +4018,54 @@
                 <tbody>
                   <row>
                     <entry>id</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return executions with the given id.</entry>
+                    <entry>只返回指定id的分支。</entry>
                   </row>
                   <row>
                     <entry>processDefinitionKey</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return executions with the given process definition key.</entry>
+                    <entry>只返回指定流程定义key的分支。</entry>
                   </row>
                   <row>
                     <entry>processDefinitionId</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return executions with the given process definition id.</entry>
+                    <entry>只返回指定流程定义id的分支。</entry>
                   </row>
                   <row>
                     <entry>processInstanceId</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return executions which are part of the process instance with the given id.</entry>
+                    <entry>只返回作为指定流程实例id一部分的分支。</entry>
                   </row>
                   <row>
                     <entry>messageEventSubscriptionName</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return executions which are subscribed to a message with the given name.</entry>
+                    <entry>只返回订阅了指定名称消息的分支。</entry>
                   </row>
                   <row>
                     <entry>signalEventSubscriptionName</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return executions which are subscribed to a signal with the given name.</entry>
+                    <entry>只返回订阅了指定名称信号的分支。</entry>
                   </row>
                   <row>
                     <entry>parentId</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return executions wich are a direct child of the given execution.</entry>
+                    <entry>只返回指定分支直接下级的分支。</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Sort field, should be either one of <literal>processInstanceId</literal> (default), <literal>processDefinitionId</literal> or <literal>processDefinitionKey</literal>.</entry>
+                    <entry>排序字段，应该和<literal>processInstanceId</literal>（默认）， <literal>processDefinitionId</literal> 或 <literal>processDefinitionKey</literal>之一一起使用。</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4073,7 +4073,7 @@
         </para>
         <para>
           <table>
-              <title>List of executions - 响应码</title>
+              <title>获取分支列表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4084,11 +4084,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates request was successful and the executions are returned</entry>
+                    <entry>表示请求成功，并返回了分支。</entry>
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates a parameter was passed in the wrong format . The status-message contains additional information.</entry>
+                    <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4130,7 +4130,7 @@
     </section>
 
     <section>
-      <title>Query executions</title>
+      <title>查询分支</title>
         <para>
           <programlisting>POST query/executions</programlisting>
         </para>
@@ -4162,13 +4162,12 @@
   ...
 }</programlisting>
 
-The request body can contain all possible filters that can be used in the <link linkend="restExecutionsGet">List executions</link> URL query. On top of these, it's possible to provide an array of <literal>variables</literal> and <literal>processInstanceVariables</literal>
-to include in the query, with their format <link linkend="restQueryVariable"> described here</link>.
+请求体可以包含在<link linkend="restExecutionsGet">获取分支列表</link>中可以使用的查询条件。除此之外，也可以在查询中提供<literal>variables</literal>和<literal>processInstanceVariables</literal>列表，关于变量的格式可以参考<link linkend="restQueryVariable">此处</link>。
     </para>
-    <para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para>
+    <para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para>
         <para>
           <table>
-              <title>Query executions - 响应码</title>
+              <title>查询分支 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4179,11 +4178,11 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates request was successful and the executions are returned</entry>
+                    <entry>表示请求成功，并返回了分支。</entry>
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates a parameter was passed in the wrong format . The status-message contains additional information.</entry>
+                    <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4226,13 +4225,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 
 
     <section>
-      <title>List of variables for an execution</title>
+      <title>获取分支的变量列表</title>
         <para>
           <programlisting>GET runtime/executions/{executionId}/variables?scope={scope}</programlisting>
         </para>
         <para>
             <table>
-              <title>List of variables for an execution - URL参数</title>
+              <title>获取分支的变量列表 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4247,13 +4246,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                     <entry>executionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the execution to the variables for.</entry>
+                    <entry>变量对应的分支id。</entry>
                   </row>
                    <row>
                     <entry>scope</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Either <literal>local</literal> or <literal>global</literal>. If ommitted, both local and global scoped variables are returned.</entry>
+                    <entry><literal>local</literal> 或 <literal>global</literal>。如果忽略，会返回local和global作用域下的所有变量。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4261,7 +4260,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
         </para>
         <para>
           <table>
-              <title>List of variables for an execution - 响应码</title>
+              <title>获取分支的变量列表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4272,11 +4271,11 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the execution was found and variables are returned.</entry>
+                    <entry>表示找到了分支，并返回了变量。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested execution was not found.</entry>
+                    <entry>表示找不到请求的分支。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4307,13 +4306,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 </section>
 
   <section>
-      <title>Get a variable for an execution</title>
+      <title>获得分支的一个变量</title>
         <para>
           <programlisting>GET runtime/executions/{executionId}/variables/{variableName}?scope={scope}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a variable for an execution - URL参数</title>
+              <title>获得分支的一个变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4328,19 +4327,19 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                     <entry>executionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the execution to the variables for.</entry>
+                    <entry>变量对应的分支id</entry>
                   </row>
                   <row>
                     <entry>variableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>Name of the variable to get.</entry>
+                    <entry>获取的变量名称。</entry>
                   </row>
                    <row>
                     <entry>scope</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Either <literal>local</literal> or <literal>global</literal>. If ommitted, local variable is returned (if exists). If not, a global variable is returned (if exists).</entry>
+                    <entry><literal>local</literal> 或 <literal>global</literal>。如果忽略，返回local变量（如果存在）。如果不存在局部变量，返回global变量（如果存在）。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4348,7 +4347,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
         </para>
         <para>
           <table>
-              <title>Get a variable for an execution - 响应码</title>
+              <title>获得分支的一个变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4359,15 +4358,15 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates both the execution and variable were found and variable is returned.</entry>
+                    <entry>表示找到了分支和变量，并返回了变量。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error.</entry>
+                    <entry>表示请求体不完全，或包含非法数值。状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested execution was not found or the execution does not have a variable with the given name in the requested scope (in case scope-query parameter was omitted, variable doesn't exist in local and global scope). Status description contains additional information about the error.</entry>
+                    <entry>表示找不到请求的分支，或分支在请求作用域中不包含指定名称的变量（如果忽略scope参数，既不存在local变量也不存在global变量）。状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4382,22 +4381,22 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
       "value":123,
       "scope":"local"
    }</programlisting>
-    In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
+    当变量为二进制或序列化类型时，<literal>valueUrl</literal>给出了获得原始数据的URL。如果是普通变量，变量值就会直接包含在响应中。
     </para>
   </section>
 
 
   <section>
-      <title>Create (or update) variables on an execution</title>
+      <title>新建（或更新）分支变量</title>
         <para>
           <programlisting>POST runtime/executions/{executionId}/variables</programlisting>
           <programlisting>PUT runtime/executions/{executionId}/variables</programlisting>
         </para>
         <para>
-          When using <literal>POST</literal>, all variables that are passed are created. In case one of the variables already exists on the execution in the requested scope, the request results in an error (409 - CONFLICT). When <literal>PUT</literal> is used,
-          unexisting variables are created on the execution and existing ones are overridden without any error.
+		  使用<literal>POST</literal>时，会创建所有传递的变量。如果流程实例中已经存在了其中一个变量，就会返回一个错误（409 - CONFLICT）。使用<literal>PUT</literal>时，
+		  流程实例中不存在的变量会被创建，已存在的变量会被更新，不会有任何错误。
             <table>
-              <title>Create (or update) variables on an execution - URL参数</title>
+              <title>新建（或更新）分支变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4412,7 +4411,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                     <entry>executionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the execution to the variables for.</entry>
+                    <entry>变量对应的分支id</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4431,11 +4430,11 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
 
    ...
 ]</programlisting>
-        <emphasis role="bold">Note that you can only provide variables that have the same scope. If the request-body array contains variables from mixed scopes, the request results in an error (400 - BAD REQUEST).</emphasis>Any number of variables can be passed into the request body array. More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that scope is ignored, only <literal>local</literal> variables can be set in a process instance.
+        <emphasis role="bold">注意你只能提供作用域相同的变量。如果请求体数组中包含了不同作用域的变量，请求会返回一个错误（400 - BAD REQUEST）。</emphasis>请求体数据中可以传递任意个数的变量。关于变量格式的详细信息可以参考<link linkend="restVariables">REST变量章节</link>。注意，如果忽略了作用域，只有<literal>local</literal>作用域的比那两可以设置到流程实例中。
         </para>
         <para>
           <table>
-              <title>Create (or update) variables on an execution - 响应码</title>
+              <title>新建（或更新）分支变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4446,19 +4445,19 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the execution was found and variable is created.</entry>
+                    <entry>表示找到了分支，并成功创建了变量。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error.</entry>
+                    <entry>表示请求体不完全或包含了非法数据。状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested execution was not found.</entry>
+                    <entry>表示找不到请求的分支。</entry>
                   </row>
                    <row>
                     <entry>409</entry>
-                    <entry>Indicates the execution was found but already contains a variable with the given name (only thrown when POST method is used). Use the update-method instead.</entry>
+                    <entry>表示找到了流程实例，但是已经存在一个相同名称的变量（只在使用POST方法时抛出）。可以使用更新方法替代。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4482,13 +4481,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
   </section>
 
   <section>
-      <title>Update a variable on an execution</title>
+      <title>更新分支变量</title>
         <para>
           <programlisting>PUT runtime/executions/{executionId}/variables/{variableName}</programlisting>
         </para>
         <para>
             <table>
-              <title>Update a variable on an execution - URL参数</title>
+              <title>更新分支变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4503,13 +4502,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                     <entry>executionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the execution to update the variables for.</entry>
+                    <entry>希望更新的变量对应的分支id。</entry>
                   </row>
                   <row>
                     <entry>variableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>Name of the variable to update.</entry>
+                    <entry>希望更新的变量名称。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4524,11 +4523,11 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
     "value":123,
     "scope":"global"
  }</programlisting>
-        More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>.
+        关于变量格式的详细信息可以参考<link linkend="restVariables">REST变量章节</link>。
         </para>
         <para>
           <table>
-              <title>Update a variable on an execution - 响应码</title>
+              <title>更新分支变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4539,11 +4538,11 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates both the process instance and variable were found and variable is updated.</entry>
+                    <entry>表示找到了分支和变量，并成功更新了变量。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error.</entry>
+                    <entry>表示找不到请求的分支，或分支不包含指定名称的变量。状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4558,18 +4557,18 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
       "value":123,
       "scope":"global"
    }</programlisting>
-  In case the variable is a binary variable or serializable, the <literal>valueUrl</literal> points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
+    当变量为二进制或序列化类型时，<literal>valueUrl</literal>给出了获得原始数据的URL。如果是普通变量，变量值就会直接包含在响应中。
   </para>
   </section>
 
    <section>
-      <title>Create a new binary variable on an execution</title>
+      <title>创建一个二进制变量</title>
         <para>
           <programlisting>POST runtime/executions/{executionId}/variables</programlisting>
         </para>
         <para>
             <table>
-              <title>Create a new binary variable on an execution - URL参数</title>
+              <title>创建一个二进制变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4584,7 +4583,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                     <entry>executionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the execution to create the new variable for.</entry>
+                    <entry>希望创建的新变量对应的分支id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4592,16 +4591,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
         </para>
          <para>
        <emphasis role="bold">请求体：</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+           请求应该是<literal>multipart/form-data</literal>类型。应该只有一个文件区域，包含源码的二进制内容。除此之外，需要提供以下表单域：
       <itemizedlist>
           <listitem>
-            <para><literal>name</literal>: Required name of the variable.</para>
+            <para><literal>name</literal>：必须的变量名称。</para>
           </listitem>
           <listitem>
-            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
-          </listitem>
-          <listitem>
-            <para><literal>scope</literal>: Scope of variable that is created. If omitted, <literal>local</literal> is assumed.</para>
+            <para><literal>type</literal>：创建的变量类型。如果忽略，会假设使用<literal>binary</literal>，请求的二进制数据会当做二进制数组保存起来。</para>
           </listitem>
       </itemizedlist>
         </para>
@@ -4616,7 +4612,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
   "valueUrl" : "http://.../runtime/executions/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Create a new binary variable on an execution - 响应码</title>
+              <title>创建一个二进制变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4627,23 +4623,23 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the variable was created and the result is returned.</entry>
+                    <entry>表示成功创建了变量，并返回了结果。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of the variable to create was missing. Status message provides additional information.</entry>
+                    <entry>表示没有提供希望创建的变量名称。状态信息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested execution was not found.</entry>
+                    <entry>表示找不到请求的分支。</entry>
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the execution already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                    <entry>表示分支已经拥有了一个与指定名称相关的变量。使用PUT方法来代替更新分支变量。</entry>
                   </row>
                   <row>
                     <entry>415</entry>
-                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
+                    <entry>表示序列化数据包含的对象的类并不在运行Activiti引擎的JVM中，所以无法反序列化。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4652,13 +4648,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
   </section>
 
   <section>
-      <title>Update an existing binary variable on a process-instance</title>
+      <title>更新已经已存在的二进制分支变量</title>
          <para>
           <programlisting>PUT runtime/executions/{executionId}/variables/{variableName}</programlisting>
         </para>
         <para>
             <table>
-              <title>Update an existing binary variable on a process-instance - URL参数</title>
+              <title>更新已经已存在的二进制分支变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4673,13 +4669,13 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                     <entry>executionId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the execution to create the new variable for.</entry>
+                    <entry>希望更新的变量对应的分支id。</entry>
                   </row>
                   <row>
                     <entry>variableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The name of the variable to update.</entry>
+                    <entry>希望更新的变量名称。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4687,16 +4683,16 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
         </para>
          <para>
        <emphasis role="bold">请求体：</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+           请求应该是<literal>multipart/form-data</literal>类型。应该只有一个文件区域，包含源码的二进制内容。除此之外，需要提供以下表单域：
       <itemizedlist>
           <listitem>
-            <para><literal>name</literal>: Required name of the variable.</para>
+            <para><literal>name</literal>：必须的变量名称。</para>
           </listitem>
           <listitem>
-            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+            <para><literal>type</literal>：创建的变量类型。如果忽略，会假设使用<literal>binary</literal>，请求的二进制数据会当做二进制数组保存起来。</para>
           </listitem>
            <listitem>
-            <para><literal>scope</literal>: Scope of variable that is created. If omitted, <literal>local</literal> is assumed.</para>
+            <para><literal>scope</literal>：创建的变量作用于。如果忽略，假设是<literal>local</literal>。</para>
           </listitem>
       </itemizedlist>
         </para>
@@ -4711,7 +4707,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
   "valueUrl" : "http://.../runtime/executions/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Update an existing binary variable on a process-instance - 响应码</title>
+              <title>更新已经已存在的二进制分支变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4722,19 +4718,19 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the variable was udpated and the result is returned.</entry>
+                    <entry>表示变量已成功工薪，并返回了结果。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of the variable to update was missing. Status message provides additional information.</entry>
+                    <entry>表示没有提供希望更新的变量名称。状态信息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested execution was not found or the execution does not have a variable with the given name.</entry>
+                    <entry>表示没有找到分支，或分支不包含指定名称的变量。</entry>
                   </row>
                   <row>
                     <entry>415</entry>
-                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
+                    <entry>表示序列化数据包含的对象的类并不在运行Activiti引擎的JVM中，所以无法反序列化。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4845,174 +4841,174 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                 <tbody>
                   <row>
                     <entry>name</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks with the given name.</entry>
                   </row>
                   <row>
                     <entry>nameLike</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks with a name like the given name.</entry>
                   </row>
                   <row>
                     <entry>description</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks with the given description.</entry>
                   </row>
                   <row>
                     <entry>priority</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Integer</entry>
                     <entry>Only return tasks with the given priotiry.</entry>
                   </row>
                   <row>
                     <entry>minimumPriority</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Integer</entry>
                     <entry>Only return tasks with a priority greater than the given value.</entry>
                   </row>
                   <row>
                     <entry>maximumPriority</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Integer</entry>
                     <entry>Only return tasks with a priority lower than the given value.</entry>
                   </row>
                   <row>
                     <entry>assignee</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks assigned to the given user.</entry>
                   </row>
                   <row>
                     <entry>owner</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks owned by the given user.</entry>
                   </row>
                   <row>
                     <entry>unassigned</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
                     <entry>Only return tasks that are not assigned to anyone. If <literal>false</literal> is passed, the value is ignored.</entry>
                   </row>
                   <row>
                     <entry>delegationState</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks that have the given delegation state. Possible values are <literal>pending</literal> and <literal>resolved</literal>.</entry>
                   </row>
                   <row>
                     <entry>candidateUser</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks that can be claimed by the given user. This includes both tasks where the user is an explicit candidate for and task that are claimable by a group that the user is a member of.</entry>
                   </row>
                   <row>
                     <entry>candidateGroup</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks that can be claimed by a user in the given group.</entry>
                   </row>
                   <row>
                     <entry>involvedUser</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks in which the given user is involved.</entry>
                   </row>
                   <row>
                     <entry>taskDefinitionKey</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks with the given task definition id.</entry>
                   </row>
                   <row>
                     <entry>taskDefinitionKeyLike</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks with a given task definition id like the given value.</entry>
                   </row>
                   <row>
                     <entry>processInstanceId</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks which are part of the process instance with the given id.</entry>
                   </row>
                   <row>
                     <entry>processInstanceBusinessKey</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks which are part of the process instance with the given business key.</entry>
                   </row>
                   <row>
                     <entry>executionId</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Only return tasks which are part of the execution with the given id.</entry>
                   </row>
                   <row>
                     <entry>createdOn</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>ISO Date</entry>
                     <entry>Only return tasks which are created on the given date.</entry>
                   </row>
                   <row>
                     <entry>createdBefore</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>ISO Date</entry>
                     <entry>Only return tasks which are created before the given date.</entry>
                   </row>
                   <row>
                     <entry>createdAfter</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>ISO Date</entry>
                     <entry>Only return tasks which are created after the given date.</entry>
                   </row>
                   <row>
                     <entry>dueOn</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>ISO Date</entry>
                     <entry>Only return tasks which are due on the given date.</entry>
                   </row>
                   <row>
                     <entry>dueBefore</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>ISO Date</entry>
                     <entry>Only return tasks which are due before the given date.</entry>
                   </row>
                   <row>
                     <entry>dueAfter</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>ISO Date</entry>
                     <entry>Only return tasks which are due after the given date.</entry>
                   </row>
                   <row>
                     <entry>excludeSubTasks</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
                     <entry>Only return tasks that are not a subtask of another task.</entry>
                   </row>
                   <row>
                     <entry>active</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
                     <entry>If <literal>true</literal>, only return tasks that are not suspended (either part of a process that is not suspended or not part of a process at all). If false, only tasks that are part of suspended process instances are returned.</entry>
                   </row>
                   <row>
                     <entry>includeTaskLocalVariables</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
                     <entry>Indication to include task local variables in the result.</entry>
                   </row>
                   <row>
                     <entry>includeProcessVariables</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Boolean</entry>
                     <entry>Indication to include process variables in the result.</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5035,7 +5031,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates a parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). The status-message contains additional information.</entry>
+                    <entry>Indicates a parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). 状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5126,7 +5122,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates a parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). The status-message contains additional information.</entry>
+                    <entry>Indicates a parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). 状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5228,7 +5224,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
   "action" : "complete",
   "variables" : ...
 }</programlisting>
-       Completes the task. Optional variable array can be passed in using the <literal>variables</literal> property. More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that the variable-scope that is supplied is ignored and the variables are set on the parent-scope unless a variable exists in a local scope, which is overridden in this case. This is the same behavior as the <literal>TaskService.completeTask(taskId, variables)</literal> invocation.
+       Completes the task. Optional variable array can be passed in using the <literal>variables</literal> property. 关于变量格式的详细信息可以参考<link linkend="restVariables">REST变量章节</link>。 Note that the variable-scope that is supplied is ignored and the variables are set on the parent-scope unless a variable exists in a local scope, which is overridden in this case. This is the same behavior as the <literal>TaskService.completeTask(taskId, variables)</literal> invocation.
        </para>
        <para>
          <emphasis role="bold">Claim a task - Body JSON:</emphasis>
@@ -5499,7 +5495,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name (in the given scope). Status message provides additional information.</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name (in the given scope). 状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5575,7 +5571,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name (in the given scope) or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name (in the given scope) or the variable doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5644,7 +5640,7 @@ The request body should be an array containing one or more JSON-objects represen
             <para><literal>value</literal>: Variable value.</para>
           </listitem>
       </itemizedlist>
-      More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>.
+      关于变量格式的详细信息可以参考<link linkend="restVariables">REST变量章节</link>。
         </para>
         <para>
         <emphasis role="bold">成功响应体：</emphasis>
@@ -5676,7 +5672,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of a variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal> or an empty array of variables was included in the request or request did not contain an array of variables. Status message provides additional information.</entry>
+                    <entry>Indicates the name of a variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal> or an empty array of variables was included in the request or request did not contain an array of variables. 状态信息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -5760,7 +5756,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of the variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                    <entry>Indicates the name of the variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal>. 状态信息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -5772,7 +5768,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>415</entry>
-                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
+                    <entry>表示序列化数据包含的对象的类并不在运行Activiti引擎的JVM中，所以无法反序列化。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5836,7 +5832,7 @@ The request body should be an array containing one or more JSON-objects represen
             <para><literal>value</literal>: Variable value.</para>
           </listitem>
       </itemizedlist>
-      More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>.
+      关于变量格式的详细信息可以参考<link linkend="restVariables">REST变量章节</link>。
         </para>
         <para>
         <emphasis role="bold">成功响应体：</emphasis>
@@ -5863,7 +5859,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of a variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                    <entry>Indicates the name of a variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope <literal>global</literal>. 状态信息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -5949,7 +5945,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of the variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope <literal>global</literal>. Status message provides additional information.</entry>
+                    <entry>Indicates the name of the variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope <literal>global</literal>. 状态信息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -5957,7 +5953,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>415</entry>
-                    <entry>Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.</entry>
+                    <entry>表示序列化数据包含的对象的类并不在运行Activiti引擎的JVM中，所以无法反序列化。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5996,7 +5992,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>scope</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Scope of variable to delete in. Can be either <literal>local</literal> or <literal>global</literal>. If omitted, <literal>local</literal> is assumed.</entry>
                   </row>
@@ -7175,7 +7171,7 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the task doesn't have an attachment with the given id or the attachment doesn't have a binary stream available. Status message provides additional information.</entry>
+                    <entry>Indicates the requested task was not found or the task doesn't have an attachment with the given id or the attachment doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -7323,90 +7319,90 @@ Only the attachment name is required to create a new attachment.
               <tbody>
                 <row>
                   <entry>processInstanceId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>An id of the historic process instance.</entry>
                 </row>
                 <row>
                   <entry>processDefinitionKey</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process definition key of the historic process instance.</entry>
                 </row>
                 <row>
                   <entry>processDefinitionId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process definition id of the historic process instance.</entry>
                 </row>
                 <row>
                   <entry>businessKey</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The business key of the historic process instance.</entry>
                 </row>
                 <row>
                   <entry>involvedUser</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>An involved user of the historic process instance.</entry>
                 </row>
                 <row>
                   <entry>finished</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>Indication if the historic process instance is finished.</entry>
                 </row>
                 <row>
                   <entry>superProcessInstanceId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>An optional parent process id of the historic process instance.</entry>
                 </row>
                 <row>
                   <entry>excludeSubprocesses</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>Return only historic process instances which aren't sub processes.</entry>
                 </row>
                 <row>
                   <entry>finishedAfter</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Date</entry>
                   <entry>Return only historic process instances that were finished after this date.</entry>
                 </row>
                 <row>
                   <entry>finishedBefore</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Date</entry>
                   <entry>Return only historic process instances that were finished before this date.</entry>
                 </row>
                 <row>
                   <entry>startedAfter</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Date</entry>
                   <entry>Return only historic process instances that were started after this date.</entry>
                 </row>
                 <row>
                   <entry>startedBefore</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Date</entry>
                   <entry>Return only historic process instances that were started before this date.</entry>
                 </row>
                 <row>
                   <entry>startedBy</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>Return only historic process instances that were started by this user.</entry>
                 </row>
                 <row>
                   <entry>includeProcessVariables</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>An indication if the historic process instance variables should be returned as well.</entry>
                 </row>
                 <row>
-                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                  <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7429,7 +7425,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                 <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7514,7 +7510,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7651,7 +7647,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested process instance was not found or the process instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                  <entry>Indicates the requested process instance was not found or the process instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7740,180 +7736,180 @@ Only the attachment name is required to create a new attachment.
               <tbody>
                 <row>
                   <entry>taskId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>An id of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>processInstanceId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process instance id of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>processDefinitionKey</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process definition key of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>processDefinitionId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process definition id of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>processDefinitionName</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process definition name of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>processBusinessKey</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process instance business key of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>executionId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The execution id of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskName</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The task name of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskNameLike</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The task name with 'like' operator for the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskDescription</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The task description of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskDescriptionLike</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The task description with 'like' operator for the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskDefinitionKey</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The task identifier from the process definition for the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskDeleteReason</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The task delete reason of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskDeleteReasonLike</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The task delete reason with 'like' operator for the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskAssignee</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The assignee of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskAssigneeLike</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The assignee with 'like' operator for the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskOwner</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The owner of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskOwnerLike</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The owner with 'like' operator for the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskInvolvedUser</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>An involved user of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>taskPriority</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The priority of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>finished</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>Indication if the historic task instance is finished.</entry>
                 </row>
                 <row>
                   <entry>processFinished</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>Indication if the process instance of the historic task instance is finished.</entry>
                 </row>
                 <row>
                   <entry>parentTaskId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>An optional parent task id of the historic task instance.</entry>
                 </row>
                 <row>
                   <entry>dueDate</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have a due date equal this date.</entry>
                 </row>
                 <row>
                   <entry>dueDateAfter</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have a due date after this date.</entry>
                 </row>
                 <row>
                   <entry>dueDateBefore</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have a due date before this date.</entry>
                 </row>
                 <row>
                   <entry>taskCreatedOn</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that were created on this date.</entry>
                 </row>
                 <row>
                   <entry>includeTaskLocalVariables</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>An indication if the historic task instance local variables should be returned as well.</entry>
                 </row>
                 <row>
                   <entry>includeProcessVariables</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>An indication if the historic task instance global variables should be returned as well.</entry>
                 </row>
                 <row>
-                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                  <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7936,7 +7932,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                 <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8037,7 +8033,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8190,7 +8186,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested task instance was not found or the process instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                  <entry>Indicates the requested task instance was not found or the process instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8221,60 +8217,60 @@ Only the attachment name is required to create a new attachment.
               <tbody>
                 <row>
                   <entry>activityId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>An id of the activity instance.</entry>
                 </row>
                 <row>
                   <entry>activityInstanceId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>An id of the historic activity instance.</entry>
                 </row>
                 <row>
                   <entry>activityName</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The name of the historic activity instance.</entry>
                 </row>
                 <row>
                   <entry>activityType</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The element type of the historic activity instance.</entry>
                 </row>
                 <row>
                   <entry>executionId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The execution id of the historic activity instance.</entry>
                 </row>
                 <row>
                   <entry>finished</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>Indication if the historic activity instance is finished.</entry>
                 </row>
                 <row>
                   <entry>taskAssignee</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The assignee of the historic activity instance.</entry>
                 </row>
                 <row>
                   <entry>processInstanceId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process instance id of the historic activity instance.</entry>
                 </row>
                 <row>
                   <entry>processDefinitionId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process definition id of the historic activity instance.</entry>
                 </row>
                 <row>
-                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                  <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8297,7 +8293,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                 <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8366,7 +8362,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8423,36 +8419,36 @@ Only the attachment name is required to create a new attachment.
               <tbody>
                 <row>
                   <entry>processInstanceId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process instance id of the historic variable instance.</entry>
                 </row>
                 <row>
                   <entry>taskId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The task id of the historic variable instance.</entry>
                 </row>
                 <row>
                   <entry>excludeTaskVariables</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>Indication to exclude the task variables from the result.</entry>
                 </row>
                 <row>
                   <entry>variableName</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The variable name of the historic variable instance.</entry>
                 </row>
                 <row>
                   <entry>variableNameLike</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The variable name using the 'like' operator for the historic variable instance.</entry>
                 </row>
                 <row>
-                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                  <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8475,7 +8471,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                 <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8549,7 +8545,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8602,7 +8598,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested variable instance was not found or the variable instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                  <entry>Indicates the requested variable instance was not found or the variable instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8633,48 +8629,48 @@ Only the attachment name is required to create a new attachment.
               <tbody>
                 <row>
                   <entry>id</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The id of the historic detail.</entry>
                 </row>
                 <row>
                   <entry>processInstanceId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The process instance id of the historic detail.</entry>
                 </row>
                 <row>
                   <entry>executionId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The execution id of the historic detail.</entry>
                 </row>
                 <row>
                   <entry>activityInstanceId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The activity instance id of the historic detail.</entry>
                 </row>
                 <row>
                   <entry>taskId</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>String</entry>
                   <entry>The task id of the historic detail.</entry>
                 </row>
                 <row>
                   <entry>selectOnlyFormProperties</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>Indication to only return form properties in the result.</entry>
                 </row>
                 <row>
                   <entry>selectOnlyVariableUpdates</entry>
-                  <entry>No</entry>
+                  <entry>否</entry>
                   <entry>Boolean</entry>
                   <entry>Indication to only return variable updates in the result.</entry>
                 </row>
                 <row>
-                  <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                  <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8697,7 +8693,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                 <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8768,7 +8764,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8829,7 +8825,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested historic detail instance was not found or the historic detail instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. Status message provides additional information.</entry>
+                  <entry>Indicates the requested historic detail instance was not found or the historic detail instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8993,7 +8989,7 @@ Only the attachment name is required to create a new attachment.
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. The status-message contains additional information.</entry>
+                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -9235,25 +9231,25 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>start</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Integer</entry>
                     <entry>Index of the first row to fetch. Defaults to 0.</entry>
                   </row>
                   <row>
                     <entry>size</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>Integer</entry>
                     <entry>Number of rows to fetch, starting from <literal>start</literal>. Defaults to 10.</entry>
                   </row>
                   <row>
                     <entry>orderAscendingColumn</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Name of the column to sort the resulting rows on, ascending.</entry>
                   </row>
                   <row>
                     <entry>orderDescendingColumn</entry>
-                    <entry>No</entry>
+                    <entry>否</entry>
                     <entry>String</entry>
                     <entry>Name of the column to sort the resulting rows on, descending.</entry>
                   </row>
@@ -9705,7 +9701,7 @@ Only the attachment name is required to create a new attachment.
                     <entry>String</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c3"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9897,7 +9893,7 @@ Only the attachment name is required to create a new attachment.
                     <entry>String</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c3"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10338,7 +10334,7 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. Status description contains additional information about the error.</entry>
+                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. 状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10415,7 +10411,7 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. Status description contains additional information about the error.</entry>
+                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. 状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10483,7 +10479,7 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the key or value was missing from the request body. Status description contains additional information about the error.</entry>
+                    <entry>Indicates the key or value was missing from the request body. 状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -10550,7 +10546,7 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. Status description contains additional information about the error.</entry>
+                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. 状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10675,7 +10671,7 @@ Only the attachment name is required to create a new attachment.
                     <entry>String</entry>
                   </row>
                   <row>
-                    <entry namest="c1" nameend="c3"><para>The general <link linkend="restPagingAndSort">分页和排序查询参数</link> can be used for this URL.</para></entry>
+                    <entry namest="c1" nameend="c3"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10992,7 +10988,7 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested group was not found or that the user is not a member of the group. The status description contains additional information about the error.</entry>
+                    <entry>Indicates the requested group was not found or that the user is not a member of the group. The 状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
