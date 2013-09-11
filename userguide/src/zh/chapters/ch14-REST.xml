@@ -4740,15 +4740,15 @@
 </section>
 
   <section>
-  <title>Tasks</title>
+  <title>任务</title>
       <section>
-      <title>Get a task</title>
+      <title>获取任务</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a task - URL参数</title>
+              <title>获取任务 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4763,7 +4763,7 @@
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get.</entry>
+                    <entry>希望获得的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4771,7 +4771,7 @@
         </para>
         <para>
           <table>
-              <title>Get a task - 响应码</title>
+              <title>获取任务 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -4782,11 +4782,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task was found and returned.</entry>
+                    <entry>表示找到了任务并返回。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4815,20 +4815,20 @@
 }</programlisting>
       <itemizedlist>
           <listitem>
-            <para><literal>delegationState</literal>: Delegation-state of the task, can be <literal>null</literal>, <literal>"pending"</literal> or <literal>"resolved".</literal></para>
+            <para><literal>delegationState</literal>：任务的代理状态。可以为<literal>null</literal>，<literal>"pending"</literal> 或 <literal>"resolved"</literal>。</para>
           </listitem>
       </itemizedlist>
     </para>
     </section>
 
   <section id="restTasksGet">
-      <title>List of tasks</title>
+      <title>任务列表</title>
         <para>
           <programlisting>GET runtime/tasks</programlisting>
         </para>
         <para>
             <table>
-              <title>List of tasks - URL参数</title>
+              <title>任务列表 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -4843,157 +4843,157 @@
                     <entry>name</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks with the given name.</entry>
+                    <entry>只返回指定的名称。</entry>
                   </row>
                   <row>
                     <entry>nameLike</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks with a name like the given name.</entry>
+                    <entry>只返回与指定名称匹配的任务。</entry>
                   </row>
                   <row>
                     <entry>description</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks with the given description.</entry>
+                    <entry>只返回指定描述的任务。</entry>
                   </row>
                   <row>
                     <entry>priority</entry>
                     <entry>否</entry>
                     <entry>Integer</entry>
-                    <entry>Only return tasks with the given priotiry.</entry>
+                    <entry>只返回指定优先级的任务。</entry>
                   </row>
                   <row>
                     <entry>minimumPriority</entry>
                     <entry>否</entry>
                     <entry>Integer</entry>
-                    <entry>Only return tasks with a priority greater than the given value.</entry>
+                    <entry>只返回比指定优先级大的任务。</entry>
                   </row>
                   <row>
                     <entry>maximumPriority</entry>
                     <entry>否</entry>
                     <entry>Integer</entry>
-                    <entry>Only return tasks with a priority lower than the given value.</entry>
+                    <entry>只返回比指定优先级小的任务。</entry>
                   </row>
                   <row>
                     <entry>assignee</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks assigned to the given user.</entry>
+                    <entry>只返回分配给指定用户的任务。</entry>
                   </row>
                   <row>
                     <entry>owner</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks owned by the given user.</entry>
+                    <entry>只返回用户代理人为指定用户的任务。</entry>
                   </row>
                   <row>
                     <entry>unassigned</entry>
                     <entry>否</entry>
                     <entry>Boolean</entry>
-                    <entry>Only return tasks that are not assigned to anyone. If <literal>false</literal> is passed, the value is ignored.</entry>
+                    <entry>只返回没有分配给任何人的任务。如果传递<literal>false</literal>，这个值就会被忽略。</entry>
                   </row>
                   <row>
                     <entry>delegationState</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks that have the given delegation state. Possible values are <literal>pending</literal> and <literal>resolved</literal>.</entry>
+                    <entry>只返回指定代理状态的任务。可选值为<literal>pending</literal> 和 <literal>resolved</literal>。</entry>
                   </row>
                   <row>
                     <entry>candidateUser</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks that can be claimed by the given user. This includes both tasks where the user is an explicit candidate for and task that are claimable by a group that the user is a member of.</entry>
+                    <entry>只返回可以被指定用户领取的任务。这包含将用户设置为直接候选人和用户作为候选群组一员的情况。</entry>
                   </row>
                   <row>
                     <entry>candidateGroup</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks that can be claimed by a user in the given group.</entry>
+                    <entry>只返回可以被指定群组中用户领取的任务。</entry>
                   </row>
                   <row>
                     <entry>involvedUser</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks in which the given user is involved.</entry>
+                    <entry>只返回指定用户参与过的任务。</entry>
                   </row>
                   <row>
                     <entry>taskDefinitionKey</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks with the given task definition id.</entry>
+                    <entry>只返回指定任务定义id的任务。</entry>
                   </row>
                   <row>
                     <entry>taskDefinitionKeyLike</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks with a given task definition id like the given value.</entry>
+                    <entry>只返回任务定义id与指定值匹配的任务。</entry>
                   </row>
                   <row>
                     <entry>processInstanceId</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks which are part of the process instance with the given id.</entry>
+                    <entry>只返回作为指定id的流程实例的一部分的任务。</entry>
                   </row>
                   <row>
                     <entry>processInstanceBusinessKey</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks which are part of the process instance with the given business key.</entry>
+                    <entry>只返回作为指定key的流程实例的一部分的任务。</entry>
                   </row>
                   <row>
                     <entry>executionId</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Only return tasks which are part of the execution with the given id.</entry>
+                    <entry>只返回作为指定id分支的一部分的任务。</entry>
                   </row>
                   <row>
                     <entry>createdOn</entry>
                     <entry>否</entry>
                     <entry>ISO Date</entry>
-                    <entry>Only return tasks which are created on the given date.</entry>
+                    <entry>只返回指定创建时间的任务。</entry>
                   </row>
                   <row>
                     <entry>createdBefore</entry>
                     <entry>否</entry>
                     <entry>ISO Date</entry>
-                    <entry>Only return tasks which are created before the given date.</entry>
+                    <entry>只返回在指定时间之前创建的任务。</entry>
                   </row>
                   <row>
                     <entry>createdAfter</entry>
                     <entry>否</entry>
                     <entry>ISO Date</entry>
-                    <entry>Only return tasks which are created after the given date.</entry>
+                    <entry>只返回在指定时间之后创建的任务。</entry>
                   </row>
                   <row>
                     <entry>dueOn</entry>
                     <entry>否</entry>
                     <entry>ISO Date</entry>
-                    <entry>Only return tasks which are due on the given date.</entry>
+                    <entry>只返回指定持续时间的任务。</entry>
                   </row>
                   <row>
                     <entry>dueBefore</entry>
                     <entry>否</entry>
                     <entry>ISO Date</entry>
-                    <entry>Only return tasks which are due before the given date.</entry>
+                    <entry>只返回持续时间在指定时间之前的任务。</entry>
                   </row>
                   <row>
                     <entry>dueAfter</entry>
                     <entry>否</entry>
                     <entry>ISO Date</entry>
-                    <entry>Only return tasks which are due after the given date.</entry>
+                    <entry>只返回持续时间在指定时间之后的任务。</entry>
                   </row>
                   <row>
                     <entry>excludeSubTasks</entry>
                     <entry>否</entry>
                     <entry>Boolean</entry>
-                    <entry>Only return tasks that are not a subtask of another task.</entry>
+                    <entry>只返回非子任务的任务。</entry>
                   </row>
                   <row>
                     <entry>active</entry>
                     <entry>否</entry>
                     <entry>Boolean</entry>
-                    <entry>If <literal>true</literal>, only return tasks that are not suspended (either part of a process that is not suspended or not part of a process at all). If false, only tasks that are part of suspended process instances are returned.</entry>
+                    <entry>如果为 <literal>true</literal>，只返回未挂起的任务（作为未挂起流程的一部分，或者不属于任何流程）。如果为false，只返回作为挂起流程一部分的任务。</entry>
                   </row>
                   <row>
                     <entry>includeTaskLocalVariables</entry>
@@ -5005,7 +5005,7 @@
                     <entry>includeProcessVariables</entry>
                     <entry>否</entry>
                     <entry>Boolean</entry>
-                    <entry>Indication to include process variables in the result.</entry>
+                    <entry>表示在结果中包含变量。</entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
@@ -5016,7 +5016,7 @@
         </para>
         <para>
           <table>
-              <title>List of tasks - 响应码</title>
+              <title>任务列表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5027,11 +5027,11 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates request was successful and the tasks are returned</entry>
+                    <entry>表示请求成功，并返回任务。</entry>
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates a parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). 状态信息包含了详细信息。</entry>
+                    <entry>表示传递的参数格式错误，或'delegationState'使用了不合法的数据('pending' 和 'resolved'以外的数据)。状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5118,7 +5118,7 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates request was successful and the tasks are returned</entry>
+                    <entry>表示请求成功，并返回任务。</entry>
                   </row>
                    <row>
                     <entry>400</entry>
@@ -5198,7 +5198,7 @@
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                   <row>
                     <entry>409</entry>
@@ -5273,7 +5273,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                   <row>
                     <entry>409</entry>
@@ -5348,7 +5348,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5407,7 +5407,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5676,7 +5676,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                   <row>
                     <entry>409</entry>
@@ -5760,7 +5760,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                   <row>
                     <entry>409</entry>
@@ -6069,7 +6069,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6121,7 +6121,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6455,7 +6455,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6523,7 +6523,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6713,7 +6713,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6864,7 +6864,7 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6948,7 +6948,7 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -7026,7 +7026,7 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found.</entry>
+                    <entry>表示找不到任务。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -7506,7 +7506,7 @@ Only the attachment name is required to create a new attachment.
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates request was successful and the tasks are returned</entry>
+                  <entry>表示请求成功，并返回任务。</entry>
                 </row>
                  <row>
                   <entry>400</entry>
@@ -8029,7 +8029,7 @@ Only the attachment name is required to create a new attachment.
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates request was successful and the tasks are returned</entry>
+                  <entry>表示请求成功，并返回任务。</entry>
                 </row>
                  <row>
                   <entry>400</entry>
@@ -8541,7 +8541,7 @@ Only the attachment name is required to create a new attachment.
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates request was successful and the tasks are returned</entry>
+                  <entry>表示请求成功，并返回任务。</entry>
                 </row>
                  <row>
                   <entry>400</entry>
@@ -11823,7 +11823,7 @@ Only the attachment name is required to create a new attachment.
       <section>
         <title>List Tasks</title>
         <para>
-          Returns a paginated list of tasks that can be sorted by: "id", "name", "description", "priority", "assignee",
+          Returns a paginated 任务列表 that can be sorted by: "id", "name", "description", "priority", "assignee",
           "executionId" or "processInstanceId". The list must be based on a user of a specific role: assignee
           (lists the tasks assigned to the user) or candidate (lists the tasks that the user may claim) or a candidate
           group (lists tasks that the members of the group may claim). If the task has a form it is given in the
