@@ -5071,7 +5071,7 @@
     </section>
 
    <section>
-      <title>Query for tasks</title>
+      <title>查询任务</title>
         <para>
           <programlisting>POST repository/tasks</programlisting>
         </para>
@@ -5102,12 +5102,11 @@
 }</programlisting>
         </para>
         <para>
-          All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processInstanceVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+		  此处所有被支持的JSON参数都和<link linkend="restTasksGet">获得任务集合</link>完全一样，只是使用JSON体参数的方式替代URL参数，这样就可以使用更加高级的查询方式，并能预防请求uri过长导致的问题。除此之外，可以基于任务和流程变量进行查询。<literal>taskVariables</literal> 和 <literal>processInstanceVariables</literal> 都可以包含 <link linkend="restQueryVariable">此处描述</link>的json数组。
         </para>
         <para>
           <table>
-              <title>Query for tasks - 响应码</title>
+              <title>查询任务 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5122,7 +5121,7 @@
                   </row>
                    <row>
                     <entry>400</entry>
-                    <entry>Indicates a parameter was passed in the wrong format or that 'delegationState' has an invalid value (other than 'pending' and 'resolved'). 状态信息包含了详细信息。</entry>
+                    <entry>表示传递了格式错误的参数，或'delegationState'传递了非法数据 ( 'pending' 和 'resolved'之外的值)。状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5162,7 +5161,7 @@
     </section>
 
   <section>
-      <title>Update a task</title>
+      <title>更新任务</title>
         <para>
           <programlisting>PUT runtime/tasks/{taskId}</programlisting>
         </para>
@@ -5179,11 +5178,11 @@
   "parentTaskId" : "3",
   "priority" : 20
 }</programlisting>
-      All request values are optional. For example, you can only include the 'assignee' attribute in the request body JSON-object, only updating the assignee of the task, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the task-value will be updated to null. Example: <literal>{"dueDate" : null}</literal> will clear the duedate of the task).
+      所有请求参数都是可选的。比如，你可以在请求体的JSON对象中只包含'assignee'属性，只更新任务的负责人，其他字段都不填。当包含的字段值为null时，任务的对应属性会被更新为null。比如：<literal>{"dueDate" : null}</literal>会清空任务的持续时间。
        </para>
         <para>
           <table>
-              <title>Update a task - 响应码</title>
+              <title>更新任务 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5194,7 +5193,7 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task was updated.</entry>
+                    <entry>表示成功更新了任务。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -5202,59 +5201,59 @@
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the requested task was updated simultaneously.</entry>
+                    <entry>表示请求的任务正在被更新。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">成功响应体：</emphasis> see response for <literal>runtime/tasks/{taskId}</literal>.
+       <emphasis role="bold">成功响应体：</emphasis> 参考<literal>runtime/tasks/{taskId}</literal>的响应。
       </para>
   </section>
    <section>
-      <title>Task actions</title>
+      <title>操作任务</title>
         <para>
           <programlisting>POST runtime/tasks/{taskId}</programlisting>
         </para>
         <para>
-         <emphasis role="bold">Complete a task - Body JSON:</emphasis>
+         <emphasis role="bold">完成任务 - JSON体：</emphasis>
            <programlisting>
 {
   "action" : "complete",
   "variables" : ...
 }</programlisting>
-       Completes the task. Optional variable array can be passed in using the <literal>variables</literal> property. 关于变量格式的详细信息可以参考<link linkend="restVariables">REST变量章节</link>。 Note that the variable-scope that is supplied is ignored and the variables are set on the parent-scope unless a variable exists in a local scope, which is overridden in this case. This is the same behavior as the <literal>TaskService.completeTask(taskId, variables)</literal> invocation.
+       完成任务。可以使用<literal>variables</literal>参数传递可选的variable数组。关于变量格式的详细信息可以参考<link linkend="restVariables">REST变量章节</link>。注意，此处忽略变量作用域，变量会设置到上级作用域，除非本地作用域应包含了同名变量。这与<literal>TaskService.completeTask(taskId, variables)</literal> 的行为是相同的。
        </para>
        <para>
-         <emphasis role="bold">Claim a task - Body JSON:</emphasis>
+         <emphasis role="bold">认领任务 - JSON体：</emphasis>
            <programlisting>
 {
   "action" : "claim",
   "assignee" : "userWhoClaims"
 }</programlisting>
-      Claims the task by the given assignee. The assignee is required.
+      指定assignee认领任务。assignee是必填项。
        </para>
        <para>
-         <emphasis role="bold">Delegate a task - Body JSON:</emphasis>
+         <emphasis role="bold">代理任务 - JSON体：</emphasis>
            <programlisting>
 {
   "action" : "delegate",
   "assignee" : "userToDelegateTo"
 }</programlisting>
-      Delegates the task to the given assignee. The assignee is required.
+      指定assignee代理任务。assignee是必填项。
        </para>
        <para>
-         <emphasis role="bold">Resolve a task - Body JSON:</emphasis>
+         <emphasis role="bold">处理任务 - JSON体：</emphasis>
            <programlisting>
 {
   "action" : "resolve"
 }</programlisting>
-Resolves the task delegation. The task is assigned back to the task owner (if any).
+处理任务代理。任务会返回给任务的原负责人（如果存在）。
        </para>
         <para>
           <table>
-              <title>Task actions - 响应码</title>
+              <title>操作任务 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5265,11 +5264,11 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the action was executed.</entry>
+                    <entry>表示操作成功执行。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>When the body contains an invalid value or when the assignee is missing when the action requires it.</entry>
+                    <entry>当请求包含了非法数据或当操作需要assignee参数时，却没有传。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -5277,24 +5276,24 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the action cannot be performed due to a conflict. Either the task was updates simultaneously or the task was claimend by another user, in case of the '<literal>claim</literal>' action.</entry>
+                    <entry>表示因为冲突导致无法执行操作。可能任务正在被更新，或者，在'<literal>claim</literal>'认清任务时，任务已经被其他用户认领了。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">成功响应体：</emphasis> see response for <literal>runtime/tasks/{taskId}</literal>.
+       <emphasis role="bold">成功响应体：</emphasis> 参考<literal>runtime/tasks/{taskId}</literal>的响应。
       </para>
   </section>
       <section>
-      <title>Delete a task</title>
+      <title>删除任务</title>
         <para>
           <programlisting>DELETE runtime/tasks/{taskId}?cascadeHistory={cascadeHistory}&amp;deleteReason={deleteReason}</programlisting>
         </para>
         <para>
             <table>
-              <title>>Delete a task - URL参数</title>
+              <title>>删除任务 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5309,19 +5308,19 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to delete.</entry>
+                    <entry>希望删除的任务id。</entry>
                   </row>
                   <row>
                     <entry>cascadeHistory</entry>
                     <entry>False</entry>
                     <entry>Boolean</entry>
-                    <entry>Whether or not to delete the HistoricTask instance when deleting the task (if applicable). If not provided, this value defaults to false.</entry>
+                    <entry>删除任务时是否删除对应的任务历史（如果存在）。如果没有设置这个参数，默认为false。</entry>
                   </row>
                   <row>
                     <entry>deleteReason</entry>
                     <entry>False</entry>
                     <entry>String</entry>
-                    <entry>Reason why the task is deleted. This value is ignored when <literal>cascadeHistory</literal> is true.</entry>
+                    <entry>删除任务的原因。<literal>cascadeHistory</literal>为true时，忽略此参数。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5329,7 +5328,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
           <table>
-              <title>>Delete a task - 响应码</title>
+              <title>>删除任务 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5340,11 +5339,11 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the task was found and has been deleted. Response-body is intentionally empty.</entry>
+                    <entry>表示找到任务，并成功删除。响应体为空。</entry>
                   </row>
                   <row>
                     <entry>403</entry>
-                    <entry>Indicates the requested task cannot be deleted because it's part of a workflow.</entry>
+                    <entry>表示无法删除任务，因为它是流程的一部分。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -5357,13 +5356,13 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
   </section>
 
    <section>
-      <title>Get all variables for a task</title>
+      <title>获得任务的变量</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/variables?scope={scope}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get all variables for a task - URL参数</title>
+              <title>获得任务的变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5378,13 +5377,13 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get variables for.</entry>
+                    <entry>变量对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>scope</entry>
                     <entry>False</entry>
                     <entry>String</entry>
-                    <entry>Scope of variables to be returned. When '<literal>local</literal>', only task-local variables are returned. When '<literal>global</literal>', only variables from the task's parent execution-hierarchy are returned. When the parameter is omitted, both local and global variables are returned.</entry>
+                    <entry>返回的变量作用于。如果为 '<literal>local</literal>'，只返回任务本身的变量。如果为 '<literal>global</literal>'，只返回任务上级分支的变量。如果不指定这个变量，会返回所有局部和全局的变量。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5392,7 +5391,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
           <table>
-              <title>Get all variables for a task - 响应码</title>
+              <title>获得任务的变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5403,7 +5402,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task was found and the requested variables are returned.</entry>
+                    <entry>表示找到了任务并返回了请求的变量。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -5434,18 +5433,18 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
 
 ]</programlisting>
 
-      The variables are returned as a JSON array. Full response description can be found in the general <link linkend="restVariables">REST-variables section</link>.
+      返回JSON数组型的变量。对响应的详细介绍可以参考<link linkend="restVariables">REST变量章节</link>。
     </para>
   </section>
 
    <section>
-      <title>Get a variable from a task</title>
+      <title>获取任务的一个变量</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/variables/{variableName}?scope={scope}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a variable from a task - URL参数</title>
+              <title>获取任务的一个变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5460,19 +5459,19 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get a variable for.</entry>
+                    <entry>获取变量对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>variableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The name of the variable to get.</entry>
+                    <entry>获取变量对应的名称。</entry>
                   </row>
                   <row>
                     <entry>scope</entry>
                     <entry>False</entry>
                     <entry>String</entry>
-                    <entry>Scope of variable to be returned. When '<literal>local</literal>', only task-local variable value is returned. When '<literal>global</literal>', only variable value from the task's parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.</entry>
+                    <entry>返回的变量作用于。如果为 '<literal>local</literal>'，只返回任务本身的变量。如果为 '<literal>global</literal>'，只返回任务上级分支的变量。如果不指定这个变量，会返回所有局部和全局的变量。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5480,7 +5479,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
           <table>
-              <title>Get a variable from a task - 响应码</title>
+              <title>获取任务的一个变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5491,11 +5490,11 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task was found and the requested variables are returned.</entry>
+                    <entry>表示找到了任务并返回了请求的变量。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name (in the given scope). 状态信息包含了详细信息。</entry>
+                    <entry>表示找不到任务，或者任务不包含指定名称的变量（在指定作用域下）。状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5510,18 +5509,19 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
   "type" : "string",
   "value" : "Hello my friend"
 }</programlisting>
-      Full response body description can be found in the general <link linkend="restVariables">REST-variables section</link>.
+
+	  对响应的详细介绍可以参考<link linkend="restVariables">REST变量章节</link>。
     </para>
   </section>
 
   <section>
-      <title>Get the binary data for a variable</title>
+      <title>获取变量的二进制数据</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/variables/{variableName}/data?scope={scope}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get the binary data for a variable - URL参数</title>
+              <title>获取变量的二进制数据 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5536,19 +5536,19 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get a variable data for.</entry>
+                    <entry>获取变量数据对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>variableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The name of the variable to get data for. Only variables of type <literal>binary</literal> and <literal>serializable</literal> can be used. If any other type of variable is used, a <literal>404</literal> is returned.</entry>
+                    <entry>获取数据对应的变量名称。只能使用 <literal>binary</literal> 和 <literal>serializable</literal> 类型的变量。如果使用了其他类型的变量，会返回 <literal>404</literal> 。</entry>
                   </row>
                   <row>
                     <entry>scope</entry>
                     <entry>False</entry>
                     <entry>String</entry>
-                    <entry>Scope of variable to be returned. When '<literal>local</literal>', only task-local variable value is returned. When '<literal>global</literal>', only variable value from the task's parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.</entry>
+                    <entry>返回的变量作用于。如果为 '<literal>local</literal>'，只返回任务本身的变量。如果为 '<literal>global</literal>'，只返回任务上级分支的变量。如果不指定这个变量，会返回所有局部和全局的变量。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5556,7 +5556,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
           <table>
-              <title>Get the binary data for a variable - 响应码</title>
+              <title>获取变量的二进制数据 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5567,11 +5567,11 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task was found and the requested variables are returned.</entry>
+                    <entry>表示找到了任务并返回了请求的变量。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name (in the given scope) or the variable doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
+                    <entry>表示找不到任务，或者任务不包含指定名称的变量（在指定作用域下），或变量的二进制流不可用。状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5579,18 +5579,18 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
         </para>
         <para>
        <emphasis role="bold">成功响应体：</emphasis>
-      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type.
+	  响应体包含了变量的二进制值。当类型为 <literal>binary</literal>时，无论请求的accept-type头部设置了什么值，响应的content-type都为<literal>application/octet-stream</literal>。当类型为 <literal>serializable</literal>时， content-type为<literal>application/x-java-serialized-object</literal>。
     </para>
   </section>
 
   <section>
-      <title>Create new variables on a task</title>
+      <title>创建任务变量</title>
         <para>
           <programlisting>POST runtime/tasks/{taskId}/variables</programlisting>
         </para>
         <para>
             <table>
-              <title>Create new variables on a task - URL参数</title>
+              <title>创建任务变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5605,14 +5605,14 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to create the new variable for.</entry>
+                    <entry>创建新变量对应的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body for creating simple (non-binary) variables:</emphasis>
+       <emphasis role="bold">创建简单（非二进制）变量的请求体：</emphasis>
             <programlisting>
 [
   {
@@ -5625,19 +5625,19 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
     ...
   }
 ]</programlisting>
-The request body should be an array containing one or more JSON-objects representing the variables that should be created.
+请求体应该是包含一个或多个JSON对象的数组，对应应该创建的变量。
       <itemizedlist>
           <listitem>
-            <para><literal>name</literal>: Required name of the variable</para>
+            <para><literal>name</literal>：必须的变量名称。</para>
           </listitem>
           <listitem>
-            <para><literal>scope</literal>: Scope of variable that is created. If omitted, <literal>local</literal> is assumed.</para>
+            <para><literal>scope</literal>:创建的变量的作用域。如果忽略，假设为<literal>local</literal>。</para>
           </listitem>
           <listitem>
-            <para><literal>type</literal>: Type of variable that is created. If omitted, reverts to raw JSON-value type (string, boolean, integer or double).</para>
+            <para><literal>type</literal>：创建的变量的类型。如果忽略，转换为对应的JSON的类型 (string, boolean, integer 或 double)。</para>
           </listitem>
           <listitem>
-            <para><literal>value</literal>: Variable value.</para>
+            <para><literal>value</literal>：变量值。</para>
           </listitem>
       </itemizedlist>
       关于变量格式的详细信息可以参考<link linkend="restVariables">REST变量章节</link>。
@@ -5657,7 +5657,7 @@ The request body should be an array containing one or more JSON-objects represen
   }
 ]</programlisting>
           <table>
-              <title>Create new variables on a task - 响应码</title>
+              <title>创建任务变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5668,11 +5668,11 @@ The request body should be an array containing one or more JSON-objects represen
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the variables were created and the result is returned.</entry>
+                    <entry>表示创建了变量，并返回了结果。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of a variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal> or an empty array of variables was included in the request or request did not contain an array of variables. 状态信息包含了详细信息。</entry>
+                    <entry>表示没有传变量名，或尝试使用<literal>global</literal>作用域为独立任务（没有关联到流程）创建变量，或请求中的变量为空，或请求没有包含变量数组。状态信息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -5680,7 +5680,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the task already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                    <entry>表示任务已经存在指定名称的变量了。可以使用PUT方法来更新任务变量。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5688,13 +5688,13 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
   </section>
    <section>
-      <title>Create a new binary variable on a task</title>
+      <title>创建二进制任务变量</title>
         <para>
           <programlisting>POST runtime/tasks/{taskId}/variables</programlisting>
         </para>
         <para>
             <table>
-              <title>Create a new binary variable on a task - URL参数</title>
+              <title>创建二进制任务变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5709,7 +5709,7 @@ The request body should be an array containing one or more JSON-objects represen
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to create the new variable for.</entry>
+                    <entry>创建新变量对应的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5717,16 +5717,16 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
          <para>
        <emphasis role="bold">请求体：</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+           请求应该是<literal>multipart/form-data</literal>类型。应该只有一个文件区域，包含源码的二进制内容。除此之外，需要提供以下表单域：
       <itemizedlist>
           <listitem>
-            <para><literal>name</literal>: Required name of the variable.</para>
+            <para><literal>name</literal>：必须的变量名称。</para>
           </listitem>
           <listitem>
-            <para><literal>scope</literal>: Scope of variable that is created. If omitted, <literal>local</literal> is assumed.</para>
+            <para><literal>scope</literal>：创建的变量的作用域。如果忽略，假设使用 <literal>local</literal>。</para>
           </listitem>
           <listitem>
-            <para><literal>type</literal>: Type of variable that is created. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+            <para><literal>type</literal>：创建的变量类型。如果忽略，会假设使用<literal>binary</literal>，请求的二进制数据会当做二进制数组保存起来。</para>
           </listitem>
       </itemizedlist>
         </para>
@@ -5741,7 +5741,7 @@ The request body should be an array containing one or more JSON-objects represen
   "valueUrl" : "http://.../runtime/tasks/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Create a new binary variable on a task - 响应码</title>
+              <title>创建二进制任务变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5752,11 +5752,11 @@ The request body should be an array containing one or more JSON-objects represen
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the variable was created and the result is returned.</entry>
+                    <entry>表示创建了变量，并返回了结果。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of the variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope <literal>global</literal>. 状态信息包含了详细信息。</entry>
+                    <entry>表示没有传变量名，或尝试使用<literal>global</literal>作用域为独立任务（没有关联到流程）创建变量。状态信息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -5764,7 +5764,7 @@ The request body should be an array containing one or more JSON-objects represen
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the task already has a variable with the given name. Use the PUT method to update the task variable instead.</entry>
+                    <entry>表示任务已经存在指定名称的变量了。可以使用PUT方法来更新任务变量。</entry>
                   </row>
                   <row>
                     <entry>415</entry>
@@ -5776,13 +5776,13 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
   </section>
    <section>
-      <title>Update an existing variable on a task</title>
+      <title>更新任务的一个已有变量</title>
         <para>
           <programlisting>PUT runtime/tasks/{taskId}/variables/{variableName}</programlisting>
         </para>
         <para>
             <table>
-              <title>Update an existing variable on a task - URL参数</title>
+              <title>更新任务的一个已有变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5797,20 +5797,20 @@ The request body should be an array containing one or more JSON-objects represen
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to update the variable for.</entry>
+                    <entry>希望更新的变量对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>variableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The name of the variable to update.</entry>
+                    <entry>希望更新的变量名称。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
          <para>
-       <emphasis role="bold">Request body for updating simple (non-binary) variables:</emphasis>
+       <emphasis role="bold">更新简单（非二进制）变量的请求体：</emphasis>
             <programlisting>
 {
   "name" : "myTaskVariable",
@@ -5820,16 +5820,16 @@ The request body should be an array containing one or more JSON-objects represen
 }</programlisting>
       <itemizedlist>
           <listitem>
-            <para><literal>name</literal>: Required name of the variable</para>
+            <para><literal>name</literal>：必须的变量名称。</para>
           </listitem>
           <listitem>
-            <para><literal>scope</literal>: Scope of variable that is updated. If omitted, <literal>local</literal> is assumed.</para>
+            <para><literal>scope</literal>：更新的变量的作用域。如果忽略，假设为<literal>local</literal>。</para>
           </listitem>
           <listitem>
-            <para><literal>type</literal>: Type of variable that is updated. If omitted, reverts to raw JSON-value type (string, boolean, integer or double).</para>
+            <para><literal>type</literal>：更新的变量的类型。如果忽略，转换为对应的JSON的类型 (string, boolean, integer 或 double)。</para>
           </listitem>
           <listitem>
-            <para><literal>value</literal>: Variable value.</para>
+            <para><literal>value</literal>：变量值。</para>
           </listitem>
       </itemizedlist>
       关于变量格式的详细信息可以参考<link linkend="restVariables">REST变量章节</link>。
@@ -5844,7 +5844,7 @@ The request body should be an array containing one or more JSON-objects represen
   "value" : "Hello my friend"
 }</programlisting>
           <table>
-              <title>Update an existing variable on a task - 响应码</title>
+              <title>更新任务的一个已有变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5855,15 +5855,15 @@ The request body should be an array containing one or more JSON-objects represen
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the variables was updated and the result is returned.</entry>
+                    <entry>表示成功更新了变量并返回了结果。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of a variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope <literal>global</literal>. 状态信息包含了详细信息。</entry>
+                    <entry>表示没有传变量名，或尝试使用<literal>global</literal>作用域为独立任务（没有关联到流程）创建变量。状态信息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name in the given scope. Status message contains additional information about the error.</entry>
+                    <entry>表示找不到任务，或任务在指定作用域不包含指定名称的变量。状态信息包含错误的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5871,13 +5871,13 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
   </section>
   <section>
-      <title>Updating a binary variable on a task</title>
+      <title>更新一个二进制任务变量</title>
         <para>
           <programlisting>PUT runtime/tasks/{taskId}/variables/{variableName}</programlisting>
         </para>
         <para>
             <table>
-              <title>Updating a binary variable on a task - URL参数</title>
+              <title>更新一个二进制任务变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5892,13 +5892,13 @@ The request body should be an array containing one or more JSON-objects represen
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to update the variable for.</entry>
+                    <entry>希望更新的变量对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>variableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The name of the variable to update.</entry>
+                    <entry>希望更新的变量名称。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5906,16 +5906,16 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
          <para>
        <emphasis role="bold">请求体：</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+           请求应该是<literal>multipart/form-data</literal>类型。应该只有一个文件区域，包含源码的二进制内容。除此之外，需要提供以下表单域：
       <itemizedlist>
           <listitem>
-            <para><literal>name</literal>: Required name of the variable.</para>
+            <para><literal>name</literal>：必须的变量名称。</para>
           </listitem>
           <listitem>
-            <para><literal>scope</literal>: Scope of variable that is updated. If omitted, <literal>local</literal> is assumed.</para>
+            <para><literal>scope</literal>：创建的变量的作用域。如果忽略，假设使用 <literal>local</literal>。</para>
           </listitem>
           <listitem>
-            <para><literal>type</literal>: Type of variable that is updated. If omitted, <literal>binary</literal> is assumed and the binary data in the request will be stored as an array of bytes.</para>
+            <para><literal>type</literal>：创建的变量类型。如果忽略，会假设使用<literal>binary</literal>，请求的二进制数据会当做二进制数组保存起来。</para>
           </listitem>
       </itemizedlist>
         </para>
@@ -5930,7 +5930,7 @@ The request body should be an array containing one or more JSON-objects represen
   "valueUrl" : "http://.../runtime/tasks/123/variables/binaryVariable/data"
 }</programlisting>
           <table>
-              <title>Updating a binary variable on a task - 响应码</title>
+              <title>更新一个二进制任务变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -5941,15 +5941,15 @@ The request body should be an array containing one or more JSON-objects represen
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the variable was updated and the result is returned.</entry>
+                    <entry>表示更新了变量，并返回了结果。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the name of the variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope <literal>global</literal>. 状态信息包含了详细信息。</entry>
+                    <entry>表示没有传变量名，或尝试使用<literal>global</literal>作用域为独立任务（没有关联到流程）创建变量。状态信息包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the variable to update doesn't exist for the given task in the given scope.</entry>
+                    <entry>表示找不到任务，或任务在指定作用域不包含指定名称的变量。</entry>
                   </row>
                   <row>
                     <entry>415</entry>
@@ -5961,13 +5961,13 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
   </section>
   <section>
-      <title>Delete a variable on a task</title>
+      <title>删除任务变量</title>
         <para>
           <programlisting>DELETE runtime/tasks/{taskId}/variables/{variableName}?scope={scope}</programlisting>
         </para>
         <para>
             <table>
-              <title>Delete a variable on a task - URL参数</title>
+              <title>删除任务变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -5982,19 +5982,19 @@ The request body should be an array containing one or more JSON-objects represen
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task the variable to delete belongs to.</entry>
+                    <entry>希望删除的变量对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>variableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The name of the variable to delete.</entry>
+                    <entry>希望删除的变量名称。</entry>
                   </row>
                   <row>
                     <entry>scope</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Scope of variable to delete in. Can be either <literal>local</literal> or <literal>global</literal>. If omitted, <literal>local</literal> is assumed.</entry>
+                    <entry>希望删除的变量的作用域。可以是<literal>local</literal> 或 <literal>global</literal>。如果忽略，假设为<literal>local</literal>。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6002,7 +6002,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
         <para>
           <table>
-              <title>Delete a variable on a task - 响应码</title>
+              <title>删除任务变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6013,11 +6013,11 @@ The request body should be an array containing one or more JSON-objects represen
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the task variable was found and has been deleted. Response-body is intentionally empty.</entry>
+                    <entry>表示找到了任务变量，并成功删除。响应体为空。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the task doesn't have a variable with the given name. Status message contains additional information about the error.</entry>
+                    <entry>表示找不到任务，或任务不包含指定名称的变量。状态信息包含错误的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6065,7 +6065,7 @@ The request body should be an array containing one or more JSON-objects represen
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates all local task variables have been deleted. Response-body is intentionally empty.</entry>
+                    <entry>Indicates all local task variables have been deleted. 响应体为空。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
@@ -6379,7 +6379,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the task and identity link were found and the link has been deleted. Response-body is intentionally empty.</entry>
+                    <entry>Indicates the task and identity link were found and the link has been deleted. 响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -9495,7 +9495,7 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the job was found and has been deleted. Response-body is intentionally empty.</entry>
+                    <entry>Indicates the job was found and has been deleted. 响应体为空。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
@@ -9551,7 +9551,7 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the job was executed. Response-body is intentionally empty.</entry>
+                    <entry>Indicates the job was executed. 响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -10083,7 +10083,7 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the user was found and  has been deleted. Response-body is intentionally empty.</entry>
+                    <entry>Indicates the user was found and  has been deleted. 响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -10846,7 +10846,7 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the group was found and  has been deleted. Response-body is intentionally empty.</entry>
+                    <entry>Indicates the group was found and  has been deleted. 响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
