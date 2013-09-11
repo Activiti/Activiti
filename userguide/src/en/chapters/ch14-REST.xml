@@ -4877,10 +4877,22 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Only return tasks assigned to the given user.</entry>
                   </row>
                   <row>
+                    <entry>assigneeLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks assigned with an assignee like the given value.</entry>
+                  </row>
+                  <row>
                     <entry>owner</entry>
                     <entry>No</entry>
                     <entry>String</entry>
                     <entry>Only return tasks owned by the given user.</entry>
+                  </row>
+                  <row>
+                    <entry>ownerLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks assigned with an owner like the given value.</entry>
                   </row>
                   <row>
                     <entry>unassigned</entry>
@@ -4937,6 +4949,36 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Only return tasks which are part of the process instance with the given business key.</entry>
                   </row>
                   <row>
+                    <entry>processInstanceBusinessKeyLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of the process instance which has a business key like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKey</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with the given key.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKeyLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with a key like the given value.</entry>
+                  </row>
+                   <row>
+                    <entry>processDefinitionName</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionNameLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with a name like the given value.</entry>
+                  </row>
+                  <row>
                     <entry>executionId</entry>
                     <entry>No</entry>
                     <entry>String</entry>
@@ -4977,6 +5019,12 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>No</entry>
                     <entry>ISO Date</entry>
                     <entry>Only return tasks which are due after the given date.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutDueDate</entry>
+                    <entry>No</entry>
+                    <entry>boolean</entry>
+                    <entry>Only return tasks which don't have a due date. The property is ignored if the value is <literal>false</literal>.</entry>
                   </row>
                   <row>
                     <entry>excludeSubTasks</entry>

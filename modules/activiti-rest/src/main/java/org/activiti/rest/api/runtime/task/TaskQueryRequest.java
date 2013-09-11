@@ -34,7 +34,9 @@ public class TaskQueryRequest {
   private Integer minimumPriority;
   private Integer maximumPriority;
   private String assignee;
+  private String assigneeLike;
   private String owner;
+  private String ownerLike;
   private Boolean unassigned;
   private String delegationState;
   private String candidateUser;
@@ -42,6 +44,11 @@ public class TaskQueryRequest {
   private String involvedUser;
   private String processInstanceId;
   private String processInstanceBusinessKey;
+  private String processInstanceBusinessKeyLike;
+  private String processDefinitionKey;
+  private String processDefinitionName;
+  private String processDefinitionKeyLike;
+  private String processDefinitionNameLike;
   private String executionId;
   private Date createdOn;
   private Date createdBefore;
@@ -52,6 +59,7 @@ public class TaskQueryRequest {
   private Date dueDate;
   private Date dueBefore;
   private Date dueAfter;
+  private Boolean withoutDueDate;
   private Boolean active;
   private Boolean includeTaskLocalVariables;
   private Boolean includeProcessVariables;
@@ -123,12 +131,27 @@ public class TaskQueryRequest {
     this.assignee = assignee;
   }
   
+  public String getAssigneeLike() {
+	  return assigneeLike;
+  }
+  
+  public void setAssigneeLike(String assigneeLike) {
+	  this.assigneeLike = assigneeLike;
+  }
+  
   public String getOwner() {
     return owner;
   }
   
   public void setOwner(String owner) {
     this.owner = owner;
+  }
+  
+  public String getOwnerLike() {
+	  return ownerLike;
+  }
+  public void setOwnerLike(String ownerLike) {
+	  this.ownerLike = ownerLike;
   }
   
   public Boolean getUnassigned() {
@@ -185,6 +208,14 @@ public class TaskQueryRequest {
   
   public void setProcessInstanceBusinessKey(String processInstanceBusinessKey) {
     this.processInstanceBusinessKey = processInstanceBusinessKey;
+  }
+  
+  public String getProcessInstanceBusinessKeyLike() {
+	  return processInstanceBusinessKeyLike;
+  }
+  
+  public void setProcessInstanceBusinessKeyLike(String processInstanceBusinessKeyLike) {
+	  this.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
   }
   
   public String getExecutionId() {
@@ -307,5 +338,44 @@ public class TaskQueryRequest {
   
   public void setProcessInstanceVariables(List<QueryVariable> processInstanceVariables) {
     this.processInstanceVariables = processInstanceVariables;
+  }
+  
+  public void setProcessDefinitionNameLike(String processDefinitionNameLike) {
+	  this.processDefinitionNameLike = processDefinitionNameLike;
+  }
+  
+  public String getProcessDefinitionNameLike() {
+	  return processDefinitionNameLike;
+  }
+  
+  public String getProcessDefinitionKeyLike() {
+	  return processDefinitionKeyLike;
+  }
+  public void setProcessDefinitionKeyLike(String processDefinitionKeyLike) {
+	  this.processDefinitionKeyLike = processDefinitionKeyLike;
+  }
+  
+  public void setWithoutDueDate(Boolean withoutDueDate) {
+	  this.withoutDueDate = withoutDueDate;
+  }
+  
+  public Boolean getWithoutDueDate() {
+	  return withoutDueDate;
+  }
+  
+  public String getProcessDefinitionKey() {
+	  return processDefinitionKey;
+  }
+  
+  public void setProcessDefinitionKey(String processDefinitionKey) {
+	  this.processDefinitionKey = processDefinitionKey;
+  }
+  
+  public String getProcessDefinitionName() {
+	  return processDefinitionName;
+  }
+  
+  public void setProcessDefinitionName(String processDefinitionName) {
+	  this.processDefinitionName = processDefinitionName;
   }
 }

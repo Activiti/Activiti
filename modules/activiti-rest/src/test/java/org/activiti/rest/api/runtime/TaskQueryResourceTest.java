@@ -128,6 +128,16 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
       requestNode.put("assignee", "gonzo");
       assertResultsPresentInDataResponse(url, requestNode, adhocTask.getId());
       
+      // Owner like filtering
+      requestNode.removeAll();
+      requestNode.put("ownerLike", "owne%");
+      assertResultsPresentInDataResponse(url, requestNode, adhocTask.getId());
+      
+      // Assignee like filtering
+      requestNode.removeAll();
+      requestNode.put("assigneeLike", "%onzo");
+      assertResultsPresentInDataResponse(url, requestNode, adhocTask.getId());
+      
       // Unassigned filtering
       requestNode.removeAll();
       requestNode.put("unassigned", true);
@@ -166,6 +176,31 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
       // Process instance businesskey filtering
       requestNode.removeAll();
       requestNode.put("processInstanceBusinessKey", "myBusinessKey");
+      assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+      
+      // Process instance businesskey like filtering
+      requestNode.removeAll();
+      requestNode.put("processInstanceBusinessKeyLike", "myBusiness%");
+      assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+      
+      // Process definition key
+      requestNode.removeAll();
+      requestNode.put("processDefinitionKey", "oneTaskProcess");
+      assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+      
+      // Process definition key like
+      requestNode.removeAll();
+      requestNode.put("processDefinitionKeyLike", "%TaskProcess");
+      assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+      
+      // Process definition name
+      requestNode.removeAll();
+      requestNode.put("processDefinitionName", "The One Task Process");
+      assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+      
+      // Process definition name like
+      requestNode.removeAll();
+      requestNode.put("processDefinitionNameLike", "The One %");
       assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
       
       // CeatedOn filtering
@@ -225,6 +260,17 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
       requestNode.removeAll();
       requestNode.put("active", true);
       assertResultsPresentInDataResponse(url, requestNode, adhocTask.getId());
+      
+      // Filtering without duedate
+      requestNode.removeAll();
+      requestNode.put("withoutDueDate", true);
+      // No response should be returned, no tasks without a duedate yet 
+      assertResultsPresentInDataResponse(url, requestNode);
+      
+      processTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+      processTask.setDueDate(null);
+      taskService.saveTask(processTask);
+      assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -328,6 +374,50 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
     variableNode.put("operation", "equals");
     assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
     
+    // Greater than
+    variableNode.removeAll();
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 12300);
+    variableNode.put("operation", "greaterThan");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    variableNode.put("value", 12345);
+    variableNode.put("operation", "greaterThan");
+    assertResultsPresentInDataResponse(url, requestNode);
+    
+    // Greater than or equal
+    variableNode.removeAll();
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 12300);
+    variableNode.put("operation", "greaterThanOrEquals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    variableNode.put("value", 12345);
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // Less than
+    variableNode.removeAll();
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 12400);
+    variableNode.put("operation", "lessThan");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    variableNode.put("value", 12345);
+    variableNode.put("operation", "lessThan");
+    assertResultsPresentInDataResponse(url, requestNode);
+    
+    // Less than or equal
+    variableNode.removeAll();
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 12400);
+    variableNode.put("operation", "lessThanOrEquals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    variableNode.put("value", 12345);
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // Like
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "Abcde%");
+    variableNode.put("operation", "like");
+    
     // Any other operation but equals without value
     variableNode.removeAll();
     variableNode.put("value", "abcdef");
@@ -420,6 +510,50 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
     assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // Greater than
+    variableNode.removeAll();
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67800);
+    variableNode.put("operation", "greaterThan");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    variableNode.put("value", 67890);
+    variableNode.put("operation", "greaterThan");
+    assertResultsPresentInDataResponse(url, requestNode);
+    
+    // Greater than or equal
+    variableNode.removeAll();
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67800);
+    variableNode.put("operation", "greaterThanOrEquals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    variableNode.put("value", 67890);
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // Less than
+    variableNode.removeAll();
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67900);
+    variableNode.put("operation", "lessThan");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    variableNode.put("value", 67890);
+    variableNode.put("operation", "lessThan");
+    assertResultsPresentInDataResponse(url, requestNode);
+    
+    // Less than or equal
+    variableNode.removeAll();
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67900);
+    variableNode.put("operation", "lessThanOrEquals");
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    variableNode.put("value", 67890);
+    assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+    
+    // Like
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "Azert%");
+    variableNode.put("operation", "like");
   }
   
   /**
