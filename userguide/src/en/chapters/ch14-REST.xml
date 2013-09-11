@@ -5033,6 +5033,12 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Only return tasks which don't have a due date. The property is ignored if the value is <literal>false</literal>.</entry>
                   </row>
                   <row>
+                    <entry>withoutDueDate</entry>
+                    <entry>No</entry>
+                    <entry>boolean</entry>
+                    <entry>Only return tasks which don't have a due date. The property is ignored if the value is <literal>false</literal>.</entry>
+                  </row>
+                  <row>
                     <entry>excludeSubTasks</entry>
                     <entry>No</entry>
                     <entry>Boolean</entry>
