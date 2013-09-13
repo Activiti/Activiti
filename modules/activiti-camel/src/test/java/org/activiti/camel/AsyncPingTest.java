@@ -24,16 +24,13 @@ public class AsyncPingTest extends SpringActivitiTestCase {
 
   @Deployment(resources = {"process/asyncPing.bpmn20.xml"})
   public void testRunProcess() throws Exception {
-    
-    
-
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncPingProcess");
     
     List<Execution> executionList = runtimeService.createExecutionQuery().list();
     assertEquals(1, executionList.size());
 
     waitForJobExecutorToProcessAllJobs(3000, 100);
-    Thread.sleep(8000);
+    Thread.sleep(1500);
     
     executionList = runtimeService.createExecutionQuery().list();
     assertEquals(0, executionList.size());

@@ -13,9 +13,6 @@
 
 package org.activiti.camel;
 
-
-
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -83,20 +80,19 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
     final ActivitiEndpoint endpoint = createEndpoint(execution);
     final Exchange exchange = createExchange(execution, endpoint);
     
-    ExecutorService executor = Executors.newSingleThreadExecutor();
-    
     if (isASync(execution)) {
 
-      FutureTask<Void> future =
-              new FutureTask<Void>(new Callable<Void>() {
-                public Void call() {
-                   try {
-                    endpoint.process(exchange);
-                  } catch (Exception e) {  
-                    throw new RuntimeException("Unable to process camel endpint asynchronously.");
-                  }
-                  return null;
-              }});
+      FutureTask<Void> future = new FutureTask<Void>(new Callable<Void>() {
+          public Void call() {
+            try {
+              endpoint.process(exchange);
+            } catch (Exception e) {  
+              throw new RuntimeException("Unable to process camel endpint asynchronously.");
+            }
+            return null;
+          }
+      });
+      ExecutorService executor = Executors.newSingleThreadExecutor();
       executor.submit(future);
       handleCamelException(exchange);
 
@@ -105,8 +101,7 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
         handleCamelException(exchange);
         execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
     }
-          
-    
+  
     performDefaultOutgoingBehavior(execution);
   }
 
