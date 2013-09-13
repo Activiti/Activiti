@@ -11,11 +11,9 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.SecuredResource;
@@ -57,22 +55,20 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 			responseJSON.put("processDefinitionId", processInstance.getProcessDefinitionId());
 			
 			List<String> highLightedActivities = runtimeService.getActiveActivityIds(processInstanceId);
+			System.out.println(highLightedActivities);
 			List<String> highLightedFlows = getHighLightedFlows(processDefinition, processInstanceId);
 			
-			for (String activityId : highLightedActivities)
-				activitiesArray.add(activityId);
-			
-			for (String flow : highLightedFlows)
-				flowsArray.add(flow);
-			
 			for (String activityId : highLightedActivities) {
-				Execution execution = runtimeService.createExecutionQuery()
-    				.processInstanceId(processInstance.getProcessInstanceId())
-    				.activityId(activityId).singleResult();
-				ExecutionEntity executionEntity = (ExecutionEntity)execution;
-				executionEntity.getProcessDefinitionId();
+				activitiesArray.add(activityId);
 			}
-		} catch (Exception e) {}
+			
+			for (String flow : highLightedFlows) {
+				flowsArray.add(flow);
+			}
+			
+		} catch (Exception e) {
+		  e.printStackTrace();
+		}
 		
 		responseJSON.put("activities", activitiesArray);
 		responseJSON.put("flows", flowsArray);
@@ -90,20 +86,20 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 	 */
 	private List<String> getHighLightedFlows(ProcessDefinitionEntity processDefinition, String processInstanceId) {
 	    
-	    List<String> highLightedFlows = new ArrayList<String>();
-	    
-	    List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery()
-	            .processInstanceId(processInstanceId)
-	            //order by startime asc is not correct. use default order is correct.
-	            //.orderByHistoricActivityInstanceStartTime().asc()/*.orderByActivityId().asc()*/
-	            .list();
-        
-	    LinkedList<HistoricActivityInstance> hisActInstList = new LinkedList<HistoricActivityInstance>();
-        hisActInstList.addAll(historicActivityInstances);
-        
-        getHighlightedFlows(processDefinition.getActivities(), hisActInstList, highLightedFlows);
-	    
-	    return highLightedFlows;
+    List<String> highLightedFlows = new ArrayList<String>();
+    
+    List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery()
+        .processInstanceId(processInstanceId)
+        //order by startime asc is not correct. use default order is correct.
+        //.orderByHistoricActivityInstanceStartTime().asc()/*.orderByActivityId().asc()*/
+        .list();
+      
+    LinkedList<HistoricActivityInstance> hisActInstList = new LinkedList<HistoricActivityInstance>();
+    hisActInstList.addAll(historicActivityInstances);
+      
+    getHighlightedFlows(processDefinition.getActivities(), hisActInstList, highLightedFlows);
+    
+    return highLightedFlows;
 	}
 	
 	/**
@@ -120,57 +116,51 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 	 */
 	private void getHighlightedFlows(List<ActivityImpl> activityList, LinkedList<HistoricActivityInstance> hisActInstList, List<String> highLightedFlows){
 	    
-	    //check out startEvents in activityList
-	    List<ActivityImpl> startEventActList = new ArrayList<ActivityImpl>();
-        Map<String, ActivityImpl> activityMap = new HashMap<String, ActivityImpl>(activityList.size());
-        for(ActivityImpl activity : activityList){
-            
-            activityMap.put(activity.getId(), activity);
-            
-            String actType = (String)activity.getProperty("type");
-            if(actType!=null && actType.toLowerCase().indexOf("startevent")>=0){
-                startEventActList.add(activity);
-            }
-        }
-	    
-        //These codes is used to avoid a bug: 
-        //ACT-1728 If the process instance was started by a callActivity, it will be not have the startEvent activity in ACT_HI_ACTINST table 
-        //Code logic:
-        //Check the first activity if it is a startEvent, if not check out the startEvent's highlight outgoing flow.
-        HistoricActivityInstance firstHistActInst = hisActInstList.getFirst();
-        String firstActType = (String)firstHistActInst.getActivityType();
-        if(firstActType!=null && firstActType.toLowerCase().indexOf("startevent")<0){
-            PvmTransition startTrans = getStartTransaction(startEventActList, firstHistActInst);
-            if(startTrans!=null){
-                highLightedFlows.add(startTrans.getId());
-            }
+    //check out startEvents in activityList
+    List<ActivityImpl> startEventActList = new ArrayList<ActivityImpl>();
+    Map<String, ActivityImpl> activityMap = new HashMap<String, ActivityImpl>(activityList.size());
+    for(ActivityImpl activity : activityList){
+        
+      activityMap.put(activity.getId(), activity);
+      
+      String actType = (String) activity.getProperty("type");
+      if (actType != null && actType.toLowerCase().indexOf("startevent") >= 0){
+        startEventActList.add(activity);
+      }
+    }
+  
+    //These codes is used to avoid a bug: 
+    //ACT-1728 If the process instance was started by a callActivity, it will be not have the startEvent activity in ACT_HI_ACTINST table 
+    //Code logic:
+    //Check the first activity if it is a startEvent, if not check out the startEvent's highlight outgoing flow.
+    HistoricActivityInstance firstHistActInst = hisActInstList.getFirst();
+    String firstActType = (String) firstHistActInst.getActivityType();
+    if (firstActType != null && firstActType.toLowerCase().indexOf("startevent") < 0){
+      PvmTransition startTrans = getStartTransaction(startEventActList, firstHistActInst);
+      if (startTrans != null){
+        highLightedFlows.add(startTrans.getId());
+      }
+    } 
+      
+    while (hisActInstList.size() > 0) {
+      HistoricActivityInstance histActInst = hisActInstList.removeFirst();
+      ActivityImpl activity = activityMap.get(histActInst.getActivityId());
+      if (activity != null) {
+        boolean isParallel = false;
+        String type = histActInst.getActivityType();
+        if ("parallelGateway".equals(type) || "inclusiveGateway".equals(type)){
+          isParallel = true;
+        } else if ("subProcess".equals(histActInst.getActivityType())){
+          getHighlightedFlows(activity.getActivities(), hisActInstList, highLightedFlows);
         }
         
-        
-	    while(hisActInstList.size()>0){
-	        HistoricActivityInstance histActInst = hisActInstList.removeFirst();
-	        ActivityImpl activity = activityMap.get(histActInst.getActivityId());
-	        
-	        boolean isParallel = false;
-	        String type = histActInst.getActivityType();
-	        if("parallelGateway".equals(type) || "inclusiveGateway".equals(type)){
-	            isParallel = true;
-            }
-	        else if("subProcess".equals(histActInst.getActivityType())){
-	            getHighlightedFlows(activity.getActivities(), hisActInstList, highLightedFlows);
-	        }
-	        
-	        List<PvmTransition> allOutgoingTrans = new ArrayList<PvmTransition>();
-	        
-	        allOutgoingTrans.addAll(activity.getOutgoingTransitions());
-	        
-	        allOutgoingTrans.addAll(getBoundaryEventOutgoingTransitions(activity));
-	        
-	        List<String> activityHighLightedFlowIds = getHighlightedFlows(allOutgoingTrans, hisActInstList, isParallel);
-	        	        
-	        highLightedFlows.addAll(activityHighLightedFlowIds);
-	    }
-	    
+        List<PvmTransition> allOutgoingTrans = new ArrayList<PvmTransition>();
+        allOutgoingTrans.addAll(activity.getOutgoingTransitions());
+        allOutgoingTrans.addAll(getBoundaryEventOutgoingTransitions(activity));
+        List<String> activityHighLightedFlowIds = getHighlightedFlows(allOutgoingTrans, hisActInstList, isParallel);
+        highLightedFlows.addAll(activityHighLightedFlowIds);
+      }
+    }
 	}
 	
 	/**
@@ -181,14 +171,14 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 	 * @return
 	 */
 	private PvmTransition getStartTransaction(List<ActivityImpl> startEventActList, HistoricActivityInstance firstActInst){
-	    for(ActivityImpl startEventAct: startEventActList){
-	        for(PvmTransition trans : startEventAct.getOutgoingTransitions()){
-	            if(trans.getDestination().getId().equals(firstActInst.getActivityId())){
-	                return trans;
-	            }
-	        }
-	    }
-	    return null;
+    for (ActivityImpl startEventAct: startEventActList) {
+      for (PvmTransition trans : startEventAct.getOutgoingTransitions()) {
+        if (trans.getDestination().getId().equals(firstActInst.getActivityId())) {
+          return trans;
+        }
+      }
+    }
+    return null;
 	}
 	
 	/**
@@ -198,18 +188,18 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 	 * @return
 	 */
 	private List<PvmTransition> getBoundaryEventOutgoingTransitions(ActivityImpl activity){
-	    List<PvmTransition> boundaryTrans = new ArrayList<PvmTransition>();
-	    for(ActivityImpl subActivity : activity.getActivities()){
-	        String type = (String)subActivity.getProperty("type");
-	        if(type!=null && type.toLowerCase().indexOf("boundary")>=0){
-	            boundaryTrans.addAll(subActivity.getOutgoingTransitions());
-	        }
-	    }
-	    return boundaryTrans;
+    List<PvmTransition> boundaryTrans = new ArrayList<PvmTransition>();
+    for(ActivityImpl subActivity : activity.getActivities()){
+      String type = (String)subActivity.getProperty("type");
+      if(type!=null && type.toLowerCase().indexOf("boundary")>=0){
+        boundaryTrans.addAll(subActivity.getOutgoingTransitions());
+      }
+    }
+    return boundaryTrans;
 	}
 	
 	/**
-	 * find out single activity's highlighed flowIds
+	 * find out single activity's highlighted flowIds
 	 * 
 	 * @param activity
 	 * @param hisActInstList
@@ -218,80 +208,38 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 	 */
 	private List<String> getHighlightedFlows(List<PvmTransition> pvmTransitionList, LinkedList<HistoricActivityInstance> hisActInstList, boolean isParallel){
 	    
-	    List<String> highLightedFlowIds = new ArrayList<String>();
+    List<String> highLightedFlowIds = new ArrayList<String>();
 	    
-        PvmTransition earliestTrans = null;
-        HistoricActivityInstance earliestHisActInst = null;
-        
-        for (PvmTransition pvmTransition : pvmTransitionList) {
-                            
-            String destActId = pvmTransition.getDestination().getId();
-            HistoricActivityInstance destHisActInst = findHisActInst(hisActInstList, destActId);
-            if(destHisActInst!=null){
-                
-                if(isParallel){
-                    highLightedFlowIds.add(pvmTransition.getId());
-                }
-                else{
-                    if(earliestHisActInst==null || (earliestHisActInst.getId().compareTo(destHisActInst.getId())>0)){//用开始时间比较不准确,直接默认按id比较是准确的
-                        earliestTrans = pvmTransition;
-                        earliestHisActInst = destHisActInst;
-                    }
-                }
-            }
+    PvmTransition earliestTrans = null;
+    HistoricActivityInstance earliestHisActInst = null;
+    
+    for (PvmTransition pvmTransition : pvmTransitionList) {
+                        
+      String destActId = pvmTransition.getDestination().getId();
+      HistoricActivityInstance destHisActInst = findHisActInst(hisActInstList, destActId);
+      if (destHisActInst != null) {
+        if (isParallel) {
+          highLightedFlowIds.add(pvmTransition.getId());
+        } else if (earliestHisActInst == null || (earliestHisActInst.getId().compareTo(destHisActInst.getId()) > 0)) {
+          earliestTrans = pvmTransition;
+          earliestHisActInst = destHisActInst;
         }
-        
-        if((!isParallel) && earliestTrans!=null){
-            highLightedFlowIds.add(earliestTrans.getId());
-        }
-        
-        return highLightedFlowIds;
+      }
+    }
+    
+    if ((!isParallel) && earliestTrans!=null){
+      highLightedFlowIds.add(earliestTrans.getId());
+    }
+    
+    return highLightedFlowIds;
 	}
 	
 	private HistoricActivityInstance findHisActInst(LinkedList<HistoricActivityInstance> hisActInstList, String actId){
-	    for(HistoricActivityInstance hisActInst : hisActInstList){
-	        if(hisActInst.getActivityId().equals(actId)){
-	            return hisActInst;
-	        }
-	    }
-	    return null;
-	}
-	
-	// TODO: move this method to some 'utils'
-	/*private List<String> getHighLightedFlows(ProcessDefinitionEntity processDefinition, String processInstanceId) {
-		List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).orderByHistoricActivityInstanceStartTime().asc().orderByActivityId().asc().list();
-	    
-    for (HistoricActivityInstance hai : historicActivityInstances) {
-			historicActivityInstanceList.add(hai.getActivityId());
-		}
-	    
-    // add current activities to list
-    List<String> highLightedActivities = runtimeService.getActiveActivityIds(processInstanceId);
-    historicActivityInstanceList.addAll(highLightedActivities);
- 
-    // activities and their sequence-flows
-    getHighlightedFlows(processDefinition.getActivities());
-    
-    return highLightedFlows;
-	}
-	
-	private void getHighlightedFlows(List<ActivityImpl> activityList) {
-		for (ActivityImpl activity : activityList) {
-      
-      if (activity.getProperty("type").equals("subProcess")) {
-    	  // get flows for the subProcess
-        getHighlightedFlows(activity.getActivities());
-      }
-    	
-      if (historicActivityInstanceList.contains(activity.getId())) {
-    	  List<PvmTransition> pvmTransitionList = activity.getOutgoingTransitions();
-    	  for (PvmTransition pvmTransition: pvmTransitionList) {
-    		  String destinationFlowId = pvmTransition.getDestination().getId();
-    		  if (historicActivityInstanceList.contains(destinationFlowId)) {
-    			  highLightedFlows.add(pvmTransition.getId());
-    		  }
-    	  }
+    for (HistoricActivityInstance hisActInst : hisActInstList){
+      if (hisActInst.getActivityId().equals(actId)){
+        return hisActInst;
       }
     }
-	}*/
+    return null;
+	}
 }
