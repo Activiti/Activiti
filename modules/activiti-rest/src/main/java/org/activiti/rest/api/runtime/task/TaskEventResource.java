@@ -15,7 +15,7 @@ package org.activiti.rest.api.runtime.task;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.task.Comment;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
@@ -32,11 +32,11 @@ import org.restlet.resource.Get;
 public class TaskEventResource extends TaskBaseResource {
 
   @Get
-  public EventResponse getComment() {
+  public EventResponse getEvent() {
     if(!authenticate())
       return null;
     
-    Task task = getTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest();
     
     String eventId = getAttribute("eventId");
     if(eventId == null) {
@@ -53,24 +53,24 @@ public class TaskEventResource extends TaskBaseResource {
   }
   
   @Delete
-  public void deleteComment() {
+  public void deleteEvent() {
     if(!authenticate())
       return;
     
     // Check if task exists
     Task task = getTaskFromRequest();
     
-    String commentId = getAttribute("commentId");
-    if(commentId == null) {
-      throw new ActivitiIllegalArgumentException("CommentId is required.");
+    String eventId = getAttribute("eventId");
+    if(eventId == null) {
+      throw new ActivitiIllegalArgumentException("EventId is required.");
     }
     
-    Comment comment = ActivitiUtil.getTaskService().getComment(commentId);
-    if(comment == null || comment.getTaskId() == null || !comment.getTaskId().equals(task.getId())) {
-      throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have a comment with id '" + commentId + "'.", Comment.class);
+    Event event = ActivitiUtil.getTaskService().getEvent(eventId);
+    if(event == null || event.getTaskId() == null || !event.getTaskId().equals(task.getId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an event with id '" + event + "'.", Event.class);
     }
     
-    ActivitiUtil.getTaskService().deleteComment(commentId);
+    ActivitiUtil.getTaskService().deleteComment(eventId);
     setStatus(Status.SUCCESS_NO_CONTENT);
   }
 }

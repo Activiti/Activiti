@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
@@ -40,7 +41,7 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
     
     List<CommentResponse> result = new ArrayList<CommentResponse>();
     RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    Task task = getTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest();
     
     for(Comment comment : ActivitiUtil.getTaskService().getTaskComments(task.getId())) {
       result.add(responseFactory.createRestComment(this, comment));

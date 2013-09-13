@@ -15,6 +15,7 @@ package org.activiti.rest.api.runtime.task;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
@@ -35,7 +36,7 @@ public class TaskCommentResource extends TaskBaseResource {
     if(!authenticate())
       return null;
     
-    Task task = getTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest();
     
     String commentId = getAttribute("commentId");
     if(commentId == null) {
