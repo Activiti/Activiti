@@ -6025,13 +6025,13 @@
         </para>
   </section>
   <section>
-      <title>Delete all local variables on a task</title>
+      <title>删除任务的所有局部变量</title>
         <para>
           <programlisting>DELETE runtime/tasks/{taskId}/variables</programlisting>
         </para>
         <para>
             <table>
-              <title>Delete all local variables on a task - URL参数</title>
+              <title>删除任务的所有局部变量 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6046,7 +6046,7 @@
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task the variable to delete belongs to.</entry>
+                    <entry>希望删除的变量对应的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6054,7 +6054,7 @@
         </para>
         <para>
           <table>
-              <title>Delete all local variables on a task - 响应码</title>
+              <title>删除任务的所有局部变量 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6065,7 +6065,7 @@
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates all local task variables have been deleted. 响应体为空。</entry>
+                    <entry>表示已经删除了任务的所有局部变量。响应体为空。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
@@ -6077,13 +6077,13 @@
         </para>
   </section>
   <section>
-      <title>Get all identity links for a task</title>
+      <title>获得任务的所有IdentityLink</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/identitylinks</programlisting>
         </para>
         <para>
             <table>
-              <title>Get all identity links for a task - URL参数</title>
+              <title>获得任务的所有IdentityLink - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6098,7 +6098,7 @@
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get the identity links for.</entry>
+                    <entry>希望获得IdentityLink对应的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6106,7 +6106,7 @@
         </para>
         <para>
           <table>
-              <title>Get all identity links for a task - 响应码</title>
+              <title>获得任务的所有IdentityLink - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6117,7 +6117,7 @@
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task was found and the requested idenity links are returned.</entry>
+                    <entry>表示找到了任务，并返回了IdentityLink。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -6150,23 +6150,23 @@
   </section>
 
    <section>
-      <title>Get all identitylinks for a task for either groups or users</title>
+      <title>获得一个任务的所有组或用户的IdentityLink</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/identitylinks/users
 GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
         <para>
-        Returns only identity links targetting either users or groups. Response body and status-codes are exactly the same as when getting the full list of identity links for a task.
+		返回对应于用户或组的IdentityLink。响应体与状态码与获得一个任务的所有IdentityLink完全一样。
         </para>
   </section>
   <section>
-  <title>Get a single identity link on a task</title>
+  <title>获得一个任务的一个IdentityLink</title>
       <para>
         <programlisting>GET runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}</programlisting>
       </para>
       <para>
           <table>
-            <title>Get all identitylinks for a task for either groups or users - URL参数</title>
+            <title>获得一个任务的所有组或用户的IdentityLink - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -6181,25 +6181,25 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>taskId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the task .</entry>
+                  <entry>任务的id。</entry>
                 </row>
                 <row>
                   <entry>family</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>Either <literal>groups</literal> or <literal>users</literal>, depending on what kind of identity is targetted.</entry>
+                  <entry><literal>groups</literal> 或 <literal>users</literal>，对应期望获得哪种IdentityLink。</entry>
                 </row>
                 <row>
                   <entry>identityId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the identity.</entry>
+                  <entry>IdentityLink的id。</entry>
                 </row>
                 <row>
                   <entry>type</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The type of identity link.</entry>
+                  <entry>IdentityLink的类型。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -6207,7 +6207,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <table>
-            <title>Get all identitylinks for a task for either groups or users - 响应码</title>
+            <title>获得一个任务的所有组或用户的IdentityLink - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -6218,11 +6218,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates the task and identity link was found and returned.</entry>
+                  <entry>表示找到了任务和IdentityLink，并成功返回。</entry>
                 </row>
                  <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested task was not found or the task doesn't have the requested identityLink. The status contains additional information about this error.</entry>
+                  <entry>表示找不到任务，或任务不包含请求的IdentityLink。状态包含了错误的详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -6241,13 +6241,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 </section>
 
   <section>
-    <title>Create an identity link on a task</title>
+    <title>为任务创建一个IdentityLink</title>
       <para>
         <programlisting>POST runtime/tasks/{taskId}/identitylinks</programlisting>
       </para>
       <para>
           <table>
-            <title>Create an identity link on a task - URL参数</title>
+            <title>为任务创建一个IdentityLink - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -6262,14 +6262,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>taskId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the task .</entry>
+                  <entry>任务的id。</entry>
                 </row>
               </tbody>
            </tgroup>
         </table>
       </para>
       <para>
-       <emphasis role="bold">Request body (user):</emphasis>
+       <emphasis role="bold">请求体（用户）：</emphasis>
             <programlisting>
 {
   "userId" : "kermit",
@@ -6277,7 +6277,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 }</programlisting>
     </para>
     <para>
-       <emphasis role="bold">Request body (group):</emphasis>
+       <emphasis role="bold">请求体（组）：</emphasis>
             <programlisting>
 {
   "groupId" : "sales",
@@ -6286,7 +6286,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     </para>
       <para>
         <table>
-            <title>Create an identity link on a task - 响应码</title>
+            <title>为任务创建一个IdentityLink - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -6297,11 +6297,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>201</entry>
-                  <entry>Indicates the task was found and the identity link was created.</entry>
+                  <entry>表示找到了任务，并创建了IdentityLink。</entry>
                 </row>
                  <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested task was not found or the task doesn't have the requested identityLink. The status contains additional information about this error.</entry>
+                  <entry>表示找不到任务，或任务不包含请求的IdentityLink。状态包含了错误的详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -6321,13 +6321,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
 
      <section>
-      <title>Delete an identity link on a task</title>
+      <title>删除任务的一个IdentityLink</title>
          <para>
         <programlisting>DELETE runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}</programlisting>
       </para>
       <para>
           <table>
-            <title>Delete an identity link on a task - URL参数</title>
+            <title>删除任务的一个IdentityLink - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -6342,25 +6342,25 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>taskId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the task.</entry>
+                  <entry>任务的id。</entry>
                 </row>
                 <row>
                   <entry>family</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>Either <literal>groups</literal> or <literal>users</literal>, depending on what kind of identity is targetted.</entry>
+                  <entry><literal>groups</literal> 或 <literal>users</literal>，对应IdentityLink的种类。</entry>
                 </row>
                 <row>
                   <entry>identityId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the identity.</entry>
+                  <entry>IdentityLink的id。</entry>
                 </row>
                 <row>
                   <entry>type</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The type of identity link.</entry>
+                  <entry>IdentityLink的类型。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -6368,7 +6368,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
         <para>
           <table>
-              <title>Delete an identity link on a task - 响应码</title>
+              <title>删除任务的一个IdentityLink - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6379,11 +6379,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the task and identity link were found and the link has been deleted. 响应体为空。</entry>
+                    <entry>表示找到了任务和IdentityLInk，并成功删除了IdentityLink。响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the task doesn't have the requested identityLink. The status contains additional information about this error.</entry>
+                    <entry>表示找不到任务，或任务不包含请求的IdentityLink。状态包含了错误的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6392,13 +6392,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>Create a new comment on a task</title>
+      <title>为任务创建评论</title>
         <para>
           <programlisting>POST runtime/tasks/{taskId}/comments</programlisting>
         </para>
         <para>
             <table>
-              <title>Create a new comment on a task - URL参数</title>
+              <title>为任务创建评论 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6413,7 +6413,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to create the comment for.</entry>
+                    <entry>创建评论对应的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6436,7 +6436,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   "author" : "kermit"
 }</programlisting>
           <table>
-              <title>Create a new comment on a task - 响应码</title>
+              <title>为任务创建评论 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6447,11 +6447,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the comment was created and the result is returned.</entry>
+                    <entry>表示创建了评论，并返回了结果。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the comment is missing from the request.</entry>
+                    <entry>表示请求不包含评论。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -6463,13 +6463,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   <section>
-      <title>Get all comments on a task</title>
+      <title>获得任务的所有评论</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/comments</programlisting>
         </para>
         <para>
             <table>
-              <title>Get all comments on a task - URL参数</title>
+              <title>获得任务的所有评论 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6484,7 +6484,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get the comments for.</entry>
+                    <entry>获取评论对应的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6508,7 +6508,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   }
 ]</programlisting>
           <table>
-              <title>Get all comments on a task - 响应码</title>
+              <title>获得任务的所有评论 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6519,7 +6519,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task was found and the comments are returned.</entry>
+                    <entry>表示找到了任务，并返回了评论。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -6531,13 +6531,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   <section>
-      <title>Get a comment on a task</title>
+      <title>获得任务的一个评论</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/comments/{commentId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a comment on a task - URL参数</title>
+              <title>获得任务的一个评论 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6552,13 +6552,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get the comment for.</entry>
+                    <entry>获取评论对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>commentId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the comment.</entry>
+                    <entry>评论的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6574,7 +6574,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   "author" : "kermit"
 }</programlisting>
           <table>
-              <title>Get a comment on a task - 响应码</title>
+              <title>获得任务的一个评论 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6585,11 +6585,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task and comment were found and the comment is returned.</entry>
+                    <entry>表示找到了任务和评论，并返回了评论。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the tasks doesn't have a comment with the given ID.</entry>
+                    <entry>表示找不到任务，或任务不包含指定id的评论。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6597,13 +6597,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   <section>
-      <title>Delete a comment on a task</title>
+      <title>删除任务的一条评论</title>
         <para>
           <programlisting>DELETE runtime/tasks/{taskId}/comments/{commentId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Delete a comment on a task - URL参数</title>
+              <title>删除任务的一条评论 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6618,20 +6618,20 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to delete the comment for.</entry>
+                    <entry>删除评论对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>commentId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the comment.</entry>
+                    <entry>评论的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
         <table>
-            <title>Delete a comment on a task - 响应码</title>
+            <title>删除任务的一条评论 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -6642,24 +6642,24 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>204</entry>
-                  <entry>Indicates the task and comment were found and the comment is deleted. Response body is left empty intentionally.</entry>
+                  <entry>表示找到了任务和评论，并删除了评论。响应体为空。</entry>
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested task was not found or the tasks doesn't have a comment with the given ID.</entry>
+					  <entry>表示找不到任务，或任务不包含id的评论。</entry>
                 </row>
               </tbody>
            </tgroup>
         </table>
   </section>
     <section>
-      <title>Get all events for a task</title>
+      <title>获得任务的所有事件</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/events</programlisting>
         </para>
         <para>
             <table>
-              <title>Get all events for a task - URL参数</title>
+              <title>获得任务的所有事件 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6674,7 +6674,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get the events for.</entry>
+                    <entry>获得事件对应的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6698,7 +6698,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
 ]</programlisting>
           <table>
-              <title>Get all events for a task - 响应码</title>
+              <title>获得任务的所有事件 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6709,7 +6709,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task was found and the events are returned.</entry>
+                    <entry>表示找到了任务，并返回了事件。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -6721,13 +6721,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   <section>
-      <title>Get an event on a task</title>
+      <title>获得任务的一个事件</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/events/{eventId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get an event on a task - URL参数</title>
+              <title>获得任务的一个事件 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6742,13 +6742,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get the event for.</entry>
+                    <entry>获得事件对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>eventId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the event.</entry>
+                    <entry>事件的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6767,7 +6767,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   "userId" : null
 }</programlisting>
           <table>
-              <title>Get an event on a task - 响应码</title>
+              <title>获得任务的一个事件 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6778,11 +6778,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task and event were found and the event is returned.</entry>
+                    <entry>表示找到了任务和事件，并返回了事件。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the tasks doesn't have an event with the given ID.</entry>
+                    <entry>表示找不到任务，或任务不包含对应id的事件。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6792,13 +6792,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
 
     <section>
-      <title>Create a new attachment on a task, containing a link to an external resource</title>
+      <title>为任务创建一个附件，包含外部资源的链接</title>
         <para>
           <programlisting>POST runtime/tasks/{taskId}/attachments</programlisting>
         </para>
         <para>
             <table>
-              <title>Create a new attachment on a task, containing a link to an external resource - URL参数</title>
+              <title>为任务创建一个附件，包含外部资源的链接 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6813,7 +6813,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to create the attachment for.</entry>
+                    <entry>创建附件对应的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6828,7 +6828,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   "type":"simpleType",
   "externalUrl":"http://activiti.org"
 }</programlisting>
-Only the attachment name is required to create a new attachment.
+创建附件只有name是必填的。
         </para>
         <para>
           <emphasis role="bold">成功响应体：</emphasis>
@@ -6845,7 +6845,7 @@ Only the attachment name is required to create a new attachment.
   "contentUrl":null
 }</programlisting>
           <table>
-              <title>Create a new attachment on a task, containing a link to an external resource - 响应码</title>
+              <title>为任务创建一个附件，包含外部资源的链接 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6856,11 +6856,11 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the attachment was created and the result is returned.</entry>
+                    <entry>表示创建了附件，并返回了结果。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the attachment name is missing from the request.</entry>
+                    <entry>表示请求中缺少了附件名称。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -6872,13 +6872,13 @@ Only the attachment name is required to create a new attachment.
         </para>
   </section>
   <section>
-  <title>Create a new attachment on a task, with an attached file</title>
+  <title>为任务创建一个附件，包含附件文件</title>
         <para>
           <programlisting>POST runtime/tasks/{taskId}/attachments</programlisting>
         </para>
         <para>
             <table>
-              <title>Create a new attachment on a task, with an attached file - URL参数</title>
+              <title>为任务创建一个附件，包含附件文件 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6893,7 +6893,7 @@ Only the attachment name is required to create a new attachment.
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to create the attachment for.</entry>
+                    <entry>创建附件对应的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -6901,16 +6901,16 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
        <emphasis role="bold">请求体：</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+           请求应该是<literal>multipart/form-data</literal>类型。应该只有一个文件区域，包含源码的二进制内容。除此之外，需要提供以下表单域：
       <itemizedlist>
           <listitem>
-            <para><literal>name</literal>: Required name of the variable.</para>
+            <para><literal>name</literal>：必须的变量名称。</para>
           </listitem>
           <listitem>
-            <para><literal>description</literal>: Description of the attachment, optional.</para>
+            <para><literal>description</literal>：附件的描述，可选。</para>
           </listitem>
           <listitem>
-            <para><literal>type</literal>: Type of attachment, optional. Supports any arbitrary string or a valid HTTP content-type.</para>
+            <para><literal>type</literal>：创建的变量类型。如果忽略，会假设使用<literal>binary</literal>，请求的二进制数据会当做二进制数组保存起来。</para>
           </listitem>
       </itemizedlist>
         </para>
@@ -6929,7 +6929,7 @@ Only the attachment name is required to create a new attachment.
       "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
    }</programlisting>
           <table>
-              <title>Create a new attachment on a task, with an attached file - 响应码</title>
+              <title>为任务创建一个附件，包含附件文件 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -6940,11 +6940,11 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the attachment was created and the result is returned.</entry>
+                    <entry>表示创建了附件，并返回了结果。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the attachment name is missing from the request or no file was present in the request. The error-message contains additional information.</entry>
+                    <entry>表示请求中缺少附件名称，或请求中未包含文件。错误信息中包含了详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -6956,13 +6956,13 @@ Only the attachment name is required to create a new attachment.
         </para>
   </section>
   <section>
-      <title>Get all attachments on a task</title>
+      <title>获得任务的所有附件</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/attachments</programlisting>
         </para>
         <para>
             <table>
-              <title>Get all attachments on a task - URL参数</title>
+              <title>获得任务的所有附件 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -6977,7 +6977,7 @@ Only the attachment name is required to create a new attachment.
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get the attachments for.</entry>
+                    <entry>获取附件对应的任务id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -7011,7 +7011,7 @@ Only the attachment name is required to create a new attachment.
   }
 ]</programlisting>
           <table>
-              <title>Get all attachments on a task - 响应码</title>
+              <title>获得任务的所有附件 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -7022,7 +7022,7 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task was found and the attachments are returned.</entry>
+                    <entry>表示找到了任务，并返回了附件。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -7034,13 +7034,13 @@ Only the attachment name is required to create a new attachment.
         </para>
   </section>
   <section>
-      <title>Get an attachment on a task</title>
+      <title>获得任务的一个附件</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/attachments/{attachmentId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get an attachment on a task - URL参数</title>
+              <title>获得任务的一个附件 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -7055,13 +7055,13 @@ Only the attachment name is required to create a new attachment.
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get the attachment for.</entry>
+                    <entry>获取附件对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>attachmentId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the attachment.</entry>
+                    <entry>附件的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -7084,13 +7084,12 @@ Only the attachment name is required to create a new attachment.
   <itemizedlist>
     <listitem>
       <para>
-        <literal>externalUrl - contentUrl:</literal>In case the attachment is a link to an external resource, the <literal>externalUrl</literal> contains the URL to the external content. If the attachment content is present in the
-        Activiti engine, the <literal>contentUrl</literal> will contain an URL where the binary content can be streamed from.
+        <literal>externalUrl - contentUrl：</literal>如果附件是一个外部资源链接，<literal>externalUrl</literal>包含外部内容的URL。如果附件内容保存在Activiti引擎中，<literal>contentUrl</literal>会包含获取二进制流内容的URL。
       </para>
     </listitem>
     <listitem>
       <para>
-        <literal>type:</literal>Can be any arbitrary value. When a valid formatted media-type (eg. application/xml, text/plain) is included, the binary content HTTP response content-type will be set the the given value.
+        <literal>type：</literal>可以是任何有效值。包含一个格式合法的media-type时（比如application/xml, text/plain），二进制HTTP响应的content-type会被设置为对应值。
       </para>
     </listitem>
   </itemizedlist>
@@ -7098,7 +7097,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
           <table>
-              <title>Get an attachment on a task - 响应码</title>
+              <title>获得任务的一个附件 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -7109,11 +7108,11 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task and attachment were found and the attachment is returned.</entry>
+                    <entry>表示找到了任务和附件，并返回了附件。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the tasks doesn't have a attachment with the given ID.</entry>
+                    <entry>表示找不到任务，或任务不包含对应id的附件。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -7121,13 +7120,13 @@ Only the attachment name is required to create a new attachment.
         </para>
   </section>
   <section>
-      <title>Get the content for an attachment</title>
+      <title>获取附件的内容</title>
         <para>
           <programlisting>GET runtime/tasks/{taskId}/attachment/{attachmentId}/content</programlisting>
         </para>
         <para>
             <table>
-              <title>Get the content for an attachment - URL参数</title>
+              <title>获取附件的内容 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -7142,13 +7141,13 @@ Only the attachment name is required to create a new attachment.
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to get a variable data for.</entry>
+                    <entry>获取附件数据对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>attachmentId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the attachment, a <literal>404</literal> is returned when the attachment points to an external URL rather than content attached in Activiti.</entry>
+                    <entry>附件的id，当附件指向外部URL，而不是Activiti中的内容，就会返回<literal>404</literal>。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -7156,7 +7155,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
           <table>
-              <title>Get the content for an attachment - 响应码</title>
+              <title>获取附件的内容 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -7167,11 +7166,11 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task and attachment was found and the requested content is returned.</entry>
+                    <entry>表示找到了任务和附件，并返回了请求的内容。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested task was not found or the task doesn't have an attachment with the given id or the attachment doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
+                    <entry>表示找不到任务，或任务不包含对应id的任务，或附件不包含二进制流。状态信息包含了详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -7179,17 +7178,17 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
        <emphasis role="bold">成功响应体：</emphasis>
-      The response body contains the binary content. By default, the content-type of the response is set to <literal>application/octet-stream</literal> unless the attachment type contains a valid Content-type.
+      响应体包含了二进制内容。默认，响应的content-type设置为<literal>application/octet-stream</literal>，除非附件类型包含了合法的Content-Type。
     </para>
   </section>
   <section>
-      <title>Delete an attachment on a task</title>
+      <title>删除任务的一个附件</title>
         <para>
           <programlisting>DELETE runtime/tasks/{taskId}/attachments/{attachmentId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Delete an attachment on a task - URL参数</title>
+              <title>删除任务的一个附件 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -7204,20 +7203,20 @@ Only the attachment name is required to create a new attachment.
                     <entry>taskId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the task to delete the attachment for.</entry>
+                    <entry>希望删除附件对应的任务id。</entry>
                   </row>
                   <row>
                     <entry>attachmentId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the attachment.</entry>
+                    <entry>附件的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
         <table>
-            <title>Delete an attachment on a task - 响应码</title>
+            <title>删除任务的一个附件 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -7228,11 +7227,11 @@ Only the attachment name is required to create a new attachment.
               <tbody>
                 <row>
                   <entry>204</entry>
-                  <entry>Indicates the task and attachment were found and the attachment is deleted. Response body is left empty intentionally.</entry>
+                  <entry>表示找到了任务和附件，并删除了附件。响应体为空。</entry>
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested task was not found or the tasks doesn't have a attachment with the given ID.</entry>
+                  <entry>表示找不到任务，或任务不包含对应id的附件。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10542,7 +10541,7 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the user was found and the info for the given key has been deleted. Response body is left empty intentionally.</entry>
+                    <entry>Indicates the user was found and the info for the given key has been deleted. 响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -10984,7 +10983,7 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the group was found and the member has been deleted. The response body is left empty intentionally.</entry>
+                    <entry>Indicates the group was found and the member has been deleted. The 响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
