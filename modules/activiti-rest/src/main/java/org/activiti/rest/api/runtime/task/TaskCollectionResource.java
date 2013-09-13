@@ -47,7 +47,7 @@ public class TaskCollectionResource extends TaskBaseResource {
 
     setStatus(Status.SUCCESS_CREATED);
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createTaskReponse(this, task);
+            .createTaskResponse(this, task);
   }
   
   @Get

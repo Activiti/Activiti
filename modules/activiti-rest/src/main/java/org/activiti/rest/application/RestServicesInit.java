@@ -127,6 +127,7 @@ import org.activiti.rest.api.runtime.task.TaskIdentityLinkFamilyResource;
 import org.activiti.rest.api.runtime.task.TaskIdentityLinkResource;
 import org.activiti.rest.api.runtime.task.TaskQueryResource;
 import org.activiti.rest.api.runtime.task.TaskResource;
+import org.activiti.rest.api.runtime.task.TaskSubTaskCollectionResource;
 import org.activiti.rest.api.runtime.task.TaskVariableCollectionResource;
 import org.activiti.rest.api.runtime.task.TaskVariableDataResource;
 import org.activiti.rest.api.runtime.task.TaskVariableResource;
@@ -158,6 +159,7 @@ public class RestServicesInit {
     
     router.attach("/runtime/tasks", TaskCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}", TaskResource.class);
+    router.attach("/runtime/tasks/{taskId}/subtasks", TaskSubTaskCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}/variables", TaskVariableCollectionResource.class);
     router.attach("/runtime/tasks/{taskId}/variables/{variableName}", TaskVariableResource.class);
     router.attach("/runtime/tasks/{taskId}/variables/{variableName}/data", TaskVariableDataResource.class);
