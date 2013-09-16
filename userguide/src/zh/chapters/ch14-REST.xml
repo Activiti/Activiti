@@ -8837,15 +8837,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     </section>
   </section>
   <section>
-    <title>Forms</title>
+    <title>表单</title>
     <section>
-      <title>Get form data</title>
+      <title>获取表单数据</title>
       <para>
         <programlisting>GET form/form-data</programlisting>
       </para>
       <para>
           <table>
-            <title>Get form data - URL参数</title>
+            <title>获取表单数据 - URL参数</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -8858,15 +8858,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>taskId</entry>
-                  <entry>Yes (if no processDefinitionId)</entry>
+                  <entry>是（如果没有processDefinitionId）</entry>
                   <entry>String</entry>
-                  <entry>The task id corresponding to the form data that needs to be retrieved.</entry>
+                  <entry>获取表单数据需要对应的任务id。</entry>
                 </row>
                 <row>
                   <entry>processDefinitionId</entry>
-                  <entry>Yes (if no taskId)</entry>
+                  <entry>是（如果没有taskId）</entry>
                   <entry>String</entry>
-                  <entry>The process definition id corresponding to the start event form data that needs to be retrieved.</entry>
+                  <entry>获取startEvent表单数据需要对应的流程定义id。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8874,7 +8874,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <table>
-            <title>Get form data - 响应码</title>
+            <title>获取表单数据 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8885,11 +8885,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates that form data could be queried.</entry>
+                  <entry>表示返回了查询的表单数据。</entry>
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates that form data could not be found.</entry>
+                  <entry>表示找不到表单数据。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8940,12 +8940,12 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Submit task form data</title>
+      <title>提交任务表单数据</title>
       <para>
         <programlisting>POST form/form-data</programlisting>
       </para>
       <para>
-        <emphasis role="bold">Request body for task form:</emphasis>
+        <emphasis role="bold">任务表单的请求体：</emphasis>
         <programlisting>
 {
   "taskId" : "5",
@@ -8958,7 +8958,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 }</programlisting>
       </para>
       <para>
-        <emphasis role="bold">Request body for start event form:</emphasis>
+        <emphasis role="bold">startEvent表单的请求体：</emphasis>
         <programlisting>
 {
   "processDefinitionId" : "5",
@@ -8973,7 +8973,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <table>
-            <title>Submit task form data - 响应码</title>
+            <title>提交任务表单数据 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8984,7 +8984,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates request was successful and the form data was submitted</entry>
+                  <entry>表示请求成功，并提交了表单数据。</entry>
                 </row>
                  <row>
                   <entry>400</entry>
@@ -8995,7 +8995,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </table>
       </para>
       <para>
-        <emphasis role="bold">Success response body for start event form data (no response for task form data):</emphasis>
+        <emphasis role="bold">startEvent表单数据的成功响应体（任务表单数据没有响应）：</emphasis>
           <programlisting>
 {
   "id" : "5",
@@ -9010,15 +9010,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     </section>
   </section>
   <section>
-    <title>Database tables</title>
+    <title>数据库表</title>
     <section>
-      <title>List of tables</title>
+      <title>表列表</title>
       <para>
         <programlisting>GET management/tables</programlisting>
       </para>
       <para>
         <table>
-            <title>List of tables - 响应码</title>
+            <title>表列表 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -9029,7 +9029,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates the request was successful.</entry>
+                  <entry>表示请求成功。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -9057,13 +9057,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     </section>
 
     <section>
-      <title>Get a single table</title>
+      <title>获得一张表</title>
         <para>
           <programlisting>GET management/tables/{tableName}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a single table - URL参数</title>
+              <title>获得一张表 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9078,7 +9078,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>tableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The name of the table to get.</entry>
+                    <entry>获取表的名称。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9093,7 +9093,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       "count":60
 }</programlisting>
           <table>
-              <title>Get a single table - 响应码</title>
+              <title>获得一张表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9104,11 +9104,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the table exists and the table count is returned.</entry>
+                    <entry>表示表存在，并返回了表的记录数。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested table does not exist.</entry>
+                    <entry>表示表不存在。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9116,13 +9116,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
     <section>
-      <title>Get column info for a single table</title>
+      <title>获得表的列信息</title>
         <para>
           <programlisting>GET management/tables/{tableName}/columns</programlisting>
         </para>
         <para>
             <table>
-              <title>Get column info for a single table - URL参数</title>
+              <title>获得表的列信息 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9137,7 +9137,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>tableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The name of the table to get.</entry>
+                    <entry>获取表的名称。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9164,7 +9164,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    ]
 }</programlisting>
           <table>
-              <title>Get column info for a single table - 响应码</title>
+              <title>获得表的列信息 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9175,11 +9175,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the table exists and the table column info is returned.</entry>
+                    <entry>表示表存在，并返回了表的列信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested table does not exist.</entry>
+                    <entry>表示表不存在。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9188,13 +9188,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>Get row data for a single table</title>
+      <title>获得表的行数据</title>
         <para>
           <programlisting>GET management/tables/{tableName}/data</programlisting>
         </para>
         <para>
             <table>
-              <title>Get row data for a single table - URL参数</title>
+              <title>获得表的行数据 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9209,7 +9209,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>tableName</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The name of the table to get.</entry>
+                    <entry>获取表的名称。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9217,7 +9217,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
         <para>
             <table>
-              <title>Get row data for a single table - URL参数</title>
+              <title>获得表的行数据 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9232,25 +9232,25 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>start</entry>
                     <entry>否</entry>
                     <entry>Integer</entry>
-                    <entry>Index of the first row to fetch. Defaults to 0.</entry>
+                    <entry>从哪一行开始获取。默认为0。</entry>
                   </row>
                   <row>
                     <entry>size</entry>
                     <entry>否</entry>
                     <entry>Integer</entry>
-                    <entry>Number of rows to fetch, starting from <literal>start</literal>. Defaults to 10.</entry>
+                    <entry>获取行数，从<literal>start</literal>开始。默认为10。</entry>
                   </row>
                   <row>
                     <entry>orderAscendingColumn</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Name of the column to sort the resulting rows on, ascending.</entry>
+                    <entry>对结果行进行排序的字段，正序。</entry>
                   </row>
                   <row>
                     <entry>orderDescendingColumn</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>Name of the column to sort the resulting rows on, descending.</entry>
+                    <entry>对结果行进行排序的字段，倒序。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9281,7 +9281,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
 }</programlisting>
           <table>
-              <title>Get row data for a single table - 响应码</title>
+              <title>获得表的行数据 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9292,11 +9292,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the table exists and the table row data is returned.</entry>
+                    <entry>表示表存在，并返回了行数据。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested table does not exist.</entry>
+                    <entry>表示表不存在。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9308,14 +9308,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
 
 <section>
-    <title>Engine</title>
+    <title>引擎</title>
     <section>
-      <title>Get engine properties</title>
+      <title>获得引擎属性</title>
         <para>
           <programlisting>GET management/properties</programlisting>
         </para>
         <para>
-        Returns a read-only view of the properties used internally in the engine.
+		返回引擎内部使用的只读属性。
         </para>
         <para>
           <emphasis role="bold">成功响应体：</emphasis>
@@ -9326,7 +9326,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "schema.version":"5.13"
 }</programlisting>
           <table>
-              <title>Get engine properties - 响应码</title>
+              <title>获得引擎属性 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9337,7 +9337,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the properties are returned.</entry>
+                    <entry>表示返回了属性。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9345,12 +9345,12 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   <section>
-      <title>Get engine info</title>
+      <title>获得引擎信息</title>
         <para>
           <programlisting>GET management/engine</programlisting>
         </para>
         <para>
-        Returns a read-only view of the engine that is used in this REST-service.
+		获得REST服务使用的引擎的只读信息。
         </para>
         <para>
           <emphasis role="bold">成功响应体：</emphasis>
@@ -9362,7 +9362,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "exception":null
 }</programlisting>
           <table>
-              <title>Get engine info - 响应码</title>
+              <title>获得引擎信息 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9373,7 +9373,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the engine info is returned.</entry>
+                    <entry>表示返回了引擎信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
