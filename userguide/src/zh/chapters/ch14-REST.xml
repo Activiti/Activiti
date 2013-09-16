@@ -7239,30 +7239,30 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 </section>
 <section>
-  <title>History</title>
+  <title>历史</title>
   <section>
-    <title>Get a historic process instance</title>
+    <title>获得历史流程实例</title>
     <para>
       <programlisting>GET history/historic-process-instances/{processInstanceId}</programlisting>
     </para>
     <para>
       <table>
-          <title>Get a historic process instance - 响应码</title>
+          <title>获得历史流程实例 - 响应码</title>
           <tgroup cols='2'>
             <thead>
               <row>
-                <entry>Response code</entry>
-                <entry>Description</entry>
+                <entry>响应码</entry>
+                <entry>描述</entry>
               </row>
             </thead>
             <tbody>
               <row>
                 <entry>200</entry>
-                <entry>Indicates that the historic process instances could be found.</entry>
+                <entry>表示找到了历史流程实例。</entry>
               </row>
               <row>
                 <entry>404</entry>
-                <entry>Indicates that the historic process instances could not be found.</entry>
+                <entry>表示找不到历史流程实例。</entry>
               </row>
             </tbody>
          </tgroup>
@@ -7299,13 +7299,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section id="restHistoricProcessInstancesGet">
-    <title>List of historic process instances</title>
+    <title>历史流程实例列表</title>
       <para>
         <programlisting>GET history/historic-process-instances</programlisting>
       </para>
       <para>
           <table>
-            <title>List of historic process instances - URL参数</title>
+            <title>历史流程实例列表 - URL参数</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -7320,85 +7320,85 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>processInstanceId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>An id of the historic process instance.</entry>
+                  <entry>历史流程实例id。</entry>
                 </row>
                 <row>
                   <entry>processDefinitionKey</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process definition key of the historic process instance.</entry>
+                  <entry>历史流程实例的流程定义key。</entry>
                 </row>
                 <row>
                   <entry>processDefinitionId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process definition id of the historic process instance.</entry>
+                  <entry>历史流程实例的流程定义id。</entry>
                 </row>
                 <row>
                   <entry>businessKey</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The business key of the historic process instance.</entry>
+                  <entry>历史流程实例的businessKey。</entry>
                 </row>
                 <row>
                   <entry>involvedUser</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>An involved user of the historic process instance.</entry>
+                  <entry>历史流程实例的参与者。</entry>
                 </row>
                 <row>
                   <entry>finished</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>Indication if the historic process instance is finished.</entry>
+                  <entry>表示历史流程实例是否结束了。</entry>
                 </row>
                 <row>
                   <entry>superProcessInstanceId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>An optional parent process id of the historic process instance.</entry>
+                  <entry>历史流程实例的上级流程实例id。</entry>
                 </row>
                 <row>
                   <entry>excludeSubprocesses</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>Return only historic process instances which aren't sub processes.</entry>
+                  <entry>只返回非子流程的历史流程实例。</entry>
                 </row>
                 <row>
                   <entry>finishedAfter</entry>
                   <entry>否</entry>
                   <entry>Date</entry>
-                  <entry>Return only historic process instances that were finished after this date.</entry>
+                  <entry>只返回指定时间之后结束的历史流程实例。</entry>
                 </row>
                 <row>
                   <entry>finishedBefore</entry>
                   <entry>否</entry>
                   <entry>Date</entry>
-                  <entry>Return only historic process instances that were finished before this date.</entry>
+                  <entry>只返回指定时间之前结束的历史流程实例。</entry>
                 </row>
                 <row>
                   <entry>startedAfter</entry>
                   <entry>否</entry>
                   <entry>Date</entry>
-                  <entry>Return only historic process instances that were started after this date.</entry>
+                  <entry>只返回指定时间之后开始的历史流程实例。</entry>
                 </row>
                 <row>
                   <entry>startedBefore</entry>
                   <entry>否</entry>
                   <entry>Date</entry>
-                  <entry>Return only historic process instances that were started before this date.</entry>
+                  <entry>只返回指定时间之前开始的历史流程实例。</entry>
                 </row>
                 <row>
                   <entry>startedBy</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>Return only historic process instances that were started by this user.</entry>
+                  <entry>只返回由指定用户启动的历史流程实例。</entry>
                 </row>
                 <row>
                   <entry>includeProcessVariables</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>An indication if the historic process instance variables should be returned as well.</entry>
+                  <entry>表示是否应该返回历史流程实例变量。</entry>
                 </row>
                 <row>
                   <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
@@ -7409,7 +7409,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <table>
-            <title>List of historic process instances - 响应码</title>
+            <title>历史流程实例列表 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -7420,11 +7420,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates that historic process instances could be queried.</entry>
+                  <entry>表示成功返回了历史流程实例。</entry>
                 </row>
                 <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7467,7 +7467,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Query for historic process instances</title>
+      <title>查询历史流程实例</title>
       <para>
         <programlisting>POST query/historic-process-instances</programlisting>
       </para>
@@ -7489,12 +7489,12 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 }</programlisting>
       </para>
       <para>
-        All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricProcessInstancesGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-        for filtering based on process variables. The <literal>variables</literal> property is a json-array containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+	    所有支持的JSON参数字段和<link linkend="restHistoricProcessInstancesGet">获得历史流程实例集合</link>完全一样，但是传递的是JSON参数，而不是URL参数，这样可以支持更高级的参数，同时避免请求uri过长。除此之外，查询支持基于流程变量查询。
+		<literal>variables</literal>属性是一个json数组，包含<link linkend="restQueryVariable">此处描述</link>的格式。
       </para>
       <para>
         <table>
-            <title>Query for historic process instances - 响应码</title>
+            <title>查询历史流程实例 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -7505,11 +7505,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>表示请求成功，并返回任务。</entry>
+                  <entry>表示请求成功，并返回结果。</entry>
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7552,7 +7552,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Delete a historic process instance</title>
+      <title>删除历史流程实例</title>
       <para>
         <programlisting>DELETE history/historic-process-instances/{processInstanceId}</programlisting>
       </para>
@@ -7569,11 +7569,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates that the historic process instance was deleted.</entry>
+                  <entry>表示成功删除了历史流程实例。</entry>
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates that the historic process instance could not be found.</entry>
+                  <entry>表示找不到历史流程实例。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7581,7 +7581,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Get the identity links of a historic process instance</title>
+      <title>获取历史流程实例的IdentityLink</title>
       <para>
         <programlisting>GET history/historic-process-instance/{processInstanceId}/identitylinks</programlisting>
       </para>
@@ -7598,11 +7598,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates request was successful and the identity links are returned</entry>
+                  <entry>表示请求成功，并返回了IdentityLink。</entry>
                 </row>
                  <row>
                   <entry>404</entry>
-                  <entry>Indicates the process instance could not be found.</entry>
+                  <entry>表示找不到历史流程实例。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7625,13 +7625,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Get the binary data for a historic process instance variable</title>
+      <title>获取历史流程实例变量的二进制数据</title>
       <para>
         <programlisting>GET history/historic-process-instances/{processInstanceId}/variables/{variableName}/data</programlisting>
       </para>
       <para>
         <table>
-            <title>Get the binary data for a historic process instance variable - 响应码</title>
+            <title>获取历史流程实例变量的二进制数据 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -7642,11 +7642,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates the process instance was found and the requested variable data is returned.</entry>
+                  <entry>表示找到了历史流程实例，并返回了请求的变量数据。</entry>
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested process instance was not found or the process instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
+                  <entry>表示找不到请求的历史流程实例，或流程实例不包含指定名称的变量，或变量不是二进制流。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7654,32 +7654,32 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
       <emphasis role="bold">成功响应体：</emphasis>
-      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type.
+	  响应体包含了变量的二进制值。当类型为 <literal>binary</literal>时，无论请求的accept-type头部设置了什么值，响应的content-type都为<literal>application/octet-stream</literal>。当类型为 <literal>serializable</literal>时， content-type为<literal>application/x-java-serialized-object</literal>。
     </para>
   </section>
     <section>
-    <title>Get a single historic task instance</title>
+    <title>获得单独历史任务实例</title>
     <para>
       <programlisting>GET history/historic-task-instances/{taskId}</programlisting>
     </para>
     <para>
       <table>
-          <title>Get a single historic task instance - 响应码</title>
+          <title>获得单独历史任务实例 - 响应码</title>
           <tgroup cols='2'>
             <thead>
               <row>
-                <entry>Response code</entry>
-                <entry>Description</entry>
+                <entry>响应码</entry>
+                <entry>描述</entry>
               </row>
             </thead>
             <tbody>
               <row>
                 <entry>200</entry>
-                <entry>Indicates that the historic task instances could be found.</entry>
+                <entry>表示找到了历史任务实例。</entry>
               </row>
               <row>
                 <entry>404</entry>
-                <entry>Indicates that the historic task instances could not be found.</entry>
+                <entry>表示找不到历史任务实例。</entry>
               </row>
             </tbody>
          </tgroup>
@@ -7716,13 +7716,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section id="restHistoricTaskInstancesGet">
-      <title>Get historic task instances</title>
+      <title>获取历史任务实例</title>
       <para>
         <programlisting>GET history/historic-task-instances</programlisting>
       </para>
       <para>
           <table>
-            <title>Get historic task instances - URL参数</title>
+            <title>获取历史任务实例 - URL参数</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -7737,175 +7737,175 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>taskId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>An id of the historic task instance.</entry>
+                  <entry>历史任务实例id。</entry>
                 </row>
                 <row>
                   <entry>processInstanceId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process instance id of the historic task instance.</entry>
+                  <entry>历史任务实例的流程实例id。</entry>
                 </row>
                 <row>
                   <entry>processDefinitionKey</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process definition key of the historic task instance.</entry>
+                  <entry>历史任务实例的流程定义key。</entry>
                 </row>
                 <row>
                   <entry>processDefinitionId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process definition id of the historic task instance.</entry>
+                  <entry>历史任务实例的流程定义id。</entry>
                 </row>
                 <row>
                   <entry>processDefinitionName</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process definition name of the historic task instance.</entry>
+                  <entry>历史任务实例的流程定义名称。</entry>
                 </row>
                 <row>
                   <entry>processBusinessKey</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process instance business key of the historic task instance.</entry>
+                  <entry>历史任务实例的流程实例businessKey。</entry>
                 </row>
                 <row>
                   <entry>executionId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The execution id of the historic task instance.</entry>
+                  <entry>历史任务实例的分支id。</entry>
                 </row>
                 <row>
                   <entry>taskName</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The task name of the historic task instance.</entry>
+                  <entry>历史任务实例的任务名称。</entry>
                 </row>
                 <row>
                   <entry>taskNameLike</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The task name with 'like' operator for the historic task instance.</entry>
+                  <entry>对任务名称使用'like'查询历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>taskDescription</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The task description of the historic task instance.</entry>
+                  <entry>历史任务实例的任务描述。</entry>
                 </row>
                 <row>
                   <entry>taskDescriptionLike</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The task description with 'like' operator for the historic task instance.</entry>
+                  <entry>对任务描述使用'like'查询历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>taskDefinitionKey</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The task identifier from the process definition for the historic task instance.</entry>
+                  <entry>历史任务实例对应的流程定义的任务定义key。</entry>
                 </row>
                 <row>
                   <entry>taskDeleteReason</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The task delete reason of the historic task instance.</entry>
+                  <entry>历史任务实例的删除任务原因。</entry>
                 </row>
                 <row>
                   <entry>taskDeleteReasonLike</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The task delete reason with 'like' operator for the historic task instance.</entry>
+                  <entry>对删除任务原因使用'like'查询历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>taskAssignee</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The assignee of the historic task instance.</entry>
+                  <entry>历史任务实例的负责人。</entry>
                 </row>
                 <row>
                   <entry>taskAssigneeLike</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The assignee with 'like' operator for the historic task instance.</entry>
+                  <entry>对负责人使用'like'查询历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>taskOwner</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The owner of the historic task instance.</entry>
+                  <entry>历史任务实例的原拥有者。</entry>
                 </row>
                 <row>
                   <entry>taskOwnerLike</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The owner with 'like' operator for the historic task instance.</entry>
+                  <entry>对原拥有者使用'like'查询历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>taskInvolvedUser</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>An involved user of the historic task instance.</entry>
+                  <entry>历史任务实例的参与者。</entry>
                 </row>
                 <row>
                   <entry>taskPriority</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The priority of the historic task instance.</entry>
+                  <entry>历史任务实例的优先级。</entry>
                 </row>
                 <row>
                   <entry>finished</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>Indication if the historic task instance is finished.</entry>
+                  <entry>表示是否历史任务实例已经结束了。</entry>
                 </row>
                 <row>
                   <entry>processFinished</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>Indication if the process instance of the historic task instance is finished.</entry>
+                  <entry>表示历史任务实例的流程实例是否已经结束了。</entry>
                 </row>
                 <row>
                   <entry>parentTaskId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>An optional parent task id of the historic task instance.</entry>
+                  <entry>历史任务实例的可能的上级任务id。</entry>
                 </row>
                 <row>
                   <entry>dueDate</entry>
                   <entry>否</entry>
                   <entry>Date</entry>
-                  <entry>Return only historic task instances that have a due date equal this date.</entry>
+                  <entry>只返回指定持续时间的历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>dueDateAfter</entry>
                   <entry>否</entry>
                   <entry>Date</entry>
-                  <entry>Return only historic task instances that have a due date after this date.</entry>
+                  <entry>只返回指定持续时间之后的历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>dueDateBefore</entry>
                   <entry>否</entry>
                   <entry>Date</entry>
-                  <entry>Return only historic task instances that have a due date before this date.</entry>
+                  <entry>只返回指定持续时间之前的历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>taskCreatedOn</entry>
                   <entry>否</entry>
                   <entry>Date</entry>
-                  <entry>Return only historic task instances that were created on this date.</entry>
+                  <entry>只返回指定创建时间的历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>includeTaskLocalVariables</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>An indication if the historic task instance local variables should be returned as well.</entry>
+                  <entry>表示是否应该返回历史任务实例局部变量。</entry>
                 </row>
                 <row>
                   <entry>includeProcessVariables</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>An indication if the historic task instance global variables should be returned as well.</entry>
+                  <entry>表示是否应该返回历史任务实例全局变量。</entry>
                 </row>
                 <row>
                   <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
@@ -7916,7 +7916,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <table>
-            <title>Get historic task instances - 响应码</title>
+            <title>获取历史任务实例 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -7927,11 +7927,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates that historic process instances could be queried.</entry>
+                  <entry>表示可以查询的历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -7990,12 +7990,12 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Query for historic task instances</title>
+      <title>查询历史任务实例</title>
       <para>
         <programlisting>POST query/historic-task-instances</programlisting>
       </para>
       <para>
-        <emphasis role="bold">Query for historic task instances - Request body:</emphasis>
+        <emphasis role="bold">查询历史任务实例 - 请求体：</emphasis>
         <programlisting>
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
@@ -8012,12 +8012,12 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 }</programlisting>
       </para>
       <para>
-        All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricTaskInstancesGet">getting a collection of historic task instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-        for filtering based on process variables. The <literal>taskVariables</literal> and <literal>processVariables</literal> properties are json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+	    所有支持的JSON参数字段和<link linkend="restHistoricTaskInstancesGet">获得历史任务实例集合</link>完全一样，但是传递的是JSON参数，而不是URL参数，这样可以支持更高级的参数，同时避免请求uri过长。除此之外，查询支持基于流程变量查询。
+		<literal>taskVariables</literal>和<literal>processVariables</literal>属性是一个json数组，包含<link linkend="restQueryVariable">此处描述</link>的格式。
       </para>
       <para>
         <table>
-            <title>Query for historic task instances - 响应码</title>
+            <title>查询历史任务实例 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8032,7 +8032,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8091,7 +8091,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Delete a historic task instance</title>
+      <title>删除历史任务实例</title>
       <para>
         <programlisting>DELETE history/historic-task-instances/{taskId}</programlisting>
       </para>
@@ -8108,11 +8108,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates that the historic task instance was deleted.</entry>
+                  <entry>表似乎删除了历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates that the historic task instance could not be found.</entry>
+                  <entry>表示找不到历史任务实例。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8120,7 +8120,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Get the identity links of a historic task instance</title>
+      <title>获得历史任务实例的IdentityLink</title>
       <para>
         <programlisting>GET history/historic-task-instance/{taskId}/identitylinks</programlisting>
       </para>
@@ -8137,11 +8137,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates request was successful and the identity links are returned</entry>
+                  <entry>表示请求成功，并返回了IdentityLink。</entry>
                 </row>
                  <row>
                   <entry>404</entry>
-                  <entry>Indicates the task instance could not be found.</entry>
+                  <entry>表示找不到任务实例。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8164,13 +8164,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Get the binary data for a historic task instance variable</title>
+      <title>获取历史任务实例变量的二进制值</title>
       <para>
         <programlisting>GET history/historic-task-instances/{taskId}/variables/{variableName}/data</programlisting>
       </para>
       <para>
         <table>
-            <title>Get the binary data for a historic task instance variable - 响应码</title>
+            <title>获取历史任务实例变量的二进制值 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8181,11 +8181,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates the task instance was found and the requested variable data is returned.</entry>
+                  <entry>表示找到了任务实例，并返回了请求的变量数据。</entry>
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested task instance was not found or the process instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
+                  <entry>表示找不到任务实例，或任务实例不包含指定名称的变量，或变量没有有效的二进制流。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8193,17 +8193,17 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <emphasis role="bold">成功响应体：</emphasis>
-        The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type.
+	    响应体包含了变量的二进制值。当类型为 <literal>binary</literal>时，无论请求的accept-type头部设置了什么值，响应的content-type都为<literal>application/octet-stream</literal>。当类型为 <literal>serializable</literal>时， content-type为<literal>application/x-java-serialized-object</literal>。
       </para>
     </section>
     <section id="restHistoricActivityInstancesGet">
-      <title>Get historic activity instances</title>
+      <title>获取历史活动实例</title>
       <para>
         <programlisting>GET history/historic-activity-instances</programlisting>
       </para>
       <para>
           <table>
-            <title>Get historic activity instances - URL参数</title>
+            <title>获取历史活动实例 - URL参数</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -8218,55 +8218,55 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>activityId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>An id of the activity instance.</entry>
+                  <entry>活动实例id。</entry>
                 </row>
                 <row>
                   <entry>activityInstanceId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>An id of the historic activity instance.</entry>
+                  <entry>历史活动实例id。</entry>
                 </row>
                 <row>
                   <entry>activityName</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The name of the historic activity instance.</entry>
+                  <entry>历史活动实例的名称。</entry>
                 </row>
                 <row>
                   <entry>activityType</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The element type of the historic activity instance.</entry>
+                  <entry>历史活动实例的元素类型。</entry>
                 </row>
                 <row>
                   <entry>executionId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The execution id of the historic activity instance.</entry>
+                  <entry>历史活动实例的分支id。</entry>
                 </row>
                 <row>
                   <entry>finished</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>Indication if the historic activity instance is finished.</entry>
+                  <entry>表示历史活动实例是否完成。</entry>
                 </row>
                 <row>
                   <entry>taskAssignee</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The assignee of the historic activity instance.</entry>
+                  <entry>历史活动实例的负责人。</entry>
                 </row>
                 <row>
                   <entry>processInstanceId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process instance id of the historic activity instance.</entry>
+                  <entry>历史活动实例的流程实例id。</entry>
                 </row>
                 <row>
                   <entry>processDefinitionId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process definition id of the historic activity instance.</entry>
+                  <entry>历史活动实例的流程定义id。</entry>
                 </row>
                 <row>
                   <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
@@ -8277,7 +8277,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <table>
-            <title>Get historic activity instances - 响应码</title>
+            <title>获取历史活动实例 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8288,11 +8288,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates that historic activity instances could be queried.</entry>
+                  <entry>表示反悔了查询的历史活动实例。</entry>
                 </row>
                 <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8330,7 +8330,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Query for historic activity instances</title>
+      <title>查询历史活动实例</title>
       <para>
         <programlisting>POST query/historic-activity-instances</programlisting>
       </para>
@@ -8342,11 +8342,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 }</programlisting>
       </para>
       <para>
-        All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricTaskInstancesGet">getting a collection of historic task instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long.
+	    所有支持的JSON参数字段和<link linkend="restHistoricTaskInstancesGet">获得历史任务实例集合</link>完全一样，但是传递的是JSON参数，而不是URL参数，这样可以支持更高级的参数，同时避免请求uri过长。
       </para>
       <para>
         <table>
-            <title>Query for historic activity instances - 响应码</title>
+            <title>查询历史活动实例 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8357,11 +8357,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates request was successful and the activities are returned</entry>
+                  <entry>表示请求充公，并返回了活动。</entry>
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8399,13 +8399,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section id="restHistoricVariableInstancesGet">
-      <title>List of historic variable instances</title>
+      <title>列出历史变量实例</title>
       <para>
         <programlisting>GET history/historic-variable-instances</programlisting>
       </para>
       <para>
           <table>
-            <title>List of historic variable instances - URL参数</title>
+            <title>列出历史变量实例 - URL参数</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -8420,31 +8420,31 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>processInstanceId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process instance id of the historic variable instance.</entry>
+                  <entry>历史变量实例的流程实例id。</entry>
                 </row>
                 <row>
                   <entry>taskId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The task id of the historic variable instance.</entry>
+                  <entry>历史变量实例的任务id。</entry>
                 </row>
                 <row>
                   <entry>excludeTaskVariables</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>Indication to exclude the task variables from the result.</entry>
+                  <entry>表示从结果中排除任务变量。</entry>
                 </row>
                 <row>
                   <entry>variableName</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The variable name of the historic variable instance.</entry>
+                  <entry>历史变量实例的变量名称。</entry>
                 </row>
                 <row>
                   <entry>variableNameLike</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The variable name using the 'like' operator for the historic variable instance.</entry>
+                  <entry>对变量名称使用'like'操作历史变量实例。</entry>
                 </row>
                 <row>
                   <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
@@ -8455,7 +8455,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <table>
-            <title>List of historic variable instances - 响应码</title>
+            <title>列出历史变量实例 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8466,11 +8466,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates that historic variable instances could be queried.</entry>
+                  <entry>表示获得了历史变量实例。</entry>
                 </row>
                 <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8502,7 +8502,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Query for historic variable instances</title>
+      <title>查询历史变量实例</title>
       <para>
         <programlisting>POST query/historic-variable-instances</programlisting>
       </para>
@@ -8524,12 +8524,12 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 }</programlisting>
       </para>
       <para>
-        All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricVariableInstancesGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-        for filtering based on process variables. The <literal>variables</literal> property is a json-array containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+	    所有支持的JSON参数字段和<link linkend="restHistoricVariableInstancesGet">获得历史变量实例集合</link>完全一样，但是传递的是JSON参数，而不是URL参数，这样可以支持更高级的参数，同时避免请求uri过长。除此之外，查询支持基于流程变量查询。
+		<literal>variables</literal>属性是一个json数组，包含<link linkend="restQueryVariable">此处描述</link>的格式。
       </para>
       <para>
         <table>
-            <title>Query for historic variable instances - 响应码</title>
+            <title>查询历史变量实例 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8544,7 +8544,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8576,13 +8576,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Get the binary data for a historic task instance variable</title>
+      <title>获取历史任务实例变量的二进制值</title>
       <para>
         <programlisting>GET history/historic-variable-instances/{varInstanceId}/data</programlisting>
       </para>
       <para>
         <table>
-            <title>Get the binary data for a historic task instance variable - 响应码</title>
+            <title>获取历史任务实例变量的二进制值 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8593,11 +8593,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates the variable instance was found and the requested variable data is returned.</entry>
+                  <entry>表示找到了变量实例，并返回了请求的变量数据。</entry>
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested variable instance was not found or the variable instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
+                  <entry>表示找不到变量实例，或找不到对应名称的变量实例，或变量不包含合法的二进制流。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8605,17 +8605,17 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
       <emphasis role="bold">成功响应体：</emphasis>
-      The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type.
+	  响应体包含了变量的二进制值。当类型为 <literal>binary</literal>时，无论请求的accept-type头部设置了什么值，响应的content-type都为<literal>application/octet-stream</literal>。当类型为 <literal>serializable</literal>时， content-type为<literal>application/x-java-serialized-object</literal>。
     </para>
   </section>
     <section id="restHistoricDetailGet">
-    <title>Get historic detail</title>
+    <title>获取历史细节</title>
       <para>
         <programlisting>GET history/historic-detail</programlisting>
       </para>
       <para>
           <table>
-            <title>Get historic detail - URL参数</title>
+            <title>获取历史细节 - URL参数</title>
             <tgroup cols='4'>
               <thead>
                 <row>
@@ -8630,43 +8630,43 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>id</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The id of the historic detail.</entry>
+                  <entry>历史细节的id。</entry>
                 </row>
                 <row>
                   <entry>processInstanceId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The process instance id of the historic detail.</entry>
+                  <entry>历史细节的流程实例id。</entry>
                 </row>
                 <row>
                   <entry>executionId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The execution id of the historic detail.</entry>
+                  <entry>历史细节的分支id。</entry>
                 </row>
                 <row>
                   <entry>activityInstanceId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The activity instance id of the historic detail.</entry>
+                  <entry>历史细节的活动实例id。</entry>
                 </row>
                 <row>
                   <entry>taskId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
-                  <entry>The task id of the historic detail.</entry>
+                  <entry>历史细节的任务id。</entry>
                 </row>
                 <row>
                   <entry>selectOnlyFormProperties</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>Indication to only return form properties in the result.</entry>
+                  <entry>表示结果中只返回FormProperties。</entry>
                 </row>
                 <row>
                   <entry>selectOnlyVariableUpdates</entry>
                   <entry>否</entry>
                   <entry>Boolean</entry>
-                  <entry>Indication to only return variable updates in the result.</entry>
+                  <entry>表示结果中只返回变量更新信息。</entry>
                 </row>
                 <row>
                   <entry namest="c1" nameend="c4"><para>可以使用通用的 <link linkend="restPagingAndSort">分页和排序查询参数</link> 。</para></entry>
@@ -8677,7 +8677,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <table>
-            <title>Get historic detail - 响应码</title>
+            <title>获取历史细节 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8688,11 +8688,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates that historic detail could be queried.</entry>
+                  <entry>表示返回了查询的历史细节。</entry>
                 </row>
                 <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8732,7 +8732,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Query for historic details</title>
+      <title>查询历史细节</title>
       <para>
         <programlisting>POST query/historic-detail</programlisting>
       </para>
@@ -8744,11 +8744,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 }</programlisting>
       </para>
       <para>
-        All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricDetailGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long.
+	    所有支持的JSON参数字段和<link linkend="restHistoricVariableInstancesGet">获得历史变量实例集合</link>完全一样，但是传递的是JSON参数，而不是URL参数，这样可以支持更高级的参数，同时避免请求uri过长。
       </para>
       <para>
         <table>
-            <title>Query for historic details - 响应码</title>
+            <title>查询历史细节 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8759,11 +8759,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates request was successful and the historic details are returned</entry>
+                  <entry>表示请求成功，并返回了历史细节。</entry>
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8803,13 +8803,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
     </section>
     <section>
-      <title>Get the binary data for a historic detail variable</title>
+      <title>获取历史细节变量的二进制数据</title>
       <para>
         <programlisting>GET history/historic-detail/{detailId}/data</programlisting>
       </para>
       <para>
         <table>
-            <title>Get the binary data for a historic detail variable - 响应码</title>
+            <title>获取历史细节变量的二进制数据 - 响应码</title>
             <tgroup cols='2'>
               <thead>
                 <row>
@@ -8820,11 +8820,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tbody>
                 <row>
                   <entry>200</entry>
-                  <entry>Indicates the historic detail instance was found and the requested variable data is returned.</entry>
+                  <entry>表示找到了历史细节实例，并返回了请求的变量数据。</entry>
                 </row>
                 <row>
                   <entry>404</entry>
-                  <entry>Indicates the requested historic detail instance was not found or the historic detail instance doesn't have a variable with the given name or the variable doesn't have a binary stream available. 状态信息包含了详细信息。</entry>
+                  <entry>表示找不到历史细节实例，或历史细节实例不包含指定名称的变量，或变量不包含合法的二进制流。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -8832,7 +8832,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
       <para>
         <emphasis role="bold">成功响应体：</emphasis>
-        The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type.
+	    响应体包含了变量的二进制值。当类型为 <literal>binary</literal>时，无论请求的accept-type头部设置了什么值，响应的content-type都为<literal>application/octet-stream</literal>。当类型为 <literal>serializable</literal>时， content-type为<literal>application/x-java-serialized-object</literal>。
       </para>
     </section>
   </section>
@@ -8988,7 +8988,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 </row>
                  <row>
                   <entry>400</entry>
-                  <entry>Indicates an parameter was passed in the wrong format. 状态信息包含了详细信息。</entry>
+                  <entry>表示传递了错误格式的参数。状态信息包含了详细信息。</entry>
                 </row>
               </tbody>
            </tgroup>
