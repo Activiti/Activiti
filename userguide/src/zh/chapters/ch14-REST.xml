@@ -9760,16 +9760,16 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 </section>
 
 <section>
-  <title>Users</title>
+  <title>用户</title>
 
   <section>
-      <title>Get a single user</title>
+      <title>获得一个用户</title>
         <para>
           <programlisting>GET identity/users/{userId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a single user - URL参数</title>
+              <title>获得一个用户 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9784,7 +9784,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>userId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the user to get.</entry>
+                    <entry>获取用户的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9801,7 +9801,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "email":"no-reply@activiti.org"
 }</programlisting>
           <table>
-              <title>Get a single user - 响应码</title>
+              <title>获得一个用户 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9812,11 +9812,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the user exists and is returned.</entry>
+                    <entry>表示用户存在，并成功返回。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user does not exist.</entry>
+                    <entry>表示用户不存在。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9825,13 +9825,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>Get a list of users</title>
+      <title>获取用户列表</title>
         <para>
           <programlisting>GET identity/users</programlisting>
         </para>
         <para>
         <table>
-              <title>Get a list of users - URL参数</title>
+              <title>获取用户列表 - URL参数</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9843,52 +9843,52 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>id</entry>
-                    <entry>Only return user with the given id</entry>
+                    <entry>只返回指定id的用户。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>firstName</entry>
-                    <entry>Only return users with the given firstname</entry>
+                    <entry>只返回指定firstname的用户。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>lastName</entry>
-                    <entry>Only return users with the given lastname</entry>
+                    <entry>只返回指定lastname的用户。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>email</entry>
-                    <entry>Only return users with the given email</entry>
+                    <entry>只返回指定email的用户。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>firstNameLike</entry>
-                    <entry>Only return userswith a firstname like the given value. Use <literal>%</literal> as wildcard-character.</entry>
+                    <entry>只返回firstname与指定值匹配的用户。使用<literal>%</literal>通配符。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>lastNameLike</entry>
-                    <entry>Only return users with a lastname like the given value. Use <literal>%</literal> as wildcard-character.</entry>
+                    <entry>只返回lastname与指定值匹配的用户。使用<literal>%</literal>通配符。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>emailLike</entry>
-                    <entry>Only return users with an email like the given value. Use <literal>%</literal> as wildcard-character.</entry>
+                    <entry>只返回email与指定值匹配的用户。使用<literal>%</literal>通配符。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>memberOfGroup</entry>
-                    <entry>Only return users which are a member of the given group.</entry>
+                    <entry>只返回指定组成员的用户。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>potentialStarter</entry>
-                    <entry>Only return users which are potential starters for a process-definition with the given id.</entry>
+                    <entry>只返回指定流程定义id的默认启动人。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
-                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>firstName</literal>, <literal>lastname</literal> or <literal>email</literal>.</entry>
+                    <entry>结果排序的字段，应该是<literal>id</literal>, <literal>firstName</literal>, <literal>lastname</literal> 或 <literal>email</literal>其中之一。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
@@ -9932,7 +9932,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "size":3
 }</programlisting>
           <table>
-              <title>Get a list of users - 响应码</title>
+              <title>获取用户列表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9943,7 +9943,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the requested users were returned.</entry>
+                    <entry>表示成功返回了请求的用户。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9952,7 +9952,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
  </section>
 
   <section>
-      <title>Update a user</title>
+      <title>更新用户</title>
         <para>
           <programlisting>PUT identity/users/{userId}</programlisting>
         </para>
@@ -9964,11 +9964,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   "lastName":"Barrez",
   "email":"no-reply@alfresco.org"
 }</programlisting>
-      All request values are optional. For example, you can only include the 'firstName' attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: <literal>{"firstName" : null}</literal> will clear the firstName of the user).
+      所有请求值都是可选的。比如，你可以在请求体JSON对象中只包含'firstName'属性，只更新用户的firstName，其他值都不受影响。当包含的属性设置为null，用户的属性会被更新为null，比如：<literal>{"firstName" : null}</literal>会清空用户的firstName。
        </para>
         <para>
           <table>
-              <title>Update a user - 响应码</title>
+              <title>更新用户 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9979,27 +9979,27 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the user was updated.</entry>
+                    <entry>表示成功更新了用户。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found.</entry>
+                    <entry>表示找不到用户。</entry>
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the requested user was updated simultaneously.</entry>
+                    <entry>表示请求的用户被其他地方更新了。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">成功响应体：</emphasis> see response for <literal>identity/users/{userId}</literal>.
+       <emphasis role="bold">成功响应体：</emphasis> 参考 <literal>identity/users/{userId}</literal>的响应。
       </para>
   </section>
 
    <section>
-      <title>Create a user</title>
+      <title>创建用户</title>
         <para>
           <programlisting>POST identity/users</programlisting>
         </para>
@@ -10015,7 +10015,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
        </para>
         <para>
           <table>
-              <title>Create a user - 响应码</title>
+              <title>创建用户 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10026,29 +10026,29 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the user was created.</entry>
+                    <entry>表示成功创建了用户。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the id of the user was missing.</entry>
+                    <entry>表示没有传用户的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">成功响应体：</emphasis> see response for <literal>identity/users/{userId}</literal>.
+       <emphasis role="bold">成功响应体：</emphasis> 参考 <literal>identity/users/{userId}</literal>的响应。
       </para>
   </section>
 
   <section>
-      <title>Delete a user</title>
+      <title>删除用户</title>
          <para>
         <programlisting>DELETE identity/users/{userId}</programlisting>
       </para>
       <para>
           <table>
-            <title>Delete a user - URL参数</title>
+            <title>删除用户 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10063,7 +10063,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>userId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to delete.</entry>
+                  <entry>期望删除的用户id。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10071,7 +10071,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
         <para>
           <table>
-              <title>Delete a user - 响应码</title>
+              <title>删除用户 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10082,11 +10082,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the user was found and  has been deleted. 响应体为空。</entry>
+                    <entry>表示找到了用户，并成功删除了。响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found.</entry>
+                    <entry>表示找不到用户。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10094,13 +10094,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   <section>
-      <title>Get a user's picture</title>
+      <title>获取用户图片</title>
          <para>
         <programlisting>GET identity/users/{userId}/picture</programlisting>
       </para>
       <para>
           <table>
-            <title>Get a user's picture - URL参数</title>
+            <title>获取用户图片 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10115,7 +10115,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>userId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to get the pîcture for.</entry>
+                  <entry>期望获得图片的用户id。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10123,9 +10123,9 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
         <para>
           <emphasis role="bold">响应体：</emphasis>
-          The response body contains the raw picture data, representing the user's picture. The Content-type of the response corresponds to the mimeType that was set when creating the picture.
+		  响应体包含了演示图片数据，展示用户的图片。响应的Content-Type对应着创建图片时设置的mimeType。
           <table>
-              <title>Get a user's picture - 响应码</title>
+              <title>获取用户图片 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10136,11 +10136,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the user was found and has a picture, which is returned in the body.</entry>
+                    <entry>表示找到了用户和图片，图片在响应体中返回。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found or the user does not have a profile picture. 状态描述包含错误的详细信息。</entry>
+                    <entry>表示找不到用户，或用户没有图片。状态描述包含错误的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10149,13 +10149,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>Updating a user's picture</title>
+      <title>更新用户图片</title>
          <para>
         <programlisting>GET identity/users/{userId}/picture</programlisting>
       </para>
       <para>
           <table>
-            <title>Updating a user's picture - URL参数</title>
+            <title>更新用户图片 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10170,7 +10170,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>userId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to get the pîcture for.</entry>
+                  <entry>获得图片对应的用户id。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10178,16 +10178,16 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
         <para>
        <emphasis role="bold">请求体：</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the picture. On top of that, the folowing additionl form-fields can be present:
+           请求应该是<literal>multipart/form-data</literal>类型。应该只有一个文件区域，包含源码的二进制内容。除此之外，需要提供以下表单域：
         <itemizedlist>
             <listitem>
-              <para><literal>mimeType</literal>: Optional mime-type for the uploaded picture. If omitted, the default of <literal>image/jpeg</literal> is used as a mime-type for the picture.</para>
+              <para><literal>mimeType</literal>：上传的图片的mime-type。如果省略，默认会使用 <literal>image/jpeg</literal> 作为图片的mime-type。</para>
             </listitem>
         </itemizedlist>
         </para>
         <para>
           <table>
-              <title>Updating a user's picture - 响应码</title>
+              <title>更新用户图片 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10198,11 +10198,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the user was found and the picture has been updated. The response-body is left empty intentionally.</entry>
+                    <entry>表示找到了用户，并更新了图片。响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found.</entry>
+                    <entry>表示找不到用户。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10211,13 +10211,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>List a user's info</title>
+      <title>列出用户列表</title>
          <para>
         <programlisting>PUT identity/users/{userId}/info</programlisting>
       </para>
       <para>
           <table>
-            <title>List a user's info - URL参数</title>
+            <title>列出用户列表 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10232,7 +10232,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>userId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to get the info for.</entry>
+                  <entry>获取信息的用户id。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10252,7 +10252,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    }
 ]</programlisting>
           <table>
-              <title>List a user's info - 响应码</title>
+              <title>列出用户列表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10263,11 +10263,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the user was found and list of info (key and url) is returned.</entry>
+                    <entry>表示找到了用户，并返回了信息列表（key和url）。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found.</entry>
+                    <entry>表示找不到用户。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10276,13 +10276,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>Get a user's info</title>
+      <title>获取用户信息</title>
          <para>
         <programlisting>GET identity/users/{userId}/info/{key}</programlisting>
       </para>
       <para>
           <table>
-            <title>Get a user's info - URL参数</title>
+            <title>获取用户信息 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10297,13 +10297,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>userId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to get the info for.</entry>
+                  <entry>获取信息的用户id。</entry>
                 </row>
                 <row>
                   <entry>key</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The key of the user info to get.</entry>
+                  <entry>希望获取的用户信息的key。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10318,7 +10318,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "url":"http://localhost:8182/identity/users/testuser/info/key1"
 }</programlisting>
           <table>
-              <title>Get a user's info - 响应码</title>
+              <title>获取用户信息 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10329,11 +10329,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the user was found and the user has info for the given key..</entry>
+                    <entry>表示找到了用户和指定key的用户信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. 状态描述中包含了错误相关的详细信息。</entry>
+                    <entry>表示找不到用户，并用户没有指定key的信息。状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10342,13 +10342,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>Update a user's info</title>
+      <title>更新用户的信息</title>
          <para>
         <programlisting>PUT identity/users/{userId}/info/{key}</programlisting>
       </para>
       <para>
           <table>
-            <title>Update a user's info - URL参数</title>
+            <title>更新用户的信息 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10363,13 +10363,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>userId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to update the info for.</entry>
+                  <entry>期望更新的信息对应的用户id。</entry>
                 </row>
                 <row>
                   <entry>key</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The key of the user info to update.</entry>
+                  <entry>期望更新的用户信息的key。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10391,7 +10391,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "url":"http://localhost:8182/identity/users/testuser/info/key1"
 }</programlisting>
           <table>
-              <title>Update a user's info - 响应码</title>
+              <title>更新用户的信息 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10402,15 +10402,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the user was found and the info has been updated.</entry>
+                    <entry>表示找到了用户，并更新了信息。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the value was missing from the request body.</entry>
+                    <entry>表示请求体中缺少数据。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. 状态描述中包含了错误相关的详细信息。</entry>
+                    <entry>表示找到用户，或找不到指定key的用户信息。状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10419,13 +10419,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
    <section>
-      <title>Create a new user's info entry</title>
+      <title>创建用户信息条目</title>
          <para>
         <programlisting>POST identity/users/{userId}/info</programlisting>
       </para>
       <para>
           <table>
-            <title>Create a new user's info entry - URL参数</title>
+            <title>创建用户信息条目 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10440,7 +10440,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>userId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to create the info for.</entry>
+                  <entry>期望创建信息的用户id。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10463,7 +10463,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "url":"http://localhost:8182/identity/users/testuser/info/key1"
 }</programlisting>
           <table>
-              <title>Create a new user's info entry - 响应码</title>
+              <title>创建用户信息条目 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10474,19 +10474,19 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the user was found and the info has been created.</entry>
+                    <entry>表示找到了用户，并创建了信息。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the key or value was missing from the request body. 状态描述中包含了错误相关的详细信息。</entry>
+                    <entry>表示请求体中缺少key或value。状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found.</entry>
+                    <entry>表示找不到用户。</entry>
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates there is already an info-entry with the given key for the user, update the resource instance (<literal>PUT</literal>).</entry>
+                    <entry>表示用户已经有了一条指定key的信息条目，可以更新资源实例（<literal>PUT</literal>）。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10495,13 +10495,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>Delete a user's info</title>
+      <title>删除用户的信息</title>
          <para>
         <programlisting>DELETE identity/users/{userId}/info/{key}</programlisting>
       </para>
       <para>
           <table>
-            <title>Delete a user's info - URL参数</title>
+            <title>删除用户的信息 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10516,13 +10516,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>userId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to delete the info for.</entry>
+                  <entry>希望删除信息的用户id。</entry>
                 </row>
                 <row>
                   <entry>key</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The key of the user info to delete.</entry>
+                  <entry>期望删除的用户信息的key。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10530,7 +10530,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
         <para>
           <table>
-              <title>Delete a user's info - 响应码</title>
+              <title>删除用户的信息 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10541,11 +10541,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the user was found and the info for the given key has been deleted. 响应体为空。</entry>
+                    <entry>表示找到了用户和信息，并删除了指定key的条目。响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found or the user doesn't have info for the given key. 状态描述中包含了错误相关的详细信息。</entry>
+                    <entry>表示找不到用户，或用户不包含指定key的信息。状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10555,15 +10555,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
 </section>
 <section>
-  <title>Groups</title>
+  <title>群组</title>
    <section>
-      <title>Get a single group</title>
+      <title>获得群组</title>
         <para>
           <programlisting>GET identity/groups/{groupId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a single group - URL参数</title>
+              <title>获得群组 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -10578,7 +10578,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>groupId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the group to get.</entry>
+                    <entry>希望获得的群组id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10594,7 +10594,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "type":"Test type"
 }</programlisting>
           <table>
-              <title>Get a single group - 响应码</title>
+              <title>获得群组 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10605,11 +10605,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the group exists and is returned.</entry>
+                    <entry>表示群组存在，并成功返回。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested group does not exist.</entry>
+                    <entry>表示群组不存在。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10618,13 +10618,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>Get a list of groups</title>
+      <title>获取群组列表</title>
         <para>
           <programlisting>GET identity/groups</programlisting>
         </para>
         <para>
         <table>
-              <title>Get a list of groups - URL参数</title>
+              <title>获取群组列表 - URL参数</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10636,37 +10636,37 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>id</entry>
-                    <entry>Only return group with the given id</entry>
+                    <entry>只返回指定id的群组。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>name</entry>
-                    <entry>Only return groups with the given name</entry>
+                    <entry>只返回指定名称的群组。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>type</entry>
-                    <entry>Only return groups with the given type</entry>
+                    <entry>只返回指定类型的群组。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>nameLike</entry>
-                    <entry>Only return groups with a name like the given value. Use <literal>%</literal> as wildcard-character.</entry>
+                    <entry>只返回名称与指定值匹配的群组使用<literal>%</literal>作为通配符。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>member</entry>
-                    <entry>Only return groups which have a member with the given username.</entry>
+                    <entry>只返回成员与指定用户ing相同的群组。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>potentialStarter</entry>
-                    <entry>Only return groups which members are potential starters for a process-definition with the given id.</entry>
+                    <entry>只返回成员作为指定id流程定义的潜在启动者的劝阻。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
-                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>name</literal> or <literal>type</literal>.</entry>
+                    <entry>结果排序的字段。应该是 <literal>id</literal>, <literal>name</literal> 或 <literal>type</literal>其中之一。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
@@ -10697,7 +10697,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "size":3
 }</programlisting>
           <table>
-              <title>Get a list of groups - 响应码</title>
+              <title>获取群组列表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10708,7 +10708,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the requested groups were returned.</entry>
+                    <entry>表示返回了请求的群组。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10717,7 +10717,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
  </section>
 
   <section>
-      <title>Update a group</title>
+      <title>更新群组</title>
         <para>
           <programlisting>PUT identity/groups/{groupId}</programlisting>
         </para>
@@ -10728,11 +10728,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "name":"Test group",
    "type":"Test type"
 }</programlisting>
-      All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only updating the name of the group, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the group-value will be updated to null.
+      所有请求值都是可选的。比如，你可以在请求体JSON对象中只包含'name'属性，只更新群组的名称，其他属性都不会受到英系那个。如果把一个属性设置为null，群组的数据就会更新为null。
        </para>
         <para>
           <table>
-              <title>Update a group - 响应码</title>
+              <title>更新群组 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10743,27 +10743,27 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the group was updated.</entry>
+                    <entry>表示成功更新了群组。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested group was not found.</entry>
+                    <entry>表示找不到请求的群组。</entry>
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the requested group was updated simultaneously.</entry>
+                    <entry>表示请求的群组正在被其他地方更新。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">成功响应体：</emphasis> see response for <literal>identity/groups/{groupId}</literal>.
+       <emphasis role="bold">成功响应体：</emphasis> 参考<literal>identity/groups/{groupId}</literal>的响应。
       </para>
   </section>
 
    <section>
-      <title>Create a group</title>
+      <title>创建群组</title>
         <para>
           <programlisting>POST identity/groups</programlisting>
         </para>
@@ -10778,7 +10778,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
        </para>
         <para>
           <table>
-              <title>Create a group - 响应码</title>
+              <title>创建群组 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10789,29 +10789,29 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the group was created.</entry>
+                    <entry>表示创建了群组。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates the id of the group was missing.</entry>
+                    <entry>表示丢失了群组的id。</entry>
                   </row>
                 </tbody>
              </tgroup>
           </table>
         </para>
     <para>
-       <emphasis role="bold">成功响应体：</emphasis> see response for <literal>identity/groups/{groupId}</literal>.
+       <emphasis role="bold">成功响应体：</emphasis> 参考 <literal>identity/groups/{groupId}</literal>的响应。
       </para>
   </section>
 
   <section>
-      <title>Delete a group</title>
+      <title>删除群组</title>
          <para>
         <programlisting>DELETE identity/groups/{groupId}</programlisting>
       </para>
       <para>
           <table>
-            <title>Delete a group - URL参数</title>
+            <title>删除群组 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10826,7 +10826,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>groupId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the group to delete.</entry>
+                  <entry>期望删除的群组id。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10834,7 +10834,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
         <para>
           <table>
-              <title>Delete a group - 响应码</title>
+              <title>删除群组 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10845,11 +10845,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the group was found and  has been deleted. 响应体为空。</entry>
+                    <entry>表示找到了群组，并成功删除了。响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested group was not found.</entry>
+                    <entry>表示找不到请求的群组。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10857,17 +10857,17 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
   </section>
   <section>
-    <title>Get members in a group</title>
-    <para>There is no GET allowed on <literal>identity/groups/members</literal>. Use the <literal>identity/users?memberOfGroup=sales</literal> URL to get all users that are part of a particular group.</para>
+    <title>获取群组的成员</title>
+    <para> <literal>identity/groups/members</literal>不允许使用GET。使用 <literal>identity/users?memberOfGroup=sales</literal> URL来获得某个群组下的所有成员。</para>
   </section>
   <section>
-      <title>Add a member to a group</title>
+      <title>为群组添加一个成员</title>
          <para>
         <programlisting>POST identity/groups/{groupId}/members</programlisting>
       </para>
       <para>
           <table>
-            <title>Add a member to a group - URL参数</title>
+            <title>为群组添加一个成员 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10882,7 +10882,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>groupId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the group to add a member to.</entry>
+                  <entry>期望添加成员的群组id。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10897,7 +10897,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
        </para>
         <para>
           <table>
-              <title>Add a member to a group - 响应码</title>
+              <title>为群组添加一个成员 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10908,19 +10908,19 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>201</entry>
-                    <entry>Indicates the group was found and the member has been added.</entry>
+                    <entry>表示找到了群组，并添加了成员。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the userId was not included in the request body.</entry>
+                    <entry>表示请求体中未包含userId。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested group was not found.</entry>
+                    <entry>表示找不到请求的群组。</entry>
                   </row>
                    <row>
                     <entry>409</entry>
-                    <entry>Indicates the requested user is already a member of the group.</entry>
+                    <entry>表示请求的用户已经是群组的一员了。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10937,13 +10937,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
        </para>
   </section>
   <section>
-      <title>Delete a member from a group</title>
+      <title>删除群组的成员</title>
          <para>
         <programlisting>DELETE identity/groups/{groupId}/members/{userId}</programlisting>
       </para>
       <para>
           <table>
-            <title>Delete a member from a group - URL参数</title>
+            <title>删除群组的成员 - URL参数</title>
             <tgroup cols='3'>
               <thead>
                 <row>
@@ -10958,13 +10958,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>groupId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the group to remove a member from.</entry>
+                  <entry>期望删除成员的群组id。</entry>
                 </row>
                 <row>
                   <entry>userId</entry>
                   <entry>是</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to remove.</entry>
+                  <entry>期望删除的用户id。</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10972,7 +10972,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </para>
         <para>
           <table>
-              <title>Delete a member from a group - 响应码</title>
+              <title>删除群组的成员 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -10983,11 +10983,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the group was found and the member has been deleted. The 响应体为空。</entry>
+                    <entry>表示找到了群组，并删除了成员。响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested group was not found or that the user is not a member of the group. The 状态描述中包含了错误相关的详细信息。</entry>
+                    <entry>表示找不到请求的群组，或用户不是群组的成员。状态描述中包含了错误相关的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -11009,48 +11009,48 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 <!-- Legacy -->
   <section>
 
-    <title>Legacy REST - General Usage</title>
-    <para><emphasis role="bold">The folowing section contains documentation of the Legacy REST-api, which has been deprecated since the 5.13 release. The REST-urls will not be removed in the future but will not be maintained. Any future additions and improvements will be done to the new REST API.</emphasis></para>
+    <title>传统REST - 通用方法</title>
+    <para><emphasis role="bold">下面的章节中包含了传统的REST-api，它们在5.13版本中已经废弃了。REST url不会在未来删除，但是也不会维护了。未来的所有改进都会放到新REST API中。</emphasis></para>
     <para>
-      Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat.
-      By default the Activiti Engine will connect to a standalone H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder.
-      The REST API uses JSON format (http://www.json.org) and is built upon the Restlet (http://www.restlet.org).
+	  Activiti包含了一套引擎的REST API，可以把activiti-rest.war部署到像Apache Tomcat一样的Servlet容器里。
+	  默认Activiti引擎会连接一个单独运行的h2数据库。你可以修改WEB-INF/classes目录下的db.properties文件来修改数据库配置。
+	  REST API使用JSON格式（http://www.json.org），内部使用Restlet构建（http://www.restlet.org）。
     </para>
 
     <para>
-      Each REST API call has its individual authorization level and you must be logged in as a user to invoke a REST API
-      call (except for the /login service). Authentication is done using Basic HTTP Authentication, so if you logged in as
-      an admin (i.e. kermit) you should be able to perform all calls as described below.
+      每个REST API调用都会使用单独的校验级别，你必须登录到系统中，来调用REST API（除了/login服务）。
+	  认证是通过Basic HTTP认证实现的，如果你登录为管理员（比如kermit），
+	  你应该可以访问下面介绍的所有接口。
     </para>
 
     <para>
-      The API follows normal REST API conventions using GET for read operations, POST for creating objects, PUT for updating and
-      performing operations on already created objects and finally DELETE for deleting objects. When performing a call
-      that affects multiple objects POST is used on all such operations for consistency and making sure that an unlimited
-      number of objects may be used. The reason for using POST is that the HTTP DELETE method doesn't implicitly allow
-      request bodies and therefore, a call using DELETE, in theory, could get it's request body stripped out by a proxy.
-      So to be certain this doesn't happen we use POST, even when PUT could have been used to update multiple objects,
-      for consistency.
+	  API遵守着通常的REST API约定，对读取操作使用GET，对创建对象使用POST，
+	  对更新和执行操作使用PUT，对删除对象使用DELETE。在执行应先过很多次对象的操作时，
+	  使用POST来执行这些操作来保证传递的参数不受限制。
+	  使用POST的原因是HTTP DELETE方法不允许使用请求体。
+	  使用DELETE的调用，理论上，它的请求体会被代理剔除。
+	  为了保证不发生这种事情，我们使用了POST，虽然PUT也可以更新多个对象，
+	  为了保持一致。
     </para>
 
     <para>
-      All rest calls use a content type of "application/json" (except for upload requests which uses "multipart/form-data").
+	  所有rest调用都使用"application/json"作为Content-Type（除了上传请求使用"multipart/form-data"）。
     </para>
 
     <para>
-      The base URL for invoking a REST call is http://localhost:8080/activiti-rest/service/.
-      So for example to list the process definitions in the engine point your browser to:
+	  执行REST调用的url基础地址是http://localhost:8080/activiti-rest/service/。
+	  比如，列出引擎中流程定义的方法，在你的浏览器中应该是：
       http://localhost:8080/activiti-rest/service/process-definitions
     </para>
 
     <para>
-      You may also use curl to run queries against the REST API, e.g.:
+	  你就也可以使用curl来通过REST API执行查询，比如：
       <programlisting>curl --basic --user kermit:kermit http://localhost:8080/activiti-rest/service/tasks?assignee=kermit</programlisting>
     </para>
 
     <para>
-      Please look below to see what REST API calls that currently are available.
-      Please consider the "API" sections as a "one line hint" to what functionality of the core API that is used to implement the REST API call.
+	  请参考下面的描述，来了解哪些REST API是目前可用的。
+	  请参考"API"章节作为，“一行的注释”，来了解核心API的功能，实现REST API的调用。
     </para>
 
   </section>
@@ -11059,18 +11059,18 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
     <!-- REPOSITORY -->
 
-    <title>Repository</title>
+    <title>资源</title>
 
     <section>
-      <title>Upload Deployment</title>
+      <title>上传发布</title>
       <para>
-        Uploads and installs a deployment of format .bpmn20.xml, .bpmn, .bar or .zip using normal "html form upload"
-        (enctype=multipart/form-data) in other words not a json-request. The deployment information is returned as a response if the deploy action succeeds.
+        上传并安装发布.bpmn20.xml, .bpmn, .bar 或 .zip格式，使用普通的“html表单上传”（enctype=multipart/form-data）
+		换句话说不是json请求。如果发布操作成功，发布信息会包含在返回的响应中。
       </para>
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">Request: </emphasis>
+            <emphasis role="bold">请求：</emphasis>
             <literal>POST /deployment</literal>
           </para>
         </listitem>
@@ -11096,14 +11096,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     </section>
 
     <section>
-      <title>Get Deployments</title>
+      <title>获取发布</title>
       <para>
-        Returns a paginated list deployments that can be sorted by "id", "name" or "deploymentTime".
+	    返回分页发布列表，可以通过"id", "name" 或 "deploymentTime"排序。
       </para>
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">Request: </emphasis>
+            <emphasis role="bold">请求：</emphasis>
             <literal>GET /deployments?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
           </para>
         </listitem>
@@ -11138,15 +11138,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     </section>
 
     <section>
-      <title>Get Deployment Resources</title>
+      <title>获取发布资源</title>
       <para>
-        Returns all resources from the deployment.
-        Example: /deployment/10/resources
+	    返回发布的所有资源。
+        实例： /deployment/10/resources
       </para>
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">Request: </emphasis>
+            <emphasis role="bold">请求：</emphasis>
             <literal>GET /deployment/{deploymentId}/resources</literal>
           </para>
         </listitem>
@@ -11173,15 +11173,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     </section>
 
     <section>
-      <title>Get Deployment Resource</title>
+      <title>获取发布的一个资源</title>
       <para>
-        Returns a resource from the deployment.
-        Example: /deployment/10/resource/org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml
+	    获取发布的一个资源。
+        实例： /deployment/10/resource/org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml
       </para>
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">Request: </emphasis>
+            <emphasis role="bold">请求：</emphasis>
             <literal>GET /deployment/{deploymentId}/resource/{resourceName}</literal>
           </para>
         </listitem>
@@ -11194,21 +11194,21 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         <listitem>
           <para>
             <emphasis role="bold">响应：</emphasis>
-            <programlisting>I.e a .bpmn20.xml file, an image or whatever type of file the deployment resource contained.</programlisting>
+            <programlisting>比如，一个.bpmn20.xml文件，一个图片或其他发布资源包含的文件类型。</programlisting>
           </para>
         </listitem>
       </itemizedlist>
     </section>
 
     <section>
-      <title>Delete Deployment</title>
+      <title>删除发布</title>
       <para>
-        Deletes a deployment.
+	    删除一个发布。
       </para>
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">Request: </emphasis>
+            <emphasis role="bold">请求：</emphasis>
             <literal>DELETE /deployment/{deploymentId}?cascade={cascade?}</literal>
           </para>
         </listitem>
@@ -11231,14 +11231,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     </section>
 
     <section>
-      <title>Delete Deployments</title>
+      <title>删除发布</title>
       <para>
-        Deletes multiple deployment.
+	    删除多个发布。
       </para>
       <itemizedlist>
         <listitem>
           <para>
-            <emphasis role="bold">Request: </emphasis>
+            <emphasis role="bold">请求：</emphasis>
             <literal>POST /deployments/delete?cascade={cascade?}</literal>
             <programlisting>
 {
@@ -11270,18 +11270,18 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
     <section>
 
-      <title>Engine</title>
+      <title>引擎</title>
 
       <section>
-        <title>Get Process Engine</title>
+        <title>获取流程引擎</title>
         <para>
-          Returns the process engine initialization details. If something went wrong during startup, details
-          about the error will be given in the "exception" attribute in the response.
+		  返回流程引擎安装细节。如果启动时出现了问题，
+		  错误的细节会包含在响应的"exception"属性中。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request: </emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /process-engine</literal>
             </para>
           </listitem>
@@ -11312,20 +11312,19 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
     <section>
 
-      <title>Processes</title>
+      <title>流程</title>
 
       <section>
-        <title>List Process Definitions</title>
+        <title>流程定义列表</title>
         <para>
-          Returns details about the deployed process definitions that can be sorted by "id", "name", "version" or
-          "deploymentId". The name of the BPMN2.0 XML process diagram is given in the "resourceName" attribute and can,
-          in combination with the "deploymentId" attribute, be retrieved from the GET Deployment Resource REST API call
-          above.
+		  返回发布的流程定义的信息，可以通过"id", "name", "version" 或
+          "deploymentId"排序。BPMN2.0 XML的流程图的名字包含在"resourceName"属性中，
+		  结合"deploymentId"属性，可以通过上面的获取发布资源REST API调用获得。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Request:</emphasis>
+              <emphasis role="bold">分页请求：</emphasis>
               <literal>GET /process-definitions?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
             </para>
           </listitem>
@@ -11337,7 +11336,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Response:</emphasis>
+              <emphasis role="bold">分页响应：</emphasis>
               <programlisting>
 {
   "data": [
@@ -11365,14 +11364,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Get Process Definition Form Properties</title>
+        <title>获得流程定义表单属性</title>
         <para>
-          Returns a process definition's form properties.
+		  返回流程定义表单属性。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /process-definition/{processDefinitionId}/properties</literal>
             </para>
           </listitem>
@@ -11404,14 +11403,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Get Process Definition Form Resource</title>
+        <title>获得流程定义表单资源</title>
         <para>
-          Returns a process definition's form.
+		  返回流程定义表单。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /process-definition/{processDefinitionId}/form</literal>
             </para>
           </listitem>
@@ -11431,14 +11430,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-          <title>Get Process Definition Diagram</title>
+          <title>获取流程定义图</title>
           <para>
-          Returns a PNG diagram of the process definition if it's available.
+		  如果存在，就返回一个流程定义的PNG图。
           </para>
           <itemizedlist>
             <listitem>
               <para>
-                <emphasis role="bold">Request:</emphasis>
+                <emphasis role="bold">请求：</emphasis>
                 <literal>GET /process-definition/{processDefinitionId}/diagram</literal>
               </para>
             </listitem>
@@ -11451,28 +11450,28 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <listitem>
               <para>
                 <emphasis role="bold">响应：</emphasis>
-                <programlisting>Png diagram of the process definition.</programlisting>
+                <programlisting>流程定义的PNG图。</programlisting>
               </para>
             </listitem>
           </itemizedlist>
       </section>
 
       <section>
-        <title>Start Process Instance</title>
+        <title>启动流程实例</title>
         <para>
-          Creates a process instance based on a process definition and returns details about the newly created process instance.
-          Additional variables (from a form) may be passed using the body object. In other words placing attributes
-          next to the "processDefinitionId" attribute.
+		  根据流程定义创建流程实例，返回新创建流程实例的细节信息。
+		  可以使用请求体对象传递额外的变量（通过表单）。换句话说，
+		  就是"processDefinitionId"属性旁边的属性。
         </para>
         <para>
-          Note that if a value is submitted as true (instead of "true") it will be treated as a
-          Boolean even if no descriptor is used. The same is also valid for number, i.e., 123 will become an Integer
-          but "123" will become a String (unless a descriptor is defined).
+          注意如果提交的值为true（不是"true"），会被当做Boolean，即使没有使用描述符。
+		  这与数字的处理方式相同。比如，123会当做整数。
+		  "123"会当做字符串（除非使用描述符定义）。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>POST /process-instance</literal>
               <programlisting>
 {
@@ -11501,15 +11500,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
         <section>
-          <title>List Process Instances</title>
+          <title>流程实例列表</title>
           <para>
-            Returns details about the active process instances that can be sorted by "id", "startTime", "businessKey" or
-            "processDefinitionId". You can filter instances by "processDefinitionId" and "businessKey".
+		    返回活动的流程实例细节，可以通过"id", "startTime", "businessKey" 或
+            "processDefinitionId"排序。你可以使用"processDefinitionId" and "businessKey"进行查询。
           </para>
           <itemizedlist>
             <listitem>
               <para>
-                <emphasis role="bold">Paginated Request:</emphasis>
+                <emphasis role="bold">分页请求：</emphasis>
                 <literal>GET /process-instances?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}&amp;businessKey={businessKey}&amp;processDefinitionId={processDefinitionId}</literal>
               </para>
             </listitem>
@@ -11521,7 +11520,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             </listitem>
             <listitem>
               <para>
-                <emphasis role="bold">Paginated Response:</emphasis>
+                <emphasis role="bold">分页响应：</emphasis>
                 <programlisting>
   {
     "data": [
@@ -11545,14 +11544,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </section>
 
         <section>
-          <title>Get Process Instance Details</title>
+          <title>获得流程实例细节</title>
           <para>
-            Returns all details about a specific process instance. This can be a running or completed process instance.
+		    返回指定流程实例的所有细节。可以是运行中或已结束的流程实例。
           </para>
           <itemizedlist>
             <listitem>
               <para>
-                <emphasis role="bold">Request:</emphasis>
+                <emphasis role="bold">请求：</emphasis>
                 <literal>GET /process-instance/{processInstanceId}</literal>
               </para>
             </listitem>
@@ -11618,14 +11617,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </section>
 
         <section>
-            <title>Get Process Instance Diagram</title>
+            <title>获得流程实例图</title>
             <para>
-            Returns a PNG diagram of process with highlighted active executions. Returns 404 if process definition does not contain DI information.
+			返回高亮的活动流程PNG图。如果流程定义未包含DI信息就会返回404。
             </para>
             <itemizedlist>
               <listitem>
                 <para>
-                  <emphasis role="bold">Request:</emphasis>
+                  <emphasis role="bold">请求：</emphasis>
                   <literal>GET /process-instance/{processInstanceId}/diagram</literal>
                 </para>
               </listitem>
@@ -11638,21 +11637,21 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <listitem>
                 <para>
                   <emphasis role="bold">响应：</emphasis>
-                  <programlisting>Png diagram of process with highlighted active executions.</programlisting>
+                  <programlisting>返回高亮的活动流程PNG图。</programlisting>
                 </para>
               </listitem>
             </itemizedlist>
         </section>
 
         <section>
-            <title>Get open tasks for a process instance</title>
+            <title>获得流程实例的任务</title>
             <para>
-            Returns a list of open tasks for a running process instance
+			返回运行中流程实例的任务列表。
             </para>
             <itemizedlist>
               <listitem>
                 <para>
-                  <emphasis role="bold">Request:</emphasis>
+                  <emphasis role="bold">请求：</emphasis>
                   <literal>GET /process-instance/{processInstanceId}/tasks</literal>
                 </para>
               </listitem>
@@ -11664,7 +11663,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               </listitem>
               <listitem>
             <para>
-              <emphasis role="bold">Paginated Response:</emphasis>
+              <emphasis role="bold">分页响应：</emphasis>
               <programlisting>
 {
   "data": [
@@ -11696,14 +11695,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
          </itemizedlist>
         </section>
         <section>
-            <title>Signal an activity (receive task) for a specific process instance</title>
+            <title>继续特定流程实例的活动（receiveTask）</title>
             <para>
-            Signals an activity execution (receive task).
+			继续一个活动分支（receiveTask）。
             </para>
             <itemizedlist>
               <listitem>
                 <para>
-                  <emphasis role="bold">Request:</emphasis>
+                  <emphasis role="bold">请求：</emphasis>
                   <literal>POST /process-instance/{processInstanceId}/signal</literal>
                   <programlisting>
 {
@@ -11732,14 +11731,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </section>
 
         <section>
-            <title>Trigger a signal for a specific process instance</title>
+            <title>触发特定流程实例的信号</title>
             <para>
-            Sends a signal to a specific process instance, causing any subscribing signal event to fire. Additional variables may be passed in the body. If you don't want to set any variables, you may leave the body empty.
+			向特定流程实例发送一个信号，会触发所有订阅的信号事件。可以通过请求体发送额外的变量。
+			如果你不想发送任何变量，可以使用空的请求体。
             </para>
             <itemizedlist>
               <listitem>
                 <para>
-                  <emphasis role="bold">Request:</emphasis>
+                  <emphasis role="bold">请求：</emphasis>
                   <literal>POST /process-instance/{processInstanceId}/event/{signalName}</literal>
                   <programlisting>
 {
@@ -11774,18 +11774,18 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
     <section>
 
-      <title>Tasks</title>
+      <title>任务</title>
 
       <section>
-        <title>Get Task Summary</title>
+        <title>获得任务简介</title>
         <para>
-          Returns a task summary for a specific user: The number of tasks assigned the user, how many unassigned tasks
-          that the user may claim and how many unassigned tasks there are per group that the user is a member of.
+		  为特定用户返回任务简介：分配给用户的任务数量，用户可以认领的未分配任务的数量，
+		  用户作为成员的群组可以认领的未分配任务。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /tasks-summary?user={userId}</literal>
             </para>
           </listitem>
@@ -11820,24 +11820,24 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>List Tasks</title>
+        <title>任务列表</title>
         <para>
-          Returns a paginated 任务列表 that can be sorted by: "id", "name", "description", "priority", "assignee",
-          "executionId" or "processInstanceId". The list must be based on a user of a specific role: assignee
-          (lists the tasks assigned to the user) or candidate (lists the tasks that the user may claim) or a candidate
-          group (lists tasks that the members of the group may claim). If the task has a form it is given in the
-          "formResourceKey" attribute. The form for a task can be retrieved from the GET Task Form REST API call.
+		  返回分页的任务列表，可以同构"id", "name", "description", "priority", "assignee",
+          "executionId" 或 "processInstanceId"排序。列表必须基于特定角色的用户：负责人
+		  （分配给用户的任务列表）或候选人（用户可以领取的任务列表）或候选群组
+		  （用户作为成员的群组可以认领的任务列表）。如果任务通过"formResourceKey"属性指定了一个表单。
+		  任务的表单可以通过获取任务表单REST API获得。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Request:</emphasis>
+              <emphasis role="bold">分页请求：</emphasis>
               <literal>GET /tasks?[assignee={userId}|candidate={userId}|candidate-group={groupId}]&amp;start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
             </para>
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Example:</emphasis>
+              <emphasis role="bold">实例：</emphasis>
               <programlisting>curl --basic --user kermit:kermit http://localhost:8080/activiti-rest/service/tasks?assignee=kermit</programlisting>
             </para>
           </listitem>
@@ -11849,7 +11849,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Response:</emphasis>
+              <emphasis role="bold">分页响应：</emphasis>
               <programlisting>
 {
   "data": [
@@ -11882,14 +11882,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Get Task</title>
+        <title>获取任务</title>
         <para>
-          Returns details about the task with the task id.
+		  通过任务id获取任务的细节。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /task/{taskId}</literal>
             </para>
           </listitem>
@@ -11955,14 +11955,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Get Task Form</title>
+        <title>获取任务表单</title>
         <para>
-          Returns a task's form.
+		  获取任务表单。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /task/{taskId}/form</literal>
             </para>
           </listitem>
@@ -11982,25 +11982,25 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Perform Task Operation</title>
+        <title>执行任务操作</title>
         <para>
-          Performs an operation (claim, unclaim, assign or complete) on a task.
-          For the "complete" operation additional variables (from a form) may be passed in the body.
-          To read more about additional variables from forms, visit the Start Process Instance section
+		  对任务执行操作（认领，释放，分配或完成）。
+		  对于“完成”操作的额外变量（通过表单）可以通过请求体传递。
+		  要从表单读取更多变量，可以参考启动流程实例章节。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>PUT /task/{taskId}/[claim|unclaim|complete|assign]</literal>
-              Claim and unclaim don't need a JSON body, but for complete you can provide a number of variables and for assign a userId field is required.
-              An example body for the complete operation:
+			  认领和释放不需要JSON体，对于完成你可以提供一些变量，分配必须使用userId。
+			  例如，完成操作的请求体：
               <programlisting>
 {
       "variableName1": "variableValue1",
       "variableName2": "variableValue2"
 }</programlisting>
-              An example body for the assign operation:
+			  例如，分配操作的请求体：
               <programlisting>
 {
       "userId": "newAssignee"
@@ -12024,14 +12024,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
 	  <section>
-        <title>List Form Properties</title>
+        <title>表单属性列表</title>
         <para>
-          Returns a list of properties of a form of a running task, which is defined by the process.
+		  返回运行中任务的表单的属性列表，由流程定义。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /form/{taskId}/properties</literal>
             </para>
           </listitem>
@@ -12064,14 +12064,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
     <section>
-        <title>Add attachment to a task</title>
+        <title>为任务添加一个附件</title>
         <para>
-          Add an attachment to a task instance
+		  为任务实例添加一个附件。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>PUT /task/{taskId}/attachment</literal>
               <programlisting>{}</programlisting>
             </para>
@@ -12097,14 +12097,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-          <title>Get task attachment</title>
+          <title>获得任务附件</title>
           <para>
-          Returns the task attachment
+		  返回任务附件
           </para>
           <itemizedlist>
             <listitem>
               <para>
-                <emphasis role="bold">Request:</emphasis>
+                <emphasis role="bold">请求：</emphasis>
                 <literal>GET /attachment/{attachmentId}</literal>
               </para>
             </listitem>
@@ -12117,21 +12117,21 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <listitem>
               <para>
                 <emphasis role="bold">响应：</emphasis>
-                <programlisting>The attachment.</programlisting>
+                <programlisting>附件。</programlisting>
               </para>
             </listitem>
           </itemizedlist>
       </section>
 
     <section>
-        <title>Add url to a task</title>
+        <title>为任务添加一个url</title>
         <para>
-          Add an url to a task instance
+		  为任务实例添加一个url
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>PUT /task/{taskId}/url</literal>
               <programlisting>{}</programlisting>
             </para>
@@ -12162,18 +12162,18 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
     <section>
 
-      <title>Identity</title>
+      <title>身份</title>
 
       <section>
-        <title>Login</title>
+        <title>登录</title>
         <para>
-          Authenticates a user. If user and password doesn't match a response with status 403 is returned.
-          If authentication is successful, a response with status 200 is returned.
+		  认证一个用户。如果用户和密码不匹配，会返回403.
+		  如果认证成功，会返回200响应状态。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>POST /login</literal>
               <programlisting>
 {
@@ -12201,14 +12201,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Get User</title>
+        <title>获得用户</title>
         <para>
-          Returns details about a user.
+		  返回用户的细节。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /user/{userId}</literal>
             </para>
           </listitem>
@@ -12234,14 +12234,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>List User's Groups</title>
+        <title>列出用户的群组</title>
         <para>
-          Returns a paginated list groups belonging to a user that can be sort by "id", "name" or "type".
+		  返回用户对应的群组分页列表，可以使用"id", "name" 或 "type"排序。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Request:</emphasis>
+              <emphasis role="bold">分页请求：</emphasis>
               <literal>GET /user/{userId}/groups?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
             </para>
           </listitem>
@@ -12251,7 +12251,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Paginated Response:</emphasis>
+            <para><emphasis role="bold">分页响应：</emphasis>
               <programlisting>
 {
   data: [
@@ -12273,14 +12273,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Search users</title>
+        <title>查询用户</title>
         <para>
-          Returns a list users from whom the first or last name corresponds to the search text.
+		  返回用户列表，通过查询的文本搜索firstname和lastname。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Request:</emphasis>
+              <emphasis role="bold">分页请求：</emphasis>
               <literal>GET /users?searchText=ker</literal>
             </para>
           </listitem>
@@ -12314,14 +12314,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Create user</title>
+        <title>创建用户</title>
         <para>
-          Creates a new user.
+		  创建一个新用户。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>PUT /user</literal>
               <programlisting>
 {
@@ -12353,14 +12353,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Add user to groups</title>
+        <title>为群组添加用户</title>
         <para>
-          Adds user to the groups posted to this REST service.
+		  为群组添加用户，通过这个REST服务。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>POST /user/{userId}/groups</literal>
               <programlisting>
 ["management", "sales"]
@@ -12386,14 +12386,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Remove user from group</title>
+        <title>从群组删除用户</title>
         <para>
-          Removes user from a group.
+		  从群组删除用户。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>DELETE /user/{userId}/groups/{groupId}</literal>
             </para>
           </listitem>
@@ -12416,14 +12416,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-          <title>Get user picture</title>
+          <title>获得用户图片</title>
           <para>
-          Returns the task attachment
+		  返回用户图片
           </para>
           <itemizedlist>
             <listitem>
               <para>
-                <emphasis role="bold">Request:</emphasis>
+                <emphasis role="bold">请求：</emphasis>
                 <literal>GET /user/{userId}/picture</literal>
               </para>
             </listitem>
@@ -12443,14 +12443,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Get Group</title>
+        <title>获得群组</title>
         <para>
-          Returns details about a group.
+		  返回群组细节。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /group/{groupId}</literal>
             </para>
           </listitem>
@@ -12475,14 +12475,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>List Group Users</title>
+        <title>群组用户列表</title>
         <para>
-          Returns details about a group's users that can be sorted by "id", "firstName", "lastName" or "email".
+		  返回一个群组的用户细节，可以通过"id", "firstName", "lastName" 或 "email"排序。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Request:</emphasis>
+              <emphasis role="bold">分页请求：</emphasis>
               <literal>GET /group/{groupId}/users</literal>
             </para>
           </listitem>
@@ -12492,7 +12492,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Paginated Response:</emphasis>
+            <para><emphasis role="bold">分页响应：</emphasis>
               <programlisting>
 {
   data: [
@@ -12515,14 +12515,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
     <section>
-        <title>Search groups</title>
+        <title>查询群组</title>
         <para>
-          Returns a list of groups from whom the id or name corresponds to the search text.
+		  返回群组列表，通过查询的文本搜索id或name。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Request:</emphasis>
+              <emphasis role="bold">分页请求：</emphasis>
               <literal>GET /groups?searchText=ad</literal>
             </para>
           </listitem>
@@ -12554,14 +12554,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
     <section>
-        <title>Create group</title>
+        <title>创建群组</title>
         <para>
-          Creates a new group.
+		  创建新群组。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>PUT /group</literal>
               <programlisting>
 {
@@ -12591,14 +12591,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Add users to a group</title>
+        <title>为群组添加用户</title>
         <para>
-          Adds users to a group.
+		  为群组添加用户。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>POST /group/{groupId}/users</literal>
               <programlisting>
 ["kermit", "fozzie"]
@@ -12624,14 +12624,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Remove user from group</title>
+        <title>为群组删除用户</title>
         <para>
-          Removes user from a group.
+		  为群组删除用户。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>DELETE /group/{groupId}/users/{userId}</literal>
             </para>
           </listitem>
@@ -12659,19 +12659,19 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
     <section>
 
-      <title>Management</title>
+      <title>管理</title>
 
       <section>
-        <title>List Jobs</title>
+        <title>作业列表</title>
         <para>
-          Returns a paginated list of jobs that can be sorted by "id", "process-instance-id", "execution-id",
-          "due-date", "retries" or some custom arbitrary property id. The list can also be filtered by
-          process instance id, due date or if the jobs have retries, are executable or only have messages or timers.
+		  返回分页的作业列表，可以通过"id", "process-instance-id", "execution-id",
+          "due-date", "retries" 或一些自定义的属性id排序。列表可以通过
+          process instance id, due date 或作业是否重试，是否可执行，只是消息或定时器来查询。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Request:</emphasis>
+              <emphasis role="bold">分页请求：</emphasis>
               <literal>GET /management/jobs?process-instance={processInstanceId?}&amp;with-retries-left={withRetriesLeft=false}&amp;executable={axecutable=false}&amp;only-timers={onlyTimers=false}&amp;only-messages={onlyMessage=false}&amp;duedate-lt={iso8601Date}&amp;duedate-ltoe={iso8601Date}&amp;duedate-ht={iso8601Date}&amp;duedate-htoe={iso8601Date}&amp;start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
             </para>
           </listitem>
@@ -12683,7 +12683,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Response:</emphasis>
+              <emphasis role="bold">分页响应：</emphasis>
               <programlisting>
 {
   "data": [
@@ -12709,14 +12709,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Get Job</title>
+        <title>获得作业</title>
         <para>
-          Returns details about a job.
+		  返回作业的细节。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /management/job({jobId}</literal>
             </para>
           </listitem>
@@ -12746,14 +12746,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Execute Job</title>
+        <title>执行一个作业</title>
         <para>
-          Executes a job.
+		  执行一个作业。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>PUT /management/job/{jobId}/execute</literal>
             </para>
           </listitem>
@@ -12776,14 +12776,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Execute Jobs</title>
+        <title>执行多个作业</title>
         <para>
-          Executes multiple job.
+		  执行多个作业。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>POST /management/jobs/execute</literal>
               <programlisting>
 {
@@ -12810,14 +12810,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>List Database Tables</title>
+        <title>数据库表列表</title>
         <para>
-          Returns meta data information about all database tables in the engine.
+		  返回引擎中的所有数据库表的元数据。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /management/tables</literal>
             </para>
           </listitem>
@@ -12845,14 +12845,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
       </section>
 
       <section>
-        <title>Get Table Meta Data</title>
+        <title>获得表元数据</title>
         <para>
-          Returns meta data about a database table.
+		  返回一个数据库表的元数据。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">请求：</emphasis>
               <literal>GET /management/table/{tableName}</literal>
             </para>
           </listitem>
@@ -12876,14 +12876,14 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
 
       <section>
-        <title>Get Table Data</title>
+        <title>获得表数据</title>
         <para>
-          Returns a paginated list of database table data.
+		  返回分页的数据库表数据列表。
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Paginated Request:</emphasis>
+              <emphasis role="bold">分页请求：</emphasis>
               <literal>GET /management/table/{tableName}/data</literal>
             </para>
           </listitem>
@@ -12894,7 +12894,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Paginated Response:</emphasis>
+            <para><emphasis role="bold">分页响应：</emphasis>
               <programlisting>
 {
   "data": [
