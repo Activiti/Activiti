@@ -29,15 +29,19 @@ public class HistoricTaskInstanceQueryRequest {
   private String taskId;
   private String processInstanceId;
   private String processBusinessKey;
+  private String processBusinessKeyLike;
   private String processDefinitionId;
   private String processDefinitionKey;
+  private String processDefinitionKeyLike;
   private String processDefinitionName;
+  private String processDefinitionNameLike;
   private String executionId;
   private String taskName;
   private String taskNameLike;
   private String taskDescription;
   private String taskDescriptionLike;
   private String taskDefinitionKey;
+  private String taskDefinitionKeyLike;
   private String taskDeleteReason;
   private String taskDeleteReasonLike;
   private String taskAssignee;
@@ -46,13 +50,21 @@ public class HistoricTaskInstanceQueryRequest {
   private String taskOwnerLike;
   private String taskInvolvedUser;
   private Integer taskPriority;
+  private Integer taskMinPriority;
+  private Integer taskMaxPriority;
   private Boolean finished;
   private Boolean processFinished;
   private String parentTaskId;
   private Date dueDate;
   private Date dueDateAfter;
   private Date dueDateBefore;
+  private Boolean withoutDueDate;
   private Date taskCreatedOn;
+  private Date taskCreatedBefore;
+  private Date taskCreatedAfter;
+  private Date taskCompletedOn;
+  private Date taskCompletedBefore;
+  private Date taskCompletedAfter;
   private Boolean includeTaskLocalVariables;
   private Boolean includeProcessVariables;
   private List<QueryVariable> taskVariables;
@@ -77,6 +89,14 @@ public class HistoricTaskInstanceQueryRequest {
   public String getProcessBusinessKey() {
     return processBusinessKey;
   }
+  
+  public String getProcessBusinessKeyLike() {
+	  return processBusinessKeyLike;
+  }
+  
+  public void setProcessBusinessKeyLike(String processBusinessKeyLike) {
+	  this.processBusinessKeyLike = processBusinessKeyLike;
+  }
 
   public void setProcessBusinessKey(String processBusinessKey) {
     this.processBusinessKey = processBusinessKey;
@@ -97,6 +117,14 @@ public class HistoricTaskInstanceQueryRequest {
   public void setProcessDefinitionKey(String processDefinitionKey) {
     this.processDefinitionKey = processDefinitionKey;
   }
+  
+  public String getProcessDefinitionKeyLike() {
+	  return processDefinitionKeyLike;
+  }
+  
+  public void setProcessDefinitionKeyLike(String processDefinitionKeyLike) {
+	  this.processDefinitionKeyLike = processDefinitionKeyLike;
+  }
 
   public String getProcessDefinitionName() {
     return processDefinitionName;
@@ -106,8 +134,16 @@ public class HistoricTaskInstanceQueryRequest {
     this.processDefinitionName = processDefinitionName;
   }
 
+  public String getProcessDefinitionNameLike() {
+	  return processDefinitionNameLike;
+  }
+  
   public String getExecutionId() {
     return executionId;
+  }
+  
+  public void setProcessDefinitionNameLike(String processDefinitionNameLike) {
+	  this.processDefinitionNameLike = processDefinitionNameLike;
   }
 
   public void setExecutionId(String executionId) {
@@ -154,6 +190,14 @@ public class HistoricTaskInstanceQueryRequest {
     this.taskDefinitionKey = taskDefinitionKey;
   }
 
+  public String getTaskDefinitionKeyLike() {
+	  return taskDefinitionKeyLike;
+  }
+  
+  public void setTaskDefinitionKeyLike(String taskDefinitionKeyLike) {
+	  this.taskDefinitionKeyLike = taskDefinitionKeyLike;
+  }
+  
   public String getTaskDeleteReason() {
     return taskDeleteReason;
   }
@@ -217,6 +261,22 @@ public class HistoricTaskInstanceQueryRequest {
   public void setTaskPriority(Integer taskPriority) {
     this.taskPriority = taskPriority;
   }
+  
+  public Integer getTaskMaxPriority() {
+	  return taskMaxPriority;
+  }
+  
+  public void setTaskMaxPriority(Integer taskMaxPriority) {
+	  this.taskMaxPriority = taskMaxPriority;
+  }
+  
+  public Integer getTaskMinPriority() {
+	  return taskMinPriority;
+  }
+  
+  public void setTaskMinPriority(Integer taskMinPriority) {
+	  this.taskMinPriority = taskMinPriority;
+  }
 
   public Boolean getFinished() {
     return finished;
@@ -265,6 +325,14 @@ public class HistoricTaskInstanceQueryRequest {
   public void setDueDateBefore(Date dueDateBefore) {
     this.dueDateBefore = dueDateBefore;
   }
+  
+  public Boolean getWithoutDueDate() {
+	  return withoutDueDate;
+  }
+  
+  public void setWithoutDueDate(Boolean withoutDueDate) {
+	  this.withoutDueDate = withoutDueDate;
+  }
 
   public Date getTaskCreatedOn() {
     return taskCreatedOn;
@@ -272,6 +340,46 @@ public class HistoricTaskInstanceQueryRequest {
 
   public void setTaskCreatedOn(Date taskCreatedOn) {
     this.taskCreatedOn = taskCreatedOn;
+  }
+  
+  public void setTaskCreatedAfter(Date taskCreatedAfter) {
+	  this.taskCreatedAfter = taskCreatedAfter;
+  }
+  
+  public Date getTaskCompletedAfter() {
+	  return taskCompletedAfter;
+  }
+  
+  public void setTaskCompletedAfter(Date taskCompletedAfter) {
+	  this.taskCompletedAfter = taskCompletedAfter;
+  }
+  
+  public Date getTaskCompletedBefore() {
+	  return taskCompletedBefore;
+  }
+  
+  public void setTaskCompletedBefore(Date taskCompletedBefore) {
+	  this.taskCompletedBefore = taskCompletedBefore;
+  }
+  
+  public Date getTaskCompletedOn() {
+	  return taskCompletedOn;
+  }
+  
+  public void setTaskCompletedOn(Date taskCompletedOn) {
+	  this.taskCompletedOn = taskCompletedOn;
+  }
+  
+  public Date getTaskCreatedAfter() {
+	  return taskCreatedAfter;
+  }
+  
+  public void setTaskCreatedBefore(Date taskCreatedBefore) {
+	  this.taskCreatedBefore = taskCreatedBefore;
+  }
+  
+  public Date getTaskCreatedBefore() {
+	  return taskCreatedBefore;
   }
 
   public Boolean getIncludeTaskLocalVariables() {
@@ -307,4 +415,6 @@ public class HistoricTaskInstanceQueryRequest {
   public void setProcessVariables(List<QueryVariable> processVariables) {
     this.processVariables = processVariables;
   }
+  
+  
 }

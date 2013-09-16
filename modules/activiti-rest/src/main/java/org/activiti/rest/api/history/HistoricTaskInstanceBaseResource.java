@@ -67,14 +67,23 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
     if (queryRequest.getProcessBusinessKey() != null) {
       query.processInstanceBusinessKey(queryRequest.getProcessBusinessKey());
     }
+    if (queryRequest.getProcessBusinessKeyLike() != null) {
+      query.processInstanceBusinessKeyLike(queryRequest.getProcessBusinessKeyLike());
+    }
     if (queryRequest.getProcessDefinitionKey() != null) {
       query.processDefinitionKey(queryRequest.getProcessDefinitionKey());
+    }
+    if (queryRequest.getProcessDefinitionKeyLike() != null) {
+    	query.processDefinitionKeyLike(queryRequest.getProcessDefinitionKeyLike());
     }
     if (queryRequest.getProcessDefinitionId() != null) {
       query.processDefinitionId(queryRequest.getProcessDefinitionId());
     }
     if (queryRequest.getProcessDefinitionName() != null) {
       query.processDefinitionName(queryRequest.getProcessDefinitionName());
+    }
+    if (queryRequest.getProcessDefinitionNameLike() != null) {
+    	query.processDefinitionNameLike(queryRequest.getProcessDefinitionNameLike());
     }
     if (queryRequest.getExecutionId() != null) {
       query.executionId(queryRequest.getExecutionId());
@@ -93,6 +102,9 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
     }
     if (queryRequest.getTaskDefinitionKey() != null) {
       query.taskDefinitionKey(queryRequest.getTaskDefinitionKey());
+    }
+    if (queryRequest.getTaskDefinitionKeyLike() != null) {
+    	query.taskDefinitionKeyLike(queryRequest.getTaskDefinitionKeyLike());
     }
     if (queryRequest.getTaskDeleteReason() != null) {
       query.taskDeleteReason(queryRequest.getTaskDeleteReason());
@@ -117,6 +129,15 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
     }
     if (queryRequest.getTaskPriority() != null) {
       query.taskPriority(queryRequest.getTaskPriority());
+    }
+    if (queryRequest.getTaskMinPriority() != null) {
+    	query.taskMinPriority(queryRequest.getTaskMinPriority());
+    }
+    if (queryRequest.getTaskMaxPriority() != null) {
+    	query.taskMaxPriority(queryRequest.getTaskMaxPriority());
+    }
+    if (queryRequest.getTaskPriority() != null) {
+    	query.taskPriority(queryRequest.getTaskPriority());
     }
     if (queryRequest.getFinished() != null) {
       if (queryRequest.getFinished()) {
@@ -144,8 +165,35 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
     if (queryRequest.getDueDateBefore() != null) {
       query.taskDueBefore(queryRequest.getDueDateBefore());
     }
+    if (queryRequest.getWithoutDueDate() != null && queryRequest.getWithoutDueDate()) {
+      query.withoutTaskDueDate();
+    }
     if (queryRequest.getTaskCreatedOn() != null) {
       query.taskCreatedOn(queryRequest.getTaskCreatedOn());
+    }
+    if (queryRequest.getTaskCreatedBefore() != null) {
+      query.taskCreatedBefore(queryRequest.getTaskCreatedBefore());
+    }
+    if (queryRequest.getTaskCreatedAfter() != null) {
+      query.taskCreatedAfter(queryRequest.getTaskCreatedAfter());
+    }
+    if (queryRequest.getTaskCreatedOn() != null) {
+      query.taskCreatedOn(queryRequest.getTaskCreatedOn());
+    }
+    if (queryRequest.getTaskCreatedBefore() != null) {
+      query.taskCreatedBefore(queryRequest.getTaskCreatedBefore());
+    }
+    if (queryRequest.getTaskCreatedAfter() != null) {
+      query.taskCreatedAfter(queryRequest.getTaskCreatedAfter());
+    }
+    if (queryRequest.getTaskCompletedOn() != null) {
+      query.taskCompletedOn(queryRequest.getTaskCompletedOn());
+    }
+    if (queryRequest.getTaskCompletedBefore() != null) {
+      query.taskCompletedBefore(queryRequest.getTaskCompletedBefore());
+    }
+    if (queryRequest.getTaskCompletedAfter() != null) {
+      query.taskCompletedAfter(queryRequest.getTaskCompletedAfter());
     }
     if (queryRequest.getIncludeTaskLocalVariables() != null) {
       if (queryRequest.getIncludeTaskLocalVariables()) {
@@ -187,12 +235,59 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
         throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is not supported.");
       }
 
-      switch (variable.getVariableOperation()) {
-
+      switch(variable.getVariableOperation()) {
+      
       case EQUALS:
-        taskInstanceQuery.taskVariableValueEquals(variable.getName(), actualValue);
+        if(nameLess) {
+        	taskInstanceQuery.taskVariableValueEquals(actualValue);
+        } else {
+        	taskInstanceQuery.taskVariableValueEquals(variable.getName(), actualValue);
+        }
         break;
-
+        
+      case EQUALS_IGNORE_CASE:
+        if(actualValue instanceof String) {
+        	taskInstanceQuery.taskVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+        }
+        break;
+        
+      case NOT_EQUALS:
+      	taskInstanceQuery.taskVariableValueNotEquals(variable.getName(), actualValue);
+        break;
+        
+      case NOT_EQUALS_IGNORE_CASE:
+        if(actualValue instanceof String) {
+        	taskInstanceQuery.taskVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+        }
+        break;
+        
+      case GREATER_THAN:
+      	taskInstanceQuery.taskVariableValueGreaterThan(variable.getName(), actualValue);
+      	break;
+      	
+      case GREATER_THAN_OR_EQUALS:
+      	taskInstanceQuery.taskVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
+      	break;
+      	
+      case LESS_THAN:
+      	taskInstanceQuery.taskVariableValueLessThan(variable.getName(), actualValue);
+      	break;
+      	
+      case LESS_THAN_OR_EQUALS:
+      	taskInstanceQuery.taskVariableValueLessThanOrEqual(variable.getName(), actualValue);
+      	break;
+      	
+      case LIKE:
+      	if(actualValue instanceof String) {
+      		taskInstanceQuery.taskVariableValueLike(variable.getName(), (String) actualValue);
+      	} else {
+      		throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
+      	}
+      	break;
       default:
         throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
@@ -219,12 +314,55 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
         throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is not supported.");
       }
 
-      switch (variable.getVariableOperation()) {
-
+      switch(variable.getVariableOperation()) {
+      
       case EQUALS:
         taskInstanceQuery.processVariableValueEquals(variable.getName(), actualValue);
         break;
-
+        
+      case EQUALS_IGNORE_CASE:
+        if(actualValue instanceof String) {
+        	taskInstanceQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+        }
+        break;
+        
+      case NOT_EQUALS:
+      	taskInstanceQuery.processVariableValueNotEquals(variable.getName(), actualValue);
+        break;
+        
+      case NOT_EQUALS_IGNORE_CASE:
+        if(actualValue instanceof String) {
+        	taskInstanceQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+        }
+        break;
+        
+      case GREATER_THAN:
+      	taskInstanceQuery.processVariableValueGreaterThan(variable.getName(), actualValue);
+      	break;
+      	
+      case GREATER_THAN_OR_EQUALS:
+      	taskInstanceQuery.processVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
+      	break;
+      	
+      case LESS_THAN:
+      	taskInstanceQuery.processVariableValueLessThan(variable.getName(), actualValue);
+      	break;
+      	
+      case LESS_THAN_OR_EQUALS:
+      	taskInstanceQuery.processVariableValueLessThanOrEqual(variable.getName(), actualValue);
+      	break;
+      	
+      case LIKE:
+      	if(actualValue instanceof String) {
+      		taskInstanceQuery.processVariableValueLike(variable.getName(), (String) actualValue);
+      	} else {
+      		throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
+      	}
+      	break;
       default:
         throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
