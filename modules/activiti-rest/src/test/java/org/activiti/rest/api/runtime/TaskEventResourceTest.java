@@ -146,4 +146,37 @@ public class TaskEventResourceTest extends BaseRestTestCase {
       }
     }
   }
+  
+  /**
+   * Test delete event for a task.
+   * DELETE runtime/tasks/{taskId}/events/{eventId}
+   */
+  public void testDeleteEvent() throws Exception {
+    try {
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      taskService.setAssignee(task.getId(), "kermit");
+      taskService.addUserIdentityLink(task.getId(), "gonzo", "someType");
+
+      List<Event> events = taskService.getTaskEvents(task.getId());
+      assertEquals(2, events.size());
+      for (Event event : events) {
+        ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
+                RestUrls.URL_TASK_EVENT, task.getId(), event.getId()));
+        
+        client.delete();
+        assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+      }
+      
+      events = taskService.getTaskEvents(task.getId());
+      assertEquals(0, events.size());
+      
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for(Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
+    }
+  }
 }

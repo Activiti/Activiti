@@ -16,31 +16,29 @@ package org.activiti.rest.api.runtime.task;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.task.Event;
+import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestResponseFactory;
-import org.activiti.rest.api.engine.EventResponse;
 import org.activiti.rest.application.ActivitiRestServicesApplication;
 import org.restlet.resource.Get;
 
 
 /**
- * @author Frederik Heremans
+ * @author Tijs Rademakers
  */
-public class TaskEventCollectionResource extends TaskBaseResource {
+public class TaskSubTaskCollectionResource extends TaskBaseResource {
 
   @Get
-  public List<EventResponse> getEvents() {
+  public List<TaskResponse> getSubTasks() {
     if(!authenticate())
       return null;
     
-    List<EventResponse> result = new ArrayList<EventResponse>();
+    List<TaskResponse> result = new ArrayList<TaskResponse>();
     RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    HistoricTaskInstance task = getHistoricTaskFromRequest();
+    Task task = getTaskFromRequest();
     
-    for(Event event : ActivitiUtil.getTaskService().getTaskEvents(task.getId())) {
-      result.add(responseFactory.createEventResponse(this, event));
+    for(Task taskObject : ActivitiUtil.getTaskService().getSubTasks(task.getId())) {
+      result.add(responseFactory.createTaskResponse(this, taskObject));
     }
     
     return result;

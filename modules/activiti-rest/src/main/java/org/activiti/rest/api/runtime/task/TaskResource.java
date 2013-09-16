@@ -38,7 +38,7 @@ public class TaskResource extends TaskBaseResource {
   public TaskResponse getTask() {
     if(!authenticate()) { return null; }
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createTaskReponse(this, getTaskFromRequest());
+            .createTaskResponse(this, getTaskFromRequest());
   }
   
   @Put
@@ -61,7 +61,7 @@ public class TaskResource extends TaskBaseResource {
     task = ActivitiUtil.getTaskService().createTaskQuery().taskId(task.getId()).singleResult();
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createTaskReponse(this, task);
+            .createTaskResponse(this, task);
   }
   
   @Post

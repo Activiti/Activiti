@@ -112,7 +112,7 @@ public class RestResponseFactory {
     initializeVariableConverters();
   }
   
-  public TaskResponse createTaskReponse(SecuredResource securedResource, Task task) {
+  public TaskResponse createTaskResponse(SecuredResource securedResource, Task task) {
     TaskResponse response = new TaskResponse(task);
     response.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK, task.getId()));
 

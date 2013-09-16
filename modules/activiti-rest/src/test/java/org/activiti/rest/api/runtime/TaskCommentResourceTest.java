@@ -15,6 +15,7 @@ package org.activiti.rest.api.runtime;
 
 import java.util.List;
 
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.BaseRestTestCase;
@@ -218,6 +219,45 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       List<Task> tasks = taskService.createTaskQuery().list();
       for(Task task : tasks) {
         taskService.deleteTask(task.getId(), true);
+      }
+    }
+  }
+  
+  /**
+   * Test getting a comment for a completed task.
+   * GET runtime/tasks/{taskId}/comments/{commentId}
+   */
+  public void testGetCommentWithCompletedTask() throws Exception {
+    try {
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+
+      // Add a comment as "kermit"
+      identityService.setAuthenticatedUserId("kermit");
+      Comment comment = taskService.addComment(task.getId(), null, "This is a comment...");
+      identityService.setAuthenticatedUserId(null);
+      
+      taskService.complete(task.getId());
+      
+      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
+              RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
+      
+      Representation response = client.get();
+      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      
+      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      assertNotNull(responseNode);
+      
+      assertEquals("kermit", responseNode.get("author").getTextValue());
+      assertEquals("This is a comment...", responseNode.get("message").getTextValue());
+      assertEquals(comment.getId(), responseNode.get("id").getTextValue());
+      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().list();
+      for(HistoricTaskInstance task : tasks) {
+        historyService.deleteHistoricTaskInstance(task.getId());
       }
     }
   }

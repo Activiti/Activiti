@@ -242,7 +242,7 @@
         "name" : "Required",
         "name_de" : "Typ",
         "type" : "Choice",
-        "value" : "",
+        "value" : "No",
         "width" : 100,
         "optional" : false,
         "items" : [ {
@@ -259,7 +259,7 @@
         "name" : "Readable",
         "name_de" : "Typ",
         "type" : "Choice",
-        "value" : "",
+        "value" : "Yes",
         "width" : 100,
         "optional" : false,
         "items" : [ {
@@ -276,7 +276,7 @@
         "name" : "Writeable",
         "name_de" : "Typ",
         "type" : "Choice",
-        "value" : "",
+        "value" : "Yes",
         "width" : 100,
         "optional" : false,
         "items" : [ {

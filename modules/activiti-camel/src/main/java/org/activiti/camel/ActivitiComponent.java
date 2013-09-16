@@ -46,7 +46,7 @@ public class ActivitiComponent extends DefaultComponent {
   }
 
   private <T> T getByType(CamelContext ctx, Class<T> kls) {
-    Map<String, T> looked = ctx.getRegistry().lookupByType(kls);
+    Map<String, T> looked = ctx.getRegistry().findByTypeWithName(kls);
     if (looked.isEmpty()) {
       return null;
     }

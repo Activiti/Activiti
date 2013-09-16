@@ -102,6 +102,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean useSSL = false;
   protected boolean useTLS = false;
   protected String mailServerDefaultFrom = "activiti@localhost";
+  protected String mailSessionJndi;
 
   protected String databaseType;
   protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_FALSE;
@@ -258,7 +259,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     this.mailServerPassword = mailServerPassword;
     return this;
   }
+
+  public String getMailSesionJndi() {
+    return mailSessionJndi;
+  }
   
+  public ProcessEngineConfiguration setMailSessionJndi(String mailSessionJndi) {
+    this.mailSessionJndi = mailSessionJndi;
+    return this;
+  }
+
   public int getMailServerPort() {
     return mailServerPort;
   }

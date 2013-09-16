@@ -15,6 +15,7 @@ package org.activiti.rest.api.runtime.task;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
@@ -36,7 +37,7 @@ public class TaskAttachmentResource extends TaskBaseResource {
     if(!authenticate())
       return null;
     
-    Task task = getTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest();
     
     String attachmentId = getAttribute("attachmentId");
     if(attachmentId == null) {
@@ -53,7 +54,7 @@ public class TaskAttachmentResource extends TaskBaseResource {
   }
   
   @Delete
-  public void delegteAttachment() {
+  public void deleteAttachment() {
     if(!authenticate())
       return;
     
