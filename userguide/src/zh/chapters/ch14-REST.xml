@@ -9384,15 +9384,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 
 
 <section>
-    <title>Jobs</title>
+    <title>作业</title>
     <section>
-      <title>Get a single job</title>
+      <title>获取一个作业</title>
         <para>
           <programlisting>GET management/jobs/{jobId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Get a single job - URL参数</title>
+              <title>获取一个作业 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9407,7 +9407,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>jobId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the job to get.</entry>
+                    <entry>获取的作业id。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9430,7 +9430,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "dueDate":"2013-06-04T22:05:05.474+0000"
 }</programlisting>
           <table>
-              <title>Get a single job - 响应码</title>
+              <title>获取一个作业 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9441,11 +9441,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the job exists and is returned.</entry>
+                    <entry>表示作业存在，并成功返回。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested job does not exist.</entry>
+                    <entry>表示作业不存在。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9454,13 +9454,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>Delete a job</title>
+      <title>删除作业</title>
         <para>
           <programlisting>DELETE management/jobs/{jobId}</programlisting>
         </para>
         <para>
             <table>
-              <title>Delete a job - URL参数</title>
+              <title>删除作业 - URL参数</title>
               <tgroup cols='3'>
                 <thead>
                   <row>
@@ -9475,7 +9475,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                     <entry>jobId</entry>
                     <entry>是</entry>
                     <entry>String</entry>
-                    <entry>The id of the job to delete.</entry>
+                    <entry>期望删除的作业id。.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9483,7 +9483,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
         <para>
           <table>
-              <title>Delete a job - 响应码</title>
+              <title>删除作业 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9494,11 +9494,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the job was found and has been deleted. 响应体为空。</entry>
+                    <entry>表示找到了作业，并成功删除。响应体为空。</entry>
                   </row>
                    <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested job was not found.</entry>
+                    <entry>表示找不到作业。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9507,7 +9507,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   </section>
 
   <section>
-      <title>Execute a single job</title>
+      <title>执行作业</title>
         <para>
           <programlisting>PUT management/jobs/{jobId}</programlisting>
         </para>
@@ -9518,19 +9518,19 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   "action" : "execute"
 }</programlisting>
         <table>
-              <title>Execute a single job - 请求的JSON参数</title>
+              <title>执行作业 - 请求的JSON参数</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
-                    <entry>Parameter</entry>
-                    <entry>Description</entry>
-                    <entry>Required</entry>
+                    <entry>参数</entry>
+                    <entry>描述</entry>
+                    <entry>是否必填</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>action</entry>
-                    <entry>Action to perform. Only <literal>execute</literal> is supported.</entry>
+                    <entry>执行的操作。只支持<literal>execute</literal>。</entry>
                     <entry>是</entry>
                   </row>
                 </tbody>
@@ -9539,7 +9539,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
         <para>
           <table>
-              <title>Execute a single job - 响应码</title>
+              <title>执行作业 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9550,15 +9550,15 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>204</entry>
-                    <entry>Indicates the job was executed. 响应体为空。</entry>
+                    <entry>表示成功执行了操作。响应体为空。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested job was not found.</entry>
+                    <entry>表示找不到作业。</entry>
                   </row>
                   <row>
                     <entry>500</entry>
-                    <entry>Indicates the an exception occured while executing the job. The status-description contains additional detail about the error. The full error-stacktrace can be fetched later on if needed.</entry>
+                    <entry>表示执行作业时出现了异常。状态描述包含了错误的详细信息。如果需要可以后续获取错误堆栈。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9567,25 +9567,25 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
  </section>
 
  <section>
-      <title>Get the exception stacktrace for a job</title>
+      <title>获得作业的异常堆栈</title>
         <para>
           <programlisting>GET management/jobs/{jobId}/exception-stracktrace</programlisting>
         </para>
         <para>
         <table>
-              <title>Get the exception stacktrace for a job - URL参数</title>
+              <title>获得作业的异常堆栈 - URL参数</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
-                    <entry>Parameter</entry>
-                    <entry>Description</entry>
-                    <entry>Required</entry>
+                    <entry>参数</entry>
+                    <entry>描述</entry>
+                    <entry>是否必填</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>jobId</entry>
-                    <entry>Id of the job to get the stacktrace for.</entry>
+                    <entry>获取堆栈的作业id。</entry>
                     <entry>是</entry>
                   </row>
                 </tbody>
@@ -9594,7 +9594,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         </para>
         <para>
           <table>
-              <title>Get the exception stacktrace for a job - 响应码</title>
+              <title>获得作业的异常堆栈 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9605,11 +9605,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the requested job was not found and the stacktrace has been returned. The response contains the raw stacktrace and always has a Content-type of <literal>text/plain</literal>.</entry>
+                    <entry>表示找到了作业，并返回了堆栈。响应包含了原始堆栈，Content-Type永远是<literal>text/plain</literal>。</entry>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested job was not found or the job doesn't have an exception stacktrace. Status-description contains additional information about the error.</entry>
+                    <entry>表示找不到作业，或作业不包含错误堆栈。状态描述包含错误的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9618,75 +9618,75 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
  </section>
 
  <section>
-      <title>Get a list of jobs</title>
+      <title>获得作业列表</title>
         <para>
           <programlisting>GET management/jobs</programlisting>
         </para>
         <para>
         <table>
-              <title>Get a list of jobs - URL参数</title>
+              <title>获得作业列表 - URL参数</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
-                    <entry>Parameter</entry>
-                    <entry>Description</entry>
-                    <entry>Type</entry>
+                    <entry>参数</entry>
+                    <entry>描述</entry>
+                    <entry>类型</entry>
                   </row>
                 </thead>
                 <tbody>
                   <row>
                     <entry>id</entry>
-                    <entry>Only return job with the given id</entry>
+                    <entry>只返回指定id的作业。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>processInstanceId</entry>
-                    <entry>Only return jobs part of a process with the given id</entry>
+                    <entry>只返回指定id流程一部分的作业。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>executionId</entry>
-                    <entry>Only return jobs part of an execution with the given id</entry>
+                    <entry>只返回指定id分支一部分的作业。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>processDefinitionId</entry>
-                    <entry>Only return jobs with the given process definition id</entry>
+                    <entry>只返回指定流程定义id的作业。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
                     <entry>withRetriesLeft</entry>
-                    <entry>If <literal>true</literal>, only return jobs with retries left. If false, this parameter is ignored.</entry>
+                    <entry>如果为 <literal>true</literal>，只返回尝试剩下的。如果为false，会忽略此参数。</entry>
                     <entry>Boolean</entry>
                   </row>
                   <row>
                     <entry>executable</entry>
-                    <entry>If <literal>true</literal>, only return jobs which are executable. If false, this parameter is ignored.</entry>
+                    <entry>如果为 <literal>true</literal>，只返回可执行的作业。如果为false，会忽略此参数。</entry>
                     <entry>Boolean</entry>
                   </row>
                   <row>
                     <entry>timersOnly</entry>
-                    <entry>If <literal>true</literal>, only return jobs which are timers. If false, this parameter is ignored. Cannot be used toghether with <literal>'messagesOnly'</literal>.</entry>
+                    <entry>如果为 <literal>true</literal>，只返回类型为定时器的作业。如果为false，会忽略此参数。不能与<literal>'messagesOnly'</literal>一起使用。</entry>
                     <entry>Boolean</entry>
                   </row>
                   <row>
                     <entry>messagesOnly</entry>
-                    <entry>If <literal>true</literal>, only return jobs which are messages. If false, this parameter is ignored. Cannot be used toghether with <literal>'timersOnly'</literal></entry>
+                    <entry>如果为 <literal>true</literal>，只返回类型为消息的作业。如果为false，会忽略此参数。不能与<literal>'timersOnly'</literal>一起使用。</entry>
                     <entry>Boolean</entry>
                   </row>
                   <row>
                     <entry>withException</entry>
-                    <entry>If <literal>true</literal>, only return jobs for which an exception occured while executing it. If false, this parameter is ignored.</entry>
+                    <entry>如果为 <literal>true</literal>，只返回执行时出现了异常的作业。如果为false，会忽略此参数。</entry>
                     <entry>Boolean</entry>
                   </row>
                   <row>
                     <entry>dueBefore</entry>
-                    <entry>Only return jobs which are due to be executed before the given date. Jobs without duedate are never returned using this parameter.</entry>
+                    <entry>只返回在指定时间前到期的作业。如果使用了这个参数，就不会返回没有设置持续时间的作业。</entry>
                     <entry>Date</entry>
                   </row>
                   <row>
                     <entry>dueAfter</entry>
-                    <entry>Only return jobs which are due to be executed after the given date. Jobs without duedate are never returned using this parameter.</entry>
+                    <entry>只返回在指定时间后到期的作业。如果使用了这个参数，就不会返回没有设置持续时间的作业。</entry>
                     <entry>Date</entry>
                   </row>
                   <row>
@@ -9696,7 +9696,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   </row>
                   <row>
                     <entry>sort</entry>
-                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>dueDate</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal> or <literal>retries</literal>.</entry>
+                    <entry>对结果进行排序的字段，可以是 <literal>id</literal>, <literal>dueDate</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal> 或 <literal>retries</literal>其中之一。</entry>
                     <entry>String</entry>
                   </row>
                   <row>
@@ -9734,7 +9734,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
    "size":2
 }</programlisting>
           <table>
-              <title>Get a list of jobs - 响应码</title>
+              <title>获得作业列表 - 响应码</title>
               <tgroup cols='2'>
                 <thead>
                   <row>
@@ -9745,11 +9745,11 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the requested jobs were returned.</entry>
+                    <entry>表示返回了作业。</entry>
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates an illegal value has been used in a url query parameter or the both <literal>'messagesOnly'</literal> and <literal>'timersOnly'</literal> are used as parameters. Status description contains additional details about the error.</entry>
+                    <entry>表示在url参数中使用了非法的值，或参数中同时使用了<literal>'messagesOnly'</literal> 和 <literal>'timersOnly'</literal>。状态描述包含了错误的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9835,9 +9835,9 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tgroup cols='2'>
                 <thead>
                   <row>
-                    <entry>Parameter</entry>
-                    <entry>Description</entry>
-                    <entry>Type</entry>
+                    <entry>参数</entry>
+                    <entry>描述</entry>
+                    <entry>类型</entry>
                   </row>
                 </thead>
                 <tbody>
@@ -10140,7 +10140,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   </row>
                   <row>
                     <entry>404</entry>
-                    <entry>Indicates the requested user was not found or the user does not have a profile picture. Status-description contains additional information about the error.</entry>
+                    <entry>Indicates the requested user was not found or the user does not have a profile picture. 状态描述包含错误的详细信息。</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -10628,9 +10628,9 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
               <tgroup cols='2'>
                 <thead>
                   <row>
-                    <entry>Parameter</entry>
-                    <entry>Description</entry>
-                    <entry>Type</entry>
+                    <entry>参数</entry>
+                    <entry>描述</entry>
+                    <entry>类型</entry>
                   </row>
                 </thead>
                 <tbody>
