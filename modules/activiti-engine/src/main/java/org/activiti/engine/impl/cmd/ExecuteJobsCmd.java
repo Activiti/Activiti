@@ -14,6 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.cfg.TransactionState;
@@ -68,7 +69,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     
     try {
       job.execute(commandContext);
-    } catch (RuntimeException exception) {
+    } catch (Throwable exception) {
       // When transaction is rolled back, decrement retries
       CommandExecutor commandExecutor = Context
         .getProcessEngineConfiguration()
@@ -78,8 +79,8 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
         TransactionState.ROLLED_BACK, 
         new FailedJobListener(commandExecutor, jobId, exception));
        
-      // throw the original exception to indicate the ExecuteJobCmd failed
-      throw exception;
+      // throw the exception to indicate the ExecuteJobCmd failed
+      throw new ActivitiException("Job " + jobId + " failed", exception);
     } finally {
       if (jobExecutorContext != null) {
         jobExecutorContext.setCurrentJob(null);
