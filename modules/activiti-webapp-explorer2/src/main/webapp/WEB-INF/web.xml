@@ -49,7 +49,7 @@
 		<init-param>
 			<!-- Application class name -->
 			<param-name>org.restlet.application</param-name>
-			<param-value>org.activiti.explorer.rest.application.ExplorerRestApplication</param-value>
+			<param-value>org.activiti.rest.explorer.application.ExplorerRestApplication</param-value>
 		</init-param>
 	</servlet>
 
