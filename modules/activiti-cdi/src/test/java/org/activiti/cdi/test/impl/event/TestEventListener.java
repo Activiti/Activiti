@@ -20,6 +20,7 @@ import javax.enterprise.event.Observes;
 
 import org.activiti.cdi.BusinessProcessEvent;
 import org.activiti.cdi.annotation.event.BusinessProcess;
+import org.activiti.cdi.annotation.event.CreateTask;
 import org.activiti.cdi.annotation.event.EndActivity;
 import org.activiti.cdi.annotation.event.StartActivity;
 import org.activiti.cdi.annotation.event.TakeTransition;
@@ -66,6 +67,11 @@ public class TestEventListener {
   private int startActivityService1 = 0;
   private int endActivityService1 = 0;
   private int takeTransitiont1 = 0;
+  private int assignTask1 = 0;
+  private int completeTask1 = 0;
+  private int completeTask2 = 0;
+  private int createTask1 = 0;
+  private int createTask2 = 0;
     
   public void onStartActivityService1(@Observes @StartActivity("service1") BusinessProcessEvent businessProcessEvent) {    
     startActivityService1 += 1;
@@ -78,7 +84,27 @@ public class TestEventListener {
   public void takeTransitiont1(@Observes @TakeTransition("t1") BusinessProcessEvent businessProcessEvent) {
     takeTransitiont1 += 1;    
   }
-    
+  
+  public void onCreateTask1(@Observes @CreateTask("usertask1") BusinessProcessEvent businessProcessEvent) {
+    createTask1 += 1;
+  }
+  
+  public void onCreateTask2(@Observes @CreateTask("usertask2") BusinessProcessEvent businessProcessEvent) {
+    createTask2 += 1;
+  }
+  
+  public void onAssignTask1(@Observes @CreateTask("usertask1") BusinessProcessEvent businessProcessEvent) {
+    assignTask1 += 1;
+  }
+  
+  public void onCompleteTask1(@Observes @CreateTask("usertask1") BusinessProcessEvent businessProcessEvent) {
+    completeTask1 += 1;
+  }
+  
+  public void onCompleteTask2(@Observes @CreateTask("usertask2") BusinessProcessEvent businessProcessEvent) {
+    completeTask2 += 1;
+  }
+  
   public int getEndActivityService1() {
     return endActivityService1;
   }
@@ -89,5 +115,26 @@ public class TestEventListener {
     
   public int getTakeTransitiont1() {
     return takeTransitiont1;
+  }
+  
+  public int getCreateTask1() {
+    return createTask1;
+  }
+  
+  public int getAssignTask1() {
+    return assignTask1;
+  }
+  
+  public int getCompleteTask1() {
+    return completeTask1;
+  }
+  
+  
+  public int getCompleteTask2() {
+    return completeTask2;
+  }
+  
+  public int getCreateTask2() {
+    return createTask2;
   }
 }
