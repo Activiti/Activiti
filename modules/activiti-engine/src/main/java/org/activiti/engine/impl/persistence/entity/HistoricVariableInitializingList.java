@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.variable.CacheableVariable;
+import org.activiti.engine.impl.variable.JPAEntityVariableType;
 
 
 /**
@@ -31,25 +33,25 @@ public class HistoricVariableInitializingList extends ArrayList<HistoricVariable
   @Override
   public void add(int index, HistoricVariableInstanceEntity e) {
     super.add(index, e);
-    initializeBinaryVariable(e);
+    initializeVariable(e);
   }
   
   @Override
   public boolean add(HistoricVariableInstanceEntity e) {
-    initializeBinaryVariable(e);
+    initializeVariable(e);
     return super.add(e);
   }
   @Override
   public boolean addAll(Collection< ? extends HistoricVariableInstanceEntity> c) {
     for(HistoricVariableInstanceEntity e : c) {
-      initializeBinaryVariable(e);
+      initializeVariable(e);
     }
     return super.addAll(c);
   }
   @Override
   public boolean addAll(int index, Collection< ? extends HistoricVariableInstanceEntity> c) {
     for(HistoricVariableInstanceEntity e : c) {
-      initializeBinaryVariable(e);
+      initializeVariable(e);
     }
     return super.addAll(index, c);
   }
@@ -58,10 +60,14 @@ public class HistoricVariableInitializingList extends ArrayList<HistoricVariable
    * If the passed {@link HistoricVariableInstanceEntity} is a binary variable and the command-context is active,
    * the variable value is fetched to ensure the byte-array is populated.
    */
-  @SuppressWarnings("deprecation")
-  protected void initializeBinaryVariable(HistoricVariableInstanceEntity e) {
-    if(Context.getCommandContext() != null && e != null && e.getByteArrayValueId() != null) {
+  protected void initializeVariable(HistoricVariableInstanceEntity e) {
+    if(Context.getCommandContext() != null && e != null && e.getVariableType() != null) {
       e.getValue();
+      
+      // make sure JPA entities are cached for later retrieval
+      if (JPAEntityVariableType.TYPE_NAME.equals(e.getVariableType().getTypeName())) {
+        ((CacheableVariable) e.getVariableType()).setForceCacheable(true);
+      }
     }
   }
 }

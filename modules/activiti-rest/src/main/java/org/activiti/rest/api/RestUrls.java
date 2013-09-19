@@ -155,7 +155,7 @@ public final class RestUrls {
   public static final String[] URL_MODEL_SOURCE_EXTRA = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}", SEGMENT_SOURCE_EXTRA};
   
   /**
-   * URL template for task collection: <i>runtime/tasks/{0:taskId}</i>
+   * URL template for task collection: <i>runtime/tasks</i>
    */
   public static final String[] URL_TASK_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE};
   

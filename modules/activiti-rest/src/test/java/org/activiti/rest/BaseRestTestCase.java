@@ -122,7 +122,7 @@ public class BaseRestTestCase extends PvmTestCase {
       
       super.runBare();
 
-    }  catch (AssertionFailedError e) {
+    } catch (AssertionFailedError e) {
       log.error(EMPTY_LINE);
       log.error("ASSERTION FAILED: {}", e, e);
       exception = e;
