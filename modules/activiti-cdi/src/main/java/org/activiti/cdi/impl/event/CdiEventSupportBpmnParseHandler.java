@@ -41,6 +41,8 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.cdi.BusinessProcessEventType;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
@@ -96,6 +98,11 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
       transition.addExecutionListener(new CdiExecutionListener(transition.getId()));
     } else {
       ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(element.getId());
+      if (element instanceof UserTask) {
+        addCreateListener(activity);
+        addAssignListener(activity);
+        addCompleteListener(activity);
+      }
       if (activity != null) {
         addStartEventListener(activity);
         addEndEventListener(activity);
@@ -103,6 +110,21 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
     }
   }
   
+  private void addCompleteListener(ActivityImpl activity) {
+    UserTaskActivityBehavior behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_COMPLETE, new CdiTaskListener(activity.getId(), BusinessProcessEventType.COMPLETE_TASK));
+  }
+
+  private void addAssignListener(ActivityImpl activity) {
+    UserTaskActivityBehavior behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, new CdiTaskListener(activity.getId(), BusinessProcessEventType.ASSIGN_TASK));
+  }
+
+  private void addCreateListener(ActivityImpl activity) {
+    UserTaskActivityBehavior behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+    behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_CREATE, new CdiTaskListener(activity.getId(), BusinessProcessEventType.CREATE_TASK));
+  }
+
   protected void addEndEventListener(ActivityImpl activity) {
     activity.addExecutionListener(ExecutionListener.EVENTNAME_END, new CdiExecutionListener(activity.getId(), BusinessProcessEventType.END_ACTIVITY));
   }
