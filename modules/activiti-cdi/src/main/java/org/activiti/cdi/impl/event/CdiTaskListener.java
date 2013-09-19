@@ -36,7 +36,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  * Generic {@link TaskListener} publishing events using the cdi event
  * infrastructure.
  * 
- * @author Daniel Meyer
+ * @author Dimitris Mandalidis 
  */
 public class CdiTaskListener implements TaskListener, Serializable {
 
