@@ -180,7 +180,7 @@ org.activiti:activiti-engine:jar:5.12.1
                 <para>
                     <link linkend="configuration">配置章节</link> 会教你如何设置Activiti，
 					如何获得<literal>ProcessEngine</literal>类的实例，
-					它是说有Activiti引擎功能的中心入口。
+					它是所有Activiti引擎功能的中心入口。
                 </para>
             </listitem>
             <listitem>
