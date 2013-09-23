@@ -438,7 +438,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
   &lt;/bean&gt;
 
 &lt;/beans&gt;</programlisting>
-     <para> <emphasis role="bold">依然，把对应的数据库驱动放到classpath里。</emphasis>
+     <para> <emphasis role="bold">然后，把对应的数据库驱动放到classpath里。</emphasis>
      升级应用的Activiti依赖。启动一个新版本的Activiti
      指向包含旧版本的数据库。将<literal>databaseSchemaUpdate</literal>设置为<literal>true</literal>，
      Activiti会自动将数据库表升级到新版本，
