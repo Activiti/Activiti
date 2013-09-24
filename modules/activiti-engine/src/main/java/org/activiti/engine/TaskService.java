@@ -134,6 +134,13 @@ public interface TaskService {
   void claim(String taskId, String userId);
   
   /**
+   * A shortcut to {@link #claim} with null user in order to unclaim the task
+   * @param taskId task to unclaim, cannot be null.
+   * @throws ActivitiObjectNotFoundException when the task doesn't exist. 
+   */
+  void unclaim(String taskId);
+  
+  /**
    * Called when the task is successfully executed.
    * @param taskId the id of the task to complete, cannot be null.
    * @throws ActivitiObjectNotFoundException when no task exists with the given id.
