@@ -12,10 +12,13 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.ArrayList;
+
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 
 /**
  * Allows to create simple workflows through an easy, fluent Java API.
@@ -129,5 +132,37 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
   public WorkflowDefinition startFormdefinition(FormDefinition startFormDefinition) {
   	this.startFormDefinition = startFormDefinition;
   	return this;
+  }
+  
+  @Override
+  public StepDefinition clone() {
+    WorkflowDefinition clone = new WorkflowDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  @Override
+  public void setValues(StepDefinition otherDefinition) {
+    if(!(otherDefinition instanceof WorkflowDefinition)) {
+      throw new SimpleWorkflowException("An instance of WorkflowDefinition is required to set values");
+    }
+    
+    WorkflowDefinition definition = (WorkflowDefinition) otherDefinition;
+    setDescription(definition.getDescription());
+    setId(definition.getId());
+    setKey(definition.getKey());
+    setName(definition.getName());
+    if (definition.getStartFormDefinition() != null) {
+      setStartFormDefinition(definition.getStartFormDefinition().clone());
+    } else {
+      setStartFormDefinition(null);
+    }
+    
+    steps = new ArrayList<StepDefinition>();
+    if (definition.getSteps() != null && definition.getSteps().size() > 0) {
+      for (StepDefinition stepDefinition : definition.getSteps()) {
+        steps.add(stepDefinition.clone());
+      }
+    }
   }
 }

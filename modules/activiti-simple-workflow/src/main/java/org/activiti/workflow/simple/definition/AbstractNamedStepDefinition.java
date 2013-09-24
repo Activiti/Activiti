@@ -16,6 +16,7 @@ package org.activiti.workflow.simple.definition;
  * Superclass for all {@link StepDefinition} classes that have a name or description.
  * 
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public abstract class AbstractNamedStepDefinition implements StepDefinition {
 
@@ -57,4 +58,8 @@ public abstract class AbstractNamedStepDefinition implements StepDefinition {
   public void setStartsWithPrevious(boolean startsWithPrevious) {
     this.startsWithPrevious = startsWithPrevious;
   }
+  
+  public abstract StepDefinition clone();
+  
+  public abstract void setValues(StepDefinition otherDefinition);
 }

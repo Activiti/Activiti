@@ -29,4 +29,15 @@ public interface StepDefinition extends Serializable {
   String getId();
   
   void setId(String id);
+  
+  /**
+   * Create a clone of this {@link StepDefinition} instance.
+   */
+  public StepDefinition clone();
+  
+  /**
+   * Sets the properties of this {@link StepDefinition} instance based in the
+   * properties present in the given definition. 
+   */
+  public void setValues(StepDefinition otherDefinition);
 }

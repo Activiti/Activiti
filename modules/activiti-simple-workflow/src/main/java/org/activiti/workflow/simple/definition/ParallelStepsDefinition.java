@@ -12,6 +12,8 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.ArrayList;
+
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
@@ -42,4 +44,27 @@ public class ParallelStepsDefinition extends AbstractStepDefinitionContainer<Par
     return workflowDefinition;
   }
   
+  @Override
+  public StepDefinition clone() {
+    ParallelStepsDefinition clone = new ParallelStepsDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  @Override
+  public void setValues(StepDefinition otherDefinition) {
+    if(!(otherDefinition instanceof ParallelStepsDefinition)) {
+      throw new SimpleWorkflowException("An instance of ParallelStepsDefinition is required to set values");
+    }
+    
+    ParallelStepsDefinition definition = (ParallelStepsDefinition) otherDefinition;
+    setId(definition.getId());
+    
+    steps = new ArrayList<StepDefinition>();
+    if (definition.getSteps() != null && definition.getSteps().size() > 0) {
+      for (StepDefinition stepDefinition : definition.getSteps()) {
+        steps.add(stepDefinition.clone());
+      }
+    }
+  }
 }

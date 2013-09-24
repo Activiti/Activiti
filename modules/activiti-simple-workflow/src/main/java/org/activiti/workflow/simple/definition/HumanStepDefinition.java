@@ -12,10 +12,12 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.workflow.simple.definition.HumanStepAssignment.HumanStepAssignmentType;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
@@ -86,5 +88,37 @@ public class HumanStepDefinition extends AbstractNamedStepDefinition {
   		assignment = new HumanStepAssignment();
   	}
   	return assignment;
+  }
+
+  @Override
+  public StepDefinition clone() {
+    HumanStepDefinition clone = new HumanStepDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  @Override
+  public void setValues(StepDefinition otherDefinition) {
+    if(!(otherDefinition instanceof HumanStepDefinition)) {
+      throw new SimpleWorkflowException("An instance of HumanStepDefinition is required to set values");
+    }
+    
+    HumanStepDefinition stepDefinition = (HumanStepDefinition) otherDefinition;
+    setAssignee(stepDefinition.getAssignee());
+    if (stepDefinition.getCandidateGroups() != null && stepDefinition.getCandidateGroups().size() > 0) {
+      setCandidateGroups(new ArrayList<String>(stepDefinition.getCandidateGroups()));
+    }
+    if (stepDefinition.getCandidateUsers() != null && stepDefinition.getCandidateUsers().size() > 0) {
+      setCandidateUsers(new ArrayList<String>(stepDefinition.getCandidateUsers()));
+    }
+    setDescription(stepDefinition.getDescription());
+    if (stepDefinition.getForm() != null) {
+      setForm(stepDefinition.getForm().clone());
+    } else {
+      setForm(null);
+    }
+    setId(stepDefinition.getId());
+    setName(stepDefinition.getName());
+    setStartsWithPrevious(stepDefinition.isStartsWithPrevious());
   }
 }
