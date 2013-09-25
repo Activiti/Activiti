@@ -1264,7 +1264,7 @@
     "view" : "intermediateevent/signal.catching.svg",
     "icon" : "catching/signal.png",
     "groups" : [ "Boundary Events" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "signalrefdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "signalrefdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
     "type" : "node",
