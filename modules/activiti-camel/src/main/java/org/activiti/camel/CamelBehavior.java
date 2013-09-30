@@ -126,9 +126,9 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
       handleCamelException(exchange);
 
     } else {
-        endpoint.process(exchange);
-        handleCamelException(exchange);
-        execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
+      endpoint.process(exchange);
+      handleCamelException(exchange);
+      execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
     }
   
     performDefaultOutgoingBehavior(execution);
