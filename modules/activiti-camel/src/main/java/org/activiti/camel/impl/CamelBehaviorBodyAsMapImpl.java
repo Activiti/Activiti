@@ -13,40 +13,22 @@
 
 package org.activiti.camel.impl;
 
-import java.util.Map;
-
-import org.activiti.camel.ActivitiComponent;
 import org.activiti.camel.ActivitiEndpoint;
 import org.activiti.camel.CamelBehavior;
-import org.apache.camel.Exchange;
 
 /**
  * This implementation of the CamelBehavior abstract class works by copying variables into Camel using a 
  * Map<String,Object> object in the Camel Exchange body.
  * 
- * @author Ryan Johnston (@rjfsu), Tijs Rademakers
+ * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Saeid Mirzaei
  */
 public class CamelBehaviorBodyAsMapImpl extends CamelBehavior {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Override
-	protected void modifyActivitiComponent(ActivitiComponent component) {
-		//Set the copy method for new endpoints created using this component.
-		component.setCopyVariablesToProperties(false);
-		component.setCopyVariablesToBodyAsMap(true);
-		component.setCopyCamelBodyToBody(false);
-	}
-	
-  @Override
-  protected void copyVariables(Map<String, Object> variables, Exchange exchange, ActivitiEndpoint endpoint) {
-    if (endpoint.isCopyVariablesToProperties()) {
-      copyVariablesToBody(variables, exchange);
-    } else if (endpoint.isCopyVariablesToProperties()) {
-      copyVariablesToProperties(variables, exchange);
-    } else {
-      copyVariablesToBodyAsMap(variables, exchange);
-    }
+  protected void setPropertTargetVariable(ActivitiEndpoint endpoint) {
+    toTargetType = TargetType.BODY_AS_MAP;
   }
 
 }
