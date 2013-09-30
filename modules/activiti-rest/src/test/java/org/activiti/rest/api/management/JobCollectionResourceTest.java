@@ -75,7 +75,7 @@ public class JobCollectionResourceTest extends BaseRestTestCase {
     
     // Fetch using processDefinitionId
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?processDefinitionId=" + processInstance.getProcessDefinitionId();
-    assertResultsPresentInDataResponse(url, timerJob.getId());
+    assertResultsPresentInDataResponse(url, asyncJob.getId(), timerJob.getId());
     
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?processDefinitionId=unexisting";
     assertResultsPresentInDataResponse(url);
