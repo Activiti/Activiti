@@ -16,44 +16,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Saeid Mirzaei
+ * @author Saeid Mirzaei, Tijs Rademakers
  */
 
-public  class CommaSplitter {
-	public static int isInsideExpression(int i, String st) {
-		if ( i>0 && st.substring(0, i-1).indexOf("${") != -1 && i < st.length() && st.indexOf("}", i) != -1)
-			return st.indexOf("}", i);
-		else
-			return -1;		
-	}
-	
-	
-	// split the given spring using commas if they are not inside an expression
-	 public static List<String> splitCommas(String st) {
-	    	List<String> result = new ArrayList<String>();
-	    	int insideOffset=0; 
-	    	int j=0;
-	    	
-	    	boolean shouldContinue;
-	    	do {
-	    	   j = st.indexOf(",", insideOffset);
-	    	   j = j==-1?st.length():j;
-	    	   int isInside = isInsideExpression(j, st);
-	    	   if (isInside != -1) {
-	    		   insideOffset = isInside; 
-	    		   shouldContinue = insideOffset < st.length();
-	    		   continue;
-	    	   }
-	    	   insideOffset=0;    	   
-	    		   
-	    	   String subStr = st.substring(0, j);
-	    	   if (!subStr.isEmpty())
-	    	      result.add(subStr);
-	    	   shouldContinue = j < st.length();
-	    	   if (j < st.length())
-	    	      st = st.substring(j+1);
-	    		
-	    	} while (shouldContinue);	    	
-	    	return result;
-	    }
+public class CommaSplitter {
+
+  // split the given spring using commas if they are not inside an expression
+  public static List<String> splitCommas(String st) {
+    List<String> result = new ArrayList<String>();
+    int offset = 0;
+    
+    boolean inExpression = false;
+    for (int i = 0; i < st.length(); i++) {
+      if (inExpression == false && st.charAt(i) == ',') {
+        if ((i - offset) > 1) {
+          result.add(st.substring(offset, i));
+        }
+        offset = i + 1;
+        
+      } else if ((st.charAt(i) == '$' || st.charAt(i) == '#') && st.charAt(i + 1) == '{') {
+        inExpression = true;
+        
+      } else if (st.charAt(i) == '}') {
+        inExpression = false;
+      }
+    }
+    
+    if ((st.length() - offset) > 1) {
+      result.add(st.substring(offset));
+    }
+    return result;
+  }
 }

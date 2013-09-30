@@ -16,7 +16,7 @@
 		  </documentation>
 		  <potentialOwner>
 		    <resourceAssignmentExpression>
-		      <formalExpression>user(${testBean.twoParametersMethod("param1", "param2")})</formalExpression>
+		      <formalExpression>user(${testBean.twoParametersMethod("param1", "param2")}), ${testBean.returnParamAsGroupMethod("sales")}</formalExpression>
 		    </resourceAssignmentExpression>
 		  </potentialOwner>
 		</userTask>

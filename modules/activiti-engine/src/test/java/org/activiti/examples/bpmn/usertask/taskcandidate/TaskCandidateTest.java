@@ -196,8 +196,8 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 	  params.put("testBean", new TestBean());
 	  
     runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
-     
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("sales").count());
   }
 
 }

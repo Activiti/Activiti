@@ -154,7 +154,6 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       if (StringUtils.isNotEmpty(resourceElement) && "resourceAssignmentExpression".equals(resourceElement)) {
         String expression = XMLStreamReaderUtil.moveDown(xtr);
         if (StringUtils.isNotEmpty(expression) && "formalExpression".equals(expression)) {
-           new ArrayList<String>();
           
           List<String> assignmentList = CommaSplitter.splitCommas(xtr.getElementText());
           
