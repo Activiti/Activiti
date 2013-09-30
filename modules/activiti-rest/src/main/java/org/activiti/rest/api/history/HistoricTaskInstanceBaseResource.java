@@ -47,7 +47,7 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
     allowedSortProperties.put("start", HistoricTaskInstanceQueryProperty.START);
     allowedSortProperties.put("assignee", HistoricTaskInstanceQueryProperty.TASK_ASSIGNEE);
     allowedSortProperties.put("taskDefinitionKey", HistoricTaskInstanceQueryProperty.TASK_DEFINITION_KEY);
-    allowedSortProperties.put("descriptipn", HistoricTaskInstanceQueryProperty.TASK_DESCRIPTION);
+    allowedSortProperties.put("description", HistoricTaskInstanceQueryProperty.TASK_DESCRIPTION);
     allowedSortProperties.put("dueDate", HistoricTaskInstanceQueryProperty.TASK_DUE_DATE);
     allowedSortProperties.put("name", HistoricTaskInstanceQueryProperty.TASK_NAME);
     allowedSortProperties.put("owner", HistoricTaskInstanceQueryProperty.TASK_OWNER);

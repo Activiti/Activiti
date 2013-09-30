@@ -27,6 +27,7 @@ import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 public class HistoricProcessInstanceQueryRequest {
 
   private String processInstanceId;
+  private List<String> processInstanceIds;
   private String processBusinessKey;
   private String processDefinitionId;
   private String processDefinitionKey;
@@ -50,6 +51,14 @@ public class HistoricProcessInstanceQueryRequest {
     this.processInstanceId = processInstanceId;
   }
   
+  public List<String> getProcessInstanceIds() {
+    return processInstanceIds;
+  }
+
+  public void setProcessInstanceIds(List<String> processInstanceIds) {
+    this.processInstanceIds = processInstanceIds;
+  }
+
   public String getProcessBusinessKey() {
     return processBusinessKey;
   }

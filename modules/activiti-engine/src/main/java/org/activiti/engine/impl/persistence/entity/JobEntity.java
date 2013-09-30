@@ -113,6 +113,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   public void setExecution(ExecutionEntity execution) {
     executionId = execution.getId();
     processInstanceId = execution.getProcessInstanceId();
+    processDefinitionId = execution.getProcessDefinitionId();
     execution.addJob(this);
   }
 
