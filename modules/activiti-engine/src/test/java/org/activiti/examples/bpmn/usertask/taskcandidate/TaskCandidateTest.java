@@ -12,7 +12,9 @@
  */
 package org.activiti.examples.bpmn.usertask.taskcandidate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
@@ -24,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Joram Barrez
+ * @author Joram Barrez, Saeid Mirzaei
  */
 public class TaskCandidateTest extends PluggableActivitiTestCase {
 
@@ -174,6 +176,28 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
+  }
+  
+  // test if candidate group works with expression, when there is a function with one parameter
+  @Deployment
+    public void testCandidateExpressionOneParam() {
+	  Map<String, Object> params = new HashMap<String, Object>();
+	  params.put("testBean", new TestBean());
+	  
+      runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
+      assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
+       
+    }
+
+  // test if candidate group works with expression, when there is a function with two parameters
+  @Deployment
+  public void testCandidateExpressionTwoParams() {
+	  Map<String, Object> params = new HashMap<String, Object>();
+	  params.put("testBean", new TestBean());
+	  
+    runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
+     
   }
 
 }

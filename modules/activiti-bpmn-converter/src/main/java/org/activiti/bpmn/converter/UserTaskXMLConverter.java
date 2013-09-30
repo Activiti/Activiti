@@ -13,7 +13,6 @@
 package org.activiti.bpmn.converter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamReader;
@@ -21,6 +20,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
+import org.activiti.bpmn.converter.util.CommaSplitter;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.UserTask;
@@ -28,7 +28,7 @@ import org.activiti.bpmn.model.alfresco.AlfrescoUserTask;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+ * @author Tijs Rademakers, Saeid Mirzaei
  */
 public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   
@@ -138,26 +138,26 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       }
     }
   }
-  
+
+ 
+
   public class PotentialOwnerParser extends BaseChildElementParser {
 
     public String getElementName() {
       return "potentialOwner";
     }
+    
+   
 
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
       String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
       if (StringUtils.isNotEmpty(resourceElement) && "resourceAssignmentExpression".equals(resourceElement)) {
         String expression = XMLStreamReaderUtil.moveDown(xtr);
         if (StringUtils.isNotEmpty(expression) && "formalExpression".equals(expression)) {
-          List<String> assignmentList = new ArrayList<String>();
-          String assignmentText = xtr.getElementText();
-          if (assignmentText.contains(",")) {
-            String[] assignmentArray = assignmentText.split(",");
-            assignmentList = Arrays.asList(assignmentArray);
-          } else {
-            assignmentList.add(assignmentText);
-          }
+           new ArrayList<String>();
+          
+          List<String> assignmentList = CommaSplitter.splitCommas(xtr.getElementText());
+          
           for (String assignmentValue : assignmentList) {
             if (assignmentValue == null)
               continue;
