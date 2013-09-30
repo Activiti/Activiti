@@ -17,7 +17,6 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
@@ -39,26 +38,24 @@ public class ModelEditorJsonRestResource extends ServerResource implements Model
     ObjectNode modelNode = null;
     String modelId = (String) getRequest().getAttributes().get("modelId");
     
-    if(NumberUtils.isNumber(modelId)) {
-      RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-      Model model = repositoryService.getModel(modelId);
+    RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    Model model = repositoryService.getModel(modelId);
       
-      if (model != null) {
-        try {
-          if (StringUtils.isNotEmpty(model.getMetaInfo())) {
-            modelNode = (ObjectNode) objectMapper.readTree(model.getMetaInfo());
-          } else {
-            modelNode = objectMapper.createObjectNode();
-            modelNode.put(MODEL_NAME, model.getName());
-          }
-          modelNode.put(MODEL_ID, model.getId());
-          ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8"));
-          modelNode.put("model", editorJsonNode);
-          
-        } catch(Exception e) {
-          LOGGER.error("Error creating model JSON", e);
-          setStatus(Status.SERVER_ERROR_INTERNAL);
+    if (model != null) {
+      try {
+        if (StringUtils.isNotEmpty(model.getMetaInfo())) {
+          modelNode = (ObjectNode) objectMapper.readTree(model.getMetaInfo());
+        } else {
+          modelNode = objectMapper.createObjectNode();
+          modelNode.put(MODEL_NAME, model.getName());
         }
+        modelNode.put(MODEL_ID, model.getId());
+        ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8"));
+        modelNode.put("model", editorJsonNode);
+        
+      } catch(Exception e) {
+        LOGGER.error("Error creating model JSON", e);
+        setStatus(Status.SERVER_ERROR_INTERNAL);
       }
     }
     return modelNode;
