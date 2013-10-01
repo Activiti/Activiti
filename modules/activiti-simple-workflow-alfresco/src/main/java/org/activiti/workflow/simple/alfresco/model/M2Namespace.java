@@ -25,6 +25,11 @@ public class M2Namespace {
 	@XmlAttribute
 	private String prefix;
 
+	public M2Namespace(String uri, String prefix) {
+		this.uri = uri;
+		this.prefix = prefix;
+  }
+
 	public String getUri() {
 		return uri;
 	}

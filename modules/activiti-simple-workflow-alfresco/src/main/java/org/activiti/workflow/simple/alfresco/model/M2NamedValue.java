@@ -34,6 +34,15 @@ public class M2NamedValue {
 	@XmlElement(name="value")
 	private List<String> listValue = null;
 
+	public M2NamedValue() {
+  }
+	
+	public M2NamedValue(String name, String simpleValue, List<String> listValue) {
+	  this.name = name;
+	  this.simpleValue = simpleValue;
+	  this.listValue = listValue;
+  }
+
 	public String getName() {
 		return name;
 	}
