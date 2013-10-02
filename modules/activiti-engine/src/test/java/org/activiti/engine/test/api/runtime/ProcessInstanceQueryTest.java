@@ -33,6 +33,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   private static String PROCESS_DEFINITION_KEY = "oneTaskProcess";
   private static String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";
 
+  private static String PROCESS_DEFINITION_NAME = "oneTaskProcessName";
+  private static String PROCESS_DEFINITION_NAME_2 = "oneTaskProcess2Name";
   private List<String> processInstanceIds;
 
   /**
@@ -122,9 +124,10 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryByProcessDefinitionName() {
-    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionName("oneTaskProcessName").count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionName("oneTaskProcess2Name").count());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionName("DOES_NOT_EXIST").count());
+    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionName(PROCESS_DEFINITION_NAME).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionName(PROCESS_DEFINITION_NAME_2).count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionName("invalid").count());
+    assertEquals(null, runtimeService.createProcessInstanceQuery().processDefinitionName("invalid").singleResult());
   }
 
 
