@@ -110,9 +110,34 @@
   <section id="activiti.setup.database">
     <title>Activiti database setup</title>
     <para>As said in the one minute demo setup, the Activiti Explorer runs an in-memory H2 database by default.
-    To run the Activiti Explorer with a standalone H2 or another database the db.properties in the WEB-INF/classes of the Activiti Explorer web application
-    should be changed.
+    To run the Activiti Explorer with a standalone H2 or another database, the JNDI resource "jdbc/activitiDB" should be modified. JNDI allows
+    the database configuration to be controlled by the Servlet Container so that database parameters are not stored within the war which
+    is replaced each time the application is upgraded.
     </para>
+    <para>If using Tomcat, the JNDI resource is configured within $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (usually this
+    maps to $CATALINA_BASE/conf/Catalina/localhost/activiti-explorer.war). The default context is copied from the activiti war file when the application
+    is first deployed. If you previously deployed a verison of Activiti before 5.13, you may need to delete this file so that the correct defaults
+    are created when the application starts up. To change the JNDI resource so that the application connects to MySql instead of H2, for example,
+    change the file to the following:
+    </para>
+    <programlisting>
+    <?xml version="1.0" encoding="UTF-8"?>
+        <Context antiJARLocking="true" path="/activiti-explorer2">
+          <Resource auth="Container"
+            name="jdbc/activitiDB"
+            type="javax.sql.DataSource"
+            description="JDBC DataSource"
+            url="jdbc:mysql://localhost:3306/activiti"
+            driverClassName="com.mysql.jdbc.Driver"
+            username="sa"
+            password=""
+            defaultAutoCommit="false"
+            initialSize="5"
+            maxWait="5000"
+            maxActive="120"
+            maxIdle="5"/>
+        </Context>
+    </programlisting>
     <para>In addition, be aware that the Activiti Explorer generates demo user and groups, process definitions and models by default.
     To disable this, the activiti-standalone-context.xml file in the WEB-INF folder should be changed. To disable the demo setup fully you can use the following snippet
     of the <literal>demoDataGenerator</literal> bean definition. But as you can see you can also enable and disable items individually.
