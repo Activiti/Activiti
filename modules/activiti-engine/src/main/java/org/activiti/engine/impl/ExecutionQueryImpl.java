@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,9 +12,6 @@
  */
 package org.activiti.engine.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -22,24 +19,28 @@ import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @author Joram Barrez
  * @author Frederik Heremans
  * @author Daniel Meyer
  */
-public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery, Execution> 
+public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery, Execution>
   implements ExecutionQuery {
 
   private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
   protected String processDefinitionKey;
+  protected String processDefinitionName;
   protected String activityId;
   protected String executionId;
   protected String parentId;
   protected String processInstanceId;
   protected List<EventSubscriptionQueryValue> eventSubscriptions;
-  
+
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
@@ -49,15 +50,15 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected boolean isActive;
   protected String involvedUser;
-  
-  
+
+
   public ExecutionQueryImpl() {
   }
-  
+
   public ExecutionQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }
-  
+
   public ExecutionQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
@@ -74,14 +75,23 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return this;
   }
 
-  public ExecutionQueryImpl processDefinitionKey(String processDefinitionKey) {
+  @Override
+  public ExecutionQuery processDefinitionName(String processDefinitionName) {
+    if (processDefinitionName == null) {
+      throw new ActivitiIllegalArgumentException("Process definition name is null");
+    }
+    this.processDefinitionName = processDefinitionName;
+    return this;
+  }
+
+    public ExecutionQueryImpl processDefinitionKey(String processDefinitionKey) {
     if (processDefinitionKey == null) {
       throw new ActivitiIllegalArgumentException("Process definition key is null");
     }
     this.processDefinitionKey = processDefinitionKey;
     return this;
   }
-  
+
   public ExecutionQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("Process instance id is null");
@@ -89,7 +99,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.processInstanceId = processInstanceId;
     return this;
   }
-  
+
   public ExecutionQuery processInstanceBusinessKey(String businessKey) {
     if (businessKey == null) {
       throw new ActivitiIllegalArgumentException("Business key is null");
@@ -97,7 +107,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.businessKey = businessKey;
     return this;
   }
-  
+
   public ExecutionQuery processInstanceBusinessKey(String processInstanceBusinessKey, boolean includeChildExecutions) {
     if (!includeChildExecutions) {
       return processInstanceBusinessKey(processInstanceBusinessKey);
@@ -110,7 +120,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
       return this;
     }
   }
-  
+
   public ExecutionQueryImpl executionId(String executionId) {
     if (executionId == null) {
       throw new ActivitiIllegalArgumentException("Execution id is null");
@@ -118,16 +128,16 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.executionId = executionId;
     return this;
   }
-  
+
   public ExecutionQueryImpl activityId(String activityId) {
     this.activityId = activityId;
-    
+
     if (activityId != null) {
       isActive =  true;
     }
     return this;
   }
-  
+
   public ExecutionQueryImpl parentId(String parentId) {
     if (parentId == null) {
       throw new ActivitiIllegalArgumentException("Parent id is null");
@@ -135,19 +145,19 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.parentId = parentId;
     return this;
   }
-  
-  public ExecutionQuery signalEventSubscription(String signalName) {    
+
+  public ExecutionQuery signalEventSubscription(String signalName) {
     return eventSubscription("signal", signalName);
   }
-  
-  public ExecutionQuery signalEventSubscriptionName(String signalName) {    
+
+  public ExecutionQuery signalEventSubscriptionName(String signalName) {
     return eventSubscription("signal", signalName);
-  }  
-  
-  public ExecutionQuery messageEventSubscriptionName(String messageName) {    
+  }
+
+  public ExecutionQuery messageEventSubscriptionName(String messageName) {
     return eventSubscription("message", messageName);
-  } 
-  
+  }
+
   public ExecutionQuery eventSubscription(String eventType, String eventName) {
     if(eventName == null) {
       throw new ActivitiIllegalArgumentException("event name is null");
@@ -161,7 +171,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     eventSubscriptions.add(new EventSubscriptionQueryValue(eventName, eventType));
     return this;
   }
-  
+
   public ExecutionQuery processVariableValueEquals(String variableName, Object variableValue) {
     return variableValueEquals(variableName, variableValue, false);
   }
@@ -184,24 +194,24 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   }
 
   //ordering ////////////////////////////////////////////////////
-  
+
   public ExecutionQueryImpl orderByProcessInstanceId() {
     this.orderProperty = ExecutionQueryProperty.PROCESS_INSTANCE_ID;
     return this;
   }
-  
+
   public ExecutionQueryImpl orderByProcessDefinitionId() {
     this.orderProperty = ExecutionQueryProperty.PROCESS_DEFINITION_ID;
     return this;
   }
-  
+
   public ExecutionQueryImpl orderByProcessDefinitionKey() {
     this.orderProperty = ExecutionQueryProperty.PROCESS_DEFINITION_KEY;
     return this;
   }
-  
+
   //results ////////////////////////////////////////////////////
-  
+
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
@@ -218,7 +228,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
       .getExecutionEntityManager()
       .findExecutionsByQueryCriteria(this, page);
   }
-  
+
   //getters ////////////////////////////////////////////////////
 
   public boolean getOnlyProcessInstances() {
@@ -256,10 +266,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   }
   public SuspensionState getSuspensionState() {
     return suspensionState;
-  }  
+  }
   public void setSuspensionState(SuspensionState suspensionState) {
     this.suspensionState = suspensionState;
-  }  
+  }
   public List<EventSubscriptionQueryValue> getEventSubscriptions() {
     return eventSubscriptions;
   }
@@ -282,5 +292,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public String getParentId() {
     return parentId;
   }
-  
+  public String getProcessDefinitionName() {
+      return processDefinitionName;
+  }
 }

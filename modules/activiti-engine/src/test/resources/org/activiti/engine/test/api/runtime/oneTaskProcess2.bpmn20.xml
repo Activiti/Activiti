@@ -4,14 +4,14 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="org.activiti.enginge.test.api.runtime">
 
-  <process id="oneTaskProcess2">
-  
+  <process id="oneTaskProcess2" name="oneTaskProcess2Name">
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-    <userTask id="theTask" name="my task" />    
+    <userTask id="theTask" name="my task" />
     <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>
