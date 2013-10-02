@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" ?> 
+<?xml version="1.0" encoding="UTF-8" ?>
 
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
-  
+
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
@@ -12,7 +12,7 @@
     		1,
             #{category, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
-            #{key, jdbcType=VARCHAR}, 
+            #{key, jdbcType=VARCHAR},
             #{version, jdbcType=INTEGER},
             #{deploymentId, jdbcType=VARCHAR},
             #{resourceName, jdbcType=VARCHAR},
@@ -21,12 +21,12 @@
             #{hasStartFormKey, jdbcType=BOOLEAN},
             #{suspensionState, jdbcType=INTEGER})
   </insert>
-  
+
   <!-- PROCESSDEFINITION UPDATE -->
 
   <update id="updateProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
     update ${prefix}ACT_RE_PROCDEF set
-      REV_ = #{revisionNext, jdbcType=INTEGER},    
+      REV_ = #{revisionNext, jdbcType=INTEGER},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
       CATEGORY_ = #{category, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
@@ -36,9 +36,9 @@
   <!-- PROCESSDEFINITION DELETE -->
 
   <delete id="deleteProcessDefinitionsByDeploymentId" parameterType="string">
-    delete from ${prefix}ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymenId} 
+    delete from ${prefix}ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymenId}
   </delete>
-  
+
   <!-- PROCESSDEFINITION RESULTMAP -->
 
   <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
@@ -57,7 +57,10 @@
   </resultMap>
 
   <!-- PROCESSDEFINITION SELECT -->
-  
+  <select id="selectProcessDefinition" parameterType="string" resultMap="processDefinitionResultMap">
+    select * from ${prefix}ACT_RE_PROCDEF where ID_ = #{processDefinitionId}
+  </select>
+
   <select id="selectProcessDefinitionById" parameterType="string" resultMap="processDefinitionResultMap">
     select * from ${prefix}ACT_RE_PROCDEF where ID_ = #{processDefinitionId}
   </select>
@@ -74,8 +77,8 @@
     select count(RES.ID_)
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
   </select>
-  
-  <sql id="selectProcessDefinitionsByQueryCriteriaSql">  
+
+  <sql id="selectProcessDefinitionsByQueryCriteriaSql">
     from ${prefix}ACT_RE_PROCDEF RES
     <if test="eventSubscriptionType != null">
     	inner join ${prefix}ACT_RU_EVENT_SUBSCR EVT on RES.ID_ = EVT.CONFIGURATION_
@@ -124,13 +127,13 @@
         and (RES.SUSPENSION_STATE_ = #{suspensionState.stateCode})
       </if>
       <if test="eventSubscriptionType != null">
-      	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName}) 
+      	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName})
       </if>
       <if test="authorizationUserId != null">
         AND (exists (select ID_  from ${prefix}ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.USER_ID_ = #{authorizationUserId})
         <if test="authorizationGroups != null &amp;&amp; authorizationGroups.size() &gt; 0">
          OR exists (select ID_ from ${prefix}ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.GROUP_ID_ IN
-            <foreach item="group" index="index" collection="authorizationGroups" 
+            <foreach item="group" index="index" collection="authorizationGroups"
                      open="(" separator="," close=")">
               #{group}
             </foreach>
@@ -140,17 +143,17 @@
       </if>
     </where>
   </sql>
-    
+
   <select id="selectProcessDefinitionByDeploymentAndKey" parameterType="map" resultMap="processDefinitionResultMap">
-    select * 
-    from ${prefix}ACT_RE_PROCDEF 
+    select *
+    from ${prefix}ACT_RE_PROCDEF
     where DEPLOYMENT_ID_ = #{deploymentId}
       and KEY_ = #{processDefinitionKey}
   </select>
-    
+
   <select id="selectLatestProcessDefinitionByKey" parameterType="string" resultMap="processDefinitionResultMap">
     select *
-    from ${prefix}ACT_RE_PROCDEF 
+    from ${prefix}ACT_RE_PROCDEF
     where KEY_ = #{key} and
           VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = #{processDefinitionKey})
   </select>
