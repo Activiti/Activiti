@@ -20,6 +20,8 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * Implementation of the Parallel Gateway/AND gateway as definined in the BPMN
@@ -65,7 +67,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
     int nbrOfExecutionsToJoin = execution.getActivity().getIncomingTransitions().size();
     int nbrOfExecutionsJoined = joinedExecutions.size();
-    
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
     if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
       
       // Fork
