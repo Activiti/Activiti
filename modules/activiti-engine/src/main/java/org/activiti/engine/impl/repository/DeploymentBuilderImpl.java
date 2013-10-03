@@ -12,13 +12,6 @@
  */
 package org.activiti.engine.impl.repository;
 
-import java.io.InputStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
@@ -31,6 +24,13 @@ import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -38,6 +38,7 @@ import org.activiti.engine.repository.DeploymentBuilder;
 public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
 
   private static final long serialVersionUID = 1L;
+  protected static final String DEFAULT_ENCODING = "UTF-8";
 
   protected transient RepositoryServiceImpl repositoryService;
   protected DeploymentEntity deployment = new DeploymentEntity();
@@ -74,7 +75,11 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     }
     ResourceEntity resource = new ResourceEntity();
     resource.setName(resourceName);
-    resource.setBytes(text.getBytes());
+    try {
+      resource.setBytes(text.getBytes(DEFAULT_ENCODING));
+    } catch (UnsupportedEncodingException e) {
+      new ActivitiException("unsupported encoding exception", e);
+    }
     deployment.addResource(resource);
     return this;
   }
