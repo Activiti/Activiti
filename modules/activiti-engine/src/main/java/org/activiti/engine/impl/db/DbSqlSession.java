@@ -82,7 +82,6 @@ public class DbSqlSession implements Session {
   protected SqlSession sqlSession;
   protected DbSqlSessionFactory dbSqlSessionFactory;
   protected List<PersistentObject> insertedObjects = new ArrayList<PersistentObject>();
-  protected List<PersistentObject> updatedObjects = new ArrayList<PersistentObject>();
   protected Map<Class<?>, Map<String, CachedObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedObject>>();
   protected List<DeleteOperation> deleteOperations = new ArrayList<DeleteOperation>();
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
@@ -119,7 +118,6 @@ public class DbSqlSession implements Session {
   // update ///////////////////////////////////////////////////////////////////
   
   public void update(PersistentObject persistentObject) {
-    updatedObjects.add(persistentObject);
     cachePut(persistentObject, false);
   }
   

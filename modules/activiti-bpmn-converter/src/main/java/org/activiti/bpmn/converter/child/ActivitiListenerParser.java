@@ -43,7 +43,7 @@ public abstract class ActivitiListenerParser extends BaseChildElementParser {
       model.addProblem("Element 'class' or 'expression' is mandatory on executionListener", xtr);
     }
     listener.setEvent(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_EVENT));
-    
+    addListenerToParent(listener, parentElement);
     parseChildElements(xtr, listener, model, new FieldExtensionParser());
   }
   
