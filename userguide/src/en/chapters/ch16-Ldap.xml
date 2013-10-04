@@ -371,6 +371,12 @@
             
             </table>
         </para>
+        
+        <para>
+            Note when using Active Directory: people in the Activiti forum have reported that for Activiti Directory, the 'InitialDirContext' needs to be set
+            to Context.REFERRAL. This can be passed through the customConnectionParameters map as described above.
+        </para>
+        
     
     </section>
     

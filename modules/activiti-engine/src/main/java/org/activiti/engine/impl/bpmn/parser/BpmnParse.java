@@ -489,14 +489,20 @@ public class BpmnParse implements BpmnXMLConstants {
       // Verify if all referenced elements exist
       for (String bpmnReference : bpmnModel.getLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
-          LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        	// ACT-1625: don't warn when	artifacts are referenced from DI
+        	if(bpmnModel.getArtifact(bpmnReference) == null) {
+        		LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        	}
         } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof FlowNode)) {
           LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a flow node");
         }
       }
       for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
-          LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+          // ACT-1625: don't warn when	artifacts are referenced from DI
+        	if(bpmnModel.getArtifact(bpmnReference) == null) {
+        		LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        	}	
         } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)) {
           if (bpmnModel.getFlowLocationMap().get(bpmnReference).size() > 0) {
             LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");

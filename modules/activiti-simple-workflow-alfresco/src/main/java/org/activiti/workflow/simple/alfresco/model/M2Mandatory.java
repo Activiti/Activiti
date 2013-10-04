@@ -25,6 +25,10 @@ public class M2Mandatory {
 	@XmlValue
 	private boolean mandatory = false;
 	
+	public M2Mandatory(boolean mandatory) {
+		this.mandatory = mandatory;
+  }
+	
 	public boolean isMandatory() {
 	  return mandatory;
   }
