@@ -20,7 +20,7 @@ import org.activiti.engine.query.Query;
 
 
 /** Allows programmatic querying of {@link Execution}s.
- * 
+ *
  * @author Joram Barrez
  * @author Frederik Heremans
  */
@@ -31,7 +31,10 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   
   /** Only select executions which have the given process definition id. **/
   ExecutionQuery processDefinitionId(String processDefinitionId);
-  
+
+  /** Only select executions which have the given process definition name. */
+  ExecutionQuery processDefinitionName(String processDefinitionName);
+
   /** Only select executions which have the given process instance id. **/
   ExecutionQuery processInstanceId(String processInstanceId);
   

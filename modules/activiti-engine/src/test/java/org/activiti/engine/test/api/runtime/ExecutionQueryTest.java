@@ -53,6 +53,8 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   
   private static String CONCURRENT_PROCESS_KEY = "concurrent";
   private static String SEQUENTIAL_PROCESS_KEY = "oneTaskProcess";
+  private static String CONCURRENT_PROCESS_NAME = "concurrentName";
+  private static String SEQUENTIAL_PROCESS_NAME = "oneTaskProcessName";
   
   private List<String> concurrentProcessInstanceIds;
   private List<String> sequentialProcessInstanceIds;
@@ -92,7 +94,20 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
   }
-  
+
+  public void testQueryByProcessDefinitionName() {
+    // Concurrent process with 3 executions for each process instance
+    assertEquals(12, runtimeService.createExecutionQuery().processDefinitionName(CONCURRENT_PROCESS_NAME).list().size());
+    assertEquals(1, runtimeService.createExecutionQuery().processDefinitionName(SEQUENTIAL_PROCESS_NAME).list().size());
+  }
+
+  public void testQueryByInvalidProcessDefinitionName() {
+    ExecutionQuery query = runtimeService.createExecutionQuery().processDefinitionName("invalid");
+    assertNull(query.singleResult());
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+  }
+
   public void testQueryByProcessInstanceId() {
     for (String processInstanceId : concurrentProcessInstanceIds) {
       ExecutionQuery query =  runtimeService.createExecutionQuery().processInstanceId(processInstanceId); 
