@@ -87,7 +87,8 @@ public abstract class TestHelper {
     try {
       method = testClass.getDeclaredMethod(methodName, (Class<?>[])null);
     } catch (Exception e) {
-      throw new ActivitiException("can't get method by reflection", e);
+    	log.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e);
+    	return null;
     }
     Deployment deploymentAnnotation = method.getAnnotation(Deployment.class);
     if (deploymentAnnotation != null) {
@@ -131,7 +132,8 @@ public abstract class TestHelper {
      try {
        method = testClass.getDeclaredMethod(methodName, (Class<?>[])null);
      } catch (Exception e) {
-       throw new ActivitiException("can't get method by reflection", e);
+    	log.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e); 
+    	return;
      }
      
      handleMockServiceTaskAnnotation(mockSupport, method);

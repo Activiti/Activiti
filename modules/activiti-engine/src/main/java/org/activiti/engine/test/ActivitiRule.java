@@ -202,6 +202,9 @@ public class ActivitiRule implements TestRule {
 		if (processEngine == null) {
 			initializeProcessEngine();
 			initializeServices();
+		}
+		
+		if (mockSupport == null) {
 			initializeMockSupport();
 		}
 		
@@ -240,7 +243,9 @@ public class ActivitiRule implements TestRule {
 	}
 
 	protected void initializeMockSupport() {
-		this.mockSupport = new ActivitiMockSupport(processEngine);
+		if (ActivitiMockSupport.isMockSupportPossible(processEngine)) {
+			this.mockSupport = new ActivitiMockSupport(processEngine);
+		}
 	}
 	
 	protected void configureProcessEngine() {
@@ -262,7 +267,9 @@ public class ActivitiRule implements TestRule {
 		ClockUtil.reset();
 
 		// Rest mocks
-		TestHelper.annotationMockSupportTeardown(mockSupport);
+		if (mockSupport != null) {
+			TestHelper.annotationMockSupportTeardown(mockSupport);
+		}
 	}
 
 	public void setCurrentTime(Date currentTime) {

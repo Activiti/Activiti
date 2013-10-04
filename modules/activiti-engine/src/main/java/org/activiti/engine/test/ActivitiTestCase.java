@@ -128,7 +128,9 @@ public abstract class ActivitiTestCase extends TestCase {
   }
   
   protected void initializeMockSupport() {
-    this.mockSupport = new ActivitiMockSupport(processEngine);   
+    if (ActivitiMockSupport.isMockSupportPossible(processEngine)) {
+	  this.mockSupport = new ActivitiMockSupport(processEngine);
+	}
   }
 
   @Override
@@ -138,7 +140,9 @@ public abstract class ActivitiTestCase extends TestCase {
     ClockUtil.reset();
     
     // Reset any mocks
-    mockSupport.reset();
+    if (mockSupport != null) {
+      mockSupport.reset();
+    }
     
     super.tearDown();
   }

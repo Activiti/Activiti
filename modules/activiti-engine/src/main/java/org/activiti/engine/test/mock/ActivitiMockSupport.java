@@ -42,6 +42,10 @@ public class ActivitiMockSupport {
 		processEngineConfiguration.getBpmnParser().setActivityBehaviorFactory(testActivityBehaviorFactory);
 	}
 	
+	public static boolean isMockSupportPossible(ProcessEngine processEngine) {
+		return processEngine instanceof ProcessEngineImpl;
+	}
+	
 	public void mockServiceTaskWithClassDelegate(String originalClassFqn, Class<?> mockedClass) {
 		testActivityBehaviorFactory.addClassDelegateMock(originalClassFqn, mockedClass);
 	}
