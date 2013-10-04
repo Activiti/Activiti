@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,19 +49,19 @@ import org.slf4j.LoggerFactory;
 /**
  * Manager class that centralises recording of all history-related operations
  * that are originated from inside the engine.
- *
+ * 
  * @author Frederik Heremans
  */
 public class HistoryManager extends AbstractManager {
-
+  
   private static Logger log = LoggerFactory.getLogger(HistoryManager.class.getName());
-
+  
   private HistoryLevel historyLevel;
-
+  
   public HistoryManager() {
     this.historyLevel = Context.getProcessEngineConfiguration().getHistoryLevel();
   }
-
+  
   /**
    * @return true, if the configured history-level is equal to OR set to
    * a higher value than the given level.
@@ -73,7 +73,7 @@ public class HistoryManager extends AbstractManager {
     // Comparing enums actually compares the location of values declared in the enum
     return historyLevel.isAtLeast(level);
   }
-
+  
   /**
    * @return true, if history-level is configured to level other than "none".
    */
@@ -83,42 +83,42 @@ public class HistoryManager extends AbstractManager {
     }
     return !historyLevel.equals(HistoryLevel.NONE);
   }
-
+  
   // Process related history
-
+  
   /**
    * Record a process-instance ended. Updates the historic process instance if activity history is enabled.
    */
   public void recordProcessInstanceEnd(String processInstanceId, String deleteReason, String activityId) {
-
+    
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceManager()
               .findHistoricProcessInstance(processInstanceId);
-
+      
       if (historicProcessInstance!=null) {
         historicProcessInstance.markEnded(deleteReason);
         historicProcessInstance.setEndActivityId(activityId);
       }
     }
   }
-
+  
   /**
    * Record a process-instance started and record start-event if activity history is enabled.
    */
   public void recordProcessInstanceStart(ExecutionEntity processInstance) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
-
+      
       // Insert historic process-instance
       getDbSqlSession().insert(historicProcessInstance);
-
+  
       // Also record the start-event manually, as there is no "start" activity history listener for this
       IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
-
+      
       String processDefinitionId = processInstance.getProcessDefinitionId();
       String processInstanceId = processInstance.getProcessInstanceId();
       String executionId = processInstance.getId();
-
+  
       HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
       historicActivityInstance.setId(idGenerator.getNextId());
       historicActivityInstance.setProcessDefinitionId(processDefinitionId);
@@ -129,21 +129,21 @@ public class HistoryManager extends AbstractManager {
       historicActivityInstance.setActivityType((String) processInstance.getActivity().getProperty("type"));
       Date now = ClockUtil.getCurrentTime();
       historicActivityInstance.setStartTime(now);
-
+      
       getDbSqlSession()
         .insert(historicActivityInstance);
     }
   }
-
+  
   /**
    * Record a sub-process-instance started and alters the calledProcessinstanceId
    * on the current active activity's historic counterpart. Only effective when activity history is enabled.
    */
   public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, ExecutionEntity subProcessInstance) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-
+      
       HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity((ExecutionEntity) subProcessInstance);
-
+     
       ActivityImpl initialActivity = subProcessInstance.getActivity();
       // Fix for ACT-1728: startActivityId not initialized with subprocess-instance
       if(historicProcessInstance.getStartActivityId() == null) {
@@ -151,16 +151,16 @@ public class HistoryManager extends AbstractManager {
       	initialActivity = subProcessInstance.getProcessDefinition().getInitial();
       }
       getDbSqlSession().insert(historicProcessInstance);
-
-
+      
+      
       HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution);
       if (activitiyInstance != null) {
         activitiyInstance.setCalledProcessInstanceId(subProcessInstance.getProcessInstanceId());
       }
-
+      
       // Fix for ACT-1728: start-event not recorded for subprocesses
       IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
-
+      
       // Also record the start-event manually, as there is no "start" activity history listener for this
       HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
       historicActivityInstance.setId(idGenerator.getNextId());
@@ -172,12 +172,12 @@ public class HistoryManager extends AbstractManager {
       historicActivityInstance.setActivityType((String) initialActivity.getProperty("type"));
       Date now = ClockUtil.getCurrentTime();
       historicActivityInstance.setStartTime(now);
-
+      
       getDbSqlSession()
         .insert(historicActivityInstance);
     }
   }
-
+  
   // Activity related history
 
   /**
@@ -186,7 +186,7 @@ public class HistoryManager extends AbstractManager {
   public void recordActivityStart(ExecutionEntity executionEntity) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
-
+      
       String processDefinitionId = executionEntity.getProcessDefinitionId();
       String processInstanceId = executionEntity.getProcessInstanceId();
       String executionId = executionEntity.getId();
@@ -200,11 +200,11 @@ public class HistoryManager extends AbstractManager {
       historicActivityInstance.setActivityName((String) executionEntity.getActivity().getProperty("name"));
       historicActivityInstance.setActivityType((String) executionEntity.getActivity().getProperty("type"));
       historicActivityInstance.setStartTime(ClockUtil.getCurrentTime());
-
+      
       getDbSqlSession().insert(historicActivityInstance);
     }
   }
-
+  
   /**
    * Record the end of an activitiy, if activity history is enabled.
    */
@@ -216,18 +216,18 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
+  
   /**
    * Record the end of a start-task, if activity history is enabled.
    */
   public void recordStartEventEnded(String executionId, String activityId) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-
+      
       // Interrupted executions might not have an activityId set, skip recording history.
       if(activityId == null) {
         return;
       }
-
+      
       // Search for the historic activity instance in the dbsqlsession cache, since process hasn't been persisted to db yet
       List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
       for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
@@ -241,7 +241,7 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
+  
   /**
    * Finds the {@link HistoricActivityInstanceEntity} that is active in the given
    * execution. Uses the {@link DbSqlSession} cache to make sure the right instance
@@ -262,42 +262,42 @@ public class HistoryManager extends AbstractManager {
         return cachedHistoricActivityInstance;
       }
     }
-
+    
     List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
       .executionId(executionId)
       .activityId(activityId)
       .unfinished()
       .listPage(0, 1);
-
+    
     if (!historicActivityInstances.isEmpty()) {
       return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
     }
-
+    
     if (execution.getParentId()!=null) {
       return findActivityInstance((ExecutionEntity) execution.getParent());
     }
-
+    
     return null;
   }
-
+  
   /**
    * Replaces any open historic activityInstances' execution-id's to the id of the replaced
-   * execution, if activity history is enabled.
+   * execution, if activity history is enabled. 
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void recordExecutionReplacedBy(ExecutionEntity execution, InterpretableExecution replacedBy) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-
+      
       // Update the cached historic activity instances that are open
       List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
       for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
         if ( (cachedHistoricActivityInstance.getEndTime()==null)
-             && (execution.getId().equals(cachedHistoricActivityInstance.getExecutionId()))
+             && (execution.getId().equals(cachedHistoricActivityInstance.getExecutionId())) 
            ) {
           cachedHistoricActivityInstance.setExecutionId(replacedBy.getId());
         }
       }
-
+    
       // Update the persisted historic activity instances that are open
       List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
         .executionId(execution.getId())
@@ -319,10 +319,10 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
-
-  // Task related history
-
+  
+  
+  // Task related history 
+  
   /**
    * Record the creation of a task, if audit history is enabled.
    */
@@ -332,7 +332,7 @@ public class HistoryManager extends AbstractManager {
       getDbSqlSession().insert(historicTaskInstance);
     }
   }
-
+  
   /**
    * Record the assignment of task, if activity history is enabled.
    */
@@ -347,9 +347,9 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
+  
   /**
-   * record task instance claim time, if audit history is enabled
+   * record task instance claim time, if audit history is enabled 
    * @param taskId
    */
 
@@ -359,10 +359,10 @@ public class HistoryManager extends AbstractManager {
       if (historicTaskInstance != null) {
         historicTaskInstance.setClaimTime( ClockUtil.getCurrentTime());
       }
-    }
+    }    
   }
 
-
+  
   /**
    * Record the id of a the task associated with a historic activity, if activity history is enabled.
    */
@@ -377,7 +377,7 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
+  
   /**
    * Record task as ended, if audit history is enabled.
    */
@@ -389,7 +389,7 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
+  
   /**
    * Record task assignee change, if audit history is enabled.
    */
@@ -401,7 +401,7 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
+  
   /**
    * Record task owner change, if audit history is enabled.
    */
@@ -485,7 +485,7 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
+  
   /**
    * Record task definition key change, if audit history is enabled.
    */
@@ -494,7 +494,7 @@ public class HistoryManager extends AbstractManager {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, task.getId());
       if (historicTaskInstance != null) {
         historicTaskInstance.setTaskDefinitionKey(taskDefinitionKey);
-
+        
         if (taskDefinitionKey != null) {
           TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
           if (taskFormHandler != null) {
@@ -509,10 +509,10 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
-
+  
+ 
   // Variables related history
-
+  
   /**
    * Record a variable has been created, if audit history is enabled.
    */
@@ -522,38 +522,38 @@ public class HistoryManager extends AbstractManager {
       HistoricVariableInstanceEntity.copyAndInsert(variable);
     }
   }
-
+  
   /**
    * Record a variable has been created, if audit history is enabled.
    */
   public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
     if (isHistoryLevelAtLeast(HistoryLevel.FULL)) {
-
-      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate =
+      
+      HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = 
           HistoricDetailVariableInstanceUpdateEntity.copyAndInsert(variable);
-
+      
       if (useActivityId && sourceActivityExecution != null) {
-        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution);
+        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution); 
         if (historicActivityInstance!=null) {
           historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
         }
       }
     }
   }
-
+  
   /**
    * Record a variable has been updated, if audit history is enabled.
    */
   public void recordVariableUpdate(VariableInstanceEntity variable) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceEntity historicProcessVariable =
+      HistoricVariableInstanceEntity historicProcessVariable = 
           getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable==null) {
         historicProcessVariable = Context.getCommandContext()
                 .getHistoricVariableInstanceEntityManager()
                 .findHistoricVariableInstanceByVariableInstanceId(variable.getId());
       }
-
+      
       if (historicProcessVariable!=null) {
         historicProcessVariable.copyValue(variable);
       } else {
@@ -561,20 +561,20 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
+  
   // Comment related history
-
+  
   /**
-   * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted,
-   * if history is enabled.
+   * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 
+   * if history is enabled. 
    */
   public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create) {
     createIdentityLinkComment(taskId, userId, groupId, type, create, false);
   }
-
+  
   /**
-   * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted,
-   * if history is enabled.
+   * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 
+   * if history is enabled. 
    */
   public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
     if(isHistoryEnabled()) {
@@ -602,10 +602,10 @@ public class HistoryManager extends AbstractManager {
       getSession(CommentEntityManager.class).insert(comment);
     }
   }
-
+  
   /**
-   * Creates a new comment to indicate a new attachment has been created or deleted,
-   * if history is enabled.
+   * Creates a new comment to indicate a new attachment has been created or deleted, 
+   * if history is enabled. 
    */
   public void createAttachmentComment(String taskId, String processInstanceId, String attachmentName, boolean create) {
     if (isHistoryEnabled()) {
@@ -638,7 +638,7 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
-
+  
   // Identity link related history
   /**
    * Record the creation of a new {@link IdentityLink}, if audit history is enabled.
@@ -657,7 +657,7 @@ public class HistoryManager extends AbstractManager {
       getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLink(id);
     }
   }
-
+  
   public void updateProcessBusinessKeyInHistory(ExecutionEntity processInstance) {
     if(log.isDebugEnabled()) {
       log.debug("updateProcessBusinessKeyInHistory : {}", processInstance.getId());

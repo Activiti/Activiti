@@ -1398,7 +1398,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
-
+  
   public String updateProcessBusinessKey(String bzKey) {
     if (isProcessInstanceType() && businessKey == null && bzKey != null) {
       setBusinessKey(bzKey);
