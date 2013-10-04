@@ -78,7 +78,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     try {
       resource.setBytes(text.getBytes(DEFAULT_ENCODING));
     } catch (UnsupportedEncodingException e) {
-      new ActivitiException("unsupported encoding exception", e);
+      throw new ActivitiException("Unable to get process bytes.", e);
     }
     deployment.addResource(resource);
     return this;

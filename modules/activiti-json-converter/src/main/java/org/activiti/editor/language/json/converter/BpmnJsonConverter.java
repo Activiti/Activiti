@@ -178,6 +178,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       propertiesNode.put(PROPERTY_PROCESS_EXECUTABLE, PROPERTY_VALUE_NO);
     }
     
+    propertiesNode.put(PROPERTY_PROCESS_NAMESPACE, model.getTargetNamespace());
+    
     if (StringUtils.isNotEmpty(mainProcess.getDocumentation())) {
       propertiesNode.put(PROPERTY_DOCUMENTATION, mainProcess.getDocumentation());
     }
@@ -320,6 +322,11 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       JsonNode processExecutableNode = JsonConverterUtil.getProperty(PROPERTY_PROCESS_EXECUTABLE, modelNode);
       if (processExecutableNode != null && StringUtils.isNotEmpty(processExecutableNode.asText())) {
         process.setExecutable(JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_PROCESS_EXECUTABLE, modelNode));
+      }
+      
+      JsonNode processTargetNamespace = JsonConverterUtil.getProperty(PROPERTY_PROCESS_NAMESPACE, modelNode);
+      if (processTargetNamespace != null && StringUtils.isNotEmpty(processTargetNamespace.asText())) {
+        bpmnModel.setTargetNamespace(processTargetNamespace.asText());
       }
       
       JsonNode processExecutionListenerNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_EXECUTION_LISTENERS);

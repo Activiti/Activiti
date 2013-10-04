@@ -10078,7 +10078,8 @@ Only the attachment name is required to create a new attachment.
 {
   "firstName":"Tijs",
   "lastName":"Barrez",
-  "email":"no-reply@alfresco.org"
+  "email":"no-reply@alfresco.org",
+  "password":"pass123"
 }</programlisting>
       All request values are optional. For example, you can only include the 'firstName' attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: <literal>{"firstName" : null}</literal> will clear the firstName of the user).
        </para>
@@ -10126,7 +10127,8 @@ Only the attachment name is required to create a new attachment.
   "id":"tijs",
   "firstName":"Tijs",
   "lastName":"Barrez",
-  "email":"no-reply@alfresco.org"
+  "email":"no-reply@alfresco.org",
+  "password":"pass123"
 }</programlisting>
        </para>
         <para>

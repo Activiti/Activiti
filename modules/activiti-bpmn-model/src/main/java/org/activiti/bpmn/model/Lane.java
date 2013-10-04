@@ -12,6 +12,8 @@
  */
 package org.activiti.bpmn.model;
 
+import org.codehaus.jackson.annotate.JsonBackReference;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class Lane extends BaseElement {
     this.name = name;
   }
 
+  @JsonBackReference
   public Process getParentProcess() {
     return parentProcess;
   }
