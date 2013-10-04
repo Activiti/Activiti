@@ -101,6 +101,7 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.event.CompensationEventHandler;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.event.MessageEventHandler;
+import org.activiti.engine.impl.event.ProcessInstanceEndHandlerWaitForFinish;
 import org.activiti.engine.impl.event.SignalEventHandler;
 import org.activiti.engine.impl.form.BooleanFormType;
 import org.activiti.engine.impl.form.DateFormType;
@@ -881,6 +882,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
     
+    bpmnParserHandlers.add(new ProcessInstanceEndHandlerWaitForFinish());
+
     // History
     for (BpmnParseHandler handler : getDefaultHistoryParseHandlers()) {
       bpmnParserHandlers.add(handler);
