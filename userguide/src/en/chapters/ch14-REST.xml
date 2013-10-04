@@ -15,13 +15,13 @@
       </para>
       <para><emphasis role="bold">It's recommended to use Basic Authentication in combination with HTTPS.</emphasis></para>
       <para>It's possible to remove authentication from certain resources or adding additional authorisation on top of being an authenticated user (eg. being part of group X allows a user to execute request with URL Y). 
-      This can be achieved by using an implementation of <literal>org.activiti.rest.filter.RestAuthenticator</literal> which has 2 methods:
+      This can be achieved by using an implementation of <literal>org.activiti.rest.common.filter.RestAuthenticator</literal> which has 2 methods:
       <itemizedlist>
         <listitem><para><emphasis><literal>boolean requestRequiresAuthentication(Request request)</literal></emphasis>: Called before a request is checked for authentication (valid username and password is passed in header). If this method returns true, the method needs authentication. If false is returned, the request will be done regardless of the request being authenticated. If false is returned, <literal>isRequestAuthorized</literal> will not be called either for this request.</para></listitem>
         <listitem><para><emphasis><literal>boolean isRequestAuthorized(Request request)</literal></emphasis>: Called after a user is successfully authenticated against the Activiti identity-management but before the request is actually executed. Can be used to check if a certain request is valid for the authenticated user. If true is returned, the request is considered authorised and is executed. When false is returned, the request is not executed and the client gets an appropriate error.</para></listitem>
       </itemizedlist>
       </para>
-      <para>The custom RestAuthenticator should be set on the <literal>org.activiti.rest.application.ActivitiRestServicesApplication</literal>that is used in the RestletServlet. 
+      <para>The custom RestAuthenticator should be set on the <literal>org.activiti.rest.service.application.ActivitiRestServicesApplication</literal>that is used in the RestletServlet. 
       The easiest way for this to create a subclass of the <literal>ActivitiRestServicesApplication</literal> and use the custom implementation classname in the servlet-mapping:</para>
       
       <programlisting>
@@ -463,8 +463,8 @@
                 </tbody>
               </tgroup>
             </table>
-            It's possible to support additional variable-types with a custom JSON representation (either simple value or complex/nested JSON object). By extending the <literal>initializeVariableConverters()</literal> method on <literal>org.activiti.rest.api.RestResponseFactory</literal>,
-            you can add additional <literal>org.activiti.rest.api.engine.variable.RestVariableConverter</literal> classes to support converting your POJO's to a format suitable for transerring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
+            It's possible to support additional variable-types with a custom JSON representation (either simple value or complex/nested JSON object). By extending the <literal>initializeVariableConverters()</literal> method on <literal>org.activiti.rest.service.api.RestResponseFactory</literal>,
+            you can add additional <literal>org.activiti.rest.service.api.engine.variable.RestVariableConverter</literal> classes to support converting your POJO's to a format suitable for transerring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
         </para>
        </section>
     </section>
