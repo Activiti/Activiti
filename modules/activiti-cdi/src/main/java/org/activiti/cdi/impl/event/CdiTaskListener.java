@@ -20,26 +20,25 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.activiti.cdi.BusinessProcessEvent;
 import org.activiti.cdi.BusinessProcessEventType;
+import org.activiti.cdi.annotation.event.AssignTaskLiteral;
 import org.activiti.cdi.annotation.event.BusinessProcessLiteral;
-import org.activiti.cdi.annotation.event.EndActivityLiteral;
-import org.activiti.cdi.annotation.event.StartActivityLiteral;
-import org.activiti.cdi.annotation.event.TakeTransitionLiteral;
+import org.activiti.cdi.annotation.event.CompleteTaskLiteral;
+import org.activiti.cdi.annotation.event.CreateTaskLiteral;
 import org.activiti.cdi.impl.util.BeanManagerLookup;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * Generic {@link ExecutionListener} publishing events using the cdi event
+ * Generic {@link TaskListener} publishing events using the cdi event
  * infrastructure.
  * 
- * @author Daniel Meyer
+ * @author Dimitris Mandalidis 
  */
-public class CdiExecutionListener implements ExecutionListener, Serializable {
+public class CdiTaskListener implements TaskListener, Serializable {
 
   private static final long serialVersionUID = 1L;
   
@@ -47,20 +46,20 @@ public class CdiExecutionListener implements ExecutionListener, Serializable {
   protected final String transitionName;
   protected final String activityId;
 
-  public CdiExecutionListener(String transitionName) {
+  public CdiTaskListener(String transitionName) {
     this.type = BusinessProcessEventType.TAKE;
     this.transitionName = transitionName;
     this.activityId = null;
   }
 
-  public CdiExecutionListener(String activityId, BusinessProcessEventType type) {
+  public CdiTaskListener(String activityId, BusinessProcessEventType type) {
     this.type = type;
     this.transitionName = null;
     this.activityId = activityId;
   }
 
   @Override
-  public void notify(DelegateExecution execution) throws Exception {    
+  public void notify(DelegateTask task) {    
     // test whether cdi is setup correclty. (if not, just do not deliver the event)    
     try {
       ProgrammaticBeanLookup.lookup(ProcessEngine.class);
@@ -68,14 +67,15 @@ public class CdiExecutionListener implements ExecutionListener, Serializable {
       return;
     }
     
-    BusinessProcessEvent event = createEvent(execution);
+    BusinessProcessEvent event = createEvent(task);
     Annotation[] qualifiers = getQualifiers(event);           
     getBeanManager().fireEvent(event, qualifiers);    
   }
 
-  protected BusinessProcessEvent createEvent(DelegateExecution execution) {
-    ProcessDefinition processDefinition = Context.getExecutionContext().getProcessDefinition();
-    return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, execution, type, execution.getProcessInstanceId(), execution.getId(), new Date());
+  protected BusinessProcessEvent createEvent(DelegateTask task) {
+    String processDefinitionId = task.getExecution().getProcessDefinitionId();
+    ProcessDefinition processDefinition = task.getExecution().getEngineServices().getRepositoryService().getProcessDefinition(processDefinitionId);
+    return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, task, type, task.getExecution().getProcessInstanceId(), task.getExecutionId(), new Date());
   }
 
   protected BeanManager getBeanManager() {
@@ -88,14 +88,14 @@ public class CdiExecutionListener implements ExecutionListener, Serializable {
 
   protected Annotation[] getQualifiers(BusinessProcessEvent event) {
     Annotation businessProcessQualifier = new BusinessProcessLiteral(event.getProcessDefinition().getKey());
-    if (type == BusinessProcessEventType.TAKE) {
-      return new Annotation[] {businessProcessQualifier, new TakeTransitionLiteral(transitionName) };
+    if (type == BusinessProcessEventType.CREATE_TASK) {
+      return new Annotation[] {businessProcessQualifier, new CreateTaskLiteral(activityId) };
     }
-    if (type == BusinessProcessEventType.START_ACTIVITY) {
-      return new Annotation[] {businessProcessQualifier, new StartActivityLiteral(activityId) };
+    if (type == BusinessProcessEventType.ASSIGN_TASK) {
+      return new Annotation[] {businessProcessQualifier, new AssignTaskLiteral(activityId) };
     }
-    if (type == BusinessProcessEventType.END_ACTIVITY) {
-      return new Annotation[] {businessProcessQualifier, new EndActivityLiteral(activityId) };
+    if (type == BusinessProcessEventType.COMPLETE_TASK) {
+      return new Annotation[] {businessProcessQualifier, new CompleteTaskLiteral(activityId) };
     }
     return new Annotation[] {};
   }
