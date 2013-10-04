@@ -57,7 +57,11 @@
   </resultMap>
 
   <!-- PROCESSDEFINITION SELECT -->
-  
+
+  <select id="selectProcessDefinition" parameterType="string" resultMap="processDefinitionResultMap">
+    select * from ${prefix}ACT_RE_PROCDEF where ID_ = #{processDefinitionId}
+  </select>
+
   <select id="selectProcessDefinitionById" parameterType="string" resultMap="processDefinitionResultMap">
     select * from ${prefix}ACT_RE_PROCDEF where ID_ = #{processDefinitionId}
   </select>
