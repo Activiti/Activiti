@@ -237,6 +237,9 @@
       <if test="processDefinitionKey != null">
         and P.KEY_ = #{processDefinitionKey}
       </if>
+      <if test="processDefinitionName != null">
+        and P.NAME_ = #{processDefinitionName}
+      </if>
       <if test="executionId != null">
         and RES.ID_ = #{executionId}
       </if>
