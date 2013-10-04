@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
@@ -49,7 +50,7 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
     
     List<AttachmentResponse> result = new ArrayList<AttachmentResponse>();
     RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    Task task = getTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest();
     
     for(Attachment attachment : ActivitiUtil.getTaskService().getTaskAttachments(task.getId())) {
       result.add(responseFactory.createAttachmentResponse(this, attachment));

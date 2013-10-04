@@ -14,6 +14,7 @@
 package org.activiti.rest.api.history;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,9 @@ public class HistoricProcessInstanceBaseResource extends SecuredResource {
     // Populate query based on request
     if (queryRequest.getProcessInstanceId() != null) {
       query.processInstanceId(queryRequest.getProcessInstanceId());
+    }
+    if (queryRequest.getProcessInstanceIds() != null && queryRequest.getProcessInstanceIds().size() > 0) {
+      query.processInstanceIds(new HashSet<String>(queryRequest.getProcessInstanceIds()));
     }
     if (queryRequest.getProcessDefinitionKey() != null) {
       query.processDefinitionKey(queryRequest.getProcessDefinitionKey());

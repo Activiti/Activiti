@@ -93,7 +93,7 @@ public class AcquireJobsRunnable implements Runnable {
           		"You can ignore this message if you indeed have multiple job executor acquisition threads running against the same database. " +
           		"Exception message: {}", optimisticLockingException.getMessage());
         }
-      } catch (Exception e) {
+      } catch (Throwable e) {
         log.error("exception during job acquisition: {}", e.getMessage(), e);          
         millisToWait *= waitIncreaseFactor;
         if (millisToWait > maxWait) {

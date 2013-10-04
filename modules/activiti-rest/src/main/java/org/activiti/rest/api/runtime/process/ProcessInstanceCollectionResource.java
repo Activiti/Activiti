@@ -93,6 +93,10 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
   @Post
   public ProcessInstanceResponse createProcessInstance(ProcessInstanceCreateRequest request) {
     
+    if(!authenticate()) {
+      return null;
+    }
+    
     if(request.getProcessDefinitionId() == null && request.getProcessDefinitionKey() == null && request.getMessage() == null) {
       throw new ActivitiIllegalArgumentException("Either processDefinitionId, processDefinitionKey or message is required.");
     }

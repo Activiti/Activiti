@@ -89,7 +89,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       managementService.executeJob(timerJob.getId());
       fail("RuntimeException from within the script task expected");
     } catch(RuntimeException re) {
-      assertTextPresent("This is an exception thrown from scriptTask", re.getMessage());
+      assertTextPresent("This is an exception thrown from scriptTask", re.getCause().getMessage());
     }
     
     // Fetch the task to see that the exception that occurred is persisted

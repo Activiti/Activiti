@@ -17,8 +17,8 @@ import java.io.InputStream;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Attachment;
-import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
 import org.restlet.data.MediaType;
 import org.restlet.representation.InputRepresentation;
@@ -35,7 +35,7 @@ public class TaskAttachmentContentResource extends TaskBaseResource {
     if(!authenticate())
       return null;
     
-    Task task = getTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest();
     
     String attachmentId = getAttribute("attachmentId");
     if(attachmentId == null) {

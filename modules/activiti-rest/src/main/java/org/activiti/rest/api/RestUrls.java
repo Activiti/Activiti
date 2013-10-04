@@ -42,6 +42,7 @@ public final class RestUrls {
   public static final String SEGMENT_EXECUTION_RESOURCE = "executions";
   public static final String SEGMENT_PROCESS_INSTANCE_RESOURCE = "process-instances";
   public static final String SEGMENT_VARIABLES = "variables";
+  public static final String SEGMENT_SUBTASKS = "subtasks";
   public static final String SEGMENT_IDENTITYLINKS = "identitylinks";
   public static final String SEGMENT_COMMENTS = "comments";
   public static final String SEGMENT_EVENTS = "events";
@@ -154,7 +155,7 @@ public final class RestUrls {
   public static final String[] URL_MODEL_SOURCE_EXTRA = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_MODEL_RESOURCE, "{0}", SEGMENT_SOURCE_EXTRA};
   
   /**
-   * URL template for task collection: <i>runtime/tasks/{0:taskId}</i>
+   * URL template for task collection: <i>runtime/tasks</i>
    */
   public static final String[] URL_TASK_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE};
   
@@ -167,6 +168,11 @@ public final class RestUrls {
    * URL template for a single task: <i>runtime/tasks/{0:taskId}</i>
    */
   public static final String[] URL_TASK = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}"};
+  
+  /**
+   * URL template for a task's sub tasks: <i>runtime/tasks/{0:taskId}/subtasks</i>
+   */
+  public static final String[] URL_TASK_SUBTASKS_COLLECTION = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_TASK_RESOURCE, "{0}", SEGMENT_SUBTASKS};
   
   /**
    * URL template for a task's variables: <i>runtime/tasks/{0:taskId}/variables</i>

@@ -491,7 +491,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals(user.getId(), task.getAssignee());
     
     // Unclaim the task
-    taskService.claim(task.getId(), null);
+    taskService.unclaim(task.getId());
     
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertNull(task.getAssignee());

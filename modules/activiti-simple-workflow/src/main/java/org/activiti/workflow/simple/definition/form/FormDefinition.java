@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -83,5 +84,35 @@ public class FormDefinition implements FormPropertyDefinitionContainer {
   
   public String getFormKey() {
 	  return formKey;
+  }
+  
+  public FormDefinition clone() {
+    FormDefinition clone = new FormDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(FormDefinition otherDefinition) {
+    if(!(otherDefinition instanceof FormDefinition)) {
+      throw new SimpleWorkflowException("An instance of FormDefinition is required to set values");
+    }
+    
+    FormDefinition formDefinition = (FormDefinition) otherDefinition;
+    setFormKey(formDefinition.getFormKey());
+    
+    List<FormPropertyGroup> groupList = new ArrayList<FormPropertyGroup>();
+    if (formDefinition.getFormGroups() != null && formDefinition.getFormGroups().size() > 0) {
+      for (FormPropertyGroup propertyGroup : formDefinition.getFormGroups()) {
+        groupList.add(propertyGroup.clone());
+      }
+    }
+    setFormGroups(groupList);
+    
+    formProperties = new ArrayList<FormPropertyDefinition>();
+    if (formDefinition.getFormGroups() != null && formDefinition.getFormGroups().size() > 0) {
+      for (FormPropertyDefinition propertyDefinition : formDefinition.getFormPropertyDefinitions()) {
+        formProperties.add(propertyDefinition.clone());
+      }
+    }
   }
 }

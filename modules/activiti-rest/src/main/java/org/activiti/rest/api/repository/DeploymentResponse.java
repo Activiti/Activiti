@@ -13,8 +13,9 @@ package org.activiti.rest.api.repository;
  * limitations under the License.
  */
 
+import java.util.Date;
+
 import org.activiti.engine.repository.Deployment;
-import org.activiti.rest.api.RequestUtil;
 
 /**
  * @author Tijs Rademakers
@@ -24,14 +25,14 @@ public class DeploymentResponse {
 
   String id;
   String name;
-  String deploymentTime;
+  Date deploymentTime;
   String category;
   String url;
   
   public DeploymentResponse(Deployment deployment, String url) {
     setId(deployment.getId());
     setName(deployment.getName());
-    setDeploymentTime(RequestUtil.dateToString(deployment.getDeploymentTime()));
+    setDeploymentTime(deployment.getDeploymentTime());
     setCategory(deployment.getCategory());
     setUrl(url);
   }
@@ -48,10 +49,10 @@ public class DeploymentResponse {
   public void setName(String name) {
     this.name = name;
   }
-  public String getDeploymentTime() {
+  public  Date getDeploymentTime() {
     return deploymentTime;
   }
-  public void setDeploymentTime(String deploymentTime) {
+  public void setDeploymentTime( Date deploymentTime) {
     this.deploymentTime = deploymentTime;
   }
   public String getCategory() {

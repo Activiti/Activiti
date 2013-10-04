@@ -205,7 +205,7 @@ public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
     assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test666").count());
     assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test666").list().size());
     
-    assertEquals(7, historyService.createHistoricActivityInstanceQuery().count());
+    assertEquals(8, historyService.createHistoricActivityInstanceQuery().count());
     assertEquals(5, historyService.createHistoricDetailQuery().count());
   }
   

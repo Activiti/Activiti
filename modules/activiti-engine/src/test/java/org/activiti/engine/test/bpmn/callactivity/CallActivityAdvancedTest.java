@@ -13,11 +13,17 @@
 
 package org.activiti.engine.test.bpmn.callactivity;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -57,6 +63,33 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     // Completing this task end the process instance
     taskService.complete(taskAfterSubProcess.getId());
     assertProcessEnded(processInstance.getId());
+    
+    // Validate subprocess history
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+    	// Subprocess should have initial activity set
+    	HistoricProcessInstance historicProcess = historyService.createHistoricProcessInstanceQuery()
+    			.processInstanceId(taskInSubProcess.getProcessInstanceId())
+    			.singleResult();
+    	assertNotNull(historicProcess);
+    	assertEquals("theStart", historicProcess.getStartActivityId());
+    	
+    	List<HistoricActivityInstance> historicInstances = historyService.createHistoricActivityInstanceQuery()
+    			.processInstanceId(taskInSubProcess.getProcessInstanceId())
+    			.list();
+    	
+    	// Should contain a start-event, the task and an end-event
+    	assertEquals(3L, historicInstances.size());
+      Set<String> expectedActivities = new HashSet<String>(Arrays.asList(new String[] {
+      		"theStart",
+      		"task",
+      		"theEnd"
+      }));
+      
+      for(HistoricActivityInstance act : historicInstances) {
+      	expectedActivities.remove(act.getActivityId());
+      }
+      assertTrue("Not all expected activities were found in the history", expectedActivities.isEmpty());
+    }
   }
   
   @Deployment(resources = { "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallSimpleSubProcessWithExpressions.bpmn20.xml",

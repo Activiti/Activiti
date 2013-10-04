@@ -16,8 +16,8 @@ package org.activiti.rest.api.runtime.task;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Event;
-import org.activiti.engine.task.Task;
 import org.activiti.rest.api.ActivitiUtil;
 import org.activiti.rest.api.RestResponseFactory;
 import org.activiti.rest.api.engine.EventResponse;
@@ -37,7 +37,7 @@ public class TaskEventCollectionResource extends TaskBaseResource {
     
     List<EventResponse> result = new ArrayList<EventResponse>();
     RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    Task task = getTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest();
     
     for(Event event : ActivitiUtil.getTaskService().getTaskEvents(task.getId())) {
       result.add(responseFactory.createEventResponse(this, event));

@@ -4877,10 +4877,22 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Only return tasks assigned to the given user.</entry>
                   </row>
                   <row>
+                    <entry>assigneeLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks assigned with an assignee like the given value.</entry>
+                  </row>
+                  <row>
                     <entry>owner</entry>
                     <entry>No</entry>
                     <entry>String</entry>
                     <entry>Only return tasks owned by the given user.</entry>
+                  </row>
+                  <row>
+                    <entry>ownerLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks assigned with an owner like the given value.</entry>
                   </row>
                   <row>
                     <entry>unassigned</entry>
@@ -4937,6 +4949,36 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Only return tasks which are part of the process instance with the given business key.</entry>
                   </row>
                   <row>
+                    <entry>processInstanceBusinessKeyLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of the process instance which has a business key like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKey</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with the given key.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKeyLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with a key like the given value.</entry>
+                  </row>
+                   <row>
+                    <entry>processDefinitionName</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionNameLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with a name like the given value.</entry>
+                  </row>
+                  <row>
                     <entry>executionId</entry>
                     <entry>No</entry>
                     <entry>String</entry>
@@ -4977,6 +5019,24 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>No</entry>
                     <entry>ISO Date</entry>
                     <entry>Only return tasks which are due after the given date.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutDueDate</entry>
+                    <entry>No</entry>
+                    <entry>boolean</entry>
+                    <entry>Only return tasks which don't have a due date. The property is ignored if the value is <literal>false</literal>.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutDueDate</entry>
+                    <entry>No</entry>
+                    <entry>boolean</entry>
+                    <entry>Only return tasks which don't have a due date. The property is ignored if the value is <literal>false</literal>.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutDueDate</entry>
+                    <entry>No</entry>
+                    <entry>boolean</entry>
+                    <entry>Only return tasks which don't have a due date. The property is ignored if the value is <literal>false</literal>.</entry>
                   </row>
                   <row>
                     <entry>excludeSubTasks</entry>
@@ -7748,6 +7808,12 @@ Only the attachment name is required to create a new attachment.
                   <entry>The process definition key of the historic task instance.</entry>
                 </row>
                 <row>
+                  <entry>processDefinitionKeyLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process definition key of the historic task instance, which matches the given value.</entry>
+                </row>
+                <row>
                   <entry>processDefinitionId</entry>
                   <entry>No</entry>
                   <entry>String</entry>
@@ -7759,6 +7825,12 @@ Only the attachment name is required to create a new attachment.
                   <entry>String</entry>
                   <entry>The process definition name of the historic task instance.</entry>
                 </row>
+                 <row>
+                  <entry>processDefinitionNameLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process definition name of the historic task instance, which matches the given value.</entry>
+                </row>
                 <row>
                   <entry>processBusinessKey</entry>
                   <entry>No</entry>
@@ -7766,10 +7838,22 @@ Only the attachment name is required to create a new attachment.
                   <entry>The process instance business key of the historic task instance.</entry>
                 </row>
                 <row>
+                  <entry>processBusinessKeyLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process instance business key of the historic task instance that matches the given value.</entry>
+                </row>
+                <row>
                   <entry>executionId</entry>
                   <entry>No</entry>
                   <entry>String</entry>
                   <entry>The execution id of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskDefinitionKey</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task definition key for tasks part of a process</entry>
                 </row>
                 <row>
                   <entry>taskName</entry>
@@ -7886,10 +7970,46 @@ Only the attachment name is required to create a new attachment.
                   <entry>Return only historic task instances that have a due date before this date.</entry>
                 </row>
                 <row>
+                  <entry>withoutDueDate</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>Return only historic task instances that haveno due-date. When <literal>false</literal> is provided as value, this parameter is ignored.</entry>
+                </row>
+                <row>
+                  <entry>completedOn</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that have been completed on this date.</entry>
+                </row>
+                <row>
+                  <entry>completedAfter</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that have been completed after this date.</entry>
+                </row>
+                <row>
+                  <entry>completedBefore</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that have been completed before this date.</entry>
+                </row>
+                <row>
                   <entry>taskCreatedOn</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that were created on this date.</entry>
+                </row>
+                <row>
+                  <entry>taskCreatedBefore</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that were created before this date.</entry>
+                </row>
+                <row>
+                  <entry>taskCreatedAfter</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that were created after this date.</entry>
                 </row>
                 <row>
                   <entry>includeTaskLocalVariables</entry>
@@ -9958,7 +10078,8 @@ Only the attachment name is required to create a new attachment.
 {
   "firstName":"Tijs",
   "lastName":"Barrez",
-  "email":"no-reply@alfresco.org"
+  "email":"no-reply@alfresco.org",
+  "password":"pass123"
 }</programlisting>
       All request values are optional. For example, you can only include the 'firstName' attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: <literal>{"firstName" : null}</literal> will clear the firstName of the user).
        </para>
@@ -10006,7 +10127,8 @@ Only the attachment name is required to create a new attachment.
   "id":"tijs",
   "firstName":"Tijs",
   "lastName":"Barrez",
-  "email":"no-reply@alfresco.org"
+  "email":"no-reply@alfresco.org",
+  "password":"pass123"
 }</programlisting>
        </para>
         <para>

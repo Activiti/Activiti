@@ -38,6 +38,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Event;
@@ -142,13 +143,38 @@ public class HistoryManager extends AbstractManager {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       
       HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity((ExecutionEntity) subProcessInstance);
+     
+      ActivityImpl initialActivity = subProcessInstance.getActivity();
+      // Fix for ACT-1728: startActivityId not initialized with subprocess-instance
+      if(historicProcessInstance.getStartActivityId() == null) {
+      	historicProcessInstance.setStartActivityId(subProcessInstance.getProcessDefinition().getInitial().getId());
+      	initialActivity = subProcessInstance.getProcessDefinition().getInitial();
+      }
       getDbSqlSession().insert(historicProcessInstance);
+      
       
       HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution);
       if (activitiyInstance != null) {
         activitiyInstance.setCalledProcessInstanceId(subProcessInstance.getProcessInstanceId());
       }
       
+      // Fix for ACT-1728: start-event not recorded for subprocesses
+      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
+      
+      // Also record the start-event manually, as there is no "start" activity history listener for this
+      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
+      historicActivityInstance.setId(idGenerator.getNextId());
+      historicActivityInstance.setProcessDefinitionId(subProcessInstance.getProcessDefinitionId());
+      historicActivityInstance.setProcessInstanceId(subProcessInstance.getProcessInstanceId());
+      historicActivityInstance.setExecutionId(subProcessInstance.getId());
+      historicActivityInstance.setActivityId(initialActivity.getId());
+      historicActivityInstance.setActivityName((String) initialActivity.getProperty("name"));
+      historicActivityInstance.setActivityType((String) initialActivity.getProperty("type"));
+      Date now = ClockUtil.getCurrentTime();
+      historicActivityInstance.setStartTime(now);
+      
+      getDbSqlSession()
+        .insert(historicActivityInstance);
     }
   }
   

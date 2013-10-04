@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.DelegationState;
@@ -128,8 +129,14 @@ public class TaskBaseResource extends SecuredResource {
     if(request.getAssignee() != null) {
       taskQuery.taskAssignee(request.getAssignee());
     }
+    if(request.getAssigneeLike() != null) {
+      taskQuery.taskAssigneeLike(request.getAssigneeLike());
+    }
     if(request.getOwner() != null) {
       taskQuery.taskOwner(request.getOwner());
+    }
+    if(request.getOwnerLike() != null) {
+      taskQuery.taskOwnerLike(request.getOwnerLike());
     }
     if(request.getUnassigned() != null) {
       taskQuery.taskUnassigned();
@@ -186,6 +193,9 @@ public class TaskBaseResource extends SecuredResource {
     if(request.getDueAfter() != null) {
       taskQuery.dueAfter(request.getDueAfter());
     }
+    if(request.getWithoutDueDate() != null && request.getWithoutDueDate()) {
+    	taskQuery.withoutDueDate();
+    }
     
     if(request.getActive() != null) {
       if(request.getActive().booleanValue()) {
@@ -204,6 +214,26 @@ public class TaskBaseResource extends SecuredResource {
       if (request.getIncludeProcessVariables()) {
         taskQuery.includeProcessVariables();
       }
+    }
+    
+    if(request.getProcessInstanceBusinessKeyLike() != null) {
+    	taskQuery.processInstanceBusinessKeyLike(request.getProcessInstanceBusinessKeyLike());
+    }
+    
+    if(request.getProcessDefinitionKey() != null) {
+    	taskQuery.processDefinitionKey(request.getProcessDefinitionKey());
+    }
+    
+    if(request.getProcessDefinitionKeyLike() != null) {
+    	taskQuery.processDefinitionKeyLike(request.getProcessDefinitionKeyLike());
+    }
+    
+    if(request.getProcessDefinitionName() != null) {
+    	taskQuery.processDefinitionName(request.getProcessDefinitionName());
+    }
+    
+    if(request.getProcessDefinitionNameLike() != null) {
+    	taskQuery.processDefinitionNameLike(request.getProcessDefinitionNameLike());
     }
     
     if(request.getTaskVariables() != null) {
@@ -266,6 +296,30 @@ public class TaskBaseResource extends SecuredResource {
           throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
         }
         break;
+        
+      case GREATER_THAN:
+      	taskQuery.taskVariableValueGreaterThan(variable.getName(), actualValue);
+      	break;
+      	
+      case GREATER_THAN_OR_EQUALS:
+      	taskQuery.taskVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
+      	break;
+      	
+      case LESS_THAN:
+      	taskQuery.taskVariableValueLessThan(variable.getName(), actualValue);
+      	break;
+      	
+      case LESS_THAN_OR_EQUALS:
+      	taskQuery.taskVariableValueLessThanOrEqual(variable.getName(), actualValue);
+      	break;
+      	
+      case LIKE:
+      	if(actualValue instanceof String) {
+      		taskQuery.taskVariableValueLike(variable.getName(), (String) actualValue);
+      	} else {
+      		throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
+      	}
+      	break;
       default:
         throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
@@ -292,7 +346,7 @@ public class TaskBaseResource extends SecuredResource {
         throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
       }
       
-      switch(variable.getVariableOperation()) {
+switch(variable.getVariableOperation()) {
       
       case EQUALS:
         if(nameLess) {
@@ -321,6 +375,30 @@ public class TaskBaseResource extends SecuredResource {
           throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
         }
         break;
+        
+      case GREATER_THAN:
+      	taskQuery.processVariableValueGreaterThan(variable.getName(), actualValue);
+      	break;
+      	
+      case GREATER_THAN_OR_EQUALS:
+      	taskQuery.processVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
+      	break;
+      	
+      case LESS_THAN:
+      	taskQuery.processVariableValueLessThan(variable.getName(), actualValue);
+      	break;
+      	
+      case LESS_THAN_OR_EQUALS:
+      	taskQuery.processVariableValueLessThanOrEqual(variable.getName(), actualValue);
+      	break;
+      	
+      case LIKE:
+      	if(actualValue instanceof String) {
+      		taskQuery.processVariableValueLike(variable.getName(), (String) actualValue);
+      	} else {
+      		throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
+      	}
+      	break;
       default:
         throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
@@ -338,6 +416,23 @@ public class TaskBaseResource extends SecuredResource {
     }
     
     Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
+    if (task == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
+    }
+    return task;
+  }
+  
+  /**
+   * Get valid history task from request. Throws exception if task doen't exist or if task id is not provided.
+   */
+  protected HistoricTaskInstance getHistoricTaskFromRequest() {
+    String taskId = getAttribute("taskId");
+    
+    if (taskId == null) {
+      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
+    }
+    
+    HistoricTaskInstance task = ActivitiUtil.getHistoryService().createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
     if (task == null) {
       throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
     }

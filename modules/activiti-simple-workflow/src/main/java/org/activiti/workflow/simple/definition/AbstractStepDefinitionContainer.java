@@ -20,6 +20,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractStepDefinitionContainer<T> implements StepDefinitionContainer<T> {
@@ -148,5 +149,9 @@ public abstract class AbstractStepDefinitionContainer<T> implements StepDefiniti
     
     return (T) this;
   }
+  
+  public abstract StepDefinition clone();
+  
+  public abstract void setValues(StepDefinition otherDefinition);
   
 }

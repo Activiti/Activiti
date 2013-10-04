@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -57,13 +58,17 @@ public class HistoricTaskInstanceQueryResourceTest extends BaseRestTestCase {
     processVariables.put("intVar", 67890);
     processVariables.put("booleanVar", false);
     
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess",  "myBusinessKey", processVariables);
+    ClockUtil.setCurrentTime(new GregorianCalendar(2013, 0, 1).getTime());
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task finishedTaskProcess1 = task;
     taskService.complete(task.getId());
+    ClockUtil.setCurrentTime(null);
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.setVariableLocal(task.getId(), "local", "test");
     taskService.setOwner(task.getId(), "test");
     taskService.setDueDate(task.getId(), new GregorianCalendar(2013, 0, 1).getTime());
+    
     
     ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
     Task task2 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
@@ -85,6 +90,41 @@ public class HistoricTaskInstanceQueryResourceTest extends BaseRestTestCase {
     variableNode.put("name", "intVar");
     variableNode.put("value", 67890);
     variableNode.put("operation", "equals");
+    assertResultsPresentInDataResponse(url, requestNode, 3, task.getId(), task2.getId());
+    
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67891);
+    variableNode.put("operation", "lessThan");
+    assertResultsPresentInDataResponse(url, requestNode, 3, task.getId(), task2.getId());
+    
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67890);
+    variableNode.put("operation", "lessThan");
+    assertResultsPresentInDataResponse(url, requestNode);
+    
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67890);
+    variableNode.put("operation", "lessThanOrEquals");
+    assertResultsPresentInDataResponse(url, requestNode, 3, task.getId(), task2.getId());
+    
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67889);
+    variableNode.put("operation", "greaterThan");
+    assertResultsPresentInDataResponse(url, requestNode, 3, task.getId(), task2.getId());
+    
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67890);
+    variableNode.put("operation", "greaterThan");
+    assertResultsPresentInDataResponse(url, requestNode);
+    
+    variableNode.put("name", "intVar");
+    variableNode.put("value", 67890);
+    variableNode.put("operation", "greaterThanOrEquals");
+    assertResultsPresentInDataResponse(url, requestNode, 3, task.getId(), task2.getId());
+    
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "Azer%");
+    variableNode.put("operation", "like");
     assertResultsPresentInDataResponse(url, requestNode, 3, task.getId(), task2.getId());
     
     variableNode.put("name", "local");
@@ -152,6 +192,51 @@ public class HistoricTaskInstanceQueryResourceTest extends BaseRestTestCase {
     requestNode = objectMapper.createObjectNode();
     requestNode.put("dueDateBefore", dateFormat.format(new GregorianCalendar(2013, 4, 1).getTime()));
     assertResultsPresentInDataResponse(url, requestNode, 1, task.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskCompletedAfter", dateFormat.format(new GregorianCalendar(2010, 0, 1).getTime()));
+    assertResultsPresentInDataResponse(url, requestNode, 1, finishedTaskProcess1.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskCompletedAfter", dateFormat.format(new GregorianCalendar(2013, 4, 1).getTime()));
+    assertResultsPresentInDataResponse(url, requestNode, 0);
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskCompletedBefore", dateFormat.format(new GregorianCalendar(2010, 0, 1).getTime()));
+    assertResultsPresentInDataResponse(url, requestNode, 0);
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskCompletedAfter", dateFormat.format(new GregorianCalendar(2010, 3, 1).getTime()));
+    assertResultsPresentInDataResponse(url, requestNode, 1, finishedTaskProcess1.getId());
+    
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processBusinessKey", "myBusinessKey");
+    assertResultsPresentInDataResponse(url, requestNode, 2, task.getId(), finishedTaskProcess1.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processBusinessKeyLike", "myBusiness%");
+    assertResultsPresentInDataResponse(url, requestNode, 2, task.getId(), finishedTaskProcess1.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionKey", "someTaskProcess");
+    assertResultsPresentInDataResponse(url, requestNode, 0);
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionKey", "oneTaskProcess");
+    assertResultsPresentInDataResponse(url, requestNode, task.getId(), finishedTaskProcess1.getId(), task2.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionKeyLike", "oneTask%");
+    assertResultsPresentInDataResponse(url, requestNode, task.getId(), finishedTaskProcess1.getId(), task2.getId());
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("processDefinitionKeyLike", "some%");
+    assertResultsPresentInDataResponse(url, requestNode);
+    
+    requestNode = objectMapper.createObjectNode();
+    requestNode.put("taskDefinitionKey", "processTask");
+    assertResultsPresentInDataResponse(url, requestNode, finishedTaskProcess1.getId(), task2.getId());
   }
   
   protected void assertResultsPresentInDataResponse(String url, ObjectNode body, int numberOfResultsExpected, String... expectedTaskIds) throws JsonProcessingException, IOException {

@@ -39,7 +39,7 @@ public class TaskPaginateList extends AbstractPaginateList {
     List<TaskResponse> responseList = new ArrayList<TaskResponse>();
     RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     for (Object task : list) {
-      responseList.add(restResponseFactory.createTaskReponse(resource, (Task) task));
+      responseList.add(restResponseFactory.createTaskResponse(resource, (Task) task));
     }
     return responseList;
   }

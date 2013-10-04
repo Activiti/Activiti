@@ -32,9 +32,7 @@ public class FormPropertyGroup implements FormPropertyDefinitionContainer {
 	
 	protected List<FormPropertyDefinition> formPropertyDefinitions = new ArrayList<FormPropertyDefinition>();
 	
-	public FormPropertyGroup() {
-		
-  }
+	public FormPropertyGroup() {}
 	
 	public FormPropertyGroup(String id, String type, String title) {
 		this.id = id;
@@ -87,5 +85,30 @@ public class FormPropertyGroup implements FormPropertyDefinitionContainer {
   }
 	public void setId(String id) {
 	  this.id = id;
+  }
+	
+	public FormPropertyGroup clone() {
+	  FormPropertyGroup clone = new FormPropertyGroup();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(FormPropertyGroup otherGroup) {
+    if(!(otherGroup instanceof FormPropertyGroup)) {
+      throw new SimpleWorkflowException("An instance of FormPropertyGroup is required to set values");
+    }
+    
+    FormPropertyGroup formGroup = (FormPropertyGroup) otherGroup;
+    setId(formGroup.getId());
+    setTitle(formGroup.getTitle());
+    setType(formGroup.getType());
+    
+    List<FormPropertyDefinition> definitionList = new ArrayList<FormPropertyDefinition>();
+    if (formGroup.getFormPropertyDefinitions() != null && formGroup.getFormPropertyDefinitions().size() > 0) {
+      for (FormPropertyDefinition propertyDefinition : formGroup.getFormPropertyDefinitions()) {
+        definitionList.add(propertyDefinition.clone());
+      }
+    }
+    setFormPropertyDefinitions(definitionList);
   }
 }
