@@ -157,19 +157,19 @@
       org.activiti.db.mapping.entity
     </activiti.osgi.export.additional>
     <activiti.osgi.import.additional>
-      junit*;resolution:=optional,
-      org.junit*;resolution:=optional,
-      com.sun*;resolution:=optional,
-      javax.persistence*;resolution:=optional,
+      junit;resolution:=optional,
+      org.junit;resolution:=optional,
+      com.sun;resolution:=optional,
+      javax.persistence;resolution:=optional,
       org.apache.commons.mail;resolution:=optional,
-      org.apache.tools.ant*;resolution:=optional,
-      org.apache.xerces*;resolution:=optional,
+      org.apache.tools.ant;resolution:=optional,
+      org.apache.xerces;resolution:=optional,
       org.activiti.camel;resolution:=optional,
       org.activiti.camel.impl;resolution:=optional,
-      org.activiti.osgi*;resolution:=optional,
-      org.springframework*;resolution:=optional,
-      org.drools*;resolution:=optional,
-      com.fasterxml*;resolution:=optional,
+      org.activiti.osgi;resolution:=optional,
+      org.springframework;resolution:=optional,
+      org.drools;resolution:=optional,
+      com.fasterxml;resolution:=optional,
     </activiti.osgi.import.additional>
   </properties>
 

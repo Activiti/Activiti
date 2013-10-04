@@ -52,7 +52,7 @@
       org.activiti.osgi.Activator
     </activiti.osgi.activator>
     <activiti.osgi.import.pkg>
-      org.apache.felix.fileinstall*;resolution:=optional,*
+      org.apache.felix.fileinstall;resolution:=optional,*
     </activiti.osgi.import.pkg>
     <activiti.artifact>
       org.activiti.osgi
