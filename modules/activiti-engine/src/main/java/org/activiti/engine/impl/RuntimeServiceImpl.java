@@ -169,7 +169,6 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     Collection<String> variableNames = new ArrayList<String>();
     variableNames.add(variableName);
     commandExecutor.execute(new RemoveExecutionVariablesCmd(executionId, variableNames, true));
-    
   }
 
   public void removeVariables(String executionId, Collection<String> variableNames) {
@@ -236,6 +235,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, null));
   }
 
+  public void signalEventReceivedAsync(String signalName) {
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, true));
+  }
+  
   public void signalEventReceived(String signalName, Map<String, Object> processVariables) {
     commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, processVariables));
   }
@@ -248,6 +251,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, processVariables));
   }
 
+  public void signalEventReceivedAsync(String signalName, String executionId) {
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, true));
+  }
+  
   public void messageEventReceived(String messageName, String executionId) {
     commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, null));
   }
@@ -255,5 +262,9 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables) {
     commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, processVariables));
   }
-
+  
+  public void messageEventReceivedAsync(String messageName,
+			String executionId) {
+	  commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, true));
+  }
 }

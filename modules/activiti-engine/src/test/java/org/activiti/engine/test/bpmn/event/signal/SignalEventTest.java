@@ -22,6 +22,8 @@ import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -303,13 +305,13 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     ProcessInstance processInstanceCatch = runtimeService.startProcessInstanceByKey("processWithSignalCatch");
     assertEquals("userTaskWithSignalCatch", taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName());
     
-    // Then start the process that will throw thee signal
+    // Then start the process that will throw the signal
     runtimeService.startProcessInstanceByKey("processWithSignalThrow");
     
     // Since the signal is process instance scoped, the second process shouldn't have proceeded in any way
     assertEquals("userTaskWithSignalCatch", taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName());
     
-    // Let's try to trigger the cacth using the API, that should also fail
+    // Let's try to trigger the catch using the API, that should also fail
     runtimeService.signalEventReceived("The Signal");
     assertEquals("userTaskWithSignalCatch", taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName());
   }
@@ -327,4 +329,27 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertEquals("userTaskAfterSignalCatch", taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName());
   }
   
+  @Deployment
+  public void testAsyncTriggeredSignalEvent() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processWithSignalCatch");
+		
+		assertNotNull(processInstance);
+		Execution execution = runtimeService.createExecutionQuery()
+			      .processInstanceId(processInstance.getId())
+			      .signalEventSubscriptionName("The Signal")
+			      .singleResult();
+		assertNotNull(execution);
+		assertEquals(1, createEventSubscriptionQuery().count());
+		assertEquals(2, runtimeService.createExecutionQuery().count());
+		
+		runtimeService.signalEventReceivedAsync("The Signal", execution.getId());
+		
+		assertEquals(1, managementService
+			      .createJobQuery().messages().count());
+		
+		waitForJobExecutorToProcessAllJobs(8000L, 200L);
+		assertEquals(0, createEventSubscriptionQuery().count());    
+	    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+	    assertEquals(0, managementService.createJobQuery().count()); 
+  }
 }
