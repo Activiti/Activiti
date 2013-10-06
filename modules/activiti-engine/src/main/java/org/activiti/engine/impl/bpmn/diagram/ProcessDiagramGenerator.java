@@ -664,6 +664,49 @@ public class ProcessDiagramGenerator {
       }
     }
     
+    List<Artifact> artifacts = gatherAllArtifacts(bpmnModel);
+    for (Artifact artifact : artifacts) {
+
+      GraphicInfo artifactGraphicInfo = bpmnModel.getGraphicInfo(artifact.getId());
+      
+      if (artifactGraphicInfo != null) {
+	      // width
+	      if (artifactGraphicInfo.getX() + artifactGraphicInfo.getWidth() > maxX) {
+	        maxX = artifactGraphicInfo.getX() + artifactGraphicInfo.getWidth();
+	      }
+	      if (artifactGraphicInfo.getX() < minX) {
+	        minX = artifactGraphicInfo.getX();
+	      }
+	      // height
+	      if (artifactGraphicInfo.getY() + artifactGraphicInfo.getHeight() > maxY) {
+	        maxY = artifactGraphicInfo.getY() + artifactGraphicInfo.getHeight();
+	      }
+	      if (artifactGraphicInfo.getY() < minY) {
+	        minY = artifactGraphicInfo.getY();
+	      }
+      }
+
+      List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(artifact.getId());
+      if (graphicInfoList != null) {
+	      for (GraphicInfo graphicInfo : graphicInfoList) {
+	          // width
+	          if (graphicInfo.getX() > maxX) {
+	            maxX = graphicInfo.getX();
+	          }
+	          if (graphicInfo.getX() < minX) {
+	            minX = graphicInfo.getX();
+	          }
+	          // height
+	          if (graphicInfo.getY() > maxY) {
+	            maxY = graphicInfo.getY();
+	          }
+	          if (graphicInfo.getY()< minY) {
+	            minY = graphicInfo.getY();
+	          }
+	      }
+      }
+    }
+    
     int nrOfLanes = 0;
     for (Process process : bpmnModel.getProcesses()) {
       for (Lane l : process.getLanes()) {
@@ -696,6 +739,14 @@ public class ProcessDiagramGenerator {
     }
     
     return new ProcessDiagramCanvas((int) maxX + 10,(int) maxY + 10, (int) minX, (int) minY);
+  }
+  
+  protected static List<Artifact> gatherAllArtifacts(BpmnModel bpmnModel) {
+    List<Artifact> artifacts = new ArrayList<Artifact>();
+    for (Process process : bpmnModel.getProcesses()) {
+    	artifacts.addAll(process.getArtifacts());
+    }
+    return artifacts;
   }
   
   protected static List<FlowNode> gatherAllFlowNodes(BpmnModel bpmnModel) {
