@@ -869,4 +869,8 @@ public class ExecutionImpl implements
   public void disposeStartingExecution() {
     startingExecution = null;
   }
+  
+  public String updateProcessBusinessKey(String bzKey) {
+    return getProcessInstance().updateProcessBusinessKey(bzKey);
+  }
 }

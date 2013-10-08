@@ -659,4 +659,13 @@ public class HistoryManager extends AbstractManager {
       getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLink(id);
     }
   }
+  
+  public void updateProcessBusinessKeyInHistory(ExecutionEntity processInstance) {
+    if(log.isDebugEnabled()) {
+      log.debug("updateProcessBusinessKeyInHistory : {}", processInstance.getId());
+    }
+    HistoricProcessInstanceEntity historicProcessInstance = getDbSqlSession().selectById(HistoricProcessInstanceEntity.class, processInstance.getId());
+    historicProcessInstance.setBusinessKey(processInstance.getProcessBusinessKey());
+    getDbSqlSession().update(historicProcessInstance);
+  }
 }
