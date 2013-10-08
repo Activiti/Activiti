@@ -267,6 +267,12 @@ public interface RuntimeService {
    */
   void signal(String executionId, Map<String, Object> processVariables);
   
+  /** Updates the business key for the provided process instance
+   * @param processInstanceId id of the process instance to set the business key, cannot be null
+   * @param businessKey new businessKey value
+   */
+  void updateBusinessKey(String processInstanceId, String businessKey);
+  
   // Identity Links ///////////////////////////////////////////////////////////////
   
   /**

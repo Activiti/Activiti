@@ -33,6 +33,7 @@ import org.activiti.engine.impl.cmd.HasExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.MessageEventReceivedCmd;
 import org.activiti.engine.impl.cmd.RemoveExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.SetProcessInstanceBusinessKeyCmd;
 import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
@@ -97,7 +98,11 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public NativeProcessInstanceQuery createNativeProcessInstanceQuery() {
     return new NativeProcessInstanceQueryImpl(commandExecutor);
-  }  
+  } 
+  
+  public void updateBusinessKey(String processInstanceId, String businessKey) {
+    commandExecutor.execute(new SetProcessInstanceBusinessKeyCmd(processInstanceId, businessKey));
+  }
   
   public Map<String, Object> getVariables(String executionId) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, null, false));

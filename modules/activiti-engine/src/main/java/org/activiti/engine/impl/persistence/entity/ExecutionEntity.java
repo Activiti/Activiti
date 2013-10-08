@@ -1020,7 +1020,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("processDefinitionId", this.processDefinitionId);
-    persistentState.put("businessKey", businessKey);
+    persistentState.put("businessKey", this.businessKey);
     persistentState.put("activityId", this.activityId);
     persistentState.put("isActive", this.isActive);
     persistentState.put("isConcurrent", this.isConcurrent);
@@ -1400,7 +1400,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   public String updateProcessBusinessKey(String bzKey) {
-    if (isProcessInstanceType() && businessKey == null && bzKey != null) {
+    if (isProcessInstanceType() && bzKey != null) {
       setBusinessKey(bzKey);
       Context.getCommandContext().getHistoryManager().updateProcessBusinessKeyInHistory(this);
       return bzKey;
