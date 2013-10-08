@@ -42,9 +42,9 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
     super(executionId);
     this.messageName = messageName;
     
-    if(processVariables != null) {
+    if (processVariables != null) {
     	if (processVariables instanceof Serializable){
-    		this.payload = (Serializable)processVariables;
+    		this.payload = (Serializable) processVariables;
     	}
     	else{	
     		this.payload = new HashMap<String, Object>(processVariables);
@@ -58,10 +58,10 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
   }
 
   public MessageEventReceivedCmd(String messageName, String executionId, boolean async) {
-	    super(executionId);
-	    this.messageName = messageName;
-	    this.payload = null;
-	    this.async = async;
+    super(executionId);
+    this.messageName = messageName;
+    this.payload = null;
+    this.async = async;
   }
   protected Void execute(CommandContext commandContext, ExecutionEntity execution) {
     if(messageName == null) {

@@ -263,8 +263,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, processVariables));
   }
   
-  public void messageEventReceivedAsync(String messageName,
-			String executionId) {
+  public void messageEventReceivedAsync(String messageName, String executionId) {
 	  commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, true));
   }
 }

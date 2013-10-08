@@ -41,9 +41,9 @@ public class SignalEventReceivedCmd implements Command<Void> {
   public SignalEventReceivedCmd(String eventName, String executionId, Map<String, Object> processVariables) {
     this.eventName = eventName;
     this.executionId = executionId;
-    if(processVariables != null) {
+    if (processVariables != null) {
     	if (processVariables instanceof Serializable){
-    		this.payload = (Serializable)processVariables;
+    		this.payload = (Serializable) processVariables;
     	}
     	else{	
     		this.payload = new HashMap<String, Object>(processVariables);
@@ -56,10 +56,10 @@ public class SignalEventReceivedCmd implements Command<Void> {
   }
 
   public SignalEventReceivedCmd(String eventName, String executionId, boolean async) {
-	this.eventName = eventName;
-	this.executionId = executionId;
-	this.async = async;
-	this.payload = null;
+  	this.eventName = eventName;
+  	this.executionId = executionId;
+  	this.async = async;
+  	this.payload = null;
   }
 
   public Void execute(CommandContext commandContext) {
