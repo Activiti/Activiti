@@ -185,23 +185,25 @@ public class HistoryManager extends AbstractManager {
    */
   public void recordActivityStart(ExecutionEntity executionEntity) {
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
-      
-      String processDefinitionId = executionEntity.getProcessDefinitionId();
-      String processInstanceId = executionEntity.getProcessInstanceId();
-      String executionId = executionEntity.getId();
-
-      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
-      historicActivityInstance.setId(idGenerator.getNextId());
-      historicActivityInstance.setProcessDefinitionId(processDefinitionId);
-      historicActivityInstance.setProcessInstanceId(processInstanceId);
-      historicActivityInstance.setExecutionId(executionId);
-      historicActivityInstance.setActivityId(executionEntity.getActivityId());
-      historicActivityInstance.setActivityName((String) executionEntity.getActivity().getProperty("name"));
-      historicActivityInstance.setActivityType((String) executionEntity.getActivity().getProperty("type"));
-      historicActivityInstance.setStartTime(ClockUtil.getCurrentTime());
-      
-      getDbSqlSession().insert(historicActivityInstance);
+    	if(executionEntity.getActivity() != null) {
+    		IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
+    		
+    		String processDefinitionId = executionEntity.getProcessDefinitionId();
+    		String processInstanceId = executionEntity.getProcessInstanceId();
+    		String executionId = executionEntity.getId();
+    		
+    		HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
+    		historicActivityInstance.setId(idGenerator.getNextId());
+    		historicActivityInstance.setProcessDefinitionId(processDefinitionId);
+    		historicActivityInstance.setProcessInstanceId(processInstanceId);
+    		historicActivityInstance.setExecutionId(executionId);
+    		historicActivityInstance.setActivityId(executionEntity.getActivityId());
+    		historicActivityInstance.setActivityName((String) executionEntity.getActivity().getProperty("name"));
+    		historicActivityInstance.setActivityType((String) executionEntity.getActivity().getProperty("type"));
+    		historicActivityInstance.setStartTime(ClockUtil.getCurrentTime());
+    		
+    		getDbSqlSession().insert(historicActivityInstance);
+    	}
     }
   }
   
