@@ -17,14 +17,14 @@ import java.util.UUID;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
-import org.activiti.workflow.simple.alfresco.configmodel.Configuration;
-import org.activiti.workflow.simple.alfresco.configmodel.Form;
-import org.activiti.workflow.simple.alfresco.configmodel.FormField;
-import org.activiti.workflow.simple.alfresco.configmodel.FormFieldControl;
-import org.activiti.workflow.simple.alfresco.configmodel.FormFieldControlParameter;
-import org.activiti.workflow.simple.alfresco.configmodel.Module;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
+import org.activiti.workflow.simple.alfresco.model.config.Configuration;
+import org.activiti.workflow.simple.alfresco.model.config.Form;
+import org.activiti.workflow.simple.alfresco.model.config.FormField;
+import org.activiti.workflow.simple.alfresco.model.config.FormFieldControl;
+import org.activiti.workflow.simple.alfresco.model.config.FormFieldControlParameter;
+import org.activiti.workflow.simple.alfresco.model.config.Module;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
 
@@ -149,6 +149,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 	  form.getFormAppearance().addFormField(PROPERTY_PACKAGEITEMS, null, FORM_SET_ITEMS);
 	  
 	  FormField emailNotificationsField = new FormField();
+	  emailNotificationsField.setSet(FORM_SET_OTHER);
 	  emailNotificationsField.setId(PROPERTY_SEND_EMAIL_NOTIFICATIONS);
 	  emailNotificationsField.setControl(new FormFieldControl(FORM_EMAIL_NOTIFICATION_TEMPLATE));
 	  form.getFormAppearance().addFormAppearanceElement(emailNotificationsField);

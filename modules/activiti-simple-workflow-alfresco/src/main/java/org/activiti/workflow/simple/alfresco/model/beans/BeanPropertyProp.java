@@ -10,44 +10,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.alfresco.model;
+package org.activiti.workflow.simple.alfresco.model.beans;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(namespace="http://www.alfresco.org/model/dictionary/1.0")
-public class M2Mandatory {
-	@XmlAttribute(name="enforced")
-	private Boolean enforced;
+@XmlAccessorType(XmlAccessType.PROPERTY)
+public class BeanPropertyProp {
+
+	private String key;
+	private String value;
 	
-	@XmlValue
-	private boolean mandatory = false;
 	
-	public M2Mandatory() {
+	public BeanPropertyProp() {
 		
   }
 	
-	public M2Mandatory(boolean mandatory) {
-		this.mandatory = mandatory;
+	public BeanPropertyProp(String key, String value) {
+	  super();
+	  this.key = key;
+	  this.value = value;
+  }
+
+	@XmlAttribute
+	public String getKey() {
+	  return key;
   }
 	
-	public boolean isMandatory() {
-	  return mandatory;
+	public void setKey(String key) {
+	  this.key = key;
   }
 	
-	public Boolean isEnforced() {
-	  return enforced;
+	@XmlValue
+	public String getValue() {
+	  return value;
   }
 	
-	public void setEnforced(boolean enforced) {
-	  this.enforced = enforced;
-  }
-	
-	public void setMandatory(boolean mandatory) {
-	  this.mandatory = mandatory;
+	public void setValue(String value) {
+	  this.value = value;
   }
 }

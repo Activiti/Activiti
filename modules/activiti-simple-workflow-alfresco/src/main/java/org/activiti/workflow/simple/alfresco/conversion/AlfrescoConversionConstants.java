@@ -35,9 +35,9 @@ public interface AlfrescoConversionConstants {
 	 */
 	String CONTENT_MODEL_NAMESPACE_URL = "http://www.alfresco.org/model/dynamic-workflow/{0}/1.0";
 	
-	M2Namespace BPM_NAMESPACE = new M2Namespace("bpm", "http://www.alfresco.org/model/bpm/1.0");
-	M2Namespace DICTIONARY_NAMESPACE = new M2Namespace("d", "http://www.alfresco.org/model/dictionary/1.0");
-	M2Namespace CONTENT_NAMESPACE = new M2Namespace("cm", "http://www.alfresco.org/model/content/1.0");
+	M2Namespace BPM_NAMESPACE = new M2Namespace("http://www.alfresco.org/model/bpm/1.0", "bpm");
+	M2Namespace DICTIONARY_NAMESPACE = new M2Namespace("http://www.alfresco.org/model/dictionary/1.0", "d");
+	M2Namespace CONTENT_NAMESPACE = new M2Namespace("http://www.alfresco.org/model/content/1.0", "cm");
 	
 	String CONTENT_MODEL_CONSTRAINT_TYPE_LIST = "LIST";
 	String CONTENT_MODEL_CONSTRAINT_ALLOWED_VALUES = "allowedValues";
@@ -56,7 +56,7 @@ public interface AlfrescoConversionConstants {
 	String PROPERTY_WORKFLOW_DUE_DATE = "bpm:workflowDueDate";
 	String PROPERTY_WORKFLOW_PRIORITY = "bpm:workflowPriority";
 	String PROPERTY_SEND_EMAIL_NOTIFICATIONS = "bpm:sendEMailNotifications";
-	String PROPERTY_PACKAGEITEMS = "packageitems";
+	String PROPERTY_PACKAGEITEMS = "packageItems";
 	
 	String PROPERTY_TYPE_TEXT = "d:text";
 	String PROPERTY_TYPE_DATE = "d:date";
@@ -70,6 +70,7 @@ public interface AlfrescoConversionConstants {
 	String MODULE_ID = "kickstart_form_{0}";
 	
 	String EVALUATOR_STRING_COMPARE = "string-compare";
+	String EVALUATOR_TASK_TYPE = "task-type";
 	
 	String FORM_SET_APPEARANCE_TITLE = "title";
 	

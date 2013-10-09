@@ -22,14 +22,14 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.StartEvent;
-import org.activiti.workflow.simple.alfresco.configmodel.Configuration;
-import org.activiti.workflow.simple.alfresco.configmodel.Module;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoWorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Property;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
+import org.activiti.workflow.simple.alfresco.model.config.Configuration;
+import org.activiti.workflow.simple.alfresco.model.config.Module;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
@@ -135,17 +135,22 @@ public class WorkflowDefinitionConversionTest {
 		conversion.convert();
 		
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		conversionFactory.writeBpmnModel(stream, conversion);
+		conversionFactory.getArtifactExporter().writeBpmnModel(stream, conversion);
 		byte[] byteArray = stream.toByteArray();
 		assertTrue(byteArray.length > 0);
 		
 		stream = new ByteArrayOutputStream();
-		conversionFactory.writeContentModel(stream, conversion);
+		conversionFactory.getArtifactExporter().writeContentModel(stream, conversion);
 		byteArray = stream.toByteArray();
 		assertTrue(byteArray.length > 0);
 		
 		stream = new ByteArrayOutputStream();
-		conversionFactory.writeModule(stream, conversion);
+		conversionFactory.getArtifactExporter().writeShareConfig(stream, conversion, true);
+		byteArray = stream.toByteArray();
+		assertTrue(byteArray.length > 0);
+		
+		stream = new ByteArrayOutputStream();
+		conversionFactory.getArtifactExporter().writeShareConfig(stream, conversion, false);
 		byteArray = stream.toByteArray();
 		assertTrue(byteArray.length > 0);
 	}

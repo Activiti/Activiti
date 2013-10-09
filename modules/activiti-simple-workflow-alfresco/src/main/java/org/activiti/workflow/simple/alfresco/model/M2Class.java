@@ -30,26 +30,30 @@ import javax.xml.bind.annotation.XmlType;
 public class M2Class {
 	@XmlAttribute
 	private String name;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String title;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String description;
 	
-	@XmlElement(name="parent")
+	@XmlElement(name="parent", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String parentName;
 	
-	@XmlElementWrapper(name="properties")
-	@XmlElement(name="property")
+	@XmlElementWrapper(name="properties", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(name="property", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<M2Property> properties;
 	
-	@XmlElementWrapper(name="overrides")
-	@XmlElement(name="property")
+	@XmlElementWrapper(name="overrides", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(name="property", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<M2PropertyOverride> propertyOverrides;
 	
-	@XmlElementWrapper(name="associations")
-	@XmlElement(name="association")
+	@XmlElementWrapper(name="associations", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(name="association", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<M2ClassAssociation> associations;
 	
-	@XmlElementWrapper(name="mandatory-aspects")
-	@XmlElement(name="aspect")
+	@XmlElementWrapper(name="mandatory-aspects", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(name="aspect", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<String> mandatoryAspects;
 	
 	public List<String> getMandatoryAspects() {

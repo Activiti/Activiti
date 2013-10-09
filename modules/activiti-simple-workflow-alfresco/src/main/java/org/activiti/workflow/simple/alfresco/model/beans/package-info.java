@@ -10,11 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.alfresco.model;
-
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name="type", namespace="http://www.alfresco.org/model/dictionary/1.0")
-public class M2Type extends M2Class {
-
-}
+/**
+ * @author Frederik Heremans
+ */
+@XmlSchema(
+		elementFormDefault=XmlNsForm.QUALIFIED,
+		xmlns = {
+				@XmlNs(prefix="jos", namespaceURI="http://www.springframework.org/schema/beans"),
+				@XmlNs(prefix="tx", namespaceURI="http://www.springframework.org/schema/jee"),
+		}
+)
+package org.activiti.workflow.simple.alfresco.model.beans;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlSchema;

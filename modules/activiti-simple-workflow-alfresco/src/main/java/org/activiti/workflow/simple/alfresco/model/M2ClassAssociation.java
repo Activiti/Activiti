@@ -15,10 +15,12 @@ package org.activiti.workflow.simple.alfresco.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "isProtected", "title", "description", "source", "target" })
+@XmlType(namespace="http://www.alfresco.org/model/dictionary/1.0", 
+	propOrder = { "name", "isProtected", "title", "description", "source", "target" })
 public class M2ClassAssociation {
 
 	@XmlAttribute
@@ -26,9 +28,14 @@ public class M2ClassAssociation {
 
 	@XmlAttribute(name = "protected")
 	private Boolean isProtected;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String title;
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String description;
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private M2AssociationSource source;
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private M2AssociationTarget target;
 
 	public M2AssociationSource getSource() {

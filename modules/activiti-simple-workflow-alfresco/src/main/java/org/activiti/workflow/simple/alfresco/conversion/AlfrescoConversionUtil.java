@@ -14,9 +14,9 @@ package org.activiti.workflow.simple.alfresco.conversion;
 
 import java.text.MessageFormat;
 
-import org.activiti.workflow.simple.alfresco.configmodel.Module;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
+import org.activiti.workflow.simple.alfresco.model.config.Module;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 
 /**

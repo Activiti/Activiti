@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.activiti.workflow.simple.alfresco.configmodel;
+package org.activiti.workflow.simple.alfresco.model.config;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,20 +26,33 @@ import javax.xml.bind.annotation.XmlAttribute;
  * @author Joram Barrez
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class FormFieldVisibilityElement
+public class FormSet extends FormAppearanceElement
 {
-
-    @XmlAttribute(name="id")
-    private String id;
-
-    public String getId()
+    
+    @XmlAttribute(name="appearance")
+    private String appearance;
+    
+    @XmlAttribute(name="template")
+    private String template;
+    
+    public String getAppearance()
     {
-        return id;
+        return appearance;
     }
 
-    public void setId(String id)
+    public void setAppearance(String appearance)
     {
-        this.id = id;
+        this.appearance = appearance;
+    }
+
+    public String getTemplate()
+    {
+        return template;
+    }
+
+    public void setTemplate(String template)
+    {
+        this.template = template;
     }
     
 }

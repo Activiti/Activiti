@@ -14,13 +14,17 @@ package org.activiti.workflow.simple.alfresco.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "role", "mandatory", "many" })
+@XmlType(propOrder = { "role", "mandatory", "many" }, namespace="http://www.alfresco.org/model/dictionary/1.0")
 public class M2AssociationSource {
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String role;
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private boolean mandatory = false;
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private boolean many = false;
 
 	public String getRole() {

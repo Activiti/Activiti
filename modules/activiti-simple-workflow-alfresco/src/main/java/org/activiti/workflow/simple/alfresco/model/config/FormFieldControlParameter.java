@@ -16,53 +16,52 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.activiti.workflow.simple.alfresco.configmodel;
+package org.activiti.workflow.simple.alfresco.model.config;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlValue;
 
 /**
  * @author Joram Barrez
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class FormField extends FormAppearanceElement
+public class FormFieldControlParameter
 {
-    @XmlAttribute(name="set")
-    private String set;
+    @XmlAttribute(name="name")
+    private String name;
+
+    @XmlValue
+    private String configuration;
     
-    @XmlElement(name="control")
-    private FormFieldControl control;
-    
-    public String getSet()
-    {
-        return set;
-    }
-
-    public void setSet(String set)
-    {
-        this.set = set;
-    }
-
-    public FormFieldControl getControl()
-    {
-        return control;
-    }
-
-    public void setControl(FormFieldControl control)
-    {
-        this.control = control;
+    public FormFieldControlParameter() {
+    	
     }
     
-    public FormFieldControl createFormFieldControl(String template)
+    public FormFieldControlParameter(String name, String configuration) {
+	    this.name = name;
+	    this.configuration = configuration;
+    }
+
+		public String getName()
     {
-        FormFieldControl formFieldControl = new FormFieldControl();
-        formFieldControl.setTemplate(template);
-        
-        setControl(formFieldControl);
-        
-        return formFieldControl;
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getConfiguration()
+    {
+        return configuration;
+    }
+
+    public void setConfiguration(String configuration)
+    {
+        this.configuration = configuration;
     }
     
 }

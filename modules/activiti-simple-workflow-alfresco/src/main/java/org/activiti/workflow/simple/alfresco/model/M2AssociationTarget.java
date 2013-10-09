@@ -18,13 +18,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "className", "role", "mandatory", "many" })
+@XmlType(propOrder = { "className", "role", "mandatory", "many" }, namespace="http://www.alfresco.org/model/dictionary/1.0")
 public class M2AssociationTarget {
-	@XmlElement(name = "class")
+	@XmlElement(name = "class", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String className;
 
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String role;
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private boolean mandatory = false;
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private boolean many = false;
 
 	public String getClassName() {

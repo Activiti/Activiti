@@ -12,8 +12,8 @@
  */
 package org.activiti.workflow.simple.alfresco.conversion.form;
 
-import org.activiti.workflow.simple.alfresco.configmodel.Form;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
+import org.activiti.workflow.simple.alfresco.model.config.Form;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 

@@ -19,8 +19,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(namespace="http://www.alfresco.org/model/dictionary/1.0")
 public class M2Constraint {
 
 	@XmlAttribute
@@ -31,10 +33,14 @@ public class M2Constraint {
 	
 	@XmlAttribute
 	private String type;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String title;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String description;
 	
-	@XmlElement(name="parameter")
+	@XmlElement(name="parameter", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<M2NamedValue> parameters;
 	
 	public List<M2NamedValue> getParameters() {
