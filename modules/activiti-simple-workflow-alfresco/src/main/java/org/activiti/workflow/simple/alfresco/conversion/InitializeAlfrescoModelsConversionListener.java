@@ -18,6 +18,10 @@ import java.util.UUID;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.workflow.simple.alfresco.configmodel.Configuration;
+import org.activiti.workflow.simple.alfresco.configmodel.Form;
+import org.activiti.workflow.simple.alfresco.configmodel.FormField;
+import org.activiti.workflow.simple.alfresco.configmodel.FormFieldControl;
+import org.activiti.workflow.simple.alfresco.configmodel.FormFieldControlParameter;
 import org.activiti.workflow.simple.alfresco.configmodel.Module;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
@@ -31,13 +35,18 @@ import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConvers
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public class InitializeAlfrescoModelsConversionListener implements WorkflowDefinitionConversionListener {
+public class InitializeAlfrescoModelsConversionListener implements WorkflowDefinitionConversionListener, AlfrescoConversionConstants {
 
   private static final long serialVersionUID = 1L;
   
 	@Override
 	public void beforeStepsConversion(WorkflowDefinitionConversion conversion) {
-		String processId = generateUniqueProcessId(conversion);
+		String processId = null;
+		if(conversion.getWorkflowDefinition().getId() != null) {
+			processId = AlfrescoConversionUtil.getValidIdString(conversion.getWorkflowDefinition().getId());
+		} else {
+			processId = generateUniqueProcessId(conversion);
+		}
 		addContentModel(conversion, processId);
 		addModule(conversion, processId);
 	}
@@ -48,7 +57,14 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 			if(flowElement instanceof StartEvent) {
 				StartEvent startEvent = (StartEvent) flowElement;
 				if(startEvent.getFormKey() == null) {
-					startEvent.setFormKey(AlfrescoConversionConstants.DEFAULT_START_FORM_TYPE);
+					startEvent.setFormKey(DEFAULT_START_FORM_TYPE);
+					
+					// Also add form-config to the share-module for workflow detail screen, based on the default form
+					Module module = AlfrescoConversionUtil.getModule(conversion);
+					Configuration detailsForm = module.addConfiguration(EVALUATOR_STRING_COMPARE, 
+							MessageFormat.format(EVALUATOR_CONDITION_ACTIVITI, conversion.getProcess().getId()));
+					
+					populateDefaultDetailFormConfig(detailsForm);
 				}
 			}
 		}
@@ -56,7 +72,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 	
 	protected String generateUniqueProcessId(WorkflowDefinitionConversion conversion) {
 		String processId = AlfrescoConversionUtil.getValidIdString(
-				AlfrescoConversionConstants.PROCESS_ID_PREFIX + UUID.randomUUID().toString());
+				PROCESS_ID_PREFIX + UUID.randomUUID().toString());
 		conversion.getProcess().setId(processId);
 		return processId;
   }
@@ -67,16 +83,16 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		// Set general model properties
 		M2Model model = new M2Model();
 		model.setName(AlfrescoConversionUtil.getQualifiedName(processId, 
-				AlfrescoConversionConstants.CONTENT_MODEL_UNQUALIFIED_NAME));
+				CONTENT_MODEL_UNQUALIFIED_NAME));
 		
 		M2Namespace namespace = AlfrescoConversionUtil.createNamespace(processId);
 		model.getNamespaces().add(namespace);
 		
 		
 		// Import required alfresco models
-		model.getImports().add(AlfrescoConversionConstants.DICTIONARY_NAMESPACE);
-		model.getImports().add(AlfrescoConversionConstants.CONTENT_NAMESPACE);
-		model.getImports().add(AlfrescoConversionConstants.BPM_NAMESPACE);
+		model.getImports().add(DICTIONARY_NAMESPACE);
+		model.getImports().add(CONTENT_NAMESPACE);
+		model.getImports().add(BPM_NAMESPACE);
 		
 		// Store model in the conversion artifacts to be accessed later
 		AlfrescoConversionUtil.storeContentModel(model, conversion);
@@ -86,7 +102,55 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 	protected void addModule(WorkflowDefinitionConversion conversion, String processId) {
 		// Create form-configuration
 		Module module = new Module();
-		module.setId(MessageFormat.format(AlfrescoConversionConstants.MODULE_ID, processId));
+		module.setId(MessageFormat.format(MODULE_ID, processId));
 		AlfrescoConversionUtil.storeModule(module, conversion);
   }
+	
+	protected void populateDefaultDetailFormConfig(Configuration configuration) {
+	  Form form = configuration.createForm();
+	  
+	  // Add visibility of fields
+	  form.getFormFieldVisibility().addShowFieldElement(PROPERTY_WORKFLOW_DESCRIPTION);
+	  form.getFormFieldVisibility().addShowFieldElement(PROPERTY_WORKFLOW_DUE_DATE);
+	  form.getFormFieldVisibility().addShowFieldElement(PROPERTY_WORKFLOW_PRIORITY);
+	  form.getFormFieldVisibility().addShowFieldElement(PROPERTY_PACKAGEITEMS);
+	  form.getFormFieldVisibility().addShowFieldElement(PROPERTY_SEND_EMAIL_NOTIFICATIONS);
+	  
+	  // Add all sets to the appearance
+	  form.getFormAppearance().addFormSet(FORM_SET_GENERAL, FORM_SET_APPEARANCE_TITLE, FORM_SET_GENERAL_LABEL, null);
+	  form.getFormAppearance().addFormSet(FORM_SET_INFO, null, null, FORM_SET_TEMPLATE_2_COLUMN);
+	  form.getFormAppearance().addFormSet(FORM_SET_ASSIGNEE, FORM_SET_APPEARANCE_TITLE, FORM_SET_ASSIGNEE_LABEL, null);
+	  form.getFormAppearance().addFormSet(FORM_SET_ITEMS, FORM_SET_APPEARANCE_TITLE, FORM_SET_ITEMS_LABEL, null);
+	  form.getFormAppearance().addFormSet(FORM_SET_OTHER, FORM_SET_APPEARANCE_TITLE, FORM_SET_OTHER_LABEL, null);
+	  
+	  // Finally, add the individual fields
+	  FormField descriptionField = new FormField();
+	  descriptionField.setId(PROPERTY_WORKFLOW_DESCRIPTION);
+	  descriptionField.setControl(new FormFieldControl(FORM_MULTILINE_TEXT_TEMPLATE));
+	  descriptionField.setLabelId(FORM_WORKFLOW_DESCRIPTION_LABEL);
+	  form.getFormAppearance().addFormAppearanceElement(descriptionField);
+	  
+	  FormField dueDateField = new FormField();
+	  dueDateField.setId(PROPERTY_WORKFLOW_DUE_DATE);
+	  dueDateField.setSet(FORM_SET_INFO);
+	  dueDateField.setLabelId(FORM_WORKFLOW_DUE_DATE_LABEL);
+	  dueDateField.setControl(new FormFieldControl(FORM_DATE_TEMPLATE));
+	  dueDateField.getControl().getControlParameters().add(new FormFieldControlParameter(FORM_DATE_PARAM_SHOW_TIME, Boolean.FALSE.toString()));
+	  dueDateField.getControl().getControlParameters().add(new FormFieldControlParameter(FORM_DATE_PARAM_SUBMIT_TIME, Boolean.FALSE.toString()));
+	  form.getFormAppearance().addFormAppearanceElement(dueDateField);
+	  
+	  FormField priorityField = new FormField();
+	  priorityField.setSet(FORM_SET_INFO);
+	  priorityField.setLabelId(FORM_WORKFLOW_PRIORITY_LABEL);
+	  priorityField.setId(PROPERTY_WORKFLOW_PRIORITY);
+	  priorityField.setControl(new FormFieldControl(FORM_PRIORITY_TEMPLATE));
+	  form.getFormAppearance().addFormAppearanceElement(priorityField);
+	  
+	  form.getFormAppearance().addFormField(PROPERTY_PACKAGEITEMS, null, FORM_SET_ITEMS);
+	  
+	  FormField emailNotificationsField = new FormField();
+	  emailNotificationsField.setId(PROPERTY_SEND_EMAIL_NOTIFICATIONS);
+	  emailNotificationsField.setControl(new FormFieldControl(FORM_EMAIL_NOTIFICATION_TEMPLATE));
+	  form.getFormAppearance().addFormAppearanceElement(emailNotificationsField);
+	}
 }

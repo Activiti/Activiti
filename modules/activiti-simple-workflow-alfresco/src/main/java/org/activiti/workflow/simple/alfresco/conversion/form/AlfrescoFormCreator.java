@@ -37,10 +37,15 @@ public class AlfrescoFormCreator {
 	
 	public AlfrescoFormCreator() {
 		propertyConverters = new HashMap<Class<? extends FormPropertyDefinition>, AlfrescoFormPropertyConverter>();
+		
+		registerConverter(new AlfrescoTextPropertyConverter());
+		registerConverter(new AlfrescoDatePropertyConverter());
+		registerConverter(new AlfrescoNumberPropertyConverter());
+		registerConverter(new AlfrescoListPropertyConverter());
   }
 	
 	public void createForm(M2Type contentType, Form formConfig, FormDefinition formDefinition, WorkflowDefinitionConversion conversion) {
-		if(formDefinition.getFormGroups() != null) {
+		if(formDefinition != null && formDefinition.getFormGroups() != null) {
 			
 			for(FormPropertyGroup group : formDefinition.getFormGroups()) {
 				// Create a group in the form-config
@@ -78,5 +83,9 @@ public class AlfrescoFormCreator {
 		} else {
 			return null;
 		}
+  }
+	
+	protected void registerConverter(AlfrescoFormPropertyConverter converter) {
+		propertyConverters.put(converter.getConvertedClass(), converter);
   }
 }

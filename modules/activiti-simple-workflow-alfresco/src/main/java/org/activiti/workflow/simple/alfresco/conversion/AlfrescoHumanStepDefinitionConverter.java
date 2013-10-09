@@ -14,6 +14,7 @@ package org.activiti.workflow.simple.alfresco.conversion;
 
 import java.text.MessageFormat;
 
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.configmodel.Configuration;
 import org.activiti.workflow.simple.alfresco.configmodel.Form;
 import org.activiti.workflow.simple.alfresco.configmodel.Module;
@@ -51,12 +52,21 @@ public class AlfrescoHumanStepDefinitionConverter extends HumanStepDefinitionCon
 
 	@Override
 	public void convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
+		// Let superclass handle BPMN-specific conversion
+		super.convertStepDefinition(stepDefinition, conversion);
+		
+		// Clear form-properties in the BPMN file, as we use custom form-mapping in Alfresco
+		String userTaskId = conversion.getLastActivityId();
+		UserTask userTask = (UserTask) conversion.getProcess().getFlowElement(userTaskId);
+		userTask.getFormProperties().clear();
+		
 		HumanStepDefinition humanStep = (HumanStepDefinition) stepDefinition;
 		validate(humanStep);
 		
 		// Create the content model for the task
 		M2Type type = new M2Type();
 		M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
+		model.getTypes().add(type);
 		M2Namespace modelNamespace = model.getNamespaces().get(0);
 		type.setName(AlfrescoConversionUtil.getQualifiedName(modelNamespace.getPrefix(),
 				humanStep.getId()));

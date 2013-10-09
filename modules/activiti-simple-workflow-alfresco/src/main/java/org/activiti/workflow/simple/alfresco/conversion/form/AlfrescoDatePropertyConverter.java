@@ -41,6 +41,7 @@ public class AlfrescoDatePropertyConverter implements AlfrescoFormPropertyConver
 		M2Property property = new M2Property();
 		property.setMandatory(new M2Mandatory(dateDefinition.isMandatory()));
 		property.setName(propertyName);
+		contentType.getProperties().add(property);
 		
 		if(dateDefinition.isShowTime()) {
 			property.setPropertyType(AlfrescoConversionConstants.PROPERTY_TYPE_DATETIME);

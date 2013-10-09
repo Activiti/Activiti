@@ -42,6 +42,14 @@ public class FormFieldControl
     })
     private List<FormFieldControlParameter> controlParameters = new ArrayList<FormFieldControlParameter>();
 
+    public FormFieldControl() {
+    	
+    }
+    
+    public FormFieldControl(String template) {
+    	this.template = template;
+    }
+    
     public String getTemplate()
     {
         return template;

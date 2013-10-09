@@ -29,14 +29,22 @@ import javax.xml.bind.annotation.XmlValue;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FormFieldControlParameter
 {
-    
     @XmlAttribute(name="name")
     private String name;
 
     @XmlValue
     private String configuration;
+    
+    public FormFieldControlParameter() {
+    	
+    }
+    
+    public FormFieldControlParameter(String name, String configuration) {
+	    this.name = name;
+	    this.configuration = configuration;
+    }
 
-    public String getName()
+		public String getName()
     {
         return name;
     }

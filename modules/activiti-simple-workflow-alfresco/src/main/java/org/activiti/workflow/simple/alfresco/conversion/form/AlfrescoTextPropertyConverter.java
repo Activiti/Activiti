@@ -42,6 +42,7 @@ public class AlfrescoTextPropertyConverter implements AlfrescoFormPropertyConver
 		property.setMandatory(new M2Mandatory(textDefinition.isMandatory()));
 		property.setName(propertyName);
 		property.setPropertyType(AlfrescoConversionConstants.PROPERTY_TYPE_TEXT);
+		contentType.getProperties().add(property);
 		
 		// Add form configuration
 		form.getFormFieldVisibility().addShowFieldElement(propertyName);
@@ -58,5 +59,6 @@ public class AlfrescoTextPropertyConverter implements AlfrescoFormPropertyConver
 			control.setTemplate(AlfrescoConversionConstants.FORM_MULTILINE_TEXT_TEMPLATE);
 			formField.setControl(control);
 		}
+		
 	}
 }

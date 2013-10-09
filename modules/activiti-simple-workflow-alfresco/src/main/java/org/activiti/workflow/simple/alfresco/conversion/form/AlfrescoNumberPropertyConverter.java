@@ -58,5 +58,7 @@ public class AlfrescoNumberPropertyConverter implements AlfrescoFormPropertyConv
 			control.setTemplate(AlfrescoConversionConstants.FORM_NUMBER_TEMPLATE);
 			formField.setControl(control);
 		}
+		
+		contentType.getProperties().add(property);
 	}
 }

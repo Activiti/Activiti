@@ -50,6 +50,7 @@ public class AlfrescoListPropertyConverter implements AlfrescoFormPropertyConver
 		property.setMandatory(new M2Mandatory(dateDefinition.isMandatory()));
 		property.setName(propertyName);
 		property.setPropertyType(AlfrescoConversionConstants.PROPERTY_TYPE_TEXT);
+		contentType.getProperties().add(property);
 		
 		// Create constraint for the values
 		if(dateDefinition.getEntries() != null && dateDefinition.getEntries().size() > 0) {
@@ -59,7 +60,7 @@ public class AlfrescoListPropertyConverter implements AlfrescoFormPropertyConver
 			
 			List<String> values = new ArrayList<String>(dateDefinition.getEntries().size());
 			for(ListPropertyEntry entry : dateDefinition.getEntries()) {
-				// TODO: i18n file using labels
+				// TODO: i18n file using labels in properties-file, a part of deployment?
 				values.add(entry.getValue());
 			}
 			valueConstraint.getParameters().add(new M2NamedValue(AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_TYPE_LIST, null, values));
