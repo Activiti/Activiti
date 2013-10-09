@@ -143,6 +143,23 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
     }
   }
   
+  @Deployment
+  public void testCandidate() {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      List<HistoricTaskInstance> tasks = null;
+
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("kermit").list();
+      assertEquals(2, tasks.size());
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
+      assertEquals(0, tasks.size());
+      List<String> groups = new ArrayList<String>();
+      groups.add("management");
+      groups.add("accountancy");
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
+      assertEquals(0, tasks.size());
+    }
+  }
+  
   public void testQueryWithPagingAndVariables() {
     List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery()
         .includeProcessVariables()
