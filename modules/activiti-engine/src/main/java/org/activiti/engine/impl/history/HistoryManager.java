@@ -661,11 +661,17 @@ public class HistoryManager extends AbstractManager {
   }
   
   public void updateProcessBusinessKeyInHistory(ExecutionEntity processInstance) {
-    if(log.isDebugEnabled()) {
-      log.debug("updateProcessBusinessKeyInHistory : {}", processInstance.getId());
+    if (isHistoryEnabled()) {
+      if(log.isDebugEnabled()) {
+        log.debug("updateProcessBusinessKeyInHistory : {}", processInstance.getId());
+      }
+      if (processInstance != null) {
+        HistoricProcessInstanceEntity historicProcessInstance = getDbSqlSession().selectById(HistoricProcessInstanceEntity.class, processInstance.getId());
+        if (historicProcessInstance != null) {
+          historicProcessInstance.setBusinessKey(processInstance.getProcessBusinessKey());
+          getDbSqlSession().update(historicProcessInstance);
+        }
+      }
     }
-    HistoricProcessInstanceEntity historicProcessInstance = getDbSqlSession().selectById(HistoricProcessInstanceEntity.class, processInstance.getId());
-    historicProcessInstance.setBusinessKey(processInstance.getProcessBusinessKey());
-    getDbSqlSession().update(historicProcessInstance);
   }
 }

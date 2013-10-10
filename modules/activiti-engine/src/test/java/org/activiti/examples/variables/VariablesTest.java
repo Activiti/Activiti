@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
@@ -186,38 +187,35 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertTrue(Arrays.equals(bytes, (byte[]) variables.get("bytesVar")));
     assertEquals(8, variables.size());
     
-    
-    
     // check if the id of the variable is the same or not
    
-    String oldSerializableVarId = getVariableInstanceId(processInstance.getId(), "serializableVar");
-    String oldLongVar = getVariableInstanceId(processInstance.getId(), "longVar");
-    
-
-    // Change type of serializableVar from serializable to Short
-    Map<String, Object> newVariables = new HashMap<String, Object>();
-    newVariables.put("serializableVar", (short) 222);
-    runtimeService.setVariables(processInstance.getId(), newVariables);
-    variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals((short) 222, variables.get("serializableVar"));
-    
-    String newSerializableVarId = getVariableInstanceId(processInstance.getId(), "serializableVar");
-    
-    assertEquals(oldSerializableVarId, newSerializableVarId);
-
-    
-    // Change type of a  longVar from Long to Short
-    newVariables = new HashMap<String, Object>();
-    newVariables.put("longVar", (short) 123);
-    runtimeService.setVariables(processInstance.getId(), newVariables);
-    variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals((short) 123, variables.get("longVar"));
-    
-    String newLongVar = getVariableInstanceId(processInstance.getId(), "longVar");
-    assertEquals(oldLongVar, newLongVar);
-
-    
-
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      String oldSerializableVarId = getVariableInstanceId(processInstance.getId(), "serializableVar");
+      String oldLongVar = getVariableInstanceId(processInstance.getId(), "longVar");
+      
+  
+      // Change type of serializableVar from serializable to Short
+      Map<String, Object> newVariables = new HashMap<String, Object>();
+      newVariables.put("serializableVar", (short) 222);
+      runtimeService.setVariables(processInstance.getId(), newVariables);
+      variables = runtimeService.getVariables(processInstance.getId());
+      assertEquals((short) 222, variables.get("serializableVar"));
+      
+      String newSerializableVarId = getVariableInstanceId(processInstance.getId(), "serializableVar");
+      
+      assertEquals(oldSerializableVarId, newSerializableVarId);
+  
+      
+      // Change type of a  longVar from Long to Short
+      newVariables = new HashMap<String, Object>();
+      newVariables.put("longVar", (short) 123);
+      runtimeService.setVariables(processInstance.getId(), newVariables);
+      variables = runtimeService.getVariables(processInstance.getId());
+      assertEquals((short) 123, variables.get("longVar"));
+      
+      String newLongVar = getVariableInstanceId(processInstance.getId(), "longVar");
+      assertEquals(oldLongVar, newLongVar);
+    }
   }
   
   
