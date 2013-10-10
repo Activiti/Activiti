@@ -46,6 +46,7 @@ public interface AlfrescoConversionConstants {
 	 * Default start form key
 	 */
 	String DEFAULT_START_FORM_TYPE = "bpm:activitiStartTask";
+	String START_TASK_SIMPLE_NAME = "start";
 	
 	/**
 	 * Base type for all task models
@@ -80,6 +81,7 @@ public interface AlfrescoConversionConstants {
 	
 	String FORM_READONLY_TEMPLATE = "/org/alfresco/components/form/controls/info.ftl";
 	String FORM_MULTILINE_TEXT_TEMPLATE = "/org/alfresco/components/form/controls/textarea.ftl";
+	String FORM_TEXT_TEMPLATE = "/org/alfresco/components/form/controls/textfield.ftl";
 	String FORM_DATE_TEMPLATE = "/org/alfresco/components/form/controls/date.ftl";
 	String FORM_DATE_PARAM_SHOW_TIME = "showTime";
 	String FORM_DATE_PARAM_SUBMIT_TIME = "submitTime";

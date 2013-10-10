@@ -202,7 +202,8 @@ public class AlfrescoArtifactExporter {
     workflowProperty.addProp(new BeanPropertyProp(PROP_KEY_ENGINE_ID, PROP_ENGINE_ID));
     workflowProperty.addProp(new BeanPropertyProp(PROP_KEY_MIME_TYPE, PROP_MIME_TYPE));
     workflowProperty.addProp(new BeanPropertyProp(PROP_KEY_LOCATION, EXTENSIONS_PATH_PREFIX + processFileName));
-    workflowProperty.addProp(new BeanPropertyProp(PROP_KEY_REDEPLOY, Boolean.FALSE.toString()));
+    // TODO: set back to false or make configurable
+    workflowProperty.addProp(new BeanPropertyProp(PROP_KEY_REDEPLOY, Boolean.TRUE.toString()));
     workflowDeployer.getProperties().add(workflowProperty);
     
     writeBeans(out, beans);

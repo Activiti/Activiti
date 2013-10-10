@@ -13,12 +13,18 @@
 package org.activiti.workflow.simple.alfresco.conversion;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
+import org.activiti.workflow.simple.alfresco.conversion.form.AlfrescoFormCreator;
+import org.activiti.workflow.simple.alfresco.model.M2Aspect;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
+import org.activiti.workflow.simple.alfresco.model.M2Type;
 import org.activiti.workflow.simple.alfresco.model.config.Configuration;
 import org.activiti.workflow.simple.alfresco.model.config.Form;
 import org.activiti.workflow.simple.alfresco.model.config.FormField;
@@ -27,6 +33,12 @@ import org.activiti.workflow.simple.alfresco.model.config.FormFieldControlParame
 import org.activiti.workflow.simple.alfresco.model.config.Module;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
+import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.StepDefinition;
+import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
+import org.activiti.workflow.simple.definition.form.FormPropertyGroup;
 
 /**
  * A {@link WorkflowDefinitionConversionListener} that creates a {@link M2Model} and a {@link Configuration}
@@ -39,6 +51,12 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 
   private static final long serialVersionUID = 1L;
   
+	protected AlfrescoFormCreator formCreator;
+  
+  public InitializeAlfrescoModelsConversionListener() {
+  	formCreator = new AlfrescoFormCreator();
+  }
+  
 	@Override
 	public void beforeStepsConversion(WorkflowDefinitionConversion conversion) {
 		String processId = null;
@@ -47,8 +65,14 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		} else {
 			processId = generateUniqueProcessId(conversion);
 		}
-		addContentModel(conversion, processId);
+		
+		M2Model model = addContentModel(conversion, processId);
 		addModule(conversion, processId);
+		
+		// In case the same property definitions are used across multiple forms, we need to identify this
+		// up-front and create an aspect for this that can be shared due to the fact that you cannot define the same
+		// property twice in a the same content-model namespace
+		addAspectsForReusedProperties(conversion.getWorkflowDefinition(), model, processId);
 	}
 
 	@Override
@@ -57,14 +81,47 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 			if(flowElement instanceof StartEvent) {
 				StartEvent startEvent = (StartEvent) flowElement;
 				if(startEvent.getFormKey() == null) {
-					startEvent.setFormKey(DEFAULT_START_FORM_TYPE);
 					
-					// Also add form-config to the share-module for workflow detail screen, based on the default form
 					Module module = AlfrescoConversionUtil.getModule(conversion);
 					Configuration detailsForm = module.addConfiguration(EVALUATOR_STRING_COMPARE, 
 							MessageFormat.format(EVALUATOR_CONDITION_ACTIVITI, conversion.getProcess().getId()));
 					
-					populateDefaultDetailFormConfig(detailsForm);
+					// No form-key is set, either use the default or generate of start-form if this
+					// is available
+					if(conversion.getWorkflowDefinition().getStartFormDefinition() != null
+							&& conversion.getWorkflowDefinition().getStartFormDefinition().getFormGroups().size() > 0) {
+						
+						// Create the content model for the start-task
+						M2Type type = new M2Type();
+						M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
+						model.getTypes().add(type);
+						M2Namespace modelNamespace = model.getNamespaces().get(0);
+						type.setName(AlfrescoConversionUtil.getQualifiedName(modelNamespace.getPrefix(),
+								AlfrescoConversionConstants.START_TASK_SIMPLE_NAME));
+						type.setParentName(AlfrescoConversionConstants.DEFAULT_BASE_FORM_TYPE);
+						
+						// Create a form-config for the start-task
+						Module shareModule = AlfrescoConversionUtil.getModule(conversion);
+						Configuration configuration = shareModule.addConfiguration(AlfrescoConversionConstants.EVALUATOR_TASK_TYPE
+								, type.getName());
+						Form formConfig = configuration.createForm();
+						
+						// Populate model and form based on FormDefinition
+						formCreator.createForm(type, formConfig, conversion.getWorkflowDefinition().getStartFormDefinition(), conversion);
+						
+						// Use the same form-config for the workflow details
+						detailsForm.addForm(formConfig);
+						
+						// Set formKey on start-event, referencing type
+						startEvent.setFormKey(type.getName());
+					} else {
+						// Revert to the default start-form
+						startEvent.setFormKey(DEFAULT_START_FORM_TYPE);
+						
+						// Also add form-config to the share-module for workflow detail screen, based on the default form
+						populateDefaultDetailFormConfig(detailsForm);
+					}
+					
 				}
 			}
 		}
@@ -77,7 +134,49 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		return processId;
   }
 	
-	protected void addContentModel(WorkflowDefinitionConversion conversion, String processId) {
+	protected void addAspectsForReusedProperties(WorkflowDefinition workflowDefinition, M2Model model, String processId) {
+		Map<String, FormPropertyDefinition> definitionMap = new HashMap<String, FormPropertyDefinition>();
+		
+		// Add start-form properties
+		addDefinitionsToMap(workflowDefinition.getStartFormDefinition(), definitionMap);
+		
+		for(StepDefinition step : workflowDefinition.getSteps()) {
+			if(step instanceof HumanStepDefinition) {
+				addDefinitionsToMap(((HumanStepDefinition) step).getForm(), definitionMap);
+			}
+		}
+		
+		// Check if the map contains values other than null, this indicates duplicate properties are found
+		for(Entry<String, FormPropertyDefinition> entry : definitionMap.entrySet()) {
+			if(entry.getValue() != null) {
+				// Create an aspect for this property. The aspect itself will be populated when the first
+				// property is converted with that name
+				M2Aspect aspect = new M2Aspect();
+				aspect.setName(AlfrescoConversionUtil.getQualifiedName(processId, entry.getKey()));
+				model.getAspects().add(aspect);
+			}
+		}
+  }
+	
+	protected void addDefinitionsToMap(FormDefinition formDefinition, Map<String, FormPropertyDefinition> definitionMap) {
+		if(formDefinition != null && formDefinition.getFormGroups() != null) {
+			String finalPropertyName = null;
+			for(FormPropertyGroup group : formDefinition.getFormGroups()) {
+				if(group.getFormPropertyDefinitions() != null) {
+					for(FormPropertyDefinition def : group.getFormPropertyDefinitions()) {
+						finalPropertyName = AlfrescoConversionUtil.getValidIdString(def.getName());
+						if(definitionMap.containsKey(finalPropertyName)) {
+							definitionMap.put(finalPropertyName, def);
+						} else {
+							definitionMap.put(finalPropertyName, null);
+						}
+					}
+				}
+			}
+		}
+  }
+
+	protected M2Model addContentModel(WorkflowDefinitionConversion conversion, String processId) {
 		// The process ID is used as namespace prefix, to guarantee uniqueness
 		
 		// Set general model properties
@@ -97,6 +196,8 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		// Store model in the conversion artifacts to be accessed later
 		AlfrescoConversionUtil.storeContentModel(model, conversion);
 		AlfrescoConversionUtil.storeModelNamespacePrefix(namespace.getPrefix(), conversion);
+		
+		return model;
   }
 	
 	protected void addModule(WorkflowDefinitionConversion conversion, String processId) {

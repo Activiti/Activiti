@@ -18,8 +18,12 @@ import org.activiti.workflow.simple.alfresco.conversion.AlfrescoWorkflowDefiniti
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.activiti.workflow.simple.definition.form.DatePropertyDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyGroup;
+import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
+import org.activiti.workflow.simple.definition.form.ListPropertyEntry;
+import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.TextPropertyDefinition;
 
 public class ExportMain {
@@ -28,6 +32,7 @@ public class ExportMain {
 		AlfrescoWorkflowDefinitionConversionFactory factory = new AlfrescoWorkflowDefinitionConversionFactory();
 		
 		WorkflowDefinition definition = new WorkflowDefinition();
+		definition.setName("Custom workflow");
 		definition.setId("process");
 		
 		HumanStepDefinition humanStep = new HumanStepDefinition();
@@ -49,14 +54,49 @@ public class ExportMain {
 		
 		definition.addStep(humanStep);
 		
+		FormDefinition startForm = new FormDefinition();
+		definition.setStartFormDefinition(startForm);
+		
+		FormPropertyGroup startGroup = new FormPropertyGroup();
+		startGroup.setId("group");
+		startGroup.setTitle("My group");
+		startForm.addFormPropertyGroup(startGroup);
+		
+		// Add simple text
+		TextPropertyDefinition startTextProp = new TextPropertyDefinition();
+		startTextProp.setName("text");
+		startTextProp.setMandatory(true);
+		startGroup.addFormProperty(startTextProp);
+		
+		// Add list box
+		ListPropertyDefinition listProp = new ListPropertyDefinition();
+		listProp.setName("Gender");
+		listProp.getEntries().add(new ListPropertyEntry("Man", "m"));
+		listProp.getEntries().add(new ListPropertyEntry("Vrouw", "v"));
+		startGroup.addFormProperty(listProp);
+		
+		
+		FormPropertyGroup anotherGroup = new FormPropertyGroup();
+		anotherGroup.setId("other");
+		anotherGroup.setTitle("Another group");
+		startForm.addFormPropertyGroup(anotherGroup);
+		
+		// Add date
+		DatePropertyDefinition dateProp = new DatePropertyDefinition();
+		dateProp.setName("Start date");
+		anotherGroup.addFormProperty(dateProp);
+		
+		// Add number
+		NumberPropertyDefinition numberProp = new NumberPropertyDefinition();
+		numberProp.setName("Amount");
+		anotherGroup.addFormProperty(numberProp);
+		
 		WorkflowDefinitionConversion conversion = factory.createWorkflowDefinitionConversion(definition);
 		conversion.convert();
 		
-		File repoFolder = new File("target/repo");
-		repoFolder.mkdir();
+		File repoFolder = new File("/development/alfresco/projects/head/software/tomcat/shared/classes/alfresco/extension");
 		
-		File shareFolder = new File("target/share");
-		shareFolder.mkdir();
+		File shareFolder = new File("/development/alfresco/projects/head/software/tomcat-app/shared/classes/alfresco/web-extension");
 		
 		factory.getArtifactExporter().exportArtifacts(conversion, repoFolder, shareFolder);
 	}

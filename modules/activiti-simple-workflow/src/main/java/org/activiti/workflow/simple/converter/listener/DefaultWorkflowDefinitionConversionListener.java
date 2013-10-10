@@ -63,6 +63,11 @@ public class DefaultWorkflowDefinitionConversionListener implements WorkflowDefi
     // Add start-event
     StartEvent startEvent = new StartEvent();
     startEvent.setId(START_EVENT_ID);
+    
+    if(workflowDefinition.getStartFormDefinition() != null && workflowDefinition.getStartFormDefinition().getFormKey() != null) {
+    	startEvent.setFormKey(workflowDefinition.getStartFormDefinition().getFormKey());
+    }
+    
     process.addFlowElement(startEvent);
     conversion.setLastActivityId(startEvent.getId());
   }
