@@ -29,23 +29,30 @@ public class M2Property {
 
 	@XmlAttribute
 	private String name;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String title;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String description;
 
-	@XmlElement(name = "type")
+	@XmlElement(name = "type", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String propertyType;
 
-	@XmlElement(name="protected")
+	@XmlElement(name="protected", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private boolean isProtected = false;
 	
-	@XmlElement(name="multiple")
+	@XmlElement(name="multiple", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private boolean multiValued = false;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private M2Mandatory mandatory;
-	@XmlElement(name="default")
+	
+	@XmlElement(name="default", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String defaultValue;
 	
-	@XmlElementWrapper(name="constraints")
-	@XmlElement(name="constraint")
+	@XmlElementWrapper(name="constraints", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(name="constraint", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<M2Constraint> constraints;
 
 	public List<M2Constraint> getConstraints() {

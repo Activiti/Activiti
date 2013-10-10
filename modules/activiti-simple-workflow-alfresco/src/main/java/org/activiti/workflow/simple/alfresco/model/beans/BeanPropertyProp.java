@@ -10,43 +10,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.alfresco.model;
+package org.activiti.workflow.simple.alfresco.model.beans;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlValue;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-public class M2Namespace {
+@XmlAccessorType(XmlAccessType.PROPERTY)
+public class BeanPropertyProp {
 
-	@XmlAttribute
-	private String uri;
+	private String key;
+	private String value;
 	
-	@XmlAttribute
-	private String prefix;
-
-	public M2Namespace() {
+	
+	public BeanPropertyProp() {
 		
   }
 	
-	public M2Namespace(String uri, String prefix) {
-		this.uri = uri;
-		this.prefix = prefix;
+	public BeanPropertyProp(String key, String value) {
+	  super();
+	  this.key = key;
+	  this.value = value;
   }
 
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-
-	public String getPrefix() {
-		return prefix;
-	}
-
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
+	@XmlAttribute
+	public String getKey() {
+	  return key;
+  }
+	
+	public void setKey(String key) {
+	  this.key = key;
+  }
+	
+	@XmlValue
+	public String getValue() {
+	  return value;
+  }
+	
+	public void setValue(String value) {
+	  this.value = value;
+  }
 }

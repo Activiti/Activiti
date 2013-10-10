@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.activiti.workflow.simple.alfresco.configmodel;
+package org.activiti.workflow.simple.alfresco.model.config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,34 +24,39 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElements;
 
 /**
  * @author Joram Barrez
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name="extension")
-public class Extension
+public class FormFieldVisibility
 {
-    
-    @XmlElementWrapper(name = "modules")
-    @XmlElement(name="module")
-    private List<Module> modules = new ArrayList<Module>();
-    
-    public void addModule(Module module)
+
+    @XmlElements ({
+        @XmlElement(name="show", type=ShowField.class)
+    })
+    private List<FormFieldVisibilityElement> visibilityElements = new ArrayList<FormFieldVisibilityElement>();
+
+    public List<FormFieldVisibilityElement> getVisibilityElements()
     {
-        modules.add(module);
+        return visibilityElements;
     }
 
-    public List<Module> getModules()
+    public void setVisibilityElements(List<FormFieldVisibilityElement> visibilityElements)
     {
-        return modules;
-    }
-
-    public void setModules(List<Module> modules)
-    {
-        this.modules = modules;
+        this.visibilityElements = visibilityElements;
     }
     
+    public void addVisibilityElement(FormFieldVisibilityElement fieldVisibilityElement)
+    {
+        visibilityElements.add(fieldVisibilityElement);
+    }
+    
+    public void addShowFieldElement(String showFieldId)
+    {
+        ShowField showField = new ShowField();
+        showField.setId(showFieldId);
+        addVisibilityElement(showField);
+    }
 }

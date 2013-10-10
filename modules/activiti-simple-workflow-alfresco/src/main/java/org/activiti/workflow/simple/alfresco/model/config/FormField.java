@@ -16,47 +16,53 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.activiti.workflow.simple.alfresco.configmodel;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.activiti.workflow.simple.alfresco.model.config;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 
 /**
  * @author Joram Barrez
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class FormFieldVisibility
+public class FormField extends FormAppearanceElement
 {
-
-    @XmlElements ({
-        @XmlElement(name="show", type=ShowField.class)
-    })
-    private List<FormFieldVisibilityElement> visibilityElements = new ArrayList<FormFieldVisibilityElement>();
-
-    public List<FormFieldVisibilityElement> getVisibilityElements()
+    @XmlAttribute(name="set")
+    private String set;
+    
+    @XmlElement(name="control")
+    private FormFieldControl control;
+    
+    public String getSet()
     {
-        return visibilityElements;
+        return set;
     }
 
-    public void setVisibilityElements(List<FormFieldVisibilityElement> visibilityElements)
+    public void setSet(String set)
     {
-        this.visibilityElements = visibilityElements;
+        this.set = set;
+    }
+
+    public FormFieldControl getControl()
+    {
+        return control;
+    }
+
+    public void setControl(FormFieldControl control)
+    {
+        this.control = control;
     }
     
-    public void addVisibilityElement(FormFieldVisibilityElement fieldVisibilityElement)
+    public FormFieldControl createFormFieldControl(String template)
     {
-        visibilityElements.add(fieldVisibilityElement);
+        FormFieldControl formFieldControl = new FormFieldControl();
+        formFieldControl.setTemplate(template);
+        
+        setControl(formFieldControl);
+        
+        return formFieldControl;
     }
     
-    public void addShowFieldElement(String showFieldId)
-    {
-        ShowField showField = new ShowField();
-        showField.setId(showFieldId);
-        addVisibilityElement(showField);
-    }
 }

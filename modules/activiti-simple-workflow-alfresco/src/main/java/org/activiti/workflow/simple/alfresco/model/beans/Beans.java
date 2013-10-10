@@ -10,43 +10,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.alfresco.model;
+package org.activiti.workflow.simple.alfresco.model.beans;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-public class M2Namespace {
+@XmlRootElement(name = "beans", namespace="http://www.springframework.org/schema/beans")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+public class Beans {
 
-	@XmlAttribute
-	private String uri;
+	private List<Bean> beans;
 	
-	@XmlAttribute
-	private String prefix;
-
-	public M2Namespace() {
-		
+	@XmlElement(name="bean", namespace="http://www.springframework.org/schema/beans")
+	public List<Bean> getBeans() {
+		if(beans == null) {
+			beans = new ArrayList<Bean>();
+		}
+	  return beans;
   }
 	
-	public M2Namespace(String uri, String prefix) {
-		this.uri = uri;
-		this.prefix = prefix;
+	public void setBeans(List<Bean> beans) {
+	  this.beans = beans;
   }
-
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-
-	public String getPrefix() {
-		return prefix;
-	}
-
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
+	
 }

@@ -23,9 +23,10 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name="model")
+@XmlRootElement(name="model", namespace="http://www.alfresco.org/model/dictionary/1.0")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={
+@XmlType(
+	propOrder={
 	"name", "description", "author", "version", "imports", "namespaces", "constraints", "types",
 	"aspects"
 })
@@ -33,28 +34,34 @@ public class M2Model {
 
 	@XmlAttribute
 	private String name = null;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String description = null;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String author = null;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")	
 	private String version;
 
-	@XmlElementWrapper(name="namespaces")
-	@XmlElement(name="namespace")
+	@XmlElementWrapper(name="namespaces", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(name="namespace", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<M2Namespace> namespaces;
 	
-	@XmlElementWrapper(name="imports")
-	@XmlElement(name="import")
+	@XmlElementWrapper(name="imports", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(name="import", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<M2Namespace> imports;
 	
-	@XmlElementWrapper(name="types")
-	@XmlElement(name="type")
+	@XmlElementWrapper(name="types", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(name="type", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<M2Type> types;
 	
-	@XmlElementWrapper(name="aspects")
-	@XmlElement(name="aspect")
+	@XmlElementWrapper(name="aspects", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(name="aspect", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<M2Aspect> aspects;
 	
-	@XmlElementWrapper(name="constraints")
-	@XmlElement(name="constraint")
+	@XmlElementWrapper(name="constraints", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(name="constraint", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private List<M2Constraint> constraints;
 
 	public String getName() {

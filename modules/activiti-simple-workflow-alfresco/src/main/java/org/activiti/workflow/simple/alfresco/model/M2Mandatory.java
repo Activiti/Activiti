@@ -15,15 +15,21 @@ package org.activiti.workflow.simple.alfresco.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(namespace="http://www.alfresco.org/model/dictionary/1.0")
 public class M2Mandatory {
 	@XmlAttribute(name="enforced")
 	private Boolean enforced;
 	
 	@XmlValue
 	private boolean mandatory = false;
+	
+	public M2Mandatory() {
+		
+  }
 	
 	public M2Mandatory(boolean mandatory) {
 		this.mandatory = mandatory;

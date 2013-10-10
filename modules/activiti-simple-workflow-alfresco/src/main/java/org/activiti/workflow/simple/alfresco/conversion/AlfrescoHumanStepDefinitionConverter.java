@@ -14,14 +14,15 @@ package org.activiti.workflow.simple.alfresco.conversion;
 
 import java.text.MessageFormat;
 
-import org.activiti.workflow.simple.alfresco.configmodel.Configuration;
-import org.activiti.workflow.simple.alfresco.configmodel.Form;
-import org.activiti.workflow.simple.alfresco.configmodel.Module;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.conversion.exception.AlfrescoSimpleWorkflowException;
 import org.activiti.workflow.simple.alfresco.conversion.form.AlfrescoFormCreator;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
+import org.activiti.workflow.simple.alfresco.model.config.Configuration;
+import org.activiti.workflow.simple.alfresco.model.config.Form;
+import org.activiti.workflow.simple.alfresco.model.config.Module;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.step.HumanStepDefinitionConverter;
 import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
@@ -51,12 +52,21 @@ public class AlfrescoHumanStepDefinitionConverter extends HumanStepDefinitionCon
 
 	@Override
 	public void convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
+		// Let superclass handle BPMN-specific conversion
+		super.convertStepDefinition(stepDefinition, conversion);
+		
+		// Clear form-properties in the BPMN file, as we use custom form-mapping in Alfresco
+		String userTaskId = conversion.getLastActivityId();
+		UserTask userTask = (UserTask) conversion.getProcess().getFlowElement(userTaskId);
+		userTask.getFormProperties().clear();
+		
 		HumanStepDefinition humanStep = (HumanStepDefinition) stepDefinition;
 		validate(humanStep);
 		
 		// Create the content model for the task
 		M2Type type = new M2Type();
 		M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
+		model.getTypes().add(type);
 		M2Namespace modelNamespace = model.getNamespaces().get(0);
 		type.setName(AlfrescoConversionUtil.getQualifiedName(modelNamespace.getPrefix(),
 				humanStep.getId()));
@@ -64,8 +74,8 @@ public class AlfrescoHumanStepDefinitionConverter extends HumanStepDefinitionCon
 		
 		// Create a form-config for the task
 		Module shareModule = AlfrescoConversionUtil.getModule(conversion);
-		Configuration configuration = shareModule.addConfiguration(AlfrescoConversionConstants.EVALUATOR_STRING_COMPARE
-				, MessageFormat.format(AlfrescoConversionConstants.EVALUATOR_CONDITION_ACTIVITI, modelNamespace.getPrefix()));
+		Configuration configuration = shareModule.addConfiguration(AlfrescoConversionConstants.EVALUATOR_TASK_TYPE
+				, type.getName());
 		Form formConfig = configuration.createForm();
 		
 		// Populate model and form based on FormDefinition

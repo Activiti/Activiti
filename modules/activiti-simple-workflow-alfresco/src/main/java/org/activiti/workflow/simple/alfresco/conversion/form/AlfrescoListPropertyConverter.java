@@ -15,9 +15,6 @@ package org.activiti.workflow.simple.alfresco.conversion.form;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.workflow.simple.alfresco.configmodel.Form;
-import org.activiti.workflow.simple.alfresco.configmodel.FormField;
-import org.activiti.workflow.simple.alfresco.configmodel.FormFieldControl;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.model.M2Constraint;
@@ -26,6 +23,9 @@ import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2NamedValue;
 import org.activiti.workflow.simple.alfresco.model.M2Property;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
+import org.activiti.workflow.simple.alfresco.model.config.Form;
+import org.activiti.workflow.simple.alfresco.model.config.FormField;
+import org.activiti.workflow.simple.alfresco.model.config.FormFieldControl;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
@@ -50,6 +50,7 @@ public class AlfrescoListPropertyConverter implements AlfrescoFormPropertyConver
 		property.setMandatory(new M2Mandatory(dateDefinition.isMandatory()));
 		property.setName(propertyName);
 		property.setPropertyType(AlfrescoConversionConstants.PROPERTY_TYPE_TEXT);
+		contentType.getProperties().add(property);
 		
 		// Create constraint for the values
 		if(dateDefinition.getEntries() != null && dateDefinition.getEntries().size() > 0) {
@@ -59,7 +60,7 @@ public class AlfrescoListPropertyConverter implements AlfrescoFormPropertyConver
 			
 			List<String> values = new ArrayList<String>(dateDefinition.getEntries().size());
 			for(ListPropertyEntry entry : dateDefinition.getEntries()) {
-				// TODO: i18n file using labels
+				// TODO: i18n file using labels in properties-file, a part of deployment?
 				values.add(entry.getValue());
 			}
 			valueConstraint.getParameters().add(new M2NamedValue(AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_TYPE_LIST, null, values));

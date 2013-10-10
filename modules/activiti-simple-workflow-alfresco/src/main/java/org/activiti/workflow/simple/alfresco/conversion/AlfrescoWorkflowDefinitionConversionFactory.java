@@ -12,6 +12,7 @@
  */
 package org.activiti.workflow.simple.alfresco.conversion;
 
+import org.activiti.workflow.simple.alfresco.export.AlfrescoArtifactExporter;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 
@@ -25,15 +26,23 @@ import org.activiti.workflow.simple.definition.HumanStepDefinition;
 public class AlfrescoWorkflowDefinitionConversionFactory extends WorkflowDefinitionConversionFactory {
 
   private static final long serialVersionUID = 1L;
+  
+  protected AlfrescoArtifactExporter artifactExporter;
 
 	public AlfrescoWorkflowDefinitionConversionFactory() {
 		super();
 		
+		artifactExporter = new AlfrescoArtifactExporter();
+
 		// Add additional listeners for Alfresco-specific listeners
-		workflowDefinitionConversionListeners.add(new InitializeAlfrescoModelsConversionListener());
+		defaultWorkflowDefinitionConversionListeners.add(new InitializeAlfrescoModelsConversionListener());
 		
 		// Custom step converters
 		defaultStepConverters.put(HumanStepDefinition.class, new AlfrescoHumanStepDefinitionConverter());
+  }
+	
+	public AlfrescoArtifactExporter getArtifactExporter() {
+	  return artifactExporter;
   }
 	
 }

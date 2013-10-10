@@ -30,9 +30,16 @@ public class M2PropertyOverride {
 
 	@XmlAttribute(name="name")
 	private String name;
+	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private M2Mandatory mandatory;
 	
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String defaultValue;
+	
+	@XmlElement(name="constraint", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElementWrapper(name="constraints", namespace="http://www.alfresco.org/model/dictionary/1.0")
+	private List<M2Constraint> constraints;
 	
 	public M2Mandatory getMandatory() {
 	  return mandatory;
@@ -42,10 +49,6 @@ public class M2PropertyOverride {
 	  this.mandatory = mandatory;
   }
 	
-	@XmlElement(name="constraint")
-	@XmlElementWrapper(name="constraints")
-	private List<M2Constraint> constraints;
-
 	public List<M2Constraint> getConstraints() {
 		ensureConstraintsInitialized();
 		return constraints;

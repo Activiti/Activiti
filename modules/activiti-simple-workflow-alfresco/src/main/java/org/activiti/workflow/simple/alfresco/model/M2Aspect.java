@@ -14,7 +14,7 @@ package org.activiti.workflow.simple.alfresco.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name="aspect")
+@XmlRootElement(name="aspect", namespace="http://www.alfresco.org/model/dictionary/1.0")
 public class M2Aspect extends M2Class {
 
 }

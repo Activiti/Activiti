@@ -15,12 +15,12 @@ package org.activiti.workflow.simple.alfresco.conversion.form;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.workflow.simple.alfresco.configmodel.Form;
-import org.activiti.workflow.simple.alfresco.configmodel.FormSet;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.conversion.exception.AlfrescoSimpleWorkflowException;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
+import org.activiti.workflow.simple.alfresco.model.config.Form;
+import org.activiti.workflow.simple.alfresco.model.config.FormSet;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
@@ -37,10 +37,15 @@ public class AlfrescoFormCreator {
 	
 	public AlfrescoFormCreator() {
 		propertyConverters = new HashMap<Class<? extends FormPropertyDefinition>, AlfrescoFormPropertyConverter>();
+		
+		registerConverter(new AlfrescoTextPropertyConverter());
+		registerConverter(new AlfrescoDatePropertyConverter());
+		registerConverter(new AlfrescoNumberPropertyConverter());
+		registerConverter(new AlfrescoListPropertyConverter());
   }
 	
 	public void createForm(M2Type contentType, Form formConfig, FormDefinition formDefinition, WorkflowDefinitionConversion conversion) {
-		if(formDefinition.getFormGroups() != null) {
+		if(formDefinition != null && formDefinition.getFormGroups() != null) {
 			
 			for(FormPropertyGroup group : formDefinition.getFormGroups()) {
 				// Create a group in the form-config
@@ -78,5 +83,9 @@ public class AlfrescoFormCreator {
 		} else {
 			return null;
 		}
+  }
+	
+	protected void registerConverter(AlfrescoFormPropertyConverter converter) {
+		propertyConverters.put(converter.getConvertedClass(), converter);
   }
 }

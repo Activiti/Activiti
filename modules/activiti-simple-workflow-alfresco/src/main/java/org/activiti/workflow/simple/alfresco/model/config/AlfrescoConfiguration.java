@@ -10,43 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.alfresco.model;
+package org.activiti.workflow.simple.alfresco.model.config;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class M2Namespace {
+@XmlRootElement(name="alfresco-configuration")
+public class AlfrescoConfiguration {
 
-	@XmlAttribute
-	private String uri;
-	
-	@XmlAttribute
-	private String prefix;
-
-	public M2Namespace() {
-		
+  @XmlElement(name="config")
+  private List<Configuration> configurations = new ArrayList<Configuration>();
+  
+  public void setConfigurations(List<Configuration> configurations) {
+	  this.configurations = configurations;
   }
-	
-	public M2Namespace(String uri, String prefix) {
-		this.uri = uri;
-		this.prefix = prefix;
+  
+  public List<Configuration> getConfigurations() {
+	  return configurations;
   }
-
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-
-	public String getPrefix() {
-		return prefix;
-	}
-
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
 }

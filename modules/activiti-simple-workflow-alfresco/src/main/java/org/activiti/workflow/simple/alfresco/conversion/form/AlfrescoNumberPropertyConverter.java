@@ -12,14 +12,14 @@
  */
 package org.activiti.workflow.simple.alfresco.conversion.form;
 
-import org.activiti.workflow.simple.alfresco.configmodel.Form;
-import org.activiti.workflow.simple.alfresco.configmodel.FormField;
-import org.activiti.workflow.simple.alfresco.configmodel.FormFieldControl;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.model.M2Mandatory;
 import org.activiti.workflow.simple.alfresco.model.M2Property;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
+import org.activiti.workflow.simple.alfresco.model.config.Form;
+import org.activiti.workflow.simple.alfresco.model.config.FormField;
+import org.activiti.workflow.simple.alfresco.model.config.FormFieldControl;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
@@ -58,5 +58,7 @@ public class AlfrescoNumberPropertyConverter implements AlfrescoFormPropertyConv
 			control.setTemplate(AlfrescoConversionConstants.FORM_NUMBER_TEMPLATE);
 			formField.setControl(control);
 		}
+		
+		contentType.getProperties().add(property);
 	}
 }

@@ -56,7 +56,6 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
 
   private static final long serialVersionUID = 1L;
   
-  protected String id;
   protected String key;
   protected String name;
   protected String description;

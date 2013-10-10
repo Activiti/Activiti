@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.activiti.workflow.simple.alfresco.configmodel;
+package org.activiti.workflow.simple.alfresco.model.config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,49 +31,27 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Joram Barrez
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name="module")
-public class Module
+@XmlRootElement(name="extension")
+public class Extension
 {
     
-    @XmlElement(name="id", nillable=false, required=true)
-    private String id;
+    @XmlElementWrapper(name = "modules")
+    @XmlElement(name="module")
+    private List<Module> modules = new ArrayList<Module>();
     
-    @XmlElementWrapper(name="configurations")
-    @XmlElement(name="config")
-    private List<Configuration> configurations = new ArrayList<Configuration>();
-
-    public String getId()
+    public void addModule(Module module)
     {
-        return id;
+        modules.add(module);
     }
 
-    public void setId(String id)
+    public List<Module> getModules()
     {
-        this.id = id;
+        return modules;
     }
 
-    public List<Configuration> getConfigurations()
+    public void setModules(List<Module> modules)
     {
-        return configurations;
-    }
-
-    public void setConfigurations(List<Configuration> configurations)
-    {
-        this.configurations = configurations;
-    }
-    
-    public void addConfiguration(Configuration configuration)
-    {
-        configurations.add(configuration);
-    }
-    
-    public Configuration addConfiguration(String evaluator, String condition)
-    {
-        Configuration configuration = new Configuration();
-        configuration.setEvaluator(evaluator);
-        configuration.setCondition(condition);
-        addConfiguration(configuration);
-        return configuration;
+        this.modules = modules;
     }
     
 }
