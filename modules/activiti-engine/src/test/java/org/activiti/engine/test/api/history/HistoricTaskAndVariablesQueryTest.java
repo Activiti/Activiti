@@ -145,18 +145,44 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
   
   @Deployment
   public void testCandidate() {
-    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      List<HistoricTaskInstance> tasks = null;
-
-      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("kermit").list();
-      assertEquals(2, tasks.size());
-      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("kermit").list();
+      assertEquals(3, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("gonzo").list();
       assertEquals(0, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("fozzie").list();
+      assertEquals(1, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
+      assertEquals(1, tasks.size());
       List<String> groups = new ArrayList<String>();
       groups.add("management");
       groups.add("accountancy");
       tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
+      assertEquals(1, tasks.size());
+      
+      Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+      taskService.complete(task.getId());
+      
+      assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("kermit").list();
+      assertEquals(3, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("gonzo").list();
       assertEquals(0, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("fozzie").list();
+      assertEquals(1, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
+      assertEquals(1, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
+      assertEquals(1, tasks.size());
     }
   }
   
