@@ -12,8 +12,6 @@
  */
 package org.activiti.workflow.simple.alfresco.conversion;
 
-import java.text.MessageFormat;
-
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.conversion.exception.AlfrescoSimpleWorkflowException;
 import org.activiti.workflow.simple.alfresco.conversion.form.AlfrescoFormCreator;
@@ -63,6 +61,8 @@ public class AlfrescoHumanStepDefinitionConverter extends HumanStepDefinitionCon
 		HumanStepDefinition humanStep = (HumanStepDefinition) stepDefinition;
 		validate(humanStep);
 		
+		userTask.setName(humanStep.getName() != null ? humanStep.getName() : humanStep.getId());
+		
 		// Create the content model for the task
 		M2Type type = new M2Type();
 		M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
@@ -71,6 +71,9 @@ public class AlfrescoHumanStepDefinitionConverter extends HumanStepDefinitionCon
 		type.setName(AlfrescoConversionUtil.getQualifiedName(modelNamespace.getPrefix(),
 				humanStep.getId()));
 		type.setParentName(AlfrescoConversionConstants.DEFAULT_BASE_FORM_TYPE);
+		
+		// Update task-key on the task itself
+		userTask.setFormKey(type.getName());
 		
 		// Create a form-config for the task
 		Module shareModule = AlfrescoConversionUtil.getModule(conversion);

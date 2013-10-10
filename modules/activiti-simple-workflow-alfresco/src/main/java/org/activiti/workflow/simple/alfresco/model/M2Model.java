@@ -141,6 +141,17 @@ public class M2Model {
 		this.constraints = constraints;
 	}
 	
+	public M2Aspect getAspect(String aspectName) {
+		if(aspects != null) {
+			for(M2Aspect aspect : aspects) {
+				if(aspect.getName().equals(aspectName)) {
+					return aspect;
+				}
+			}
+		}
+		return null;
+	}
+	
 	private void ensureNamespacesInitialized() {
 		if(namespaces == null) {
 			namespaces = new ArrayList<M2Namespace>();

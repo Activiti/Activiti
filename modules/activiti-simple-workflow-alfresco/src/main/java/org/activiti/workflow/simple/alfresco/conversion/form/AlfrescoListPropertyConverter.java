@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
+import org.activiti.workflow.simple.alfresco.model.M2Aspect;
 import org.activiti.workflow.simple.alfresco.model.M2Constraint;
 import org.activiti.workflow.simple.alfresco.model.M2Mandatory;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
@@ -50,24 +51,35 @@ public class AlfrescoListPropertyConverter implements AlfrescoFormPropertyConver
 		property.setMandatory(new M2Mandatory(dateDefinition.isMandatory()));
 		property.setName(propertyName);
 		property.setPropertyType(AlfrescoConversionConstants.PROPERTY_TYPE_TEXT);
-		contentType.getProperties().add(property);
+		
+		M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
+		M2Aspect aspect = model.getAspect(propertyName);
+		if(aspect != null) {
+			// In case the "shared" aspect doesn't have the actual property set yet, we
+			// do this here
+			if(aspect.getProperties().isEmpty()) {
+				aspect.getProperties().add(property);
+			}
+			contentType.getMandatoryAspects().add(propertyName);
+		} else {
+			contentType.getProperties().add(property);
+		}
 		
 		// Create constraint for the values
 		if(dateDefinition.getEntries() != null && dateDefinition.getEntries().size() > 0) {
 			M2Constraint valueConstraint = new M2Constraint();
 			valueConstraint.setType(AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_TYPE_LIST);
-			valueConstraint.setName(propertyName + AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_TYPE_LIST);
+			valueConstraint.setName(propertyName + AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_TYPE_LIST.toLowerCase());
 			
 			List<String> values = new ArrayList<String>(dateDefinition.getEntries().size());
 			for(ListPropertyEntry entry : dateDefinition.getEntries()) {
 				// TODO: i18n file using labels in properties-file, a part of deployment?
 				values.add(entry.getValue());
 			}
-			valueConstraint.getParameters().add(new M2NamedValue(AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_TYPE_LIST, null, values));
+			valueConstraint.getParameters().add(new M2NamedValue(AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_ALLOWED_VALUES, null, values));
 			
 			// Add constraint to the root model instead of the type itself and reference it from within the property
 			// for readability and reuse of the model
-			M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
 			model.getConstraints().add(valueConstraint);
 			
 			M2Constraint reference = new M2Constraint();
@@ -77,7 +89,7 @@ public class AlfrescoListPropertyConverter implements AlfrescoFormPropertyConver
 		
 		// Add form configuration
 		form.getFormFieldVisibility().addShowFieldElement(propertyName);
-		FormField formField = form.getFormAppearance().addFormField(propertyName, property.getTitle(), formSet);
+		FormField formField = form.getFormAppearance().addFormField(propertyName, propertyDefinition.getName(), formSet);
 
 		// Read-only properties should always be rendered using an info-template
 		if(dateDefinition.isWritable()) {
