@@ -33,6 +33,5 @@ public class InCompleteSignalConverterTest extends AbstractConverterTest {
     List<Problem> problems = model.getProblems();
     assertNotNull(problems);
     assertEquals(1, problems.size());
-    System.out.println(problems.get(0));
   }
 }

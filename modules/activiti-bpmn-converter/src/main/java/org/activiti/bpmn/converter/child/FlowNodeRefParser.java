@@ -14,28 +14,23 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.Event;
-import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.bpmn.model.Lane;
 
 /**
  * @author Tijs Rademakers
  */
-public class TimerEventDefinitionParser extends BaseChildElementParser {
+public class FlowNodeRefParser extends BaseChildElementParser {
 
   public String getElementName() {
-    return ELEMENT_EVENT_TIMERDEFINITION;
+    return ATTRIBUTE_FLOWNODE_REF;
   }
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof Event == false) return;
+    if (parentElement instanceof Lane == false) return;
     
-    TimerEventDefinition eventDefinition = new TimerEventDefinition();
-    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TIMERDEFINITION, eventDefinition, xtr, model);
-    
-    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+    Lane lane = (Lane) parentElement;
+    lane.getFlowReferences().add(xtr.getElementText());
   }
 }

@@ -54,6 +54,9 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
         model.addProblem("Invalid 'messageRef': no message with id '" + eventDefinition.getMessageRef() + "' found.", xtr);
       }
     }
+    
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_MESSAGEDEFINITION, eventDefinition, xtr, model);
+    
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 }

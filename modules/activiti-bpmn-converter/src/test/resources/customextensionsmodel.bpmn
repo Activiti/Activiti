@@ -4,6 +4,19 @@
 	xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
 	targetNamespace="http://www.activiti.org/test">
   <process id="process" name="process1" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" class="org.test.TestClass"></activiti:executionListener>
+      <activiti:executionListener event="end" expression="${testExpression}"></activiti:executionListener>
+      <activiti:executionListener event="start" delegateExpression="${delegateExpression}"></activiti:executionListener>
+      <custom:test xmlns:custom="http://custom.org/bpmn" id="test" name="test">
+        <custom:name>
+          <custom:test>test</custom:test>
+        </custom:name>
+        <custom:name id="customName" />
+        <custom:description xmlns:custom2="http://custom2.org/bpmn" custom2:id="test" />
+      </custom:test>
+      <custom:test xmlns:custom="http://custom.org/bpmn" id="test2" name="test2" />
+    </extensionElements>
     <endEvent id="sid-F7795B38-72CD-41A4-9549-6CFB7D3E5FB5"></endEvent>
     <sequenceFlow id="sid-C6C56AC3-9561-49E0-A58A-624F6CB8BB82" sourceRef="sid-F62B554B-FF4F-475E-94FF-A3F44EDA6A6A" targetRef="servicetask"></sequenceFlow>
     <serviceTask id="servicetask" name="Service task" activiti:async="true" activiti:exclusive="false" activiti:class="org.test.TestClass">
@@ -23,6 +36,21 @@
         <custom:test xmlns:custom="http://custom.org/bpmn" id="test2" name="test2" />
       </extensionElements>
     </serviceTask>
+    <boundaryEvent id="timerEvent" attachedToRef="servicetask">
+      <timerEventDefinition>
+        <extensionElements>
+          <custom:test xmlns:custom="http://custom.org/bpmn" id="test" name="test">
+            <custom:name>
+              <custom:test>test</custom:test>
+            </custom:name>
+            <custom:name id="customName" />
+            <custom:description xmlns:custom2="http://custom2.org/bpmn" custom2:id="test" />
+          </custom:test>
+          <custom:test xmlns:custom="http://custom.org/bpmn" id="test2" name="test2" />
+        </extensionElements>
+        <timeCycle>${cronExpression}</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
     <startEvent id="sid-F62B554B-FF4F-475E-94FF-A3F44EDA6A6A"></startEvent>
     <sequenceFlow id="sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E" sourceRef="servicetask" targetRef="sid-F7795B38-72CD-41A4-9549-6CFB7D3E5FB5"></sequenceFlow>
   </process>
