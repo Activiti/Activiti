@@ -240,6 +240,9 @@
   </sql>
   
   <sql id="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
+    <if test="candidateUser != null || candidateGroups != null">
+      inner join ${prefix}ACT_HI_IDENTITYLINK HI on HI.TASK_ID_ = RES.ID_
+    </if>
     <if test="processFinished || processUnfinished || processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null">
       inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
     </if>
@@ -377,6 +380,26 @@
       <if test="completedAfterDate != null">
         and RES.END_TIME_ &gt; #{completedAfterDate}
       </if>
+      <if test="candidateUser != null || candidateGroups != null">
+        and RES.ASSIGNEE_ is null
+        and HI.TYPE_ = 'candidate'
+        and
+        (
+          <if test="candidateUser != null">
+            HI.USER_ID_ = #{candidateUser}
+          </if>
+          <if test="candidateUser != null &amp;&amp; candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+            or
+          </if>
+          <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+            HI.GROUP_ID_ IN
+            <foreach item="group" index="index" collection="candidateGroups"
+                     open="(" separator="," close=")">
+              #{group}
+            </foreach>
+          </if>
+        )
+      </if>
       <if test="involvedUser != null">
         and (
           exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
@@ -459,23 +482,23 @@
   </sql>
 
   <select id="selectHistoricTaskInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-    	${limitBefore}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
     </if>
     ${sql}
     <if test="resultType == 'LIST_PAGE'">
-    	${limitAfter}
+      ${limitAfter}
     </if>
   </select>
   
   <select id="selectHistoricTaskInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-        ${limitBeforeNativeQuery}
-  	</if>
-  	${sql} 
     <if test="resultType == 'LIST_PAGE'">
-  		${limitAfter}
-  	</if>
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
   </select>
 
   <select id="selectHistoricTaskInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">

@@ -15,6 +15,7 @@ package org.activiti.engine.history;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.activiti.engine.query.Query;
 import org.activiti.engine.task.Task;
@@ -144,9 +145,25 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    */
   HistoricTaskInstanceQuery taskOwnerLike(String taskOwnerLike);
   
+  /** Only select historic tasks for which the given user is a candidate. */
+  HistoricTaskInstanceQuery taskCandidateUser(String candidateUser);
+  
   /** Only select historic task for which there exist an {@link HistoricIdentityLink} with the given user, including tasks
    *  which have been assigned to the given user (assignee) or owned by the given user (owner). */
   HistoricTaskInstanceQuery taskInvolvedUser(String involvedUser);
+  
+  /** Only select historic tasks for which users in the given group are candidates. */
+  HistoricTaskInstanceQuery taskCandidateGroup(String candidateGroup);
+  
+  /**
+   * Only select tasks for which the 'candidateGroup' is one of the given groups.
+   * 
+   * @throws ActivitiIllegalArgumentException 
+   *   When query is executed and {@link #taskCandidateGroup(String)} or 
+   *     {@link #taskCandidateUser(String)} has been executed on the query instance. 
+   *   When passed group list is empty or <code>null</code>. 
+   */
+  HistoricTaskInstanceQuery taskCandidateGroupIn(List<String> candidateGroups);
   
   /** 
    * Only select historic task instances with the given priority.
