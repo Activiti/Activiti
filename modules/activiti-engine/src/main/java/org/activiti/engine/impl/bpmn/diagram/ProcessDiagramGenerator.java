@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.Artifact;
+import org.activiti.bpmn.model.Association;
+import org.activiti.bpmn.model.AssociationDirection;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
@@ -53,6 +56,7 @@ import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
+import org.activiti.bpmn.model.TextAnnotation;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
@@ -66,6 +70,7 @@ import org.activiti.bpmn.model.UserTask;
 public class ProcessDiagramGenerator {
 
   protected static final Map<Class<? extends BaseElement>, ActivityDrawInstruction> activityDrawInstructions = new HashMap<Class<? extends BaseElement>, ActivityDrawInstruction>();
+  protected static final Map<Class<? extends BaseElement>, ArtifactDrawInstruction> artifactDrawInstructions = new HashMap<Class<? extends BaseElement>, ArtifactDrawInstruction>();
   
   // The instructions on how to draw a certain construct is
   // created statically and stored in a map for performance.
@@ -311,6 +316,42 @@ public class ProcessDiagramGenerator {
       }
     });
 
+    // text annotation
+    artifactDrawInstructions.put(TextAnnotation.class, new ArtifactDrawInstruction() {
+
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, Artifact artifact) {
+        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(artifact.getId());
+        TextAnnotation textAnnotation = (TextAnnotation) artifact;
+        processDiagramCanvas.drawTextAnnotation(textAnnotation.getText(), (int) graphicInfo.getX(), (int) graphicInfo.getY(),
+                (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+      }
+    });
+    
+    // association
+    artifactDrawInstructions.put(Association.class, new ArtifactDrawInstruction() {
+
+      public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, Artifact artifact) {
+        List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(artifact.getId());
+        int xPoints[]= new int[graphicInfoList.size()];
+        int yPoints[]= new int[graphicInfoList.size()];
+        for (int i=1; i<graphicInfoList.size(); i++) {
+            GraphicInfo graphicInfo = graphicInfoList.get(i);
+            GraphicInfo previousGraphicInfo = graphicInfoList.get(i-1);
+            
+            if (i == 1) {
+              xPoints[0] = (int) previousGraphicInfo.getX();
+              yPoints[0] = (int) previousGraphicInfo.getY();
+            }
+            xPoints[i] = (int) graphicInfo.getX();
+            yPoints[i] = (int) graphicInfo.getY();
+        }
+
+        Association association = (Association) artifact;
+        AssociationDirection associationDirection = association.getAssociationDirection();
+        boolean highLighted = false;
+        processDiagramCanvas.drawAssociation(xPoints, yPoints, associationDirection, highLighted);
+      }
+    });
   }
 
   /**
@@ -356,6 +397,14 @@ public class ProcessDiagramGenerator {
     for (FlowNode flowNode : bpmnModel.getProcesses().get(0).findFlowElementsOfType(FlowNode.class)) {
       drawActivity(processDiagramCanvas, bpmnModel, flowNode, highLightedActivities, highLightedFlows);
     }
+    
+    // Draw artifacts
+    for (Process process : bpmnModel.getProcesses()) {
+      for (Artifact artifact : process.getArtifacts()) {
+        drawArtifact(processDiagramCanvas, bpmnModel, artifact);
+      }
+    }
+    
     return processDiagramCanvas;
   }
   
@@ -405,6 +454,10 @@ public class ProcessDiagramGenerator {
 
     }
 
+    
+    /*
+    // Original transitions drawing  
+
     // Outgoing transitions of activity
     for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
       List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(sequenceFlow.getId());
@@ -437,28 +490,43 @@ public class ProcessDiagramGenerator {
         }
       }
     }
+    */
     
-    // TODO: curvy parameter
+    // TODO: use graphicInfo
     
     // Outgoing transitions of activity
-//    for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
-//      boolean highLighted = (highLightedFlows.contains(sequenceFlow.getId()));
-//      boolean drawConditionalIndicator = sequenceFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION) != null
-//              && !((String) activity.getProperty("type")).toLowerCase().contains("gateway");
-//      boolean isDefault = sequenceFlow.getId().equals(activity.getProperty("default"))
-//    		  && ((String) activity.getProperty("type")).toLowerCase().contains("gateway");
-//      
-//      List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();
-//      int xPoints[]= new int[waypoints.size()/2];
-//      int yPoints[]= new int[waypoints.size()/2];
-//      for (int i=0, j=0; i < waypoints.size(); i+=2, j++) { // waypoints.size()
-//                                                      // minimally 4: x1, y1,
-//                                                      // x2, y2
-//      	xPoints[j] = waypoints.get(i);
-//      	yPoints[j] = waypoints.get(i+1);
-//      }
-//      processDiagramCanvas.drawSequenceflow(xPoints, yPoints, drawConditionalIndicator, isDefault, highLighted);
-//    }
+    for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
+      boolean highLighted = (highLightedFlows.contains(sequenceFlow.getId()));
+      boolean isDefault = sequenceFlow.getConditionExpression() == null && (flowNode instanceof Gateway);
+      boolean drawConditionalIndicator = sequenceFlow.getConditionExpression() != null && !(flowNode instanceof Gateway);
+      
+      List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(sequenceFlow.getId());
+      int xPoints[]= new int[graphicInfoList.size()];
+      int yPoints[]= new int[graphicInfoList.size()];
+      
+      for (int i=1; i<graphicInfoList.size(); i++) {
+        GraphicInfo graphicInfo = graphicInfoList.get(i);
+        GraphicInfo previousGraphicInfo = graphicInfoList.get(i-1);
+        
+        if (i == 1) {
+          xPoints[0] = (int) previousGraphicInfo.getX();
+          yPoints[0] = (int) previousGraphicInfo.getY();
+        }
+        xPoints[i] = (int) graphicInfo.getX();
+        yPoints[i] = (int) graphicInfo.getY();
+        
+      }
+
+      processDiagramCanvas.drawSequenceflow(xPoints, yPoints, drawConditionalIndicator, isDefault, highLighted);
+
+      // Draw sequenceflow label
+      GraphicInfo labelGraphicInfo = bpmnModel.getLabelGraphicInfo(sequenceFlow.getId());
+      if (labelGraphicInfo != null) {
+        GraphicInfo lineCenter = getLineCenter(graphicInfoList);
+        processDiagramCanvas.drawLabel(sequenceFlow.getName(), (int)lineCenter.getX() + (int)labelGraphicInfo.getX(), (int)(lineCenter.getY() + (int)labelGraphicInfo.getY() - labelGraphicInfo.getHeight()),
+        		(int) labelGraphicInfo.getWidth(), (int) labelGraphicInfo.getHeight(), false);
+      }
+    }
 
     // Nested elements
     if (flowNode instanceof FlowElementsContainer) {
@@ -467,6 +535,70 @@ public class ProcessDiagramGenerator {
           drawActivity(processDiagramCanvas, bpmnModel, (FlowNode) nestedFlowElement, highLightedActivities, highLightedFlows);
         }
       }
+    }
+  }
+  
+  protected static GraphicInfo getLineCenter(List<GraphicInfo> graphicInfoList) {
+    GraphicInfo gi = new GraphicInfo();
+    
+    int xPoints[]= new int[graphicInfoList.size()];
+    int yPoints[]= new int[graphicInfoList.size()];
+    
+    double length = 0;
+    double[] lengths = new double[graphicInfoList.size()];
+    lengths[0] = 0;
+    double m = 0;
+    for (int i=1; i<graphicInfoList.size(); i++) {
+        GraphicInfo graphicInfo = graphicInfoList.get(i);
+        GraphicInfo previousGraphicInfo = graphicInfoList.get(i-1);
+        
+        if (i == 1) {
+          xPoints[0] = (int) previousGraphicInfo.getX();
+          yPoints[0] = (int) previousGraphicInfo.getY();
+        }
+        xPoints[i] = (int) graphicInfo.getX();
+        yPoints[i] = (int) graphicInfo.getY();
+        
+        length += Math.sqrt(
+      		  		Math.pow((int) graphicInfo.getX() - (int) previousGraphicInfo.getX(), 2) + 
+      		  		Math.pow((int) graphicInfo.getY() - (int) previousGraphicInfo.getY(), 2)
+      		  	);
+        lengths[i] = length;
+      }
+      m = length / 2;
+      int p1 = 0, p2 = 1;
+      for (int i = 1; i < lengths.length; i++) {
+			double len = lengths[i];
+			p1 = i-1;
+			p2 = i;
+			if (len > m) {
+				break;
+			}
+		}
+      
+      GraphicInfo graphicInfo1 = graphicInfoList.get(p1);
+      GraphicInfo graphicInfo2 = graphicInfoList.get(p2);
+      
+      double AB = (int)graphicInfo2.getX() - (int)graphicInfo1.getX();
+      double OA = (int)graphicInfo2.getY() - (int)graphicInfo1.getY();
+      double OB = lengths[p2] - lengths[p1];
+      double ob =  m - lengths[p1];
+      double ab =  AB * ob / OB;
+      double oa =  OA * ob / OB;
+      
+      double mx = graphicInfo1.getX() + ab;
+      double my = graphicInfo1.getY() + oa;
+      
+      gi.setX(mx);
+      gi.setY(my);
+    return gi;
+  }
+  
+  protected static void drawArtifact(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, Artifact artifact) {
+
+    ArtifactDrawInstruction drawInstruction = artifactDrawInstructions.get(artifact.getClass());
+    if (drawInstruction != null) {
+      drawInstruction.draw(processDiagramCanvas, bpmnModel, artifact);
     }
   }
 
@@ -532,6 +664,49 @@ public class ProcessDiagramGenerator {
       }
     }
     
+    List<Artifact> artifacts = gatherAllArtifacts(bpmnModel);
+    for (Artifact artifact : artifacts) {
+
+      GraphicInfo artifactGraphicInfo = bpmnModel.getGraphicInfo(artifact.getId());
+      
+      if (artifactGraphicInfo != null) {
+	      // width
+	      if (artifactGraphicInfo.getX() + artifactGraphicInfo.getWidth() > maxX) {
+	        maxX = artifactGraphicInfo.getX() + artifactGraphicInfo.getWidth();
+	      }
+	      if (artifactGraphicInfo.getX() < minX) {
+	        minX = artifactGraphicInfo.getX();
+	      }
+	      // height
+	      if (artifactGraphicInfo.getY() + artifactGraphicInfo.getHeight() > maxY) {
+	        maxY = artifactGraphicInfo.getY() + artifactGraphicInfo.getHeight();
+	      }
+	      if (artifactGraphicInfo.getY() < minY) {
+	        minY = artifactGraphicInfo.getY();
+	      }
+      }
+
+      List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(artifact.getId());
+      if (graphicInfoList != null) {
+	      for (GraphicInfo graphicInfo : graphicInfoList) {
+	          // width
+	          if (graphicInfo.getX() > maxX) {
+	            maxX = graphicInfo.getX();
+	          }
+	          if (graphicInfo.getX() < minX) {
+	            minX = graphicInfo.getX();
+	          }
+	          // height
+	          if (graphicInfo.getY() > maxY) {
+	            maxY = graphicInfo.getY();
+	          }
+	          if (graphicInfo.getY()< minY) {
+	            minY = graphicInfo.getY();
+	          }
+	      }
+      }
+    }
+    
     int nrOfLanes = 0;
     for (Process process : bpmnModel.getProcesses()) {
       for (Lane l : process.getLanes()) {
@@ -566,6 +741,14 @@ public class ProcessDiagramGenerator {
     return new ProcessDiagramCanvas((int) maxX + 10,(int) maxY + 10, (int) minX, (int) minY);
   }
   
+  protected static List<Artifact> gatherAllArtifacts(BpmnModel bpmnModel) {
+    List<Artifact> artifacts = new ArrayList<Artifact>();
+    for (Process process : bpmnModel.getProcesses()) {
+    	artifacts.addAll(process.getArtifacts());
+    }
+    return artifacts;
+  }
+  
   protected static List<FlowNode> gatherAllFlowNodes(BpmnModel bpmnModel) {
     List<FlowNode> flowNodes = new ArrayList<FlowNode>();
     for (Process process : bpmnModel.getProcesses()) {
@@ -593,4 +776,9 @@ public class ProcessDiagramGenerator {
 
   }
 
+  protected interface ArtifactDrawInstruction {
+
+    void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, Artifact artifact);
+
+  }
 }
