@@ -48,9 +48,11 @@ public class ProcessParser implements BpmnXMLConstants {
         List<String> candidateGroups = BpmnXMLUtil.parseDelimitedList(candidateGroupsString);
         process.setCandidateStarterGroups(candidateGroups);
       }
-      
+
+      BpmnXMLUtil.addCustomAttributes(xtr, process);
+
       model.getProcesses().add(process);
-      
+
     }
     return process;
   }

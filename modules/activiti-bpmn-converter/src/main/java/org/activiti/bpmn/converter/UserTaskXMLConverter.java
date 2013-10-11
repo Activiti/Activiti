@@ -12,8 +12,7 @@
  */
 package org.activiti.bpmn.converter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -23,6 +22,7 @@ import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.converter.util.CommaSplitter;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.alfresco.AlfrescoUserTask;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +33,22 @@ import org.apache.commons.lang3.StringUtils;
 public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   
   List<String> formTypes = new ArrayList<String>();
-  
+
+  /** default attributes taken from bpmn spec  and from activiti extension */
+  protected static final List<ExtensionAttribute> defaultAttributes =    Arrays.asList(
+      new ExtensionAttribute(ATTRIBUTE_ID)
+      , new ExtensionAttribute(ATTRIBUTE_NAME)
+      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY)
+      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_DUEDATE)
+      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ASSIGNEE)
+      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_PRIORITY)
+      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEUSERS)
+      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEGROUPS)
+      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS)
+      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE)
+      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION)
+  );
+
   public UserTaskXMLConverter() {
     HumanPerformerParser humanPerformerParser = new HumanPerformerParser();
     childElementParsers.put(humanPerformerParser.getElementName(), humanPerformerParser);
@@ -82,7 +97,9 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       String expression = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEGROUPS);
       userTask.getCandidateGroups().addAll(parseDelimitedList(expression));
     }
-    
+
+    BpmnXMLUtil.addCustomAttributes(xtr, userTask);
+
     parseChildElements(getXMLElementName(), userTask, xtr);
     
     return userTask;
@@ -100,6 +117,8 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     if (userTask.getPriority() != null) {
       writeQualifiedAttribute(ATTRIBUTE_TASK_USER_PRIORITY, userTask.getPriority().toString(), xtw);
     }
+    // write custom attributes
+    BpmnXMLUtil.writeAttribute(userTask.getAttributes().values(), xtw, defaultAttributes);
   }
   
   @Override

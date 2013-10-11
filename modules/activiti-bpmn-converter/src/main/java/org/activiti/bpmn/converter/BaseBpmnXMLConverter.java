@@ -24,24 +24,8 @@ import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.converter.export.ActivitiListenerExport;
 import org.activiti.bpmn.converter.export.MultiInstanceExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
-import org.activiti.bpmn.model.Activity;
-import org.activiti.bpmn.model.Artifact;
-import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.ErrorEventDefinition;
-import org.activiti.bpmn.model.EventDefinition;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FormProperty;
-import org.activiti.bpmn.model.FormValue;
-import org.activiti.bpmn.model.Gateway;
-import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SignalEventDefinition;
-import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.SubProcess;
-import org.activiti.bpmn.model.TerminateEventDefinition;
-import org.activiti.bpmn.model.TimerEventDefinition;
-import org.activiti.bpmn.model.UserTask;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,6 +179,35 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     BpmnXMLUtil.parseChildElements(elementName, parentElement, xtr, childParsers, model);
   }
   
+  protected ExtensionElement parseExtensionElement(XMLStreamReader xtr) throws Exception {
+    ExtensionElement extensionElement = new ExtensionElement();
+    extensionElement.setName(xtr.getLocalName());
+    if (StringUtils.isNotEmpty(xtr.getNamespaceURI())) {
+      extensionElement.setNamespace(xtr.getNamespaceURI());
+    }
+    if (StringUtils.isNotEmpty(xtr.getPrefix())) {
+      extensionElement.setNamespacePrefix(xtr.getPrefix());
+    }
+
+    BpmnXMLUtil.addCustomAttributes(xtr, extensionElement);
+
+    boolean readyWithExtensionElement = false;
+    while (readyWithExtensionElement == false && xtr.hasNext()) {
+      xtr.next();
+      if (xtr.isCharacters()) {
+        if (StringUtils.isNotEmpty(xtr.getText().trim())) {
+          extensionElement.setElementText(xtr.getText().trim());
+        }
+      } else if (xtr.isStartElement()) {
+        ExtensionElement childExtensionElement = parseExtensionElement(xtr);
+        extensionElement.addChildElement(childExtensionElement);
+      } else if (xtr.isEndElement() && extensionElement.getName().equalsIgnoreCase(xtr.getLocalName())) {
+        readyWithExtensionElement = true;
+      }
+    }
+    return extensionElement;
+  }
+
   protected boolean parseAsync(XMLStreamReader xtr) {
     boolean async = false;
     String asyncString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS);

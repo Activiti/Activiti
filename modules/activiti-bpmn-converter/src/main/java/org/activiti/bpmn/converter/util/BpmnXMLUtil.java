@@ -1,12 +1,10 @@
 package org.activiti.bpmn.converter.util;
 
 import java.text.StringCharacterIterator;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -294,5 +292,68 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     }
     return resultString.toString();
   }
-  
+
+  /**
+   * add all attributes from XML to element extensionAttributes.
+   *
+   * @param xtr
+   * @param element
+   */
+  public static void addCustomAttributes(XMLStreamReader xtr, BaseElement element) {
+    for (int i = 0; i < xtr.getAttributeCount(); i++) {
+      ExtensionAttribute extensionAttribute = new ExtensionAttribute();
+      extensionAttribute.setName(xtr.getAttributeLocalName(i));
+      extensionAttribute.setValue(xtr.getAttributeValue(i));
+      extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
+      if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
+        extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
+      }
+      element.addAttribute(extensionAttribute);
+    }
+  }
+
+  /**
+   * write attributes to xtw (except blacklisted)
+   * @param attributes
+   * @param xtw
+   * @param blackList
+   */
+  public static void writeAttribute(Collection<List<ExtensionAttribute>> attributes, XMLStreamWriter xtw, List<ExtensionAttribute> blackList) throws XMLStreamException {
+    Map<String, String> localNamespaces = new LinkedHashMap<String, String>();
+    for (List<ExtensionAttribute> attributeList : attributes) {
+      if (attributeList != null && !attributeList.isEmpty()) {
+        for (ExtensionAttribute attribute : attributeList) {
+          if ( !isBlacklisted(attribute, blackList)) {
+            if (attribute.getNamespacePrefix() == null) {
+              if (attribute.getNamespace() == null)
+                xtw.writeAttribute(attribute.getName(), attribute.getValue());
+              else {
+                xtw.writeAttribute(attribute.getNamespace(), attribute.getName(), attribute.getValue());
+              }
+            } else {
+              if ( !localNamespaces.containsKey(attribute.getNamespacePrefix())) {
+                localNamespaces.put(attribute.getNamespacePrefix(), attribute.getNamespace());
+                xtw.writeNamespace(attribute.getNamespacePrefix(), attribute.getNamespace());
+              }
+              xtw.writeAttribute(attribute.getNamespacePrefix(), attribute.getNamespace(),
+                  attribute.getName(), attribute.getValue());
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private static boolean isBlacklisted(ExtensionAttribute attribute, List<ExtensionAttribute> blackList) {
+    for (ExtensionAttribute blackAttribute : blackList){
+      if (blackAttribute.getName().equals(attribute.getName())) {
+        if ( blackAttribute.getNamespace() != null && attribute.getNamespace() != null
+            && blackAttribute.getNamespace().equals(attribute.getNamespace()))
+          return true;
+        if (blackAttribute.getNamespace() == null && attribute.getNamespace() == null)
+          return true;
+      }
+    }
+    return false;
+  }
 }

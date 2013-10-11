@@ -14,14 +14,23 @@ package org.activiti.bpmn.converter.export;
 
 import javax.xml.stream.XMLStreamWriter;
 
+import com.sun.org.apache.xml.internal.dtm.ref.dom2dtm.DOM2DTMdefaultNamespaceDeclarationNode;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class DefinitionsRootExport implements BpmnXMLConstants {
 
-  public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw, String encoding) throws Exception {
-    xtw.writeStartDocument(encoding, "1.0");
+  /** default namespaces for definitions */
+  protected static final Set<String> defaultNamespaces = new HashSet<String>(
+      Arrays.asList(XSI_PREFIX, ACTIVITI_EXTENSIONS_PREFIX, BPMNDI_PREFIX, OMGDC_PREFIX, OMGDI_PREFIX));
+
+  public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw) throws Exception {
+    xtw.writeStartDocument("UTF-8", "1.0");
 
     // start definitions root element
     xtw.writeStartElement(ELEMENT_DEFINITIONS);
@@ -32,6 +41,10 @@ public class DefinitionsRootExport implements BpmnXMLConstants {
     xtw.writeNamespace(BPMNDI_PREFIX, BPMNDI_NAMESPACE);
     xtw.writeNamespace(OMGDC_PREFIX, OMGDC_NAMESPACE);
     xtw.writeNamespace(OMGDI_PREFIX, OMGDI_NAMESPACE);
+    for ( String prefix : model.getNamespaces().keySet()) {
+      if (!defaultNamespaces.contains(prefix))
+        xtw.writeNamespace( prefix, model.getNamespaces().get(prefix));
+    }
     xtw.writeAttribute(TYPE_LANGUAGE_ATTRIBUTE, SCHEMA_NAMESPACE);
     xtw.writeAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE, XPATH_NAMESPACE);
     if (StringUtils.isNotEmpty(model.getTargetNamespace())) {
