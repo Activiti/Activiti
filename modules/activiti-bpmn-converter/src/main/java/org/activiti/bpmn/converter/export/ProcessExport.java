@@ -29,7 +29,7 @@ public class ProcessExport implements BpmnXMLConstants {
   /**
    * default attributes taken from process instance attributes
    */
-  protected static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(
+  public static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(
           new ExtensionAttribute(ATTRIBUTE_ID)
           ,new ExtensionAttribute(ATTRIBUTE_NAME)
           ,new ExtensionAttribute(ATTRIBUTE_PROCESS_EXECUTABLE)

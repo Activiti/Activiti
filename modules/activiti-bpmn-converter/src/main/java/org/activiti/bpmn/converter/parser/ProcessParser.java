@@ -17,6 +17,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.export.ProcessExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
@@ -26,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class ProcessParser implements BpmnXMLConstants {
-  
+
   public Process parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
     Process process = null;
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
@@ -49,7 +50,7 @@ public class ProcessParser implements BpmnXMLConstants {
         process.setCandidateStarterGroups(candidateGroups);
       }
 
-      BpmnXMLUtil.addCustomAttributes(xtr, process);
+      BpmnXMLUtil.addCustomAttributes(xtr, process, ProcessExport.defaultAttributes);
 
       model.getProcesses().add(process);
 

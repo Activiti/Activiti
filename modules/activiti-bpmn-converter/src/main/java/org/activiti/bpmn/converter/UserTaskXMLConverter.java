@@ -98,7 +98,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       userTask.getCandidateGroups().addAll(parseDelimitedList(expression));
     }
 
-    BpmnXMLUtil.addCustomAttributes(xtr, userTask);
+    BpmnXMLUtil.addCustomAttributes(xtr, userTask, defaultAttributes);
 
     parseChildElements(getXMLElementName(), userTask, xtr);
     

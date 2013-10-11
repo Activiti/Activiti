@@ -32,7 +32,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
   private void validateModel(BpmnModel model) {
     Process process = model.getMainProcess();
     assertNotNull(process.getAttributes());
-    assertEquals(4, process.getAttributes().size());
+    assertEquals(1, process.getAttributes().size());
     List<ExtensionAttribute> attributes = process.getAttributes().get("version");
     assertNotNull(attributes);
     assertEquals(1, attributes.size());
@@ -54,11 +54,11 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
     
     Map<String, List<ExtensionAttribute>> attributesMap = userTask.getAttributes();
     assertNotNull(attributesMap);
-    assertEquals(3, attributesMap.size());
+    assertEquals(2, attributesMap.size());
 
     attributes = attributesMap.get("id");
     assertNotNull(attributes);
-    assertEquals(2, attributes.size());
+    assertEquals(1, attributes.size());
     boolean testResult = false;
     for (ExtensionAttribute a : attributes) {
       assertNotNull(a);

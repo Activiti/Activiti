@@ -294,12 +294,13 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   }
 
   /**
-   * add all attributes from XML to element extensionAttributes.
+   * add all attributes from XML to element extensionAttributes (except blackListed).
    *
    * @param xtr
    * @param element
+   * @param blackList
    */
-  public static void addCustomAttributes(XMLStreamReader xtr, BaseElement element) {
+  public static void addCustomAttributes(XMLStreamReader xtr, BaseElement element, List<ExtensionAttribute> blackList) {
     for (int i = 0; i < xtr.getAttributeCount(); i++) {
       ExtensionAttribute extensionAttribute = new ExtensionAttribute();
       extensionAttribute.setName(xtr.getAttributeLocalName(i));
@@ -308,7 +309,8 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
         extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
       }
-      element.addAttribute(extensionAttribute);
+      if (!isBlacklisted(extensionAttribute, blackList))
+        element.addAttribute(extensionAttribute);
     }
   }
 
@@ -345,13 +347,15 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   }
 
   private static boolean isBlacklisted(ExtensionAttribute attribute, List<ExtensionAttribute> blackList) {
-    for (ExtensionAttribute blackAttribute : blackList){
-      if (blackAttribute.getName().equals(attribute.getName())) {
-        if ( blackAttribute.getNamespace() != null && attribute.getNamespace() != null
-            && blackAttribute.getNamespace().equals(attribute.getNamespace()))
-          return true;
-        if (blackAttribute.getNamespace() == null && attribute.getNamespace() == null)
-          return true;
+    if (blackList != null) {
+      for (ExtensionAttribute blackAttribute : blackList){
+        if (blackAttribute.getName().equals(attribute.getName())) {
+          if ( blackAttribute.getNamespace() != null && attribute.getNamespace() != null
+              && blackAttribute.getNamespace().equals(attribute.getNamespace()))
+            return true;
+          if (blackAttribute.getNamespace() == null && attribute.getNamespace() == null)
+            return true;
+        }
       }
     }
     return false;

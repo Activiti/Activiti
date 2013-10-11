@@ -189,7 +189,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       extensionElement.setNamespacePrefix(xtr.getPrefix());
     }
 
-    BpmnXMLUtil.addCustomAttributes(xtr, extensionElement);
+    BpmnXMLUtil.addCustomAttributes(xtr, extensionElement, null);
 
     boolean readyWithExtensionElement = false;
     while (readyWithExtensionElement == false && xtr.hasNext()) {
