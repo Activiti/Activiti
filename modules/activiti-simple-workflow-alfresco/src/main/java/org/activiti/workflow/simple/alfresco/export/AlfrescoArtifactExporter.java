@@ -33,7 +33,6 @@ import org.activiti.workflow.simple.alfresco.model.beans.Beans;
 import org.activiti.workflow.simple.alfresco.model.config.AlfrescoConfiguration;
 import org.activiti.workflow.simple.alfresco.model.config.Module;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Class capable of exporting Alfresco artifacts that are part of a
@@ -147,7 +146,7 @@ public class AlfrescoArtifactExporter {
 	public void writeBpmnModel(OutputStream out, WorkflowDefinitionConversion conversion) throws IOException {
 		BpmnModel model = conversion.getBpmnModel();
 		byte[] xmlContent = bpmnConverter.convertToXML(model, "UTF-8");
-		IOUtils.write(xmlContent, out);
+		out.write(xmlContent);
 	}
 	
 	/**
