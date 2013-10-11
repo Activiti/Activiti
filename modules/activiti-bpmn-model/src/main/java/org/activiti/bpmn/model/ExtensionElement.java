@@ -7,15 +7,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class ExtensionElement {
+public class ExtensionElement extends BaseElement {
 
   protected String name;
   protected String namespacePrefix;
   protected String namespace;
   protected String elementText;
   protected Map<String, List<ExtensionElement>> childElements = new LinkedHashMap<String, List<ExtensionElement>>();
-  protected Map<String, List<ExtensionAttribute>> attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
-  
+
   public String getElementText() {
     return elementText;
   }
@@ -55,21 +54,5 @@ public class ExtensionElement {
   }
   public void setChildElements(Map<String, List<ExtensionElement>> childElements) {
     this.childElements = childElements;
-  }
-  public Map<String, List<ExtensionAttribute>> getAttributes() {
-    return attributes;
-  }
-  public void addAttribute(ExtensionAttribute attribute) {
-    if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
-      List<ExtensionAttribute> attributeList = null;
-      if (this.attributes.containsKey(attribute.getName()) == false) {
-        attributeList = new ArrayList<ExtensionAttribute>();
-        this.attributes.put(attribute.getName(), attributeList);
-      }
-      this.attributes.get(attribute.getName()).add(attribute);
-    }
-  }
-  public void setAttributes(Map<String, List<ExtensionAttribute>> attributes) {
-    this.attributes = attributes;
   }
 }
