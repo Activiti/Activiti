@@ -8,8 +8,17 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.bpmn.model.*;
+import org.activiti.bpmn.model.ActivitiListener;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ExtensionAttribute;
+import org.activiti.bpmn.model.ExtensionElement;
+import org.activiti.bpmn.model.FieldExtension;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.bpmn.model.TimerEventDefinition;
 import org.junit.Test;
 
 public class CustomExtensionsConverterTest extends AbstractConverterTest {

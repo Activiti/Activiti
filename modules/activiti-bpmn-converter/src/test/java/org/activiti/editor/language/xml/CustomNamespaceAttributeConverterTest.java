@@ -1,13 +1,18 @@
 package org.activiti.editor.language.xml;
 
-import org.activiti.bpmn.model.*;
-import org.activiti.bpmn.model.Process;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ExtensionAttribute;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.UserTask;
+import org.junit.Test;
 
 public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest {
 
@@ -59,16 +64,21 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
     attributes = attributesMap.get("id");
     assertNotNull(attributes);
     assertEquals(1, attributes.size());
-    boolean testResult = false;
-    for (ExtensionAttribute a : attributes) {
-      assertNotNull(a);
-      assertEquals("id", a.getName());
-      if (a.getValue().equals("test")) {
-        assertEquals("custom2", a.getNamespacePrefix());
-        assertEquals("http://custom2.org/bpmn", a.getNamespace());
-        testResult = true;
-      }
-    }
-    assertTrue(testResult);
+    ExtensionAttribute a = attributes.get(0);
+    assertNotNull(a);
+    assertEquals("id", a.getName());
+    assertEquals("test", a.getValue());
+    assertEquals("custom2", a.getNamespacePrefix());
+    assertEquals("http://custom2.org/bpmn", a.getNamespace());
+    
+    attributes = attributesMap.get("attr");
+    assertNotNull(attributes);
+    assertEquals(1, attributes.size());
+    a = attributes.get(0);
+    assertNotNull(a);
+    assertEquals("attr", a.getName());
+    assertEquals("attrValue", a.getValue());
+    assertEquals("custom2", a.getNamespacePrefix());
+    assertEquals("http://custom2.org/bpmn", a.getNamespace());
   }
 }
