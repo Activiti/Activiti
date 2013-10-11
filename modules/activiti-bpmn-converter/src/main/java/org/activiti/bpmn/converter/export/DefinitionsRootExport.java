@@ -14,7 +14,6 @@ package org.activiti.bpmn.converter.export;
 
 import javax.xml.stream.XMLStreamWriter;
 
-import com.sun.org.apache.xml.internal.dtm.ref.dom2dtm.DOM2DTMdefaultNamespaceDeclarationNode;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
 import org.apache.commons.lang3.StringUtils;
@@ -29,8 +28,8 @@ public class DefinitionsRootExport implements BpmnXMLConstants {
   protected static final Set<String> defaultNamespaces = new HashSet<String>(
       Arrays.asList(XSI_PREFIX, ACTIVITI_EXTENSIONS_PREFIX, BPMNDI_PREFIX, OMGDC_PREFIX, OMGDI_PREFIX));
 
-  public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    xtw.writeStartDocument("UTF-8", "1.0");
+  public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw, String encoding) throws Exception {
+    xtw.writeStartDocument(encoding, "1.0");
 
     // start definitions root element
     xtw.writeStartElement(ELEMENT_DEFINITIONS);
