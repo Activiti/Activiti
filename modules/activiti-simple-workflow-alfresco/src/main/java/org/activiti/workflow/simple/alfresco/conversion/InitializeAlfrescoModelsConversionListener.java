@@ -39,6 +39,7 @@ import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyGroup;
+import org.activiti.workflow.simple.definition.form.ReferencePropertyDefinition;
 
 /**
  * A {@link WorkflowDefinitionConversionListener} that creates a {@link M2Model} and a {@link Configuration}
@@ -98,13 +99,14 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 						M2Namespace modelNamespace = model.getNamespaces().get(0);
 						type.setName(AlfrescoConversionUtil.getQualifiedName(modelNamespace.getPrefix(),
 								AlfrescoConversionConstants.START_TASK_SIMPLE_NAME));
-						type.setParentName(AlfrescoConversionConstants.DEFAULT_BASE_FORM_TYPE);
+						type.setParentName(AlfrescoConversionConstants.DEFAULT_START_FORM_TYPE);
 						
 						// Create a form-config for the start-task
 						Module shareModule = AlfrescoConversionUtil.getModule(conversion);
 						Configuration configuration = shareModule.addConfiguration(AlfrescoConversionConstants.EVALUATOR_TASK_TYPE
 								, type.getName());
 						Form formConfig = configuration.createForm();
+						formConfig.setStartForm(true);
 						
 						// Populate model and form based on FormDefinition
 						formCreator.createForm(type, formConfig, conversion.getWorkflowDefinition().getStartFormDefinition(), conversion);
@@ -164,11 +166,13 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 			for(FormPropertyGroup group : formDefinition.getFormGroups()) {
 				if(group.getFormPropertyDefinitions() != null) {
 					for(FormPropertyDefinition def : group.getFormPropertyDefinitions()) {
-						finalPropertyName = AlfrescoConversionUtil.getValidIdString(def.getName());
-						if(definitionMap.containsKey(finalPropertyName)) {
-							definitionMap.put(finalPropertyName, def);
-						} else {
-							definitionMap.put(finalPropertyName, null);
+						if(!(def instanceof ReferencePropertyDefinition)) {
+							finalPropertyName = AlfrescoConversionUtil.getValidIdString(def.getName());
+							if(definitionMap.containsKey(finalPropertyName)) {
+								definitionMap.put(finalPropertyName, def);
+							} else {
+								definitionMap.put(finalPropertyName, null);
+							}
 						}
 					}
 				}

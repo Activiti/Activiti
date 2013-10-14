@@ -34,7 +34,7 @@ public class M2PropertyOverride {
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private M2Mandatory mandatory;
 	
-	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
+	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0", name="default")
 	private String defaultValue;
 	
 	@XmlElement(name="constraint", namespace="http://www.alfresco.org/model/dictionary/1.0")

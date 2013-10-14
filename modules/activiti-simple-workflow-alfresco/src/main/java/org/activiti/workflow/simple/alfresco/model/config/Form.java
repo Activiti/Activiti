@@ -21,6 +21,7 @@ package org.activiti.workflow.simple.alfresco.model.config;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author Joram Barrez
@@ -28,6 +29,9 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Form
 {
+		@XmlTransient
+		private boolean startForm = false;
+		
     @XmlElement(name="field-visibility")
     private FormFieldVisibility formFieldVisibility = new FormFieldVisibility();
     
@@ -53,5 +57,12 @@ public class Form
     {
         this.formAppearance = formAppearance;
     }
-
+    
+    public boolean isStartForm() {
+	    return startForm;
+    }
+    
+    public void setStartForm(boolean startForm) {
+	    this.startForm = startForm;
+    }
 }

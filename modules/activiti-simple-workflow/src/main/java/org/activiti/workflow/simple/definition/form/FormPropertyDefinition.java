@@ -12,6 +12,9 @@
  */
 package org.activiti.workflow.simple.definition.form;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
@@ -28,6 +31,8 @@ public abstract class FormPropertyDefinition {
   protected String name;
   protected boolean mandatory;
   protected boolean writable;
+  
+  protected Map<String, Object> parameters = new HashMap<String, Object>(); 
   
   public String getName() {
     return name;
@@ -51,6 +56,14 @@ public abstract class FormPropertyDefinition {
   
   public void setWritable(boolean writable) {
 	  this.writable = writable;
+  }
+  
+  public void setParameters(Map<String, Object> parameters) {
+	  this.parameters = parameters;
+  }
+  
+  public Map<String, Object> getParameters() {
+	  return parameters;
   }
   
   /**

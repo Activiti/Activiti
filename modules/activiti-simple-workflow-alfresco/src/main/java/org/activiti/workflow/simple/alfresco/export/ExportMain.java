@@ -14,6 +14,7 @@ package org.activiti.workflow.simple.alfresco.export;
 
 import java.io.File;
 
+import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoWorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
@@ -24,6 +25,7 @@ import org.activiti.workflow.simple.definition.form.FormPropertyGroup;
 import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyEntry;
 import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
+import org.activiti.workflow.simple.definition.form.ReferencePropertyDefinition;
 import org.activiti.workflow.simple.definition.form.TextPropertyDefinition;
 
 public class ExportMain {
@@ -52,6 +54,13 @@ public class ExportMain {
 		textProperty.setMandatory(true);
 		group.addFormProperty(textProperty);
 		
+		ReferencePropertyDefinition taskPackageItem = new ReferencePropertyDefinition();
+		taskPackageItem.getParameters().put(AlfrescoConversionConstants.PARAMETER_PACKAGEITEMS_ALLOW_ADD, false);
+		taskPackageItem.getParameters().put(AlfrescoConversionConstants.PARAMETER_PACKAGEITEMS_ALLOW_REMOVE, false);
+		
+		taskPackageItem.setType(AlfrescoConversionConstants.FORM_REFERENCE_PACKAGE_ITEMS);
+		group.addFormProperty(taskPackageItem);
+		
 		definition.addStep(humanStep);
 		
 		FormDefinition startForm = new FormDefinition();
@@ -77,6 +86,7 @@ public class ExportMain {
 		
 		
 		FormPropertyGroup anotherGroup = new FormPropertyGroup();
+		anotherGroup.setType(AlfrescoConversionConstants.FORM_GROUP_LAYOUT_2_COLUMNS);
 		anotherGroup.setId("other");
 		anotherGroup.setTitle("Another group");
 		startForm.addFormPropertyGroup(anotherGroup);
@@ -90,6 +100,24 @@ public class ExportMain {
 		NumberPropertyDefinition numberProp = new NumberPropertyDefinition();
 		numberProp.setName("Amount");
 		anotherGroup.addFormProperty(numberProp);
+		
+		FormPropertyGroup defaultGroup = new FormPropertyGroup("default",AlfrescoConversionConstants.FORM_GROUP_LAYOUT_3_COLUMNS,"Default fields");
+		startForm.addFormPropertyGroup(defaultGroup);
+		
+		ReferencePropertyDefinition dueDateField = new ReferencePropertyDefinition();
+		dueDateField.setType(AlfrescoConversionConstants.FORM_REFERENCE_DUEDATE);
+		defaultGroup.addFormProperty(dueDateField);
+		ReferencePropertyDefinition priorityGroup = new ReferencePropertyDefinition();
+		priorityGroup.setType(AlfrescoConversionConstants.FORM_REFERENCE_PRIORITY);
+		defaultGroup.addFormProperty(priorityGroup);
+		ReferencePropertyDefinition messageField = new ReferencePropertyDefinition();
+		messageField.setType(AlfrescoConversionConstants.FORM_REFERENCE_WORKFLOW_DESCRIPTION);
+		defaultGroup.addFormProperty(messageField);
+		
+	// Add package items
+			ReferencePropertyDefinition packageItem = new ReferencePropertyDefinition();
+			packageItem.setType(AlfrescoConversionConstants.FORM_REFERENCE_PACKAGE_ITEMS);
+			defaultGroup.addFormProperty(packageItem);
 		
 		WorkflowDefinitionConversion conversion = factory.createWorkflowDefinitionConversion(definition);
 		conversion.convert();

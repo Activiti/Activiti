@@ -83,6 +83,7 @@ public class JsonConverterTest {
 		textProp.setName("textProp");
 		textProp.setWritable(false);
 		formDefinition.addFormProperty(textProp);
+		textProp.getParameters().put("custom-parameter", "This is a test");
 		
 		NumberPropertyDefinition numberProp = new NumberPropertyDefinition();
 		numberProp.setMandatory(true);
@@ -109,7 +110,7 @@ public class JsonConverterTest {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Writer writer = new OutputStreamWriter(baos);
 		converter.writeWorkflowDefinition(workflowDefinition, writer);
-
+		
 		// Parse definition based on written JSON
 		WorkflowDefinition parsedDefinition = converter.readWorkflowDefinition(baos.toByteArray());
 		assertEquals(workflowDefinition.getSteps().size(), parsedDefinition.getSteps().size());
@@ -144,6 +145,12 @@ public class JsonConverterTest {
 					assertEquals(origDef.isMandatory(), parsedDef.isMandatory());
 					assertEquals(origDef.isWritable(), parsedDef.isWritable());
 					assertEquals(origDef.getClass(), parsedDef.getClass());
+					
+					if(parsedDef instanceof TextPropertyDefinition) {
+						assertTrue(parsedDef.getParameters() != null);
+						assertEquals(1L, parsedDef.getParameters().size());
+						assertEquals("This is a test", parsedDef.getParameters().get("custom-parameter"));
+					}
 				}
 			}
 			index++;

@@ -45,7 +45,7 @@ public interface AlfrescoConversionConstants {
 	/**
 	 * Default start form key
 	 */
-	String DEFAULT_START_FORM_TYPE = "bpm:activitiStartTask";
+	String DEFAULT_START_FORM_TYPE = "bpm:startTask";
 	String START_TASK_SIMPLE_NAME = "start";
 	
 	/**
@@ -59,10 +59,20 @@ public interface AlfrescoConversionConstants {
 	String PROPERTY_SEND_EMAIL_NOTIFICATIONS = "bpm:sendEMailNotifications";
 	String PROPERTY_PACKAGEITEMS = "packageItems";
 	
+	String PROPERTY_PACKAGEITEMS_ITEM_ACTION_GROUP = "bpm:packageItemActionGroup";
+	String PROPERTY_PACKAGEITEMS_ACTION_GROUP = "bpm:packageActionGroup";
+	String PROPERTY_PACKAGEITEMS_ACTION_GROUP_ADD = "add_package_item_actions";
+	String PROPERTY_PACKAGEITEMS_ITEM_ACTION_GROUP_REMOVE = "edit_and_remove_package_item_actions";
+	String PROPERTY_PACKAGEITEMS_ITEM_ACTION_GROUP_EDIT = "edit_package_item_actions";
+	
 	String PROPERTY_TYPE_TEXT = "d:text";
 	String PROPERTY_TYPE_DATE = "d:date";
 	String PROPERTY_TYPE_DOUBLE = "d:double";
 	String PROPERTY_TYPE_DATETIME = "d:datetime";
+	
+	String PROPERTY_DUE_DATE = "bpm:dueDate";
+	String PROPERTY_PRIORITY = "bpm:priority";
+	String PROPERTY_DESCRIPTION = "bpm:description";
 	
 	// Form constants
 	/**
@@ -103,9 +113,15 @@ public interface AlfrescoConversionConstants {
 	String FORM_WORKFLOW_DUE_DATE_LABEL = "workflow.field.due";
 	String FORM_WORKFLOW_PRIORITY_LABEL = "workflow.field.priority";
 	
+	// Custom property definition constants
 	String FORM_GROUP_LAYOUT_1_COLUMN = "one-column";
 	String FORM_GROUP_LAYOUT_2_COLUMNS = "two-column";
 	String FORM_GROUP_LAYOUT_3_COLUMNS = "three-column";
+	
+	String FORM_REFERENCE_DUEDATE = "duedate";
+	String FORM_REFERENCE_PRIORITY = "priority";
+	String FORM_REFERENCE_WORKFLOW_DESCRIPTION = "workflow-description";
+	String FORM_REFERENCE_PACKAGE_ITEMS = "package-items";
 	
 	// Process constants
 	String INITIATOR_VARIABLE = "initiatorUserName";
@@ -116,10 +132,16 @@ public interface AlfrescoConversionConstants {
 	 */
 	String EVALUATOR_CONDITION_ACTIVITI = "activiti${0}";
 	
+	// Custom form definition parameters
+	String PARAMETER_PACKAGEITEMS_ALLOW_ADD = "allow-add";
+	String PARAMETER_PACKAGEITEMS_ALLOW_REMOVE = "allow-remove";
+	
 	
 	// Artifact keys
 	String ARTIFACT_CONTENT_MODEL_KEY = "contentModel";
 	String ARTIFACT_SHARE_CONFIG_MODULE = "configModule";
 	String ARTIFACT_MODEL_NAMESPACE_PREFIX = "modelNamespacePrefix";
+	
+	
 
 }

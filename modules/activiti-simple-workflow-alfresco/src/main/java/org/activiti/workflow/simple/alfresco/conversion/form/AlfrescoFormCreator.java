@@ -42,6 +42,7 @@ public class AlfrescoFormCreator {
 		registerConverter(new AlfrescoDatePropertyConverter());
 		registerConverter(new AlfrescoNumberPropertyConverter());
 		registerConverter(new AlfrescoListPropertyConverter());
+		registerConverter(new AlfrescoReferencePropertyConverter());
   }
 	
 	public void createForm(M2Type contentType, Form formConfig, FormDefinition formDefinition, WorkflowDefinitionConversion conversion) {
