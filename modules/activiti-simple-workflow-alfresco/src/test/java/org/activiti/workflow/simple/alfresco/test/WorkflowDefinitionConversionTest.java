@@ -75,7 +75,7 @@ public class WorkflowDefinitionConversionTest {
 		boolean startTaskFound = false;
 		for(FlowElement element : process.getFlowElements()) {
 			if(element instanceof StartEvent) {
-				assertEquals("bpm:activitiStartTask", ((StartEvent) element).getFormKey());
+				assertEquals("bpm:startTask", ((StartEvent) element).getFormKey());
 				startTaskFound = true;
 			}
 		}
