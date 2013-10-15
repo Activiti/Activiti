@@ -12,9 +12,12 @@
  */
 package org.activiti.workflow.simple.alfresco.conversion;
 
+import java.util.Map.Entry;
+
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.conversion.exception.AlfrescoSimpleWorkflowException;
 import org.activiti.workflow.simple.alfresco.conversion.form.AlfrescoFormCreator;
+import org.activiti.workflow.simple.alfresco.conversion.script.ScriptTaskListenerBuilder;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
@@ -83,8 +86,62 @@ public class AlfrescoHumanStepDefinitionConverter extends HumanStepDefinitionCon
 		
 		// Populate model and form based on FormDefinition
 		formCreator.createForm(type, formConfig, humanStep.getForm(), conversion);
+		
+		// Set up property sharing using task-listeners
+		addPropertySharing(humanStep, conversion, userTask);
+		
+		// Add Script listeners
+		addScriptListeners(humanStep, conversion, userTask);
+		
 	}
 	
+	protected void addScriptListeners(HumanStepDefinition humanStep, WorkflowDefinitionConversion conversion,
+      UserTask userTask) {
+	  
+		// Add create-script-listener if it has been used in this conversion
+		if(AlfrescoConversionUtil.hasTaskScriptTaskListenerBuilder(conversion, userTask.getId(), 
+				AlfrescoConversionConstants.TASK_LISTENER_EVENT_CREATE)) {
+			userTask.getTaskListeners().add(AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
+					AlfrescoConversionConstants.TASK_LISTENER_EVENT_CREATE).build());
+		}
+		
+		// Add complete-script-listener if it has been used in this conversion
+		if(AlfrescoConversionUtil.hasTaskScriptTaskListenerBuilder(conversion, userTask.getId(), 
+				AlfrescoConversionConstants.TASK_LISTENER_EVENT_COMPLETE)) {
+			userTask.getTaskListeners().add(AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
+					AlfrescoConversionConstants.TASK_LISTENER_EVENT_COMPLETE).build());
+		}
+  }
+
+	protected void addPropertySharing(HumanStepDefinition humanStep, WorkflowDefinitionConversion conversion, UserTask userTask) {
+		PropertySharing sharing = AlfrescoConversionUtil.getPropertySharing(conversion, userTask.getId());
+		
+		// Add default incoming properties (due-date and priority)
+		// TODO: make optional?
+		ScriptTaskListenerBuilder createEventBuilder = AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
+				AlfrescoConversionConstants.TASK_LISTENER_EVENT_CREATE);
+		
+		createEventBuilder.addDueDateInheritance();
+		createEventBuilder.addPriorityInheritance();
+		
+		// Add create-listener in case incoming properties are present
+		if(sharing.hasIncomingProperties()) {
+			createEventBuilder = AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
+					AlfrescoConversionConstants.TASK_LISTENER_EVENT_CREATE);
+			for(Entry<String, String> entry : sharing.getIncomingProperties().entrySet()) {
+				createEventBuilder.addIncomingProperty(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		// Add complete-listener in case incoming properties are present
+		if(sharing.hasOutgoingProperties()) {
+			ScriptTaskListenerBuilder completeEventBuilder = AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
+					AlfrescoConversionConstants.TASK_LISTENER_EVENT_COMPLETE);
+			for(Entry<String, String> entry : sharing.getOutgoingProperties().entrySet()) {
+				completeEventBuilder.addOutgoingProperty(entry.getKey(), entry.getValue());
+			}
+		}
+  }
 
 	@Override
 	protected String getInitiatorExpression() {

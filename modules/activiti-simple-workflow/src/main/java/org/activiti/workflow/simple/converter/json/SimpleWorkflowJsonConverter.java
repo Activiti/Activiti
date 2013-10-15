@@ -21,6 +21,7 @@ import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.ScriptStepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.activiti.workflow.simple.definition.form.BooleanPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.DatePropertyDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
@@ -124,7 +125,7 @@ public class SimpleWorkflowJsonConverter {
 
 					// Register all property-definition model classes as sub-types
 					objectMapper.registerSubtypes(ListPropertyDefinition.class, TextPropertyDefinition.class,
-					    ReferencePropertyDefinition.class, DatePropertyDefinition.class, NumberPropertyDefinition.class);
+					    ReferencePropertyDefinition.class, DatePropertyDefinition.class, NumberPropertyDefinition.class, BooleanPropertyDefinition.class);
 
 					// Register all step-types
 					objectMapper.registerSubtypes(HumanStepDefinition.class, FeedbackStepDefinition.class, ParallelStepsDefinition.class, ScriptStepDefinition.class);

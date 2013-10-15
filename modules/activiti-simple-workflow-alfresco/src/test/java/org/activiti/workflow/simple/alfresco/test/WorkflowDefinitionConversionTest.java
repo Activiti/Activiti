@@ -22,6 +22,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoWorkflowDefinitionConversionFactory;
@@ -115,6 +116,40 @@ public class WorkflowDefinitionConversionTest {
 		String generatedProcessId = process.getId();
 		assertNotNull(generatedProcessId);
 	}
+	
+	@Test
+	public void testTaskListenerForIncomingProperties() throws Exception {
+		WorkflowDefinition definition = new WorkflowDefinition();
+		definition.setId("process");
+		
+		HumanStepDefinition humanStep = new HumanStepDefinition();
+		humanStep.setId("step1");
+		FormDefinition form = new FormDefinition();
+		form.setFormKey("myform");
+		humanStep.setForm(form);
+		
+		definition.addStep(humanStep);
+		
+		WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(definition);
+		conversion.convert();
+		
+		Process process = conversion.getProcess();
+		assertNotNull(process);
+		
+		boolean listenerFound = false;
+		for(FlowElement flowElement : process.getFlowElements()) {
+			if(flowElement instanceof UserTask) {
+					UserTask task = (UserTask) flowElement;
+					assertNotNull(task.getTaskListeners());
+					assertEquals(1L, task.getTaskListeners().size());
+					assertEquals("create", task.getTaskListeners().get(0).getEvent());
+					listenerFound = true;
+			}
+		}
+		assertTrue(listenerFound);
+		
+	}
+	
 	
 	/**
 	 * Check artifact export.

@@ -166,7 +166,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 			for(FormPropertyGroup group : formDefinition.getFormGroups()) {
 				if(group.getFormPropertyDefinitions() != null) {
 					for(FormPropertyDefinition def : group.getFormPropertyDefinitions()) {
-						if(!(def instanceof ReferencePropertyDefinition)) {
+						if(isPropertyReuseCandidate(def)) {
 							finalPropertyName = AlfrescoConversionUtil.getValidIdString(def.getName());
 							if(definitionMap.containsKey(finalPropertyName)) {
 								definitionMap.put(finalPropertyName, def);
@@ -179,6 +179,15 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 			}
 		}
   }
+	
+	protected boolean isPropertyReuseCandidate(FormPropertyDefinition def) {
+		boolean valid = !(def instanceof ReferencePropertyDefinition);
+		if(!valid) {
+			ReferencePropertyDefinition reference = (ReferencePropertyDefinition) def;
+			valid = AlfrescoConversionConstants.FORM_REFERENCE_FIELD.equals(reference.getType());
+		}
+		return valid;
+	}
 
 	protected M2Model addContentModel(WorkflowDefinitionConversion conversion, String processId) {
 		// The process ID is used as namespace prefix, to guarantee uniqueness

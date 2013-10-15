@@ -13,7 +13,12 @@
 package org.activiti.workflow.simple.alfresco.conversion;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.activiti.workflow.simple.alfresco.conversion.script.ScriptTaskListenerBuilder;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
 import org.activiti.workflow.simple.alfresco.model.config.Module;
@@ -76,6 +81,65 @@ public class AlfrescoConversionUtil implements AlfrescoConversionConstants {
 	
 	public static String getModelNamespacePrefix(WorkflowDefinitionConversion conversion) {
 		return (String) conversion.getArtifact(ARTIFACT_MODEL_NAMESPACE_PREFIX);
+	}
+	
+	/**
+	 * @return the {@link PropertySharing} object for the given usertask-id. Creates and registers a new
+	 * object if there is no {@link PropertySharing} object registered for the given usertask.
+	 */
+	@SuppressWarnings("unchecked")
+  public static PropertySharing getPropertySharing(WorkflowDefinitionConversion conversion, String userTaskId) {
+		List<PropertySharing> sharingList = (List<PropertySharing>) conversion.getArtifact(ARTIFACT_PROPERTY_SHARING);
+		if(sharingList == null) {
+			sharingList = new ArrayList<PropertySharing>();
+		}
+		
+		PropertySharing result = null;
+		for(PropertySharing sharing : sharingList) {
+			if(userTaskId.equals(sharing.getUserTaskId())) {
+				result = sharing;
+			}
+		}
+		
+		if(result == null) {
+			result = new PropertySharing();
+			result.setUserTaskId(userTaskId);
+			sharingList.add(result);
+		}
+		return result;
+	}
+	
+	/**
+	 * @return the {@link ScriptTaskListenerBuilder} object for the given usertask-id. Creates and registers a new
+	 * object if there is no {@link ScriptTaskListenerBuilder} object registered for the given usertask.
+	 */
+	@SuppressWarnings("unchecked")
+  public static ScriptTaskListenerBuilder getScriptTaskListenerBuilder(WorkflowDefinitionConversion conversion, String userTaskId, String eventName) {
+		String key = userTaskId + "-" + eventName;
+		Map<String, ScriptTaskListenerBuilder> builderMap = (Map<String, ScriptTaskListenerBuilder>) conversion.getArtifact(ARTIFACT_PROPERTY_TASK_SCRIPT_BUILDER);
+		if(builderMap == null) {
+			builderMap = new HashMap<String, ScriptTaskListenerBuilder>();
+			conversion.setArtifact(ARTIFACT_PROPERTY_TASK_SCRIPT_BUILDER, builderMap);
+		}
+		
+		ScriptTaskListenerBuilder result = builderMap.get(key);
+		
+		if(result == null) {
+			result = new ScriptTaskListenerBuilder();
+			result.setEvent(eventName);
+			builderMap.put(key, result);
+		}
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+  public static boolean hasTaskScriptTaskListenerBuilder(WorkflowDefinitionConversion conversion, String userTaskId, String eventName) {
+		String key = userTaskId + "-" + eventName;
+		Map<String, ScriptTaskListenerBuilder> builderMap = (Map<String, ScriptTaskListenerBuilder>) conversion.getArtifact(ARTIFACT_PROPERTY_TASK_SCRIPT_BUILDER);
+		if(builderMap != null) {
+			return builderMap.get(key) != null;
+		}		
+		return false;
 	}
 	
 }

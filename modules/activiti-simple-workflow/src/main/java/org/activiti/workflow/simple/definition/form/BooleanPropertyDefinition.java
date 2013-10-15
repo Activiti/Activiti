@@ -16,28 +16,30 @@ import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
- * A form-property with a value that is represented as a number.
+ * A form-property with a value that is represented as a boolean.
  *  
  * @author Frederik Heremans
  */
-@JsonTypeName("number")
-public class NumberPropertyDefinition extends FormPropertyDefinition {
+@JsonTypeName("boolean")
+public class BooleanPropertyDefinition extends FormPropertyDefinition {
 	
 	@Override
 	public FormPropertyDefinition clone() {
-		NumberPropertyDefinition clone = new NumberPropertyDefinition();
+		BooleanPropertyDefinition clone = new BooleanPropertyDefinition();
 		clone.setValues(this);
 	  return clone;
 	}
 	
 	@Override
 	public void setValues(FormPropertyDefinition otherDefinition) {
-		if(!(otherDefinition instanceof NumberPropertyDefinition)) {
-			throw new SimpleWorkflowException("An instance of NumberPropertyDefinition is required to set values");
+		if(!(otherDefinition instanceof BooleanPropertyDefinition)) {
+			throw new SimpleWorkflowException("An instance of BooleanPropertyDefinition is required to set values");
 		}
-		setName(otherDefinition.getName());
-		setMandatory(otherDefinition.isMandatory());
-		setWritable(otherDefinition.isWritable());
+		
+		BooleanPropertyDefinition datePropertyDefinition = (BooleanPropertyDefinition) otherDefinition;
+		setName(datePropertyDefinition.getName());
+		setMandatory(datePropertyDefinition.isMandatory());
+		setWritable(datePropertyDefinition.isWritable());
 		
 		setParameters(otherDefinition.cloneParameters());
 	}

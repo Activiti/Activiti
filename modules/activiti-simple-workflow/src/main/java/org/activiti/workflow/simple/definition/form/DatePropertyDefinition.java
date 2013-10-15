@@ -62,5 +62,7 @@ public class DatePropertyDefinition extends FormPropertyDefinition {
 		setMandatory(datePropertyDefinition.isMandatory());
 		setWritable(datePropertyDefinition.isWritable());
 		setShowTime(datePropertyDefinition.isShowTime());
+		
+		setParameters(otherDefinition.cloneParameters());
 	}
 }

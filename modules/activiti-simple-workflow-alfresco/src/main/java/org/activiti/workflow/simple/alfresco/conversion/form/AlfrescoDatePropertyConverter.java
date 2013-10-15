@@ -68,11 +68,6 @@ public class AlfrescoDatePropertyConverter implements AlfrescoFormPropertyConver
 		FormField formField = form.getFormAppearance().addFormField(propertyName, dateDefinition.getName(), formSet);
 
 		if(dateDefinition.isWritable()) {
-			// Read-only properties should always be rendered using an info-template
-			FormFieldControl control = new FormFieldControl();
-			control.setTemplate(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE);
-			formField.setControl(control);
-		} else {
 			// Use custom date-control
 			FormFieldControl control = new FormFieldControl();
 			control.setTemplate(AlfrescoConversionConstants.FORM_DATE_TEMPLATE);
@@ -80,6 +75,11 @@ public class AlfrescoDatePropertyConverter implements AlfrescoFormPropertyConver
 					Boolean.toString(dateDefinition.isShowTime()));
 			control.addControlParameter(AlfrescoConversionConstants.FORM_DATE_PARAM_SUBMIT_TIME, 
 					Boolean.toString(dateDefinition.isShowTime()));
+			formField.setControl(control);
+		} else {
+			// Read-only properties should always be rendered using an info-template
+			FormFieldControl control = new FormFieldControl();
+			control.setTemplate(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE);
 			formField.setControl(control);
 		}
 	}

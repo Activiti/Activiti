@@ -43,6 +43,7 @@ public class AlfrescoFormCreator {
 		registerConverter(new AlfrescoNumberPropertyConverter());
 		registerConverter(new AlfrescoListPropertyConverter());
 		registerConverter(new AlfrescoReferencePropertyConverter());
+		registerConverter(new AlfrescoBooleanPropertyConverter());
   }
 	
 	public void createForm(M2Type contentType, Form formConfig, FormDefinition formDefinition, WorkflowDefinitionConversion conversion) {
@@ -50,7 +51,13 @@ public class AlfrescoFormCreator {
 			
 			for(FormPropertyGroup group : formDefinition.getFormGroups()) {
 				// Create a group in the form-config
-				String groupId = AlfrescoConversionUtil.getValidIdString(group.getId());
+				String groupId = null; 
+				if(group.getId() != null) {
+					groupId = AlfrescoConversionUtil.getValidIdString(group.getId());
+				} else {
+					groupId = AlfrescoConversionUtil.getValidIdString(group.getTitle());
+				}
+				
 				FormSet formSet = formConfig.getFormAppearance().addFormSet(groupId, getAppearanceForGroup(group), group.getTitle(), getTemplateForGroup(group));
 				
 				// Convert all properties

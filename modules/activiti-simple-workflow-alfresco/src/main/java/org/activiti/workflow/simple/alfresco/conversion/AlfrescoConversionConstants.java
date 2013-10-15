@@ -69,6 +69,7 @@ public interface AlfrescoConversionConstants {
 	String PROPERTY_TYPE_DATE = "d:date";
 	String PROPERTY_TYPE_DOUBLE = "d:double";
 	String PROPERTY_TYPE_DATETIME = "d:datetime";
+	String PROPERTY_TYPE_BOOLEAN = "d:boolean";
 	
 	String PROPERTY_DUE_DATE = "bpm:dueDate";
 	String PROPERTY_PRIORITY = "bpm:priority";
@@ -122,6 +123,7 @@ public interface AlfrescoConversionConstants {
 	String FORM_REFERENCE_PRIORITY = "priority";
 	String FORM_REFERENCE_WORKFLOW_DESCRIPTION = "workflow-description";
 	String FORM_REFERENCE_PACKAGE_ITEMS = "package-items";
+	String FORM_REFERENCE_FIELD = "field";
 	
 	// Process constants
 	String INITIATOR_VARIABLE = "initiatorUserName";
@@ -141,6 +143,14 @@ public interface AlfrescoConversionConstants {
 	String ARTIFACT_CONTENT_MODEL_KEY = "contentModel";
 	String ARTIFACT_SHARE_CONFIG_MODULE = "configModule";
 	String ARTIFACT_MODEL_NAMESPACE_PREFIX = "modelNamespacePrefix";
+	String ARTIFACT_PROPERTY_SHARING = "propertySharing";
+	String ARTIFACT_PROPERTY_TASK_SCRIPT_BUILDER = "scriptTaskListenerBuilder";
+
+	// Listener and extension elements
+	String CLASSNAME_SCRIPT_TASK_LISTENER = "org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener";
+	String SCRIPT_TASK_LISTENER_SCRIPT_FIELD_NAME = "script";
+	String TASK_LISTENER_EVENT_CREATE = "create";
+	String TASK_LISTENER_EVENT_COMPLETE = "complete";
 	
 	
 

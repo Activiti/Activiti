@@ -23,27 +23,27 @@ import org.activiti.workflow.simple.alfresco.model.config.Form;
 import org.activiti.workflow.simple.alfresco.model.config.FormField;
 import org.activiti.workflow.simple.alfresco.model.config.FormFieldControl;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.definition.form.BooleanPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
-import org.activiti.workflow.simple.definition.form.TextPropertyDefinition;
 
-public class AlfrescoTextPropertyConverter implements AlfrescoFormPropertyConverter {
+public class AlfrescoBooleanPropertyConverter implements AlfrescoFormPropertyConverter {
 
 	@Override
 	public Class<? extends FormPropertyDefinition> getConvertedClass() {
-		return TextPropertyDefinition.class;
+		return BooleanPropertyDefinition.class;
 	}
 
 	@Override
 	public void convertProperty(M2Type contentType, String formSet, Form form, FormPropertyDefinition propertyDefinition, WorkflowDefinitionConversion conversion) {
-		TextPropertyDefinition textDefinition = (TextPropertyDefinition) propertyDefinition;
+		BooleanPropertyDefinition dateDefinition = (BooleanPropertyDefinition) propertyDefinition;
 		String propertyName = AlfrescoConversionUtil.getQualifiedName(AlfrescoConversionUtil.getModelNamespacePrefix(conversion),
-				textDefinition.getName());
+				dateDefinition.getName());
 		
 		// Add to content model
 		M2Property property = new M2Property();
-		property.setMandatory(new M2Mandatory(textDefinition.isMandatory()));
+		property.setMandatory(new M2Mandatory(dateDefinition.isMandatory()));
 		property.setName(propertyName);
-		property.setPropertyType(AlfrescoConversionConstants.PROPERTY_TYPE_TEXT);
+		property.setPropertyType(AlfrescoConversionConstants.PROPERTY_TYPE_BOOLEAN);
 		
 		M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
 		M2Aspect aspect = model.getAspect(propertyName);
@@ -60,23 +60,13 @@ public class AlfrescoTextPropertyConverter implements AlfrescoFormPropertyConver
 		
 		// Add form configuration
 		form.getFormFieldVisibility().addShowFieldElement(propertyName);
-		FormField formField = form.getFormAppearance().addFormField(propertyName, propertyDefinition.getName(), formSet);
+		FormField formField = form.getFormAppearance().addFormField(propertyName, dateDefinition.getName(), formSet);
 
-		if(!textDefinition.isWritable()) {
+		if(!dateDefinition.isWritable()) {
 			// Read-only properties should always be rendered using an info-template
 			FormFieldControl control = new FormFieldControl();
 			control.setTemplate(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE);
 			formField.setControl(control);
-		} else if(textDefinition.isMultiline()) {
-			// In case the property is multi-lined, use an alternative control template
-			FormFieldControl control = new FormFieldControl();
-			control.setTemplate(AlfrescoConversionConstants.FORM_MULTILINE_TEXT_TEMPLATE);
-			formField.setControl(control);
-		} else {
-			FormFieldControl control = new FormFieldControl();
-			control.setTemplate(AlfrescoConversionConstants.FORM_TEXT_TEMPLATE);
-			formField.setControl(control);
 		}
-		
 	}
 }

@@ -63,14 +63,14 @@ public class AlfrescoNumberPropertyConverter implements AlfrescoFormPropertyConv
 		FormField formField = form.getFormAppearance().addFormField(propertyName, propertyDefinition.getName(), formSet);
 
 		if(numberPropertyDefinition.isWritable()) {
-			// Read-only properties should always be rendered using an info-template
-			FormFieldControl control = new FormFieldControl();
-			control.setTemplate(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE);
-			formField.setControl(control);
-		} else {
 			// Use custom date-control
 			FormFieldControl control = new FormFieldControl();
 			control.setTemplate(AlfrescoConversionConstants.FORM_NUMBER_TEMPLATE);
+			formField.setControl(control);
+		} else {
+			// Read-only properties should always be rendered using an info-template
+			FormFieldControl control = new FormFieldControl();
+			control.setTemplate(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE);
 			formField.setControl(control);
 		}
 	}

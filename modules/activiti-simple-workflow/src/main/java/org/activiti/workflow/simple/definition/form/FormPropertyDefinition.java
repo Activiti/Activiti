@@ -76,4 +76,12 @@ public abstract class FormPropertyDefinition {
    * properties present in the given definition. 
    */
   public abstract void setValues(FormPropertyDefinition otherDefinition);
+  
+  protected Map<String, Object> cloneParameters() {
+  	Map<String, Object> result = new HashMap<String, Object>();
+  	if(parameters != null && parameters.size() > 0) {
+  		result.putAll(parameters);
+  	}
+  	return result;
+  }
 }

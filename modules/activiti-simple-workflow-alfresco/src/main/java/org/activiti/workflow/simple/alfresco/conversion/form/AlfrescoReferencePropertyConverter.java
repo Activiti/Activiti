@@ -15,6 +15,10 @@ package org.activiti.workflow.simple.alfresco.conversion.form;
 import java.util.Map;
 
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
+import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
+import org.activiti.workflow.simple.alfresco.conversion.exception.AlfrescoSimpleWorkflowException;
+import org.activiti.workflow.simple.alfresco.model.M2Aspect;
+import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2PropertyOverride;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
 import org.activiti.workflow.simple.alfresco.model.config.Form;
@@ -45,10 +49,40 @@ public class AlfrescoReferencePropertyConverter implements AlfrescoFormPropertyC
 			addPriorityReference(form, formSet, referenceDefinition.isWritable());
 		} else if (AlfrescoConversionConstants.FORM_REFERENCE_WORKFLOW_DESCRIPTION.equals(referenceDefinition.getType())) {
 			addWorkflowDescriptionReference(form, formSet);
+		} else if (AlfrescoConversionConstants.FORM_REFERENCE_FIELD.equals(referenceDefinition.getType())) {
+			addFieldReference(form, formSet, referenceDefinition, contentType, 
+					AlfrescoConversionUtil.getContentModel(conversion));
 		} else {
 			// TODO: plain references
 		}
 	}
+
+	protected void addFieldReference(Form form, String formSet, ReferencePropertyDefinition definition, M2Type contentType, M2Model model) {
+	  if(form.isStartForm()) {
+	  	throw new AlfrescoSimpleWorkflowException("Field references cannot be used on start-forms");
+	  }
+	  
+	  // Check if model contains an aspect for the property
+		String propertyName = AlfrescoConversionUtil.getQualifiedName(model.getNamespaces().get(0).getPrefix(),
+				definition.getName());
+		
+		if(model.getAspect(propertyName) == null) {
+			throw new AlfrescoSimpleWorkflowException("The property '" + definition.getName() + "' is not used in a from prior to this form: " + contentType.getName() + " - " + propertyName);
+		}
+	  
+		// Add aspect to content-type
+		contentType.getMandatoryAspects().add(propertyName);
+		
+		// Add read-only field to form
+		form.getFormFieldVisibility().addShowFieldElement(propertyName);
+		
+		FormField field = new FormField();
+		form.getFormAppearance().addFormAppearanceElement(field);
+		field.setId(propertyName);
+		field.setLabelId(definition.getName());
+		field.setSet(formSet);
+	  field.setControl(new FormFieldControl(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE));
+  }
 
 	protected void addWorkflowDescriptionReference(Form form, String formSet) {
 		String fieldName = null;

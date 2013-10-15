@@ -75,5 +75,7 @@ public class ListPropertyDefinition extends FormPropertyDefinition {
 				entries.add(newEntry);
 			}
 		}
+		
+		setParameters(otherDefinition.cloneParameters());
 	}
 }

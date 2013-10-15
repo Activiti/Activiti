@@ -92,7 +92,7 @@ public class AlfrescoListPropertyConverter implements AlfrescoFormPropertyConver
 		FormField formField = form.getFormAppearance().addFormField(propertyName, propertyDefinition.getName(), formSet);
 
 		// Read-only properties should always be rendered using an info-template
-		if(dateDefinition.isWritable()) {
+		if(!dateDefinition.isWritable()) {
 			FormFieldControl control = new FormFieldControl();
 			control.setTemplate(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE);
 			formField.setControl(control);
