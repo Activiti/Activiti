@@ -26,7 +26,7 @@ import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.DatePropertyDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 
-public class AlfrescoDatePropertyConverter implements AlfrescoFormPropertyConverter {
+public class AlfrescoDatePropertyConverter extends BaseAlfrescoFormPropertyConverter {
 
 	@Override
 	public Class<? extends FormPropertyDefinition> getConvertedClass() {
@@ -36,8 +36,7 @@ public class AlfrescoDatePropertyConverter implements AlfrescoFormPropertyConver
 	@Override
 	public void convertProperty(M2Type contentType, String formSet, Form form, FormPropertyDefinition propertyDefinition, WorkflowDefinitionConversion conversion) {
 		DatePropertyDefinition dateDefinition = (DatePropertyDefinition) propertyDefinition;
-		String propertyName = AlfrescoConversionUtil.getQualifiedName(AlfrescoConversionUtil.getModelNamespacePrefix(conversion),
-				dateDefinition.getName());
+		String propertyName = getPropertyName(propertyDefinition, conversion);
 		
 		// Add to content model
 		M2Property property = new M2Property();
@@ -82,5 +81,11 @@ public class AlfrescoDatePropertyConverter implements AlfrescoFormPropertyConver
 			control.setTemplate(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE);
 			formField.setControl(control);
 		}
+		
+		if(!form.isStartForm()) {
+			// Add to output properties, if needed
+			addOutputProperty(propertyDefinition, propertyName, contentType.getName(), conversion);
+		}
+
 	}
 }

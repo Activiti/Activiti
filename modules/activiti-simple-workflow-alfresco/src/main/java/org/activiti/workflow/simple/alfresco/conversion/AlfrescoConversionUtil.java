@@ -92,6 +92,7 @@ public class AlfrescoConversionUtil implements AlfrescoConversionConstants {
 		List<PropertySharing> sharingList = (List<PropertySharing>) conversion.getArtifact(ARTIFACT_PROPERTY_SHARING);
 		if(sharingList == null) {
 			sharingList = new ArrayList<PropertySharing>();
+			conversion.setArtifact(ARTIFACT_PROPERTY_SHARING, sharingList);
 		}
 		
 		PropertySharing result = null;

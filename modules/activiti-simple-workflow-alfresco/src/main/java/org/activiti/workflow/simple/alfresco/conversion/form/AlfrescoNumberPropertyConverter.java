@@ -26,7 +26,7 @@ import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
 
-public class AlfrescoNumberPropertyConverter implements AlfrescoFormPropertyConverter {
+public class AlfrescoNumberPropertyConverter extends BaseAlfrescoFormPropertyConverter {
 
 	@Override
 	public Class<? extends FormPropertyDefinition> getConvertedClass() {
@@ -36,8 +36,7 @@ public class AlfrescoNumberPropertyConverter implements AlfrescoFormPropertyConv
 	@Override
 	public void convertProperty(M2Type contentType, String formSet, Form form, FormPropertyDefinition propertyDefinition, WorkflowDefinitionConversion conversion) {
 		NumberPropertyDefinition numberPropertyDefinition = (NumberPropertyDefinition) propertyDefinition;
-		String propertyName = AlfrescoConversionUtil.getQualifiedName(AlfrescoConversionUtil.getModelNamespacePrefix(conversion),
-				numberPropertyDefinition.getName());
+		String propertyName = getPropertyName(propertyDefinition, conversion);
 		
 		// Add to content model
 		M2Property property = new M2Property();
@@ -73,5 +72,11 @@ public class AlfrescoNumberPropertyConverter implements AlfrescoFormPropertyConv
 			control.setTemplate(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE);
 			formField.setControl(control);
 		}
+		
+		if(!form.isStartForm()) {
+			// Add to output properties, if needed
+			addOutputProperty(propertyDefinition, propertyName, contentType.getName(), conversion);
+		}
+
 	}
 }

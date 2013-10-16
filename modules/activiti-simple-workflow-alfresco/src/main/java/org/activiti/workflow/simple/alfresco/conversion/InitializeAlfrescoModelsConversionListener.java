@@ -13,9 +13,12 @@
 package org.activiti.workflow.simple.alfresco.conversion;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import org.activiti.bpmn.model.FlowElement;
@@ -53,6 +56,14 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
   private static final long serialVersionUID = 1L;
   
 	protected AlfrescoFormCreator formCreator;
+	
+	// Types of ReferencePropertyDefinition that should be ignore for reuse
+	protected static final Set<String> IGNORED_REFERENCE_TYPES_REUSE = new HashSet<String>(Arrays.asList(
+			AlfrescoConversionConstants.FORM_REFERENCE_DUEDATE,
+			AlfrescoConversionConstants.FORM_REFERENCE_PRIORITY,
+			AlfrescoConversionConstants.FORM_REFERENCE_PACKAGE_ITEMS,
+			AlfrescoConversionConstants.FORM_REFERENCE_WORKFLOW_DESCRIPTION
+  ));
   
   public InitializeAlfrescoModelsConversionListener() {
   	formCreator = new AlfrescoFormCreator();
@@ -184,7 +195,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		boolean valid = !(def instanceof ReferencePropertyDefinition);
 		if(!valid) {
 			ReferencePropertyDefinition reference = (ReferencePropertyDefinition) def;
-			valid = AlfrescoConversionConstants.FORM_REFERENCE_FIELD.equals(reference.getType());
+			valid = ! IGNORED_REFERENCE_TYPES_REUSE.contains(reference.getType());
 		}
 		return valid;
 	}

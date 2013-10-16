@@ -12,12 +12,13 @@
  */
 package org.activiti.workflow.simple.alfresco.conversion.form;
 
-import java.util.Map;
-
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.conversion.exception.AlfrescoSimpleWorkflowException;
 import org.activiti.workflow.simple.alfresco.model.M2Aspect;
+import org.activiti.workflow.simple.alfresco.model.M2AssociationSource;
+import org.activiti.workflow.simple.alfresco.model.M2AssociationTarget;
+import org.activiti.workflow.simple.alfresco.model.M2ClassAssociation;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2PropertyOverride;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
@@ -29,7 +30,7 @@ import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ReferencePropertyDefinition;
 
-public class AlfrescoReferencePropertyConverter implements AlfrescoFormPropertyConverter {
+public class AlfrescoReferencePropertyConverter extends BaseAlfrescoFormPropertyConverter {
 
 	@Override
 	public Class<? extends FormPropertyDefinition> getConvertedClass() {
@@ -51,20 +52,65 @@ public class AlfrescoReferencePropertyConverter implements AlfrescoFormPropertyC
 			addWorkflowDescriptionReference(form, formSet);
 		} else if (AlfrescoConversionConstants.FORM_REFERENCE_FIELD.equals(referenceDefinition.getType())) {
 			addFieldReference(form, formSet, referenceDefinition, contentType, 
-					AlfrescoConversionUtil.getContentModel(conversion));
+					conversion);
 		} else {
-			// TODO: plain references
+			addAssociation(form, formSet, referenceDefinition, contentType, conversion);
 		}
 	}
 
-	protected void addFieldReference(Form form, String formSet, ReferencePropertyDefinition definition, M2Type contentType, M2Model model) {
+	protected void addAssociation(Form form, String formSet, ReferencePropertyDefinition referenceDefinition,
+	    M2Type contentType, WorkflowDefinitionConversion conversion) {
+
+		M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
+
+		// Check if model contains an aspect for the property
+		String propertyName = getPropertyName(referenceDefinition, conversion);
+
+		M2ClassAssociation association = new M2ClassAssociation();
+		association.setName(propertyName);
+		association.setTitle(referenceDefinition.getName());
+		M2AssociationSource source = new M2AssociationSource();
+		source.setMany(false);
+		source.setMandatory(true);
+		M2AssociationTarget target = new M2AssociationTarget();
+		target.setClassName(referenceDefinition.getType());
+		target.setMandatory(referenceDefinition.isMandatory());
+
+		// Determine whether or not it's allowed to select multiple targets 
+		boolean isTargetMany = extractBooleanFromParameters(referenceDefinition.getParameters(), AlfrescoConversionConstants.PARAMETER_REFERENCE_MANY, false);
+		target.setMany(isTargetMany);
+		
+		association.setTarget(target);
+		association.setSource(source);
+
+		M2Aspect aspect = model.getAspect(propertyName);
+		if (aspect != null) {
+			if (aspect.getAssociations().isEmpty()) {
+				aspect.getAssociations().add(association);
+			}
+			contentType.getMandatoryAspects().add(propertyName);
+		} else {
+			contentType.getAssociations().add(association);
+		}
+
+		// Add field to form
+		form.getFormFieldVisibility().addShowFieldElement(propertyName);
+
+		FormField field = new FormField();
+		form.getFormAppearance().addFormAppearanceElement(field);
+		field.setId(propertyName);
+		field.setSet(formSet);
+	}
+
+	protected void addFieldReference(Form form, String formSet, ReferencePropertyDefinition definition, M2Type contentType, WorkflowDefinitionConversion conversion) {
 	  if(form.isStartForm()) {
 	  	throw new AlfrescoSimpleWorkflowException("Field references cannot be used on start-forms");
 	  }
 	  
+	  M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
+	  
 	  // Check if model contains an aspect for the property
-		String propertyName = AlfrescoConversionUtil.getQualifiedName(model.getNamespaces().get(0).getPrefix(),
-				definition.getName());
+		String propertyName = getPropertyName(definition, conversion);
 		
 		if(model.getAspect(propertyName) == null) {
 			throw new AlfrescoSimpleWorkflowException("The property '" + definition.getName() + "' is not used in a from prior to this form: " + contentType.getName() + " - " + propertyName);
@@ -159,23 +205,6 @@ public class AlfrescoReferencePropertyConverter implements AlfrescoFormPropertyC
 		
 	}
 	
-	protected boolean extractBooleanFromParameters(Map<String, Object> parameters, String key, boolean defaultValue) {
-		boolean result = defaultValue;
-		if(parameters != null) {
-			Object value = parameters.get(key);
-			if(value != null) {
-				if(value instanceof Boolean) {
-					result = (Boolean) value;
-				} else if(value instanceof String){
-					result = Boolean.valueOf((Boolean) value);
-				} else {
-					result = Boolean.valueOf(value.toString());
-				}
-			}
-		}
-		return result;
-	}
-
 	protected void addDueDateReference(Form form, String formSet, boolean writable) {
 		String fieldName = null;
 		if(form.isStartForm()) {
