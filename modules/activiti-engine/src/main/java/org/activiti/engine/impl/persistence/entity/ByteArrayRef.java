@@ -24,7 +24,8 @@ public final class ByteArrayRef implements Serializable {
   private String id;
   private String name;
   private ByteArrayEntity entity;
-  
+  protected boolean deleted = false;
+
   public ByteArrayRef() {
   }
 
@@ -70,7 +71,7 @@ public final class ByteArrayRef implements Serializable {
   }
 
   public void delete() {
-    if (id != null) {
+    if (!deleted) {
       if (entity != null) {
         // if the entity has been loaded already,
         // we might as well use the safer optimistic locking delete.
@@ -83,9 +84,7 @@ public final class ByteArrayRef implements Serializable {
           .getByteArrayEntityManager()
           .deleteByteArrayById(id);
       }
-      id = null;
-      entity = null;
-      name = null;
+      deleted = true;
     }
   }
   
@@ -98,8 +97,12 @@ public final class ByteArrayRef implements Serializable {
     }
   }
 
+  public boolean isDeleted() {
+    return deleted;
+  }
+
   @Override
   public String toString() {
-    return "ByteArrayRef[id=" + id + ", name=" + name + ", entity=" + entity + "]";
+    return "ByteArrayRef[id=" + id + ", name=" + name + ", entity=" + entity + (deleted ? ", deleted]" :"]");
   }
 }
