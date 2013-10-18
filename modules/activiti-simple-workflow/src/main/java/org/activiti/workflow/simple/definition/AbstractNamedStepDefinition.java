@@ -12,6 +12,9 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Superclass for all {@link StepDefinition} classes that have a name or description.
  * 
@@ -26,6 +29,7 @@ public abstract class AbstractNamedStepDefinition implements StepDefinition {
 	protected String name;
   protected String description;
   protected boolean startsWithPrevious;
+  protected Map<String, Object> parameters = new HashMap<String, Object>();
 
   public String getId() {
     return id;
@@ -57,6 +61,16 @@ public abstract class AbstractNamedStepDefinition implements StepDefinition {
 
   public void setStartsWithPrevious(boolean startsWithPrevious) {
     this.startsWithPrevious = startsWithPrevious;
+  }
+  
+  @Override
+  public Map<String, Object> getParameters() {
+  	return parameters;
+  }
+  
+  @Override
+  public void setParameters(Map<String, Object> parameters) {
+  	this.parameters = parameters;
   }
   
   public abstract StepDefinition clone();

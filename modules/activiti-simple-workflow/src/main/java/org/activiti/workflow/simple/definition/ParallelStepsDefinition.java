@@ -13,6 +13,8 @@
 package org.activiti.workflow.simple.definition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
@@ -28,6 +30,7 @@ public class ParallelStepsDefinition extends AbstractStepDefinitionContainer<Par
   private static final long serialVersionUID = 1L;
   
 	protected WorkflowDefinition workflowDefinition;
+	protected Map<String, Object> parameters = new HashMap<String, Object>();
   
   public ParallelStepsDefinition() {
     
@@ -59,6 +62,8 @@ public class ParallelStepsDefinition extends AbstractStepDefinitionContainer<Par
     
     ParallelStepsDefinition definition = (ParallelStepsDefinition) otherDefinition;
     setId(definition.getId());
+
+    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
     
     steps = new ArrayList<StepDefinition>();
     if (definition.getSteps() != null && definition.getSteps().size() > 0) {
@@ -66,5 +71,14 @@ public class ParallelStepsDefinition extends AbstractStepDefinitionContainer<Par
         steps.add(stepDefinition.clone());
       }
     }
+  }
+  
+  @Override
+  public Map<String, Object> getParameters() {
+  	return parameters;
+  }
+  
+  public void setParameters(Map<String,Object> parameters) {
+  	this.parameters = parameters;
   }
 }

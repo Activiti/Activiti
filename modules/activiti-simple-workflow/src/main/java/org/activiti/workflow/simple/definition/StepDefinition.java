@@ -13,6 +13,7 @@
 package org.activiti.workflow.simple.definition;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.As;
@@ -33,11 +34,23 @@ public interface StepDefinition extends Serializable {
   /**
    * Create a clone of this {@link StepDefinition} instance.
    */
-  public StepDefinition clone();
+  StepDefinition clone();
   
   /**
    * Sets the properties of this {@link StepDefinition} instance based in the
    * properties present in the given definition. 
    */
-  public void setValues(StepDefinition otherDefinition);
+   void setValues(StepDefinition otherDefinition);
+   
+   /**
+    * @return custom parameter map.
+    */
+   Map<String, Object> getParameters();
+   
+   /**
+    * Set the custom parameters.
+    */
+   void setParameters(Map<String, Object> parameters);
+  
+  
 }
