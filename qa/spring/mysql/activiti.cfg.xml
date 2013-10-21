@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="dataSource" class="org.activiti.standalone.jta.BitronixDataSourceFactoryBean">
+    <property name="className" value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" />
+    <property name="uniqueName" value="ActivitiDS" />
+    <property name="maxPoolSize" value="20" />
+    <property name="allowLocalTransactions" value="true" />
+    <property name="driverProperties">
+      <!-- MySQL -->
+      <props>
+          <prop key="url">@jdbc.url@</prop>
+          <prop key="user">@jdbc.username@</prop>
+          <prop key="password">@jdbc.password@</prop>
+      </props>
+    </property>
+  </bean>
+  
+  <bean id="btmTransactionManager" factory-method="getTransactionManager" class="bitronix.tm.TransactionManagerServices" 
+        destroy-method="shutdown" />
+
+  <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+    <property name="transactionManager" ref="btmTransactionManager"/>
+    <property name="userTransaction" ref="btmTransactionManager"/>
+  </bean>
+
+  <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+    <property name="dataSource" ref="dataSource" />
+    <property name="transactionManager" ref="transactionManager" />
+    <property name="transactionsExternallyManaged" value="true" />
+    <property name="databaseSchemaUpdate" value="true" />
+    <property name="jobExecutorActivate" value="false" />
+    <property name="mailServerHost" value="localhost" />
+    <property name="mailServerPort" value="5025" />
+    <property name="idGenerator">
+      <bean class="org.activiti.engine.impl.persistence.StrongUuidGenerator" />
+    </property>
+  </bean>
+
+  <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+    <property name="processEngineConfiguration" ref="processEngineConfiguration" />
+  </bean>
+
+  <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
+  <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
+  <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
+  <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
+  <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
+
+</beans>

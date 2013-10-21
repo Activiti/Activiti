@@ -23,7 +23,7 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Christian Lipphardt (camunda)
@@ -78,7 +78,11 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     this.textValue2 = variableInstance.getTextValue2();
     this.doubleValue = variableInstance.getDoubleValue();
     this.longValue = variableInstance.getLongValue();
-    this.setBytes(variableInstance.getBytes());
+    
+    this.variableType = variableInstance.getType();
+    if (variableInstance.getByteArrayValueId()!=null) {
+      setByteArrayValue(variableInstance.getByteArrayValue().getBytes());
+    }
   }
 
   public void delete() {

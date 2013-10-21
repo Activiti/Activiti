@@ -44,16 +44,10 @@ public interface Task {
   /** Change the description of the task */
 	void setDescription(String description);
 	
-	/** indication of how important/urgent this task is with a number between 
-	 * 0 and 100 where higher values mean a higher priority and lower values mean 
-	 * lower priority: [0..19] lowest, [20..39] low, [40..59] normal, [60..79] high 
-	 * [80..100] highest */
+	/** Indication of how important/urgent this task is */
 	int getPriority();
 	
-  /** indication of how important/urgent this task is with a number between 
-   * 0 and 100 where higher values mean a higher priority and lower values mean 
-   * lower priority: [0..19] lowest, [20..39] low, [40..59] normal, [60..79] high 
-   * [80..100] highest */
+	/** Sets the indication of how important/urgent this task is */
 	void setPriority(int priority);
 	
   /** The {@link User.getId() userId} of the person that is responsible for this task. */

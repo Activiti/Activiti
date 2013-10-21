@@ -82,7 +82,6 @@ public class DbSqlSession implements Session {
   protected SqlSession sqlSession;
   protected DbSqlSessionFactory dbSqlSessionFactory;
   protected List<PersistentObject> insertedObjects = new ArrayList<PersistentObject>();
-  protected List<PersistentObject> updatedObjects = new ArrayList<PersistentObject>();
   protected Map<Class<?>, Map<String, CachedObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedObject>>();
   protected List<DeleteOperation> deleteOperations = new ArrayList<DeleteOperation>();
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
@@ -119,7 +118,6 @@ public class DbSqlSession implements Session {
   // update ///////////////////////////////////////////////////////////////////
   
   public void update(PersistentObject persistentObject) {
-    updatedObjects.add(persistentObject);
     cachePut(persistentObject, false);
   }
   
@@ -140,7 +138,7 @@ public class DbSqlSession implements Session {
     deleteOperations.add(new CheckedDeleteOperation(persistentObject));
   }
 
-  private interface DeleteOperation {
+  public interface DeleteOperation {
     
     boolean sameIdentity(PersistentObject other);
 
@@ -162,7 +160,7 @@ public class DbSqlSession implements Session {
    * are no variables, which would also work with this query, but not with the 
    * regular {@link CheckedDeleteOperation}. 
    */
-  private class BulkDeleteOperation implements DeleteOperation {
+  public class BulkDeleteOperation implements DeleteOperation {
     private String statement;
     private Object parameter;
     
@@ -197,8 +195,8 @@ public class DbSqlSession implements Session {
    * A {@link DeleteOperation} that checks for concurrent modifications if the persistent object implements {@link HasRevision}.
    * That is, it employs optimisting concurrency control. Used when the persistent object has been fetched already.
    */
-  private class CheckedDeleteOperation implements DeleteOperation {
-    private final PersistentObject persistentObject;
+  public class CheckedDeleteOperation implements DeleteOperation {
+    protected final PersistentObject persistentObject;
     
     public CheckedDeleteOperation(PersistentObject persistentObject) {
       this.persistentObject = persistentObject;
@@ -231,6 +229,10 @@ public class DbSqlSession implements Session {
       } else {
         sqlSession.delete(deleteStatement, persistentObject);
       }
+    }
+
+    public PersistentObject getPersistentObject() {
+      return persistentObject;
     }
 
     @Override

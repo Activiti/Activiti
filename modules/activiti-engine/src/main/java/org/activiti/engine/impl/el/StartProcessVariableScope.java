@@ -55,7 +55,7 @@ public class StartProcessVariableScope implements VariableScope {
     return null;
   }
 
-  public Object getVariableLocal(Object variableName) {
+  public Object getVariableLocal(String variableName) {
     return null;
   }
 

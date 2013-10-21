@@ -12,7 +12,6 @@
  */
 package org.activiti.workflow.simple.converter;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +20,11 @@ import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
 import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 
 /**
  * Instances of this class are created by a {@link WorkflowDefinitionConversionFactory}.
@@ -81,7 +79,7 @@ public class WorkflowDefinitionConversion {
   public void convert() {
     
     if (workflowDefinition == null) {
-      throw new ActivitiException("Cannot start conversion: need to set a WorkflowDefinition first!");
+      throw new SimpleWorkflowException("Cannot start conversion: need to set a WorkflowDefinition first!");
     }
     
     this.incrementalIdMapping = new HashMap<String, Integer>();
@@ -210,23 +208,11 @@ public class WorkflowDefinitionConversion {
    * Returns the BPMN 2.0 xml which is the converted version of the 
    * provided {@link WorkflowDefinition}. 
    */
-  public String getbpm20Xml() {
+  public String getBpmn20Xml() {
     if (bpmnModel == null) {
       convert();
     }
     BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
     return new String(bpmnXMLConverter.convertToXML(bpmnModel));
   }
-  
-  /**
-   * Returns the BPMN 2.0 diagram which is the converted version of the
-   * provided {@link WorkflowDefinition}.
-   */
-  public InputStream getWorkflowDiagramImage() {
-    if (bpmnModel == null) {
-      convert();
-    }
-    return ProcessDiagramGenerator.generatePngDiagram(bpmnModel);
-  }
-  
 }

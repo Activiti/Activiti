@@ -20,8 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
@@ -72,7 +70,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   protected void setUp() throws Exception {
     super.setUp();
     
-    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
     
     deploymentId = repositoryService.createDeployment()
         .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
@@ -199,31 +197,31 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     }
   }
   
-  public void testQueryByDuedateLowerThen() {
-    JobQuery query = managementService.createJobQuery().duedateLowerThen(testStartTime);
+  public void testQueryByDuedateLowerThan() {
+    JobQuery query = managementService.createJobQuery().duedateLowerThan(testStartTime);
     verifyQueryResults(query, 0);
     
-    query = managementService.createJobQuery().duedateLowerThen(new Date(timerOneFireTime.getTime() + ONE_SECOND));
+    query = managementService.createJobQuery().duedateLowerThan(new Date(timerOneFireTime.getTime() + ONE_SECOND));
     verifyQueryResults(query, 1);
     
-    query = managementService.createJobQuery().duedateLowerThen(new Date(timerTwoFireTime.getTime() + ONE_SECOND));
+    query = managementService.createJobQuery().duedateLowerThan(new Date(timerTwoFireTime.getTime() + ONE_SECOND));
     verifyQueryResults(query, 2);
     
-    query = managementService.createJobQuery().duedateLowerThen(new Date(timerThreeFireTime.getTime() + ONE_SECOND));
+    query = managementService.createJobQuery().duedateLowerThan(new Date(timerThreeFireTime.getTime() + ONE_SECOND));
     verifyQueryResults(query, 3);
   }
   
-  public void testQueryByDuedateHigherThen() {
-    JobQuery query = managementService.createJobQuery().duedateHigherThen(testStartTime);
+  public void testQueryByDuedateHigherThan() {
+    JobQuery query = managementService.createJobQuery().duedateHigherThan(testStartTime);
     verifyQueryResults(query, 3);
     
-    query = managementService.createJobQuery().duedateHigherThen(timerOneFireTime);
+    query = managementService.createJobQuery().duedateHigherThan(timerOneFireTime);
     verifyQueryResults(query, 2);
     
-    query = managementService.createJobQuery().duedateHigherThen(timerTwoFireTime);
+    query = managementService.createJobQuery().duedateHigherThan(timerTwoFireTime);
     verifyQueryResults(query, 1);
     
-    query = managementService.createJobQuery().duedateHigherThen(timerThreeFireTime);
+    query = managementService.createJobQuery().duedateHigherThan(timerThreeFireTime);
     verifyQueryResults(query, 0);
   }
   
@@ -383,7 +381,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
       managementService.executeJob(timerJob.getId());
       fail("RuntimeException from within the script task expected");
     } catch(RuntimeException re) {
-      assertTextPresent(EXCEPTION_MESSAGE, re.getMessage());
+      assertTextPresent(EXCEPTION_MESSAGE, re.getCause().getMessage());
     }
     return processInstance;
   }
@@ -419,7 +417,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
   
   private void createJobWithoutExceptionMsg() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();
@@ -446,7 +444,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
   
   private void createJobWithoutExceptionStacktrace() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();
@@ -469,7 +467,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }  
   
   private void deleteJobInDatabase() {
-      CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+      CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
       commandExecutor.execute(new Command<Void>() {
         public Void execute(CommandContext commandContext) {
           

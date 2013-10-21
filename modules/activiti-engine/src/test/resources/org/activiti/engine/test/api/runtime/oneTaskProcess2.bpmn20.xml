@@ -4,7 +4,7 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="org.activiti.enginge.test.api.runtime">
 
-  <process id="oneTaskProcess2">
+  <process id="oneTaskProcess2" name="oneTaskProcess2Name">
   
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />

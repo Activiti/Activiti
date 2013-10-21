@@ -22,6 +22,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.impl.variable.CacheableVariable;
+import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
@@ -38,6 +40,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   protected String variableName;
   protected String variableNameLike;
   protected boolean excludeTaskRelated = false;
+  protected boolean excludeVariableInitialization = false;
   protected QueryVariableValue queryVariableValue;
 
   public HistoricVariableInstanceQueryImpl() {
@@ -86,6 +89,11 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
       throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
     }
     excludeTaskRelated = true;
+    return this;
+  }
+  
+  public HistoricVariableInstanceQuery excludeVariableInitialization() {
+    excludeVariableInitialization = true;
     return this;
   }
 
@@ -140,10 +148,19 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
             .getHistoricVariableInstanceEntityManager()
             .findHistoricVariableInstancesByQueryCriteria(this, page);
     
-    for (HistoricVariableInstance historicVariableInstance: historicVariableInstances) {
-      // TODO what about JPAEntityVariableType? see HistoricDetailQueryImpl.executeList
-      if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
-        ((HistoricVariableInstanceEntity)historicVariableInstance).getBytes();
+    if (excludeVariableInitialization == false) {
+      for (HistoricVariableInstance historicVariableInstance: historicVariableInstances) {
+        if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
+          HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
+          if(variableEntity != null && variableEntity.getVariableType() != null) {
+            variableEntity.getValue();
+            
+            // make sure JPA entities are cached for later retrieval
+            if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())) {
+              ((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
+            }
+          }
+        }
       }
     }
     return historicVariableInstances;

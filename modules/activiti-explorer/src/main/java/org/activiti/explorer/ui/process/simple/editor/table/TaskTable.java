@@ -25,8 +25,9 @@ import org.activiti.explorer.ui.process.simple.editor.listener.AddTaskClickListe
 import org.activiti.explorer.ui.process.simple.editor.listener.DeleteTaskClickListener;
 import org.activiti.explorer.ui.process.simple.editor.listener.ShowFormClickListener;
 import org.activiti.explorer.ui.process.simple.editor.listener.TaskFormModelListener;
-import org.activiti.workflow.simple.definition.FormDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
@@ -88,14 +89,21 @@ public class TaskTable extends Table implements TaskFormModelListener {
 
   public void addTaskRow(HumanStepDefinition humanStepDefinition) {
     Object taskItemId = addTaskRow(null, humanStepDefinition.getName(), humanStepDefinition.getAssignee(), 
-            humanStepDefinition.getCandidateGroupsCommaSeparated(), humanStepDefinition.getDescription(),
+            getCommaSeperated(humanStepDefinition.getCandidateGroups()), humanStepDefinition.getDescription(),
             humanStepDefinition.isStartsWithPrevious());
     if (humanStepDefinition.getForm() != null) {
       taskFormModel.addForm(taskItemId, humanStepDefinition.getForm());
     }
   }
 
-  public void addDefaultTaskRow() {
+  protected String getCommaSeperated(List<String> list) {
+	  if(list != null && list.size() > 0) {
+	  	return StringUtils.join(list, ", ");
+	  }
+	  return null;
+  }
+
+	public void addDefaultTaskRow() {
     addDefaultTaskRowAfter(null);
   }
 

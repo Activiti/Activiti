@@ -28,7 +28,7 @@ public interface VariableScope {
 
   Object getVariable(String variableName);
 
-  Object getVariableLocal(Object variableName);
+  Object getVariableLocal(String variableName);
 
   Set<String> getVariableNames();
 

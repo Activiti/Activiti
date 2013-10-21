@@ -36,11 +36,19 @@ public class AddCommentCmd implements Command<Comment>{
 
   protected String taskId;
   protected String processInstanceId;
+  protected String type;
   protected String message;
   
   public AddCommentCmd(String taskId, String processInstanceId, String message) {
     this.taskId = taskId;
     this.processInstanceId = processInstanceId;
+    this.message = message;
+  }
+  
+  public AddCommentCmd(String taskId, String processInstanceId, String type, String message) {
+    this.taskId = taskId;
+    this.processInstanceId = processInstanceId;
+    this.type = type;
     this.message = message;
   }
   
@@ -74,7 +82,7 @@ public class AddCommentCmd implements Command<Comment>{
     String userId = Authentication.getAuthenticatedUserId();
     CommentEntity comment = new CommentEntity();
     comment.setUserId(userId);
-    comment.setType(CommentEntity.TYPE_COMMENT);
+    comment.setType( (type == null)? CommentEntity.TYPE_COMMENT : type );
     comment.setTime(ClockUtil.getCurrentTime());
     comment.setTaskId(taskId);
     comment.setProcessInstanceId(processInstanceId);

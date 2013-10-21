@@ -41,6 +41,16 @@ import org.activiti.engine.test.Deployment;
  */
 public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
+  @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testStartProcessInstanceWithVariables() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("basicType", new DummySerializable());
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    Task task = taskService.createTaskQuery().includeProcessVariables().singleResult();
+    assertNotNull(task.getProcessVariables());
+  }
+  
+  
   public void testStartProcessInstanceByKeyNullKey() {
     try {
       runtimeService.startProcessInstanceByKey(null);

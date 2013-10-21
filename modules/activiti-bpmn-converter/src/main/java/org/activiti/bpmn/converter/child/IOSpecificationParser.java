@@ -24,7 +24,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SendTask;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.SubProcess;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers

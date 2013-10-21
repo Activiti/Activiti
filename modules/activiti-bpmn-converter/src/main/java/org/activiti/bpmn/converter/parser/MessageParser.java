@@ -18,7 +18,7 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Message;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -32,6 +32,7 @@ public class MessageParser implements BpmnXMLConstants {
       String itemRef = parseItemRef(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_REF), model);
       Message message = new Message(messageId, messageName, itemRef);
       BpmnXMLUtil.addXMLLocation(message, xtr);
+      BpmnXMLUtil.parseChildElements(ELEMENT_MESSAGE, message, xtr, model);
       model.addMessage(message);
     }
   }

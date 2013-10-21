@@ -114,7 +114,7 @@ public class ReportingUtil {
     // Deploy
     repositoryService.createDeployment()
       .name(processDefinition.getName() + " - task duration report")
-      .addString(conversion.getProcess().getId() + ".bpmn20.xml", conversion.getbpm20Xml())
+      .addString(conversion.getProcess().getId() + ".bpmn20.xml", conversion.getBpmn20Xml())
       .deploy();
   }
 

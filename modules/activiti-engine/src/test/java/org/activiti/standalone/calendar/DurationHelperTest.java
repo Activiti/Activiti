@@ -23,9 +23,15 @@ import java.util.Date;
 
 import org.activiti.engine.impl.calendar.DurationHelper;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.junit.After;
 import org.junit.Test;
 
 public class DurationHelperTest {
+  
+  @After
+  public void resetClock() {
+    ClockUtil.reset();
+  }
 
   @Test
   public void shouldNotExceedNumber() throws Exception {

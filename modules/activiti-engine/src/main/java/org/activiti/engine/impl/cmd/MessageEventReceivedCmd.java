@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,15 +34,35 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
   
   private static final long serialVersionUID = 1L;
   
-  protected final Map<String, Object> processVariables;
+  protected final Serializable payload;
   protected final String messageName;
-
+  protected final boolean async;
+  
   public MessageEventReceivedCmd(String messageName, String executionId, Map<String, Object> processVariables) {
     super(executionId);
     this.messageName = messageName;
-    this.processVariables = processVariables;
+    
+    if (processVariables != null) {
+    	if (processVariables instanceof Serializable){
+    		this.payload = (Serializable) processVariables;
+    	}
+    	else{	
+    		this.payload = new HashMap<String, Object>(processVariables);
+    	}
+    		
+    }
+    else{
+    	this.payload = null;
+    }
+    this.async = false;
   }
 
+  public MessageEventReceivedCmd(String messageName, String executionId, boolean async) {
+    super(executionId);
+    this.messageName = messageName;
+    this.payload = null;
+    this.async = async;
+  }
   protected Void execute(CommandContext commandContext, ExecutionEntity execution) {
     if(messageName == null) {
       throw new ActivitiIllegalArgumentException("messageName cannot be null");
@@ -57,12 +78,7 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
     // there can be only one:
     EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptions.get(0);
     
-    HashMap<String, Object> payload = null;
-    if(processVariables != null) {
-      payload = new HashMap<String, Object>(processVariables);
-    }
-    
-    eventSubscriptionEntity.eventReceived(payload, false);
+    eventSubscriptionEntity.eventReceived(payload, async);
     
     return null;
   }

@@ -12,16 +12,25 @@
  */
 package org.activiti.workflow.simple.definition;
 
-import org.activiti.engine.ActivitiException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
+import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
  * Defines a block of steps that all must be executed in parallel.
  * 
  * @author Joram Barrez
  */
+@JsonTypeName("parallel-step")
 public class ParallelStepsDefinition extends AbstractStepDefinitionContainer<ParallelStepsDefinition> implements StepDefinition {
 
-  protected WorkflowDefinition workflowDefinition;
+  private static final long serialVersionUID = 1L;
+  
+	protected WorkflowDefinition workflowDefinition;
+	protected Map<String, Object> parameters = new HashMap<String, Object>();
   
   public ParallelStepsDefinition() {
     
@@ -33,9 +42,43 @@ public class ParallelStepsDefinition extends AbstractStepDefinitionContainer<Par
   
   public WorkflowDefinition endParallel() {
     if (workflowDefinition == null) {
-      throw new ActivitiException("Can only call endParallel when inParallel was called on a workflow definition first");
+      throw new SimpleWorkflowException("Can only call endParallel when inParallel was called on a workflow definition first");
     }
     return workflowDefinition;
   }
   
+  @Override
+  public StepDefinition clone() {
+    ParallelStepsDefinition clone = new ParallelStepsDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  @Override
+  public void setValues(StepDefinition otherDefinition) {
+    if(!(otherDefinition instanceof ParallelStepsDefinition)) {
+      throw new SimpleWorkflowException("An instance of ParallelStepsDefinition is required to set values");
+    }
+    
+    ParallelStepsDefinition definition = (ParallelStepsDefinition) otherDefinition;
+    setId(definition.getId());
+
+    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
+    
+    steps = new ArrayList<StepDefinition>();
+    if (definition.getSteps() != null && definition.getSteps().size() > 0) {
+      for (StepDefinition stepDefinition : definition.getSteps()) {
+        steps.add(stepDefinition.clone());
+      }
+    }
+  }
+  
+  @Override
+  public Map<String, Object> getParameters() {
+  	return parameters;
+  }
+  
+  public void setParameters(Map<String,Object> parameters) {
+  	this.parameters = parameters;
+  }
 }

@@ -14,6 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.cfg.TransactionState;
@@ -45,7 +46,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
 
   public Object execute(CommandContext commandContext) {
     
-    if(jobId == null) {
+    if (jobId == null) {
       throw new ActivitiIllegalArgumentException("jobId is null");
     }
     
@@ -62,26 +63,26 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     }
     
     JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
-    if(jobExecutorContext != null) { // if null, then we are not called by the job executor     
+    if (jobExecutorContext != null) { // if null, then we are not called by the job executor     
       jobExecutorContext.setCurrentJob(job);
     }
     
     try {
       job.execute(commandContext);
-    } catch (RuntimeException exception) {
+    } catch (Throwable exception) {
       // When transaction is rolled back, decrement retries
       CommandExecutor commandExecutor = Context
         .getProcessEngineConfiguration()
-        .getCommandExecutorTxRequiresNew();
+        .getCommandExecutor();
       
       commandContext.getTransactionContext().addTransactionListener(
         TransactionState.ROLLED_BACK, 
         new FailedJobListener(commandExecutor, jobId, exception));
        
-      // throw the original exception to indicate the ExecuteJobCmd failed
-      throw exception;
+      // throw the exception to indicate the ExecuteJobCmd failed
+      throw new ActivitiException("Job " + jobId + " failed", exception);
     } finally {
-      if(jobExecutorContext != null) {
+      if (jobExecutorContext != null) {
         jobExecutorContext.setCurrentJob(null);
       }
     }

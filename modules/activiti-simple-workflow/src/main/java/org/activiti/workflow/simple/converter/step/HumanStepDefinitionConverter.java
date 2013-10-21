@@ -16,9 +16,10 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
-import org.activiti.workflow.simple.definition.FormDefinition;
+import org.activiti.workflow.simple.definition.HumanStepAssignment.HumanStepAssignmentType;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
 
 /**
  * {@link StepDefinitionConverter} for converting a {@link HumanStepDefinition} to a {@link UserTask}.
@@ -27,8 +28,10 @@ import org.activiti.workflow.simple.definition.StepDefinition;
  * @author Joram Barrez
  */
 public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<HumanStepDefinition, UserTask> {
-
-  private static final String DEFAULT_INITIATOR_VARIABLE = "initiator";
+  
+	private static final long serialVersionUID = 1L;
+  
+	private static final String DEFAULT_INITIATOR_VARIABLE = "initiator";
   private static final String DEFAULT_INITIATOR_ASSIGNEE_EXPRESSION = "${initiator}";
 
   public Class< ? extends StepDefinition> getHandledClass() {
@@ -52,7 +55,7 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
     userTask.setDocumentation(humanStepDefinition.getDescription());
 
     // Initiator
-    if (humanStepDefinition.isAssigneeInitiator()) {
+    if (humanStepDefinition.getAssignmentType() == HumanStepAssignmentType.INITIATOR) {
       userTask.setAssignee(getInitiatorExpression());
 
       // Add the initiator variable declaration to the start event
@@ -61,17 +64,17 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
       }
       
     // Assignee  
-    } else if (humanStepDefinition.getAssignee() != null) {
+    } else if (humanStepDefinition.getAssignmentType() == HumanStepAssignmentType.USER) {
       userTask.setAssignee(humanStepDefinition.getAssignee());
     }
 
     // Candidate Users
-    if (humanStepDefinition.getCandidateUsers() != null && humanStepDefinition.getCandidateUsers().size() > 0) {
+    if (humanStepDefinition.getAssignmentType() == HumanStepAssignmentType.USERS || humanStepDefinition.getAssignmentType() == HumanStepAssignmentType.MIXED) {
       userTask.setCandidateUsers(humanStepDefinition.getCandidateUsers());
     }
 
     // Candidate groups
-    if (humanStepDefinition.getCandidateGroups() != null && humanStepDefinition.getCandidateGroups().size() > 0) {
+    if (humanStepDefinition.getAssignmentType() == HumanStepAssignmentType.GROUPS || humanStepDefinition.getAssignmentType() == HumanStepAssignmentType.MIXED) {
       userTask.setCandidateGroups(humanStepDefinition.getCandidateGroups());
     }
     
@@ -82,6 +85,10 @@ public class HumanStepDefinitionConverter extends BaseStepDefinitionConverter<Hu
       
       // Form properties
       userTask.setFormProperties(convertProperties(formDefinition));
+      
+      if(formDefinition.getFormKey() != null) {
+      	userTask.setFormKey(formDefinition.getFormKey());
+      }
     }
 
     return userTask;

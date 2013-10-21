@@ -23,7 +23,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.UserTask;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActivitiListenerExport implements BpmnXMLConstants {
 

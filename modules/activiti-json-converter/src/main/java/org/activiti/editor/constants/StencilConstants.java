@@ -72,10 +72,13 @@ public interface StencilConstants {
 	final String PROPERTY_DOCUMENTATION = "documentation";
 	
 	final String PROPERTY_PROCESS_ID = "process_id";
+	final String PROPERTY_PROCESS_EXECUTABLE = "process_executable";
 	final String PROPERTY_PROCESS_VERSION = "process_version";
 	final String PROPERTY_PROCESS_AUTHOR = "process_author";
 	final String PROPERTY_PROCESS_NAMESPACE = "process_namespace";
 	
+	final String PROPERTY_CANCEL_ACTIVITY = "cancelactivity";
+        
 	final String PROPERTY_TIMER_DURATON = "timerdurationdefinition";
 	final String PROPERTY_TIMER_DATE = "timerdatedefinition";
 	final String PROPERTY_TIMER_CYCLE = "timercycledefinition";
@@ -102,21 +105,27 @@ public interface StencilConstants {
   final String PROPERTY_TASK_LISTENER_CLASS = "task_listener_class";
   final String PROPERTY_TASK_LISTENER_EXPRESSION = "task_listener_expression";
   final String PROPERTY_TASK_LISTENER_DELEGATEEXPRESSION = "task_listener_delegate_expression";
+  final String PROPERTY_TASK_LISTENER_FIELDS = "task_listener_fields";
+  final String PROPERTY_TASK_LISTENER_FIELD_NAME = "task_listener_field_name";
+  final String PROPERTY_TASK_LISTENER_FIELD_VALUE = "task_listener_field_value";
+  final String PROPERTY_TASK_LISTENER_FIELD_EXPRESSION = "task_listener_field_expression";
 	
 	final String PROPERTY_EXECUTION_LISTENERS = "executionlisteners";
 	final String PROPERTY_EXECUTION_LISTENER_EVENT = "execution_listener_event_type";
 	final String PROPERTY_EXECUTION_LISTENER_CLASS = "execution_listener_class";
 	final String PROPERTY_EXECUTION_LISTENER_EXPRESSION = "execution_listener_expression";
 	final String PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION = "execution_listener_delegate_expression";
+        
+        final String PROPERTY_EXECUTION_LISTENER_FIELDS = "execution_listener_fields";
+        final String PROPERTY_EXECUTION_LISTENER_FIELD_NAME = "execution_listener_field_name";
+        final String PROPERTY_EXECUTION_LISTENER_FIELD_VALUE = "execution_listener_field_value";
+        final String PROPERTY_EXECUTION_LISTENER_FIELD_EXPRESSION = "execution_listener_field_expression";
 	
 	final String PROPERTY_FORMKEY = "formkeydefinition";
 	final String PROPERTY_DUEDATE = "duedatedefinition";
 	final String PROPERTY_PRIORITY = "prioritydefinition";
 	
 	final String PROPERTY_USERTASK_ASSIGNMENT = "usertaskassignment";
-	final String PROPERTY_USERTASK_FORMKEY = "formkeydefinition";
-	final String PROPERTY_USERTASK_PRIORITY = "prioritydefinition";
-	final String PROPERTY_USERTASK_DUEDATE = "duedatedefinition";
   final String PROPERTY_USERTASK_ASSIGNMENT_TYPE = "assignment_type";
   final String PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION = "resourceassignmentexpr";
   final String PROPERTY_USERTASK_ASSIGNEE = "assignee";
@@ -138,7 +147,13 @@ public interface StencilConstants {
   final String PROPERTY_FORM_TYPE = "formproperty_type";
   final String PROPERTY_FORM_EXPRESSION = "formproperty_expression";
   final String PROPERTY_FORM_VARIABLE = "formproperty_variable";
-  
+  final String PROPERTY_FORM_REQUIRED = "formproperty_required";
+  final String PROPERTY_FORM_READABLE = "formproperty_readable";
+  final String PROPERTY_FORM_WRITEABLE = "formproperty_writeable";
+  final String PROPERTY_FORM_FORM_VALUES = "formproperty_formvalues";
+  final String PROPERTY_FORM_FORM_VALUE_ID = "formproperty_formvalue_id";
+  final String PROPERTY_FORM_FORM_VALUE_NAME = "formproperty_formvalue_name";
+
 	final String PROPERTY_SCRIPT_FORMAT = "scriptformat";
 	final String PROPERTY_SCRIPT_TEXT = "scripttext";
 	

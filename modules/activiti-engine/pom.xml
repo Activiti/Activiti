@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.14-SNAPSHOT</version>
+    <version>5.15-SNAPSHOT</version>
   </parent>
 
   <dependencies>
@@ -23,8 +23,8 @@
       <artifactId>commons-email</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>org.mybatis</groupId>
@@ -157,17 +157,19 @@
       org.activiti.db.mapping.entity
     </activiti.osgi.export.additional>
     <activiti.osgi.import.additional>
-      junit*;resolution:=optional,
-      org.junit*;resolution:=optional,
-      com.sun*;resolution:=optional,
-      javax.persistence*;resolution:=optional,
+      junit;resolution:=optional,
+      org.junit;resolution:=optional,
+      com.sun;resolution:=optional,
+      javax.persistence;resolution:=optional,
       org.apache.commons.mail;resolution:=optional,
-      org.apache.tools.ant*;resolution:=optional,
-      org.apache.xerces*;resolution:=optional,
-      org.activiti.osgi*;resolution:=optional,
-      org.springframework*;resolution:=optional,
-      org.drools*;resolution:=optional,
-      com.fasterxml*;resolution:=optional,
+      org.apache.tools.ant;resolution:=optional,
+      org.apache.xerces;resolution:=optional,
+      org.activiti.camel;resolution:=optional,
+      org.activiti.camel.impl;resolution:=optional,
+      org.activiti.osgi;resolution:=optional,
+      org.springframework;resolution:=optional,
+      org.drools;resolution:=optional,
+      com.fasterxml;resolution:=optional,
     </activiti.osgi.import.additional>
   </properties>
 
@@ -418,9 +420,10 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="updating activiti configuration config to db ${config}" />
-                    <copy file="${basedir}/../../qa/spring/activiti-context.xml" todir="target/test-classes" overwrite="true" />
-                    <delete file="target/test-classes/activiti.cfg.xml" />
+                    <echo message="updating activiti configuration config to db ${database}" />
+                    <copy file="${basedir}/../../qa/spring/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+                    </copy>
                   </tasks>
                 </configuration>
               </execution>
@@ -490,18 +493,18 @@
 							</configuration>
 						</execution>
 						<execution>
-                <id>database-test-drop-schema</id>
-                <phase>prepare-package</phase>
-                <goals>
-                    <goal>run</goal>
-                </goals>
-                <configuration>
-                    <tasks>
-                        <echo message="dropping schema in ${database}" />
-                        <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
-                    </tasks>
-                </configuration>
-            </execution>
+							<id>database-test-drop-schema</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<tasks>
+									<echo message="dropping schema in ${database}" />
+									<java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+								</tasks>
+							</configuration>
+						</execution>
 					</executions>
 				</plugin>
 				<plugin>
@@ -522,7 +525,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-jdk14</artifactId>
-				<version>1.6.4</version>
+				<version>1.7.2</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>

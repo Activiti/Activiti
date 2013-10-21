@@ -82,7 +82,10 @@
     <property name="componentFactories" ref="componentFactories" />
     <property name="workflowDefinitionConversionFactory" ref="workflowDefinitionConversionFactory" />
     <property name="loginHandler" ref="activitiLoginHandler" />
+    <property name="simpleWorkflowJsonConverter" ref="simpleWorkflowJsonConverter" />
   </bean>
+  
+  <bean id="simpleWorkflowJsonConverter" class="org.activiti.workflow.simple.converter.json.SimpleWorkflowJsonConverter" />
   
   <bean name="i18nManager" class="org.activiti.explorer.I18nManager" scope="session">
     <property name="messageSource" ref="messageSource" />

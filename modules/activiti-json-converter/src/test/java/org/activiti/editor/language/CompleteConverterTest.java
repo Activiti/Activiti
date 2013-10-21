@@ -37,7 +37,6 @@ public class CompleteConverterTest extends AbstractConverterTest {
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof UserTask);
     assertEquals("userTask1", flowElement.getId());
-    UserTask userTask = (UserTask) flowElement;
     
     flowElement = model.getMainProcess().getFlowElement("catchsignal");
     assertNotNull(flowElement);

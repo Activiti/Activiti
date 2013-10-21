@@ -216,7 +216,7 @@
     <if test="candidateUser != null || candidateGroups != null">
       inner join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = RES.ID_
     </if>
-    <foreach collection="variables" index="index" item="var">
+    <foreach collection="queryVariableValues" index="index" item="var">
       <choose>
         <when test="var.local">
           inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.ID_ = A${index}.TASK_ID_ 
@@ -226,10 +226,10 @@
         </otherwise>
       </choose>       
     </foreach>
-    <if test="processDefinitionKey != null || processDefinitionName != null">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionName != null || processDefinitionNameLike != null">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
-    <if test="processInstanceBusinessKey != null">
+    <if test="processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null">
         inner join ${prefix}ACT_RU_EXECUTION E on RES.PROC_INST_ID_ = E.ID_
     </if>
     <where> 
@@ -260,8 +260,14 @@
       <if test="assignee != null">
         and RES.ASSIGNEE_ = #{assignee}
       </if>
+      <if test="assigneeLike != null">
+        and RES.ASSIGNEE_ like #{assigneeLike}
+      </if>
       <if test="owner != null">
         and RES.OWNER_ = #{owner}
+      </if>
+      <if test="ownerLike != null">
+        and RES.OWNER_ like #{ownerLike}
       </if>
       <if test="unassigned">
         and RES.ASSIGNEE_ IS NULL
@@ -277,6 +283,9 @@
       </if>
       <if test="processInstanceBusinessKey != null">
         and E.BUSINESS_KEY_ = #{processInstanceBusinessKey}
+      </if>
+      <if test="processInstanceBusinessKeyLike != null">
+        and E.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}
       </if>         
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
@@ -302,8 +311,14 @@
       <if test="processDefinitionKey != null">
         and D.KEY_ = #{processDefinitionKey}
       </if>
+      <if test="processDefinitionKeyLike != null">
+        and D.KEY_ like #{processDefinitionKeyLike}
+      </if>
       <if test="processDefinitionName != null">
         and D.NAME_ = #{processDefinitionName}
+      </if>
+      <if test="processDefinitionNameLike != null">
+        and D.NAME_ like #{processDefinitionNameLike}
       </if>
       <if test="dueDate != null">
         and RES.DUE_DATE_ = #{dueDate}
@@ -313,6 +328,9 @@
       </if>
       <if test="dueAfter != null">
         and RES.DUE_DATE_ &gt; #{dueAfter}
+      </if>
+      <if test="withoutDueDate">
+        and RES.DUE_DATE_ is null
       </if>
       <if test="dueDate != null || dueBefore != null || dueAfter != null">
         and RES.DUE_DATE_ is not null
@@ -347,7 +365,7 @@
           or RES.OWNER_ = #{involvedUser}
           )
       </if>
-      <foreach item="var" collection="variables" index="index">
+      <foreach item="var" collection="queryVariableValues" index="index">
         <if test="!var.local">
           <!-- When process instance variable is queried for, taskId should be null -->
           and A${index}.TASK_ID_ is null

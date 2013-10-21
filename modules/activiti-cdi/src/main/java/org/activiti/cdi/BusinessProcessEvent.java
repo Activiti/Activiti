@@ -14,6 +14,7 @@ package org.activiti.cdi;
 
 import java.util.Date;
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -64,5 +65,10 @@ public interface BusinessProcessEvent {
    *         fired.
    */
   public Date getTimeStamp();
+  
+  /**
+   * @return the variable scope associated with the event 
+   */
+  public VariableScope getVariableScope();
 
 }

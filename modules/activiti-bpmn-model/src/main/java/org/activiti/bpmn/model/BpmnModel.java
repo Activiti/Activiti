@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.parse.Problem;
 import org.activiti.bpmn.model.parse.Warning;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -56,7 +56,7 @@ public class BpmnModel {
 	  for (Process process : processes) {
 	    boolean foundPool = false;
 	    for (Pool pool : pools) {
-        if(pool.getProcessRef().equalsIgnoreCase(process.getId())) {
+        if (StringUtils.isNotEmpty(pool.getProcessRef()) && pool.getProcessRef().equalsIgnoreCase(process.getId())) {
           
           if(poolRef != null) {
             if(pool.getId().equalsIgnoreCase(poolRef)) {

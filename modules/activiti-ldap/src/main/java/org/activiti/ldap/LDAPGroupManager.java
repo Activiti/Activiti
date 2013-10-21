@@ -77,7 +77,7 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
 
   @Override
   public GroupQuery createNewGroupQuery() {
-    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
+    return new GroupQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
   }
 
   @Override
@@ -116,7 +116,8 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
         
         List<Group> groups = new ArrayList<Group>();
         try {
-          NamingEnumeration< ? > namingEnum = initialDirContext.search(ldapConfigurator.getBaseDn(), searchExpression, createSearchControls());
+          String baseDn = ldapConfigurator.getGroupBaseDn() != null ? ldapConfigurator.getGroupBaseDn() : ldapConfigurator.getBaseDn();
+          NamingEnumeration< ? > namingEnum = initialDirContext.search(baseDn, searchExpression, createSearchControls());
           while (namingEnum.hasMore()) { // Should be only one
             SearchResult result = (SearchResult) namingEnum.next();
             

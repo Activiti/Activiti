@@ -47,7 +47,8 @@
       DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
       LONG_ = #{longValue, jdbcType=BIGINT},
       TEXT_ = #{textValue, jdbcType=VARCHAR},
-      TEXT2_ = #{textValue2, jdbcType=VARCHAR}
+      TEXT2_ = #{textValue2, jdbcType=VARCHAR},
+      VAR_TYPE_ = #{variableType, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
@@ -85,7 +86,7 @@
   </select>
   
   <select id="selectHistoricVariableInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricVariableInstanceQueryImpl" resultType="long">
-    select count(RES.*)
+    select count(RES.ID_)
     <include refid="selectHistoricVariableInstanceByQueryCriteriaSql"/>
   </select>
   

@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.SignalEventDefinition;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -43,6 +43,8 @@ public class SignalEventDefinitionParser extends BaseChildElementParser {
     if (StringUtils.isEmpty(eventDefinition.getSignalRef())) {
       model.addProblem("signalEventDefinition does not have required property 'signalRef'", xtr);
     }
+    
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_SIGNALDEFINITION, eventDefinition, xtr, model);
     
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }

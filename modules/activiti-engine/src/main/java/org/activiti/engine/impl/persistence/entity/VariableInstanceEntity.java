@@ -21,7 +21,7 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tom Baeyens
@@ -76,7 +76,12 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   public void setExecution(ExecutionEntity execution) {
     this.executionId = execution.getId();
     this.processInstanceId = execution.getProcessInstanceId();
-    this.forcedUpdate = true;
+    forceUpdate();
+  }
+  
+  public void forceUpdate() {
+	    forcedUpdate = true;
+	  
   }
 
   public void delete() {

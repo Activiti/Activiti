@@ -25,7 +25,7 @@ import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.runtime.Job;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Stub of the common parts of a Job. You will normally work with a subclass of
@@ -113,6 +113,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   public void setExecution(ExecutionEntity execution) {
     executionId = execution.getId();
     processInstanceId = execution.getProcessInstanceId();
+    processDefinitionId = execution.getProcessDefinitionId();
     execution.addJob(this);
   }
 

@@ -12,11 +12,13 @@
  */
 package org.activiti.cdi.test.impl.event;
 
+import static org.junit.Assert.assertEquals;
+
 import org.activiti.cdi.test.CdiActivitiTestCase;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class EventNotificationTest extends CdiActivitiTestCase {
 
@@ -68,6 +70,35 @@ public class EventNotificationTest extends CdiActivitiTestCase {
     assertEquals(1, listenerBean.getEndActivityService1());
     assertEquals(1, listenerBean.getStartActivityService1());
     assertEquals(1, listenerBean.getTakeTransitiont1());
+  }
+  
+  @Test
+  @Deployment(resources = {"org/activiti/cdi/test/impl/event/TaskEventNotificationTest.process3.bpmn20.xml"})
+  public void testCreateEventsPerActivity() {
+    TestEventListener listenerBean = getBeanInstance(TestEventListener.class);
+    listenerBean.reset();
+    
+    assertEquals(0, listenerBean.getCreateTask1());
+    assertEquals(0, listenerBean.getAssignTask1());
+    assertEquals(0, listenerBean.getCompleteTask1());
+    
+    // start the process
+    runtimeService.startProcessInstanceByKey("process3");
+    
+    Task task = taskService.createTaskQuery().singleResult();
+    
+    taskService.claim(task.getId(), "auser");
+    taskService.complete(task.getId());
+    
+    task = taskService.createTaskQuery().singleResult();
+    taskService.complete(task.getId());
+    
+    // assert
+    assertEquals(1, listenerBean.getCreateTask1());
+    assertEquals(1, listenerBean.getCreateTask2());
+    assertEquals(1, listenerBean.getAssignTask1());
+    assertEquals(1, listenerBean.getCompleteTask1());
+    assertEquals(1, listenerBean.getCompleteTask2());
   }
 
 

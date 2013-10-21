@@ -37,6 +37,7 @@ public class TaskDefinition implements Serializable {
   
   // assignment fields
   protected Expression nameExpression;
+  protected Expression ownerExpression;
   protected Expression descriptionExpression;
   protected Expression assigneeExpression;
   protected Set<Expression> candidateUserIdExpressions = new HashSet<Expression>();
@@ -62,6 +63,14 @@ public class TaskDefinition implements Serializable {
 
   public void setNameExpression(Expression nameExpression) {
     this.nameExpression = nameExpression;
+  }
+  
+  public Expression getOwnerExpression() {
+    return ownerExpression;
+  }
+  
+  public void setOwnerExpression(Expression ownerExpression) {
+    this.ownerExpression = ownerExpression;
   }
 
   public Expression getDescriptionExpression() {

@@ -244,7 +244,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
   
   private void cleanDB() {
     String jobId = managementService.createJobQuery().singleResult().getId();
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new DeleteJobsCmd(jobId));
   }
 

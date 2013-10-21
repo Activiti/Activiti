@@ -18,7 +18,7 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Signal;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -52,6 +52,7 @@ public class SignalParser implements BpmnXMLConstants {
       }
       
       BpmnXMLUtil.addXMLLocation(signal, xtr);
+      BpmnXMLUtil.parseChildElements(ELEMENT_SIGNAL, signal, xtr, model);
       model.addSignal(signal);
     }
   }

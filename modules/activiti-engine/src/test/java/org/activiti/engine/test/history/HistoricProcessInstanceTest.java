@@ -256,4 +256,27 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
       assertEquals(0, historyService.getHistoricIdentityLinksForProcessInstance(pi.getId()).size());
     }
   }
+  
+  
+  /**
+   * Validation for ACT-821
+   */
+  @Deployment(resources= {
+  		"org/activiti/engine/test/history/HistoricProcessInstanceTest.testDeleteHistoricProcessInstanceWithCallActivity.bpmn20.xml",
+  		"org/activiti/engine/test/history/HistoricProcessInstanceTest.testDeleteHistoricProcessInstanceWithCallActivity-subprocess.bpmn20.xml"
+  })
+  public void testDeleteHistoricProcessInstanceWithCallActivity() {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+    	 ProcessInstance pi = runtimeService.startProcessInstanceByKey("callSimpleSubProcess");
+    	 
+    	 runtimeService.deleteProcessInstance(pi.getId(), "testing");
+    	 
+    	 // The parent and child process should be present in history
+    	 assertEquals(2L, historyService.createHistoricProcessInstanceQuery().count());
+    	 
+    	 // Deleting the parent process should cascade the child-process
+    	 historyService.deleteHistoricProcessInstance(pi.getId());
+    	 assertEquals(0L, historyService.createHistoricProcessInstanceQuery().count());
+    }
+  }
 }

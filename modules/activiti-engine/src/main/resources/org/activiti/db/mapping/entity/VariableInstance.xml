@@ -37,6 +37,7 @@
     REV_ = #{revisionNext, jdbcType=INTEGER},
     EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
     BYTEARRAY_ID_ = #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+    TYPE_ =  #{type, jdbcType=VARCHAR },
     DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
     LONG_ = #{longValue, jdbcType=BIGINT},
     TEXT_ = #{textValue, jdbcType=VARCHAR},

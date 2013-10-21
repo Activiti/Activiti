@@ -15,6 +15,7 @@ package org.activiti.standalone.history;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,8 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricFormProperty;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.HistoricVariableUpdate;
@@ -1299,4 +1302,59 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     
     assertEquals(entity.getId(), ((FieldAccessJPAEntity)update.getValue()).getId());
     }
+  
+  /**
+   * Test confirming fix for ACT-1731
+   */
+   @Deployment(
+      resources={"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+    public void testQueryHistoricTaskIncludeBinaryVariable() throws Exception {
+     // Start process with a binary variable
+     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", 
+             Collections.singletonMap("binaryVariable", (Object)"It is I, le binary".getBytes()));
+     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+     assertNotNull(task);
+     taskService.setVariableLocal(task.getId(), "binaryTaskVariable", (Object)"It is I, le binary".getBytes());
+     
+     // Complete task
+     taskService.complete(task.getId());
+     
+     // Query task, including processVariables
+     HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).includeProcessVariables().singleResult();
+     assertNotNull(historicTask);
+     assertNotNull(historicTask.getProcessVariables());
+     byte[] bytes = (byte[]) historicTask.getProcessVariables().get("binaryVariable");
+     assertEquals("It is I, le binary", new String(bytes));
+     
+     // Query task, including taskVariables
+     historicTask = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).includeTaskLocalVariables().singleResult();
+     assertNotNull(historicTask);
+     assertNotNull(historicTask.getTaskLocalVariables());
+     bytes = (byte[]) historicTask.getTaskLocalVariables().get("binaryTaskVariable");
+     assertEquals("It is I, le binary", new String(bytes));
+    }
+   
+   /**
+    * Test confirming fix for ACT-1731
+    */
+   @Deployment(
+     resources={"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+   public void testQueryHistoricProcessInstanceIncludeBinaryVariable() throws Exception {
+    // Start process with a binary variable
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", 
+            Collections.singletonMap("binaryVariable", (Object)"It is I, le binary".getBytes()));
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    
+    // Complete task to end process
+    taskService.complete(task.getId());
+    
+    // Query task, including processVariables
+    HistoricProcessInstance historicProcess = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).includeProcessVariables().singleResult();
+    assertNotNull(historicProcess);
+    assertNotNull(historicProcess.getProcessVariables());
+    byte[] bytes = (byte[]) historicProcess.getProcessVariables().get("binaryVariable");
+    assertEquals("It is I, le binary", new String(bytes));
+    
+   }
 }

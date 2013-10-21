@@ -34,28 +34,7 @@ public class TimerEventDefinitionParser extends BaseChildElementParser {
     
     TimerEventDefinition eventDefinition = new TimerEventDefinition();
     BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-    try {
-      while (xtr.hasNext()) {
-        xtr.next();
-        if (xtr.isStartElement() && ATTRIBUTE_TIMER_DURATION.equalsIgnoreCase(xtr.getLocalName())) {
-          eventDefinition.setTimeDuration(xtr.getElementText());
-          break;
-
-        } else if (xtr.isStartElement() && ATTRIBUTE_TIMER_DATE.equalsIgnoreCase(xtr.getLocalName())) {
-          eventDefinition.setTimeDate(xtr.getElementText());
-          break;
-
-        } else if (xtr.isStartElement() && ATTRIBUTE_TIMER_CYCLE.equalsIgnoreCase(xtr.getLocalName())) {
-          eventDefinition.setTimeCycle(xtr.getElementText());
-          break;
-          
-        } else if (xtr.isEndElement() && ELEMENT_EVENT_TIMERDEFINITION.equalsIgnoreCase(xtr.getLocalName())) {
-          break;
-        }
-      }
-    } catch (Exception e) {
-      LOGGER.warn("Error parsing timer event definition", e);
-    }
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TIMERDEFINITION, eventDefinition, xtr, model);
     
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }

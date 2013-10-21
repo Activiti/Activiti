@@ -13,24 +13,24 @@
 
 package org.activiti.engine.impl.jobexecutor;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.activiti.engine.impl.cfg.TransactionListener;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Frederik Heremans
  */
 public class FailedJobListener implements TransactionListener {
+  private static final Logger log = LoggerFactory.getLogger(FailedJobListener.class);
 
   protected CommandExecutor commandExecutor;
   protected String jobId;
   protected Throwable exception;
-  
-  private static Logger log = Logger.getLogger(FailedJobListener.class.getName());
 
   public FailedJobListener(CommandExecutor commandExecutor, String jobId, Throwable exception) {
     this.commandExecutor = commandExecutor;
@@ -40,15 +40,16 @@ public class FailedJobListener implements TransactionListener {
   
   public void execute(CommandContext commandContext) {
     try {
-      commandExecutor.execute(commandContext.getFailedJobCommandFactory()
-              .getCommand(jobId, exception));
-    } catch(Throwable t) {
+      CommandConfig commandConfig = commandExecutor.getDefaultConfig().transactionRequiresNew();
+      Command<Object> failedJobCommand = commandContext.getFailedJobCommandFactory().getCommand(jobId, exception);
+      commandExecutor.execute(commandConfig, failedJobCommand);
+    } catch (Throwable t) {
       // When there is an error while handling failed jobs (decrementing retries) this
       // should be logged because it's a serious issue
-      log.log(Level.SEVERE, "Error while executing command when job is failed for job: '" + jobId + "'.", t);
+      log.warn("Error while executing command when job is failed for job: '" + jobId + "'.", t);
       
       // Re-throw the exception
-      if(t instanceof RuntimeException) {
+      if (t instanceof RuntimeException) {
         throw (RuntimeException) t;
       }
       throw new RuntimeException(t);

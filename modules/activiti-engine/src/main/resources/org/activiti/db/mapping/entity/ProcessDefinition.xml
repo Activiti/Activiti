@@ -57,7 +57,11 @@
   </resultMap>
 
   <!-- PROCESSDEFINITION SELECT -->
-  
+
+  <select id="selectProcessDefinition" parameterType="string" resultMap="processDefinitionResultMap">
+    select * from ${prefix}ACT_RE_PROCDEF where ID_ = #{processDefinitionId}
+  </select>
+
   <select id="selectProcessDefinitionById" parameterType="string" resultMap="processDefinitionResultMap">
     select * from ${prefix}ACT_RE_PROCDEF where ID_ = #{processDefinitionId}
   </select>
@@ -127,9 +131,9 @@
       	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName}) 
       </if>
       <if test="authorizationUserId != null">
-        AND (exists (select ID_  from ${prefix} ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.USER_ID_ = #{authorizationUserId})
+        AND (exists (select ID_  from ${prefix}ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.USER_ID_ = #{authorizationUserId})
         <if test="authorizationGroups != null &amp;&amp; authorizationGroups.size() &gt; 0">
-         OR exists (select ID_ from ${prefix} ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.GROUP_ID_ IN
+         OR exists (select ID_ from ${prefix}ACT_RU_IDENTITYLINK  IDN where IDN.PROC_DEF_ID_ = RES.ID_ and IDN.GROUP_ID_ IN
             <foreach item="group" index="index" collection="authorizationGroups" 
                      open="(" separator="," close=")">
               #{group}

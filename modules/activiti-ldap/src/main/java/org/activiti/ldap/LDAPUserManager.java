@@ -83,7 +83,8 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
         
           String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryByUserId(ldapConfigurator, userId);
 
-          NamingEnumeration< ? > namingEnum = initialDirContext.search(ldapConfigurator.getBaseDn(), searchExpression, createSearchControls());
+          String baseDn = ldapConfigurator.getUserBaseDn() != null ? ldapConfigurator.getUserBaseDn() : ldapConfigurator.getBaseDn();
+          NamingEnumeration< ? > namingEnum = initialDirContext.search(baseDn, searchExpression, createSearchControls());
           UserEntity user = new UserEntity();
           while (namingEnum.hasMore()) { // Should be only one
             SearchResult result = (SearchResult) namingEnum.next();
@@ -125,7 +126,8 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
           List<User> result = new ArrayList<User>();
           try {
             String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryByFullNameLike(ldapConfigurator, query.getFullNameLike());
-            NamingEnumeration< ? > namingEnum = initialDirContext.search(ldapConfigurator.getBaseDn(), searchExpression, createSearchControls());
+            String baseDn = ldapConfigurator.getUserBaseDn() != null ? ldapConfigurator.getUserBaseDn() : ldapConfigurator.getBaseDn();
+            NamingEnumeration< ? > namingEnum = initialDirContext.search(baseDn, searchExpression, createSearchControls());
             
             while (namingEnum.hasMore()) { 
               SearchResult searchResult = (SearchResult) namingEnum.next();
@@ -182,7 +184,7 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
 
   @Override
   public UserQuery createNewUserQuery() {
-    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
+    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
   }
 
 
@@ -232,7 +234,8 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
           try {
 
             String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryByUserId(ldapConfigurator, userId);
-            NamingEnumeration< ? > namingEnum = initialDirContext.search(ldapConfigurator.getBaseDn(), 
+            String baseDn = ldapConfigurator.getUserBaseDn() != null ? ldapConfigurator.getUserBaseDn() : ldapConfigurator.getBaseDn();
+            NamingEnumeration< ? > namingEnum = initialDirContext.search(baseDn, 
                     searchExpression, createSearchControls());
             
             while (namingEnum.hasMore()) { // Should be only one

@@ -12,9 +12,13 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
 
 /**
  * Allows to create simple workflows through an easy, fluent Java API.
@@ -50,11 +54,13 @@ import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
  */
 public class WorkflowDefinition extends AbstractStepDefinitionContainer<WorkflowDefinition> {
 
-  protected String id;
   protected String key;
   protected String name;
   protected String description;
+  protected FormDefinition startFormDefinition;
   protected ParallelStepsDefinition currentParallelStepsDefinition;
+  
+  protected Map<String, Object> parameters = new HashMap<String, Object>();
 
   public String getName() {
     return name;
@@ -108,10 +114,30 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
     return this;
   }
   
+  public Map<String, Object> getParameters() {
+	  return parameters;
+  }
+  
+  public void setParameters(Map<String, Object> parameters) {
+	  this.parameters = parameters;
+  }
+  
   public ParallelStepsDefinition inParallel() {
     currentParallelStepsDefinition = new ParallelStepsDefinition(this);
     addStep(currentParallelStepsDefinition);
     return currentParallelStepsDefinition;
   }
+
+  public FormDefinition getStartFormDefinition() {
+	  return startFormDefinition;
+  }
   
+  public void setStartFormDefinition(FormDefinition startFormDefinition) {
+	  this.startFormDefinition = startFormDefinition;
+  }
+  
+  public WorkflowDefinition startFormdefinition(FormDefinition startFormDefinition) {
+  	this.startFormDefinition = startFormDefinition;
+  	return this;
+  }
 }

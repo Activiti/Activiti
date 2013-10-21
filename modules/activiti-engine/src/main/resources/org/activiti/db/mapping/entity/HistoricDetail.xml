@@ -116,7 +116,7 @@
   </select>
   
   <select id="selectHistoricDetailCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultType="long">
-    select count(RES.*)
+    select count(RES.ID_)
     <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
   </select>
   

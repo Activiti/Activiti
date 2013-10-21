@@ -37,7 +37,6 @@ import org.activiti.explorer.ui.process.listener.ImportModelClickListener;
 import org.activiti.explorer.ui.process.listener.NewModelClickListener;
 import org.activiti.explorer.ui.process.simple.editor.SimpleTableEditorConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
-import org.activiti.workflow.simple.converter.json.JsonConverter;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -102,7 +101,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     
     this.processDefinitionPage = processDefinitionPage;
     this.modelData = repositoryService.getModel(modelId);
-
+    
     initUi();
   }
   
@@ -235,17 +234,18 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
           DownloadStream ds = null;
           try {
             
-            JsonNode editorNode = new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
             byte[] bpmnBytes = null;
             String filename = null;
             if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(modelData.getCategory())) {
-              JsonConverter jsonConverter = new JsonConverter();
-              WorkflowDefinition workflowDefinition = jsonConverter.convertFromJson(editorNode);
+              WorkflowDefinition workflowDefinition = ExplorerApp.get().getSimpleWorkflowJsonConverter()
+              		.readWorkflowDefinition(repositoryService.getModelEditorSource(modelData.getId()));
+              
               filename = workflowDefinition.getName();
               WorkflowDefinitionConversion conversion = 
                       ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
-              bpmnBytes = conversion.getbpm20Xml().getBytes("utf-8");
+              bpmnBytes = conversion.getBpmn20Xml().getBytes("utf-8");
             } else {
+            	JsonNode editorNode = new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
               BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
               BpmnModel model = jsonConverter.convertToBpmnModel(editorNode);
               filename = model.getMainProcess().getId() + ".bpmn20.xml";
@@ -270,11 +270,11 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   protected void deployModel() {
     try {
       
-      final ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
       
       if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(modelData.getCategory())) {
-        deploySimpleTableEditorModel(modelNode);
+        deploySimpleTableEditorModel(repositoryService.getModelEditorSource(modelData.getId()));
       } else {
+      	final ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService.getModelEditorSource(modelData.getId()));
         deployModelerModel(modelNode);
       }
 
@@ -284,7 +284,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     }
   }
 
-  protected void deploySimpleTableEditorModel(final ObjectNode modelNode) {
+  protected void deploySimpleTableEditorModel(final byte[] model) {
     
     final DeployModelPopupWindow deployModelPopupWindow = new DeployModelPopupWindow(modelData);
     
@@ -295,8 +295,8 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
       public void buttonClick(ClickEvent event) {
         
         // Convert to simple workflow definition
-        JsonConverter jsonConverter = new JsonConverter();
-        WorkflowDefinition workflowDefinition = jsonConverter.convertFromJson(modelNode);
+      	WorkflowDefinition workflowDefinition = ExplorerApp.get().getSimpleWorkflowJsonConverter()
+      			.readWorkflowDefinition(model);
 
         // Update model name
         modelData.setName(deployModelPopupWindow.getProcessName());
@@ -309,7 +309,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
         // Deploy to database
         byte[] bpmnBytes = null;
         try {
-          bpmnBytes = conversion.getbpm20Xml().getBytes("utf-8");
+          bpmnBytes = conversion.getBpmn20Xml().getBytes("utf-8");
           
           String processName = modelData.getName() + ".bpmn20.xml";
           Deployment deployment = repositoryService.createDeployment()

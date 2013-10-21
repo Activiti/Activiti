@@ -293,6 +293,22 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         .getIdentityLinkEntityManager()
         .deleteIdentityLink(identityLink, true);
     }
+    
+    // fix deleteCandidate() in create TaskListener
+    List<IdentityLinkEntity> removedIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
+    for (IdentityLinkEntity identityLinkEntity : this.getIdentityLinks()) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLinkEntity.getType())) {
+        if ((userId != null && userId.equals(identityLinkEntity.getUserId()))
+          || (groupId != null && identityLinkEntity.getGroupId().equals(groupId))) {
+          Context
+            .getCommandContext()
+            .getIdentityLinkEntityManager()
+            .deleteIdentityLink(identityLinkEntity, true);
+          removedIdentityLinkEntities.add(identityLinkEntity);
+        }
+      }
+    }
+    getIdentityLinks().removeAll(removedIdentityLinkEntities);
   }
   
   public Set<IdentityLink> getCandidates() {
@@ -723,9 +739,14 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     return variables;
   }
   public List<VariableInstanceEntity> getQueryVariables() {
+    if(queryVariables == null && Context.getCommandContext() != null) {
+      queryVariables = new VariableInitializingList();
+    }
     return queryVariables;
   }
+  
   public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
+  
 }

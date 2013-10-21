@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import javax.naming.NamingException;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -167,22 +169,31 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
   protected void setMailServerProperties(Email email) {
     ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
 
-    String host = processEngineConfiguration.getMailServerHost();
-    if (host == null) {
-      throw new ActivitiException("Could not send email: no SMTP host is configured");
-    }
-    email.setHostName(host);
+    String mailSessionJndi = processEngineConfiguration.getMailSesionJndi();
+    if (mailSessionJndi != null) {
+      try {
+        email.setMailSessionFromJNDI(mailSessionJndi);
+      } catch (NamingException e) {
+        throw new ActivitiException("Could not send email: Incorrect JNDI configuration", e);
+      }
+    } else {
+      String host = processEngineConfiguration.getMailServerHost();
+      if (host == null) {
+        throw new ActivitiException("Could not send email: no SMTP host is configured");
+      }
+      email.setHostName(host);
 
-    int port = processEngineConfiguration.getMailServerPort();
-    email.setSmtpPort(port);
+      int port = processEngineConfiguration.getMailServerPort();
+      email.setSmtpPort(port);
 
-    email.setSSL(processEngineConfiguration.getMailServerUseSSL());
-    email.setTLS(processEngineConfiguration.getMailServerUseTLS());
+      email.setSSL(processEngineConfiguration.getMailServerUseSSL());
+      email.setTLS(processEngineConfiguration.getMailServerUseTLS());
 
-    String user = processEngineConfiguration.getMailServerUsername();
-    String password = processEngineConfiguration.getMailServerPassword();
-    if (user != null && password != null) {
-      email.setAuthentication(user, password);
+      String user = processEngineConfiguration.getMailServerUsername();
+      String password = processEngineConfiguration.getMailServerPassword();
+      if (user != null && password != null) {
+        email.setAuthentication(user, password);
+      }
     }
   }
   

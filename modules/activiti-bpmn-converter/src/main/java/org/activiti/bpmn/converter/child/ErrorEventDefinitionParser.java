@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.Event;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -40,6 +40,8 @@ public class ErrorEventDefinitionParser extends BaseChildElementParser {
     if (parentElement instanceof EndEvent && StringUtils.isEmpty(eventDefinition.getErrorCode())) {
       model.addProblem("errorRef is required for an error event", xtr);
     }
+    
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_ERRORDEFINITION, eventDefinition, xtr, model);
     
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }

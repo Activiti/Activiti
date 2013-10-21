@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.14-SNAPSHOT</version>
+    <version>5.15-SNAPSHOT</version>
   </parent>
 
   <build>
@@ -52,7 +52,7 @@
       org.activiti.osgi.Activator
     </activiti.osgi.activator>
     <activiti.osgi.import.pkg>
-      org.apache.felix.fileinstall*;resolution:=optional,*
+      org.apache.felix.fileinstall;resolution:=optional,*
     </activiti.osgi.import.pkg>
     <activiti.artifact>
       org.activiti.osgi
