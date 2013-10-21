@@ -280,7 +280,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected List<JobHandler> customJobHandlers;
   protected Map<String, JobHandler> jobHandlers;
-  protected JobExecutor jobExecutor;
 
   // MYBATIS SQL SESSION FACTORY //////////////////////////////////////////////
   
@@ -1305,15 +1304,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public ProcessEngineConfigurationImpl setDeployers(List<Deployer> deployers) {
     this.deployers = deployers;
-    return this;
-  }
-  
-  public JobExecutor getJobExecutor() {
-    return jobExecutor;
-  }
-  
-  public ProcessEngineConfigurationImpl setJobExecutor(JobExecutor jobExecutor) {
-    this.jobExecutor = jobExecutor;
     return this;
   }
   
