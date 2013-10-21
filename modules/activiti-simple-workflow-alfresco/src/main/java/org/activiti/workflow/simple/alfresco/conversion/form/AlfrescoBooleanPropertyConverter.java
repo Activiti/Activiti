@@ -26,7 +26,7 @@ import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.BooleanPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 
-public class AlfrescoBooleanPropertyConverter implements AlfrescoFormPropertyConverter {
+public class AlfrescoBooleanPropertyConverter extends BaseAlfrescoFormPropertyConverter {
 
 	@Override
 	public Class<? extends FormPropertyDefinition> getConvertedClass() {
@@ -35,13 +35,12 @@ public class AlfrescoBooleanPropertyConverter implements AlfrescoFormPropertyCon
 
 	@Override
 	public void convertProperty(M2Type contentType, String formSet, Form form, FormPropertyDefinition propertyDefinition, WorkflowDefinitionConversion conversion) {
-		BooleanPropertyDefinition dateDefinition = (BooleanPropertyDefinition) propertyDefinition;
-		String propertyName = AlfrescoConversionUtil.getQualifiedName(AlfrescoConversionUtil.getModelNamespacePrefix(conversion),
-				dateDefinition.getName());
+		BooleanPropertyDefinition booleanDefinition = (BooleanPropertyDefinition) propertyDefinition;
+		String propertyName = getPropertyName(propertyDefinition, conversion);
 		
 		// Add to content model
 		M2Property property = new M2Property();
-		property.setMandatory(new M2Mandatory(dateDefinition.isMandatory()));
+		property.setMandatory(new M2Mandatory(booleanDefinition.isMandatory()));
 		property.setName(propertyName);
 		property.setPropertyType(AlfrescoConversionConstants.PROPERTY_TYPE_BOOLEAN);
 		
@@ -60,13 +59,18 @@ public class AlfrescoBooleanPropertyConverter implements AlfrescoFormPropertyCon
 		
 		// Add form configuration
 		form.getFormFieldVisibility().addShowFieldElement(propertyName);
-		FormField formField = form.getFormAppearance().addFormField(propertyName, dateDefinition.getName(), formSet);
+		FormField formField = form.getFormAppearance().addFormField(propertyName, booleanDefinition.getName(), formSet);
 
-		if(!dateDefinition.isWritable()) {
+		if(!booleanDefinition.isWritable()) {
 			// Read-only properties should always be rendered using an info-template
 			FormFieldControl control = new FormFieldControl();
 			control.setTemplate(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE);
 			formField.setControl(control);
+		}
+		
+		if(!form.isStartForm()) {
+			// Add to output properties, if needed
+			addOutputProperty(propertyDefinition, propertyName, contentType.getName(), conversion);
 		}
 	}
 }

@@ -12,13 +12,13 @@
  */
 package org.activiti.workflow.simple.definition;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
-import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 
 /**
  * Allows to create simple workflows through an easy, fluent Java API.
@@ -54,13 +54,13 @@ import org.activiti.workflow.simple.exception.SimpleWorkflowException;
  */
 public class WorkflowDefinition extends AbstractStepDefinitionContainer<WorkflowDefinition> {
 
-  private static final long serialVersionUID = 1L;
-  
   protected String key;
   protected String name;
   protected String description;
   protected FormDefinition startFormDefinition;
   protected ParallelStepsDefinition currentParallelStepsDefinition;
+  
+  protected Map<String, Object> parameters = new HashMap<String, Object>();
 
   public String getName() {
     return name;
@@ -114,6 +114,14 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
     return this;
   }
   
+  public Map<String, Object> getParameters() {
+	  return parameters;
+  }
+  
+  public void setParameters(Map<String, Object> parameters) {
+	  this.parameters = parameters;
+  }
+  
   public ParallelStepsDefinition inParallel() {
     currentParallelStepsDefinition = new ParallelStepsDefinition(this);
     addStep(currentParallelStepsDefinition);
@@ -131,37 +139,5 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
   public WorkflowDefinition startFormdefinition(FormDefinition startFormDefinition) {
   	this.startFormDefinition = startFormDefinition;
   	return this;
-  }
-  
-  @Override
-  public StepDefinition clone() {
-    WorkflowDefinition clone = new WorkflowDefinition();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  @Override
-  public void setValues(StepDefinition otherDefinition) {
-    if(!(otherDefinition instanceof WorkflowDefinition)) {
-      throw new SimpleWorkflowException("An instance of WorkflowDefinition is required to set values");
-    }
-    
-    WorkflowDefinition definition = (WorkflowDefinition) otherDefinition;
-    setDescription(definition.getDescription());
-    setId(definition.getId());
-    setKey(definition.getKey());
-    setName(definition.getName());
-    if (definition.getStartFormDefinition() != null) {
-      setStartFormDefinition(definition.getStartFormDefinition().clone());
-    } else {
-      setStartFormDefinition(null);
-    }
-    
-    steps = new ArrayList<StepDefinition>();
-    if (definition.getSteps() != null && definition.getSteps().size() > 0) {
-      for (StepDefinition stepDefinition : definition.getSteps()) {
-        steps.add(stepDefinition.clone());
-      }
-    }
   }
 }

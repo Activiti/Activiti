@@ -70,7 +70,14 @@ public class AlfrescoFormCreator {
 			    converter.convertProperty(contentType, formSet.getId(), formConfig, property, conversion);
 				}
 			}
+			
 		}
+		
+		// Finally, add "transitions" if not already added
+		// TODO: check if added once transitions are supported
+		formConfig.getFormAppearance().addFormSet(AlfrescoConversionConstants.FORM_SET_RESPONSE, null, null, null);
+		formConfig.getFormFieldVisibility().addShowFieldElement(AlfrescoConversionConstants.FORM_FIELD_TRANSITIONS);
+		formConfig.getFormAppearance().addFormField(AlfrescoConversionConstants.FORM_FIELD_TRANSITIONS, null, AlfrescoConversionConstants.FORM_SET_RESPONSE);
 	}
 
 	protected String getTemplateForGroup(FormPropertyGroup group) {

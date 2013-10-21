@@ -71,6 +71,9 @@ public interface AlfrescoConversionConstants {
 	String PROPERTY_TYPE_DATETIME = "d:datetime";
 	String PROPERTY_TYPE_BOOLEAN = "d:boolean";
 	
+	String CONTENT_TYPE_PEOPLE = "cm:person";
+	String CONTENT_TYPE_GROUP = "cm:authority";
+	
 	String PROPERTY_DUE_DATE = "bpm:dueDate";
 	String PROPERTY_PRIORITY = "bpm:priority";
 	String PROPERTY_DESCRIPTION = "bpm:description";
@@ -106,6 +109,7 @@ public interface AlfrescoConversionConstants {
 	String FORM_SET_ASSIGNEE = "assignee";
 	String FORM_SET_ITEMS = "items";
 	String FORM_SET_OTHER = "other";
+	String FORM_SET_RESPONSE = "response";
 	String FORM_SET_GENERAL_LABEL = "workflow.set.general";
 	String FORM_SET_ASSIGNEE_LABEL = "workflow.set.assignee";
 	String FORM_SET_ITEMS_LABEL = "workflow.set.items";
@@ -113,6 +117,8 @@ public interface AlfrescoConversionConstants {
 	String FORM_WORKFLOW_DESCRIPTION_LABEL = "workflow.field.message";
 	String FORM_WORKFLOW_DUE_DATE_LABEL = "workflow.field.due";
 	String FORM_WORKFLOW_PRIORITY_LABEL = "workflow.field.priority";
+	
+	String FORM_FIELD_TRANSITIONS = "transitions";
 	
 	// Custom property definition constants
 	String FORM_GROUP_LAYOUT_1_COLUMN = "one-column";
@@ -137,6 +143,8 @@ public interface AlfrescoConversionConstants {
 	// Custom form definition parameters
 	String PARAMETER_PACKAGEITEMS_ALLOW_ADD = "allow-add";
 	String PARAMETER_PACKAGEITEMS_ALLOW_REMOVE = "allow-remove";
+	String PARAMETER_ADD_PROPERTY_TO_OUTPUT = "property-output";
+	String PARAMETER_REFERENCE_MANY = "reference-many";
 	
 	
 	// Artifact keys

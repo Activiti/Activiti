@@ -12,6 +12,8 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.HashMap;
+
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
@@ -62,5 +64,7 @@ public class ScriptStepDefinition extends AbstractNamedStepDefinition {
     setScript(stepDefinition.getScript());
     setScriptLanguage(stepDefinition.getScriptLanguage());
     setStartsWithPrevious(stepDefinition.isStartsWithPrevious());
+    
+    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
   }
 }

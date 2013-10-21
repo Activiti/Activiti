@@ -26,6 +26,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoWorkflowDefinitionConversionFactory;
+import org.activiti.workflow.simple.alfresco.model.M2ClassAssociation;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Property;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
@@ -36,6 +37,7 @@ import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyGroup;
+import org.activiti.workflow.simple.definition.form.ReferencePropertyDefinition;
 import org.activiti.workflow.simple.definition.form.TextPropertyDefinition;
 import org.junit.Assert;
 import org.junit.Before;
@@ -147,7 +149,48 @@ public class WorkflowDefinitionConversionTest {
 			}
 		}
 		assertTrue(listenerFound);
+	}
+	
+	@Test
+	public void testTaskListenerForOutgoingProperties() throws Exception {
+		WorkflowDefinition definition = new WorkflowDefinition();
+		definition.setId("process");
 		
+		HumanStepDefinition humanStep = new HumanStepDefinition();
+		humanStep.setId("step1");
+		FormDefinition form = new FormDefinition();
+		
+		humanStep.setForm(form);
+		
+		TextPropertyDefinition text = new TextPropertyDefinition();
+		text.setName("my text");
+		
+		text.getParameters().put(AlfrescoConversionConstants.PARAMETER_ADD_PROPERTY_TO_OUTPUT, true);
+		FormPropertyGroup group = new FormPropertyGroup();
+		group.setId("group");
+		form.getFormGroups().add(group);
+		group.getFormPropertyDefinitions().add(text);
+		
+		definition.addStep(humanStep);
+		
+		WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(definition);
+		conversion.convert();
+		
+		Process process = conversion.getProcess();
+		assertNotNull(process);
+		
+		boolean listenerFound = false;
+		for(FlowElement flowElement : process.getFlowElements()) {
+			if(flowElement instanceof UserTask) {
+					UserTask task = (UserTask) flowElement;
+					assertNotNull(task.getTaskListeners());
+					assertEquals(2L, task.getTaskListeners().size());
+					assertEquals("create", task.getTaskListeners().get(0).getEvent());
+					assertEquals("complete", task.getTaskListeners().get(1).getEvent());
+					listenerFound = true;
+			}
+		}
+		assertTrue(listenerFound);
 	}
 	
 	
@@ -232,6 +275,50 @@ public class WorkflowDefinitionConversionTest {
 		assertEquals("d:text", property.getPropertyType());
 		assertEquals(Boolean.TRUE, property.getMandatory().isMandatory());
 	}
+	
+	/**
+	 * Test if a custom reference (eg. type=cm:person) is turned into an association on the
+	 * model.
+	 */
+	@Test
+	public void testCustomReference() throws Exception {
+		// TODO: finish test once all types are present
+		WorkflowDefinition definition = new WorkflowDefinition();
+		definition.setId("process");
+		
+		HumanStepDefinition humanStep = new HumanStepDefinition();
+		humanStep.setId("step1");
+		FormDefinition form = new FormDefinition();
+		humanStep.setForm(form);
+		
+		FormPropertyGroup group = new FormPropertyGroup();
+		group.setId("group");
+		group.setTitle("My group");
+		humanStep.getForm().addFormPropertyGroup(group);
+		
+		// Add simple text
+		ReferencePropertyDefinition textProperty = new ReferencePropertyDefinition();
+		textProperty.setName("person");
+		textProperty.setMandatory(true);
+		textProperty.setType("cm:person");
+		group.addFormProperty(textProperty);
+		
+		definition.addStep(humanStep);
+		
+		WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(definition);
+		conversion.convert();
+		
+		// Check content-model
+		M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
+		assertNotNull(model);
+		M2Type type = model.getTypes().get(0);
+		assertNotNull(type);
+		
+		// Simple text
+		M2ClassAssociation association = getAssociationFromType("person", type);
+		assertEquals("cm:person", association.getTarget().getClassName());
+		assertTrue(association.getTarget().isMandatory());
+	}
 
 	protected M2Property getPropertyFromType(String shortName, M2Type type) {
 		for(M2Property prop : type.getProperties()) {
@@ -240,6 +327,16 @@ public class WorkflowDefinitionConversionTest {
 			}
 		}
 		Assert.fail("No property found for the given name: " + shortName);
+		return null;
+  }
+	
+	protected M2ClassAssociation getAssociationFromType(String shortName, M2Type type) {
+		for(M2ClassAssociation assoc : type.getAssociations()) {
+			if(assoc.getName().endsWith(shortName)) {
+				return assoc;
+			}
+		}
+		Assert.fail("No association found for the given name: " + shortName);
 		return null;
   }
 }

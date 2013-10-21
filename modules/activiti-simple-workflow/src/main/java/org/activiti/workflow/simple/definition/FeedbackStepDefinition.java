@@ -13,6 +13,7 @@
 package org.activiti.workflow.simple.definition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.workflow.simple.converter.step.FeedbackStepDefinitionConverter;
@@ -130,5 +131,7 @@ public class FeedbackStepDefinition extends AbstractNamedStepDefinition {
     setId(stepDefinition.getId());
     setName(stepDefinition.getName());
     setStartsWithPrevious(stepDefinition.isStartsWithPrevious());
+    
+    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
   }
 }

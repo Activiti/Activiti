@@ -25,8 +25,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @SuppressWarnings("unchecked")
 public abstract class AbstractStepDefinitionContainer<T> implements StepDefinitionContainer<T> {
   
-  private static final long serialVersionUID = 1L;
-  
   protected String id;
   protected List<StepDefinition> steps;
   
@@ -149,9 +147,4 @@ public abstract class AbstractStepDefinitionContainer<T> implements StepDefiniti
     
     return (T) this;
   }
-  
-  public abstract StepDefinition clone();
-  
-  public abstract void setValues(StepDefinition otherDefinition);
-  
 }
