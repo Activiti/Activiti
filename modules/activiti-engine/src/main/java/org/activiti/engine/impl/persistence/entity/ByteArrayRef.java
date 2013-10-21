@@ -71,7 +71,7 @@ public final class ByteArrayRef implements Serializable {
   }
 
   public void delete() {
-    if (!deleted) {
+    if (!deleted && id != null) {
       if (entity != null) {
         // if the entity has been loaded already,
         // we might as well use the safer optimistic locking delete.
