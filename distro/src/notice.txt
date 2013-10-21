@@ -1,11 +1,41 @@
 Activiti BPM Platform
-Copyright 2010-2011 Alfresco Software, Ltd.
+Copyright 2010-2013 Alfresco Software, Ltd.
 
 The following activiti software libraries are distributed under the Apache License Version 2.0 (the License):
+ * activiti-bpmn-converter-<version>-sources.jar
+ * activiti-bpmn-converter-<version>.jar
+ * activiti-bpmn-layout-<version>-sources.jar
+ * activiti-bpmn-layout-<version>.jar
+ * activiti-bpmn-model-<version>-sources.jar
+ * activiti-bpmn-model-<version>.jar
+ * activiti-camel-<version>-sources.jar
+ * activiti-camel-<version>.jar
+ * activiti-cdi-<version>-sources.jar
+ * activiti-cdi-<version>.jar
+ * activiti-common-rest-<version>-sources.jar
+ * activiti-common-rest-<version>.jar
  * activiti-cxf-<version>-sources.jar
  * activiti-cxf-<version>.jar
+ * activiti-diagram-rest-<version>-sources.jar
+ * activiti-diagram-rest-<version>.jar
  * activiti-engine-<version>-sources.jar
  * activiti-engine-<version>.jar
+ * activiti-explorer-<version>-sources.jar
+ * activiti-explorer-<version>.jar
+ * activiti-json-converter-<version>-sources.jar
+ * activiti-json-converter-<version>.jar
+ * activiti-ldap-<version>-sources.jar
+ * activiti-ldap-<version>.jar
+ * activiti-modeler-<version>-sources.jar
+ * activiti-modeler-<version>.jar
+ * activiti-mule-<version>-sources.jar
+ * activiti-mule-<version>.jar
+ * activiti-osgi-<version>-sources.jar
+ * activiti-osgi-<version>.jar
+ * activiti-rest-<version>-sources.jar
+ * activiti-rest-<version>.jar
+ * activiti-simple-workflow-<version>-sources.jar
+ * activiti-simple-workflow-<version>.jar
  * activiti-spring-<version>-sources.jar
  * activiti-spring-<version>.jar
 
@@ -174,7 +204,6 @@ saaj-impl-1.3.jar : CDDL http://www.opensource.org/licenses/cddl1
 scannotation-1.0.2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 serp-1.13.1.jar : BSD http://www.opensource.org/licenses/bsd-license.php
 servlet-api-2.5.jar : http://developers.sun.com/license/berkeley_license.html
-signavio-core-components-1.0.jar : MIT http://www.opensource.org/licenses/mit-license.php
 slf4j-api-1.5.6.jar : MIT http://www.opensource.org/licenses/mit-license.php
 slf4j-api-1.6.1.jar : MIT http://www.opensource.org/licenses/mit-license.php
 slf4j-jdk14-1.6.1.jar : MIT http://www.opensource.org/licenses/mit-license.php

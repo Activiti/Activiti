@@ -35,14 +35,20 @@
 
   <h1>Activiti Release Notes</h1>
   
-  <h3>Release Notes - Activiti - Version 5.14-SNAPSHOT</h3>
+  <h3>Release Notes - Activiti - Version 5.14</h3>
   
    <h4>Highlights</h4>
+   <ul>
+    <li>Version 5.14 is focused on bug fixes and small improvements.</li>
+    <li>Improved process and task query support</li>
+    <li>Add OSGi bundle headers to all Activiti module JARs</li>
+    <li>Thanks to the community for the large number of pull requests, especially Martin Grofcik, Mike Dias and Saeid Mirzaei</li>
+   </ul>
    
    <h4>Important Note for MSSQL and DB2 users</h4>
     
    <p>
-        Activiti 5.13 and 5.14-SNAPSHOT contain changes to the default indexes that are created when using
+        Activiti 5.13 and 5.14 contain changes to the default indexes that are created when using
         MSSQL or DB2 as database. These indexes <b>are not created automatically when upgrading Activiti</b>,
         as they may conflict with custom indexes or impact the database load. The purpose if the indexes
         is to avoid deadlock exceptions when using Activiti under high load.
