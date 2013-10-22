@@ -5073,7 +5073,7 @@
    <section>
       <title>查询任务</title>
         <para>
-          <programlisting>POST repository/tasks</programlisting>
+          <programlisting>POST query/tasks</programlisting>
         </para>
         <para>
           <emphasis role="bold">请求体：</emphasis>
@@ -9509,7 +9509,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   <section>
       <title>执行作业</title>
         <para>
-          <programlisting>PUT management/jobs/{jobId}</programlisting>
+          <programlisting>POST management/jobs/{jobId}</programlisting>
         </para>
         <para>
          <emphasis role="bold">请求JSON体：</emphasis>

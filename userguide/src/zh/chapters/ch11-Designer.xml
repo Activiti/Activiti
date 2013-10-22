@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
-<chapter id="activitiDesigner"> 
+<chapter id="activitiDesigner">
   <title>Eclipse Designer</title>
-  
+
   <para>
   	Activiti 同时还有个Eclipse 插件，Activiti Eclipse Designer ，可用于图形化建模、测试、部署 BPMN 2.0的流程。
   </para>
-  
+
   <section id="eclipseDesignerInstallation">
     <title>Installation</title>
     <para>
@@ -16,7 +16,7 @@
     <para>
     	打开 <emphasis role="bold">Help -> Install New Software</emphasis>. 在如下面板中
      , 点击 <emphasis>Add</emphasis> 按钮, 然后填入下列字段:
-      
+
       <itemizedlist>
         <listitem>
           <para><emphasis role="bold">Name: </emphasis>Activiti BPMN 2.0 designer</para>
@@ -35,7 +35,7 @@
       , 因为它会检查所有当前安装所需要的插件并可以被Eclipse下载.
     </para>
   </section>
-  
+
   <section id="eclipseDesignerEditorFeatures">
     <title>Activiti Designer 编辑器的特性</title>
     <para>
@@ -43,7 +43,7 @@
         <listitem>
           <para>
           	创建Activiti 项目和图形.
-          	
+
           	<mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.create.activiti.project.png"/>
@@ -54,7 +54,7 @@
         <listitem>
           <para>
           	当创建一个ACTIVITI表格的时候，Activiti Designer会建立一个BPMN的文档.打开Activiti Diagram 辑器时会出现一个图示的画布和调色板,同一文件在用XML编辑器打开后,会显示BPMN2.0程定义XML元素.因此,同一个文件能同时使用图形图以及BPMN 2.0XML. 注意Activiti的5.9 BPMN扩展尚未作为部署文件来支持程定义. 因此,Activiti Designer 的“创建部署文件”功能生成一个BAR文件,BAR里面有一个含.bpmn内容的.bpmn20.xml文件.您也可以做一个快速的文件重命名.另外,你也可直接用Activiti Designer 打开.bpmn20.xml文件.
-            
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.bpmn.file.png"/>
@@ -65,7 +65,7 @@
         <listitem>
           <para>
           	BPMN 2.0XML文件可以导入Activiti Designer,并创建一个图表, 只需复制BPMN 2.0 XML进你的项目,再用.Activiti Designer打开它. Activiti Designer用BPMN DI的文件创建图表信息.如你有一个BPMN2.0的XML文件而无BPMN DI信息，那也无图可创建.
-          
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.open.importedfile.png"/>
@@ -79,7 +79,7 @@
           	package explorer视图中的Activiti项目,然后选择弹出菜单底问的 <emphasis>Create deployment artifacts</emphasis> 选项
           	由Activiti Designer来创建.更多关于Designer的部署功能,见
           	<link linkend="eclipseDesignerDeployment">部署</link> 一节.
-          
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.create.deployment.png"/>
@@ -103,7 +103,7 @@
           	Activiti 项目可以做为Maven 项目来生成.但是需要配置依赖关系
             需要运行 <emphasis>mvn eclipse:eclipse</emphasis> 这样Maven的依赖会像预期的那样被配置.
             注意对于流程设计来讲是不需要Maven的依赖.只是在运行单元测试时需要.
-            
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.project.maven.png"/>
@@ -114,7 +114,7 @@
       </itemizedlist>
     </para>
   </section>
-  
+
   <section id="eclipseDesignerBPMNFeatures">
     <title>Activiti Designer 的BPMN 特性</title>
     <para>
@@ -123,10 +123,10 @@
           <para>
           	支持开始没有事件,启动错误事件、定时器启动事件,最后没有一个错误事件,事件,结束序列流,
 			并行网关,网关,网关,独家包容事件网关,嵌入式子流程、事件子流程、调用活动,游泳池,车道,
-			脚本任务、用户任务、服务任务,邮件任务,手动任务,业务规则任务,获得任务, 
-			定时器边界事件、错误边界事件、信号边界事件、定时器捕获事件,信号捕捉事件、信号投掷项目, 
+			脚本任务、用户任务、服务任务,邮件任务,手动任务,业务规则任务,获得任务,
+			定时器边界事件、错误边界事件、信号边界事件、定时器捕获事件,信号捕捉事件、信号投掷项目,
 			和四个Alfresco特定的元素(用户、脚本、邮件任务和开始事件).
-			
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.model.process.png"/>
@@ -137,7 +137,7 @@
         <listitem>
           <para>
             可以很快地改变一个任务的类型,只需鼠标悬停在该元素上,然后选择新的任务类型.
-            
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.model.quick.change.png"/>
@@ -148,7 +148,7 @@
         <listitem>
           <para>
             可以快速地添加一个新元素,只需鼠标悬停某个元素上,然后选择一个新的元素类型.
-            
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.model.quick.new.png"/>
@@ -159,7 +159,7 @@
         <listitem>
           <para>
           	支持对Java 服务任务的Java 类、表达式以及代理表达式的配置.此外,也可以配置字段扩展.
-            
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.servicetask.property.png"/>
@@ -167,11 +167,11 @@
             </mediaobject>
           </para>
         </listitem>
-        
+
         <listitem>
           <para>
 			支持pools 和 lanes, 因为Activiti能根据不同的程定义读取不同的存储池.它使仅用一个存储池看起来意义重大.如果您使用多个池，要注意储存池的图序列流动，它可能会在部署AD引擎的过程中发生问题.当然,只要你想,你可以添加尽可能多的POOL,LANES.
-            
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.model.poolandlanes.png"/>
@@ -179,10 +179,10 @@
             </mediaobject>
           </para>
         </listitem>
-        
+
         <listitem>
           <para>
-            您可以通过填写名称属性添加标签序列流. 
+            您可以通过填写名称属性添加标签序列流.
             你可以自己定位标签的位置保存为BPMN 2 XML DI部分信息
             <mediaobject>
               <imageobject>
@@ -191,11 +191,11 @@
             </mediaobject>
           </para>
         </listitem>
-        
+
         <listitem>
           <para>
             支持子流程事件.
-            
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.model.eventsubprocess.png"/>
@@ -203,11 +203,11 @@
             </mediaobject>
           </para>
         </listitem>
-        
+
         <listitem>
           <para>
           	支持扩嵌入式子流程. 你还可以添加一个嵌入式子流程进另一个嵌入式子流程.
-            
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.embeddedprocess.canvas.png"/>
@@ -215,12 +215,12 @@
             </mediaobject>
           </para>
         </listitem>
-        
+
         <listitem>
           <para>
           	支持任务和嵌入子过程上的定时器边界事件.尽管,定时器边界事件最大的意义在于可以在Activiti Designer 中
 			的用户任务或嵌入子过程上使用.
-            
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.timerboundary.canvas.png"/>
@@ -228,11 +228,11 @@
             </mediaobject>
           </para>
         </listitem>
-        
+
         <listitem>
           <para>
           	支持附加的Activiti 的扩展,如邮件任务、用户任务候选者配置以及脚本任务的配置.
-            
+
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.mailtask.property.png"/>
@@ -243,7 +243,7 @@
         <listitem>
           <para>
           	支持Activiti 执行监听和任务监听.可以给执行监听添加字段扩展.
-          
+
           	<mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/designer.listener.configuration.png"/>
@@ -262,7 +262,7 @@
       </itemizedlist>
     </para>
   </section>
-  
+
   <section id="eclipseDesignerDeployment">
     <title>Activiti Designer 部署特性</title>
     <para>
@@ -270,7 +270,7 @@
 		还可以有任务表单以及可以在Activiti Explorer中浏览的流程图片.在Activiti Designer中创建BAR文件是非常简单
 		的.完成流程实现后,在package explorer视图下右击你的Activiti项目,然后选择弹出菜单底部的
     	<emphasis role="bold">Create deployment artifacts</emphasis> 选项.
-    	
+
     	<mediaobject>
          <imageobject>
            <imagedata align="center" fileref="images/designer.create.deployment.png"/>
@@ -279,7 +279,7 @@
    	</para>
    	<para>
     	接下来,deployment目录会被创建,其内包含有BAR文件,你的Activiti项目中的Java类的JAR文件也可以在此.
-    	
+
     	<mediaobject>
          <imageobject>
            <imagedata align="center" fileref="images/designer.deployment.dir.png"/>
@@ -288,7 +288,7 @@
     </para>
     <para>
     	现在就可以使用Activiti Explorer中的部署标签将这个文件部署到Activiti引擎上了,相信你已经准备好了.
-    	
+
     </para>
     <para>
     	当你的项目中含有Java 类时,部署要稍微麻烦一点.这种情况下,Activiti Designer 中的
@@ -297,7 +297,7 @@
 		这些类在Activiti引擎的类路径下是可用的.
     </para>
   </section>
-  
+
   <section id="eclipseDesignerExtending">
     <title>扩展Activiti Designer</title>
     <para>你可以对Activiti Designer提供的默认功能进行扩展.这一节介绍有哪些扩展可用,如何使用这些扩展,
@@ -353,11 +353,11 @@
 		  Maven 命令.</para>
         <para>在Eclipse里创建一个新项目.这是一个普通的项目类型.在项目的根路径下创建
 		<literal>pom.xml</literal>文件用来包含Maven 项目的设置. 同时创建 <literal>src/main/java</literal>
-		和<literal>src/main/resources</literal>文件, 这是Maven 对于Java 源文件和资源的约定. 
+		和<literal>src/main/resources</literal>文件, 这是Maven 对于Java 源文件和资源的约定.
 		打开<literal>pom.xml</literal> 文件并添加下列代码:</para>
         <para>
-          <programlisting>&lt;project 
-  xmlns="http://maven.apache.org/POM/4.0.0" 
+          <programlisting>&lt;project
+  xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -371,7 +371,7 @@
 ...
 &lt;/project></programlisting>
         </para>
-        <para>正如你所看到的, 这只是一个定义了项目<literal>groupId</literal>, 
+        <para>正如你所看到的, 这只是一个定义了项目<literal>groupId</literal>,
 		<literal>artifactId</literal> 和 <literal>version</literal>的基本的pom.xml 文件. 我们将创建
 		一个定制,其中包含我们money业务中一个的自定义节点.</para>
         <para>通过在<literal>pom.xml</literal> 文件内引入依赖,就可以将集成的类库添加到你项目的依赖中:
@@ -393,11 +393,11 @@
    &lt;/repository&gt;
 &lt;/repositories&gt;</programlisting>
         </para>
-        <para>最后,在<literal> pom.xml</literal>文件中添加对<literal>maven-compiler-plugin</literal> 
+        <para>最后,在<literal> pom.xml</literal>文件中添加对<literal>maven-compiler-plugin</literal>
 		  的配置,Java 源代码级别最低是1.5 (看下面的代码片段). 这在使用注解时需要。也可以包含让Maven
 		  生成JAR的<literal>MANIFEST.MF</literal> 文件的命令. 这不是必需的, 但这样你可以使用清单文
 		  件的一个特定的属性作为扩展的名称 (这个名称可以显示在Designer的某处, 主要是为以后如果Designer
-		  中有几个扩展的时候使用).如果你想这样做,将以下代码片段包含进 <literal>pom.xml</literal>文件: 
+		  中有几个扩展的时候使用).如果你想这样做,将以下代码片段包含进 <literal>pom.xml</literal>文件:
 		 </para>
         <para>
           <programlisting>&lt;build>
@@ -432,32 +432,32 @@
   &lt;/plugins>
 &lt;/build></programlisting>
         </para>
-        <para>扩展的名称是由<literal>ActivitiDesigner-Extension-Name</literal> 属性描述的. 
-		现在剩下唯一要做的就是让 根据<literal>pom.xml</literal>件中的指令来设置项目了. 
+        <para>扩展的名称是由<literal>ActivitiDesigner-Extension-Name</literal> 属性描述的.
+		现在剩下唯一要做的就是让 根据<literal>pom.xml</literal>件中的指令来设置项目了.
 		所以打开命令窗口,转到Eclipse 工作空间下你的项目的根文件夹.然后执行以下Maven命令:
 		</para>
         <para>
           <programlisting>mvn eclipse:eclipse</programlisting>
         </para>
-        <para>等待构建完成.刷新项目(使用项目上下文菜单(右击),选择<literal>Refresh</literal>). 
+        <para>等待构建完成.刷新项目(使用项目上下文菜单(右击),选择<literal>Refresh</literal>).
 		此时,<literal>src/main/java</literal>和<literal>src/main/resources</literal> 文件夹应该
 		已经是Eclipse 项目下的资源文件夹了.
 		</para>
         <note>
-          <para>当然你也可以使用 <ulink url="http://www.eclipse.org/m2e">m2eclipse</ulink> 
+          <para>当然你也可以使用 <ulink url="http://www.eclipse.org/m2e">m2eclipse</ulink>
 		  插件，只要从项目的上下文菜单（右击）就能启用Maven 依赖管理。然后在项目上下文菜
-		  单中选择<literal>Maven</literal> > <literal>Update project configuration</literal> 
+		  单中选择<literal>Maven</literal> > <literal>Update project configuration</literal>
 		  这也能设置源文件夹. </para>
         </note>
         <para>设置就这样.现在就可以开始创建Activiti Designer的定制了!</para>
       </section>
       <section id="eclipseDesignerApplyingExtension">
         <title>将扩展应用到Activiti Designer</title>
-        <para>你可能想要知道怎样才能将扩展添加到Activiti Designer 以使定制被应用.这就是操作步骤: 
+        <para>你可能想要知道怎样才能将扩展添加到Activiti Designer 以使定制被应用.这就是操作步骤:
 		<itemizedlist>
             <listitem>
               <para>一旦创建完扩展的JAR（例如,利用Maven执行项目内的mvn的安装程序进行构建）,需要
-			  将其放在计算机中安装Activiti Designer 的地方; 
+			  将其放在计算机中安装Activiti Designer 的地方;
 			  </para>
             </listitem>
             <listitem>
@@ -497,8 +497,8 @@
               </para>
             </listitem>
             <listitem>
-              <para>选择<literal>Activiti Designer Extensions</literal> 分组,点击<literal>Add JARs...</literal> 
-			  按钮. 导航到存储扩展的文件夹，选择你想要添加的扩展文件.完成后,这个扩展就作为 
+              <para>选择<literal>Activiti Designer Extensions</literal> 分组,点击<literal>Add JARs...</literal>
+			  按钮. 导航到存储扩展的文件夹，选择你想要添加的扩展文件.完成后,这个扩展就作为
 			  <literal>Activiti Designer Extensions</literal> 分组的一部分显示在preference 窗口内,如下显示.</para>
               <para>
                 <mediaobject>
@@ -510,7 +510,7 @@
               </para>
             </listitem>
             <listitem>
-              <para>点击<literal>OK</literal> 按钮并关闭preferences对话框.<literal>Activiti Designer Extensions</literal> 
+              <para>点击<literal>OK</literal> 按钮并关闭preferences对话框.<literal>Activiti Designer Extensions</literal>
 			  分组自动添加到了你新创建的Activiti项目.在Navigator 或Package Explorer 视图中你可以看
 			  到此用户类库作为一项出现在项目树中。如果工作空间内已经存在Activiti 的项目了，你也会
 			  看到新扩展显示在该分组内.例子如下所示.
@@ -533,13 +533,13 @@
         <para>
           根据你的项目的设置,现在你就能够很容易在画板中添加形状了.每个要添加的形状都是由JAR文件中
 		  的类来描述的.注意这些类并不是Activiti 引擎在运行时使用的类.在扩展内描述的那些属性可以设
-		  置给每个Activiti Designer 内的形状, you can also define the runtime characteristics that should be used by the engine 
-          when a process instance reaches the node in the process. The runtime characteristics can use any 
-          of the options that Activiti supports for regular <literal>ServiceTask</literal>s. 
-          See <link linkend="eclipseDesignerConfiguringRuntime">这一节</link> for more 
+		  置给每个Activiti Designer 内的形状, you can also define the runtime characteristics that should be used by the engine
+          when a process instance reaches the node in the process. The runtime characteristics can use any
+          of the options that Activiti supports for regular <literal>ServiceTask</literal>s.
+          See <link linkend="eclipseDesignerConfiguringRuntime">这一节</link> for more
           details.
         </para>
-        <para>一个形状的类就是添加了一些注解的普通Java 类.这个类必须实现 <literal>CustomServiceTask</literal> 
+        <para>一个形状的类就是添加了一些注解的普通Java 类.这个类必须实现 <literal>CustomServiceTask</literal>
 		接口,但你不必自己实现这个接口.只需继承 <literal>AbstractCustomServiceTask</literal> 这个基类
 		（目前,必须是直接继承这个类,中间不要有抽象类）.在这个类的Javadoc中你可以找到关于它所提供的
 		默认设置以及何时需要重写它所实现了的方法的说明.重写让你做一些诸如为画板和画布上的形状提供
@@ -556,7 +556,7 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
 }</programlisting>
         </para>
         <para>需要实现 <literal>getName()</literal> 方法来决定画板中节点使用的名称.也可以将节点放进
-		一个属于它们自己的抽屉,并为其提供一个图标.重写 <literal>AbstractCustomServiceTask</literal>. 
+		一个属于它们自己的抽屉,并为其提供一个图标.重写 <literal>AbstractCustomServiceTask</literal>.
 		中恰当的方法.如果你想要提供一个图标,确保图标在JAR中<literal>src/main/resources</literal> 包
 		内,大小为16x16 像素,格式为JPEG 或PNG.提供的路径是相对于那个文件夹的.</para>
         <para>给图形添加属性是通过向此类添加成员变量,并使用 <literal>@Property</literal> 注解对其
@@ -598,7 +598,7 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.designer.integration.servicetask.AbstractCustomServiceTask #contributeToPaletteDrawer()
    */
   @Override
@@ -613,7 +613,7 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.activiti.designer.integration.servicetask.AbstractCustomServiceTask #getSmallIconPath()
    */
   @Override
@@ -652,32 +652,32 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
             </imageobject>
           </mediaobject>
         </para>
-        
+
       	<section id="eclipseDesignerConfiguringRuntime">
       		<title>配置运行时执行自定义服务任务</title>
-      		
+
       		<para>
       			你的字段设置及扩展适用于设计者,用户在建模过程中可以配置服务任务的属性,在大多数情况下,你会在Activiti的执行进程时想要使用用户配置的属性.要做到这一点,当进程达到<literal>CustomServiceTask</literal>时,必须指示出Activiti的其中的一类实例.
       		</para>
-      		
+
       		<para>
       			有一个特殊的注解来指定运行时<literal>CustomServiceTask</literal>的特点，<literal>@Runtime</literal>标注.如例:
       		</para>
-      		
+
       		<programlisting>@Runtime(javaDelegateClass = "org.acme.runtime.AcmeMoneyJavaDelegation")</programlisting>
 
           <para>
 			你的 <literal>CustomServiceTask</literal> 将使一个正常的<literal>ServiceTask</literal>在BPMN建模过程中输出。 Activiti的使<link linkend="bpmnJavaServiceTask">several ways</link>来定义<literal>ServiceTask</literal>运行时的特征。因此，<literal>@Runtime</literal>标注可以采取三个属性之一，它可直接匹配Activiti的选项，如下：
-			
+
             <itemizedlist>
               <listitem>
                 <para>
-                  <literal>javaDelegateClass</literal>映射到<literal>activiti:class</literal> 在BPMN输出。实现<literal>JavaDelegate</literal>一类的完全限定类名. 
+                  <literal>javaDelegateClass</literal>映射到<literal>activiti:class</literal> 在BPMN输出。实现<literal>JavaDelegate</literal>一类的完全限定类名.
                 </para>
               </listitem>
               <listitem>
                 <para>
-                  <literal>expression</literal>映射到<literal>activiti:expression</literal> 在BPMN输出. 指定表达式的方法被执行,就如Spring Bean的方法. 使用此选项时,您应该您应该<emphasis>not</emphasis> 指定任何 <literal>@Property</literal> 
+                  <literal>expression</literal>映射到<literal>activiti:expression</literal> 在BPMN输出. 指定表达式的方法被执行,就如Spring Bean的方法. 使用此选项时,您应该您应该<emphasis>not</emphasis> 指定任何 <literal>@Property</literal>
                   注解字段.欲知详情, 请参下文.
                 </para>
               </listitem>
@@ -688,30 +688,30 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
               </listitem>
             </itemizedlist>
           </para>
-          	
+
           	<para>
           		如果你的成员提供Activiti的注入运行时类,用户的属性值将被注入进去.名称应与成员在<literal>CustomServiceTask</literal>里的名称相匹配,欲了解更多信息,请参考用户手册中的<link linkend="serviceTaskFieldInjection">this part</link>.请注意,因为5.11.0版本的设计者可以用<literal>Expression</literal>界面给动态字段值.这意味着,此设计属性的价值必须包含一个表达式,这个表达式将在实施<literal>JavaDelegate</literal> 类别时被注入<literal>Expression</literal>
-          		
+
           	</para>
 
             <note>
               <para>
                 你可在你<literal>CustomServiceTask</literal>的成员中使用<literal>@Property</literal> 注解,如果你使用<literal>@Runtime</literal>'s <literal>expression</literal>属性运行,将无法正常工作.原因是Activiti会试图解决<emphasis>method</emphasis> 而不是一个类别.因此,任何成员打上<literal>@Property</literal> 都会被设计者忽略,如果你使用的<literal>expression</literal>  <literal>@Runtime</literal>标注.设计师不会使它们作为节点的属性窗格中的可编辑字段,在进程的BPMN的属性将不会产生输出.
-              </para>      
+              </para>
             </note>
 
             <note>
               <para>
 				注意运行时类不应该在您的扩展JAR,因为它依赖于Activiti库.Activiti需要在运行时能够找到它,所以它需要在Activiti引擎的类路径.
-                
+
               </para>
             </note>
 
             <para>
-              
+
 				设计师的源代码树中包含不同选择的项目配置<literal>@Runtime</literal>的例子。看一看money-tasks项目的一些出发点，它涉及到以钱为代表的项目类别的例子.
             </para>
-          
+
         </section>
       </section>
       <section id="eclipseDesignerPropertyTypes">
@@ -781,7 +781,7 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
         </section>
         <section>
           <title>PropertyType.BOOLEAN_CHOICE</title>
-          <para>创建单个复选框来控制布尔逻辑或切换选择.注意你可以指定<literal>Property</literal> 
+          <para>创建单个复选框来控制布尔逻辑或切换选择.注意你可以指定<literal>Property</literal>
 		  注解的 <literal>required</literal> 属性,但它不会被计算,因为那会使用户不得选择,不管
 		  是不是选中了选择框.图形存储的值是java.lang.Boolean.toString(boolean) ,其结果是"true"
 		  或"false".</para>
@@ -798,9 +798,9 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
           <para>如下所示,创建一组单选按钮.选择任一单选按钮与选择任一其它单选按钮都是排斥的
 		  （即,只允许选择一个）.可以是必填项,其验证信息以提示框的方式显示.通过将这一组的背
 		  景颜色改为淡红色来显示验证失败.</para>
-          <para>这个属性类型要求注解的类的成员还要有<literal>@PropertyItems</literal> 
+          <para>这个属性类型要求注解的类的成员还要有<literal>@PropertyItems</literal>
 		  注解（例子,如下）.利用这个额外的注解,你可以指定以字符串数组来提供的项目列表.通过
-		  为每个项目添加两个数组项来制定这些项目;第一个是要显示的标题;第二个是要存储的值. 
+		  为每个项目添加两个数组项来制定这些项目;第一个是要显示的标题;第二个是要存储的值.
 		  </para>
           <para>
             <programlisting>@Property(type = PropertyType.RADIO_CHOICE, displayName = "Withdrawl limit", required = true)
@@ -829,9 +829,9 @@ private String withdrawlLimit;</programlisting>
           <para>如下所示,创建带有固定选项的下拉列表框.可以是必填项,其验证信息以提示框的方式显示.
 		  通过将下拉列表框的背景颜色改为淡红色来显示验证失败.
 		  </para>
-          <para>这个属性类型要求被注解的类的成员还要有 <literal>@PropertyItems</literal> 
+          <para>这个属性类型要求被注解的类的成员还要有 <literal>@PropertyItems</literal>
 		  注解（例子,如下）.利用这个额外的注解,你可以指定以字符串数组来提供的项目列表.通过
-		  为每个项目添加两个数组项来制定这些项目;第一个是要显示的标题;第二个是要存储的值. 
+		  为每个项目添加两个数组项来制定这些项目;第一个是要显示的标题;第二个是要存储的值.
 		  </para>
           <para>
             <programlisting>@Property(type = PropertyType.COMBOBOX_CHOICE, displayName = "Account type", required = true)
@@ -863,7 +863,7 @@ private String accountType;</programlisting>
 		  （注意,使用的控件自动设置为选中系统日期，所以该值很少为空.通过将此控件的
 		  背景颜色改为淡红色来显示验证失败.
 		  </para>
-          <para>这个属性类型要求注解的类成员还要有<literal>@DatePickerProperty</literal> 
+          <para>这个属性类型要求注解的类成员还要有<literal>@DatePickerProperty</literal>
 		 注解（示例，见下文）.利用这个额外的注解,你可以指定图形中用于存储日期时间的模式,
 		 以及你想要显示的日期选择器的类型.这两个属性都是可选的,并且如果不指定它们都会使
 		 用默认值（它们是 <literal>DatePickerProperty</literal> 注解中的静态变量).
@@ -891,11 +891,11 @@ private String expiryDate;</programlisting>
           <para>如下所示,创建数据表格控件.数据表格允许用户输入任意多行数据,并为每一行的一
 		  组固定列输入值（每个行和列交叉处称为单元格）.由用户来决定对行的添加、删除.
 		  </para>
-          <para>这个属性类型要求注解的类成员还要有 <literal>@DataGridProperty</literal> 
+          <para>这个属性类型要求注解的类成员还要有 <literal>@DataGridProperty</literal>
 		  注解（示例,见下文）.利用这个附加注解,可以指定一些数据网格所特有的属性.需要使用
 		  <literal>itemClass</literal> 属性引用一个类来决定哪些列要加入到表格. Activiti
             Designer 希望成员变量是List类型.习惯上,可以将 <literal>itemClass</literal>
-			属性表示的类作为泛型类型来使用.例如,如果你要在表格中编辑一个购物单,你会在 
+			属性表示的类作为泛型类型来使用.例如,如果你要在表格中编辑一个购物单,你会在
 			<literal>GroceryListItem</literal> 类上定义表格的列.在你的
               <literal>CustomServiceTask</literal>内,会想要它是像这样:</para>
           <para>
@@ -917,7 +917,7 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
 		  被校验.如果校验失败，数据表格中特定单元格的文本控件的背景颜色会变为浅红.
 		  </para>
           <para>默认,该组件允许用户添加行,但不允许决定这些行的顺序.如果想要对此允许,必须将
-              <literal>orderable</literal> 属性设置为true ，这就能让每行末尾的按钮在表格内上下移动. 
+              <literal>orderable</literal> 属性设置为true ，这就能让每行末尾的按钮在表格内上下移动.
 			  <note>
               <para>此刻,这个属性类型还没被正确注入在运行时的类中.</para>
 			  </note>
@@ -933,13 +933,13 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
       </section>
       <section>
         <title>禁用画板中默认形状</title>
-        <para>这个定制需要在扩展中包含一个实现了 <literal>DefaultPaletteCustomizer</literal>接口的类. 
+        <para>这个定制需要在扩展中包含一个实现了 <literal>DefaultPaletteCustomizer</literal>接口的类.
 		  不要直接实现这个接口,需要创建 <literal>AbstractDefaultPaletteCustomizer</literal>
           这个基类的子类.目前,这个类没提供任何功能,但<literal>DefaultPaletteCustomizer</literal>
 		  接口今后的版本会提供更多的能力让这个基类拥有一些合理的默认行为,所以最好继承,这样你的
 		  扩展会兼容将来的发布. </para>
         <para>继承 <literal>AbstractDefaultPaletteCustomizer</literal> 类需要你实现方法
-		<literal>disablePaletteEntries()</literal>, 此方法必须返回一个 <literal>PaletteEntry</literal> 
+		<literal>disablePaletteEntries()</literal>, 此方法必须返回一个 <literal>PaletteEntry</literal>
 		的列表.对于每个默认的形状,通过将它对应的 <literal>PaletteEntry</literal> 值添加到你的列表中
 		可以将其禁掉.注意如果你移除了默认集合中的形状,抽屉内没有剩余的形状了,那么那个抽屉整个就会
 		从画板中被移除.如果你希望禁掉所有默认形状,只需将<literal>PaletteEntry.ALL</literal> 添加到你
@@ -1005,25 +1005,32 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
       <para>除了定制画板,你还可以给Activiti Designer创建能执行校验、将来自图形的信息保存到
 	  Eclipse工作空间内的自定义资源的扩展.对此有内置扩展点,本节说明如何使用这些扩展点.
 	  </para>
+        <para>
+        	<note>
+        		<para>
+					最近重新使用了ExportMarshaller。我们仍然在开发校验相关的功能。
+					下面的文档介绍的是老方案，
+					一旦新功能完成，就会更新。
+        		</para>
+        	</note>
+        </para>
       <para>Activiti Designer允许编写校验图形的扩展.默认工具中已经存在BPMN 构造的校验了,但
 	  如果你想要对更多项进行校验,比如建模约定或 <literal>CustomServiceTask</literal>属性中
 	  的值,这时你就可以添加自己的校验了.这样的扩展被称为<literal>Process Validators</literal>
 	  (流程校验器).
 	  </para>
-      <para>你也可以让Activiti Designer在保存图形时公布一些额外的格式.这样的扩展被称为
+      <para>你也可以让Activiti Designer在保存图形时公布一些额外的格式。这样的扩展被称为
 	  <literal>Export Marshallers</literal>(输出装配器),每次用户保存时都会由Activiti Designer
-	  自动调用.通过在Eclipse 设置对话框中对保存格式进行设置来启用或禁用这一个行为.
+	  自动调用。通过在Eclipse 设置对话框来启用或禁用这一个行为，这会对扩展进行检测。
+	  Designer会确保在保存图片时，根据用户的配置来调用<literal>ExportMarshaller</literal>。
 	  </para>
-      <para>你可以将这两种扩展与BPMN 2.0的校验、BPMN 2.0的输出以及Activiti Designer 默认
-	  在保存时保存的流程图片进行比较.事实上,这些功能使用了相同的扩展特性,你可以将其用
-	  于你自己的格式的保存中.</para>
-      <para>经常, 会想将<literal>ProcessValidator</literal>和<literal>ExportMarshaller</literal>
+      <para>通常, 会想将<literal>ProcessValidator</literal>和<literal>ExportMarshaller</literal>
 	    进行联合.假如你有几个<literal>CustomServiceTask</literal>在用,其属性你想要在生
-	    成的流程中使用.然而,在流程产生出来之前,你想首先校验其中一些值.结合<literal>ProcessValidator</literal> 
+	    成的流程中使用.然而,在流程产生出来之前,你想首先校验其中一些值.结合<literal>ProcessValidator</literal>
 		和 <literal>ExportMarshaller</literal>是完成这的最好方法，Activiti Designer 能够
 		将你的扩展无缝隙地插入到这一工具内.
 	  </para>
-      <para>要创建 <literal>ProcessValidator</literal>和 <literal>ExportMarshaller</literal>, 
+      <para>要创建 <literal>ProcessValidator</literal>和 <literal>ExportMarshaller</literal>,
 	    需要创建与扩展画板所不同的扩展。原因很简单：在你的代码中，需要访问更多由集成类库提
 		供的API.特别是,你会使用Eclipse本身中的类.所以要开始,必须先创建一个Eclipse插件（利用
 		Eclipse对PDE的支持来完成）,然后将它打包在一个自定义的Eclipse产品或特性中.解释
@@ -1032,18 +1039,23 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
 	  </para>
       <para>你的模块必须依赖以下类库:</para>
       <para>
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="images/designer.export.dependencies.png"/>
-          </imageobject>
-        </mediaobject>
+        <itemizedlist>
+        	<listitem>org.eclipse.core.runtime</listitem>
+        	<listitem>org.eclipse.core.resources</listitem>
+        	<listitem>org.activiti.designer.eclipse</listitem>
+        	<listitem>org.activiti.designer.libs</listitem>
+        	<listitem>org.activiti.designer.util</listitem>
+        </itemizedlist>
       </para>
-      <para><literal>ProcessValidator</literal>和 <literal>ExportMarshaller</literal>都是通过
-	    继承基础类来创建的.这些基础类从其超类 <literal>AbstractDiagramWorker</literal> 那里继
+      <para>
+	    另外，Designer中也可以使用org.apache.commons.lang，你可以根据需要在自己的扩展中使用。
+      </para>
+      <para><literal>ProcessValidator</literal>和<literal>ExportMarshaller</literal>都是通过
+	    继承基础类来创建的.这些基础类从其超类 <literal>AbstractDiagramWorker</literal>那里继
 		承了一些很有用的方法.利用这些方法可以创建显示在Eclipse中problems视图内帮助用户找出问
-		题或要点的消息、警告以及错误标记.也可以利用<literal>AbstractDiagramWorker</literal>
-		中的这些方法通过<literal>Resources</literal>和<literal>InputStreams</literal> 访问
-		图形的内容.
+		题或要点的消息、警告以及错误标记。也可以通过<literal>Resources</literal>和<literal>InputStreams</literal>
+		获得图形的内容。这些信息保存在<literal>DiagramWorkerContext</literal>，
+		由<literal>AbstractDiagramWorker</literal>提供。
 		</para>
       <para>把调用<literal>clearMarkers()</literal>作为在<literal>ProcessValidator</literal>
 	    或<literal>ExportMarshaller</literal>内的第一件要做的事可能会是个好主意;这将清理掉所
@@ -1051,16 +1063,21 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
 		标记）.例如  :</para>
       <para>
         <programlisting>// Clear markers for this diagram first
-clearMarkers(getResource(diagram.eResource().getURI()));</programlisting>
+clearMarkersForDiagram();</programlisting>
       </para>
-      <para>你还应该利用进度监控将进度情况报告给用户,因为校验和/或装配行为都会占用一些时间,
+      <para>你还应该利用进度监控将进度情况报告给用户（在<literal>DiagramWorkerContext</literal>中），因为校验和/或装配行为都会占用一些时间,
 		  在此期间用户被迫等待.报告进度的情况需要一些关于如何使用Eclipse 特性的知识.仔细看
 		  一下 <ulink url="http://www.eclipse.org/articles/Article-Progress-Monitors/article.html">
 		  这篇</ulink> 深入解释了概念和用法的文章.</para>
       <section>
-        <title> 创建ProcessValidator扩展</title>
+        <title>创建ProcessValidator扩展</title>
+        <para>
+        	<note>
+        		<para>需要复审！</para>
+        	</note>
+        </para>
         <para>在<literal>plugin.xml</literal>文件内给
-		<literal>org.activiti.designer.eclipse.extension.validation.ProcessValidator</literal> 
+		<literal>org.activiti.designer.eclipse.extension.validation.ProcessValidator</literal>
 		扩展点创建扩展.需要为此扩展点创建<literal>AbstractProcessValidator</literal>类的子类.
 		</para>
         <para>
@@ -1077,8 +1094,8 @@ clearMarkers(getResource(diagram.eResource().getURI()));</programlisting>
 }</programlisting>
         </para>
         <para>必须实现几个方法.最重要的是,实现<literal>getValidatorId()</literal>,为你的校验器
-		返回一个全局唯一的ID.这让你能在 <literal>ExportMarshaller</literal>内对其进行调用,甚至
-		可以让其他人在他们的<literal>ExportMarshaller</literal>内调用你的校验器.实现 
+		返回一个全局唯一的ID。这让你能在 <literal>ExportMarshaller</literal>内对其进行调用,甚至
+		可以让其他人在他们的<literal>ExportMarshaller</literal>内调用你的校验器.实现
 		<literal>getValidatorName()</literal>，返回校验器的逻辑名.这个名称在对话框中显示给用户.
 		在<literal>getFormatName()</literal>中,可以返回校验器通常校验的图形的类型.
 		</para>
@@ -1103,15 +1120,20 @@ for (final EObject object : contents) {
       <section>
         <title>创建ExportMarshaller扩展</title>
         <para>在<literal>plugin.xml</literal>文件内给
-		<literal>org.activiti.designer.eclipse.extension.export.ExportMarshaller</literal>
+		<literal>org.activiti.designer.eclipse.extension.ExportMarshaller</literal>
 		扩展点创建扩展.需要为此扩展点创建<literal>AbstractExportMarshaller</literal> 类的子类.
 		这个抽象基类提供了在编组到你自己格式时所使用的几个有用的方法，但最重要的是它允许你
 		将资源保存到工作空间内，还允许调用校验器.</para>
+          <para>
+		    在Designer的examples目录下有一个示例。这个例子演示了如何使用基础类中的方法实现基本功能，
+			比如访问图形的<literal>InputStream</literal>，
+			使用<literal>BpmnModel</literal>，并将资源保存到工作区中。
+          </para>
         <para>
           <programlisting>&lt;?eclipse version="3.6"?>
 &lt;plugin>
   &lt;extension
-    point="org.activiti.designer.eclipse.extension.export.ExportMarshaller">
+    point="org.activiti.designer.eclipse.extension.ExportMarshaller">
     &lt;ExportMarshaller
       class="org.acme.export.AcmeExportMarshaller">
     &lt;/ExportMarshaller>
@@ -1121,47 +1143,22 @@ for (final EObject object : contents) {
 }</programlisting>
         </para>
         <para>需要你来实现某些方法，如<literal>getMarshallerName()</literal>及<literal>getFormatName()</literal>.
-		这些方法用来向用户显示选项以及在进度对话框中显示信息,因此要确保你所描述的能表达出你实现的功能. 
+		这些方法用来向用户显示选项以及在进度对话框中显示信息,因此要确保你所描述的能表达出你实现的功能.
 		</para>
-        <para>大部分你的工作是在 <literal>marshallDiagram(Diagram diagram,IProgressMonitor monitor)</literal> 
-		方法内进行的.给你提供了diagram对象,它包含着有关图形（BPMN 的构造）和图示中对象的所有信息.
-		</para>
+        <para>大部分你的工作是在 <literal>doMarshallDiagram()方法</literal>完成的。</para>
         <para>如果想先执行某个校验,可以直接在你的装配器内调用校验器.从校验器接收到一个布尔类型的结果值,
 		这样你就能知道校验是否成功.大多数情况下,如果校验无效是不会对图形进行编组的,但你也可以选择继续,
-		甚至校验失败后,创建一个不同的资源.比如:</para>
-        <para>
-          <programlisting>final boolean validDiagram = invokeValidator(AcmeConstants.ACME_VALIDATOR_ID, diagram, monitor);
-if (!validDiagram) { 
-  addProblemToDiagram(diagram, "Marshalling to " + getFormatName() + " format was skipped because validation of the diagram failed.", null);
-} else {
-  //proceed with marshalling
-}</programlisting>
-        </para>
-        <para>如你所见,如果校验器（这里以常量标识）返回的结果为false,在这里我们选择取消编组.同时也向图
-		形添加了额外的标记,这样用户就能看到文件为什么没被创建的解释了.这并不是必须的,但这似乎对用户是
-		很有用的,并且这展示出了在<literal>ProcessValidator</literal>和<literal>ExportMarshaller</literal>
-		中如何使用这些工具.
+		甚至校验失败后,创建一个不同的资源。
 		</para>
         <para>一旦获得了所有你所需要的数据,就可以调用<literal>saveResource()</literal>方法来创建包含着
 		你的数据的文件了.可以在单个<markup>ExportMarshaller</markup>内多次调用<literal>saveResource()</literal>,
 		所以装配器可用来创建多个输出文件.</para>
-        <para>利用<literal>AbstractDiagramWorker</literal>类中一些的方法可以给输出的资源构造文件名.有几
-		个你已经解析过了的有用的变量,允许你来创建像_&lt;original -filename>__&lt;my- format -name>.xml 的文件名.
-		Javadocs 内有对这些变量的描述,这是一个使用了其中一个变量的例子:
-		</para>
-        <para>
-          <programlisting>private static final String FILENAME_PATTERN = ExportMarshaller.PLACEHOLDER_ORIGINAL_FILENAME + ".acme.axml";
-...
-saveResource(getRelativeURIForDiagram(diagram, FILENAME_PATTERN), bais, this.monitor);</programlisting>
-        </para>
-        <para>这里所发生的是:使用了静态的成员变量来描述文件名模式（这只是最佳方式，你当然可以按照任何
-		你喜欢的方式来指定这个字符串了）,并且模式使用了<literal>ExportMarshaller.PLACEHOLDER_ORIGINAL_FILENAME</literal>
-		常量给原始文件名插入了一个变量.接下来在<literal>marshallDiagram()</literal>方法内,调用了
-		<literal>getRelativeURIForDiagram()</literal>,它会针对任何变量来解析文件名并替换这些变量（译注,
-		这句话的意思是说如果该方法的参数中含有变量,那么会将变量替换为其表示的实际值,而后再做解析,
-		这是很显然的）。给<literal>saveResource()</literal>提供一个到你数据的<literal>InputStream</literal>,
-		该方法会将数据保存到相对路径为此原始图形的资源中.</para>
-        <para>当然，你同样应该利用进度监控将进度情况报告给用户<ulink
+        <para>利用<literal>AbstractDiagramWorker</literal>类中<literal>saveResource()</literal>方法可以给输出的资源构造文件名。
+		有几个你已经解析过了的有用的变量，允许你来创建像_original-filename__my-format-name.xml 的文件名。
+		Javadocs 内有对这些变量的描述，<literal>ExportMarshaller</literal>接口中也做了定义。
+		你也可以使用<literal>resolvePlaceholders()</literal>处理一个string（比如，一个路径），如果你想自己解析占位符。
+		<literal>getURIRelativeToDiagram()</literal>会帮你做这些事情。</para>
+        <para>你应该利用进度监控将进度情况报告给用户<ulink
             url="http://www.eclipse.org/articles/Article-Progress-Monitors/article.html">这篇文章</ulink>描述了如何来完成.</para>
       </section>
     </section>

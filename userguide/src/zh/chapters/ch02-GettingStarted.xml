@@ -149,7 +149,7 @@ org.activiti:activiti-engine:jar:5.12.1
 +- org.apache.commons:commons-email:jar:1.2:compile
 |  +- javax.mail:mail:jar:1.4.1:compile
 |  \- javax.activation:activation:jar:1.1:compile
-+- commons-lang:commons-lang:jar:2.4:compile
++- org.apache.commons:commons-lang3:jar:3.1:compile
 +- org.mybatis:mybatis:jar:3.1.1:compile
 +- org.springframework:spring-beans:jar:3.1.2.RELEASE:compile
 |  \- org.springframework:spring-core:jar:3.1.2.RELEASE:compile

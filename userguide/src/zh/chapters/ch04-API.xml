@@ -404,7 +404,8 @@ taskVariables.put(&quot;managerMotivation&quot;, &quot;We have a tight deadline!
 taskService.complete(task.getId(), taskVariables);
             </programlisting>
 			流程实例会进入到下一个环节。在这里例子中，
-			流程又会进入第一个环节，因为任务没有被通过。
+			下一环节允许员工通过表单调整原始的请假申请。员工可以重新提交请假申请，
+			这会使流程重新进入到第一个任务。
         </para>
     </section>
 
