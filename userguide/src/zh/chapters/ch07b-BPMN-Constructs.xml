@@ -4638,6 +4638,12 @@ public void testExecutionListenerFieldInjection() {
                   <emphasis role="bold">complete</emphasis>：当任务完成，并尚未从运行数据中删除时触发。
                 </para>
               </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="bold">delete</emphasis>：只在任务删除之前发生。
+				  注意在通过completeTask正常完成时，也会执行。
+                </para>
+              </listitem>            
             </itemizedlist>
           </para>
         </listitem>

@@ -9,25 +9,19 @@
     <section>
       <title>安装与认证</title>
 
-      <para>activiti包含了一个activiti引擎的REST API，把activiti-rest.war部署到像Apache Tomcat这样的servlet容器就可以使用。
-	  不过，它也可以使用在其他web应用中，把activiti-rest的依赖都加入classpath，添加servlet，并映射到你的应用中。</para>
-      <para>默认情况下，activiti引擎会连接内存数据库H2。你可以修改WEB-INF/classes目录下的db.properties来修改数据库设置。REST API使用JSON格式
-	  （http://www.json.org），它是基于Restlet（http://www.restlet.org）开发的。</para>
-      <para>默认所有REST资源都需要先使用有效的activiti用户认证后才能使用。会使用Basic HTTP认证，所以你要一直在请求的HTTP头中包含一个
-	  <literal>Authorization: Basic ...==</literal>属性，或在请求url中包含用户名和密码（比如： <literal>http://username:password@localhost...</literal>）。
+      <para>activiti包含了一个activiti引擎的REST API，把activiti-rest.war部署到像Apache Tomcat这样的servlet容器就可以使用。不过，它也可以使用在其他web应用中，把activiti-rest的依赖都加入classpath，添加servlet，并映射到你的应用中。</para>
+      <para>默认情况下，activiti引擎会连接内存数据库H2。你可以修改WEB-INF/classes目录下的db.properties来修改数据库设置。REST API使用JSON格式（http://www.json.org），它是基于Restlet（http://www.restlet.org）开发的。</para>
+      <para>默认所有REST资源都需要先使用有效的activiti用户认证后才能使用。会使用Basic HTTP认证，所以你要一直在请求的HTTP头中包含一个<literal>Authorization: Basic ...==</literal>属性，或在请求url中包含用户名和密码（比如： <literal>http://username:password@localhost...</literal>）。
       </para>
       <para><emphasis role="bold">建议把Basic认证与HTTPS一起使用。</emphasis></para>
-      <para>可以从删除对应资源的认证，或添加额外的授权给一个认证的用户
-	  （比如，把用户加入一个组，让它可以执行URL Y）。
-	  可以使用<literal>org.activiti.rest.filter.RestAuthenticator</literal>的实现，它有两个方法：
+      <para>可以从删除对应资源的认证，或添加额外的授权给一个认证的用户（比如，把用户加入一个组，让它可以执行URL Y）。
+	  可以使用<literal>org.activiti.rest.common.filter.RestAuthenticator</literal>的实现，它有两个方法：
       <itemizedlist>
-        <listitem><para><emphasis><literal>boolean requestRequiresAuthentication(Request request)</literal></emphasis>：在请求认证检查之前调用
-		（通过头部传递合法的账号和密码）。如果方法返回true，这个方法就需要认证才能访问。如果返回false，无论请求是否认证都可以访问。
-		如果返回false，就不会为这个方法调用<literal>isRequestAuthorized</literal>。</para></listitem>
+        <listitem><para><emphasis><literal>boolean requestRequiresAuthentication(Request request)</literal></emphasis>：在请求认证检查之前调用（通过头部传递合法的账号和密码）。如果方法返回true，这个方法就需要认证才能访问。如果返回false，无论请求是否认证都可以访问。如果返回false，就不会为这个方法调用<literal>isRequestAuthorized</literal>。</para></listitem>
         <listitem><para><emphasis><literal>boolean isRequestAuthorized(Request request)</literal></emphasis>：在用户已经通过activiti账号管理认证后，但是再请求实际之前调用。可以用来检查认证用户是否可以访问对应请求。如果返回true，会允许请求执行。如果返回true，请求不会执行，客户端会收到对应的错误。</para></listitem>
       </itemizedlist>
       </para>
-      <para>自定义的RestAuthenticator应该设置到RestletServlet的<literal>org.activiti.rest.application.ActivitiRestServicesApplication</literal>中。
+      <para>自定义的RestAuthenticator应该设置到RestletServlet的<literal>org.activiti.rest.service.application.ActivitiRestServicesApplication</literal>中。
 	  最简单的方法是创建<literal>ActivitiRestServicesApplication</literal>的子类，并在servlet-mapping中设置自定义的类名：</para>
 
       <programlisting>
@@ -65,7 +59,7 @@
           <tbody>
             <row>
               <entry><literal>GET</literal></entry>
-              <entry>获得一个资源或或获得多个资源</entry>
+              <entry>获得一个资源或获得多个资源</entry>
             </row>
             <row>
               <entry><literal>POST</literal></entry>
@@ -289,7 +283,7 @@
 {
   "name" : "variableName",
   "value" : "variableValue",
-  "operator" : "equals",
+  "operation" : "equals",
   "type" : "string"
 }</programlisting>
             <table>
@@ -314,7 +308,7 @@
                     <entry>查询包含的变量值，要包含给定类型的正确格式。</entry>
                   </row>
                   <row>
-                    <entry>operator</entry>
+                    <entry>operation</entry>
                     <entry>是</entry>
                     <entry>查询使用的参数，可以是以下值： <literal>equals, notEquals, equalsIgnoreCase, notEqualsIgnoreCase, lessThan, greaterThan, lessThanOrEquals, greaterThanOrEquals</literal>和<literal>like</literal>。</entry>
                   </row>
@@ -475,7 +469,7 @@
             </table>
 			可以通过自定义JSON格式来支持更多变量类型（无论是简单数值或复杂/内嵌JSON对象）。
 			扩展<literal>org.activiti.rest.api.RestResponseFactory</literal>的<literal>initializeVariableConverters()</literal>方法，
-			你可以添加自定义的<literal>org.activiti.rest.api.engine.variable.RestVariableConverter</literal>类来支持POJO与对应REST数据的相互转换。实际的JSON转换是通过Jackson实现的。
+			你可以添加自定义的<literal>org.activiti.rest.api.service.engine.variable.RestVariableConverter</literal>类来支持POJO与对应REST数据的相互转换。实际的JSON转换是通过Jackson实现的。
         </para>
        </section>
     </section>
@@ -2916,7 +2910,7 @@
     {
         "name" : "myVariable",
         "value" : 1234,
-        "operator" : "equals",
+        "operation" : "equals",
         "type" : "long"
     },
     ...
@@ -4144,7 +4138,7 @@
     {
         "name" : "myVariable",
         "value" : 1234,
-        "operator" : "equals",
+        "operation" : "equals",
         "type" : "long"
     },
     ...
@@ -4154,7 +4148,7 @@
     {
         "name" : "processVariable",
         "value" : "some string",
-        "operator" : "equals",
+        "operation" : "equals",
         "type" : "string"
     },
     ...
@@ -4882,10 +4876,22 @@
                     <entry>只返回分配给指定用户的任务。</entry>
                   </row>
                   <row>
+                    <entry>assigneeLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>只返回负责人与指定值匹配的任务。</entry>
+                  </row>
+                  <row>
                     <entry>owner</entry>
                     <entry>否</entry>
                     <entry>String</entry>
-                    <entry>只返回用户代理人为指定用户的任务。</entry>
+                    <entry>只返回原拥有人为指定用户的任务。</entry>
+                  </row>
+                  <row>
+                    <entry>ownerLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>只返回原拥有人与指定值匹配的任务。</entry>
                   </row>
                   <row>
                     <entry>unassigned</entry>
@@ -4942,6 +4948,36 @@
                     <entry>只返回作为指定key的流程实例的一部分的任务。</entry>
                   </row>
                   <row>
+                    <entry>processInstanceBusinessKeyLike</entry>
+                    <entry>否</entry>
+                    <entry>String</entry>
+                    <entry>只返回业务key与指定值匹配的流程实例的一部分的任务。</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKey</entry>
+                    <entry>否</entry>
+                    <entry>String</entry>
+                    <entry>只返回作为指定流程定义key的流程实例的一部分的任务。</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKeyLike</entry>
+                    <entry>否</entry>
+                    <entry>String</entry>
+                    <entry>只返回指定流程定义key与指定值匹配的流程实例的一部分的任务。</entry>
+                  </row>
+                   <row>
+                    <entry>processDefinitionName</entry>
+                    <entry>否</entry>
+                    <entry>String</entry>
+                    <entry>只返回作为指定流程定义名称的流程实例的一部分的任务。</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionNameLike</entry>
+                    <entry>否</entry>
+                    <entry>String</entry>
+                    <entry>只返回流程定义名称与指定值匹配的流程实例的一部分的任务。</entry>
+                  </row>
+                  <row>
                     <entry>executionId</entry>
                     <entry>否</entry>
                     <entry>String</entry>
@@ -4982,6 +5018,12 @@
                     <entry>否</entry>
                     <entry>ISO Date</entry>
                     <entry>只返回持续时间在指定时间之后的任务。</entry>
+                  </row>
+                  <row>
+                    <entry>withoutDueDate</entry>
+                    <entry>否</entry>
+                    <entry>boolean</entry>
+                    <entry>只返回没有设置持续时间的任务。如果值为<literal>false</literal>就会忽略这个属性。</entry>
                   </row>
                   <row>
                     <entry>excludeSubTasks</entry>
@@ -5088,7 +5130,7 @@
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ],
@@ -7482,7 +7524,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ]
@@ -7752,6 +7794,12 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>历史任务实例的流程定义key。</entry>
                 </row>
                 <row>
+                  <entry>processDefinitionKeyLike</entry>
+                  <entry>否</entry>
+                  <entry>String</entry>
+                  <entry>历史任务实例的流程定义key与指定值匹配。</entry>
+                </row>
+                <row>
                   <entry>processDefinitionId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
@@ -7763,6 +7811,12 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>String</entry>
                   <entry>历史任务实例的流程定义名称。</entry>
                 </row>
+                 <row>
+                  <entry>processDefinitionNameLike</entry>
+                  <entry>否</entry>
+                  <entry>String</entry>
+                  <entry>历史任务实例的流程定义名称与指定值匹配。</entry>
+                </row>
                 <row>
                   <entry>processBusinessKey</entry>
                   <entry>否</entry>
@@ -7770,10 +7824,22 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>历史任务实例的流程实例businessKey。</entry>
                 </row>
                 <row>
+                  <entry>processBusinessKeyLike</entry>
+                  <entry>否</entry>
+                  <entry>String</entry>
+                  <entry>历史任务实例的流程实例业务key与指定值匹配。</entry>
+                </row>
+                <row>
                   <entry>executionId</entry>
                   <entry>否</entry>
                   <entry>String</entry>
                   <entry>历史任务实例的分支id。</entry>
+                </row>
+                <row>
+                  <entry>taskDefinitionKey</entry>
+                  <entry>否</entry>
+                  <entry>String</entry>
+                  <entry>流程的任务部分的流程定义key。</entry>
                 </row>
                 <row>
                   <entry>taskName</entry>
@@ -7890,10 +7956,46 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>只返回指定持续时间之前的历史任务实例。</entry>
                 </row>
                 <row>
+                  <entry>withoutDueDate</entry>
+                  <entry>否</entry>
+                  <entry>Boolean</entry>
+                  <entry>只返回没有设置持续时间的历史任务实例。当设置为<literal>false</literal>时会忽略这个参数。</entry>
+                </row>
+                <row>
+                  <entry>completedOn</entry>
+                  <entry>否</entry>
+                  <entry>Date</entry>
+                  <entry>只返回在指定时间完成的历史任务实例。</entry>
+                </row>
+                <row>
+                  <entry>completedAfter</entry>
+                  <entry>否</entry>
+                  <entry>Date</entry>
+                  <entry>只返回在指定时间之后完成的历史任务实例。</entry>
+                </row>
+                <row>
+                  <entry>completedBefore</entry>
+                  <entry>否</entry>
+                  <entry>Date</entry>
+                  <entry>只返回在指定时间之前完成的历史任务实例。</entry>
+                </row>
+                <row>
                   <entry>taskCreatedOn</entry>
                   <entry>否</entry>
                   <entry>Date</entry>
                   <entry>只返回指定创建时间的历史任务实例。</entry>
+                </row>
+                <row>
+                  <entry>taskCreatedBefore</entry>
+                  <entry>否</entry>
+                  <entry>Date</entry>
+                  <entry>只返回在指定时间前创建的历史任务实例。</entry>
+                </row>
+                <row>
+                  <entry>taskCreatedAfter</entry>
+                  <entry>否</entry>
+                  <entry>Date</entry>
+                  <entry>只返回在指定时间后创建的历史任务实例。</entry>
                 </row>
                 <row>
                   <entry>includeTaskLocalVariables</entry>
@@ -8005,7 +8107,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ]
@@ -8517,7 +8619,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ]
@@ -9322,8 +9424,8 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <programlisting>
 {
    "next.dbid":"101",
-   "schema.history":"create(5.13)",
-   "schema.version":"5.13"
+   "schema.history":"create(5.14)",
+   "schema.version":"5.14"
 }</programlisting>
           <table>
               <title>获得引擎属性 - 响应码</title>
@@ -9357,7 +9459,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <programlisting>
 {
    "name":"default",
-   "version":"5.13",
+   "version":"5.14",
    "resourceUrl":"file://activiti/activiti.cfg.xml",
    "exception":null
 }</programlisting>
@@ -9962,7 +10064,8 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 {
   "firstName":"Tijs",
   "lastName":"Barrez",
-  "email":"no-reply@alfresco.org"
+  "email":"no-reply@alfresco.org",
+  "password":"pass123"
 }</programlisting>
       所有请求值都是可选的。比如，你可以在请求体JSON对象中只包含'firstName'属性，只更新用户的firstName，其他值都不受影响。当包含的属性设置为null，用户的属性会被更新为null，比如：<literal>{"firstName" : null}</literal>会清空用户的firstName。
        </para>
@@ -10010,7 +10113,8 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   "id":"tijs",
   "firstName":"Tijs",
   "lastName":"Barrez",
-  "email":"no-reply@alfresco.org"
+  "email":"no-reply@alfresco.org",
+  "password":"pass123"
 }</programlisting>
        </para>
         <para>
@@ -11010,7 +11114,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
   <section>
 
     <title>传统REST - 通用方法</title>
-    <para><emphasis role="bold">下面的章节中包含了传统的REST-api，它们在5.13版本中已经废弃了。REST url不会在未来删除，但是也不会维护了。未来的所有改进都会放到新REST API中。</emphasis></para>
+    <para><emphasis role="bold">下面的章节中包含了传统的REST-api，它们在5.14版本中已经废弃了。REST url不会在未来删除，但是也不会维护了。未来的所有改进都会放到新REST API中。</emphasis></para>
     <para>
 	  Activiti包含了一套引擎的REST API，可以把activiti-rest.war部署到像Apache Tomcat一样的Servlet容器里。
 	  默认Activiti引擎会连接一个单独运行的h2数据库。你可以修改WEB-INF/classes目录下的db.properties文件来修改数据库配置。

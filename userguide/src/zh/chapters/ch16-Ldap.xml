@@ -6,13 +6,13 @@
 
     <para>
 		企业通常已经在LDAP系统各种保存了用户和群组信息。
-		自从5.13版本开始，Activiti提供了一种解决方案，
+		自从5.14版本开始，Activiti提供了一种解决方案，
 		通过简单的配置就可以告知activiti如何连接LDAP。
     </para>
 
     <para>
-		在Activiti 5.13之前，Activiti就已经可以集成LDAP了。
-		然后，5.13的配置简单了很多。
+		在Activiti 5.14之前，Activiti就已经可以集成LDAP了。
+		然后，5.14的配置简单了很多。
 		不过，配置LDAP的“老”办法依然有效。更确切的说，
 		简化的配置其实是基于“老”方法的封装。
     </para>
@@ -180,6 +180,18 @@
                             <entry>String</entry>
                             <entry></entry>
                         </row>
+                         <row>
+                            <entry>userBaseDn</entry>
+                            <entry>搜索用户基于的'distinguished name' (DN)。如果没有提供，会使用baseDn（参考上面）</entry>
+                            <entry>String</entry>
+                            <entry></entry>
+                        </row> 
+                        <row>
+                            <entry>groupBaseDn</entry>
+                            <entry>搜索群组基于的'distinguished name' (DN)。如果没有提供，会使用baseDn（参考上面）</entry>
+                            <entry>String</entry>
+                            <entry></entry>
+                        </row>     
                          <row>
                             <entry>searchTimeLimit</entry>
                             <entry>搜索LDAP的超时时间，单位毫秒。</entry>
@@ -356,6 +368,12 @@
 
             </table>
         </para>
+        
+        <para>
+			注意，在使用活动目录（AD）时：Activiti论坛中的人们反映对于活动目录（AD），
+			'InitialDirContext'需要设置为Context.REFERRAL。可以通过上面描述的customConnectionParameters传递。
+        </para>
+        
 
     </section>
 

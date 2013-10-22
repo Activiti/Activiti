@@ -544,4 +544,43 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     </para>
   </section>
 
+    <section id="MDC">
+
+  <title>映射诊断上下文</title>
+
+    <para>
+		在5.13中，activiti支持slf4j的MDC功能。
+		如下的基础信息会传递到日志中记录：
+      <itemizedlist>
+        <listitem>
+            <para>
+            流程定义Id标记为mdcProcessDefinitionID
+            </para>
+        </listitem>
+
+        <listitem>
+        <para>
+            流程实例Id标记为mdcProcessInstanceID
+            </para>
+        </listitem>
+
+        <listitem>
+        <para>
+            分支Id标记为mdcexecutionId
+        </para>
+        </listitem>
+      </itemizedlist>
+
+
+	  默认不会记录这些信息。可以配置日志使用期望的格式来显示它们，扩展通常的日志信息。
+	  比如，下面的log4j配置定义会让日志显示上面提及的信息：
+     <programlisting>
+ log4j.appender.consoleAppender.layout.ConversionPattern =ProcessDefinitionId=%X{mdcProcessDefinitionID}
+executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdcBusinessKey=%X{mdcBusinessKey} %m%n"
+      </programlisting>
+	  当系统进行高风险任务，日志必须严格检查时，这个功能就非常有用，比如要使用日志分析的情况。
+
+    </para>
+  </section>
+
 </chapter>
