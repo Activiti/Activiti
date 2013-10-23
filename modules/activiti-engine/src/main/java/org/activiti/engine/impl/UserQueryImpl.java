@@ -33,6 +33,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   protected String firstNameLike;
   protected String lastName;
   protected String lastNameLike;
+  protected String fullNameLike;
   protected String email;
   protected String emailLike;
   protected String groupId;
@@ -86,6 +87,14 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
       throw new ActivitiIllegalArgumentException("Provided lastNameLike is null");
     }
     this.lastNameLike = lastNameLike;
+    return this;
+  }
+  
+  public UserQuery userFullNameLike(String fullNameLike) {
+    if (fullNameLike == null) {
+      throw new ActivitiIllegalArgumentException("Provided full name is null");
+    }
+    this.fullNameLike = fullNameLike;
     return this;
   }
   
@@ -182,4 +191,8 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   public String getGroupId() {
     return groupId;
   }
+  public String getFullNameLike() {
+    return fullNameLike;
+  }
+  
 }

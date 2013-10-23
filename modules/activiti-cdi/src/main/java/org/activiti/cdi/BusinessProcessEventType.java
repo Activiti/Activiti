@@ -13,6 +13,7 @@
 package org.activiti.cdi;
 
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.TaskListener;
 
 /**
  * The type of a business process event. Indicates what is happening/has
@@ -30,6 +31,15 @@ public interface BusinessProcessEventType {
   
   /** Signifies that an activity is being left / was left **/
   public static final BusinessProcessEventType END_ACTIVITY = new DefaultBusinessProcessEventType(ExecutionListener.EVENTNAME_END);
+  
+  /** Signifies that a task has been created **/
+  public static final BusinessProcessEventType CREATE_TASK = new DefaultBusinessProcessEventType(TaskListener.EVENTNAME_CREATE);
+  
+  /** Signifies that a task has been created **/
+  public static final BusinessProcessEventType ASSIGN_TASK = new DefaultBusinessProcessEventType(TaskListener.EVENTNAME_ASSIGNMENT);
+  
+  /** Signifies that a task has been created **/
+  public static final BusinessProcessEventType COMPLETE_TASK = new DefaultBusinessProcessEventType(TaskListener.EVENTNAME_COMPLETE);
 
   static class DefaultBusinessProcessEventType implements BusinessProcessEventType {
 

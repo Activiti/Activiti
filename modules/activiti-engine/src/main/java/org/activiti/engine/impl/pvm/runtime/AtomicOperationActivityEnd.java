@@ -50,7 +50,7 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
       execution.setActivity(parentActivity);
       execution.performOperation(ACTIVITY_END);
       
-    } else if (execution.isProcessInstance()) {
+    } else if (execution.isProcessInstanceType()) {
       execution.performOperation(PROCESS_END);
     
     } else if (execution.isScope()) {

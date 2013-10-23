@@ -543,5 +543,44 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
 &lt;/dependency&gt;</programlisting>
     </para>
   </section>
+  
+    <section id="MDC">
+  
+  <title>Mapped Diagnostic Contexts</title>
+    
+    <para> 
+        As of version 5.13, activiti supports Mapped Diagnostic Contexts feature of sl4j.
+        These basic information are passed to the underlying logger along with what is going to be logged:
+      <itemizedlist>
+        <listitem>
+            <para>
+            processDefinition Id as mdcProcessDefinitionID
+            </para>        
+        </listitem>
+          
+        <listitem>
+        <para>
+            processInstance Id as mdcProcessInstanceID
+            </para>
+        </listitem>
+           
+        <listitem>
+        <para>
+            execution Id as mdcexecutionId
+        </para>
+        </listitem>
+      </itemizedlist>
+      
+      
+      None of these information are logged by default. The logger can be configured to show them in desired format, extra to the usual logged messages.
+      For example in log4j the following sample layout definition  causes the logger to show the above mentioned information:
+     <programlisting>
+ log4j.appender.consoleAppender.layout.ConversionPattern =ProcessDefinitionId=%X{mdcProcessDefinitionID}
+executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdcBusinessKey=%X{mdcBusinessKey} %m%n"
+      </programlisting>
+      This is useful where the systems are mission critical and logges should be seriously checked,  by means of a log analyzer for example.
+    
+    </para>
+  </section>  
 
 </chapter>

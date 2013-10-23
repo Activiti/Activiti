@@ -12,6 +12,9 @@
  */
 package org.activiti.test.ldap;
 
+import java.util.List;
+
+import org.activiti.engine.identity.User;
 import org.activiti.engine.test.Deployment;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -27,14 +30,56 @@ public class LdapIntegrationTest extends LDAPTestCase {
   public void testCandidateGroupFetchedThroughLdap() {
     runtimeService.startProcessInstanceByKey("testCandidateGroup");
     assertEquals(1, taskService.createTaskQuery().count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("Sales").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("sales").count());
 
     // Pepe is a member of the candidate group and should be able to find the task
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser("pepe").count());
     
     // Kermit is a candidate user and should be able to find the task
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
+  }
+  
+  public void testUserQueryById() {
+    List<User> users = identityService.createUserQuery().userId("kermit").list();
+    assertEquals(1, users.size());
     
+    User user = users.get(0);
+    assertEquals("kermit", user.getId());
+    assertEquals("Kermit", user.getFirstName());
+    assertEquals("The Frog", user.getLastName());
+    
+    user = identityService.createUserQuery().userId("fozzie").singleResult();
+    assertEquals("fozzie", user.getId());
+    assertEquals("Fozzie", user.getFirstName());
+    assertEquals("Bear", user.getLastName());
+  }
+  
+  public void testUserQueryByFullNameLike() {
+    List<User> users = identityService.createUserQuery().userFullNameLike("ermi").list();
+    assertEquals(1, users.size());
+    assertEquals(1, identityService.createUserQuery().userFullNameLike("ermi").count());
+    
+    User user = users.get(0);
+    assertEquals("kermit", user.getId());
+    assertEquals("Kermit", user.getFirstName());
+    assertEquals("The Frog", user.getLastName());
+    
+    users = identityService.createUserQuery().userFullNameLike("rog").list();
+    assertEquals(1, users.size());
+    assertEquals(1, identityService.createUserQuery().userFullNameLike("rog").count());
+    
+    user = users.get(0);
+    assertEquals("kermit", user.getId());
+    assertEquals("Kermit", user.getFirstName());
+    assertEquals("The Frog", user.getLastName());
+    
+    users = identityService.createUserQuery().userFullNameLike("e").list();
+    assertEquals(4, users.size());
+    assertEquals(4, identityService.createUserQuery().userFullNameLike("e").count());
+    
+    users = identityService.createUserQuery().userFullNameLike("The").list();
+    assertEquals(3, users.size());
+    assertEquals(3, identityService.createUserQuery().userFullNameLike("The").count());
   }
   
 }

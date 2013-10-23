@@ -93,7 +93,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return null;
   }
   
-  public Object getVariableLocal(Object variableName) {
+  public Object getVariableLocal(String variableName) {
     ensureVariableInstancesInitialized();
     VariableInstanceEntity variableInstance = variableInstances.get(variableName);
     if (variableInstance!=null) {
@@ -210,10 +210,11 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       ensureVariableInstancesInitialized();
       VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
       if (variableInstance != null) {
-        variableInstance.delete();
-
+        
         Context.getCommandContext().getHistoryManager()
           .recordVariableUpdate(variableInstance);
+        
+        variableInstance.delete();
       }
     }
   }
@@ -262,11 +263,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   public Object setVariableLocal(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
     ensureVariableInstancesInitialized();
     VariableInstanceEntity variableInstance = variableInstances.get(variableName);
-    if ((variableInstance != null) && (!variableInstance.getType().isAbleToStore(value))) {
-      // delete variable
-      removeVariable(variableName);
-      variableInstance = null;
-    }
     if (variableInstance == null) {
       createVariableLocal(variableName, value);
     } else {
@@ -343,6 +339,17 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   }
 
   protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
+	
+      // type should be changed
+	 if ((variableInstance != null) && (!variableInstance.getType().isAbleToStore(value))) {
+		    VariableTypes variableTypes = Context
+		    	      .getProcessEngineConfiguration()
+		    	      .getVariableTypes();
+		    VariableType newType = variableTypes.findVariableType(value);
+		    variableInstance.setValue(null);
+		    variableInstance.setType(newType);
+		    variableInstance.forceUpdate();
+	  }
     variableInstance.setValue(value);
 
     Context.getCommandContext().getHistoryManager()
@@ -363,15 +370,13 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     initializeVariableInstanceBackPointer(variableInstance);
     variableInstances.put(variableName, variableInstance);
     
-    variableInstance.setValue(value);
-    
     // Record historic variable
     Context.getCommandContext().getHistoryManager()
       .recordVariableCreate(variableInstance);
 
     // Record historic detail
     Context.getCommandContext().getHistoryManager()
-      .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution,  isActivityIdUsedForDetails());
+      .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
 
     return variableInstance;
   }

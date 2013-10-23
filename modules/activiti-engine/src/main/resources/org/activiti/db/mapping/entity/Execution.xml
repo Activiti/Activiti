@@ -31,6 +31,7 @@
   <update id="updateExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
     update ${prefix}ACT_RU_EXECUTION set
       REV_ = #{revisionNext, jdbcType=INTEGER},
+      BUSINESS_KEY_ = #{businessKey, jdbcType=VARCHAR},
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       ACT_ID_ = #{activityId, jdbcType=VARCHAR},
       IS_ACTIVE_ = #{isActive, jdbcType=BOOLEAN},
@@ -93,7 +94,7 @@
       <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
       <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
       <result property="taskId" column="VAR_TASK_ID_" jdbcType="VARCHAR" />
-      <result property="byteArrayValueId" column="VAR_BYTEARRAY_ID_" jdbcType="VARCHAR" />
+      <result property="byteArrayRef" column="VAR_BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
       <result property="doubleValue" column="VAR_DOUBLE_" jdbcType="DOUBLE" />
       <result property="textValue" column="VAR_TEXT_" jdbcType="VARCHAR" />
       <result property="textValue2" column="VAR_TEXT2_" jdbcType="VARCHAR" />
@@ -209,9 +210,6 @@
   </sql>
   
   <sql id="commonSelectExecutionsByQueryCriteriaSql">
-    <if test="involvedUser != null">
-      inner join ${prefix}ACT_RU_IDENTITYLINK I on I.PROC_INST_ID_ = RES.ID_
-    </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       <choose>
         <when test="queryVariableValue.local">
@@ -239,6 +237,9 @@
       </if>
       <if test="processDefinitionKey != null">
         and P.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processDefinitionName != null">
+        and P.NAME_ = #{processDefinitionName}
       </if>
       <if test="executionId != null">
         and RES.ID_ = #{executionId}
@@ -272,6 +273,9 @@
       <if test="subProcessInstanceId != null">
         and RES.ID_ = (select PROC_INST_ID_ from ${prefix}ACT_RU_EXECUTION where ID_ = (select SUPER_EXEC_ from ${prefix}ACT_RU_EXECUTION where ID_ = #{subProcessInstanceId}))
       </if>
+      <if test="excludeSubprocesses">
+        and RES.SUPER_EXEC_ is null
+      </if>
       <if test="suspensionState != null">
       	<if test="suspensionState.stateCode == 1">
         	and (RES.SUSPENSION_STATE_ = 1)
@@ -281,7 +285,7 @@
         </if>
       </if>
       <if test="involvedUser != null">
-        and I.USER_ID_ = #{involvedUser}
+        and EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{involvedUser})
       </if>
       <!-- PLEASE NOTE: If you change anything have a look into the HistoricVariableInstance & HistoricProcessInstance, the same query object is used there! -->
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">

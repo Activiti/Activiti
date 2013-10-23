@@ -6,9 +6,10 @@
                  http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">  
   
   <display-name>Activiti REST</display-name>
-   
+  <distributable />
+  
   <listener>
-    <listener-class>org.activiti.rest.servlet.ActivitiServletContextListener</listener-class>
+    <listener-class>org.activiti.rest.common.servlet.ActivitiServletContextListener</listener-class>
   </listener> 
   
   <!-- Restlet adapter -->  
@@ -18,7 +19,7 @@
     <init-param>
       <!-- Application class name -->
       <param-name>org.restlet.application</param-name>
-      <param-value>org.activiti.rest.application.ActivitiRestApplication</param-value>
+      <param-value>org.activiti.rest.common.application.ActivitiRestApplication</param-value>
     </init-param>
   </servlet>
   

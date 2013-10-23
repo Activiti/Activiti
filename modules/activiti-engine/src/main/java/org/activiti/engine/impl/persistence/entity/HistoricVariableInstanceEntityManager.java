@@ -36,6 +36,7 @@ public class HistoricVariableInstanceEntityManager extends AbstractManager {
       List<HistoricVariableInstanceEntity> historicProcessVariables = (List) getDbSqlSession()
         .createHistoricVariableInstanceQuery()
         .processInstanceId(historicProcessInstanceId)
+        .excludeVariableInitialization()
         .list();
       for (HistoricVariableInstanceEntity historicProcessVariable : historicProcessVariables) {
         historicProcessVariable.delete();
@@ -67,10 +68,10 @@ public class HistoricVariableInstanceEntityManager extends AbstractManager {
 
   public void deleteHistoricVariableInstancesByTaskId(String taskId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceQueryImpl historicProcessVariableQuery = 
-        (HistoricVariableInstanceQueryImpl) new HistoricVariableInstanceQueryImpl().taskId(taskId);
-      List<HistoricVariableInstance> historicProcessVariables = historicProcessVariableQuery.list();
-      for(HistoricVariableInstance historicProcessVariable : historicProcessVariables) {
+      List<HistoricVariableInstance> historicProcessVariables = 
+          new HistoricVariableInstanceQueryImpl().taskId(taskId).list();
+      
+      for (HistoricVariableInstance historicProcessVariable : historicProcessVariables) {
         ((HistoricVariableInstanceEntity) historicProcessVariable).delete();
       }
     }

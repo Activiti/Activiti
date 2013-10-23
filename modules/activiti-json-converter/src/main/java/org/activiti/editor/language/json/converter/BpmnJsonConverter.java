@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.ActivitiListener;
+
 import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
@@ -30,6 +32,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
@@ -38,7 +41,7 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.activiti.editor.language.json.converter.util.JsonConverterUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -171,6 +174,12 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     if (StringUtils.isNotEmpty(mainProcess.getName())) {
       propertiesNode.put(PROPERTY_NAME, mainProcess.getName());
     }
+    if (mainProcess.isExecutable() == false) {
+      propertiesNode.put(PROPERTY_PROCESS_EXECUTABLE, PROPERTY_VALUE_NO);
+    }
+    
+    propertiesNode.put(PROPERTY_PROCESS_NAMESPACE, model.getTargetNamespace());
+    
     if (StringUtils.isNotEmpty(mainProcess.getDocumentation())) {
       propertiesNode.put(PROPERTY_DOCUMENTATION, mainProcess.getDocumentation());
     }
@@ -298,16 +307,31 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     if (nonEmptyPoolFound == false) {
       
-      JsonNode processIdNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_PROCESS_ID);
+      JsonNode processIdNode = JsonConverterUtil.getProperty(PROPERTY_PROCESS_ID, modelNode);
       Process process = new Process();
       bpmnModel.getProcesses().add(process);
       if (processIdNode != null && StringUtils.isNotEmpty(processIdNode.asText())) {
         process.setId(processIdNode.asText());
       }
       
-      JsonNode processNameNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_NAME);
+      JsonNode processNameNode = JsonConverterUtil.getProperty(PROPERTY_NAME, modelNode);
       if (processNameNode != null && StringUtils.isNotEmpty(processNameNode.asText())) {
         process.setName(processNameNode.asText());
+      }
+      
+      JsonNode processExecutableNode = JsonConverterUtil.getProperty(PROPERTY_PROCESS_EXECUTABLE, modelNode);
+      if (processExecutableNode != null && StringUtils.isNotEmpty(processExecutableNode.asText())) {
+        process.setExecutable(JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_PROCESS_EXECUTABLE, modelNode));
+      }
+      
+      JsonNode processTargetNamespace = JsonConverterUtil.getProperty(PROPERTY_PROCESS_NAMESPACE, modelNode);
+      if (processTargetNamespace != null && StringUtils.isNotEmpty(processTargetNamespace.asText())) {
+        bpmnModel.setTargetNamespace(processTargetNamespace.asText());
+      }
+      
+      JsonNode processExecutionListenerNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_EXECUTION_LISTENERS);
+      if (processExecutionListenerNode != null && StringUtils.isNotEmpty(processExecutionListenerNode.asText())){
+         process.setExecutionListeners(convertJsonToListeners(processExecutionListenerNode));
       }
       
       processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
@@ -367,6 +391,40 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     }
   }
   
+  private List<ActivitiListener> convertJsonToListeners(JsonNode listenersNode) {
+    List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
+    
+    try {
+      listenersNode = objectMapper.readTree(listenersNode.asText());
+    } catch (Exception e) {
+      LOGGER.info("Listeners node can not be read", e);
+    }
+      
+    JsonNode itemsArrayNode = listenersNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+    if (itemsArrayNode != null) {
+      for (JsonNode itemNode : itemsArrayNode) {
+        JsonNode typeNode = itemNode.get(PROPERTY_EXECUTION_LISTENER_EVENT);
+        if (typeNode != null && StringUtils.isNotEmpty(typeNode.asText())) {
+
+          ActivitiListener listener = new ActivitiListener();
+          listener.setEvent(typeNode.asText());
+          if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_EXECUTION_LISTENER_CLASS).asText())) {
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+            listener.setImplementation(itemNode.get(PROPERTY_EXECUTION_LISTENER_CLASS).asText());
+          } else if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_EXECUTION_LISTENER_EXPRESSION).asText())) {
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION);
+            listener.setImplementation(itemNode.get(PROPERTY_EXECUTION_LISTENER_EXPRESSION).asText());
+          } else if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION).asText())) {
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
+            listener.setImplementation(itemNode.get(PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION).asText());
+          }
+          executionListeners.add(listener);
+        }
+      }
+    }
+    return executionListeners;
+  }
+  
   private void fillSubShapes(Map<String, SubProcess> subShapesMap, SubProcess subProcess) {
     for (FlowElement flowElement : subProcess.getFlowElements()) {
       if (flowElement instanceof SubProcess) {
@@ -423,7 +481,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       }
     }
   }
-  
+   
   private Activity retrieveAttachedRefObject(String attachedToRefId, Collection<FlowElement> flowElementList) {
     for (FlowElement flowElement : flowElementList) {
       if (attachedToRefId.equals(flowElement.getId())) {

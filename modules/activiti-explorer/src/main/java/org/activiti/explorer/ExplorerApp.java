@@ -12,6 +12,7 @@
  */
 package org.activiti.explorer;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.explorer.cache.UserCache;
 import org.activiti.explorer.identity.LoggedInUser;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.ComponentFactory;
@@ -29,6 +29,7 @@ import org.activiti.explorer.ui.form.FormPropertyRendererManager;
 import org.activiti.explorer.ui.login.LoginHandler;
 import org.activiti.explorer.ui.variable.VariableRendererManager;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
+import org.activiti.workflow.simple.converter.json.SimpleWorkflowJsonConverter;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -55,12 +56,13 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   protected LoginHandler loginHandler;
   protected ComponentFactories componentFactories;
   protected WorkflowDefinitionConversionFactory workflowDefinitionConversionFactory;
+  protected SimpleWorkflowJsonConverter simpleWorkflowJsonConverter;
   
-  // Transient member
-  protected transient UserCache userCache; // transient, beceause the cache can be rebuild anyway
-
   // Flag to see if the session has been invalidated, when the application was closed
   protected boolean invalidatedSession = false;
+  
+  protected List<String> adminGroups;
+  protected List<String> userGroups;
   
   public void init() {
     setMainWindow(mainWindow);
@@ -137,10 +139,6 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
     this.formPropertyRendererManager = formPropertyRendererManager;
   }
 
-  public UserCache getUserCache() {
-    return userCache;
-  }
-  
   public <T> ComponentFactory<T> getComponentFactory(Class<? extends ComponentFactory<T>> clazz) {
     return componentFactories.get(clazz);
   }
@@ -261,9 +259,6 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   public void setUseJavascriptDiagram(boolean useJavascriptDiagram) {
     this.useJavascriptDiagram = useJavascriptDiagram;
   }
-  public void setUserCache(UserCache userCache) {
-    this.userCache = userCache;
-  }
   public void setApplicationMainWindow(MainWindow mainWindow) {
     this.mainWindow = mainWindow;
   }
@@ -288,4 +283,23 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   public void setWorkflowDefinitionConversionFactory(WorkflowDefinitionConversionFactory workflowDefinitionConversionFactory) {
     this.workflowDefinitionConversionFactory = workflowDefinitionConversionFactory;
   }
+  public List<String> getAdminGroups() {
+    return adminGroups;
+  }
+  public void setAdminGroups(List<String> adminGroups) {
+    this.adminGroups = adminGroups;
+  }
+  public List<String> getUserGroups() {
+    return userGroups;
+  }
+  public void setUserGroups(List<String> userGroups) {
+    this.userGroups = userGroups;
+  }
+  public SimpleWorkflowJsonConverter getSimpleWorkflowJsonConverter() {
+	  return simpleWorkflowJsonConverter;
+  }
+  public void setSimpleWorkflowJsonConverter(SimpleWorkflowJsonConverter simpleWorkflowJsonConverter) {
+	  this.simpleWorkflowJsonConverter = simpleWorkflowJsonConverter;
+  }
+  
 }

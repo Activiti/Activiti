@@ -16,7 +16,7 @@
 package org.activiti.spring.components.registry;
 
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.lang.reflect.Method;
 import java.util.Map;

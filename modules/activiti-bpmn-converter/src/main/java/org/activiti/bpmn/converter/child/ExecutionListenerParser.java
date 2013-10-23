@@ -12,10 +12,8 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import javax.xml.stream.XMLStreamReader;
-
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.HasExecutionListeners;
 
 /**
@@ -27,10 +25,7 @@ public class ExecutionListenerParser extends ActivitiListenerParser {
   	return ELEMENT_EXECUTION_LISTENER;
   }
   
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    
-    super.parseChildElement(xtr, parentElement, model);
-    
+  public void addListenerToParent(ActivitiListener listener, BaseElement parentElement) {
     if (parentElement instanceof HasExecutionListeners) {
       ((HasExecutionListeners) parentElement).getExecutionListeners().add(listener);
     }

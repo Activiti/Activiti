@@ -23,7 +23,7 @@ import org.activiti.engine.impl.context.Context;
  * 
  * @author Frederik Heremans
  */
-public class JPAEntityVariableType implements VariableType {
+public class JPAEntityVariableType implements VariableType, CacheableVariable {
 
   public static final String TYPE_NAME = "jpa-entity";
   

@@ -139,7 +139,7 @@
       <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
       <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
       <result property="taskId" column="VAR_TASK_ID_" jdbcType="VARCHAR" />
-      <result property="byteArrayValueId" column="VAR_BYTEARRAY_ID_" jdbcType="VARCHAR" />
+      <result property="byteArrayRef" column="VAR_BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
       <result property="doubleValue" column="VAR_DOUBLE_" jdbcType="DOUBLE" />
       <result property="textValue" column="VAR_TEXT_" jdbcType="VARCHAR" />
       <result property="textValue2" column="VAR_TEXT2_" jdbcType="VARCHAR" />
@@ -161,14 +161,14 @@
 
   <select id="selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
   	${limitBefore}
-    select RES.* ${limitBetween}
+    select distinct RES.* ${limitBetween}
     <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
   </select>
   
   <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">
-    select count(*)
+    select count(RES.ID_)
     <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
   </select>
   
@@ -240,13 +240,16 @@
   </sql>
   
   <sql id="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
-    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null">
+    <if test="candidateUser != null || candidateGroups != null">
+      inner join ${prefix}ACT_HI_IDENTITYLINK HI on HI.TASK_ID_ = RES.ID_
+    </if>
+    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null">
       inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
     </if>
-    <if test="processDefinitionKey != null || processDefinitionName != null">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionName != null || processDefinitionNameLike != null">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
-    <foreach collection="variables" index="index" item="var">
+    <foreach collection="queryVariableValues" index="index" item="var">
       <choose>
         <when test="var.local">
           inner join ${prefix}ACT_HI_VARINST A${index} on RES.ID_ = A${index}.TASK_ID_ 
@@ -266,8 +269,14 @@
       <if test="processDefinitionKey != null">
         and D.KEY_ = #{processDefinitionKey}
       </if>
+      <if test="processDefinitionKeyLike != null">
+        and D.KEY_ like #{processDefinitionKeyLike}
+      </if>
       <if test="processDefinitionName != null">
         and D.NAME_ = #{processDefinitionName}
+      </if>
+      <if test="processDefinitionNameLike != null">
+        and D.NAME_ like #{processDefinitionNameLike}
       </if>
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
@@ -275,8 +284,14 @@
       <if test="processInstanceBusinessKey != null">
         and HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}
       </if>
+      <if test="processInstanceBusinessKeyLike != null">
+        and HPI.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}
+      </if>
       <if test="taskDefinitionKey != null">
         and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
+      </if>
+      <if test="taskDefinitionKeyLike != null">
+        and RES.TASK_DEF_KEY_ like #{taskDefinitionKeyLike}
       </if>
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
@@ -317,6 +332,12 @@
       <if test="taskPriority != null">
         and RES.PRIORITY_ = #{taskPriority}
       </if>
+      <if test="taskMinPriority != null">
+        and RES.PRIORITY_ &gt;= #{taskMinPriority}
+      </if>
+      <if test="taskMaxPriority != null">
+        and RES.PRIORITY_ &lt;= #{taskMaxPriority}
+      </if>
       <if test="unfinished">
         and RES.END_TIME_ is null
       </if>
@@ -338,8 +359,46 @@
       <if test="dueAfter != null">
         and RES.DUE_DATE_ &gt; #{dueAfter}
       </if>
+      <if test="withoutDueDate">
+        and RES.DUE_DATE_ is null
+      </if>
       <if test="creationDate != null">
         and RES.START_TIME_ = #{creationDate}
+      </if>
+      <if test="creationBeforeDate != null">
+        and RES.START_TIME_ &lt; #{creationBeforeDate}
+      </if>
+      <if test="creationAfterDate != null">
+        and RES.START_TIME_ &gt; #{creationAfterDate}
+      </if>
+      <if test="completedDate != null">
+        and RES.END_TIME_ = #{completedDate}
+      </if>
+      <if test="completedBeforeDate != null">
+        and RES.END_TIME_ &lt; #{completedBeforeDate}
+      </if>
+      <if test="completedAfterDate != null">
+        and RES.END_TIME_ &gt; #{completedAfterDate}
+      </if>
+      <if test="candidateUser != null || candidateGroups != null">
+        and RES.ASSIGNEE_ is null
+        and HI.TYPE_ = 'candidate'
+        and
+        (
+          <if test="candidateUser != null">
+            HI.USER_ID_ = #{candidateUser}
+          </if>
+          <if test="candidateUser != null &amp;&amp; candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+            or
+          </if>
+          <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+            HI.GROUP_ID_ IN
+            <foreach item="group" index="index" collection="candidateGroups"
+                     open="(" separator="," close=")">
+              #{group}
+            </foreach>
+          </if>
+        )
       </if>
       <if test="involvedUser != null">
         and (
@@ -348,22 +407,22 @@
           or RES.OWNER_ = #{involvedUser}
           )
       </if>
-      <foreach item="var" collection="variables" index="index">
-        <if test="!var.local">
+      <foreach item="queryVar" collection="queryVariableValues" index="index">
+        <if test="!queryVar.local">
           <!-- When process instance variable is queried for, taskId should be null -->
           and A${index}.TASK_ID_ is null
         </if>
-        <if test="var.name != null">
+        <if test="queryVar.name != null">
           <!-- Match-all variable-names when name is null -->
-          and A${index}.NAME_= #{var.name}
+          and A${index}.NAME_= #{queryVar.name}
         </if>
-        <if test="!var.type.equals('null')">
-          and A${index}.VAR_TYPE_ = #{var.type}
+        <if test="!queryVar.type.equals('null')">
+          and A${index}.VAR_TYPE_ = #{queryVar.type}
         </if>
         <!-- Variable value -->
-        <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+        <if test="queryVar.textValue != null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
           <choose>
-            <when test="var.operator.equals('EQUALS_IGNORE_CASE') || var.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+            <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE')">
               and lower(A${index}.TEXT_)
             </when>
             <otherwise>
@@ -371,33 +430,33 @@
             </otherwise>
           </choose> 
           <choose>
-              <when test="var.operator.equals('LIKE')">LIKE</when>
+              <when test="queryVar.operator.equals('LIKE')">LIKE</when>
               <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>          
-          #{var.textValue}
+          #{queryVar.textValue}
         </if>
-        <if test="var.textValue2 != null">
+        <if test="queryVar.textValue2 != null">
           and A${index}.TEXT2_ 
           <choose>
-            <when test="var.operator.equals('LIKE')">LIKE</when>
+            <when test="queryVar.operator.equals('LIKE')">LIKE</when>
             <otherwise><include refid="executionVariableOperator" /></otherwise>
           </choose>          
-          #{var.textValue2}
+          #{queryVar.textValue2}
         </if>
-        <if test="var.longValue != null">
+        <if test="queryVar.longValue != null">
           and A${index}.LONG_
           <include refid="executionVariableOperator" />
-          #{var.longValue}
+          #{queryVar.longValue}
         </if>
-        <if test="var.doubleValue != null">
+        <if test="queryVar.doubleValue != null">
           and A${index}.DOUBLE_ 
           <include refid="executionVariableOperator" />
-          #{var.doubleValue}
+          #{queryVar.doubleValue}
         </if>
         <!-- Null variable type -->
-        <if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+        <if test="queryVar.textValue == null &amp;&amp; queryVar.textValue2 == null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
           <choose>
-            <when test="var.operator.equals('NOT_EQUALS')">
+            <when test="queryVar.operator.equals('NOT_EQUALS')">
               and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
             </when>
             <otherwise>
@@ -411,35 +470,35 @@
   
   <sql id="executionVariableOperator">
     <choose>
-      <when test="var.operator.equals('EQUALS')">=</when>
-      <when test="var.operator.equals('EQUALS_IGNORE_CASE')">=</when>
-      <when test="var.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
-      <when test="var.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
-      <when test="var.operator.equals('GREATER_THAN')">&gt;</when>
-      <when test="var.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
-      <when test="var.operator.equals('LESS_THAN')">&lt;</when>
-      <when test="var.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+      <when test="queryVar.operator.equals('EQUALS')">=</when>
+      <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE')">=</when>
+      <when test="queryVar.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
+      <when test="queryVar.operator.equals('GREATER_THAN')">&gt;</when>
+      <when test="queryVar.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+      <when test="queryVar.operator.equals('LESS_THAN')">&lt;</when>
+      <when test="queryVar.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
    </choose>
   </sql>
 
   <select id="selectHistoricTaskInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-    	${limitBefore}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
     </if>
     ${sql}
     <if test="resultType == 'LIST_PAGE'">
-    	${limitAfter}
+      ${limitAfter}
     </if>
   </select>
   
   <select id="selectHistoricTaskInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-        ${limitBeforeNativeQuery}
-  	</if>
-  	${sql} 
     <if test="resultType == 'LIST_PAGE'">
-  		${limitAfter}
-  	</if>
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
   </select>
 
   <select id="selectHistoricTaskInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">

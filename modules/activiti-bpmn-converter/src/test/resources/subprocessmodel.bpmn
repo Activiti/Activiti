@@ -7,6 +7,10 @@
     <sequenceFlow id="sid-4BE8FBF0-B946-48DB-9B18-488BF8DFE4D1" sourceRef="boundaryEvent1" targetRef="sid-194696BA-1A7D-47D7-95A9-A77390D25048"></sequenceFlow>
     <sequenceFlow id="sid-04DAFAA0-34C1-48DF-BAD5-1038344BBFA9" sourceRef="start1" targetRef="userTask1"></sequenceFlow>
     <subProcess id="subprocess1" name="subProcess">
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>10</loopCardinality>
+        <completionCondition>${assignee == ""}</completionCondition>
+      </multiInstanceLoopCharacteristics>
       <endEvent id="sid-565296D1-FCF9-4B31-9048-528B10A27C46"></endEvent>
       <startEvent id="subStartEvent"></startEvent>
       <sequenceFlow id="sid-C7145ECA-31A2-4A91-B20A-023CF0764155" sourceRef="subUserTask1" targetRef="sid-565296D1-FCF9-4B31-9048-528B10A27C46"></sequenceFlow>

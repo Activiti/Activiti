@@ -21,11 +21,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import org.activiti.engine.FormService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -35,7 +32,6 @@ import org.activiti.engine.test.ActivitiRule;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.converter.step.FeedbackStepDefinitionConverter;
-import org.activiti.workflow.simple.definition.FeedbackStepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.junit.After;
 import org.junit.Before;
@@ -315,7 +311,7 @@ public class WorkflowConversionTest {
     WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(workflowDefinition);
     conversion.convert();
     
-    log.info("Converted process : " + conversion.getbpm20Xml());
+    log.info("Converted process : " + conversion.getBpmn20Xml());
     
 //    InputStream is = conversion.getWorkflowDiagramImage();
 //    try {
@@ -351,7 +347,7 @@ public class WorkflowConversionTest {
     long nrOfDeployments = countNrOfDeployments();
     
     activitiRule.getRepositoryService().createDeployment()
-      .addString(conversion.getProcess().getId() + ".bpmn20.xml", conversion.getbpm20Xml())
+      .addString(conversion.getProcess().getId() + ".bpmn20.xml", conversion.getBpmn20Xml())
       .deploy();
     
     assertEquals(nrOfDeployments + 1, countNrOfDeployments());

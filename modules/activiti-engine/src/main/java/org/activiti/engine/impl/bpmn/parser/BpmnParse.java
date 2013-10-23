@@ -67,7 +67,7 @@ import org.activiti.engine.impl.util.io.ResourceStreamSource;
 import org.activiti.engine.impl.util.io.StreamSource;
 import org.activiti.engine.impl.util.io.StringStreamSource;
 import org.activiti.engine.impl.util.io.UrlStreamSource;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -363,7 +363,9 @@ public class BpmnParse implements BpmnXMLConstants {
   protected void transformProcessDefinitions() {
     sequenceFlows = new HashMap<String, TransitionImpl>();
     for (Process process : bpmnModel.getProcesses()) {
-      bpmnParserHandlers.parseElement(this, process);
+      if (process.isExecutable()) {
+        bpmnParserHandlers.parseElement(this, process);
+      }
     }
 
     if (processDefinitions.size() > 0) {
@@ -487,14 +489,20 @@ public class BpmnParse implements BpmnXMLConstants {
       // Verify if all referenced elements exist
       for (String bpmnReference : bpmnModel.getLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
-          LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        	// ACT-1625: don't warn when	artifacts are referenced from DI
+        	if(bpmnModel.getArtifact(bpmnReference) == null) {
+        		LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        	}
         } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof FlowNode)) {
           LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a flow node");
         }
       }
       for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
-          LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+          // ACT-1625: don't warn when	artifacts are referenced from DI
+        	if(bpmnModel.getArtifact(bpmnReference) == null) {
+        		LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        	}	
         } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)) {
           if (bpmnModel.getFlowLocationMap().get(bpmnReference).size() > 0) {
             LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");

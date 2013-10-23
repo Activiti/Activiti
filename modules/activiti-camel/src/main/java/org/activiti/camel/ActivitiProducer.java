@@ -12,6 +12,11 @@
  */
 package org.activiti.camel;
 
+/**
+ * @author Saeid Mirzaei  
+ * @author Maciej Próchniak
+ */
+
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -25,12 +30,16 @@ public class ActivitiProducer extends DefaultProducer {
   public static final String PROCESS_KEY_PROPERTY = "PROCESS_KEY_PROPERTY";
 
   public static final String PROCESS_ID_PROPERTY = "PROCESS_ID_PROPERTY";
+  
+  private final long timeout;
 
+  private final long timeResolution;
+  
   private String processKey = null;
 
   private String activity = null;
 
-  public ActivitiProducer(ActivitiEndpoint endpoint, RuntimeService runtimeService) {
+  public ActivitiProducer(ActivitiEndpoint endpoint, RuntimeService runtimeService, long timeout, long timeResolution) {
     super(endpoint);
     this.runtimeService = runtimeService;
     String[] path = endpoint.getEndpointKey().split(":");
@@ -38,6 +47,8 @@ public class ActivitiProducer extends DefaultProducer {
     if (path.length > 2) {
       activity = path[2];
     }
+    this.timeout = timeout;
+    this.timeResolution = timeResolution;
   }
 
   public void process(Exchange exchange) throws Exception {
@@ -53,20 +64,35 @@ public class ActivitiProducer extends DefaultProducer {
   private boolean shouldStartProcess() {
     return activity == null;
   }
-
+  
   private void signal(Exchange exchange) {
     String processInstanceId = findProcessInstanceId(exchange);
-    Execution execution = runtimeService.createExecutionQuery()
-        .processDefinitionKey(processKey)
-        .processInstanceId(processInstanceId)
-        .activityId(activity).singleResult();
-
-    if (execution == null) {
-      throw new RuntimeException("Couldn't find activity "+activity+" for processId " + processInstanceId);
+    
+    boolean firstTime = true; 
+    long initialTime  = System.currentTimeMillis();
+   
+    Execution execution = null;
+    while (firstTime || (timeout > 0 && (System.currentTimeMillis() - initialTime < timeout))) {
+       execution = runtimeService.createExecutionQuery()
+          .processDefinitionKey(processKey)
+          .processInstanceId(processInstanceId)
+          .activityId(activity).singleResult();
+       try {
+         Thread.sleep(timeResolution);
+       } catch (InterruptedException e) {
+         throw new RuntimeException("error occured while waiting for activiti=" + activity + " for processInstanceId=" + processInstanceId);
+       }
+       firstTime = false;
+       if (execution != null) {
+         break;
+       }
     }
+    if (execution == null) {
+      throw new RuntimeException("Couldn't find activity "+activity+" for processId " + processInstanceId + " in defined timeout.");
+    }
+    
     runtimeService.setVariables(execution.getId(), ExchangeUtils.prepareVariables(exchange, getActivitiEndpoint()));
     runtimeService.signal(execution.getId());
-
   }
 
   private String findProcessInstanceId(Exchange exchange) {

@@ -33,8 +33,10 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.cfg.TransactionPropagation;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
@@ -139,8 +141,9 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       
       log.info("dropping and recreating db");
       
-      CommandExecutor commandExecutor = ((ProcessEngineImpl)processEngine).getProcessEngineConfiguration().getCommandExecutorTxRequired();
-      commandExecutor.execute(new Command<Object>() {
+      CommandExecutor commandExecutor = ((ProcessEngineImpl)processEngine).getProcessEngineConfiguration().getCommandExecutor();
+      CommandConfig config = new CommandConfig().transactionNotSupported();
+      commandExecutor.execute(config, new Command<Object>() {
         public Object execute(CommandContext commandContext) {
           DbSqlSession session = commandContext.getSession(DbSqlSession.class);
           session.dbSchemaDrop();
@@ -203,6 +206,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
           }
         }
       } catch (InterruptedException e) {
+        // ignore
       } finally {
         timer.cancel();
       }

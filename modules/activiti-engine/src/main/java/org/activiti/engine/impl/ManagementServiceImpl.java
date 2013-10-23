@@ -15,6 +15,7 @@ package org.activiti.engine.impl;
 import java.sql.Connection;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.cmd.DeleteJobCmd;
 import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
@@ -27,6 +28,7 @@ import org.activiti.engine.impl.cmd.SetJobRetriesCmd;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePageQuery;
@@ -82,7 +84,8 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   }
 
   public String databaseSchemaUpgrade(final Connection connection, final String catalog, final String schema) {
-    return commandExecutor.execute(new Command<String>(){
+    CommandConfig config = commandExecutor.getDefaultConfig().transactionNotSupported();
+    return commandExecutor.execute(config, new Command<String>(){
       public String execute(CommandContext commandContext) {
         DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) commandContext.getSessionFactories().get(DbSqlSession.class);
         DbSqlSession dbSqlSession = new DbSqlSession(dbSqlSessionFactory, connection, catalog, schema);
@@ -90,6 +93,23 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
         return dbSqlSession.dbSchemaUpdate();
       }
     });
+  }
+  
+  public <T> T executeCommand(Command<T> command) {
+    if (command == null) {
+      throw new ActivitiIllegalArgumentException("The command is null");
+    }
+    return commandExecutor.execute(command);
+  }
+  
+  public <T> T executeCommand(CommandConfig config, Command<T> command) {
+    if (config == null) {
+      throw new ActivitiIllegalArgumentException("The config is null");
+    }
+    if (command == null) {
+      throw new ActivitiIllegalArgumentException("The command is null");
+    }
+    return commandExecutor.execute(config, command);
   }
 
 }

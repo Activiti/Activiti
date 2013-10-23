@@ -267,6 +267,12 @@ public interface RuntimeService {
    */
   void signal(String executionId, Map<String, Object> processVariables);
   
+  /** Updates the business key for the provided process instance
+   * @param processInstanceId id of the process instance to set the business key, cannot be null
+   * @param businessKey new businessKey value
+   */
+  void updateBusinessKey(String processInstanceId, String businessKey);
+  
   // Identity Links ///////////////////////////////////////////////////////////////
   
   /**
@@ -463,6 +469,16 @@ public interface RuntimeService {
   /**
    * Notifies the process engine that a signal event of name 'signalName' has
    * been received. This method delivers the signal to all executions waiting on
+   * the signal.<p/> 
+   * 
+   * @param signalName
+   *          the name of the signal event
+   */
+  void signalEventReceivedAsync(String signalName);
+  
+  /**
+   * Notifies the process engine that a signal event of name 'signalName' has
+   * been received. This method delivers the signal to all executions waiting on
    * the signal.<p/>
    * 
    * <strong>NOTE:</strong> The waiting executions are notified synchronously.
@@ -507,6 +523,21 @@ public interface RuntimeService {
   void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables);
 
   /**
+   * Notifies the process engine that a signal event of name 'signalName' has
+   * been received. This method delivers the signal to a single execution, being the 
+   * execution referenced by 'executionId'. 
+   * The waiting execution is notified <strong>asynchronously</strong>.
+   * 
+   * @param signalName
+   *          the name of the signal event
+   * @param executionId
+   *          the id of the execution to deliver the signal to
+   * @throws ActivitiObjectNotFoundException if no such execution exists.
+   * @throws ActivitiException if the execution has not subscribed to the signal.
+   */
+  void signalEventReceivedAsync(String signalName, String executionId);
+  
+  /**
    * Notifies the process engine that a message event with name 'messageName' has
    * been received and has been correlated to an execution with id 'executionId'. 
    * 
@@ -537,5 +568,20 @@ public interface RuntimeService {
    * @throws ActivitiException if the execution has not subscribed to the signal
    */
   void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables);
+
+  /**
+   * Notifies the process engine that a message event with the name 'messageName' has
+   * been received and has been correlated to an execution with id 'executionId'. 
+   * 
+   * The waiting execution is notified <strong>asynchronously</strong>.
+   * 
+   * @param messageName
+   *          the name of the message event
+   * @param executionId
+   *          the id of the execution to deliver the message to
+   * @throws ActivitiObjectNotFoundException if no such execution exists.
+   * @throws ActivitiException if the execution has not subscribed to the signal
+   */
+  void messageEventReceivedAsync(String messageName, String executionId);
 
 }

@@ -12,14 +12,13 @@
  */
 package org.activiti.workflow.simple.definition;
 
-import java.io.Serializable;
 import java.util.List;
 
 
 /**
  * @author Joram Barrez
  */
-public interface StepDefinitionContainer<T> extends Serializable {
+public interface StepDefinitionContainer<T> {
   
   List<StepDefinition> getSteps();
 

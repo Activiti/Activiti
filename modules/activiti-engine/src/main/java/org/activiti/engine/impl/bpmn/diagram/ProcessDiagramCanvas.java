@@ -25,6 +25,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
@@ -32,6 +33,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -45,6 +47,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.activiti.bpmn.model.AssociationDirection;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.util.IoUtil;
@@ -73,11 +76,13 @@ public class ProcessDiagramCanvas {
   protected static final int FONT_SIZE = 11;
   protected static final int FONT_SPACING = 2;
   protected static final int TEXT_PADDING = 3;
+  protected static final int ANNOTATION_TEXT_PADDING = 7;
   protected static final int LINE_HEIGHT = FONT_SIZE + FONT_SPACING;
   
 
   // Colors
   protected static Color TASK_BOX_COLOR = new Color(255, 255, 204);
+  protected static Color SUBPROCESS_BOX_COLOR = new Color(250, 251, 252);
   protected static Color BOUNDARY_EVENT_COLOR = new Color(255, 255, 255);
   protected static Color CONDITIONAL_INDICATOR_COLOR = new Color(255, 255, 255);
   protected static Color HIGHLIGHT_COLOR = Color.RED;
@@ -85,6 +90,8 @@ public class ProcessDiagramCanvas {
   
   // Fonts
   protected static Font LABEL_FONT = null;
+  protected static Font ANNOTATION_FONT = new Font("Arial", Font.PLAIN, FONT_SIZE);
+  protected static Font TASK_FONT = new Font("Arial", Font.PLAIN, FONT_SIZE);
 
   // Strokes
   protected static Stroke THICK_TASK_BORDER_STROKE = new BasicStroke(3.0f);
@@ -94,6 +101,8 @@ public class ProcessDiagramCanvas {
   protected static Stroke EVENT_SUBPROCESS_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,  new float[] { 1.0f }, 0.0f);
   protected static Stroke INTERRUPTING_EVENT_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,  new float[] { 4.0f, 3.0f }, 0.0f);
   protected static Stroke HIGHLIGHT_FLOW_STROKE = new BasicStroke(1.3f);
+  protected static Stroke ANNOTATION_STROKE = new BasicStroke(2.0f);
+  protected static Stroke ASSOCIATION_STROKE = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,  new float[] { 2.0f, 2.0f }, 0.0f);
 
   // icons
   protected static int ICON_SIZE = 16;
@@ -345,11 +354,22 @@ public class ProcessDiagramCanvas {
       g.setPaint(originalPaint);
   }
 
+  public void drawAssociation(int[] xPoints, int[] yPoints, AssociationDirection associationDirection, boolean highLighted) {
+    boolean conditional = false, isDefault = false;
+	drawConnection(xPoints, yPoints, conditional, isDefault, "association", associationDirection, highLighted);
+  }
+
   public void drawSequenceflow(int[] xPoints, int[] yPoints, boolean conditional, boolean isDefault, boolean highLighted) {
+	  drawConnection(xPoints, yPoints, conditional, isDefault, "sequenceFlow", AssociationDirection.ONE, highLighted);
+  }
+  
+  public void drawConnection(int[] xPoints, int[] yPoints, boolean conditional, boolean isDefault, String connectionType, AssociationDirection associationDirection, boolean highLighted) {
     Paint originalPaint = g.getPaint();
     Stroke originalStroke = g.getStroke();
 
-    if (highLighted) {
+    if (connectionType.equals("association")) {
+      g.setStroke(ASSOCIATION_STROKE);
+    } else if (highLighted) {
       g.setPaint(HIGHLIGHT_COLOR);
       g.setStroke(HIGHLIGHT_FLOW_STROKE);
     }
@@ -430,11 +450,6 @@ public class ProcessDiagramCanvas {
       // add curve
       path.curveTo(ax, ay, bx, by, zx, zy);
     }
-
-    if (i == xPoints.length-1) {
-      Line2D.Double lineDouble = new Line2D.Double(xPoints[i-1], yPoints[i-1], xPoints[i], yPoints[i]);
-      drawArrowHead(lineDouble);
-    }
   }
   g.draw(path);
 
@@ -448,6 +463,14 @@ public class ProcessDiagramCanvas {
     drawConditionalSequenceFlowIndicator(line);
   }
 
+  if (associationDirection.equals(AssociationDirection.ONE) || associationDirection.equals(AssociationDirection.BOTH)) {
+    Line2D.Double line = new Line2D.Double(xPoints[xPoints.length-2], yPoints[xPoints.length-2], xPoints[xPoints.length-1], yPoints[xPoints.length-1]);
+    drawArrowHead(line);
+  }
+  if (associationDirection.equals(AssociationDirection.BOTH)) {
+    Line2D.Double line = new Line2D.Double(xPoints[1], yPoints[1], xPoints[0], yPoints[0]);
+    drawArrowHead(line);
+  }
   g.setPaint(originalPaint);
   g.setStroke(originalStroke);
 }
@@ -575,8 +598,12 @@ public class ProcessDiagramCanvas {
     // Create a new gradient paint for every task box, gradient depends on x and y and is not relative
     g.setPaint(new GradientPaint(x + 50, y, Color.white, x + 50, y + 50, TASK_BOX_COLOR));
 
+    int arcR = 20;
+    if (thickBorder)
+    	arcR = 8;
+    
     // shape
-    RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, 20, 20);
+    RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, arcR, arcR);
     g.fill(rect);
     g.setPaint(originalPaint);
 
@@ -591,21 +618,30 @@ public class ProcessDiagramCanvas {
 
     // text
     if (name != null && name.length() > 0) {
-      drawMultilineText(name, x, y, width, height);
+      int boxWidth = width - (2 * TEXT_PADDING);
+      int boxHeight = height - ICON_SIZE - ICON_PADDING - ICON_PADDING - MARKER_WIDTH - 2 - 2;
+      int boxX = x + width/2 - boxWidth/2;
+      int boxY = y + height/2 - boxHeight/2 + ICON_PADDING + ICON_PADDING - 2 - 2;
+      
+      drawMultilineCentredText(name, boxX, boxY, boxWidth, boxHeight);
     }
   }
   
-  protected void drawMultilineText(String text, int x, int y, int boxWidth, int boxHeight) {
-    int availableHeight = boxHeight - ICON_SIZE - ICON_PADDING;
-    
+  protected void drawMultilineCentredText(String text, int x, int y, int boxWidth, int boxHeight) {
+    drawMultilineText(text, x, y, boxWidth, boxHeight, true);
+  }
+
+  protected void drawMultilineAnnotationText(String text, int x, int y, int boxWidth, int boxHeight) {
+	  drawMultilineText(text, x, y, boxWidth, boxHeight, false);
+  }
+  
+  protected void drawMultilineText(String text, int x, int y, int boxWidth, int boxHeight, boolean centered) {
     // Create an attributed string based in input text
     AttributedString attributedString = new AttributedString(text);
     attributedString.addAttribute(TextAttribute.FONT, g.getFont());
     attributedString.addAttribute(TextAttribute.FOREGROUND, Color.black);
     
     AttributedCharacterIterator characterIterator = attributedString.getIterator();
-    
-    int width = boxWidth - (2 * TEXT_PADDING);
     
     int currentHeight = 0;
     // Prepare a list of lines of text we'll be drawing
@@ -615,16 +651,16 @@ public class ProcessDiagramCanvas {
     LineBreakMeasurer measurer = new LineBreakMeasurer(characterIterator, g.getFontRenderContext());
     
     TextLayout layout = null;
-    while (measurer.getPosition() < characterIterator.getEndIndex() && currentHeight <= availableHeight) {
+    while (measurer.getPosition() < characterIterator.getEndIndex() && currentHeight <= boxHeight) {
        
       int previousPosition = measurer.getPosition();
       
       // Request next layout
-      layout = measurer.nextLayout(width);
+      layout = measurer.nextLayout(boxWidth);
       
       int height = ((Float)(layout.getDescent() + layout.getAscent() + layout.getLeading())).intValue();
       
-      if(currentHeight + height > availableHeight) {
+      if(currentHeight + height > boxHeight) {
         // The line we're about to add should NOT be added anymore, append three dots to previous one instead
         // to indicate more text is truncated
         layouts.remove(layouts.size() - 1);
@@ -641,14 +677,14 @@ public class ProcessDiagramCanvas {
     }
     
     
-    int currentY = y + ICON_SIZE + ((availableHeight - currentHeight) /2);
+    int currentY = y + (centered ? ((boxHeight - currentHeight) /2) : 0);
     int currentX = 0;
     
     // Actually draw the lines
     for(TextLayout textLayout : layouts) {
       
       currentY += textLayout.getAscent();
-      currentX = TEXT_PADDING + x + ((width - ((Double)textLayout.getBounds().getWidth()).intValue()) /2);
+      currentX = x + (centered ? ((boxWidth - ((Double)textLayout.getBounds().getWidth()).intValue()) /2) : 0);
       
       textLayout.draw(g, currentX, currentY);
       currentY += textLayout.getDescent() + textLayout.getLeading();
@@ -710,7 +746,7 @@ public class ProcessDiagramCanvas {
   }
 
   public void drawExpandedSubProcess(String name, int x, int y, int width, int height, Boolean isTriggeredByEvent) {
-    RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, 20, 20);
+    RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, 8, 8);
     
     // Use different stroke (dashed)
     if(isTriggeredByEvent) {
@@ -719,6 +755,10 @@ public class ProcessDiagramCanvas {
       g.draw(rect);
       g.setStroke(originalStroke);
     } else {
+      Paint originalPaint = g.getPaint();
+      g.setPaint(SUBPROCESS_BOX_COLOR);
+      g.fill(rect);
+      g.setPaint(originalPaint);
       g.draw(rect);
     }
 
@@ -889,19 +929,93 @@ public class ProcessDiagramCanvas {
     g.setStroke(originalStroke);
   }
 
-  public void drawLabel(String name, int x, int y, int width, int height){
+  public void drawTextAnnotation(String text, int x, int y, int width, int height) {
+	  Font originalFont = g.getFont();
+	  Stroke originalStroke = g.getStroke();
+	  
+	  g.setFont(ANNOTATION_FONT);
+	  //g.setStroke(ANNOTATION_STROKE);
+	  
+	  Path2D path = new Path2D.Double();
+	  x += .5;
+	  int lineLength = 18;
+	  path.moveTo(x + lineLength, y);
+	  path.lineTo(x, y);
+	  path.lineTo(x, y + height);
+	  path.lineTo(x + lineLength, y + height);
+	  
+	  path.lineTo(x + lineLength, y + height -1);
+	  path.lineTo(x + 1, y + height -1);
+	  path.lineTo(x + 1, y + 1);
+	  path.lineTo(x + lineLength, y + 1);
+	  path.closePath();
+	  
+	  g.draw(path);
+	  
+	  int boxWidth = width - (2 * ANNOTATION_TEXT_PADDING);
+      int boxHeight = height - (2 * ANNOTATION_TEXT_PADDING);
+      int boxX = x + width/2 - boxWidth/2;
+      int boxY = y + height/2 - boxHeight/2;
+      
+      // for debug
+      /*
+          Stroke oStroke = g.getStroke();
+          Paint oPaint = g.getPaint();
+      	  
+          Stroke rStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,  new float[] { 2.0f, 2.0f }, 0.0f);
+          Color rPaint = new Color(112, 146, 190);
+      	  g.setStroke(rStroke);
+      	  g.setPaint(rPaint);
+	      Rectangle2D r = new Rectangle2D.Double(boxX, boxY, boxWidth, boxHeight);
+	      g.draw(r);
+	      
+	      g.setStroke(oStroke);
+	      g.setPaint(oPaint);
+       */
+	  //
+      
+	  drawMultilineAnnotationText(text, boxX, boxY, boxWidth, boxHeight);
+	  
+	// restore originals
+    g.setFont(originalFont);
+    g.setStroke(originalStroke);
+  }
+  
+  public void drawLabel(String text, int x, int y, int width, int height){
+	  drawLabel(text, x, y, width, height, true);
+  }
+  public void drawLabel(String text, int x, int y, int width, int height, boolean centered){
+	float interline = 1.0f;
+	
     // text
-    if (name != null) {
+    if (text != null && text.length()>0) {
       Paint originalPaint = g.getPaint();
       Font originalFont = g.getFont();
 
       g.setPaint(LABEL_COLOR);
       g.setFont(LABEL_FONT);
 
-      int textX = x + width/2 - fontMetrics.stringWidth(name)/2;
-      int textY = y + height + fontMetrics.getHeight();
-
-      g.drawString(name, textX, textY);
+      int wrapWidth = 100;
+      int textY = y + height;
+      
+      // TODO: use drawMultilineText()
+      AttributedString as = new AttributedString(text);
+      as.addAttribute(TextAttribute.FOREGROUND, g.getPaint());
+      as.addAttribute(TextAttribute.FONT, g.getFont());
+      AttributedCharacterIterator aci = as.getIterator();
+      FontRenderContext frc = new FontRenderContext(null, true, false);
+      LineBreakMeasurer lbm = new LineBreakMeasurer(aci, frc);
+      
+      while (lbm.getPosition() < text.length()) {
+    	  TextLayout tl = lbm.nextLayout(wrapWidth);
+    	  textY += tl.getAscent();
+    	  Rectangle2D bb = tl.getBounds();
+    	  float tY = (float) (x);
+    	  if (centered)
+        	  tY += (int)(width/2 - bb.getWidth()/2);
+    	  tl.draw(g, tY, textY);
+    	  textY += tl.getDescent() + tl.getLeading() + (interline - 1.0f) * tl.getAscent();
+      }
   
       // restore originals
       g.setFont(originalFont);

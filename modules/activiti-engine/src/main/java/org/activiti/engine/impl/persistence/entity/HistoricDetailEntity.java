@@ -25,7 +25,7 @@ import org.activiti.engine.impl.db.PersistentObject;
 /**
  * @author Tom Baeyens
  */
-public class HistoricDetailEntity implements HistoricDetail, PersistentObject, Serializable {
+public abstract class HistoricDetailEntity implements HistoricDetail, PersistentObject, Serializable {
 
   private static final long serialVersionUID = 1L;
   
@@ -57,51 +57,39 @@ public class HistoricDetailEntity implements HistoricDetail, PersistentObject, S
   public void setId(String id) {
     this.id = id;
   }
-
   
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-
-  
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
 
-  
-  public String getExecutionId() {
-    return executionId;
-  }
-
-  
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
-
-  
   public String getActivityInstanceId() {
     return activityInstanceId;
   }
-
-  
   public void setActivityInstanceId(String activityInstanceId) {
     this.activityInstanceId = activityInstanceId;
+  }
+
+  public String getTaskId() {
+    return taskId;
+  }
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
+  }
+
+  public String getExecutionId() {
+    return executionId;
+  }
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
   }
 
   public Date getTime() {
     return time;
   }
-  
   public void setTime(Date time) {
     this.time = time;
-  }
-
-  
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
   }
 }

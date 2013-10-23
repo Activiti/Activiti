@@ -23,6 +23,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.identity.LoggedInUser;
 import org.activiti.explorer.identity.LoggedInUserImpl;
 
@@ -43,6 +44,7 @@ public class DefaultLoginHandler implements LoginHandler {
       loggedInUser = new LoggedInUserImpl(user, password);
       List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
       for (Group group : groups) {
+
         if (Constants.SECURITY_ROLE.equals(group.getType())) {
           loggedInUser.addSecurityRoleGroup(group);
           if (Constants.SECURITY_ROLE_USER.equals(group.getId())) {
@@ -51,9 +53,19 @@ public class DefaultLoginHandler implements LoginHandler {
           if (Constants.SECURITY_ROLE_ADMIN.equals(group.getId())) {
             loggedInUser.setAdmin(true);
           }
+        } else if (ExplorerApp.get().getAdminGroups() != null
+                    && ExplorerApp.get().getAdminGroups().contains(group.getId())) {
+          loggedInUser.addSecurityRoleGroup(group);
+          loggedInUser.setAdmin(true);
+        } else if (ExplorerApp.get().getUserGroups() != null
+                && ExplorerApp.get().getUserGroups().contains(group.getId())) {
+          loggedInUser.addSecurityRoleGroup(group);
+          loggedInUser.setUser(true);
         } else {
           loggedInUser.addGroup(group);
         }
+        
+        
       }
     }
     

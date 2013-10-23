@@ -34,6 +34,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
   protected String processDefinitionKey;
+  protected String processDefinitionName;
   protected String activityId;
   protected String executionId;
   protected String parentId;
@@ -43,6 +44,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
+  protected boolean excludeSubprocesses;
   protected SuspensionState suspensionState;
   protected String businessKey;
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
@@ -80,7 +82,16 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.processDefinitionKey = processDefinitionKey;
     return this;
   }
-  
+
+  @Override
+  public ExecutionQuery processDefinitionName(String processDefinitionName) {
+    if (processDefinitionName == null) {
+      throw new ActivitiIllegalArgumentException("Process definition name is null");
+    }
+    this.processDefinitionName = processDefinitionName;
+    return this;
+  }
+
   public ExecutionQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("Process instance id is null");
@@ -160,6 +171,27 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     eventSubscriptions.add(new EventSubscriptionQueryValue(eventName, eventType));
     return this;
   }
+  
+  public ExecutionQuery processVariableValueEquals(String variableName, Object variableValue) {
+    return variableValueEquals(variableName, variableValue, false);
+  }
+
+  public ExecutionQuery processVariableValueEquals(Object variableValue) {
+    return variableValueEquals(variableValue, false);
+  }
+
+  public ExecutionQuery processVariableValueNotEquals(String variableName, Object variableValue) {
+    return variableValueNotEquals(variableName, variableValue, false);
+  }
+
+  public ExecutionQuery processVariableValueEqualsIgnoreCase(String name, String value) {
+    return variableValueEqualsIgnoreCase(name, value, false);
+  }
+
+  @Override
+  public ExecutionQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
+    return variableValueNotEqualsIgnoreCase(name, value, false);
+  }
 
   //ordering ////////////////////////////////////////////////////
   
@@ -208,6 +240,9 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
+  public String getProcessDefinitionName() {
+    return processDefinitionName;
+  }
   public String getActivityId() {
     return activityId;
   }
@@ -228,7 +263,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   }
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
-  }  
+  }
+  public boolean isExcludeSubprocesses() {
+    return excludeSubprocesses;
+  }
   public SuspensionState getSuspensionState() {
     return suspensionState;
   }  

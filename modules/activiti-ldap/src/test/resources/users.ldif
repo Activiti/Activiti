@@ -30,6 +30,7 @@ dn: cn=User,ou=groups,o=activiti
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: User
+uid : user
 uniqueMember: uid=kermit, ou=users,o=activiti
 uniqueMember: uid=pepe, ou=users,o=activiti
 uniqueMember: uid=gonzo, ou=users,o=activiti
@@ -39,6 +40,7 @@ dn: cn=Admin,ou=groups,o=activiti
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: Admin
+uid : admin
 uniqueMember: uid=kermit, ou=users,o=activiti
 uniqueMember: uid=fozzie, ou=users,o=activiti
 
@@ -46,6 +48,7 @@ dn: cn=Sales,ou=groups,o=activiti
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: Sales
+uid : sales
 uniqueMember: uid=pepe, ou=users,o=activiti
 uniqueMember: uid=gonzo, ou=users,o=activiti
 
@@ -66,8 +69,8 @@ objectClass: organizationalPerson
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: top
-cn: Pepe the King Prawn
-sn: the King Prawn
+cn: Pepe
+sn: The King Prawn
 uid: pepe
 userPassword:: cGFzcw==
 
@@ -76,7 +79,7 @@ objectClass: organizationalPerson
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: top
-cn: Fozzie Bear
+cn: Fozzie
 sn: Bear
 uid: fozzie
 userPassword:: cGFzcw==
@@ -86,7 +89,7 @@ objectClass: organizationalPerson
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: top
-cn: Kermit The Frog
+cn: Kermit
 sn: The Frog
 uid: kermit
 userPassword:: cGFzcw==
@@ -96,7 +99,7 @@ objectClass: organizationalPerson
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: top
-cn: Gonzo The Great
+cn: Gonzo
 sn: The Great
 uid: gonzo
 userPassword:: cGFzcw==

@@ -21,6 +21,7 @@ import java.util.List;
 public class UserTask extends Task {
 
   protected String assignee;
+  protected String owner;
   protected String priority;
   protected String formKey;
   protected String dueDate;
@@ -34,6 +35,12 @@ public class UserTask extends Task {
   }
   public void setAssignee(String assignee) {
     this.assignee = assignee;
+  }
+  public String getOwner() {
+    return owner;
+  }
+  public void setOwner(String owner) {
+    this.owner = owner;
   }
   public String getPriority() {
     return priority;

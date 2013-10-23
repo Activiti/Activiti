@@ -39,10 +39,12 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String businessKey;
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected String processDefinitionId;
+  protected String processDefinitionName;
   protected Set<String> processInstanceIds; 
   protected String processDefinitionKey;
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
+  protected boolean excludeSubprocesses;
   protected String involvedUser;
   protected SuspensionState suspensionState;
   protected boolean includeProcessVariables;
@@ -97,7 +99,16 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     this.processDefinitionKey = processDefinitionKey;
     return this;
   }
-  
+
+  @Override
+  public ProcessInstanceQuery processDefinitionName(String processDefinitionName) {
+    if (processDefinitionName == null) {
+	  throw new ActivitiIllegalArgumentException("Process definition name is null");
+    }
+    this.processDefinitionName = processDefinitionName;
+    return this;
+  }
+
   public ProcessInstanceQueryImpl processDefinitionId(String processDefinitionId) {
     if (processDefinitionId == null) {
       throw new ActivitiIllegalArgumentException("Process definition id is null");
@@ -121,6 +132,11 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   
   public ProcessInstanceQuery subProcessInstanceId(String subProcessInstanceId) {
     this.subProcessInstanceId = subProcessInstanceId;
+    return this;
+  }
+  
+  public ProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses) {
+    this.excludeSubprocesses = excludeSubprocesses;
     return this;
   }
   
@@ -166,6 +182,8 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     String specialOrderBy = super.getOrderBy();
     if (specialOrderBy != null && specialOrderBy.length() > 0) {
       specialOrderBy = specialOrderBy.replace("RES.", "TEMPRES_");
+      specialOrderBy = specialOrderBy.replace("ProcessDefinitionKey", "TEMPP_KEY_");
+      specialOrderBy = specialOrderBy.replace("ProcessDefinitionId", "TEMPP_ID_");
     }
     return specialOrderBy;
   }
@@ -186,11 +204,11 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     if (includeProcessVariables) {
       return commandContext
           .getExecutionEntityManager()
-          .findProcessInstanceAndVariablesByQueryCriteria(this, page);
+          .findProcessInstanceAndVariablesByQueryCriteria(this);
     } else {
       return commandContext
           .getExecutionEntityManager()
-          .findProcessInstanceByQueryCriteria(this, page);
+          .findProcessInstanceByQueryCriteria(this);
     }
   }
   
@@ -214,6 +232,9 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
+  public String getProcessDefinitionName() {
+    return processDefinitionName;
+  }
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
   }
@@ -225,7 +246,10 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   }
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
-  }  
+  }
+  public boolean isExcludeSubprocesses() {
+    return excludeSubprocesses;
+  }
   public String getInvolvedUser() {
     return involvedUser;
   }

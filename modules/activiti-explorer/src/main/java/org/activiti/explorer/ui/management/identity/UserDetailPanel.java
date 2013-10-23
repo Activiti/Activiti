@@ -273,9 +273,6 @@ public class UserDetailPanel extends DetailPanel implements MemberShipChangeList
        if (nameChanged(originalFirstName, originalLastName)) {
          userPage.notifyUserChanged(user.getId());
        }
-       
-       // Update user cache
-       ExplorerApp.get().getUserCache().notifyUserDataChanged(user.getId());
       }
     });
   }
@@ -316,9 +313,6 @@ public class UserDetailPanel extends DetailPanel implements MemberShipChangeList
 
             // Update ui
             userPage.refreshSelectNext();
-            
-            // Update user cache
-            ExplorerApp.get().getUserCache().notifyUserDataChanged(user.getId());
           }
         });
         

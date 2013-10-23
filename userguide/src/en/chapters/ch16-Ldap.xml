@@ -6,14 +6,14 @@
 
     <para>
         Companies often already have a user and group store in the form of an LDAP system.
-        Since version 5.13, Activiti offers an out-of-the-box solution for easily configuring 
+        Since version 5.15-SNAPSHOT, Activiti offers an out-of-the-box solution for easily configuring 
         how Activiti should connect with an LDAP system.  
     </para>
     
     <para>
-       Before Activiti 5.13, it was already possible to integrate LDAP with Activiti.
-       However, as of 5.13, the configuration has been simplified a lot. However, the 'old' way
-       of configuring LDAP still works. As a matter of facts, the simplified configuration is
+       Before Activiti 5.15-SNAPSHOT, it was already possible to integrate LDAP with Activiti.
+       However, as of 5.15-SNAPSHOT, the configuration has been simplified a lot. However, the 'old' way
+       of configuring LDAP still works. More specifically, the simplified configuration is
        just a wrapper on top of the 'old' infrastructure.
     </para>
     
@@ -22,11 +22,29 @@
         <title>Usage</title>
         
         <para>
+            To add the LDAP integration code to your project, simply add the following
+            dependency to your pom.xml:
+            <programlisting>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.activiti&lt;/groupId&gt;
+  &lt;artifactId&gt;activiti-ldap&lt;/artifactId&gt;
+  &lt;version&gt;latest.version&lt;/version&gt;
+&lt;/dependency&gt;            
+            </programlisting> 
+        </para>
+    
+    </section>
+    
+    <section id="ldap_usecases">
+    
+        <title>Use cases</title>
+        
+        <para>
             The LDAP integration has currently two main use cases:
             <itemizedlist>
                 <listitem>
                     <para>
-                        Allow for authentication through the IdentityService. This is eg useful when using Activiti Explorer
+                        Allow for authentication through the IdentityService. This is eg. useful when using Activiti Explorer
                         and the login needs to go through LDAP.
                     </para>
                 </listitem>
@@ -73,9 +91,11 @@
                 &lt;!-- Query params --&gt;
                 &lt;property name=&quot;baseDn&quot; value=&quot;o=activiti&quot; /&gt;
                 &lt;property name=&quot;queryUserByUserId&quot; value=&quot;(&amp;(objectClass=inetOrgPerson)(uid={0}))&quot; /&gt;
+                &lt;property name=&quot;queryUserByFullNameLike&quot; value=&quot;(&amp;(objectClass=inetOrgPerson)(|({0}=*{1}*)({2}=*{3}*)))&quot; /&gt;
                 &lt;property name=&quot;queryGroupsForUser&quot; value=&quot;(&amp;(objectClass=groupOfUniqueNames)(uniqueMember={0}))&quot; /&gt;
                 
                 &lt;!-- Attribute config --&gt;
+                &lt;property name=&quot;userIdAttribute&quot; value=&quot;uid&quot; /&gt;
                 &lt;property name=&quot;userFirstNameAttribute&quot; value=&quot;cn&quot; /&gt;
                 &lt;property name=&quot;userLastNameAttribute&quot; value=&quot;sn&quot; /&gt;
                 
@@ -96,7 +116,7 @@
         <title>Properties</title>
         
         <para>
-            Following properties can be set on <literal>org.activiti.ldap.LDAPConfigurator</literal>
+            Following properties can be set on <literal>org.activiti.ldap.LDAPConfigurator</literal>:
             <table>
                 <title>LDAP configuration properties</title>
                 <tgroup cols='4'>
@@ -152,7 +172,7 @@
                             properties. Such properties are for example to configure connection pooling, specific
                             security settings, etc. All the provided parameters will be provided when creating a 
                             connection to the LDAP system.</entry>
-                            <entry>map&lt;String, String&gt;</entry>
+                            <entry>Map&lt;String, String&gt;</entry>
                             <entry></entry>
                         </row>     
                          <row>
@@ -162,12 +182,24 @@
                             <entry></entry>
                         </row>     
                          <row>
+                            <entry>userBaseDn</entry>
+                            <entry>The base 'distinguished name' (DN) from which the searches for users are started. If not provided, baseDn (see above) will be used</entry>
+                            <entry>String</entry>
+                            <entry></entry>
+                        </row> 
+                        <row>
+                            <entry>groupBaseDn</entry>
+                            <entry>The base 'distinguished name' (DN) from which the searches for groups are started. If not provided, baseDn (see above) will be used</entry>
+                            <entry>String</entry>
+                            <entry></entry>
+                        </row>     
+                         <row>
                             <entry>searchTimeLimit</entry>
                             <entry>The timeout that is used when doing a search in LDAP in milliseconds</entry>
                             <entry>long</entry>
                             <entry>one hour</entry>
                         </row>     
-                         <row>
+                        <row>
                             <entry>queryUserByUserId</entry>
                             <entry>
                             The query that is executed when searching for a user by userId. 
@@ -181,7 +213,22 @@
                             </entry>
                             <entry>string</entry>
                             <entry></entry>
-                        </row>     
+                        </row>    
+                        <row>
+                            <entry>queryUserByFullNameLike</entry>
+                            <entry>
+                            The query that is executed when searching for a user by full name. 
+                            For example: (&amp; (objectClass=inetOrgPerson) (|({0}=*{1}*)({2}=*{3}*)) )
+                            Here, all the objects in LDAP with the class 'inetOrgPerson'
+                            and who have the matching first name and last name values will be returned.
+                            Note that {0} injects the firstNameAttribute (as defined above), {1} and {3} the search text
+                            and {2} the lastNameAttribute. If setting the query alone is insufficient for your specific
+                            LDAP setup, you can alternatively plug in a different
+                            LDAPQueryBuilder, which allows for more customization than only the  query.
+                            </entry>
+                            <entry>string</entry>
+                            <entry></entry>
+                        </row>      
                          <row>
                             <entry>queryGroupsForUser</entry>
                             <entry>The query that is executed when searching for the groups of a specific user.
@@ -200,8 +247,7 @@
                             <entry>Name of the attribute that matches the user id.
                             This property is used when looking for a User object
                             and the mapping between the LDAP object and the Activiti User object
-                            is done. This property is optional and is only needed if searching for User
-                            objects using the Activiti API.</entry>
+                            is done.</entry>
                             <entry>string</entry>
                             <entry></entry>
                         </row>     
@@ -246,24 +292,44 @@
                             <entry>String</entry>
                             <entry></entry>
                         </row>  
+                    </tbody>
+                </tgroup>
+            </table>
+        </para>
+        
+        <para>
+            Following properties are when one wants to customize default behavior or
+            introduced group caching:
+            <table>
+                <title>Advanced properties</title>
+                <tgroup cols='4'>
+                    <thead>
                         <row>
+                            <entry>Property name</entry>
+                            <entry>Description</entry>
+                            <entry>Type</entry>
+                            <entry>Default value</entry>   
+                        </row>
+                    </thead>
+                    <tbody>
+                          <row>
                             <entry>ldapUserManagerFactory</entry>
                             <entry>Set a custom implementation of the LDAPUserManagerFactory if the default implementation is not suitable.</entry>
-                            <entry>An instance of LDAPUserManagerFactory</entry>
-                            <entry>org.activiti.ldap.LDAPUserManagerFactory</entry>
+                            <entry>instance of LDAPUserManagerFactory</entry>
+                            <entry></entry>
                         </row>  
                         <row>
                             <entry>ldapGroupManagerFactory</entry>
                             <entry>Set a custom implementation of the LDAPGroupManagerFactory if the default implementation is not suitable.</entry>
-                            <entry>An instance of LDAPGroupManagerFactory</entry>
-                            <entry>org.activiti.ldap.LDAPGroupManagerFactory</entry>
+                            <entry>instance of LDAPGroupManagerFactory</entry>
+                            <entry></entry>
                         </row>  
                         <row>
                             <entry>ldapMemberShipManagerFactory</entry>
                             <entry>Set a custom implementation of the LDAPMembershipManagerFactory if the default implementation is not suitable.
                             Note that this is very unlikely, as membership are managed in the LDAP system itself normally.</entry>
                             <entry>An instance of LDAPMembershipManagerFactory</entry>
-                            <entry>org.activiti.ldap.LDAPMembershipManagerFactory</entry>
+                            <entry></entry>
                         </row>  
                         <row>
                             <entry>ldapQueryBuilder</entry>
@@ -302,7 +368,61 @@
                         </row>  
                     </tbody>
                 </tgroup>
+            
             </table>
+        </para>
+        
+        <para>
+            Note when using Active Directory: people in the Activiti forum have reported that for Activiti Directory, the 'InitialDirContext' needs to be set
+            to Context.REFERRAL. This can be passed through the customConnectionParameters map as described above.
+        </para>
+        
+    
+    </section>
+    
+    <section id="lda-explorer">
+    
+        <title>Integrate LDAP in Explorer</title>
+        
+        <para>
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        Add the LDAP configuration as above to <literal>activiti-standalone-context.xml</literal>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Add the activiti-ldap jar to WEB-INF/lib
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Remove the <literal>demoDataGenerator</literal> bean, as it will try to insert users (which is not possible with the LDAP integration)
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Add following configuration to the <literal>explorerApp</literal> bean in <literal>activiti-ui.context</literal>:
+                        <programlisting>
+&lt;property name=&quot;adminGroups&quot;&gt;
+  &lt;list&gt;
+    &lt;value&gt;admin&lt;/value&gt;
+  &lt;/list&gt;
+  &lt;/property&gt;
+  &lt;property name=&quot;userGroups&quot;&gt;
+    &lt;list&gt;
+      &lt;value&gt;user&lt;/value&gt;
+    &lt;/list&gt;
+&lt;/property&gt;                        
+                        </programlisting>
+                        Obviously replacing the values with your own values. The value that needs to be used is the id of the group (configurable
+                        through <literal>groupIdAttribute</literal>). The config above will make all members of the 'admin' group an Administrator user
+                        in Activiti Explorer and similar for the user group. Any group not matching these values is seen as an 'assignment' group, 
+                        ie where tasks can become assigned to.
+                    </para>
+                </listitem>
+            </itemizedlist>
         </para>
     
     </section>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="OneTaskCategory">
+
+  <process id="oneTaskProcess" name="The One Task Process">
+    <documentation>One task process description</documentation>
+  
+    <startEvent id="theStart">
+      <extensionElements>
+        <activiti:formProperty id="number" name="Number" type="long" />
+        <activiti:formProperty id="description" name="Description" />
+      </extensionElements>
+    </startEvent>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <userTask id="theTask" name="my task" activiti:assignee="kermit">
+      <extensionElements>
+        <activiti:formProperty id="room" />
+        <activiti:formProperty id="duration" type="long"/>
+        <activiti:formProperty id="speaker" variable="SpeakerName" writable="false" />
+        <activiti:formProperty id="street" expression="#{address.street}" required="true" />
+        <activiti:formProperty id="start" 
+          type="date" 
+          datePattern="dd-MMM-yyyy" />
+        <activiti:formProperty id="end" name="End" type="date" />
+        <activiti:formProperty id="direction" type="enum">
+          <activiti:value id="left" name="Go Left" />
+          <activiti:value id="right" name="Go Right" />
+          <activiti:value id="up" name="Go Up" />
+          <activiti:value id="down" name="Go Down" />
+        </activiti:formProperty>
+      </extensionElements>
+    </userTask>    
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

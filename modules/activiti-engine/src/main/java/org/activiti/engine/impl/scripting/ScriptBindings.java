@@ -88,23 +88,19 @@ public class ScriptBindings implements Bindings {
   }
 
   public Set<java.util.Map.Entry<String, Object>> entrySet() {
-    throw new UnsupportedOperationException();
-//    return variableScope.getVariables().entrySet();
+    return variableScope.getVariables().entrySet();
   }
 
   public Set<String> keySet() {
-    throw new UnsupportedOperationException();
-//    return variableScope.getVariables().keySet();
+    return variableScope.getVariables().keySet();
   }
 
   public int size() {
-    throw new UnsupportedOperationException();
-//    return variableScope.getVariables().size();
+    return variableScope.getVariables().size();
   }
 
   public Collection<Object> values() {
-    throw new UnsupportedOperationException();
-//    return variableScope.getVariables().values();
+    return variableScope.getVariables().values();
   }
 
   public void putAll(Map< ? extends String, ? extends Object> toMerge) {
@@ -129,5 +125,4 @@ public class ScriptBindings implements Bindings {
   public boolean isEmpty() {
     throw new UnsupportedOperationException();
   }
-
 }

@@ -277,14 +277,14 @@
     {
       &quot;type&quot; : &quot;lineChart&quot;,
       &quot;description&quot; : &quot;My first chart&quot;,
-      &quot;xaxis&quot; : &quot;Category&quot;
+      &quot;xaxis&quot; : &quot;Year&quot;
       &quot;yaxis&quot; : &quot;Total sales&quot;
       &quot;data&quot; : 
       {
-        &quot;A&quot; : 50,
-        &quot;B&quot; : 33,
-        &quot;C&quot; : 17,
-        &quot;D&quot; : 87,
+        &quot;2010&quot; : 50,
+        &quot;2011&quot; : 33,
+        &quot;2012&quot; : 17,
+        &quot;2013&quot; : 87,
       }
     }
   ]

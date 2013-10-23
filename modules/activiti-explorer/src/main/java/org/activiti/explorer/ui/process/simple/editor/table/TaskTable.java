@@ -25,8 +25,9 @@ import org.activiti.explorer.ui.process.simple.editor.listener.AddTaskClickListe
 import org.activiti.explorer.ui.process.simple.editor.listener.DeleteTaskClickListener;
 import org.activiti.explorer.ui.process.simple.editor.listener.ShowFormClickListener;
 import org.activiti.explorer.ui.process.simple.editor.listener.TaskFormModelListener;
-import org.activiti.workflow.simple.definition.FormDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
@@ -88,14 +89,21 @@ public class TaskTable extends Table implements TaskFormModelListener {
 
   public void addTaskRow(HumanStepDefinition humanStepDefinition) {
     Object taskItemId = addTaskRow(null, humanStepDefinition.getName(), humanStepDefinition.getAssignee(), 
-            humanStepDefinition.getCandidateGroupsCommaSeparated(), humanStepDefinition.getDescription(),
+            getCommaSeperated(humanStepDefinition.getCandidateGroups()), humanStepDefinition.getDescription(),
             humanStepDefinition.isStartsWithPrevious());
     if (humanStepDefinition.getForm() != null) {
       taskFormModel.addForm(taskItemId, humanStepDefinition.getForm());
     }
   }
 
-  public void addDefaultTaskRow() {
+  protected String getCommaSeperated(List<String> list) {
+	  if(list != null && list.size() > 0) {
+	  	return StringUtils.join(list, ", ");
+	  }
+	  return null;
+  }
+
+	public void addDefaultTaskRow() {
     addDefaultTaskRowAfter(null);
   }
 
@@ -120,29 +128,30 @@ public class TaskTable extends Table implements TaskFormModelListener {
     // assignee
     ComboBox assigneeComboBox = new ComboBox();
     assigneeComboBox.setNullSelectionAllowed(true);
-    if (taskAssignee == null) {
-      assigneeComboBox.setValue(null);
-    } else {
-      assigneeComboBox.setValue(taskAssignee);
-    }
+   
     for (User user : ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().orderByUserFirstName().asc().list()) {
       assigneeComboBox.addItem(user.getId());
       assigneeComboBox.setItemCaption(user.getId(), user.getFirstName() + " " + user.getLastName());
     }
+    
+    if (taskAssignee != null) {
+      assigneeComboBox.select(taskAssignee);
+    }
+    
     newItem.getItemProperty(ID_ASSIGNEE).setValue(assigneeComboBox);
     
     // groups
     ComboBox groupComboBox = new ComboBox();
     groupComboBox.setNullSelectionAllowed(true);
-    if (taskGroups == null) {
-      groupComboBox.setValue(null);
-    } else {
-      groupComboBox.setValue(taskGroups);
-    }
-    for (Group group : ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().groupType("assignment").orderByGroupName().asc().list()) {
+    for (Group group : ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().orderByGroupName().asc().list()) {
       groupComboBox.addItem(group.getId());
       groupComboBox.setItemCaption(group.getId(), group.getName());
     }
+    
+    if (taskGroups != null) {
+      groupComboBox.select(taskGroups);
+    }
+    
     newItem.getItemProperty(ID_GROUPS).setValue(groupComboBox);
 
     // description

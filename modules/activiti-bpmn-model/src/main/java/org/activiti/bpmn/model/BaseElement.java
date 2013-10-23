@@ -12,20 +12,24 @@
  */
 package org.activiti.bpmn.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
  */
-public class BaseElement {
+public class BaseElement implements HasExtensionAttributes {
   
   protected String id;
   protected int xmlRowNumber;
   protected int xmlColumnNumber;
-  protected Map<String, ExtensionElement> extensionElements = new LinkedHashMap<String, ExtensionElement>();
+  protected Map<String, List<ExtensionElement>> extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
+  /** extension attributes could be part of each element */
+  protected Map<String, List<ExtensionAttribute>> attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
 
   public String getId() {
     return id;
@@ -51,17 +55,56 @@ public class BaseElement {
     this.xmlColumnNumber = xmlColumnNumber;
   }
 
-  public Map<String, ExtensionElement> getExtensionElements() {
+  public Map<String, List<ExtensionElement>> getExtensionElements() {
     return extensionElements;
   }
   
   public void addExtensionElement(ExtensionElement extensionElement) {
     if (extensionElement != null && StringUtils.isNotEmpty(extensionElement.getName())) {
-      this.extensionElements.put(extensionElement.getName(), extensionElement);
+      List<ExtensionElement> elementList = null;
+      if (this.extensionElements.containsKey(extensionElement.getName()) == false) {
+        elementList = new ArrayList<ExtensionElement>();
+        this.extensionElements.put(extensionElement.getName(), elementList);
+      }
+      this.extensionElements.get(extensionElement.getName()).add(extensionElement);
     }
   }
 
-  public void setExtensionElements(Map<String, ExtensionElement> extensionElements) {
+  public void setExtensionElements(Map<String, List<ExtensionElement>> extensionElements) {
     this.extensionElements = extensionElements;
+  }
+
+  @Override
+  public Map<String, List<ExtensionAttribute>> getAttributes() {
+    return attributes;
+  }
+
+  @Override
+  public String getAttributeValue(String namespace, String name) {
+    List<ExtensionAttribute> attributes = getAttributes().get(name);
+    if (attributes != null && !attributes.isEmpty()) {
+      for (ExtensionAttribute attribute : attributes) {
+        if ( namespace == attribute.getNamespace())
+          return attribute.getValue();
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public void addAttribute(ExtensionAttribute attribute) {
+    if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
+      List<ExtensionAttribute> attributeList = null;
+      if (this.attributes.containsKey(attribute.getName()) == false) {
+        attributeList = new ArrayList<ExtensionAttribute>();
+        this.attributes.put(attribute.getName(), attributeList);
+      }
+      this.attributes.get(attribute.getName()).add(attribute);
+    }
+  }
+
+  @Override
+  public void setAttributes(Map<String, List<ExtensionAttribute>> attributes) {
+    this.attributes = attributes;
   }
 }

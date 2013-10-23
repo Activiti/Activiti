@@ -55,6 +55,9 @@ public class SubProcessConverterTest extends AbstractConverterTest {
     assertTrue(flowElement instanceof SubProcess);
     assertEquals("subprocess1", flowElement.getId());
     SubProcess subProcess = (SubProcess) flowElement;
+    assertTrue(subProcess.getLoopCharacteristics().isSequential());
+    assertEquals("10", subProcess.getLoopCharacteristics().getLoopCardinality());
+    assertEquals("${assignee == \"\"}", subProcess.getLoopCharacteristics().getCompletionCondition());
     assertTrue(subProcess.getFlowElements().size() == 5);
     
     flowElement = model.getMainProcess().getFlowElement("boundaryEvent1");

@@ -57,16 +57,14 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
   @SuppressWarnings("unchecked")
   public void deleteUser(String userId) {
     UserEntity user = findUserById(userId);
-    if (user!=null) {
-      if (user.getPictureByteArrayId()!=null) {
-        getByteArrayManager().deleteByteArrayById(user.getPictureByteArrayId());
-      }
+    if (user != null) {
       List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
       for (IdentityInfoEntity identityInfo: identityInfos) {
         getIdentityInfoManager().deleteIdentityInfo(identityInfo);
       }
       getDbSqlSession().delete("deleteMembershipsByUserId", userId);
-      getDbSqlSession().delete(user);
+
+      user.delete();
     }
   }
   
@@ -85,7 +83,7 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
   }
 
   public UserQuery createNewUserQuery() {
-    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutorTxRequired());
+    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
   }
 
   public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
@@ -95,7 +93,7 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
     return (IdentityInfoEntity) getDbSqlSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("userId", userId);

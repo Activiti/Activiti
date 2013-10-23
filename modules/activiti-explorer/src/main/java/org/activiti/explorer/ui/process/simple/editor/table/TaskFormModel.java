@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.explorer.ui.process.simple.editor.listener.TaskFormModelListener;
-import org.activiti.workflow.simple.definition.FormDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
 
 /**
  * @author Joram Barrez

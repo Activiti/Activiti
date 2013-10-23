@@ -13,7 +13,9 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -41,6 +43,21 @@ public class CommentEntityManager extends AbstractManager {
   public List<Comment> findCommentsByTaskId(String taskId) {
     checkHistoryEnabled();
     return getDbSqlSession().selectList("selectCommentsByTaskId", taskId);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<Comment> findCommentsByTaskIdAndType(String taskId, String type) {
+    checkHistoryEnabled();
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("taskId", taskId);
+    params.put("type", type);
+    return getDbSqlSession().selectListWithRawParameter("selectCommentsByTaskIdAndType", params, 0, Integer.MAX_VALUE);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<Comment> findCommentsByType(String type) {
+    checkHistoryEnabled();
+    return getDbSqlSession().selectList("selectCommentsByType", type);
   }
 
   @SuppressWarnings("unchecked")

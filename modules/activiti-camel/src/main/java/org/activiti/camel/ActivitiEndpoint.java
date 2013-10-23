@@ -27,6 +27,7 @@ import org.apache.camel.impl.DefaultEndpoint;
  */
 public class ActivitiEndpoint extends DefaultEndpoint {
 
+
   private RuntimeService runtimeService;
 
   private ActivitiConsumer activitiConsumer;
@@ -38,6 +39,14 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   private boolean copyCamelBodyToBody;
   
   private boolean copyVariablesFromProperties;
+
+  private boolean copyVariablesFromHeader;
+  
+  private boolean copyCamelBodyToBodyAsString;
+  
+  private long timeout = 5000;
+  
+  private int timeResolution = 100;
 
   public ActivitiEndpoint(String uri, CamelContext camelContext, RuntimeService runtimeService) {
     super();
@@ -61,7 +70,7 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   }
 
   public Producer createProducer() throws Exception {
-    return new ActivitiProducer(this, runtimeService);
+    return new ActivitiProducer(this, runtimeService, getTimeout(), getTimeResolution());
   }
 
   public Consumer createConsumer(Processor processor) throws Exception {
@@ -104,8 +113,33 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     this.copyVariablesFromProperties = copyVariablesFromProperties;
   }
 
+  public boolean isCopyVariablesFromHeader() {
+    return this.copyVariablesFromHeader;
+  }
+
+  public void setCopyVariablesFromHeader(boolean copyVariablesFromHeader) {
+    this.copyVariablesFromHeader = copyVariablesFromHeader;
+  }
+  
+  public boolean isCopyCamelBodyToBodyAsString() {
+    return copyCamelBodyToBodyAsString;
+  }
+  
+  public void setCopyCamelBodyToBodyAsString(boolean copyCamelBodyToBodyAsString) {
+    this.copyCamelBodyToBodyAsString = copyCamelBodyToBodyAsString;
+  }
+  
   @Override
   public boolean isLenientProperties() {
     return true;
   }
+  
+  public long getTimeout() {
+    return timeout;
+  }
+  
+  public int getTimeResolution() {
+    return timeResolution;
+  }
+
 }

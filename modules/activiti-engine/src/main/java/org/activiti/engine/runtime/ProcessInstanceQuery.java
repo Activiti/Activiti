@@ -39,6 +39,9 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   /** Select process instance with the given business key, unique for the given process definition */
   ProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey, String processDefinitionKey);
 
+  /** Select process instances whose process definition name is processDefinitionName*/
+  ProcessInstanceQuery processDefinitionName(String processDefinitionName);
+
   /**
    * Select the process instances which are defined by a process definition with
    * the given key.
@@ -63,6 +66,11 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * such process instance that can be the result of this query.
    */
   ProcessInstanceQuery subProcessInstanceId(String subProcessInstanceId);
+  
+  /**
+   * Exclude sub processes from the query result;
+   */
+  ProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses);
   
   /**
    * Select the process instances with which the user with the given id is involved. 

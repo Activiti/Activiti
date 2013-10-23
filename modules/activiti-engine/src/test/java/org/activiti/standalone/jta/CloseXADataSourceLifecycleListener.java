@@ -24,7 +24,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
  * Used in JPA-tests to close the XA-datasource after engine is closed, due to internal caching
- * of datasource, independant of process-enging/spring-context.
+ * of datasource, independent of process-engine/spring-context.
  * 
  * @author Frederik Heremans
  */

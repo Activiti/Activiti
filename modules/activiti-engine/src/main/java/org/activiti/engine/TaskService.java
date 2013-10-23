@@ -134,6 +134,13 @@ public interface TaskService {
   void claim(String taskId, String userId);
   
   /**
+   * A shortcut to {@link #claim} with null user in order to unclaim the task
+   * @param taskId task to unclaim, cannot be null.
+   * @throws ActivitiObjectNotFoundException when the task doesn't exist. 
+   */
+  void unclaim(String taskId);
+  
+  /**
    * Called when the task is successfully executed.
    * @param taskId the id of the task to complete, cannot be null.
    * @throws ActivitiObjectNotFoundException when no task exists with the given id.
@@ -381,6 +388,9 @@ public interface TaskService {
   /** Add a comment to a task and/or process instance. */
   Comment addComment(String taskId, String processInstanceId, String message);
   
+  /** Add a comment to a task and/or process instance with a custom type. */
+  Comment addComment(String taskId, String processInstanceId, String type, String message);
+  
   /** 
    * Returns an individual comment with the given id. Returns null if no comment exists with the given id.
    */
@@ -397,6 +407,12 @@ public interface TaskService {
 
   /** The comments related to the given task. */
   List<Comment> getTaskComments(String taskId);
+  
+  /** The comments related to the given task of the given type. */
+  List<Comment> getTaskComments(String taskId, String type);
+  
+  /** All comments of a given type. */
+  List<Comment> getCommentsByType(String type);
 
   /** The all events related to the given task. */
   List<Event> getTaskEvents(String taskId);

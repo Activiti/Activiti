@@ -74,6 +74,9 @@ public interface FormService {
   
   /** Completes a task with the user data that was entered as properties in a task form. */  
   void submitTaskFormData(String taskId, Map<String, String> properties);
+  
+  /** Save the data that was entered as properties in a task form. */
+  void saveFormData(String taskId, Map<String, String> properties);
 
   /**
    * Retrieves a user defined reference to a start form.

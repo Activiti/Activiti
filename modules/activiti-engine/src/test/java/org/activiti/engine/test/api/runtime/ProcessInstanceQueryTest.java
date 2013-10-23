@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +41,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   private static String PROCESS_DEFINITION_KEY = "oneTaskProcess";
   private static String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";
+  private static String PROCESS_DEFINITION_NAME = "oneTaskProcessName";
+  private static String PROCESS_DEFINITION_NAME_2 = "oneTaskProcess2Name";
   
   private List<String> processInstanceIds;
 
@@ -140,6 +143,16 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     }
   }
 
+  public void testQueryByProcessDefinitionName() {
+    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionName(PROCESS_DEFINITION_NAME).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionName(PROCESS_DEFINITION_NAME_2).count());
+  }
+
+  public void testQueryByInvalidProcessDefinitionName() {
+    assertNull(runtimeService.createProcessInstanceQuery().processDefinitionName("invalid").singleResult());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionName("invalid").count());
+  }
+
   public void testQueryByInvalidProcessInstanceId() {
     assertNull(runtimeService.createProcessInstanceQuery().processInstanceId("I do not exist").singleResult());
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId("I do not exist").list().size());
@@ -203,6 +216,37 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     
     ProcessInstance nestedSubProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(subProcessInstance.getId()).singleResult();
     assertEquals(subProcessInstance.getId(), runtimeService.createProcessInstanceQuery().subProcessInstanceId(nestedSubProcessInstance.getId()).singleResult().getId());
+  }
+  
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/superProcessWithNestedSubProcess.bpmn20.xml",
+          "org/activiti/engine/test/api/runtime/nestedSubProcess.bpmn20.xml",
+          "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"})
+  public void testQueryWithExcludeSubprocesses() {
+    ProcessInstance superProcessInstance = runtimeService.startProcessInstanceByKey("nestedSubProcessQueryTest");
+    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(superProcessInstance.getId()).singleResult();
+    ProcessInstance nestedSubProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(subProcessInstance.getId()).singleResult();
+    
+    List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().excludeSubprocesses(true).list();
+    assertEquals(6, instanceList.size());
+    
+    boolean superProcessFound = false;
+    boolean subProcessFound = false;
+    boolean nestedSubProcessFound = false;
+    for (ProcessInstance processInstance : instanceList) {
+      if (processInstance.getId().equals(superProcessInstance.getId())) {
+        superProcessFound = true;
+      } else if (processInstance.getId().equals(subProcessInstance.getId())) {
+        subProcessFound = true;
+      } else if (processInstance.getId().equals(nestedSubProcessInstance.getId())) {
+        nestedSubProcessFound = true;
+      }
+    }
+    assertTrue(superProcessFound);
+    assertTrue(subProcessFound == false);
+    assertTrue(nestedSubProcessFound == false);
+    
+    instanceList = runtimeService.createProcessInstanceQuery().excludeSubprocesses(false).list();
+    assertEquals(8, instanceList.size());
   }
   
   public void testQueryPaging() {
@@ -1289,6 +1333,24 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     
     assertEquals(piCount, runtimeService.createNativeProcessInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(ProcessInstance.class)).list().size());
     assertEquals(piCount, runtimeService.createNativeProcessInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(ProcessInstance.class)).count());
+  }
+  
+  /**
+   * Test confirming fix for ACT-1731
+   */
+  @Deployment(resources={
+  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testIncludeBinaryVariables() throws Exception {
+    // Start process with a binary variable
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", 
+            Collections.singletonMap("binaryVariable", (Object)"It is I, le binary".getBytes()));
+    
+    processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId())
+              .includeProcessVariables().singleResult();
+    assertNotNull(processInstance);
+    // Query process, including variables
+    byte[] bytes = (byte[]) processInstance.getProcessVariables().get("binaryVariable");
+    assertEquals("It is I, le binary", new String(bytes));
   }
   
   public void testNativeQueryPaging() {

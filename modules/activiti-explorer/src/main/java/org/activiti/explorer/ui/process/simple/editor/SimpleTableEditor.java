@@ -12,13 +12,16 @@
  */
 package org.activiti.explorer.ui.process.simple.editor;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.UUID;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
@@ -29,14 +32,12 @@ import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.simple.editor.table.TaskTable;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
-import org.activiti.workflow.simple.converter.json.JsonConverter;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinitionContainer;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -242,7 +243,7 @@ public class SimpleTableEditor extends AbstractPage {
       public InputStream getStream() {
         WorkflowDefinitionConversion workflowDefinitionConversion =
                 ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(createWorkflow());
-        return workflowDefinitionConversion.getWorkflowDiagramImage();
+        return ProcessDiagramGenerator.generatePngDiagram(workflowDefinitionConversion.getBpmnModel());
       }
     };
     
@@ -296,13 +297,15 @@ public class SimpleTableEditor extends AbstractPage {
 //      
 //      repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
     
-      JsonConverter jsonConverter = new JsonConverter();
-      ObjectNode json = jsonConverter.convertToJson(workflowDefinition);
-      repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
+    	// Write JSON to byte-array and set as editor-source
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	ExplorerApp.get().getSimpleWorkflowJsonConverter().writeWorkflowDefinition(workflowDefinition, new OutputStreamWriter(baos));
+      repositoryService.addModelEditorSource(model.getId(), baos.toByteArray());
       
       // Store process image
       // TODO: we should really allow the service to take an inputstream as input. Now we load it into memory ...
-      repositoryService.addModelEditorSourceExtra(model.getId(), IOUtils.toByteArray(conversion.getWorkflowDiagramImage()));
+      repositoryService.addModelEditorSourceExtra(model.getId(), IOUtils.toByteArray(
+          ProcessDiagramGenerator.generatePngDiagram(conversion.getBpmnModel())));
     } catch (IOException e) {
       logger.warn("Could not generate process image. Image is not stored and will not be shown.", e);
     }

@@ -28,14 +28,11 @@ public abstract class BaseChildElementParser implements BpmnXMLConstants {
   
   protected static final Logger LOGGER = LoggerFactory.getLogger(BaseChildElementParser.class);
 
-  protected BaseElement parentElement;
-  
   public abstract String getElementName();
   
   public abstract void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception;
   
   protected void parseChildElements(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model, BaseChildElementParser parser) throws Exception {
-  	this.parentElement = parentElement;
     boolean readyWithChildElements = false;
     while (readyWithChildElements == false && xtr.hasNext()) {
       xtr.next();

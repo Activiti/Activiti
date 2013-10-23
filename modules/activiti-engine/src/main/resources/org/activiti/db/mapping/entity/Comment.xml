@@ -114,6 +114,36 @@
       and TYPE_ = 'comment'
     order by TIME_ desc
   </select>
+  
+  <select id="selectCommentsByTaskIdAndType" parameterType="java.util.Map" resultMap="commentResultMap">
+  	select *
+  	from ${prefix}ACT_HI_COMMENT
+  	where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+  		and TYPE_ = #{type,jdbcType=VARCHAR}
+  	order by TIME_ desc
+  </select>
+  
+  <select id="selectCommentsByTaskIdAndType_postgres" parameterType="java.util.Map" resultMap="commentResultMap_postgres">
+  	select *
+  	from ${prefix}ACT_HI_COMMENT
+  	where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+  		and TYPE_ = #{type,jdbcType=VARCHAR}
+  	order by TIME_ desc
+  </select>
+  
+  <select id="selectCommentsByType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+  	select *
+  	from ${prefix}ACT_HI_COMMENT
+  	where TYPE_ = #{parameter,jdbcType=VARCHAR}
+  	order by TIME_ desc
+  </select>
+  
+  <select id="selectCommentsByType_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+  	select *
+  	from ${prefix}ACT_HI_COMMENT
+  	where TYPE_ = #{parameter,jdbcType=VARCHAR}
+  	order by TIME_ desc
+  </select>
 
   <select id="selectEventsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
     select * 

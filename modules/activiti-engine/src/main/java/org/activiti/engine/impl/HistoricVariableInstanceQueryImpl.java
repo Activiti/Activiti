@@ -22,6 +22,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.impl.variable.CacheableVariable;
+import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
@@ -38,6 +40,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   protected String variableName;
   protected String variableNameLike;
   protected boolean excludeTaskRelated = false;
+  protected boolean excludeVariableInitialization = false;
   protected QueryVariableValue queryVariableValue;
 
   public HistoricVariableInstanceQueryImpl() {
@@ -88,6 +91,11 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     excludeTaskRelated = true;
     return this;
   }
+  
+  public HistoricVariableInstanceQuery excludeVariableInitialization() {
+    excludeVariableInitialization = true;
+    return this;
+  }
 
   public HistoricVariableInstanceQuery variableName(String variableName) {
     if (variableName == null) {
@@ -127,19 +135,31 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceCountByQueryCriteria(this);
+    return commandContext
+        .getHistoricVariableInstanceEntityManager()
+        .findHistoricVariableInstanceCountByQueryCriteria(this);
   }
 
   public List<HistoricVariableInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
+    
     List<HistoricVariableInstance> historicVariableInstances = commandContext
             .getHistoricVariableInstanceEntityManager()
             .findHistoricVariableInstancesByQueryCriteria(this, page);
-    if (historicVariableInstances!=null) {
+    
+    if (excludeVariableInitialization == false) {
       for (HistoricVariableInstance historicVariableInstance: historicVariableInstances) {
         if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
-          ((HistoricVariableInstanceEntity)historicVariableInstance).getByteArrayValue();
+          HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
+          if(variableEntity != null && variableEntity.getVariableType() != null) {
+            variableEntity.getValue();
+            
+            // make sure JPA entities are cached for later retrieval
+            if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())) {
+              ((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
+            }
+          }
         }
       }
     }

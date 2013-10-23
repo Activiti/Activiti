@@ -22,7 +22,7 @@
 
 <book>
 
-  <bookinfo><title>Activiti 5.13-SNAPSHOT User Guide</title></bookinfo>
+  <bookinfo><title>Activiti 5.15-SNAPSHOT User Guide</title></bookinfo>
   
   <toc />
   
@@ -43,6 +43,6 @@
 &ch14;
 &ch15;
 &ch16;
-&ch17
+&ch17;
 
 </book>

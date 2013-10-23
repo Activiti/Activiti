@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -580,6 +581,26 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals("unexistingstringvalue").count());
     assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals(false).count());
     assertEquals(0, taskService.createTaskQuery().taskVariableValueEquals(otherDate.getTime()).count());
+    
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueLike("stringVar", "string%").count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueLike("stringVar", "String%").count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueLike("stringVar", "%Value").count());
+    
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueGreaterThan("integerVar", 1000).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueGreaterThan("integerVar", 1234).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueGreaterThan("integerVar", 1240).count());
+    
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueGreaterThanOrEqual("integerVar", 1000).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueGreaterThanOrEqual("integerVar", 1234).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueGreaterThanOrEqual("integerVar", 1240).count());
+    
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueLessThan("integerVar", 1240).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueLessThan("integerVar", 1234).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueLessThan("integerVar", 1000).count());
+    
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueLessThanOrEqual("integerVar", 1240).count());
+    assertEquals(1, taskService.createTaskQuery().taskVariableValueLessThanOrEqual("integerVar", 1234).count());
+    assertEquals(0, taskService.createTaskQuery().taskVariableValueLessThanOrEqual("integerVar", 1000).count());
   }
   
   @Deployment
@@ -741,6 +762,64 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, taskService.createTaskQuery().processVariableValueEqualsIgnoreCase("lower", "uiop").count());
   }
   
+  @Deployment(resources="org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml")
+  public void testProcessVariableValueLike() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("mixed", "AzerTY");
+    
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    
+    assertEquals(1, taskService.createTaskQuery().processVariableValueLike("mixed", "Azer%").count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueLike("mixed", "A%").count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueLike("mixed", "a%").count());
+  }
+  
+  @Deployment(resources="org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml")
+  public void testProcessVariableValueGreaterThan() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("number", 10);
+    
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    
+    assertEquals(1, taskService.createTaskQuery().processVariableValueGreaterThan("number", 5).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueGreaterThan("number", 10).count());
+  }
+  
+  @Deployment(resources="org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml")
+  public void testProcessVariableValueGreaterThanOrEquals() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("number", 10);
+    
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    
+    assertEquals(1, taskService.createTaskQuery().processVariableValueGreaterThanOrEqual("number", 5).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueGreaterThanOrEqual("number", 10).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueGreaterThanOrEqual("number", 11).count());
+  }
+  
+  @Deployment(resources="org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml")
+  public void testProcessVariableValueLessThan() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("number", 10);
+    
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    
+    assertEquals(1, taskService.createTaskQuery().processVariableValueLessThan("number", 12).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueLessThan("number", 10).count());
+  }
+  
+  @Deployment(resources="org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml")
+  public void testProcessVariableValueLessThanOrEquals() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("number", 10);
+    
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    
+    assertEquals(1, taskService.createTaskQuery().processVariableValueLessThanOrEqual("number", 12).count());
+    assertEquals(1, taskService.createTaskQuery().processVariableValueLessThanOrEqual("number", 10).count());
+    assertEquals(0, taskService.createTaskQuery().processVariableValueLessThanOrEqual("number", 8).count());
+  }
+  
   @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
   public void testProcessDefinitionId() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
@@ -871,6 +950,27 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).dueAfter(oneHourAgo.getTime()).count());
   }
   
+  @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
+  public void testTaskWithoutDueDate() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).withoutDueDate().singleResult();
+    
+    // Set due-date on task
+    Date dueDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("01/02/2003 01:12:13");
+    task.setDueDate(dueDate);
+    taskService.saveTask(task);
+
+    assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).withoutDueDate().count());
+    
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    
+    // Clear due-date on task
+    task.setDueDate(null);
+    taskService.saveTask(task);
+    
+    assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).withoutDueDate().count());
+  }
+  
   public void testQueryPaging() {
     TaskQuery query = taskService.createTaskQuery().taskCandidateUser("kermit");
     
@@ -947,6 +1047,33 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     
     // use parameters
     assertEquals(1, taskService.createNativeTaskQuery().sql("SELECT count(*) FROM " + managementService.getTableName(Task.class) + " T WHERE T.NAME_ = #{taskName}").parameter("taskName", "gonzoTask").count());
+  }
+  
+  /**
+   * Test confirming fix for ACT-1731
+   */
+  @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
+  public void testIncludeBinaryVariables() throws Exception {
+    // Start process with a binary variable
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", 
+            Collections.singletonMap("binaryVariable", (Object)"It is I, le binary".getBytes()));
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    taskService.setVariableLocal(task.getId(), "binaryTaskVariable", (Object)"It is I, le binary".getBytes());
+    
+    // Query task, including processVariables
+    task = taskService.createTaskQuery().taskId(task.getId()).includeProcessVariables().singleResult();
+    assertNotNull(task);
+    assertNotNull(task.getProcessVariables());
+    byte[] bytes = (byte[]) task.getProcessVariables().get("binaryVariable");
+    assertEquals("It is I, le binary", new String(bytes));
+    
+    // Query task, including taskVariables
+    task = taskService.createTaskQuery().taskId(task.getId()).includeTaskLocalVariables().singleResult();
+    assertNotNull(task);
+    assertNotNull(task.getTaskLocalVariables());
+    bytes = (byte[]) task.getTaskLocalVariables().get("binaryTaskVariable");
+    assertEquals("It is I, le binary", new String(bytes));
   }
   
   /**

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -168,7 +169,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
       for (HistoricVariableInstanceEntity variableInstance: queryVariables) {
-        if (variableInstance.getTaskId() != null) {
+        if (variableInstance.getId() != null && variableInstance.getTaskId() != null) {
           variables.put(variableInstance.getName(), variableInstance.getValue());
         }
       }
@@ -179,16 +180,21 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
       for (HistoricVariableInstanceEntity variableInstance: queryVariables) {
-        if (variableInstance.getTaskId() == null) {
+        if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
           variables.put(variableInstance.getName(), variableInstance.getValue());
         }
       }
     }
     return variables;
   }
+  
   public List<HistoricVariableInstanceEntity> getQueryVariables() {
+    if(queryVariables == null && Context.getCommandContext() != null) {
+      queryVariables = new HistoricVariableInitializingList();
+    }
     return queryVariables;
   }
+  
   public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
