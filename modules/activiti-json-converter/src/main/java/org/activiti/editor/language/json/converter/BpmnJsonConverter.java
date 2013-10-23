@@ -362,13 +362,6 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       }
     }
     
-    /* Add flows to map for later processing
-    Map<String, SequenceFlow> flowSourceMap = new HashMap<String, SequenceFlow>();
-    Map<String, SequenceFlow> flowTargetMap = new HashMap<String, SequenceFlow>();
-    for (Process process : bpmnModel.getProcesses()) {
-      addAllSequenceFlows(process.getFlowElements(), flowSourceMap, flowTargetMap);
-    }*/
-    
     // boundary events only contain attached ref id
     for (Process process : bpmnModel.getProcesses()) {
       postProcessElements(process, process.getFlowElements());
