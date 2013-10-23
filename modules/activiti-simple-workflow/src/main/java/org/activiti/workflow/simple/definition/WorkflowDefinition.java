@@ -59,6 +59,7 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
   protected String description;
   protected FormDefinition startFormDefinition;
   protected ParallelStepsDefinition currentParallelStepsDefinition;
+  protected ChoiceStepsDefinition currentChoiceStepsDefinition;
   
   protected Map<String, Object> parameters = new HashMap<String, Object>();
 
@@ -126,6 +127,12 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
     currentParallelStepsDefinition = new ParallelStepsDefinition(this);
     addStep(currentParallelStepsDefinition);
     return currentParallelStepsDefinition;
+  }
+  
+  public ChoiceStepsDefinition inChoice() {
+    currentChoiceStepsDefinition = new ChoiceStepsDefinition(this);
+    addStep(currentChoiceStepsDefinition);
+    return currentChoiceStepsDefinition;
   }
 
   public FormDefinition getStartFormDefinition() {

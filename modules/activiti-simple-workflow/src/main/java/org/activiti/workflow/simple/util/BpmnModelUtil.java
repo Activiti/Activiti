@@ -19,5 +19,4 @@ public class BpmnModelUtil {
     }
     return successors;
   }
-  
 }

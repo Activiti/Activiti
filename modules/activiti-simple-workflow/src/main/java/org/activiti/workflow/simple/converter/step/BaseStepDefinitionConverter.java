@@ -30,6 +30,7 @@ import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyEntry;
 import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Base class that can be used for {@link StepDefinitionConverter}, contains utility-methods.
@@ -43,15 +44,16 @@ import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> implements StepDefinitionConverter {
+public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> implements StepDefinitionConverter<U, T> {
   
   private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("unchecked")
-  public void convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
+  public T convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
     U typedStepDefinition = (U) stepDefinition;
     T processArtifact = createProcessArtifact(typedStepDefinition, conversion);
     createAdditionalArtifacts(conversion, typedStepDefinition, processArtifact);
+    return processArtifact;
   }
   
   /**
@@ -71,40 +73,52 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
    * A sequence flow will NOT automatically be added
    */
   protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement) {
-      addFlowElement(conversion, flowElement, false);
+    addFlowElement(conversion, flowElement, false);
   }
 
   protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement, boolean addSequenceFlowToLastActivity) {
-      if (conversion.isSequenceflowGenerationEnabled() && addSequenceFlowToLastActivity) {
-          addSequenceFlow(conversion, conversion.getLastActivityId(), flowElement.getId());
-      }
-      conversion.getProcess().addFlowElement(flowElement);
-      
-      if (conversion.isUpdateLastActivityEnabled()) {
-        conversion.setLastActivityId(flowElement.getId());
-      }
+    if (conversion.isSequenceflowGenerationEnabled() && addSequenceFlowToLastActivity) {
+      addSequenceFlow(conversion, conversion.getLastActivityId(), flowElement.getId());
+    }
+    conversion.getProcess().addFlowElement(flowElement);
+    
+    if (conversion.isUpdateLastActivityEnabled()) {
+      conversion.setLastActivityId(flowElement.getId());
+    }
   }
   
   protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, FlowNode sourceActivity, FlowNode targetActivity) {
     return addSequenceFlow(conversion, sourceActivity.getId(), targetActivity.getId());
   }
 
+  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, String targetActivityId) {
+    return addSequenceFlow(conversion, sourceActivityId, targetActivityId, null);
+  }
+  
   /**
    * Add a sequence-flow to the current process from source to target.
    * Sequence-flow name is set to a user-friendly name, containing an
    * incrementing number.
    *
+   * @param conversion
    * @param sourceActivityId
    * @param targetActivityId
+   * @param condition
    */
-  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, String targetActivityId) {
-      SequenceFlow sequenceFlow = new SequenceFlow();
-      sequenceFlow.setId(conversion.getUniqueNumberedId(getSequenceFlowPrefix()));
-      sequenceFlow.setSourceRef(sourceActivityId);
-      sequenceFlow.setTargetRef(targetActivityId);
+  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, 
+      String targetActivityId, String condition) {
+    
+    SequenceFlow sequenceFlow = new SequenceFlow();
+    sequenceFlow.setId(conversion.getUniqueNumberedId(getSequenceFlowPrefix()));
+    sequenceFlow.setSourceRef(sourceActivityId);
+    sequenceFlow.setTargetRef(targetActivityId);
+    
+    if (StringUtils.isNotEmpty(condition)) {
+      sequenceFlow.setConditionExpression(condition);
+    }
 
-      conversion.getProcess().addFlowElement(sequenceFlow);
-      return sequenceFlow;
+    conversion.getProcess().addFlowElement(sequenceFlow);
+    return sequenceFlow;
   }
   
   // Subclasses can overwrite this if they want a different sequence flow prefix

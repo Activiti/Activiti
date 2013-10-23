@@ -20,54 +20,54 @@ import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
- * Defines a block of steps that all must be executed in parallel.
+ * Defines a block of steps of which one collection of steps is executed based on conditions.
  * 
- * @author Joram Barrez
+ * @author Tijs Rademakers
  */
-@JsonTypeName("parallel-step")
-public class ParallelStepsDefinition extends AbstractStepListContainer<ParallelStepsDefinition> implements StepDefinition {
+@JsonTypeName("choice-step")
+public class ChoiceStepsDefinition extends AbstractConditionStepListContainer<ChoiceStepsDefinition> implements StepDefinition {
 
   private static final long serialVersionUID = 1L;
   
 	protected WorkflowDefinition workflowDefinition;
 	protected Map<String, Object> parameters = new HashMap<String, Object>();
   
-  public ParallelStepsDefinition() {
+  public ChoiceStepsDefinition() {
     
   }
   
-  public ParallelStepsDefinition(WorkflowDefinition workflowDefinition) {
+  public ChoiceStepsDefinition(WorkflowDefinition workflowDefinition) {
     this.workflowDefinition = workflowDefinition;
   }
   
-  public WorkflowDefinition endParallel() {
+  public WorkflowDefinition endChoice() {
     if (workflowDefinition == null) {
-      throw new SimpleWorkflowException("Can only call endParallel when inParallel was called on a workflow definition first");
+      throw new SimpleWorkflowException("Can only call endChoice when inChoice was called on a workflow definition first");
     }
     return workflowDefinition;
   }
   
   @Override
   public StepDefinition clone() {
-    ParallelStepsDefinition clone = new ParallelStepsDefinition();
+    ChoiceStepsDefinition clone = new ChoiceStepsDefinition();
     clone.setValues(this);
     return clone;
   }
   
   @Override
   public void setValues(StepDefinition otherDefinition) {
-    if(!(otherDefinition instanceof ParallelStepsDefinition)) {
+    if(!(otherDefinition instanceof ChoiceStepsDefinition)) {
       throw new SimpleWorkflowException("An instance of ParallelStepsDefinition is required to set values");
     }
     
-    ParallelStepsDefinition definition = (ParallelStepsDefinition) otherDefinition;
+    ChoiceStepsDefinition definition = (ChoiceStepsDefinition) otherDefinition;
     setId(definition.getId());
 
     setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
     
-    steps = new ArrayList<ListStepDefinition<ParallelStepsDefinition>>();
+    steps = new ArrayList<ListConditionStepDefinition<ChoiceStepsDefinition>>();
     if (definition.getStepList() != null && definition.getStepList().size() > 0) {
-      for (ListStepDefinition<ParallelStepsDefinition> stepDefinition : definition.getStepList()) {
+      for (ListConditionStepDefinition<ChoiceStepsDefinition> stepDefinition : definition.getStepList()) {
         steps.add(stepDefinition.clone());
       }
     }

@@ -30,7 +30,7 @@ import org.activiti.workflow.simple.definition.StepDefinition;
  * 
  * @author Frederik Heremans
  */
-public interface StepDefinitionConverter extends Serializable {
+public interface StepDefinitionConverter<U extends StepDefinition, T> extends Serializable {
 
   /**
    * @return class that this converter is capable of handling.
@@ -46,6 +46,6 @@ public interface StepDefinitionConverter extends Serializable {
    * @param conversion
    *          The conversion which is calling this step converter.
    */
-  void convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion);
+  T convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion);
   
 }
