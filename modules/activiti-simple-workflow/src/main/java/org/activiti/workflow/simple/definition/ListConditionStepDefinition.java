@@ -18,12 +18,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
+import org.codehaus.jackson.annotate.JsonTypeName;
 
 
 /**
  * @author Tijs Rademakers
  */
 @SuppressWarnings("unchecked")
+@JsonTypeName("list")
 public class ListConditionStepDefinition<T> extends AbstractStepDefinitionContainer<ListConditionStepDefinition<T>> implements StepDefinition {
 
   private static final long serialVersionUID = 1L;

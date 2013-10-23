@@ -23,7 +23,6 @@ import org.activiti.workflow.simple.definition.ChoiceStepsDefinition;
 import org.activiti.workflow.simple.definition.ConditionDefinition;
 import org.activiti.workflow.simple.definition.ListConditionStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
-import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
  * {@link StepDefinitionConverter} for converting a {@link ChoiceStepsDefinition} to the following BPMN 2.0 structure:

@@ -389,35 +389,35 @@ public class WorkflowConversionTest {
     .description("This is a test workflow")
     .addFeedbackStep("Test feedback", "kermit");
   
-  activitiRule.getRuntimeService().startProcessInstanceByKey(convertAndDeploy(workflowDefinition));
-  
-  // First, a task should be assigned to kermit to select the people
-  assertEquals(1, taskService.createTaskQuery().count());
-  assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
-  Task task = taskService.createTaskQuery().singleResult();
-  
-  // Completing the task using the predefined process variable (normally done through the form)
-  TaskService taskService = activitiRule.getTaskService();
-  taskService.complete(task.getId(), CollectionUtil.singletonMap(FeedbackStepDefinitionConverter.VARIABLE_FEEDBACK_PROVIDERS, Arrays.asList("gonzo", "fozzie")));
-  
-  // Three tasks should be available now
-  assertEquals(3, taskService.createTaskQuery().count());
-  assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
-  assertEquals(1, taskService.createTaskQuery().taskAssignee("gonzo").count());
-  assertEquals(1, taskService.createTaskQuery().taskAssignee("fozzie").count());
-  
-  // Completing the feedback tasks first should only leave the 'gather feedback' task for kermit open
-  for (Task feedbackTask : taskService.createTaskQuery().list()) {
-    if (!feedbackTask.getAssignee().equals("kermit")) {
-      activitiRule.getTaskService().complete(feedbackTask.getId());
+    activitiRule.getRuntimeService().startProcessInstanceByKey(convertAndDeploy(workflowDefinition));
+    
+    // First, a task should be assigned to kermit to select the people
+    assertEquals(1, taskService.createTaskQuery().count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    Task task = taskService.createTaskQuery().singleResult();
+    
+    // Completing the task using the predefined process variable (normally done through the form)
+    TaskService taskService = activitiRule.getTaskService();
+    taskService.complete(task.getId(), CollectionUtil.singletonMap(FeedbackStepDefinitionConverter.VARIABLE_FEEDBACK_PROVIDERS, Arrays.asList("gonzo", "fozzie")));
+    
+    // Three tasks should be available now
+    assertEquals(3, taskService.createTaskQuery().count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("gonzo").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("fozzie").count());
+    
+    // Completing the feedback tasks first should only leave the 'gather feedback' task for kermit open
+    for (Task feedbackTask : taskService.createTaskQuery().list()) {
+      if (!feedbackTask.getAssignee().equals("kermit")) {
+        activitiRule.getTaskService().complete(feedbackTask.getId());
+      }
     }
-  }
-  assertEquals(1, taskService.createTaskQuery().count());
-  assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
-  
-  // Completing this last task should finish the process
-  activitiRule.getTaskService().complete(activitiRule.getTaskService().createTaskQuery().singleResult().getId());
-  assertEquals(0, activitiRule.getRuntimeService().createProcessInstanceQuery().count());
+    assertEquals(1, taskService.createTaskQuery().count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    
+    // Completing this last task should finish the process
+    activitiRule.getTaskService().complete(activitiRule.getTaskService().createTaskQuery().singleResult().getId());
+    assertEquals(0, activitiRule.getRuntimeService().createProcessInstanceQuery().count());
   }
   
   // Helper methods -----------------------------------------------------------------------------
