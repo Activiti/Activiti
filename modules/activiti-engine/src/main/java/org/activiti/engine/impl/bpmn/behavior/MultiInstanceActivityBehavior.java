@@ -60,9 +60,6 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   protected final String NUMBER_OF_ACTIVE_INSTANCES = "nrOfActiveInstances";
   protected final String NUMBER_OF_COMPLETED_INSTANCES = "nrOfCompletedInstances";
   
-  // Variable names for inner instances (as described in the spec)
-  protected final String LOOP_COUNTER = "loopCounter";
-  
   // Instance members
   protected ActivityImpl activity;
   protected AbstractBpmnActivityBehavior innerActivityBehavior;
@@ -71,7 +68,9 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   protected Expression collectionExpression;
   protected String collectionVariable;
   protected String collectionElementVariable;
-  
+  // default variable name for loop counter for inner instances (as described in the spec)
+  protected String collectionElementIndexVariable="loopCounter";
+
   /**
    * @param innerActivityBehavior The original {@link ActivityBehavior} of the activity 
    *                         that will be wrapped inside this behavior.
@@ -84,7 +83,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
   
   public void execute(ActivityExecution execution) throws Exception {
-    if (getLocalLoopVariable(execution, LOOP_COUNTER) == null) {
+    if (getLocalLoopVariable(execution, getCollectionElementIndexVariable()) == null) {
       try {
         createInstances(execution);
       } catch (BpmnError error) {
@@ -290,6 +289,12 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
   public void setCollectionElementVariable(String collectionElementVariable) {
     this.collectionElementVariable = collectionElementVariable;
+  }
+  public String getCollectionElementIndexVariable() {
+    return collectionElementIndexVariable;
+  }
+  public void setCollectionElementIndexVariable(String collectionElementIndexVariable) {
+    this.collectionElementIndexVariable = collectionElementIndexVariable;
   }
   public void setInnerActivityBehavior(AbstractBpmnActivityBehavior innerActivityBehavior) {
     this.innerActivityBehavior = innerActivityBehavior;
