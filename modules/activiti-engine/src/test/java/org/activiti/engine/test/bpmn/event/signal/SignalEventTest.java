@@ -352,4 +352,22 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 	    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
 	    assertEquals(0, managementService.createJobQuery().count()); 
   }
+  
+  @Deployment
+  public void testSignalUserTask() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("catchSignal");
+    Execution execution = runtimeService.createExecutionQuery()
+            .processInstanceId(pi.getId())
+            .activityId("waitState")
+            .singleResult();
+    assertNotNull(execution);
+    runtimeService.signal(execution.getId());
+    
+    execution = runtimeService.createExecutionQuery()
+            .processInstanceId(pi.getId())
+            .activityId("waitState")
+            .singleResult();
+    assertNotNull(execution);
+  }
+
 }
