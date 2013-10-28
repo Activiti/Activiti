@@ -15,6 +15,8 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
@@ -38,10 +40,12 @@ public class SignalCmd extends NeedsActiveExecutionCmd<Object> {
   }
   
   protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
+    if (execution.getActivity().getActivityBehavior() instanceof UserTaskActivityBehavior)
+      throw new ActivitiException("UserTask:" + execution.getId() + " should not be signalled.");
+    
     if(processVariables != null) {
       execution.setVariables(processVariables);
     }
-    
     execution.signal(signalName, signalData);
     return null;
   }
