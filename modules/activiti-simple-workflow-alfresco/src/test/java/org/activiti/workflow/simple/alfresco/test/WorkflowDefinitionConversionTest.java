@@ -12,11 +12,10 @@
  */
 package org.activiti.workflow.simple.alfresco.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
@@ -27,6 +26,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoWorkflowDefinitionConversionFactory;
+import org.activiti.workflow.simple.alfresco.conversion.script.PropertyReference;
 import org.activiti.workflow.simple.alfresco.model.M2ClassAssociation;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Property;
@@ -352,6 +352,33 @@ public class WorkflowDefinitionConversionTest {
 		conversionFactory.getArtifactExporter().writeBpmnModel(System.out, conversion);
 	}
 	
+	@Test
+	public void testPropertyReferenceParsing() throws Exception {
+		String absoluteReference = "{{Property Name}}";
+		
+		assertTrue(PropertyReference.isPropertyReference(absoluteReference));
+		assertFalse(PropertyReference.isPropertyReference("{{incomplete}"));
+		assertTrue(PropertyReference.containsPropertyReference(absoluteReference));
+		assertEquals("test_propertyname", PropertyReference.createReference(absoluteReference).getVariableReference("test"));
+		
+		String referenceWithProperties = "{{Property Name.test}}";
+		
+		assertTrue(PropertyReference.isPropertyReference(referenceWithProperties));
+		assertTrue(PropertyReference.containsPropertyReference(referenceWithProperties));
+		assertEquals("test_propertyname.test", PropertyReference.createReference(referenceWithProperties).getVariableReference("test"));
+
+		absoluteReference = "{{Property Name.}}";
+		assertTrue(PropertyReference.isPropertyReference(absoluteReference));
+		assertFalse(PropertyReference.isPropertyReference("{{incomplete}"));
+		assertTrue(PropertyReference.containsPropertyReference(absoluteReference));
+		assertEquals("test_propertyname", PropertyReference.createReference(absoluteReference).getVariableReference("test"));
+		
+		
+		String referenceInText = "This is a {{reference}}";
+		assertEquals("This is a ${test_reference}", PropertyReference.replaceAllPropertyReferencesInString(referenceInText, "test", new ArrayList<PropertyReference>(), true));
+		assertEquals("This is a test_reference", PropertyReference.replaceAllPropertyReferencesInString(referenceInText, "test", new ArrayList<PropertyReference>(), false));
+		
+	}
 	
 	protected M2Property getPropertyFromType(String shortName, M2Type type) {
 		for(M2Property prop : type.getProperties()) {

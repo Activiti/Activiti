@@ -38,9 +38,18 @@ public class PropertyReference {
   protected static final Pattern REFERENCE_EXPRESSION_PATTERN = Pattern.compile("\\{\\{[^\\{](.*?)\\}\\}");
   
 	protected String propertyName;
+	protected String additionalProperties;
 	
 	public PropertyReference(String propertyName) {
+		this(propertyName, null);
+  }
+	
+	public PropertyReference(String propertyName, String additionalProperties) {
 		this.propertyName = propertyName;
+		this.additionalProperties = additionalProperties;
+		if(additionalProperties != null && additionalProperties.isEmpty()) {
+			this.additionalProperties = null;
+		}
   }
 	
 	public String getPlaceholder() {
@@ -87,8 +96,8 @@ public class PropertyReference {
 		if(value == null) {
 			return false;
 		}
-		return value != null && value.indexOf(REFERENCE_PREFIX) > 0
-				&& value.indexOf(REFERENCE_SUFFIX) > 0;
+		return value != null && value.indexOf(REFERENCE_PREFIX) >= 0
+				&& value.indexOf(REFERENCE_SUFFIX) >= 0;
 	}
 	
 	public static String replaceAllPropertyReferencesInString(String refrence, String namespacePrefix, List<PropertyReference> foundReferences, boolean wrapAsExpression) {
@@ -124,14 +133,30 @@ public class PropertyReference {
 	public static PropertyReference createReference(String referenceString) {
 		PropertyReference ref = null;
 		if(isPropertyReference(referenceString)) {
-			ref = new PropertyReference(referenceString.replace(REFERENCE_PREFIX, "").replace(REFERENCE_SUFFIX, ""));
+			String raw = referenceString.replace(REFERENCE_PREFIX, "").replace(REFERENCE_SUFFIX, "");
+			if(raw.contains(".")) {
+				String additional = null;
+				String propertyName = raw;
+				int indexOf = raw.indexOf(".");
+				if(indexOf > 0) {
+					propertyName = raw.substring(0, indexOf);
+					additional = raw.substring(indexOf + 1);
+				}
+				ref = new PropertyReference(propertyName, additional);
+			} else {
+				ref = new PropertyReference(raw);
+			}
 		}
 		return ref;
 	}
 	
 	protected String getVariableName(String propertyName) {
 		if(propertyName != null) {
-			return propertyName.replace(':', '_');
+			if(additionalProperties != null) {
+				return propertyName.replace(':', '_') + "." + additionalProperties;
+			} else {
+				return propertyName.replace(':', '_');
+			}
 		}
 		return null;
 	}
