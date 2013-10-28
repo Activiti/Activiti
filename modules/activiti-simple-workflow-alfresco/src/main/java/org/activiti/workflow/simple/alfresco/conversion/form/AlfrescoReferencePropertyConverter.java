@@ -15,6 +15,7 @@ package org.activiti.workflow.simple.alfresco.conversion.form;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.conversion.exception.AlfrescoSimpleWorkflowException;
+import org.activiti.workflow.simple.alfresco.conversion.script.PropertyReference;
 import org.activiti.workflow.simple.alfresco.model.M2Aspect;
 import org.activiti.workflow.simple.alfresco.model.M2AssociationSource;
 import org.activiti.workflow.simple.alfresco.model.M2AssociationTarget;
@@ -107,15 +108,13 @@ public class AlfrescoReferencePropertyConverter extends BaseAlfrescoFormProperty
 	  	throw new AlfrescoSimpleWorkflowException("Field references cannot be used on start-forms");
 	  }
 	  
-	  M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
-	  
 	  // Check if model contains an aspect for the property
 		String propertyName = getPropertyName(definition, conversion);
 		
-		if(model.getAspect(propertyName) == null) {
-			throw new AlfrescoSimpleWorkflowException("The property '" + definition.getName() + "' is not used in a from prior to this form: " + contentType.getName() + " - " + propertyName);
-		}
-	  
+		// Add property-reference to the context to be validated
+		PropertyReference reference = new PropertyReference(definition.getName());
+		AlfrescoConversionUtil.getPropertyReferences(conversion).add(reference);
+		
 		// Add aspect to content-type
 		contentType.getMandatoryAspects().add(propertyName);
 		

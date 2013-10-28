@@ -18,6 +18,8 @@ import java.util.Map;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 /**
  * Defines one property in a {@link FormDefinition}.
@@ -62,6 +64,7 @@ public abstract class FormPropertyDefinition {
 	  this.parameters = parameters;
   }
   
+  @JsonSerialize(include=Inclusion.NON_EMPTY)
   public Map<String, Object> getParameters() {
 	  return parameters;
   }

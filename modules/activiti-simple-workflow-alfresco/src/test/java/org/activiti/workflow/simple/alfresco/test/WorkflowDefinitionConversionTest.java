@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
@@ -32,6 +33,7 @@ import org.activiti.workflow.simple.alfresco.model.M2Property;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
 import org.activiti.workflow.simple.alfresco.model.config.Configuration;
 import org.activiti.workflow.simple.alfresco.model.config.Module;
+import org.activiti.workflow.simple.alfresco.step.AlfrescoEmailStepDefinition;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
@@ -319,7 +321,38 @@ public class WorkflowDefinitionConversionTest {
 		assertEquals("cm:person", association.getTarget().getClassName());
 		assertTrue(association.getTarget().isMandatory());
 	}
-
+	
+	@Test
+	public void testConvertEmailStep() throws Exception {
+		WorkflowDefinition definition = new WorkflowDefinition();
+		AlfrescoEmailStepDefinition emailStep = new AlfrescoEmailStepDefinition();
+		emailStep.setTo("fred");
+		emailStep.setSubject("jos");
+		
+		definition.addStep(emailStep);
+		
+		WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(definition);
+		conversion.convert();
+		
+		// Process should contain a single service-task
+		ServiceTask task = null;
+		
+		for(FlowElement element : conversion.getProcess().getFlowElements()) {
+			if(element instanceof ServiceTask) {
+				if(task != null) {
+					Assert.fail("More than one service-task found");
+				}
+				task = (ServiceTask) element;
+			}
+		}
+		
+		assertNotNull(task);
+		assertEquals(AlfrescoConversionConstants.CLASSNAME_SCRIPT_DELEGATE, task.getImplementation());
+		
+		conversionFactory.getArtifactExporter().writeBpmnModel(System.out, conversion);
+	}
+	
+	
 	protected M2Property getPropertyFromType(String shortName, M2Type type) {
 		for(M2Property prop : type.getProperties()) {
 			if(prop.getName().endsWith(shortName)) {

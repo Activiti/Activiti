@@ -19,6 +19,8 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 /**
  * Allows to create simple workflows through an easy, fluent Java API.
@@ -115,6 +117,7 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
     return this;
   }
   
+  @JsonSerialize(include=Inclusion.NON_EMPTY)
   public Map<String, Object> getParameters() {
 	  return parameters;
   }

@@ -153,10 +153,13 @@ public interface AlfrescoConversionConstants {
 	String ARTIFACT_MODEL_NAMESPACE_PREFIX = "modelNamespacePrefix";
 	String ARTIFACT_PROPERTY_SHARING = "propertySharing";
 	String ARTIFACT_PROPERTY_TASK_SCRIPT_BUILDER = "scriptTaskListenerBuilder";
+	String ARTIFACT_PROPERTY_REFERENCES = "propertyReferences";
 
 	// Listener and extension elements
 	String CLASSNAME_SCRIPT_TASK_LISTENER = "org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener";
+	String CLASSNAME_SCRIPT_DELEGATE = "org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate";
 	String SCRIPT_TASK_LISTENER_SCRIPT_FIELD_NAME = "script";
+	String SCRIPT_DELEGATE_SCRIPT_FIELD_NAME = "script";
 	String TASK_LISTENER_EVENT_CREATE = "create";
 	String TASK_LISTENER_EVENT_COMPLETE = "complete";
 	

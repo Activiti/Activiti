@@ -19,6 +19,8 @@ import java.util.Map;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 
 /**
@@ -111,6 +113,7 @@ public class ListConditionStepDefinition<T> extends AbstractStepDefinitionContai
   }
 
   @Override
+  @JsonSerialize(include=Inclusion.NON_EMPTY)
   public Map<String, Object> getParameters() {
     return parameters;
   }

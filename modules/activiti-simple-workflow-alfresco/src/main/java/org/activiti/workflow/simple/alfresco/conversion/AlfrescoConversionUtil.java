@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.workflow.simple.alfresco.conversion.script.PropertyReference;
 import org.activiti.workflow.simple.alfresco.conversion.script.ScriptTaskListenerBuilder;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
@@ -81,6 +82,11 @@ public class AlfrescoConversionUtil implements AlfrescoConversionConstants {
 	
 	public static String getModelNamespacePrefix(WorkflowDefinitionConversion conversion) {
 		return (String) conversion.getArtifact(ARTIFACT_MODEL_NAMESPACE_PREFIX);
+	}
+	
+	@SuppressWarnings("unchecked")
+  public static List<PropertyReference> getPropertyReferences(WorkflowDefinitionConversion conversion) {
+		return (List<PropertyReference>) conversion.getArtifact(ARTIFACT_PROPERTY_REFERENCES);
 	}
 	
 	/**

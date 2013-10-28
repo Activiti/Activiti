@@ -18,6 +18,8 @@ import java.util.Map;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 
 /**
@@ -83,6 +85,7 @@ public class ListStepDefinition<T> extends AbstractStepDefinitionContainer<ListS
   }
 
   @Override
+  @JsonSerialize(include=Inclusion.NON_EMPTY)
   public Map<String, Object> getParameters() {
     return parameters;
   }

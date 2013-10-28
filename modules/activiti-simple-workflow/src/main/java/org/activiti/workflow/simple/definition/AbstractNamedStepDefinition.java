@@ -15,6 +15,9 @@ package org.activiti.workflow.simple.definition;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
 /**
  * Superclass for all {@link StepDefinition} classes that have a name or description.
  * 
@@ -64,6 +67,7 @@ public abstract class AbstractNamedStepDefinition implements StepDefinition {
   }
   
   @Override
+  @JsonSerialize(include=Inclusion.NON_EMPTY)
   public Map<String, Object> getParameters() {
   	return parameters;
   }

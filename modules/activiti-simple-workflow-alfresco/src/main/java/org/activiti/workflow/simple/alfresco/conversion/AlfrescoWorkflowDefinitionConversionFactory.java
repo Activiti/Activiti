@@ -13,6 +13,7 @@
 package org.activiti.workflow.simple.alfresco.conversion;
 
 import org.activiti.workflow.simple.alfresco.export.AlfrescoArtifactExporter;
+import org.activiti.workflow.simple.alfresco.step.AlfrescoEmailStepDefinition;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 
@@ -39,7 +40,9 @@ public class AlfrescoWorkflowDefinitionConversionFactory extends WorkflowDefinit
 		
 		// Custom step converters
 		defaultStepConverters.put(HumanStepDefinition.class, new AlfrescoHumanStepDefinitionConverter());
+		defaultStepConverters.put(AlfrescoEmailStepDefinition.class, new AlfrescoEmailStepConverter());
   }
+	
 	
 	public AlfrescoArtifactExporter getArtifactExporter() {
 	  return artifactExporter;

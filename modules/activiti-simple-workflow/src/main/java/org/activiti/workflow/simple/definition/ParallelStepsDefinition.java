@@ -18,6 +18,8 @@ import java.util.Map;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 /**
  * Defines a block of steps that all must be executed in parallel.
@@ -74,6 +76,7 @@ public class ParallelStepsDefinition extends AbstractStepListContainer<ParallelS
   }
   
   @Override
+  @JsonSerialize(include=Inclusion.NON_EMPTY)
   public Map<String, Object> getParameters() {
   	return parameters;
   }
