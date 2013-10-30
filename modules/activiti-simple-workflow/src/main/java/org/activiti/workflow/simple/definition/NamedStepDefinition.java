@@ -10,20 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.workflow.simple.converter;
+package org.activiti.workflow.simple.definition;
 
+public interface NamedStepDefinition {
 
-public interface ConversionConstants {
-  
-  String DEFAULT_SEQUENCEFLOW_PREFIX = "sequenceFlow";
-  
-  String USER_TASK_ID_PREFIX = "userTask";
-  String GATEWAY_ID_PREFIX = "gateway";
-  String EVENT_ID_PREFIX = "event";
-  String END_EVENT_ID_PREFIX = "endEvent";
-  String BOUNDARY_ID_PREFIX = "boundaryEvent";
-  String SCRIPT_TASK_ID_PREFIX = "scriptTask";
-  String SERVICE_TASK_ID_PREFIX = "serviceTask";
-  String INTERMEDIATE_EVENT_ID_PREVIX = "intermediateEvent";
-
+	String getName();
+	void setName(String name);
+	
+	String getDescription();
+	void setDescription(String description);
 }

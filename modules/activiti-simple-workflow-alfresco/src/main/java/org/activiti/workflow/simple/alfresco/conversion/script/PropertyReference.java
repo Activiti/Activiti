@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
+import org.activiti.workflow.simple.alfresco.model.M2Namespace;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 
@@ -39,6 +41,7 @@ public class PropertyReference {
   
 	protected String propertyName;
 	protected String additionalProperties;
+	protected boolean isPrefixed = false;
 	
 	public PropertyReference(String propertyName) {
 		this(propertyName, null);
@@ -50,6 +53,8 @@ public class PropertyReference {
 		if(additionalProperties != null && additionalProperties.isEmpty()) {
 			this.additionalProperties = null;
 		}
+		
+		isPrefixed = propertyName != null && propertyName.contains(":");
   }
 	
 	public String getPlaceholder() {
@@ -61,28 +66,47 @@ public class PropertyReference {
   }
 	
 	public String getUsernameReferenceExpression(String namespacePrefix) {
-		String qualifiedName = AlfrescoConversionUtil.getQualifiedName(namespacePrefix, propertyName);
+		String qualifiedName = getQualifiedName(namespacePrefix);;
 		return MessageFormat.format(USERNAME_REFERENCE_EXPRESSION, getVariableName(qualifiedName));
 	}
 	
 	public String getGroupReferenceExpression(String namespacePrefix) {
-		String qualifiedName = AlfrescoConversionUtil.getQualifiedName(namespacePrefix, propertyName);
+		String qualifiedName = getQualifiedName(namespacePrefix);;
 		return MessageFormat.format(GROUPNAME_REFERENCE_EXPRESSION, getVariableName(qualifiedName));
 	}
 	
 	public String getPropertyReferenceExpression(String namespacePrefix) {
-		String qualifiedName = AlfrescoConversionUtil.getQualifiedName(namespacePrefix, propertyName);
+		String qualifiedName = getQualifiedName(namespacePrefix);;
 		return MessageFormat.format(REFERENCE_EXPRESSION, getVariableName(qualifiedName));
 	}
 	
 	public String getVariableReference(String namespacePrefix) {
-		String qualifiedName = AlfrescoConversionUtil.getQualifiedName(namespacePrefix, propertyName);
+		String qualifiedName = getQualifiedName(namespacePrefix);;
 		return getVariableName(qualifiedName);
 	}
 	
 	public void validate(M2Model model) {
 		String namespacePrefix = model.getNamespaces().get(0).getPrefix();
-		if(!model.isContainedInModel(AlfrescoConversionUtil.getQualifiedName(namespacePrefix, propertyName))) {
+		
+		boolean valid = false;
+		if(propertyName.contains(":")) {
+			// Already prefixed. Check if we import that namespace...
+			for(M2Namespace imported : model.getImports()) {
+				if(propertyName.startsWith(imported.getPrefix())) {
+					valid = true;
+					break;
+				}
+			}
+			
+			if(!valid && !propertyName.startsWith(AlfrescoConversionConstants.WORKFLOW_NAMESPACE.getPrefix()) && 
+				!propertyName.startsWith(AlfrescoConversionConstants.BPM_NAMESPACE.getPrefix())) {
+				throw new SimpleWorkflowException("Property reference: " + this.getPlaceholder() + " references a property for a namespace that is not imported in the BPM-model");
+			} else {
+				valid = true;
+			}
+		}
+		
+		if(!valid && !model.isContainedInModel(getQualifiedName(namespacePrefix))) {
 			throw new SimpleWorkflowException("Property reference: " + this.getPlaceholder() + " does not reference an existing property.");
 		}
 	}
@@ -159,5 +183,15 @@ public class PropertyReference {
 			}
 		}
 		return null;
+	}
+	
+	protected String getQualifiedName(String namespacePrefix) {
+		String qualifiedName = null;
+		if(isPrefixed) {
+			qualifiedName = propertyName;
+		} else {
+			qualifiedName = AlfrescoConversionUtil.getQualifiedName(namespacePrefix, propertyName);
+		}
+		return qualifiedName;
 	}
 }

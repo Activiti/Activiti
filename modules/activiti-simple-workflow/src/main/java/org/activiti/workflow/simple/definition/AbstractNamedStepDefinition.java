@@ -24,7 +24,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
-public abstract class AbstractNamedStepDefinition implements StepDefinition {
+public abstract class AbstractNamedStepDefinition implements StepDefinition, NamedStepDefinition {
 
   private static final long serialVersionUID = 1L;
   

@@ -22,8 +22,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
 import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
-import org.activiti.workflow.simple.definition.ChoiceStepsDefinition;
-import org.activiti.workflow.simple.definition.ListConditionStepDefinition;
 import org.activiti.workflow.simple.definition.ListStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;

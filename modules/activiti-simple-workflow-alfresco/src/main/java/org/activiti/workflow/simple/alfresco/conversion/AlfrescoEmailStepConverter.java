@@ -44,6 +44,7 @@ public class AlfrescoEmailStepConverter extends BaseStepDefinitionConverter<Alfr
 		
 		// Build the actual task and add it to the process
 		ServiceTask serviceTask = builder.build();
+		serviceTask.setName(stepDefinition.getName());
 		serviceTask.setId(conversion.getUniqueNumberedId(ConversionConstants.SERVICE_TASK_ID_PREFIX));
 		addFlowElement(conversion, serviceTask, true);
 		return serviceTask;

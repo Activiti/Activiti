@@ -18,6 +18,7 @@ import java.util.Map;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.conversion.exception.AlfrescoSimpleWorkflowException;
+import org.activiti.workflow.simple.alfresco.form.AlfrescoTransitionsPropertyDefinition;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
 import org.activiti.workflow.simple.alfresco.model.config.Form;
 import org.activiti.workflow.simple.alfresco.model.config.FormSet;
@@ -44,6 +45,7 @@ public class AlfrescoFormCreator {
 		registerConverter(new AlfrescoListPropertyConverter());
 		registerConverter(new AlfrescoReferencePropertyConverter());
 		registerConverter(new AlfrescoBooleanPropertyConverter());
+		registerConverter(new AlfrescoTransitionsPropertyConverter());
   }
 	
 	public void createForm(M2Type contentType, Form formConfig, FormDefinition formDefinition, WorkflowDefinitionConversion conversion) {
@@ -73,11 +75,22 @@ public class AlfrescoFormCreator {
 			
 		}
 		
-		// Finally, add "transitions" if not already added
-		// TODO: check if added once transitions are supported
-		formConfig.getFormAppearance().addFormSet(AlfrescoConversionConstants.FORM_SET_RESPONSE, null, null, null);
-		formConfig.getFormFieldVisibility().addShowFieldElement(AlfrescoConversionConstants.FORM_FIELD_TRANSITIONS);
-		formConfig.getFormAppearance().addFormField(AlfrescoConversionConstants.FORM_FIELD_TRANSITIONS, null, AlfrescoConversionConstants.FORM_SET_RESPONSE);
+		if(formDefinition != null && formDefinition.getFormPropertyDefinitions() != null && !formDefinition.getFormPropertyDefinitions().isEmpty()) {
+			for(FormPropertyDefinition def : formDefinition.getFormPropertyDefinitions()) {
+				if(def instanceof AlfrescoTransitionsPropertyDefinition) {
+					AlfrescoFormPropertyConverter converter = propertyConverters.get(def.getClass());
+			    if(converter != null) {
+			    	converter.convertProperty(contentType, null, formConfig, def, conversion);
+			    }
+				}
+			}
+		}
+		// Finally, add default "transitions" if not already added to the model
+		if(formConfig.getFormAppearance().getFormSet(AlfrescoConversionConstants.FORM_SET_RESPONSE) == null) {
+			formConfig.getFormAppearance().addFormSet(AlfrescoConversionConstants.FORM_SET_RESPONSE, null, null, null);
+			formConfig.getFormFieldVisibility().addShowFieldElement(AlfrescoConversionConstants.FORM_FIELD_TRANSITIONS);
+			formConfig.getFormAppearance().addFormField(AlfrescoConversionConstants.FORM_FIELD_TRANSITIONS, null, AlfrescoConversionConstants.FORM_SET_RESPONSE);
+		}
 	}
 
 	protected String getTemplateForGroup(FormPropertyGroup group) {

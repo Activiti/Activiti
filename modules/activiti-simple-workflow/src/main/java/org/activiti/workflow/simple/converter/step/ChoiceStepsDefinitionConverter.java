@@ -15,8 +15,10 @@ package org.activiti.workflow.simple.converter.step;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.definition.ChoiceStepsDefinition;
@@ -58,6 +60,7 @@ public class ChoiceStepsDefinitionConverter extends BaseStepDefinitionConverter<
     // generated steps have a sequence flow to the first gateway
     WorkflowDefinitionConversionFactory conversionFactory = conversion.getConversionFactory();
     List<FlowElement> endElements = new ArrayList<FlowElement>();
+    List<SequenceFlow> bypassingFlows = new ArrayList<SequenceFlow>();
     for (ListConditionStepDefinition<ChoiceStepsDefinition> stepListDefinition : choiceStepsDefinition.getStepList()) {
       
       StringBuilder conditionBuilder = new StringBuilder();
@@ -87,7 +90,10 @@ public class ChoiceStepsDefinitionConverter extends BaseStepDefinitionConverter<
         if (i == 0) {
           if (conditionBuilder.length() > 0) {
             conditionBuilder.append("}");
-            addSequenceFlow(conversion, forkGateway.getId(), flowElement.getId(), conditionBuilder.toString());
+            SequenceFlow mainFlow = addSequenceFlow(conversion, forkGateway.getId(), flowElement.getId(), conditionBuilder.toString());
+            if(stepListDefinition.getName() != null) {
+            	mainFlow.setName(stepListDefinition.getName());
+          	}
           } else {
             addSequenceFlow(conversion, forkGateway.getId(), flowElement.getId());
           }
@@ -96,6 +102,21 @@ public class ChoiceStepsDefinitionConverter extends BaseStepDefinitionConverter<
         if ((i + 1) == stepListDefinition.getSteps().size()) {
           endElements.add(flowElement);
         }
+      }
+      
+      if(stepListDefinition.getSteps().isEmpty()) {
+        // Special case for a "stepless" stepListDefinition, which should just create a sequence-flow from the fork to the join
+      	SequenceFlow created = null;
+      	if (conditionBuilder.length() > 0) {
+          conditionBuilder.append("}");
+          created = addSequenceFlow(conversion, forkGateway.getId(), null, conditionBuilder.toString());
+      	} else {
+      		created = addSequenceFlow(conversion, forkGateway.getId(), null);
+      	}
+      	if(stepListDefinition.getName() != null) {
+      		created.setName(stepListDefinition.getName());
+      	}
+      	bypassingFlows.add(created);
       }
     }
     
@@ -109,7 +130,13 @@ public class ChoiceStepsDefinitionConverter extends BaseStepDefinitionConverter<
     
     // Create sequenceflow from all generated steps to the second gateway
     for (FlowElement endElement : endElements) {
-      addSequenceFlow(conversion, endElement.getId(), joinGateway.getId());
+    	if(!(endElement instanceof EndEvent)) {
+    		addSequenceFlow(conversion, endElement.getId(), joinGateway.getId());
+    	}
+    }
+    
+    for(SequenceFlow bypassingFlow : bypassingFlows) {
+    	bypassingFlow.setTargetRef(joinGateway.getId());
     }
     
     return forkGateway;

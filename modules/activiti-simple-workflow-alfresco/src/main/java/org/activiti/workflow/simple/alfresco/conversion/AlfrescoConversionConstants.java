@@ -36,6 +36,7 @@ public interface AlfrescoConversionConstants {
 	String CONTENT_MODEL_NAMESPACE_URL = "http://www.alfresco.org/model/dynamic-workflow/{0}/1.0";
 	
 	M2Namespace BPM_NAMESPACE = new M2Namespace("http://www.alfresco.org/model/bpm/1.0", "bpm");
+	M2Namespace WORKFLOW_NAMESPACE = new M2Namespace("http://www.alfresco.org/model/workflow/1.0", "wf");
 	M2Namespace DICTIONARY_NAMESPACE = new M2Namespace("http://www.alfresco.org/model/dictionary/1.0", "d");
 	M2Namespace CONTENT_NAMESPACE = new M2Namespace("http://www.alfresco.org/model/content/1.0", "cm");
 	
@@ -52,6 +53,7 @@ public interface AlfrescoConversionConstants {
 	 * Base type for all task models
 	 */
 	String DEFAULT_BASE_FORM_TYPE = "bpm:workflowTask";
+	String OUTCOME_BASE_FORM_TYPE = "bpm:activitiOutcomeTask";
 	
 	String PROPERTY_WORKFLOW_DESCRIPTION = "bpm:workflowDescription";
 	String PROPERTY_WORKFLOW_DUE_DATE = "bpm:workflowDueDate";
@@ -64,6 +66,7 @@ public interface AlfrescoConversionConstants {
 	String PROPERTY_PACKAGEITEMS_ACTION_GROUP_ADD = "add_package_item_actions";
 	String PROPERTY_PACKAGEITEMS_ITEM_ACTION_GROUP_REMOVE = "edit_and_remove_package_item_actions";
 	String PROPERTY_PACKAGEITEMS_ITEM_ACTION_GROUP_EDIT = "edit_package_item_actions";
+	String PROPERTY_OUTCOME_PROPERTY_NAME = "bpm:outcomePropertyName";
 	
 	String PROPERTY_TYPE_TEXT = "d:text";
 	String PROPERTY_TYPE_DATE = "d:date";
@@ -72,11 +75,13 @@ public interface AlfrescoConversionConstants {
 	String PROPERTY_TYPE_BOOLEAN = "d:boolean";
 	
 	String CONTENT_TYPE_PEOPLE = "cm:person";
-	String CONTENT_TYPE_GROUP = "cm:authority";
+	String CONTENT_TYPE_GROUP = "cm:authorityContainer";
+	String CONTENT_TYPE_CONTENT = "cm:content";
 	
 	String PROPERTY_DUE_DATE = "bpm:dueDate";
 	String PROPERTY_PRIORITY = "bpm:priority";
 	String PROPERTY_DESCRIPTION = "bpm:description";
+	String PROPERTY_TRANSITIONS_SUFFIX = "transitions";
 	
 	// Form constants
 	/**
@@ -102,7 +107,10 @@ public interface AlfrescoConversionConstants {
 	String FORM_NUMBER_TEMPLATE = "/org/alfresco/components/form/controls/number.ftl";
 	String FORM_PRIORITY_TEMPLATE = "/org/alfresco/components/form/controls/workflow/priority.ftl";
 	String FORM_EMAIL_NOTIFICATION_TEMPLATE = "/org/alfresco/components/form/controls/workflow/email-notification.ftl";
-	
+	String FORM_TRANSITIONS_TEMPLATE = "/org/alfresco/components/form/controls/workflow/activiti-transitions.ftl";
+	String FORM_PACKAGE_ITEMS_TEMPLATE = "/org/alfresco/components/form/controls/workflow/packageitems.ftl";
+	String FORM_PACKAGE_ITEMS_PARAM_ROOTNODE = "rootNode";
+	String FORM_PACKAGE_ITEMS_PARAM_ROOTNODE_DEFAULT = "{siteshome}";
 	
 	String FORM_SET_GENERAL = "";
 	String FORM_SET_INFO = "info";
@@ -162,7 +170,7 @@ public interface AlfrescoConversionConstants {
 	String SCRIPT_DELEGATE_SCRIPT_FIELD_NAME = "script";
 	String TASK_LISTENER_EVENT_CREATE = "create";
 	String TASK_LISTENER_EVENT_COMPLETE = "complete";
-	
-	
 
+	String TRANSITION_APPROVE = "Approve";
+	String TRANSITION_REJECT = "Reject";
 }

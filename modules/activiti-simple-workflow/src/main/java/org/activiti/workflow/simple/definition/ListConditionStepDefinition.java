@@ -28,7 +28,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
  */
 @SuppressWarnings("unchecked")
 @JsonTypeName("list")
-public class ListConditionStepDefinition<T> extends AbstractStepDefinitionContainer<ListConditionStepDefinition<T>> implements StepDefinition {
+public class ListConditionStepDefinition<T> extends AbstractStepDefinitionContainer<ListConditionStepDefinition<T>> implements StepDefinition, NamedStepDefinition {
 
   private static final long serialVersionUID = 1L;
   
@@ -36,6 +36,8 @@ public class ListConditionStepDefinition<T> extends AbstractStepDefinitionContai
   protected List<ConditionDefinition> conditions = new ArrayList<ConditionDefinition>();
   protected String name;
   protected Map<String, Object> parameters = new HashMap<String, Object>();
+
+	protected String description;
   
   public ListConditionStepDefinition() {
     super();
@@ -60,6 +62,16 @@ public class ListConditionStepDefinition<T> extends AbstractStepDefinitionContai
     }
     
     return (T) stepListContainer;
+  }
+  
+  @Override
+  public String getDescription() {
+	  return description;
+  }
+
+	@Override
+  public void setDescription(String description) {
+	  this.description = description;
   }
   
   @Override

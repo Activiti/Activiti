@@ -39,7 +39,7 @@ public class AlfrescoConversionUtil implements AlfrescoConversionConstants {
 	 */
 	public static String getValidIdString(String s) {
 		if(s != null) {
-			return s.toLowerCase().replace(" ", "").replace("_", "");
+			return s.toLowerCase().replace(" ", "").replace("_", "").replace("-", "_");
 		}
 		return null;
 	}
@@ -57,6 +57,10 @@ public class AlfrescoConversionUtil implements AlfrescoConversionConstants {
 	public static M2Namespace createNamespace(String prefix) {
 		String uri  = MessageFormat.format(CONTENT_MODEL_NAMESPACE_URL, prefix);
 		return new M2Namespace(uri, prefix);
+	}
+	
+	public static String getUrlQualifiedPropertyName(String prefixedProperty, M2Namespace nameSpace) {
+		return "{" + nameSpace.getUri() + "}" + prefixedProperty.replace(nameSpace.getPrefix() +":", "");
 	}
 	
 	// Artifact related methods

@@ -31,6 +31,7 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.conversion.form.AlfrescoFormCreator;
 import org.activiti.workflow.simple.alfresco.conversion.script.PropertyReference;
 import org.activiti.workflow.simple.alfresco.model.M2Aspect;
@@ -43,6 +44,7 @@ import org.activiti.workflow.simple.alfresco.model.config.FormField;
 import org.activiti.workflow.simple.alfresco.model.config.FormFieldControl;
 import org.activiti.workflow.simple.alfresco.model.config.FormFieldControlParameter;
 import org.activiti.workflow.simple.alfresco.model.config.Module;
+import org.activiti.workflow.simple.alfresco.step.AlfrescoReviewStepDefinition;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
@@ -152,8 +154,10 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 				}
 			}
 		}
+		
+		
 
-		// Check all elements that can contain PropertyReferences
+		// Check all elements that can contain PropertyReferences or need additional builders invoked
 		List<PropertyReference> references = AlfrescoConversionUtil.getPropertyReferences(conversion);
 		for(FlowElement element : conversion.getProcess().getFlowElements()) {
 			if(element instanceof SequenceFlow) {
@@ -162,6 +166,8 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 				resolvePropertyRefrencesInCatchEvent((IntermediateCatchEvent) element, modelNamespace, references);
 			} else if(element instanceof ServiceTask)  {
 				resolvePropertyRefrencesInServiceTask((ServiceTask) element, modelNamespace, references);
+			} else if(element instanceof UserTask) {
+				addScriptListenersToUserTask((UserTask) element, conversion);
 			}
 		}
 		
@@ -173,6 +179,22 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		}
 		
 	}
+	
+	protected void addScriptListenersToUserTask(UserTask userTask, WorkflowDefinitionConversion conversion) {
+		// Add create-script-listener if it has been used in this conversion
+		if(AlfrescoConversionUtil.hasTaskScriptTaskListenerBuilder(conversion, userTask.getId(), 
+				AlfrescoConversionConstants.TASK_LISTENER_EVENT_CREATE)) {
+			userTask.getTaskListeners().add(AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
+					AlfrescoConversionConstants.TASK_LISTENER_EVENT_CREATE).build());
+		}
+		
+		// Add complete-script-listener if it has been used in this conversion
+		if(AlfrescoConversionUtil.hasTaskScriptTaskListenerBuilder(conversion, userTask.getId(), 
+				AlfrescoConversionConstants.TASK_LISTENER_EVENT_COMPLETE)) {
+			userTask.getTaskListeners().add(AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
+					AlfrescoConversionConstants.TASK_LISTENER_EVENT_COMPLETE).build());
+		}
+  }
 	
 	protected void resolvePropertyRefrencesInSequenceFlow(SequenceFlow sequenceFlow, M2Namespace modelNamespace, List<PropertyReference> references) {
 		if(sequenceFlow.getConditionExpression() != null && PropertyReference.containsPropertyReference(sequenceFlow.getConditionExpression())) {
@@ -223,6 +245,8 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		for(StepDefinition step : workflowDefinition.getSteps()) {
 			if(step instanceof HumanStepDefinition) {
 				addDefinitionsToMap(((HumanStepDefinition) step).getForm(), definitionMap);
+			} else if(step instanceof AlfrescoReviewStepDefinition) {
+				addDefinitionsToMap(((AlfrescoReviewStepDefinition) step).getForm(), definitionMap);
 			}
 		}
 		

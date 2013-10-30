@@ -95,9 +95,6 @@ public class AlfrescoHumanStepDefinitionConverter extends HumanStepDefinitionCon
 		// Set up property sharing using task-listeners
 		addPropertySharing(humanStep, conversion, userTask);
 		
-		// Add Script listeners
-		addScriptListeners(humanStep, conversion, userTask);
-		
 		// Special handling for assignee that reference form-properties, before BPMN
 		// is created
 		if (humanStep.getAssignmentType() == HumanStepAssignmentType.USER) {
@@ -105,7 +102,7 @@ public class AlfrescoHumanStepDefinitionConverter extends HumanStepDefinitionCon
 
 			if (assignee != null && PropertyReference.isPropertyReference(assignee)) {
 				PropertyReference reference = PropertyReference.createReference(assignee);
-				reference.validate(model);
+				AlfrescoConversionUtil.getPropertyReferences(conversion).add(reference);
 				userTask.setAssignee(reference.getUsernameReferenceExpression(modelNamespace.getPrefix()));
 			}
 		} else if (humanStep.getAssignmentType() == HumanStepAssignmentType.USERS) {
@@ -130,24 +127,6 @@ public class AlfrescoHumanStepDefinitionConverter extends HumanStepDefinitionCon
 			}
 		}
 		throw new SimpleWorkflowException("No usertask found in conversion");
-  }
-
-	protected void addScriptListeners(HumanStepDefinition humanStep, WorkflowDefinitionConversion conversion,
-      UserTask userTask) {
-	  
-		// Add create-script-listener if it has been used in this conversion
-		if(AlfrescoConversionUtil.hasTaskScriptTaskListenerBuilder(conversion, userTask.getId(), 
-				AlfrescoConversionConstants.TASK_LISTENER_EVENT_CREATE)) {
-			userTask.getTaskListeners().add(AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
-					AlfrescoConversionConstants.TASK_LISTENER_EVENT_CREATE).build());
-		}
-		
-		// Add complete-script-listener if it has been used in this conversion
-		if(AlfrescoConversionUtil.hasTaskScriptTaskListenerBuilder(conversion, userTask.getId(), 
-				AlfrescoConversionConstants.TASK_LISTENER_EVENT_COMPLETE)) {
-			userTask.getTaskListeners().add(AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
-					AlfrescoConversionConstants.TASK_LISTENER_EVENT_COMPLETE).build());
-		}
   }
 
 	protected void addPropertySharing(HumanStepDefinition humanStep, WorkflowDefinitionConversion conversion, UserTask userTask) {

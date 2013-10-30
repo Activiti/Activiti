@@ -97,7 +97,7 @@ public class TimeDurationDefinition {
 				builder.append(days + "D");
 			}
 			
-			if(isDateDefined) {
+			if(isTimeDefined) {
 				builder.append("T");
 				
 				if(hours != null && hours > 0) {

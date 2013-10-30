@@ -12,6 +12,8 @@
  */
 package org.activiti.workflow.simple.alfresco.conversion.script;
 
+import java.text.MessageFormat;
+
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.ServiceTask;
@@ -27,8 +29,10 @@ public class ScriptServiceTaskBuilder {
 	protected StringBuilder finalScript;
 	protected ServiceTask serviceTask;
 	
+	protected static final String SET_EXECUTION_VARIABLE_TEMPLATE = "execution.setVariable(''{0}'', {1});";
+	
 	public ScriptServiceTaskBuilder() {
-		finalScript = new StringBuilder();
+		finalScript = new StringBuilder("\n");
   }
 	
 	public ServiceTask build() {
@@ -49,4 +53,12 @@ public class ScriptServiceTaskBuilder {
 	public void addLine(String line) {
 		finalScript.append(line).append("\n");
 	}
+	
+	public void setExecutionVariable(String name, String value) {
+		addLine(MessageFormat.format(SET_EXECUTION_VARIABLE_TEMPLATE, name, value));
+	}
+
+	public void add(String script) {
+		finalScript.append(script);
+  }
 }

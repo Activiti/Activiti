@@ -152,6 +152,17 @@ public class M2Model {
 		return null;
 	}
 	
+	public M2Type getType(String typeName) {
+		if(types != null) {
+			for(M2Type type : types) {
+				if(type.getName().equals(typeName)) {
+					return type;
+				}
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * @return true, if a property, aspect or association exists with the given name
 	 * in any of the types present in this model.
