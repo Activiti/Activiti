@@ -44,7 +44,7 @@ public class ExtensionElementsParser implements BpmnXMLConstants {
       xtr.next();
       if (xtr.isStartElement()) {
         if (ELEMENT_EXECUTION_LISTENER.equals(xtr.getLocalName())) {
-          new ExecutionListenerParser().parseChildElement(xtr, activeProcess, model);
+          new ExecutionListenerParser().parseChildElement(xtr, parentElement, model);
         } else {
           ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
           parentElement.addExtensionElement(extensionElement);
