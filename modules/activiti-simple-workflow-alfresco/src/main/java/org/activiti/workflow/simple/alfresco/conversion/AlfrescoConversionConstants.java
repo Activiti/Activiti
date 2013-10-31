@@ -157,7 +157,7 @@ public interface AlfrescoConversionConstants {
 	
 	// Artifact keys
 	String ARTIFACT_CONTENT_MODEL_KEY = "contentModel";
-	String ARTIFACT_SHARE_CONFIG_MODULE = "configModule";
+	String ARTIFACT_SHARE_CONFIG_EXTENSION = "configExtension";
 	String ARTIFACT_MODEL_NAMESPACE_PREFIX = "modelNamespacePrefix";
 	String ARTIFACT_PROPERTY_SHARING = "propertySharing";
 	String ARTIFACT_PROPERTY_TASK_SCRIPT_BUILDER = "scriptTaskListenerBuilder";

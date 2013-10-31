@@ -39,6 +39,7 @@ import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
 import org.activiti.workflow.simple.alfresco.model.config.Configuration;
+import org.activiti.workflow.simple.alfresco.model.config.Extension;
 import org.activiti.workflow.simple.alfresco.model.config.Form;
 import org.activiti.workflow.simple.alfresco.model.config.FormField;
 import org.activiti.workflow.simple.alfresco.model.config.FormFieldControl;
@@ -90,7 +91,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		}
 		
 		M2Model model = addContentModel(conversion, processId);
-		addModule(conversion, processId);
+		addExtension(conversion, processId);
 		
 		// In case the same property definitions are used across multiple forms, we need to identify this
 		// up-front and create an aspect for this that can be shared due to the fact that you cannot define the same
@@ -111,7 +112,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 				StartEvent startEvent = (StartEvent) flowElement;
 				if(startEvent.getFormKey() == null) {
 					
-					Module module = AlfrescoConversionUtil.getModule(conversion);
+					Module module = AlfrescoConversionUtil.getExtension(conversion).getModules().get(0);
 					Configuration detailsForm = module.addConfiguration(EVALUATOR_STRING_COMPARE, 
 							MessageFormat.format(EVALUATOR_CONDITION_ACTIVITI, conversion.getProcess().getId()));
 					
@@ -129,7 +130,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 						type.setParentName(AlfrescoConversionConstants.DEFAULT_START_FORM_TYPE);
 						
 						// Create a form-config for the start-task
-						Module shareModule = AlfrescoConversionUtil.getModule(conversion);
+						Module shareModule = AlfrescoConversionUtil.getExtension(conversion).getModules().get(0);
 						Configuration configuration = shareModule.addConfiguration(AlfrescoConversionConstants.EVALUATOR_TASK_TYPE
 								, type.getName());
 						Form formConfig = configuration.createForm();
@@ -315,11 +316,13 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		return model;
   }
 	
-	protected void addModule(WorkflowDefinitionConversion conversion, String processId) {
+	protected void addExtension(WorkflowDefinitionConversion conversion, String processId) {
 		// Create form-configuration
+		Extension extension = new Extension();
 		Module module = new Module();
+		extension.addModule(module);
 		module.setId(MessageFormat.format(MODULE_ID, processId));
-		AlfrescoConversionUtil.storeModule(module, conversion);
+		AlfrescoConversionUtil.storeExtension(extension, conversion);
   }
 	
 	protected void populateDefaultDetailFormConfig(Configuration configuration) {

@@ -35,11 +35,11 @@ public class AlfrescoEmailStepConverter extends BaseStepDefinitionConverter<Alfr
 		
 		ScriptServiceTaskBuilder builder = new ScriptServiceTaskBuilder();
 		builder.addLine("var mail = actions.create('mail');");
-		addMailActionParameter("to", stepDefinition.getTo(), builder);
-		addMailActionParameter("cc", stepDefinition.getCc(), builder);
-		addMailActionParameter("from", stepDefinition.getFrom(), builder);
-		addMailActionParameter("subject", stepDefinition.getSubject(), builder);
-		addMailActionParameter("text", stepDefinition.getBody(), builder);
+		addMailActionParameter("to", getSafeJsString(stepDefinition.getTo()), builder);
+		addMailActionParameter("cc", getSafeJsString(stepDefinition.getCc()), builder);
+		addMailActionParameter("from", getSafeJsString(stepDefinition.getFrom()), builder);
+		addMailActionParameter("subject", getSafeJsString(stepDefinition.getSubject()), builder);
+		addMailActionParameter("text", getSafeJsString(stepDefinition.getBody()), builder);
 		builder.addLine("mail.execute(bpm_package);");
 		
 		// Build the actual task and add it to the process
@@ -48,6 +48,13 @@ public class AlfrescoEmailStepConverter extends BaseStepDefinitionConverter<Alfr
 		serviceTask.setId(conversion.getUniqueNumberedId(ConversionConstants.SERVICE_TASK_ID_PREFIX));
 		addFlowElement(conversion, serviceTask, true);
 		return serviceTask;
+	}
+	
+	protected String getSafeJsString(String string) {
+		if(string != null) {
+			string = string.replace("'", "\\'");
+		}
+  	return string;
 	}
 	
 	protected void addMailActionParameter(String name, String value, ScriptServiceTaskBuilder builder) {
