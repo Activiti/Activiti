@@ -4835,7 +4835,8 @@ public class MyTaskCreateListener implements TaskListener {
           Additionally, each of the created executions will have an execution-local variable (i.e. not visible
           for the other executions, and not stored on process instance level) :
           <itemizedlist>
-            <listitem><para><emphasis role="bold">loopCounter</emphasis>: indicates the <emphasis>index in the for-each loop</emphasis> of that particular instance.</para></listitem>
+            <listitem><para><emphasis role="bold">loopCounter</emphasis>: indicates the <emphasis>index in the for-each loop</emphasis> of that particular instance. loopCounter variable can be renamed by activiti
+                <emphasis role="bold">elementIndexVariable</emphasis> attribute.</para></listitem>
           </itemizedlist>
         </para>
       

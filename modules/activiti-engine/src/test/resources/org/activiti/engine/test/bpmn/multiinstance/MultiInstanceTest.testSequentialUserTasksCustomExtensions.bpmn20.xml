@@ -5,18 +5,19 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
   
-  <process id="miParallelUserTasks">
+  <process id="miSequentialUserTasksCustomExtensions">
   
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miTasks" />
     
-    <userTask id="miTasks" name="My Task ${loopCounter}" activiti:assignee="${assignee}">
-      <multiInstanceLoopCharacteristics isSequential="false"
-          activiti:collection="assigneeList" activiti:elementVariable="assignee">
+    <userTask id="miTasks" name="My Task" activiti:assignee="kermit_${loopValueIndex}">
+      <multiInstanceLoopCharacteristics isSequential="true" activiti:elementIndexVariable="loopValueIndex">
+        <loopCardinality>${nrOfLoops}</loopCardinality>
+        <completionCondition>${nrOfCompletedInstances == 5}</completionCondition>
       </multiInstanceLoopCharacteristics>
     </userTask>
-    
-    <sequenceFlow id="flow3" sourceRef="miTasks" targetRef="theEnd" />
+
+    <sequenceFlow id="flow4" sourceRef="miTasks" targetRef="theEnd" />
     <endEvent id="theEnd" />
     
   </process>
