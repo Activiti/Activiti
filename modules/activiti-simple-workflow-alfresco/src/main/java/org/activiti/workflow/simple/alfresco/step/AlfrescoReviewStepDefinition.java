@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.workflow.simple.alfresco.conversion.exception.AlfrescoSimpleWorkflowException;
 import org.activiti.workflow.simple.definition.AbstractStepDefinitionContainer;
+import org.activiti.workflow.simple.definition.FormStepDefinition;
 import org.activiti.workflow.simple.definition.HumanStepAssignment.HumanStepAssignmentType;
 import org.activiti.workflow.simple.definition.NamedStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
@@ -36,7 +37,7 @@ import org.codehaus.jackson.annotate.JsonTypeName;
  * @author Frederik Heremans 
  */
 @JsonTypeName("review-step")
-public class AlfrescoReviewStepDefinition extends AbstractStepDefinitionContainer<AlfrescoReviewStepDefinition> implements StepDefinition, NamedStepDefinition {
+public class AlfrescoReviewStepDefinition extends AbstractStepDefinitionContainer<AlfrescoReviewStepDefinition> implements StepDefinition, NamedStepDefinition, FormStepDefinition {
   
   private static final long serialVersionUID = 1L;
   

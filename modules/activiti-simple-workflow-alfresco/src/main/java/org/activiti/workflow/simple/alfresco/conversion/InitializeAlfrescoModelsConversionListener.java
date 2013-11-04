@@ -45,10 +45,14 @@ import org.activiti.workflow.simple.alfresco.model.config.FormField;
 import org.activiti.workflow.simple.alfresco.model.config.FormFieldControl;
 import org.activiti.workflow.simple.alfresco.model.config.FormFieldControlParameter;
 import org.activiti.workflow.simple.alfresco.model.config.Module;
-import org.activiti.workflow.simple.alfresco.step.AlfrescoReviewStepDefinition;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
-import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.AbstractConditionStepListContainer;
+import org.activiti.workflow.simple.definition.AbstractStepDefinitionContainer;
+import org.activiti.workflow.simple.definition.AbstractStepListContainer;
+import org.activiti.workflow.simple.definition.FormStepDefinition;
+import org.activiti.workflow.simple.definition.ListConditionStepDefinition;
+import org.activiti.workflow.simple.definition.ListStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
@@ -243,13 +247,8 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		// Add start-form properties
 		addDefinitionsToMap(workflowDefinition.getStartFormDefinition(), definitionMap);
 		
-		for(StepDefinition step : workflowDefinition.getSteps()) {
-			if(step instanceof HumanStepDefinition) {
-				addDefinitionsToMap(((HumanStepDefinition) step).getForm(), definitionMap);
-			} else if(step instanceof AlfrescoReviewStepDefinition) {
-				addDefinitionsToMap(((AlfrescoReviewStepDefinition) step).getForm(), definitionMap);
-			}
-		}
+		// Run through steps recursivelye, looking for properties
+		addAspectsForReusedProperties(workflowDefinition.getSteps(), model, processId, definitionMap);
 		
 		// Check if the map contains values other than null, this indicates duplicate properties are found
 		for(Entry<String, FormPropertyDefinition> entry : definitionMap.entrySet()) {
@@ -261,7 +260,28 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 				model.getAspects().add(aspect);
 			}
 		}
-  }
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+  protected void addAspectsForReusedProperties(List<StepDefinition> steps, M2Model model, String processId, Map<String, FormPropertyDefinition> definitionMap) {
+		for (StepDefinition step : steps) {
+			if (step instanceof FormStepDefinition) {
+				addDefinitionsToMap(((FormStepDefinition) step).getForm(), definitionMap);
+			} else if(step instanceof AbstractStepListContainer<?>) {
+        List<ListStepDefinition<?>> stepList = ((AbstractStepListContainer) step).getStepList();
+        for(ListStepDefinition<?> list : stepList) {
+        	addAspectsForReusedProperties(list.getSteps(), model, processId, definitionMap);
+        }
+      } else if(step instanceof AbstractConditionStepListContainer<?>) {
+        List<ListConditionStepDefinition<?>> stepList = ((AbstractConditionStepListContainer) step).getStepList();
+        for(ListConditionStepDefinition<?> list : stepList) {
+        	addAspectsForReusedProperties(list.getSteps(), model, processId, definitionMap);
+        }
+      } else if(step instanceof AbstractStepDefinitionContainer<?>) {
+      	addAspectsForReusedProperties(((AbstractStepDefinitionContainer<WorkflowDefinition>) step).getSteps(), model, processId, definitionMap);
+      }
+		}
+	}
 	
 	protected void addDefinitionsToMap(FormDefinition formDefinition, Map<String, FormPropertyDefinition> definitionMap) {
 		if(formDefinition != null && formDefinition.getFormGroups() != null) {
