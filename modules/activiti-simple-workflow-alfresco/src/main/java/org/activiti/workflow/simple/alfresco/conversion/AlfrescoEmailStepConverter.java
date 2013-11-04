@@ -63,7 +63,7 @@ public class AlfrescoEmailStepConverter extends BaseStepDefinitionConverter<Alfr
 	
 	protected String getSafeScriptLiteral(String value) {
 		if(value != null) {
-			return value.replace("\n", "\\\n");
+			return value.replace("\n", "\\n\\\n");
 		} else {
 			return "";
 		}
