@@ -30,6 +30,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.ImplementationType;
@@ -361,16 +362,9 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       }
     }
     
-    // Add flows to map for later processing
-    Map<String, SequenceFlow> flowSourceMap = new HashMap<String, SequenceFlow>();
-    Map<String, SequenceFlow> flowTargetMap = new HashMap<String, SequenceFlow>();
-    for (Process process : bpmnModel.getProcesses()) {
-      addAllSequenceFlows(process.getFlowElements(), flowSourceMap, flowTargetMap);
-    }
-    
     // boundary events only contain attached ref id
     for (Process process : bpmnModel.getProcesses()) {
-      postProcessElements(process, process.getFlowElements(), flowSourceMap, flowTargetMap);
+      postProcessElements(process, process.getFlowElements());
     }
     
     return bpmnModel;
@@ -436,34 +430,10 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     }
   }
   
-  private void addAllSequenceFlows(Collection<FlowElement> flowElementList,
-      Map<String, SequenceFlow> flowSourceMap, Map<String, SequenceFlow> flowTargetMap) {
-    
-    for (FlowElement flowElement : flowElementList) {
-      if (flowElement instanceof SequenceFlow) {
-        SequenceFlow flow = (SequenceFlow) flowElement;
-        flowSourceMap.put(flow.getSourceRef(), flow);
-        flowTargetMap.put(flow.getTargetRef(), flow);
-      } else if (flowElement instanceof SubProcess) {
-        SubProcess subProcess = (SubProcess) flowElement;
-        addAllSequenceFlows(subProcess.getFlowElements(), flowSourceMap, flowTargetMap);
-      }
-    }
-  }
   
-  private void postProcessElements(Process process, Collection<FlowElement> flowElementList,
-      Map<String, SequenceFlow> flowSourceMap, Map<String, SequenceFlow> flowTargetMap) {
+  private void postProcessElements(FlowElementsContainer process, Collection<FlowElement> flowElementList) {
     
     for (FlowElement flowElement : flowElementList) {
-      
-      if (flowElement instanceof FlowNode) {
-        if (flowSourceMap.containsKey(flowElement.getId())) {
-          ((FlowNode) flowElement).getOutgoingFlows().add(flowSourceMap.get(flowElement.getId()));
-        }
-        if (flowTargetMap.containsKey(flowElement.getId())) {
-          ((FlowNode) flowElement).getIncomingFlows().add(flowTargetMap.get(flowElement.getId()));
-        }
-      }
       
       if (flowElement instanceof BoundaryEvent) {
         BoundaryEvent boundaryEvent = (BoundaryEvent) flowElement;
@@ -477,8 +447,18 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         }
       } else if (flowElement instanceof SubProcess) {
         SubProcess subProcess = (SubProcess) flowElement;
-        postProcessElements(process, subProcess.getFlowElements(), flowSourceMap, flowTargetMap);
-      }
+        postProcessElements(subProcess, subProcess.getFlowElements());
+      } else if (flowElement instanceof SequenceFlow) {
+    	SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
+    	FlowElement sourceFlowElement = process.getFlowElement(sequenceFlow.getSourceRef()) ;
+    	if(sourceFlowElement != null && sourceFlowElement instanceof FlowNode) {
+    	  ((FlowNode) sourceFlowElement).getOutgoingFlows().add(sequenceFlow);
+    	}
+    	FlowElement targerFlowElement = process.getFlowElement(sequenceFlow.getTargetRef()) ;
+    	if(targerFlowElement != null && targerFlowElement instanceof FlowNode) {
+    	  ((FlowNode) targerFlowElement).getIncomingFlows().add(sequenceFlow);
+    	}
+	  }
     }
   }
    
