@@ -99,7 +99,7 @@ public class WorkflowDefinitionConversionTest {
 		assertNotNull(contentModel);
 		
 		// Check presence of form-config and default workflow-details
-		Module module = AlfrescoConversionUtil.getModule(conversion);
+		Module module = AlfrescoConversionUtil.getExtension(conversion).getModules().get(0);
 		assertNotNull(module);
 		assertEquals(1L, module.getConfigurations().size());
 		
@@ -437,7 +437,7 @@ public class WorkflowDefinitionConversionTest {
 		conversion.convert();
 		new File("target/repo").mkdir();
 		new File("target/share").mkdir();
-		conversionFactory.getArtifactExporter().exportArtifacts(conversion, new File("target/repo"), new File("target/share"));
+		conversionFactory.getArtifactExporter().exportArtifacts(conversion, new File("target/repo"), new File("target/share"), false);
 	}
 	
 	protected M2Property getPropertyFromType(String shortName, M2Type type) {

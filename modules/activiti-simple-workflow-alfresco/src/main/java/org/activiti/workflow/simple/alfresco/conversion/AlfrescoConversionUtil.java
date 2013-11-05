@@ -22,7 +22,7 @@ import org.activiti.workflow.simple.alfresco.conversion.script.PropertyReference
 import org.activiti.workflow.simple.alfresco.conversion.script.ScriptTaskListenerBuilder;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
-import org.activiti.workflow.simple.alfresco.model.config.Module;
+import org.activiti.workflow.simple.alfresco.model.config.Extension;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 
 /**
@@ -72,12 +72,12 @@ public class AlfrescoConversionUtil implements AlfrescoConversionConstants {
 		return (M2Model) conversion.getArtifact(ARTIFACT_CONTENT_MODEL_KEY);
 	}
 
-	public static void storeModule(Module module, WorkflowDefinitionConversion conversion) {
-		conversion.setArtifact(ARTIFACT_SHARE_CONFIG_MODULE, module);
+	public static void storeExtension(Extension module, WorkflowDefinitionConversion conversion) {
+		conversion.setArtifact(ARTIFACT_SHARE_CONFIG_EXTENSION, module);
   }
 	
-	public static Module getModule(WorkflowDefinitionConversion conversion) {
-		return (Module) conversion.getArtifact(ARTIFACT_SHARE_CONFIG_MODULE);
+	public static Extension getExtension(WorkflowDefinitionConversion conversion) {
+		return (Extension) conversion.getArtifact(ARTIFACT_SHARE_CONFIG_EXTENSION);
 	}
 	
 	public static void storeModelNamespacePrefix(String prefix, WorkflowDefinitionConversion conversion) {

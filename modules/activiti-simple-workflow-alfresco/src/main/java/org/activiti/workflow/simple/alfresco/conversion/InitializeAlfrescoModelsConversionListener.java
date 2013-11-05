@@ -39,15 +39,20 @@ import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
 import org.activiti.workflow.simple.alfresco.model.config.Configuration;
+import org.activiti.workflow.simple.alfresco.model.config.Extension;
 import org.activiti.workflow.simple.alfresco.model.config.Form;
 import org.activiti.workflow.simple.alfresco.model.config.FormField;
 import org.activiti.workflow.simple.alfresco.model.config.FormFieldControl;
 import org.activiti.workflow.simple.alfresco.model.config.FormFieldControlParameter;
 import org.activiti.workflow.simple.alfresco.model.config.Module;
-import org.activiti.workflow.simple.alfresco.step.AlfrescoReviewStepDefinition;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
-import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.AbstractConditionStepListContainer;
+import org.activiti.workflow.simple.definition.AbstractStepDefinitionContainer;
+import org.activiti.workflow.simple.definition.AbstractStepListContainer;
+import org.activiti.workflow.simple.definition.FormStepDefinition;
+import org.activiti.workflow.simple.definition.ListConditionStepDefinition;
+import org.activiti.workflow.simple.definition.ListStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
@@ -90,7 +95,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		}
 		
 		M2Model model = addContentModel(conversion, processId);
-		addModule(conversion, processId);
+		addExtension(conversion, processId);
 		
 		// In case the same property definitions are used across multiple forms, we need to identify this
 		// up-front and create an aspect for this that can be shared due to the fact that you cannot define the same
@@ -111,7 +116,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 				StartEvent startEvent = (StartEvent) flowElement;
 				if(startEvent.getFormKey() == null) {
 					
-					Module module = AlfrescoConversionUtil.getModule(conversion);
+					Module module = AlfrescoConversionUtil.getExtension(conversion).getModules().get(0);
 					Configuration detailsForm = module.addConfiguration(EVALUATOR_STRING_COMPARE, 
 							MessageFormat.format(EVALUATOR_CONDITION_ACTIVITI, conversion.getProcess().getId()));
 					
@@ -129,7 +134,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 						type.setParentName(AlfrescoConversionConstants.DEFAULT_START_FORM_TYPE);
 						
 						// Create a form-config for the start-task
-						Module shareModule = AlfrescoConversionUtil.getModule(conversion);
+						Module shareModule = AlfrescoConversionUtil.getExtension(conversion).getModules().get(0);
 						Configuration configuration = shareModule.addConfiguration(AlfrescoConversionConstants.EVALUATOR_TASK_TYPE
 								, type.getName());
 						Form formConfig = configuration.createForm();
@@ -242,13 +247,8 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		// Add start-form properties
 		addDefinitionsToMap(workflowDefinition.getStartFormDefinition(), definitionMap);
 		
-		for(StepDefinition step : workflowDefinition.getSteps()) {
-			if(step instanceof HumanStepDefinition) {
-				addDefinitionsToMap(((HumanStepDefinition) step).getForm(), definitionMap);
-			} else if(step instanceof AlfrescoReviewStepDefinition) {
-				addDefinitionsToMap(((AlfrescoReviewStepDefinition) step).getForm(), definitionMap);
-			}
-		}
+		// Run through steps recursivelye, looking for properties
+		addAspectsForReusedProperties(workflowDefinition.getSteps(), model, processId, definitionMap);
 		
 		// Check if the map contains values other than null, this indicates duplicate properties are found
 		for(Entry<String, FormPropertyDefinition> entry : definitionMap.entrySet()) {
@@ -260,7 +260,28 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 				model.getAspects().add(aspect);
 			}
 		}
-  }
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+  protected void addAspectsForReusedProperties(List<StepDefinition> steps, M2Model model, String processId, Map<String, FormPropertyDefinition> definitionMap) {
+		for (StepDefinition step : steps) {
+			if (step instanceof FormStepDefinition) {
+				addDefinitionsToMap(((FormStepDefinition) step).getForm(), definitionMap);
+			} else if(step instanceof AbstractStepListContainer<?>) {
+        List<ListStepDefinition<?>> stepList = ((AbstractStepListContainer) step).getStepList();
+        for(ListStepDefinition<?> list : stepList) {
+        	addAspectsForReusedProperties(list.getSteps(), model, processId, definitionMap);
+        }
+      } else if(step instanceof AbstractConditionStepListContainer<?>) {
+        List<ListConditionStepDefinition<?>> stepList = ((AbstractConditionStepListContainer) step).getStepList();
+        for(ListConditionStepDefinition<?> list : stepList) {
+        	addAspectsForReusedProperties(list.getSteps(), model, processId, definitionMap);
+        }
+      } else if(step instanceof AbstractStepDefinitionContainer<?>) {
+      	addAspectsForReusedProperties(((AbstractStepDefinitionContainer<WorkflowDefinition>) step).getSteps(), model, processId, definitionMap);
+      }
+		}
+	}
 	
 	protected void addDefinitionsToMap(FormDefinition formDefinition, Map<String, FormPropertyDefinition> definitionMap) {
 		if(formDefinition != null && formDefinition.getFormGroups() != null) {
@@ -315,11 +336,13 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		return model;
   }
 	
-	protected void addModule(WorkflowDefinitionConversion conversion, String processId) {
+	protected void addExtension(WorkflowDefinitionConversion conversion, String processId) {
 		// Create form-configuration
+		Extension extension = new Extension();
 		Module module = new Module();
+		extension.addModule(module);
 		module.setId(MessageFormat.format(MODULE_ID, processId));
-		AlfrescoConversionUtil.storeModule(module, conversion);
+		AlfrescoConversionUtil.storeExtension(extension, conversion);
   }
 	
 	protected void populateDefaultDetailFormConfig(Configuration configuration) {

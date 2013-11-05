@@ -59,6 +59,7 @@ public interface AlfrescoConversionConstants {
 	String PROPERTY_WORKFLOW_DUE_DATE = "bpm:workflowDueDate";
 	String PROPERTY_WORKFLOW_PRIORITY = "bpm:workflowPriority";
 	String PROPERTY_SEND_EMAIL_NOTIFICATIONS = "bpm:sendEMailNotifications";
+	String PROPERTY_COMMENT = "bpm:comment";
 	String PROPERTY_PACKAGEITEMS = "packageItems";
 	
 	String PROPERTY_PACKAGEITEMS_ITEM_ACTION_GROUP = "bpm:packageItemActionGroup";
@@ -123,6 +124,7 @@ public interface AlfrescoConversionConstants {
 	String FORM_SET_ITEMS_LABEL = "workflow.set.items";
 	String FORM_SET_OTHER_LABEL = "workflow.set.other";
 	String FORM_WORKFLOW_DESCRIPTION_LABEL = "workflow.field.message";
+	String FORM_COMMENT_LABEL = "workflow.field.comment";
 	String FORM_WORKFLOW_DUE_DATE_LABEL = "workflow.field.due";
 	String FORM_WORKFLOW_PRIORITY_LABEL = "workflow.field.priority";
 	
@@ -134,6 +136,8 @@ public interface AlfrescoConversionConstants {
 	String FORM_GROUP_LAYOUT_3_COLUMNS = "three-column";
 	
 	String FORM_REFERENCE_DUEDATE = "duedate";
+	String FORM_REFERENCE_EMAIL_NOTIFICATION = "email-notification";
+	String FORM_REFERENCE_COMMENT = "comment";
 	String FORM_REFERENCE_PRIORITY = "priority";
 	String FORM_REFERENCE_WORKFLOW_DESCRIPTION = "workflow-description";
 	String FORM_REFERENCE_PACKAGE_ITEMS = "package-items";
@@ -153,11 +157,12 @@ public interface AlfrescoConversionConstants {
 	String PARAMETER_PACKAGEITEMS_ALLOW_REMOVE = "allow-remove";
 	String PARAMETER_ADD_PROPERTY_TO_OUTPUT = "property-output";
 	String PARAMETER_REFERENCE_MANY = "reference-many";
+	String PARAMETER_FORCE_NOTOFICATIONS = "force-notifications";
 	
 	
 	// Artifact keys
 	String ARTIFACT_CONTENT_MODEL_KEY = "contentModel";
-	String ARTIFACT_SHARE_CONFIG_MODULE = "configModule";
+	String ARTIFACT_SHARE_CONFIG_EXTENSION = "configExtension";
 	String ARTIFACT_MODEL_NAMESPACE_PREFIX = "modelNamespacePrefix";
 	String ARTIFACT_PROPERTY_SHARING = "propertySharing";
 	String ARTIFACT_PROPERTY_TASK_SCRIPT_BUILDER = "scriptTaskListenerBuilder";

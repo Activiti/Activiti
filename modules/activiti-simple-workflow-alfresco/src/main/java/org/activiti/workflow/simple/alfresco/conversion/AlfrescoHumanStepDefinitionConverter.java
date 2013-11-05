@@ -84,7 +84,7 @@ public class AlfrescoHumanStepDefinitionConverter extends HumanStepDefinitionCon
 		userTask.setFormKey(type.getName());
 		
 		// Create a form-config for the task
-		Module shareModule = AlfrescoConversionUtil.getModule(conversion);
+		Module shareModule = AlfrescoConversionUtil.getExtension(conversion).getModules().get(0);
 		Configuration configuration = shareModule.addConfiguration(AlfrescoConversionConstants.EVALUATOR_TASK_TYPE
 				, type.getName());
 		Form formConfig = configuration.createForm();
