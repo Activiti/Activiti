@@ -84,4 +84,27 @@ public class UserTask extends Task {
   public void setTaskListeners(List<ActivitiListener> taskListeners) {
     this.taskListeners = taskListeners;
   }
+  
+  public UserTask clone() {
+    UserTask clone = new UserTask();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(UserTask otherElement) {
+    super.setValues(otherElement);
+    setAssignee(otherElement.getAssignee());
+    setAsynchronous(otherElement.isAsynchronous());
+    setCandidateGroups(new ArrayList<String>(otherElement.getCandidateGroups()));
+    setCandidateUsers(new ArrayList<String>(otherElement.getCandidateUsers()));
+    setDocumentation(otherElement.getDocumentation());
+    setFormKey(otherElement.getFormKey());
+    
+    taskListeners = new ArrayList<ActivitiListener>();
+    if (otherElement.getTaskListeners() != null && otherElement.getTaskListeners().size() > 0) {
+      for (ActivitiListener listener : otherElement.getTaskListeners()) {
+        taskListeners.add(listener.clone());
+      }
+    }
+  }
 }

@@ -82,4 +82,34 @@ public class ServiceTask extends Task {
   public boolean isExtended() {
     return extensionId != null && !extensionId.isEmpty();
   }
+  
+  public ServiceTask clone() {
+    ServiceTask clone = new ServiceTask();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(ServiceTask otherElement) {
+    super.setValues(otherElement);
+    setImplementation(otherElement.getImplementation());
+    setImplementationType(otherElement.getImplementationType());
+    setResultVariableName(otherElement.getResultVariableName());
+    setType(otherElement.getType());
+    setOperationRef(otherElement.getOperationRef());
+    setExtensionId(otherElement.getExtensionId());
+    
+    fieldExtensions = new ArrayList<FieldExtension>();
+    if (otherElement.getFieldExtensions() != null && otherElement.getFieldExtensions().size() > 0) {
+      for (FieldExtension extension : otherElement.getFieldExtensions()) {
+        fieldExtensions.add(extension.clone());
+      }
+    }
+    
+    customProperties = new ArrayList<CustomProperty>();
+    if (otherElement.getCustomProperties() != null && otherElement.getCustomProperties().size() > 0) {
+      for (CustomProperty property : otherElement.getCustomProperties()) {
+        customProperties.add(property.clone());
+      }
+    }
+  }
 }

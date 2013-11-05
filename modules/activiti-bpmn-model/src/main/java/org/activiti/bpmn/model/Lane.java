@@ -12,10 +12,10 @@
  */
 package org.activiti.bpmn.model;
 
-import org.codehaus.jackson.annotate.JsonBackReference;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonBackReference;
 
 /**
  * @author Tijs Rademakers
@@ -49,5 +49,22 @@ public class Lane extends BaseElement {
 
   public void setFlowReferences(List<String> flowReferences) {
     this.flowReferences = flowReferences;
+  }
+  
+  public Lane clone() {
+    Lane clone = new Lane();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(Lane otherElement) {
+    super.setValues(otherElement);
+    setName(otherElement.getName());
+    setParentProcess(otherElement.getParentProcess());
+    
+    flowReferences = new ArrayList<String>();
+    if (otherElement.getFlowReferences() != null && otherElement.getFlowReferences().size() > 0) {
+      flowReferences.addAll(otherElement.getFlowReferences());
+    }
   }
 }
