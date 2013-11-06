@@ -160,13 +160,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     ArrayNode shapesArrayNode = objectMapper.createArrayNode();
     
-    Process mainProcess = null;
-    if (model.getPools().size() > 0) {
-      mainProcess = model.getProcess(model.getPools().get(0).getId());
-    } else {
-      mainProcess = model.getMainProcess();
-    }
-      
+    Process mainProcess = model.getMainProcess();
+    
     ObjectNode propertiesNode = objectMapper.createObjectNode();
     if (StringUtils.isNotEmpty(mainProcess.getId())) {
       propertiesNode.put(PROPERTY_PROCESS_ID, mainProcess.getId());
@@ -187,22 +182,30 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     if (model.getPools().size() > 0) {
       for (Pool pool : model.getPools()) {
-        GraphicInfo graphicInfo = model.getGraphicInfo(pool.getId());
+        GraphicInfo poolGraphicInfo = model.getGraphicInfo(pool.getId());
         ObjectNode poolNode = BpmnJsonConverterUtil.createChildShape(pool.getId(), STENCIL_POOL, 
-            graphicInfo.getX() + graphicInfo.getWidth(), graphicInfo.getY() + graphicInfo.getHeight(), graphicInfo.getX(), graphicInfo.getY());
+            poolGraphicInfo.getX() + poolGraphicInfo.getWidth(), poolGraphicInfo.getY() + poolGraphicInfo.getHeight(), poolGraphicInfo.getX(), poolGraphicInfo.getY());
         shapesArrayNode.add(poolNode);
         ObjectNode poolPropertiesNode = objectMapper.createObjectNode();
         poolPropertiesNode.put(PROPERTY_OVERRIDE_ID, pool.getId());
+        poolPropertiesNode.put(PROPERTY_PROCESS_ID, pool.getProcessRef());
+        if (pool.isExecutable() == false) {
+          poolPropertiesNode.put(PROPERTY_PROCESS_EXECUTABLE, PROPERTY_VALUE_NO);
+        }
         if (StringUtils.isNotEmpty(pool.getName())) {
           poolPropertiesNode.put(PROPERTY_NAME, pool.getName());
         }
         poolNode.put(EDITOR_SHAPE_PROPERTIES, poolPropertiesNode);
+        poolNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
         
         ArrayNode laneShapesArrayNode = objectMapper.createArrayNode();
         poolNode.put(EDITOR_CHILD_SHAPES, laneShapesArrayNode);
         
         Process process = model.getProcess(pool.getId());
         if (process != null) {
+          
+          processFlowElements(process.findFlowElementsOfType(SequenceFlow.class), model, shapesArrayNode, poolGraphicInfo.getX(), poolGraphicInfo.getY());
+          
           for (Lane lane : process.getLanes()) {
             GraphicInfo laneGraphicInfo = model.getGraphicInfo(lane.getId());
             ObjectNode laneNode = BpmnJsonConverterUtil.createChildShape(lane.getId(), STENCIL_LANE, 
@@ -218,6 +221,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             
             ArrayNode elementShapesArrayNode = objectMapper.createArrayNode();
             laneNode.put(EDITOR_CHILD_SHAPES, elementShapesArrayNode);
+            laneNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
             
             for (FlowElement flowElement : process.getFlowElements()) {
               if (lane.getFlowReferences().contains(flowElement.getId())) {
@@ -244,7 +248,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     return modelNode;
   }
   
-  public void processFlowElements(Collection<FlowElement> flowElements, BpmnModel model, ArrayNode shapesArrayNode, 
+  @Override
+  public void processFlowElements(Collection<? extends FlowElement> flowElements, BpmnModel model, ArrayNode shapesArrayNode, 
       double subProcessX, double subProcessY) {
     
     for (FlowElement flowElement : flowElements) {
@@ -272,7 +277,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     ArrayNode shapesArrayNode = (ArrayNode) modelNode.get(EDITOR_CHILD_SHAPES);
     
-    boolean nonEmptyPoolFound = false;
+    boolean emptyPoolFound = true;
     // first create the pool structure
     for (JsonNode shapeNode : shapesArrayNode) {
       String stencilId = BpmnJsonConverterUtil.getStencilId(shapeNode);
@@ -280,19 +285,27 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         Pool pool = new Pool();
         pool.setId(BpmnJsonConverterUtil.getElementId(shapeNode));
         pool.setName(JsonConverterUtil.getPropertyValueAsString(PROPERTY_NAME, shapeNode));
+        pool.setProcessRef(JsonConverterUtil.getPropertyValueAsString(PROPERTY_PROCESS_ID, shapeNode));
+        JsonNode processExecutableNode = JsonConverterUtil.getProperty(PROPERTY_PROCESS_EXECUTABLE, shapeNode);
+        if (processExecutableNode != null && StringUtils.isNotEmpty(processExecutableNode.asText())) {
+          pool.setExecutable(JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_PROCESS_EXECUTABLE, shapeNode));
+        }
         bpmnModel.getPools().add(pool);
         
         Process process = new Process();
-        process.setId("Process_" + pool.getId());
+        process.setId(pool.getProcessRef());
+        process.setName(pool.getName());
+        process.setExecutable(pool.isExecutable());
         bpmnModel.addProcess(process);
-        pool.setProcessRef(process.getId());
+        
+        processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
         
         ArrayNode laneArrayNode = (ArrayNode) shapeNode.get(EDITOR_CHILD_SHAPES);
         for (JsonNode laneNode : laneArrayNode) {
           // should be a lane, but just check to be certain
           String laneStencilId = BpmnJsonConverterUtil.getStencilId(laneNode);
           if (STENCIL_LANE.equals(laneStencilId)) {
-            nonEmptyPoolFound = true;
+            emptyPoolFound = false;
             Lane lane = new Lane();
             lane.setId(BpmnJsonConverterUtil.getElementId(laneNode));
             lane.setName(JsonConverterUtil.getPropertyValueAsString(PROPERTY_NAME, laneNode));
@@ -305,7 +318,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       }
     }
     
-    if (nonEmptyPoolFound == false) {
+    if (emptyPoolFound) {
       
       JsonNode processIdNode = JsonConverterUtil.getProperty(PROPERTY_PROCESS_ID, modelNode);
       Process process = new Process();
@@ -376,6 +389,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     return bpmnModel;
   }
   
+  @Override
   public void processJsonElements(JsonNode shapesArrayNode, JsonNode modelNode, 
       BaseElement parentElement, Map<String, JsonNode> shapeMap) {
     

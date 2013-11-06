@@ -2,18 +2,18 @@
         "resourceId" : "canvas",
         "properties" : {
             "orientation" : "horizontal",
+            "expressionlanguage" : "http://www.w3.org/1999/XPath",
             "modificationdate" : "",
             "creationdate" : "",
             "version" : "",
             "author" : "",
             "typelanguage" : "http://www.w3.org/2001/XMLSchema",
             "targetnamespace" : "http://www.activiti.org/processdef",
-            "expressionlanguage" : "http://www.w3.org/1999/XPath",
             "name" : "",
             "documentation" : "",
             "process_id" : "diagramProcess",
             "process_author" : "",
-            "process_executable" : "Yes",
+            "process_executable" : "No",
             "process_version" : "",
             "process_namespace" : "http://www.activiti.org/processdef",
             "executionlisteners" : ""
@@ -29,7 +29,7 @@
                 "documentation" : "",
                 "process_id" : "poolProcess",
                 "process_author" : "",
-                "process_executable" : "Yes",
+                "process_executable" : "No",
                 "process_version" : "",
                 "process_namespace" : "http://www.activiti.org/processdef"
             },
@@ -431,7 +431,7 @@
         {
             "resourceId" : "sid-0B9DCAA9-2469-4074-936E-0A99C3DEF03A",
             "properties" : {
-                "overrideid" : "flow1",
+                "overrideid" : "",
                 "name" : "",
                 "documentation" : "",
                 "conditionsequenceflow" : "",
@@ -470,7 +470,7 @@
         {
             "resourceId" : "sid-A78B49FE-016F-4FC5-BA1E-FFF2E60392AB",
             "properties" : {
-                "overrideid" : "flow2",
+                "overrideid" : "",
                 "name" : "",
                 "documentation" : "",
                 "conditionsequenceflow" : "",
@@ -509,7 +509,7 @@
         {
             "resourceId" : "sid-A4D56B00-AD8D-4331-9AE6-EE93859FB8BD",
             "properties" : {
-                "overrideid" : "flow3",
+                "overrideid" : "",
                 "name" : "",
                 "documentation" : "",
                 "conditionsequenceflow" : "",
@@ -548,7 +548,7 @@
         {
             "resourceId" : "sid-3A6BD6A9-DF8D-4270-BA2E-B4FB6343D45F",
             "properties" : {
-                "overrideid" : "flow4",
+                "overrideid" : "",
                 "name" : "",
                 "documentation" : "",
                 "conditionsequenceflow" : "",
@@ -587,7 +587,7 @@
         {
             "resourceId" : "sid-280C4010-2CA6-4A18-9394-9F87E60D8FF0",
             "properties" : {
-                "overrideid" : "flow5",
+                "overrideid" : "",
                 "name" : "",
                 "documentation" : "",
                 "conditionsequenceflow" : "",
@@ -626,7 +626,7 @@
         {
             "resourceId" : "sid-EEDE9DD2-16F5-4503-B29D-94F6EF1C1D74",
             "properties" : {
-                "overrideid" : "flow6",
+                "overrideid" : "",
                 "name" : "",
                 "documentation" : "",
                 "conditionsequenceflow" : "",
@@ -665,7 +665,7 @@
         {
             "resourceId" : "sid-26C473DF-5D3A-4440-824F-890D99CB0AAD",
             "properties" : {
-                "overrideid" : "flow7",
+                "overrideid" : "",
                 "name" : "",
                 "documentation" : "",
                 "conditionsequenceflow" : "",
