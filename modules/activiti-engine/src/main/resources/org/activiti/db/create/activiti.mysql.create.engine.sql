@@ -119,6 +119,7 @@ create table ACT_RU_TASK (
     PRIORITY_ integer,
     CREATE_TIME_ timestamp,
     DUE_DATE_ datetime,
+    CATEGORY_ varchar(255),
     SUSPENSION_STATE_ integer,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;

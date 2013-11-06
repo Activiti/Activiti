@@ -36,6 +36,7 @@ public class HistoricTaskWrapper implements Task {
   protected String owner;
   protected String assignee;
   protected Date dueDate;
+  protected String category;
   protected String parentTaskId;
 
   public HistoricTaskWrapper(HistoricTaskInstance historicTaskInstance) {
@@ -126,8 +127,16 @@ public class HistoricTaskWrapper implements Task {
   public void setDueDate(Date dueDate) {
     this.dueDate = dueDate;
   }
+  
+  public String getCategory() {
+		return category;
+	}
 
-  public void delegate(String userId) {
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public void delegate(String userId) {
   }
 
   public void setParentTaskId(String parentTaskId) {

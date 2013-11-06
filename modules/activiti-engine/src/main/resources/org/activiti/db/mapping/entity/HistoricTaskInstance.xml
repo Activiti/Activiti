@@ -39,7 +39,8 @@
         TASK_DEF_KEY_,
         FORM_KEY_,
         PRIORITY_,
-        DUE_DATE_
+        DUE_DATE_,
+        CATEGORY_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processDefinitionId, jdbcType=VARCHAR},
@@ -58,7 +59,8 @@
         #{taskDefinitionKey ,jdbcType=VARCHAR},
         #{formKey ,jdbcType=VARCHAR},
         #{priority, jdbcType=INTEGER},
-        #{dueDate, jdbcType=TIMESTAMP}
+        #{dueDate, jdbcType=TIMESTAMP},
+        #{category, jdbcType=VARCHAR}
       )
   </insert>
 
@@ -79,7 +81,8 @@
       TASK_DEF_KEY_ = #{taskDefinitionKey ,jdbcType=VARCHAR},
       FORM_KEY_ = #{formKey ,jdbcType=VARCHAR},
       PRIORITY_ = #{priority, jdbcType=INTEGER},
-      DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP}
+      DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP},
+      CATEGORY_ = #{category, jdbcType=VARCHAR}
     where ID_ = #{id}
   </update>
 
@@ -110,6 +113,7 @@
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER" />
     <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP" />
+    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
   </resultMap>
   
   <resultMap id="historicTaskInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
@@ -131,6 +135,7 @@
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER" />
     <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP" />
+    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
     <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -379,6 +384,9 @@
       </if>
       <if test="completedAfterDate != null">
         and RES.END_TIME_ &gt; #{completedAfterDate}
+      </if>
+      <if test="category != null">
+        and RES.CATEGORY_ = #{category}
       </if>
       <if test="candidateUser != null || candidateGroups != null">
         and RES.ASSIGNEE_ is null

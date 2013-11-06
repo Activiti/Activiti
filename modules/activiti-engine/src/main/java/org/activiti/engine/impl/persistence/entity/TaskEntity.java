@@ -69,6 +69,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected Date createTime; // The time when the task has been created
   protected Date dueDate;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
+  protected String category;
   
   protected boolean isIdentityLinksInitialized = false;
   protected List<IdentityLinkEntity> taskIdentityLinkEntities = new ArrayList<IdentityLinkEntity>(); 
@@ -511,6 +512,18 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         .recordTaskPriorityChange(id, priority);
     }
   }
+  
+  public void setCategory(String category) {
+  	this.category = category;
+  	
+  	 
+    CommandContext commandContext = Context.getCommandContext();
+    if (commandContext!=null) {
+      commandContext
+        .getHistoryManager()
+        .recordTaskCategoryChange(id, category);
+    }
+  }
 
   public void setPriorityWithoutCascade(int priority) {
     this.priority = priority;
@@ -713,7 +726,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void setSuspensionState(int suspensionState) {
     this.suspensionState = suspensionState;
   }
-  public boolean isSuspended() {
+  public String getCategory() {
+		return category;
+	}
+	public boolean isSuspended() {
     return suspensionState == SuspensionState.SUSPENDED.getStateCode();
   }
   public Map<String, Object> getTaskLocalVariables() {

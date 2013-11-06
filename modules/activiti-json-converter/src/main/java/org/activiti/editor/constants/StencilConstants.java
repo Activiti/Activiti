@@ -123,6 +123,7 @@ public interface StencilConstants {
 	
 	final String PROPERTY_FORMKEY = "formkeydefinition";
 	final String PROPERTY_DUEDATE = "duedatedefinition";
+	final String PROPERTY_CATEGORY = "categoryDefinition";
 	final String PROPERTY_PRIORITY = "prioritydefinition";
 	
 	final String PROPERTY_USERTASK_ASSIGNMENT = "usertaskassignment";

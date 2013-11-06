@@ -92,6 +92,18 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       }
     }
     
+    if (taskDefinition.getCategoryExpression() != null) {
+    	final Object category = taskDefinition.getCategoryExpression().getValue(execution);
+    	if (category != null) {
+    		if (category instanceof String) {
+    			task.setCategory((String) category);
+    		} else {
+    			 throw new ActivitiIllegalArgumentException("Category expression does not resolve to a string: " + 
+               taskDefinition.getCategoryExpression().getExpressionText());
+    		}
+    	}
+    }
+    
     handleAssignments(task, execution);
    
     // All properties set, now firing 'create' event
