@@ -22,6 +22,6 @@ public class SimpleCamelCallRoute extends RouteBuilder {
   @Override
   public void configure() throws Exception {
 
-	  from("activiti:SimpleCamelCallProcess:simpleCall").to("log: org.activiti.camel.examples.simpleCall").setBody(simple("Hello ${body}"));;
+	  from("activiti:SimpleCamelCallProcess:simpleCall").to("log: org.activiti.camel.examples.SimpleCamelCall");
   }
 }

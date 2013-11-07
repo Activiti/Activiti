@@ -9,15 +9,11 @@
 
 
     <process id="SimpleCamelCallProcess">
-
         <startEvent id="start"/>
         <sequenceFlow id="flow1" sourceRef="start" targetRef="simpleCall"/>
-
         <serviceTask id="simpleCall" activiti:type="camel"/>
-        <sequenceFlow id="flow2" sourceRef="simpleCall" targetRef="end"/>
-       
+        <sequenceFlow id="flow2" sourceRef="simpleCall" targetRef="end"/>       
         <endEvent id="end"/>
-
     </process>
 
 </definitions>

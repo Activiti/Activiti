@@ -4196,62 +4196,82 @@ public class StartProcessInstanceTestDelegateWithInjection {
         </para>
         
         <para>
-          For more documentation about Camel routes you can look on the Camel website. This user guide only shows an example route definition related to the Activiti integration.
-          When a Camel task is executed a route is searched for that corresponds to the key of process definition and the identifier of that task, like in the short example above &quot;sendCamel&quot;.
-          An example route defined in Java can look like this:
-          <programlisting>
-public class AsyncCamelRoute extends RouteBuilder {
+          For more documentation about Camel routes you can look on the <ulink url="http://camel.apache.org/">Camel website</ulink>. 
+		  The basic concepts are demonstrated through a few small samples here in this document.
+		  In the first sample, we will do the simplest form of Camel call from an activiti workflow. Let's call it SimpleCamelCall.
+		</para>
+		</section>
+		<section id="bpmnCamelTaskSimpleCamelCall">
+
+		<title> Simpel Camel Call </title>
+<para>
+		All the files related to this example can be found in org.activiti.camel.examples.simpleCamelCall package. Target is simply activating a specific camel route.
+		First of all we need an Spring context which contains the introduction to the routes as mentioned previously. This part of the file serves this purpose:
+</para>
+
+		<programlisting>
+&lt;camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring"&gt;
+	&lt;packageScan&gt;
+		&lt;package&gt;org.activiti.camel.examples.simpleCamelCall&lt;/package&gt;
+	&lt;/packageScan&gt;
+&lt;/camelContext>
+         </programlisting>
+	   The route itself is configured in a file named SimpleCamelCallRoute located in the directory mentioned in PackageScan tag above. 
+	   Here is the route:
+	   
+         <programlisting>
+public class SimpleCamelCallRoute extends RouteBuilder {
 
   @Override
   public void configure() throws Exception {
 
-    from("activiti:asyncCamelProcess:serviceTaskAsync1?copyVariablesToProperties=true").setHeader("destination", constant("activiti:asyncCamelProcess:receive1")).to("seda:asyncQueue");
-    from("seda:asyncQueue").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
-    
-    from("activiti:asyncCamelProcess:serviceTaskAsync2?copyVariablesToProperties=true").setHeader("destination", constant("activiti:asyncCamelProcess:receive2")).to("seda:asyncQueue2");
-    from("seda:asyncQueue2").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
-    
-    from("seda:receiveQueue").recipientList(header("destination"));
+	  from("activiti:SimpleCamelCallProcess:simpleCall").to("log: org.activiti.camel.examples.SimpleCamelCall");
   }
-}</programlisting>
-          Note the from endpoint definition &quot;activiti:asyncCamelProcess:serviceTaskAsync1&quot; where activiti relates to the Activiti Camel component. asyncCamelProcess refers to the process definition
-          key of the process definition. And serviceTaskAsync1 relates to the identifier of the Camel task. The process variables can be copied to the body or the properties of the Camel payload.
-          In this example the variables are copied as message properties (the default). copyVariablesToBodyAsMap=true will copy the variables to the body of the Camel message in a Map instance. 
-          copyCamelBodyToBody=true will copy the camelBody process variable to the body of the Camel message
-          In this example you can also see that a Camel message can be sent to a receive task of an Activiti process instance. In this example a bit of additional Camel logic is used to send the Camel message
-          to the receive task that's defined in the message header destination property. But eventually the message will be sent to the receive1 or receive2 receive tasks.
-          By default the message body of the Camel message is expected as a Map (all Map entries will be copied to the Activiti execution) or as a String that will be copied to the camelBody process variable. 
-          When defining the copyVariablesToProperties=true option the message properties are copied to the Activiti execution.
-        </para>
-        
-        <para>
-          In addition to sending messages from a process instance to Camel and back again you can also start a process instance from a Camel message.
-          <programlisting>from("direct:start").to("activiti:camelProcess");</programlisting>
-          Note that camelProcess is the process definition key of the process definition for which a process instance will be created when a message is read from the direct:start queue.
-        </para>
-        
-        <para>
-          If you want to define multiple Camel context beans and/or want to use a different bean name, this can be overriden on the Camel task definition like this:
+}
+</programlisting>
+The route just logs the message body and nothing more. Notice the format of the from endpoint. It is consisted of three parts:
+<table>
+<title>Endpoint URL parts:</title>
+	         <tgroup cols='2'>
+	           <thead>
+	             <row>
+	               <entry>Part</entry>
+	               <entry>Desciption</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+	               <entry>activiti</entry>
+	               <entry>shows that it is going to be used by activiti component</entry>
+	             </row>
+	             <row>
+	               <entry>SimpleCamelCallProcess</entry>
+	               <entry>name of the process</entry>
+	             </row>
+                <row>
+                 <entry>simpleCall</entry>
+                 <entry>Name of the Camel service in the process</entry>
+               </row>
+             </tbody>
+	         </tgroup>
+	        </table>
+	Ok, our route is now properly configured and accessible to the Camel. 
+	Now comes the workflow part. The workflow looks like:
+		
           <programlisting>
-&lt;serviceTask id="serviceTask1" activiti:type="camel"&gt;
-  &lt;extensionElements&gt;
-    &lt;activiti:field name="camelContext" stringValue="customCamelContext" /&gt;
-  &lt;/extensionElements&gt;
-&lt;/serviceTask&gt;</programlisting>
-        </para>
-        
-        <para>
-          You can also override the default Camel behavior class (org.activiti.camel.impl.CamelBehaviorDefaultImpl). This can be handy to customize the Camel logic or to change the default behavior of copying the process
-          variables to something else. The Activiti Camel module provide two additional Camel behavior classes, CamelBehaviorBodyAsMapImpl and CamelBehaviorCamelBodyImpl. CamelBehaviorBodyAsMapImpl copies the process variables
-          to a Map instance in the Camel message body by default (remember that you can override this on the endpoint using for example copyVariablesToProperties=true). CamelBehaviorCamelBodyImpl expects a camelBody process variable
-          and copies it to the Camel message body. The default Camel behavior class can be overriden by using the following field definition:
-          <programlisting>
-&lt;serviceTask id="serviceTask1" activiti:type="camel"&gt;
-  &lt;extensionElements&gt;
-    &lt;activiti:field name="camelBehaviorClass" stringValue="org.activiti.camel.impl.CamelBehaviorCamelBodyImpl" /&gt;
-  &lt;/extensionElements&gt;
-&lt;/serviceTask&gt;</programlisting>
-        </para>
+&lt;process id="SimpleCamelCallProcess"&gt;
+        &lt;startEvent id="start"/&gt;
+        &lt;sequenceFlow id="flow1" sourceRef="start" targetRef="simpleCall"/&gt;
+		<emphasis role="bold">
+        &lt;serviceTask id="simpleCall" activiti:type="camel"/&gt;
+		</emphasis>
+        &lt;sequenceFlow id="flow2" sourceRef="simpleCall" targetRef="end"/&gt;      
+        &lt;endEvent id="end"/&gt;
+&lt;/process&gt;	  
+          </programlisting>
+In the service task, it is just mentioned that type of service is Camel and the target route should be named as simpleCall. This match what have mentioned in activiti endpoint. By instantiating the process we will see an empty log entry.
+Great we are done for the simplest case.
+		  
       </section>
     
     </section>
