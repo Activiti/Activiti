@@ -2699,7 +2699,7 @@
        <emphasis role="bold">Request body (start by message):</emphasis>
             <programlisting>
 {
-   "processDefinitionKey":"newOrderMessage",
+   "message":"newOrderMessage",
    "businessKey":"myBusinessKey",
    "variables": [
       {
