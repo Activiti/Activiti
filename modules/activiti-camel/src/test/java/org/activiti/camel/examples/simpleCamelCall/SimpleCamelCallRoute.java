@@ -1,4 +1,4 @@
-package org.activiti.camel.examples.calcsum;
+package org.activiti.camel.examples.simpleCamelCall;
 
 
 /* Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,13 +17,11 @@ package org.activiti.camel.examples.calcsum;
 
 import org.apache.camel.builder.RouteBuilder;
 
-public class CalcSumRoute extends RouteBuilder {
+public class SimpleCamelCallRoute extends RouteBuilder {
 
   @Override
   public void configure() throws Exception {
 
-    from("direct:inputString").to("stream:out");
-           
-
+	  from("activiti:SimpleCamelCallProcess:simpleCall").to("log: org.activiti.camel.examples.simpleCall").setBody(simple("Hello ${body}"));;
   }
 }
