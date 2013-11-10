@@ -27,6 +27,7 @@ public class DbIdGenerator implements IdGenerator {
   protected int idBlockSize;
   protected long nextId = 0;
   protected long lastId = -1;
+  private String format = "%09d";
   
   protected CommandExecutor commandExecutor;
   protected CommandConfig commandConfig;
@@ -36,7 +37,7 @@ public class DbIdGenerator implements IdGenerator {
       getNewBlock();
     }
     long _nextId = nextId++;
-    return Long.toString(_nextId);
+    return String.format(getFormat(), _nextId);
   }
 
   protected synchronized void getNewBlock() {
@@ -67,5 +68,13 @@ public class DbIdGenerator implements IdGenerator {
   
   public void setCommandConfig(CommandConfig commandConfig) {
     this.commandConfig = commandConfig;
+  }
+
+  public String getFormat() {
+    return format;
+  }
+  
+  public void setFormat(String format) {
+    this.format = format;
   }
 }
