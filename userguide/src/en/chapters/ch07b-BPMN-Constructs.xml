@@ -4203,9 +4203,9 @@ public class StartProcessInstanceTestDelegateWithInjection {
 		</section>
 		<section id="bpmnCamelTaskSimpleCamelCall">
 
-		<title> Simpel Camel Call </title>
+		<title> Simpel Camel Call example</title>
 <para>
-		All the files related to this example can be found in org.activiti.camel.examples.simpleCamelCall package. Target is simply activating a specific camel route.
+		All the files related to this example can be found in org.activiti.camel.examples.simpleCamelCall package of activiti-camel module. Target is simply activating a specific camel route.
 		First of all we need an Spring context which contains the introduction to the routes as mentioned previously. This part of the file serves this purpose:
 </para>
 
@@ -4273,7 +4273,202 @@ In the service task, it is just mentioned that type of service is Camel and the 
 Great we are done for the simplest case.
 		  
       </section>
-    
+	  <section id="bpmnCamelTaskPingPong">
+
+		<title> Ping Pong example</title>
+		<para>
+Our example worked but nothing is really transferred between Camel and Activiti. In this example we try to send and recieve information to and from Camel. 
+We send a string, camel concatenates something to it and returns back the result. Still simple but shows the basics.
+The sender part is trivial, we send our message in form of a variable to Camel Task. Here is our caller code:
+		</para>
+        <programlisting>
+@Deployment
+public void testPingPong() {
+	Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();
+
+	variables.put("input", "Hello");
+	Map&lt;String, String&gt; outputMap = new HashMap&lt;String, String&gt;();
+	variables.put("outputMap", outputMap);
+	
+	runtimeService.startProcessInstanceByKey("PingPongProcess", variables);
+	assertEquals(1, outputMap.size());
+	assertNotNull(outputMap.get("outputValue"));
+	assertEquals("Hello World", outputMap.get("outputValue"));
+	
+}         
+	</programlisting>
+	<para>
+	variable "input" is actually the input for camel route and outputMap is there to capture the result back from Camel. The process should be something like this:
+	</para>
+    <programlisting>
+&lt;process id="PingPongProcess"&gt;
+	&lt;startEvent id="start"/&gt;
+	&lt;sequenceFlow id="flow1" sourceRef="start" targetRef="ping"/&gt;
+	&lt;serviceTask id="ping" activiti:type="camel"/&gt;
+	&lt;sequenceFlow id="flow2" sourceRef="ping" targetRef="saveOutput"/&gt;
+	&lt;serviceTask id="saveOutput"  activiti:class="org.activiti.camel.examples.pingPong.SaveOutput" /&gt;
+	&lt;sequenceFlow id="flow3" sourceRef="saveOutput" targetRef="end"/&gt;
+	&lt;endEvent id="end"/&gt;
+&lt;/process&gt;
+    </programlisting>
+	<para>
+	Note that SaveOutput Service task, stores the value of "Output" variable from context to the previously mentioned OutputMap. 
+	Now we have to know how the variables are send to Camel and returned back. Here comes the notion of Camel behaviour into the play.
+	The way variables are communicated to Camel is configurable via CamelBehavior. Here we use Default one in our sample, a short description of the other ones comes afterwards.
+	With such a code you can configure the desired camel behaviour:
+	</para>
+    <programlisting>
+&lt;serviceTask id="serviceTask1" activiti:type="camel"&gt;
+	&lt;extensionElements&gt;
+		&lt;activiti:field name="camelBehaviorClass" stringValue="org.activiti.camel.impl.CamelBehaviorCamelBodyImpl" /&gt;
+	&lt;/extensionElements&gt;
+&lt;/serviceTask&gt;
+	</programlisting>
+	<para>
+	If you do not specify and specific behaviour then, org.activiti.camel.impl.CamelBehaviorDefaultImpl will be set.
+	This behaviour copies the variables to Camel properties of the same name. 
+	In return regardless of selected behaviour, if the camel message body is a map, then each of its elements is copied as a variable,
+	else the whole object is copied into a specific variable with the name of "camelBody".
+	Knowing that, this camel route concludes our second example:
+	</para>
+    <programlisting>
+@Override
+public void configure() throws Exception {
+   from("activiti:PingPongProcess:ping").transform().simple("${property.input} World");
+
+}
+	</programlisting>
+	<para>
+		In this route, string "world" is concatenated to the end of property named "input" and the result will be in the message body.
+		It is accessible by checking "camelBody" variable in the java service task and copied to "outputMap" and checked in test case.
+		Now that the example on its default behaviour works, lets see what are the other possibilities.
+		In starting every camel route, the Process Instance ID will be copied into a camel property with the specific name of "PROCESS_ID_PROPERTY". 
+		It is later used for correlating the process instance and camel route. Also it can be exploited in the Camel route.
+		There are three different behaviours already available out of the box. Each behaviour can also be overwritten by a specific phrase in the URL of route.		
+		here is an example of overriding the already defined behaviour in URL:
+		<programlisting>
+from("activiti:asyncCamelProcess:serviceTaskAsync2?copyVariablesToProperties=true").
+		</programlisting>
+the following table provides an overview of three availble camel behaviours:
+<table>
+<title>Exisiting camel behaviours:</title>
+	         <tgroup cols='3'>
+	           <thead>
+	             <row>
+	               <entry>behaviour</entry>
+	               <entry>in Url</entry>
+				   <entry>Description</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+	               <entry>CamelBehaviorDefaultImpl</entry>
+	               <entry>copyVariablesToProperties</entry>
+				   <entry>Copy Activiti variables as Camel properties</entry>
+	             </row>
+	             <row>
+				    <entry>CamelBehaviorCamelBodyImpl</entry>
+ 	                <entry>copyCamelBodyToBody</entry>
+				    <entry>Copy only Activiti variable named "camelBody" as camel message body</entry>
+	             </row>
+                <row>
+				    <entry>CamelBehaviorBodyAsMapImpl</entry>
+	               <entry>copyVariablesToBodyAsMap</entry>
+				   <entry>Copy all the activiti variables in a map as Camel message body</entry>
+               </row>
+             </tbody>
+	         </tgroup>
+	        </table>
+	the above table explains how activiti variables are going to be transfered to Camel. The following tables explains how the Camel variables are returned back to Activiti.
+	they can only be configured in camel URL.
+<table>
+<title>Exisiting camel behaviours:</title>
+	         <tgroup cols='3'>
+	           <thead>
+	             <row>	             
+	               <entry>Url</entry>
+				   <entry>Description</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+				    <entry>Default</entry>
+ 	                <entry>If Camel body is a map, copy each element as Activit varaible, otherwise copy the whole Camel body as "camelBody" activiti variable</entry>
+	             </row>
+	             <row>
+	               <entry>copyVariablesFromProperties</entry>
+	               <entry>Copiy Camel properties as Activiti variables of the same name</entry>
+	             </row>
+                <row>
+				   <entry>copyCamelBodyToBodyAsString</entry>
+	               <entry>like default, but if camel Body is not a map, first convert it to String and then copy it in "camelBody"</entry>
+               </row>
+			   
+                <row>
+				   <entry>isCopyVariablesFromHeader</entry>
+	               <entry>Additionally copy camel headers to Activiti variables of the same names</entry>
+               </row>
+             </tbody>
+	         </tgroup>
+	        </table>
+		Source files of this example are available in org.activiti.camel.examples.pingPong package of activiti-camel module as well.
+	</para>
+	
+	
+	</section>
+	<section id="bpmnCamelTaskAsyncPingPong">
+
+		<title> Asynchronous Ping Pong example</title>
+		<para>
+		All the previous example were synchronous. The workflow stops, until the camel route is concluded and returned.
+		We might need the activiti workflow to continue sometimes and wait for camel some time in the next steps. For such purposes the asynchronous capability of
+		camel service task is useful. You can make use of this feature by setting sync property of camel service task.
+		<programlisting>
+&lt;serviceTask id="serviceAsyncPing" activiti:type="camel" activiti:async="true"/&gt;
+		</programlisting>
+		by setting this feature the specified camel route is activated asynchronously and both Activiti workflow and Camel route will proceed synchronously. 
+		if you do not need any mege, then that is all you have to do. But if you need to merge somewhere in your workflow, you can use a receive task.
+		<programlisting>
+&lt;receiveTask id="receiveAsyncPing" name="Wait State" /&gt;
+		</programlisting>
+		</para>
+		activiti will stop there for a signal from Camel. In camel when the route is finished you can send the proper signal by sending your message to the proper activiti endpoing.
+		<programlisting>
+ from("activiti:asyncPingProcess:serviceAsyncPing").to("activiti:asyncPingProcess:receiveAsyncPing");		
+		</programlisting>
+	 As usual endpoint consists of three parts separated by colons: 
+	 	<itemizedlist>
+	        <listitem>
+	          <para>
+			   constant string "activiti" 
+			  </para>
+			</listitem>
+	        <listitem>
+	          <para>
+			    process name
+			  </para>
+			</listitem>
+	        <listitem>
+	          <para>
+			    recieve task name
+			  </para>
+			</listitem>
+	 	</itemizedlist>
+	</section>
+	<section id="bpmnCamelTaskAsyncPingPong">
+
+		<title>Instantiate workflow from Camel route</title>
+		<para>
+		In our all previous examples Activiti workflow started first and the Camel route was started within workflow. 
+		It is also possible from the other side. It is possible that a workflow is instantiated from an already started camel route.
+		It is very similar to signalling receive task, except that the last part is not there. Here is a sample route:
+	<programlisting>
+from("direct:start").to("activiti:camelProcess");
+	</programlisting>		
+	as you see the url has two parts, the first is constant string "activiti" and the second name is the name of the process. Obviously the process should be already
+	deployed and startable by engine configuration. 
+		</para>
+	</section>
     </section>
 
 		<section id="bpmnManualTask">
