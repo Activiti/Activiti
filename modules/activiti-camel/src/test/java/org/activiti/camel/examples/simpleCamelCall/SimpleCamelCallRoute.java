@@ -1,6 +1,3 @@
-package org.activiti.camel.examples.simpleCamelCall;
-
-
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +11,7 @@ package org.activiti.camel.examples.simpleCamelCall;
  * limitations under the License.
  */
 
+package org.activiti.camel.examples.simpleCamelCall;
 
 import org.apache.camel.builder.RouteBuilder;
 
