@@ -147,6 +147,7 @@ public interface StencilConstants {
   final String PROPERTY_FORM_NAME = "formproperty_name";
   final String PROPERTY_FORM_TYPE = "formproperty_type";
   final String PROPERTY_FORM_EXPRESSION = "formproperty_expression";
+  final String PROPERTY_FORM_DEFAULT_EXPRESSION = "formproperty_default_expression";
   final String PROPERTY_FORM_VARIABLE = "formproperty_variable";
   final String PROPERTY_FORM_REQUIRED = "formproperty_required";
   final String PROPERTY_FORM_READABLE = "formproperty_readable";
