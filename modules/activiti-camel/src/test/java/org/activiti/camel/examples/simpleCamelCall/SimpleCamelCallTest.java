@@ -11,21 +11,19 @@
  * limitations under the License.
  */
 
+package org.activiti.camel.examples.simpleCamelCall;
 
-package org.activiti.camel.route;
+import org.activiti.engine.test.Deployment;
+import org.activiti.spring.impl.test.SpringActivitiTestCase;
+import org.springframework.test.context.ContextConfiguration;
 
-/**
- * @author Saeid Mirzaei  
- */
-
-import org.apache.camel.builder.RouteBuilder;
-
-
-public class AsyncPingRoute extends RouteBuilder {
-
-  @Override
-  public void configure() throws Exception {
-    from("activiti:asyncPingProcess:serviceAsyncPing").to("activiti:asyncPingProcess:receiveAsyncPing");
+@ContextConfiguration("classpath:camel-activiti-context.xml")
+public class SimpleCamelCallTest extends SpringActivitiTestCase {
+  
+ 
+  @Deployment
+  public void testSimpleCamelCall() {
+	  runtimeService.startProcessInstanceByKey("SimpleCamelCallProcess");
   }
 
 }

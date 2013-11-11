@@ -10,22 +10,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-package org.activiti.camel.route;
+package org.activiti.camel.examples.pingPong;
 
 /**
  * @author Saeid Mirzaei  
  */
 
-import org.apache.camel.builder.RouteBuilder;
+import java.util.Map;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
-public class AsyncPingRoute extends RouteBuilder {
+public class SaveOutput implements  JavaDelegate {
 
-  @Override
-  public void configure() throws Exception {
-    from("activiti:asyncPingProcess:serviceAsyncPing").to("activiti:asyncPingProcess:receiveAsyncPing");
-  }
+	
+	private static final long serialVersionUID = 1L;
+
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void execute(DelegateExecution execution) throws Exception {
+		Map<String, String> outputMap = (Map<String, String>) execution.getVariable("outputMap");
+		outputMap.put("outputValue",  (String) execution.getVariable("camelBody"));
+		
+		
+	}
 
 }

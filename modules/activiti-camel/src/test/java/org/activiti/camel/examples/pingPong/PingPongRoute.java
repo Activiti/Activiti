@@ -10,9 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-package org.activiti.camel.route;
+package org.activiti.camel.examples.pingPong;
 
 /**
  * @author Saeid Mirzaei  
@@ -20,12 +18,12 @@ package org.activiti.camel.route;
 
 import org.apache.camel.builder.RouteBuilder;
 
+public class PingPongRoute extends RouteBuilder {
 
-public class AsyncPingRoute extends RouteBuilder {
-
-  @Override
-  public void configure() throws Exception {
-    from("activiti:asyncPingProcess:serviceAsyncPing").to("activiti:asyncPingProcess:receiveAsyncPing");
-  }
+	@Override
+	public void configure() throws Exception {
+		from("activiti:PingPongProcess:ping").transform().simple("${property.input} World");
+		
+	}
 
 }
