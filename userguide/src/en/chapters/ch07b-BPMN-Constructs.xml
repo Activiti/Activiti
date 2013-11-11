@@ -4200,10 +4200,19 @@ public class StartProcessInstanceTestDelegateWithInjection {
 		  The basic concepts are demonstrated through a few small samples here in this document.
 		  In the first sample, we will do the simplest form of Camel call from an activiti workflow. Let's call it SimpleCamelCall.
 		</para>
+		<para>
+		If you want to define multiple Camel context beans and/or want to use a different bean name, this can be overriden on the Camel task definition like this:
+		<programlisting>
+&lt;serviceTask id="serviceTask1" activiti:type="camel"&gt;
+	&lt;extensionElements&gt;
+		&lt;activiti:field name="camelContext" stringValue="customCamelContext" /&gt;
+	&lt;/extensionElements&gt;
+&lt;/serviceTask&gt;
+		</programlisting>
+		</para>
 		</section>
 		<section id="bpmnCamelTaskSimpleCamelCall">
-
-		<title> Simpel Camel Call example</title>
+		<title> Simple Camel Call example</title>
 <para>
 		All the files related to this example can be found in org.activiti.camel.examples.simpleCamelCall package of activiti-camel module. Target is simply activating a specific camel route.
 		First of all we need an Spring context which contains the introduction to the routes as mentioned previously. This part of the file serves this purpose:
@@ -4235,14 +4244,14 @@ The route just logs the message body and nothing more. Notice the format of the 
 	         <tgroup cols='2'>
 	           <thead>
 	             <row>
-	               <entry>Part</entry>
+	               <entry>Endpoint Url Part</entry>
 	               <entry>Desciption</entry>
 	             </row>
 	           </thead>
 	           <tbody>
 	             <row>
 	               <entry>activiti</entry>
-	               <entry>shows that it is going to be used by activiti component</entry>
+	               <entry>refers to Activiti endpoint</entry>
 	             </row>
 	             <row>
 	               <entry>SimpleCamelCallProcess</entry>
@@ -4250,7 +4259,7 @@ The route just logs the message body and nothing more. Notice the format of the 
 	             </row>
                 <row>
                  <entry>simpleCall</entry>
-                 <entry>Name of the Camel service in the process</entry>
+                 <entry>name of the Camel service in the process</entry>
                </row>
              </tbody>
 	         </tgroup>
@@ -4269,7 +4278,7 @@ The route just logs the message body and nothing more. Notice the format of the 
         &lt;endEvent id="end"/&gt;
 &lt;/process&gt;	  
           </programlisting>
-In the service task, it is just mentioned that type of service is Camel and the target route should be named as simpleCall. This match what have mentioned in activiti endpoint. By instantiating the process we will see an empty log entry.
+In the service task, it is just mentioned that type of service is Camel and the target route should be named as simpleCall. This matches what have mentioned in activiti endpoint. By instantiating the process we will see an empty log entry.
 Great we are done for the simplest case.
 		  
       </section>
@@ -4277,7 +4286,7 @@ Great we are done for the simplest case.
 
 		<title> Ping Pong example</title>
 		<para>
-Our example worked but nothing is really transferred between Camel and Activiti. In this example we try to send and recieve information to and from Camel. 
+Our example worked but nothing is really transferred between Camel and Activiti and there is not much merit in it. In this example we try to send and receive data to and from Camel. 
 We send a string, camel concatenates something to it and returns back the result. Still simple but shows the basics.
 The sender part is trivial, we send our message in form of a variable to Camel Task. Here is our caller code:
 		</para>
@@ -4344,7 +4353,9 @@ public void configure() throws Exception {
 		Now that the example on its default behaviour works, lets see what are the other possibilities.
 		In starting every camel route, the Process Instance ID will be copied into a camel property with the specific name of "PROCESS_ID_PROPERTY". 
 		It is later used for correlating the process instance and camel route. Also it can be exploited in the Camel route.
-		There are three different behaviours already available out of the box. Each behaviour can also be overwritten by a specific phrase in the URL of route.		
+	</para>
+	<para>
+		There are three different behaviours already available out of the box in Activiti. Each behaviour can also be overwritten by a specific phrase in the route URL.		
 		here is an example of overriding the already defined behaviour in URL:
 		<programlisting>
 from("activiti:asyncCamelProcess:serviceTaskAsync2?copyVariablesToProperties=true").
@@ -4355,8 +4366,8 @@ the following table provides an overview of three availble camel behaviours:
 	         <tgroup cols='3'>
 	           <thead>
 	             <row>
-	               <entry>behaviour</entry>
-	               <entry>in Url</entry>
+	               <entry>Behaviour</entry>
+	               <entry>In Url</entry>
 				   <entry>Description</entry>
 	             </row>
 	           </thead>
@@ -4379,8 +4390,8 @@ the following table provides an overview of three availble camel behaviours:
              </tbody>
 	         </tgroup>
 	        </table>
-	the above table explains how activiti variables are going to be transfered to Camel. The following tables explains how the Camel variables are returned back to Activiti.
-	they can only be configured in camel URL.
+	the above table explains how activiti variables are going to be transfered to Camel. The following table explains how the Camel variables are returned back to Activiti.
+	This can only be configured in route URLs.
 <table>
 <title>Exisiting camel behaviours:</title>
 	         <tgroup cols='3'>
@@ -4420,19 +4431,19 @@ the following table provides an overview of three availble camel behaviours:
 
 		<title> Asynchronous Ping Pong example</title>
 		<para>
-		All the previous example were synchronous. The workflow stops, until the camel route is concluded and returned.
-		We might need the activiti workflow to continue sometimes and wait for camel some time in the next steps. For such purposes the asynchronous capability of
+		Previous examples were all synchronous. The workflow stops, until the camel route is concluded and returned.
+		In some cases, we might need the activiti workflow to continue  and wait for camel some time in the next steps. For such purposes the asynchronous capability of
 		camel service task is useful. You can make use of this feature by setting sync property of camel service task.
 		<programlisting>
 &lt;serviceTask id="serviceAsyncPing" activiti:type="camel" activiti:async="true"/&gt;
 		</programlisting>
-		by setting this feature the specified camel route is activated asynchronously and both Activiti workflow and Camel route will proceed synchronously. 
+		By setting this feature the specified camel route is activated asynchronously and both Activiti workflow and Camel route will proceed together. 
 		if you do not need any mege, then that is all you have to do. But if you need to merge somewhere in your workflow, you can use a receive task.
 		<programlisting>
 &lt;receiveTask id="receiveAsyncPing" name="Wait State" /&gt;
 		</programlisting>
 		</para>
-		activiti will stop there for a signal from Camel. In camel when the route is finished you can send the proper signal by sending your message to the proper activiti endpoing.
+		Activiti will stop there for a signal from Camel. In camel when the route is finished you can send the proper signal by sending your message to the proper activiti endpoing.
 		<programlisting>
  from("activiti:asyncPingProcess:serviceAsyncPing").to("activiti:asyncPingProcess:receiveAsyncPing");		
 		</programlisting>
@@ -4454,6 +4465,9 @@ the following table provides an overview of three availble camel behaviours:
 			  </para>
 			</listitem>
 	 	</itemizedlist>
+	<Para>
+	You have to make sure that the activiti receive task is started sooner than the signal from Camel. Otherwise the signal may be lost and workflow gets stuck at the receive task forever.
+	</Para>
 	</section>
 	<section id="bpmnCamelTaskAsyncPingPong">
 
@@ -4465,7 +4479,7 @@ the following table provides an overview of three availble camel behaviours:
 	<programlisting>
 from("direct:start").to("activiti:camelProcess");
 	</programlisting>		
-	as you see the url has two parts, the first is constant string "activiti" and the second name is the name of the process. Obviously the process should be already
+	as you see the url has two parts, the first is constant string "activiti" and the second name is the name of the process. Obviously the process should already be
 	deployed and startable by engine configuration. 
 		</para>
 	</section>
