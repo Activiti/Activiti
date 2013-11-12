@@ -11,21 +11,15 @@
  * limitations under the License.
  */
 
-
-package org.activiti.camel.route;
-
-/**
- * @author Saeid Mirzaei  
- */
+package org.activiti.camel.examples.simpleCamelCall;
 
 import org.apache.camel.builder.RouteBuilder;
 
-
-public class AsyncPingRoute extends RouteBuilder {
+public class SimpleCamelCallRoute extends RouteBuilder {
 
   @Override
   public void configure() throws Exception {
-    from("activiti:asyncPingProcess:serviceAsyncPing").to("activiti:asyncPingProcess:receiveAsyncPing");
-  }
 
+	  from("activiti:SimpleCamelCallProcess:simpleCall").to("log: org.activiti.camel.examples.SimpleCamelCall");
+  }
 }
