@@ -959,7 +959,10 @@ public class DbSqlSession implements Session {
   }
 
   private String appendTablePrefix(String sqlStatement) {
-		return sqlStatement.replace("ACT_", dbSqlSessionFactory.getDatabaseTablePrefix()+"ACT_");
+    if(dbSqlSessionFactory.getDatabaseTablePrefix().endsWith(".")) {
+    	return sqlStatement;
+    }
+    return sqlStatement.replace("ACT_", dbSqlSessionFactory.getDatabaseTablePrefix()+"ACT_");
   }
 
 protected String addSqlStatementPiece(String sqlStatement, String line) {
