@@ -1,0 +1,2 @@
+alter table ACT_HI_TASKINST
+    add CATEGORY_ NVARCHAR2(255);

@@ -12,6 +12,7 @@
  */
 package org.activiti.bpmn.model;
 
+
 /**
  * @author Tijs Rademakers
  */
@@ -59,5 +60,20 @@ public class MultiInstanceLoopCharacteristics extends BaseElement {
   }
   public void setSequential(boolean sequential) {
     this.sequential = sequential;
+  }
+  
+  public MultiInstanceLoopCharacteristics clone() {
+    MultiInstanceLoopCharacteristics clone = new MultiInstanceLoopCharacteristics();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(MultiInstanceLoopCharacteristics otherLoopCharacteristics) {
+    setInputDataItem(otherLoopCharacteristics.getInputDataItem());
+    setLoopCardinality(otherLoopCharacteristics.getLoopCardinality());
+    setCompletionCondition(otherLoopCharacteristics.getCompletionCondition());
+    setElementVariable(otherLoopCharacteristics.getElementVariable());
+    setElementIndexVariable(otherLoopCharacteristics.getElementIndexVariable());
+    setSequential(otherLoopCharacteristics.isSequential());
   }
 }

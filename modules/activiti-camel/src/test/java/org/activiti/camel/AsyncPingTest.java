@@ -1,5 +1,9 @@
 package org.activiti.camel;
 
+
+/**
+ * @author Saeid Mirzaei  
+ */
 import java.util.List;
 
 /**
@@ -14,9 +18,7 @@ import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-
 @ContextConfiguration("classpath:camel-activiti-context.xml")
-
 public class AsyncPingTest extends SpringActivitiTestCase {
 
   @Autowired

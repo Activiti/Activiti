@@ -179,4 +179,51 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     return flowElements;
   }
   
+  public Process clone() {
+    Process clone = new Process();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(Process otherElement) {
+    super.setValues(otherElement);
+    
+    setName(otherElement.getName());
+    setExecutable(otherElement.isExecutable());
+    setDocumentation(otherElement.getDocumentation());
+    if (otherElement.getIoSpecification() != null) {
+      setIoSpecification(otherElement.getIoSpecification().clone());
+    }
+    
+    executionListeners = new ArrayList<ActivitiListener>();
+    if (otherElement.getExecutionListeners() != null && otherElement.getExecutionListeners().size() > 0) {
+      for (ActivitiListener listener : otherElement.getExecutionListeners()) {
+        executionListeners.add(listener.clone());
+      }
+    }
+    
+    candidateStarterUsers = new ArrayList<String>();
+    if (otherElement.getCandidateStarterUsers() != null && otherElement.getCandidateStarterUsers().size() > 0) {
+      candidateStarterUsers.addAll(otherElement.getCandidateStarterUsers());
+    }
+    
+    candidateStarterGroups = new ArrayList<String>();
+    if (otherElement.getCandidateStarterGroups() != null && otherElement.getCandidateStarterGroups().size() > 0) {
+      candidateStarterGroups.addAll(otherElement.getCandidateStarterGroups());
+    }
+    
+    flowElementList = new ArrayList<FlowElement>();
+    if (otherElement.getFlowElements() != null && otherElement.getFlowElements().size() > 0) {
+      for (FlowElement element : otherElement.getFlowElements()) {
+        flowElementList.add(element.clone());
+      }
+    }
+    
+    artifactList = new ArrayList<Artifact>();
+    if (otherElement.getArtifacts() != null && otherElement.getArtifacts().size() > 0) {
+      for (Artifact artifact : otherElement.getArtifacts()) {
+        artifactList.add(artifact.clone());
+      }
+    }
+  }
 }

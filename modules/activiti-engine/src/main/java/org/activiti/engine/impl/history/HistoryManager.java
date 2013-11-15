@@ -463,6 +463,19 @@ public class HistoryManager extends AbstractManager {
       }
     }
   }
+  
+  /**
+   * Record task category change, if audit history is enabled.
+   */
+  public void recordTaskCategoryChange(String taskId, String category) {
+    if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      if (historicTaskInstance!=null) {
+        historicTaskInstance.setCategory(category);
+      }
+    }
+  }
+
 
   /**
    * Record task parent task id change, if audit history is enabled.

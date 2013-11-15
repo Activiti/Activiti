@@ -47,10 +47,14 @@ public class AlfrescoReferencePropertyConverter extends BaseAlfrescoFormProperty
 			addDueDateReference(form, formSet, referenceDefinition.isWritable());
 		} else if (AlfrescoConversionConstants.FORM_REFERENCE_PACKAGE_ITEMS.equals(referenceDefinition.getType())) {
 			addPackageReference(form, formSet, contentType, referenceDefinition);
+		} else if (AlfrescoConversionConstants.FORM_REFERENCE_EMAIL_NOTIFICATION.equals(referenceDefinition.getType())) {
+			addEmailNotificationReference(form, formSet, contentType, referenceDefinition);
 		} else if (AlfrescoConversionConstants.FORM_REFERENCE_PRIORITY.equals(referenceDefinition.getType())) {
 			addPriorityReference(form, formSet, referenceDefinition.isWritable());
 		} else if (AlfrescoConversionConstants.FORM_REFERENCE_WORKFLOW_DESCRIPTION.equals(referenceDefinition.getType())) {
 			addWorkflowDescriptionReference(form, formSet);
+		} else if (AlfrescoConversionConstants.FORM_REFERENCE_COMMENT.equals(referenceDefinition.getType())) {
+			addCommentReference(form, formSet);
 		} else if (AlfrescoConversionConstants.FORM_REFERENCE_FIELD.equals(referenceDefinition.getType())) {
 			addFieldReference(form, formSet, referenceDefinition, contentType, conversion);
 		} else {
@@ -167,6 +171,17 @@ public class AlfrescoReferencePropertyConverter extends BaseAlfrescoFormProperty
 		}
 		form.getFormAppearance().addFormAppearanceElement(descriptionField);
 	}
+	
+	protected void addCommentReference(Form form, String formSet) {
+		form.getFormFieldVisibility().addShowFieldElement(AlfrescoConversionConstants.PROPERTY_COMMENT);
+
+		FormField commentField = new FormField();
+		commentField.setId(AlfrescoConversionConstants.PROPERTY_COMMENT);
+		commentField.setLabelId(AlfrescoConversionConstants.FORM_COMMENT_LABEL);
+		commentField.setSet(formSet);
+	  commentField.setControl(new FormFieldControl(AlfrescoConversionConstants.FORM_MULTILINE_TEXT_TEMPLATE));
+		form.getFormAppearance().addFormAppearanceElement(commentField);
+	}
 
 	protected void addPriorityReference(Form form, String formSet, boolean writable) {
 
@@ -206,7 +221,6 @@ public class AlfrescoReferencePropertyConverter extends BaseAlfrescoFormProperty
 
 			addOrAlterPackageItemActions(contentType, allowAddingItems, allowRemovingItems);
 		}
-
 	}
 
 	protected void addDueDateReference(Form form, String formSet, boolean writable) {
@@ -239,6 +253,29 @@ public class AlfrescoReferencePropertyConverter extends BaseAlfrescoFormProperty
 			formField.setControl(new FormFieldControl(AlfrescoConversionConstants.FORM_READONLY_TEMPLATE));
 		}
 		form.getFormAppearance().addFormAppearanceElement(formField);
+	}
+	
+	protected void addEmailNotificationReference(Form form, String formSet, M2Type type, ReferencePropertyDefinition def) {
+		// Only relevant on a start-form
+		if(form.isStartForm()) {
+			boolean forced = extractBooleanFromParameters(def.getParameters(), AlfrescoConversionConstants.PARAMETER_FORCE_NOTOFICATIONS, false);
+			if(forced) {
+				// Notifications are needed, add an override to the model
+				if(type.getPropertyOverride(AlfrescoConversionConstants.PROPERTY_SEND_EMAIL_NOTIFICATIONS) == null) {
+					M2PropertyOverride override = new M2PropertyOverride();
+					override.setName(AlfrescoConversionConstants.PROPERTY_SEND_EMAIL_NOTIFICATIONS);
+					override.setDefaultValue(Boolean.TRUE.toString());
+					type.getPropertyOverrides().add(override);
+				}
+			} else {
+				// Render a control to select whether notifications are needed or not
+				form.getFormFieldVisibility().addShowFieldElement(AlfrescoConversionConstants.PROPERTY_SEND_EMAIL_NOTIFICATIONS);
+				FormField formField = form.getFormAppearance().addFormField(AlfrescoConversionConstants.PROPERTY_SEND_EMAIL_NOTIFICATIONS,
+						null, formSet);
+				formField.setControl(new FormFieldControl(AlfrescoConversionConstants.FORM_EMAIL_NOTIFICATION_TEMPLATE));
+				form.getFormAppearance().addFormAppearanceElement(formField);
+			}
+		}
 	}
 	
 	protected void addOrAlterPackageItemActions(M2Type contentType, boolean allowAdd, boolean allowRemove) {

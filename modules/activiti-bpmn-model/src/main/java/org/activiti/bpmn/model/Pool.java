@@ -32,4 +32,16 @@ public class Pool extends BaseElement {
   public void setProcessRef(String processRef) {
     this.processRef = processRef;
   }
+  
+  public Pool clone() {
+    Pool clone = new Pool();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(Pool otherElement) {
+    super.setValues(otherElement);
+    setName(otherElement.getName());
+    setProcessRef(otherElement.getProcessRef());
+  }
 }

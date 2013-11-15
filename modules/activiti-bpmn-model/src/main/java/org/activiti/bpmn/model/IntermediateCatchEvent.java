@@ -17,4 +17,13 @@ package org.activiti.bpmn.model;
  */
 public class IntermediateCatchEvent extends Event {
 
+  public IntermediateCatchEvent clone() {
+    IntermediateCatchEvent clone = new IntermediateCatchEvent();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(IntermediateCatchEvent otherEvent) {
+    super.setValues(otherEvent);
+  }
 }

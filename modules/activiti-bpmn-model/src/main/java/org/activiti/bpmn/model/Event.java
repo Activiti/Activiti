@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author Tijs Rademakers
  */
-public class Event extends FlowNode {
+public abstract class Event extends FlowNode {
 
   protected List<EventDefinition> eventDefinitions = new ArrayList<EventDefinition>();
 
@@ -32,5 +32,16 @@ public class Event extends FlowNode {
   
   public void addEventDefinition(EventDefinition eventDefinition) {
     eventDefinitions.add(eventDefinition);
+  }
+    
+  public void setValues(Event otherEvent) {
+    super.setValues(otherEvent);
+    
+    eventDefinitions = new ArrayList<EventDefinition>();
+    if (otherEvent.getEventDefinitions() != null && otherEvent.getEventDefinitions().size() > 0) {
+      for (EventDefinition eventDef : otherEvent.getEventDefinitions()) {
+        eventDefinitions.add(eventDef.clone());
+      }
+    }
   }
 }

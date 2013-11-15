@@ -51,7 +51,12 @@ public class ExchangeUtils {
       camelVarMap = exchange.getProperties();
     } else {
       camelVarMap = new HashMap<String, Object>();
-      Object camelBody = exchange.getIn().getBody();
+      Object camelBody = null;
+      if (exchange.hasOut())
+    	  camelBody = exchange.getOut().getBody();
+      else
+    	  camelBody = exchange.getIn().getBody();
+      
       
       if(camelBody instanceof Map<?,?>) {
         Map<?,?> camelBodyMap = (Map<?,?>)camelBody;

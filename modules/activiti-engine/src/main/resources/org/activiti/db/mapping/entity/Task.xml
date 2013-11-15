@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
 <mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntity">
@@ -8,7 +23,7 @@
   
   <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
     insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
-                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, SUSPENSION_STATE_)
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{name, jdbcType=VARCHAR},
@@ -24,6 +39,7 @@
             #{processDefinitionId, jdbcType=VARCHAR},
             #{taskDefinitionKey, jdbcType=VARCHAR},
             #{dueDate, jdbcType=TIMESTAMP},
+            #{category, jdbcType=VARCHAR},
             #{suspensionState, jdbcType=INTEGER}
            )
   </insert>
@@ -45,6 +61,7 @@
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       DESCRIPTION_ = #{description, jdbcType=VARCHAR},
       DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP},
+      CATEGORY_ = #{category, jdbcType=VARCHAR},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
@@ -74,6 +91,7 @@
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
     <result property="taskDefinitionKeyWithoutCascade" column="TASK_DEF_KEY_" jdbcType="VARCHAR"/>
     <result property="dueDateWithoutCascade" column="DUE_DATE_" jdbcType="TIMESTAMP"/>
+    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
   </resultMap>
   
@@ -93,6 +111,7 @@
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
     <result property="taskDefinitionKeyWithoutCascade" column="TASK_DEF_KEY_" jdbcType="VARCHAR"/>
     <result property="dueDateWithoutCascade" column="DUE_DATE_" jdbcType="TIMESTAMP"/>
+    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
     <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
@@ -334,6 +353,9 @@
       </if>
       <if test="dueDate != null || dueBefore != null || dueAfter != null">
         and RES.DUE_DATE_ is not null
+      </if>
+      <if test="category != null">
+        and RES.CATEGORY_ = #{category}
       </if>
       <if test="excludeSubtasks">
         and RES.PARENT_TASK_ID_ IS NULL

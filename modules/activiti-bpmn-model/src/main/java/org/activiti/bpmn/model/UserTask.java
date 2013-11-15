@@ -25,6 +25,7 @@ public class UserTask extends Task {
   protected String priority;
   protected String formKey;
   protected String dueDate;
+  protected String category;
   protected List<String> candidateUsers = new ArrayList<String>();
   protected List<String> candidateGroups = new ArrayList<String>();
   protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
@@ -60,7 +61,13 @@ public class UserTask extends Task {
   public void setDueDate(String dueDate) {
     this.dueDate = dueDate;
   }
-  public List<String> getCandidateUsers() {
+  public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public List<String> getCandidateUsers() {
     return candidateUsers;
   }
   public void setCandidateUsers(List<String> candidateUsers) {
@@ -83,5 +90,30 @@ public class UserTask extends Task {
   }
   public void setTaskListeners(List<ActivitiListener> taskListeners) {
     this.taskListeners = taskListeners;
+  }
+  
+  public UserTask clone() {
+    UserTask clone = new UserTask();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(UserTask otherElement) {
+    super.setValues(otherElement);
+    setAssignee(otherElement.getAssignee());
+    setAsynchronous(otherElement.isAsynchronous());
+    setCandidateGroups(new ArrayList<String>(otherElement.getCandidateGroups()));
+    setCandidateUsers(new ArrayList<String>(otherElement.getCandidateUsers()));
+    setDocumentation(otherElement.getDocumentation());
+    setFormKey(otherElement.getFormKey());
+    setDueDate(otherElement.getDueDate());
+    setCategory(otherElement.getCategory());
+    
+    taskListeners = new ArrayList<ActivitiListener>();
+    if (otherElement.getTaskListeners() != null && otherElement.getTaskListeners().size() > 0) {
+      for (ActivitiListener listener : otherElement.getTaskListeners()) {
+        taskListeners.add(listener.clone());
+      }
+    }
   }
 }

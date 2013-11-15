@@ -17,4 +17,13 @@ package org.activiti.bpmn.model;
  */
 public class InclusiveGateway extends Gateway {
 
+  public InclusiveGateway clone() {
+    InclusiveGateway clone = new InclusiveGateway();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(InclusiveGateway otherElement) {
+    super.setValues(otherElement);
+  }
 }

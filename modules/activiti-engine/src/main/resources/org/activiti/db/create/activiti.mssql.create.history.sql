@@ -51,6 +51,7 @@ create table ACT_HI_TASKINST (
     PRIORITY_ int,
     DUE_DATE_ datetime,
     FORM_KEY_ nvarchar(255),
+    CATEGORY_ nvarchar(255),
     primary key (ID_)
 );
 

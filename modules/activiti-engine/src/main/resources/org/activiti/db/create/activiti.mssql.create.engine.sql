@@ -118,6 +118,7 @@ create table ACT_RU_TASK (
     PRIORITY_ int,
     CREATE_TIME_ datetime,
     DUE_DATE_ datetime,
+    CATEGORY_ nvarchar(255),
     SUSPENSION_STATE_ int,
     primary key (ID_)
 );
