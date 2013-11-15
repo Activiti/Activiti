@@ -6,6 +6,12 @@
   <description>BPM and workflow engine</description>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
+  
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
 
   <packaging>pom</packaging>
   <version>5.15-SNAPSHOT</version>
@@ -678,6 +684,16 @@
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.4.2</version>
+          <configuration>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <arguments>${arguments} -Psonatype-oss-release</arguments>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -694,6 +710,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-engine</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-simple-workflow</module>
@@ -721,6 +738,31 @@
               <execution>
                 <goals>
                   <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
                 </goals>
               </execution>
             </executions>
@@ -887,18 +929,6 @@
     </profile>
   </profiles>
   
-  <distributionManagement>
-    <snapshotRepository>
-      <id>alfresco.snapshot.repo</id>
-      <url>https://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-      <uniqueVersion>false</uniqueVersion>
-    </snapshotRepository>
-    <repository>
-      <id>alfresco.release.repo</id>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
-    </repository>
-  </distributionManagement>
-
   <!-- Various information, not used by the build -->
 
   <url>http://activiti.org</url>
@@ -910,73 +940,66 @@
   </licenses>
   <organization>
     <name>Alfresco</name>
-    <url>http://alfresco.com</url>
+    <url>http://www.alfresco.com</url>
   </organization>
   <developers>
     <developer>
-      <name>Tom Baeyens</name>
+      <name>Tijs Rademakers</name>
       <organization>Alfresco</organization>
-      <url>http://alfresco.com</url>
+      <url>http://www.alfresco.com</url> 
     </developer>
     <developer>
       <name>Joram Barrez</name>
       <organization>Alfresco</organization>
-      <url>http://alfresco.com</url>
+      <url>http://www.alfresco.com</url>
     </developer>
     <developer>
       <name>Frederik Heremans</name>
       <organization>Alfresco</organization>
-      <url>http://alfresco.com</url> 
-    </developer>
-    <developer>
-      <name>Tijs Rademakers</name>
-      <organization>Alfresco</organization>
-      <url>http://alfresco.com</url> 
-    </developer>
-    <developer>
-      <name>Bernd Ruecker</name>
-      <organization>camunda</organization>
-      <url>http://camunda.com</url>
-    </developer>
-    <developer>
-      <name>Falko Menge</name>
-      <organization>camunda</organization>
-      <url>http://camunda.com</url>
-    </developer>
-    <developer>
-      <name>Nils Preusker</name>
-      <organization>camunda</organization>
-      <url>http://camunda.com</url>
-    </developer>
-    <developer>
-      <name>Christian Lipphardt</name>
-      <organization>camunda</organization>
-      <url>http://camunda.com</url>
-    </developer>
-    <developer>
-      <name>Kristin Polenz</name>
-      <organization>camunda</organization>
-      <url>http://camunda.com</url>
-    </developer>
-    <developer>
-      <name>Gero Decker</name>
-      <organization>Signavio</organization>
-      <url>http://signavio.com</url>
+      <url>http://www.alfresco.com</url> 
     </developer>
     <developer>
       <name>Erik Winlöf</name>
       <organization>Alfresco</organization>
-      <url>http://alfresco.com</url>
+      <url>http://www.alfresco.com</url>
     </developer>
     <developer>
-      <name>Nick Burch</name>
-      <organization>Alfresco</organization>
-      <url>http://alfresco.com</url> 
+      <name>Josh Long</name>
+      <organization>Pivotal</organization>
+      <url>http://www.pivotal.com</url> 
+    </developer>
+    <developer>
+      <name>Etienne Studer</name>
+      <organization>Edorasware</organization>
+      <url>http://www.edorasware.com</url> 
+    </developer>
+    <developer>
+      <name>José Antonio Álvarez</name>
+      <organization>Edorasware</organization>
+      <url>http://www.edorasware.com</url> 
+    </developer>
+    <developer>
+      <name>Guy Brand</name>
+      <organization>Edorasware</organization>
+      <url>http://www.edorasware.com</url> 
+    </developer>
+    <developer>
+      <name>Martin Grofcik</name>
+      <organization>Edorasware</organization>
+      <url>http://www.edorasware.com</url> 
+    </developer>
+    <developer>
+      <name>Christian Muelder</name>
+      <organization>Next Level Integration</organization>
+      <url>http://next-level-integration.com/</url> 
     </developer>
     <developer>
       <name>Christian Stettler</name>
-      <organization>Mimacom</organization>
-      <url>http://mimacom.com</url> 
+    </developer>
+    <developer>
+      <name>Saeid Mirzaei</name>
+      <organization>Atos worldline</organization>
+      <url>http://www.worldline.com/</url> 
     </developer>
   </developers>
   <issueManagement>
@@ -988,7 +1011,8 @@
     <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
   </ciManagement>
   <scm>
-    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
-    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
+    <url>git@github.com:Activiti/Activiti.git</url>
+    <connection>scm:git:git@github.com:Activiti/Activiti.git</connection>
+    <developerConnection>scm:git:git@github.com:Activiti/Activiti.git</developerConnection>
   </scm>
 </project>
