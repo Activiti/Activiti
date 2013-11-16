@@ -19,7 +19,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
 import org.activiti.cdi.BusinessProcessEvent;
+import org.activiti.cdi.annotation.event.AssignTask;
 import org.activiti.cdi.annotation.event.BusinessProcess;
+import org.activiti.cdi.annotation.event.CompleteTask;
 import org.activiti.cdi.annotation.event.CreateTask;
 import org.activiti.cdi.annotation.event.EndActivity;
 import org.activiti.cdi.annotation.event.StartActivity;
@@ -93,15 +95,15 @@ public class TestEventListener {
     createTask2 += 1;
   }
   
-  public void onAssignTask1(@Observes @CreateTask("usertask1") BusinessProcessEvent businessProcessEvent) {
+  public void onAssignTask1(@Observes @AssignTask("usertask1") BusinessProcessEvent businessProcessEvent) {
     assignTask1 += 1;
   }
   
-  public void onCompleteTask1(@Observes @CreateTask("usertask1") BusinessProcessEvent businessProcessEvent) {
+  public void onCompleteTask1(@Observes @CompleteTask("usertask1") BusinessProcessEvent businessProcessEvent) {
     completeTask1 += 1;
   }
   
-  public void onCompleteTask2(@Observes @CreateTask("usertask2") BusinessProcessEvent businessProcessEvent) {
+  public void onCompleteTask2(@Observes @CompleteTask("usertask2") BusinessProcessEvent businessProcessEvent) {
     completeTask2 += 1;
   }
   
