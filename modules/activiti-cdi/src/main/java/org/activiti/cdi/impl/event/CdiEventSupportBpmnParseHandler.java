@@ -42,6 +42,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.cdi.BusinessProcessEventType;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -111,17 +112,35 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
   }
   
   private void addCompleteListener(ActivityImpl activity) {
-    UserTaskActivityBehavior behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+    UserTaskActivityBehavior behavior = null;
+    if (activity.getActivityBehavior() instanceof UserTaskActivityBehavior) {
+      behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+    } else if (activity.getActivityBehavior() instanceof MultiInstanceActivityBehavior) {
+      MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) activity.getActivityBehavior();
+      behavior = (UserTaskActivityBehavior) multiInstanceBehavior.getInnerActivityBehavior();
+    }
     behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_COMPLETE, new CdiTaskListener(activity.getId(), BusinessProcessEventType.COMPLETE_TASK));
   }
 
   private void addAssignListener(ActivityImpl activity) {
-    UserTaskActivityBehavior behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+    UserTaskActivityBehavior behavior = null;
+    if (activity.getActivityBehavior() instanceof UserTaskActivityBehavior) {
+      behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+    } else if (activity.getActivityBehavior() instanceof MultiInstanceActivityBehavior) {
+      MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) activity.getActivityBehavior();
+      behavior = (UserTaskActivityBehavior) multiInstanceBehavior.getInnerActivityBehavior();
+    }
     behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, new CdiTaskListener(activity.getId(), BusinessProcessEventType.ASSIGN_TASK));
   }
 
   private void addCreateListener(ActivityImpl activity) {
-    UserTaskActivityBehavior behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+    UserTaskActivityBehavior behavior = null;
+    if (activity.getActivityBehavior() instanceof UserTaskActivityBehavior) {
+      behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+    } else if (activity.getActivityBehavior() instanceof MultiInstanceActivityBehavior) {
+      MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) activity.getActivityBehavior();
+      behavior = (UserTaskActivityBehavior) multiInstanceBehavior.getInnerActivityBehavior();
+    }
     behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_CREATE, new CdiTaskListener(activity.getId(), BusinessProcessEventType.CREATE_TASK));
   }
 
