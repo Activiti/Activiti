@@ -99,6 +99,7 @@ public class FormProperty extends BaseElement {
   }
   
   public void setValues(FormProperty otherProperty) {
+    super.setValues(otherProperty);
     setName(otherProperty.getName());
     setExpression(otherProperty.getExpression());
     setVariable(otherProperty.getVariable());

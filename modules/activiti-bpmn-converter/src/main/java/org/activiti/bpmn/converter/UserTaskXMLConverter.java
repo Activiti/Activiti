@@ -36,19 +36,14 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   
   List<String> formTypes = new ArrayList<String>();
 
-  /** default attributes taken from bpmn spec  and from activiti extension */
-  protected static final List<ExtensionAttribute> defaultAttributes =    Arrays.asList(
-      new ExtensionAttribute(ATTRIBUTE_ID)
-      , new ExtensionAttribute(ATTRIBUTE_NAME)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_DUEDATE)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ASSIGNEE)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_PRIORITY)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEUSERS)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEGROUPS)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION)
+  /** default attributes taken from bpmn spec and from activiti extension */
+  protected static final List<ExtensionAttribute> defaultUserTaskAttributes = Arrays.asList(
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_DUEDATE), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ASSIGNEE), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_PRIORITY), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEUSERS), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEGROUPS)
   );
 
   public UserTaskXMLConverter() {
@@ -101,13 +96,14 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       userTask.getCandidateGroups().addAll(parseDelimitedList(expression));
     }
 
-    BpmnXMLUtil.addCustomAttributes(xtr, userTask, defaultAttributes);
+    BpmnXMLUtil.addCustomAttributes(xtr, userTask, defaultUserTaskAttributes);
 
     parseChildElements(getXMLElementName(), userTask, xtr);
     
     return userTask;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
     UserTask userTask = (UserTask) element;
@@ -122,7 +118,8 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       writeQualifiedAttribute(ATTRIBUTE_TASK_USER_PRIORITY, userTask.getPriority().toString(), xtw);
     }
     // write custom attributes
-    BpmnXMLUtil.writeAttribute(userTask.getAttributes().values(), xtw, defaultAttributes);
+    BpmnXMLUtil.writeCustomAttributes(userTask.getAttributes().values(), xtw, defaultElementAttributes, 
+        defaultActivityAttributes, defaultUserTaskAttributes);
   }
   
   @Override

@@ -12,6 +12,7 @@
  */
 package org.activiti.bpmn.converter;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
@@ -59,6 +61,17 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   protected Map<String, BaseChildElementParser> childElementParsers = new HashMap<String, BaseChildElementParser>();
   
   protected boolean didWriteExtensionStartElement = false;
+  
+  protected static final List<ExtensionAttribute> defaultElementAttributes = Arrays.asList(
+      new ExtensionAttribute(ATTRIBUTE_ID),
+      new ExtensionAttribute(ATTRIBUTE_NAME)
+  );
+  
+  protected static final List<ExtensionAttribute> defaultActivityAttributes = Arrays.asList(
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION)
+  );
   
   public void convertToBpmnModel(XMLStreamReader xtr, BpmnModel model, Process activeProcess, 
       List<SubProcess> activeSubProcessList) throws Exception {

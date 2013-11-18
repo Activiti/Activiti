@@ -101,13 +101,21 @@ public class UserTask extends Task {
   public void setValues(UserTask otherElement) {
     super.setValues(otherElement);
     setAssignee(otherElement.getAssignee());
-    setAsynchronous(otherElement.isAsynchronous());
-    setCandidateGroups(new ArrayList<String>(otherElement.getCandidateGroups()));
-    setCandidateUsers(new ArrayList<String>(otherElement.getCandidateUsers()));
-    setDocumentation(otherElement.getDocumentation());
+    setOwner(otherElement.getOwner());
     setFormKey(otherElement.getFormKey());
     setDueDate(otherElement.getDueDate());
+    setPriority(otherElement.getPriority());
     setCategory(otherElement.getCategory());
+    
+    setCandidateGroups(new ArrayList<String>(otherElement.getCandidateGroups()));
+    setCandidateUsers(new ArrayList<String>(otherElement.getCandidateUsers()));
+    
+    formProperties = new ArrayList<FormProperty>();
+    if (otherElement.getFormProperties() != null && otherElement.getFormProperties().size() > 0) {
+      for (FormProperty property : otherElement.getFormProperties()) {
+        formProperties.add(property.clone());
+      }
+    }
     
     taskListeners = new ArrayList<ActivitiListener>();
     if (otherElement.getTaskListeners() != null && otherElement.getTaskListeners().size() > 0) {
