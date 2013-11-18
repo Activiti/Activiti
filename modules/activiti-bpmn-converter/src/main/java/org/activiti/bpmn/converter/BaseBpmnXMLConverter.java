@@ -209,6 +209,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     BpmnXMLUtil.parseChildElements(elementName, parentElement, xtr, childParsers, model);
   }
   
+  @SuppressWarnings("unchecked")
   protected ExtensionElement parseExtensionElement(XMLStreamReader xtr) throws Exception {
     ExtensionElement extensionElement = new ExtensionElement();
     extensionElement.setName(xtr.getLocalName());
@@ -219,7 +220,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       extensionElement.setNamespacePrefix(xtr.getPrefix());
     }
 
-    BpmnXMLUtil.addCustomAttributes(xtr, extensionElement, null);
+    BpmnXMLUtil.addCustomAttributes(xtr, extensionElement, defaultElementAttributes);
 
     boolean readyWithExtensionElement = false;
     while (readyWithExtensionElement == false && xtr.hasNext()) {

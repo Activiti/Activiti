@@ -308,8 +308,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
    * @param element
    * @param blackList
    */
-  @SuppressWarnings("unchecked")
-  public static void addCustomAttributes(XMLStreamReader xtr, BaseElement element, List<ExtensionAttribute> blackList) {
+  public static void addCustomAttributes(XMLStreamReader xtr, BaseElement element, List<ExtensionAttribute>... blackLists) {
     for (int i = 0; i < xtr.getAttributeCount(); i++) {
       ExtensionAttribute extensionAttribute = new ExtensionAttribute();
       extensionAttribute.setName(xtr.getAttributeLocalName(i));
@@ -318,7 +317,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
         extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
       }
-      if (!isBlacklisted(extensionAttribute, blackList))
+      if (!isBlacklisted(extensionAttribute, blackLists))
         element.addAttribute(extensionAttribute);
     }
   }

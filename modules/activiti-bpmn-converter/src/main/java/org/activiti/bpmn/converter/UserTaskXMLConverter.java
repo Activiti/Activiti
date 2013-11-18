@@ -67,6 +67,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
+  @SuppressWarnings("unchecked")
   protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
     String formKey = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY);
     UserTask userTask = null;
@@ -96,15 +97,16 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       userTask.getCandidateGroups().addAll(parseDelimitedList(expression));
     }
 
-    BpmnXMLUtil.addCustomAttributes(xtr, userTask, defaultUserTaskAttributes);
+    BpmnXMLUtil.addCustomAttributes(xtr, userTask, defaultElementAttributes, 
+        defaultActivityAttributes, defaultUserTaskAttributes);
 
     parseChildElements(getXMLElementName(), userTask, xtr);
     
     return userTask;
   }
-
-  @SuppressWarnings("unchecked")
+  
   @Override
+  @SuppressWarnings("unchecked")
   protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
     UserTask userTask = (UserTask) element;
     writeQualifiedAttribute(ATTRIBUTE_TASK_USER_ASSIGNEE, userTask.getAssignee(), xtw);
