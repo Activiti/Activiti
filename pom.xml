@@ -65,7 +65,7 @@
     <repository>
       <id>activiti-third-party</id>
       <name>Activiti third party</name>
-      <url>https://maven.alfresco.com/nexus/content/repositories/activiti-thirdparty/</url>
+      <url>https://maven.alfresco.com/nexus/content/repositories/thirdparty/</url>
     </repository>
   </repositories>
 
