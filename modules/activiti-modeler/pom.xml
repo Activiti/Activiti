@@ -20,6 +20,14 @@
       org.activiti.modeler
     </activiti.artifact>
   </properties>
+  
+  <repositories>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Public online Restlet repository</name>
+      <url>http://maven.restlet.org</url>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>
@@ -110,14 +118,17 @@
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet</artifactId>
+      <version>${restlet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.servlet</artifactId>
+      <version>${restlet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.jackson</artifactId>
+      <version>${restlet.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.jackson</groupId>
@@ -132,6 +143,7 @@
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.fileupload</artifactId>
+      <version>${restlet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
@@ -220,16 +232,4 @@
       </build>
     </profile>
   </profiles>
-  
-  <repositories>
-    <repository>
-      <id>buzzmedia</id>
-      <url>http://maven.thebuzzmedia.com</url> <!-- ImageScalr -->
-    </repository>
-    <repository>
-      <id>Alfresco thirdparty</id>
-      <url>https://maven.alfresco.com/nexus/content/repositories/thirdparty/</url>
-    </repository>
-  </repositories>
-
 </project>

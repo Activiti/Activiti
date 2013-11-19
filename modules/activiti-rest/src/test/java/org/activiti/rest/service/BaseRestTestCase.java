@@ -54,7 +54,7 @@ import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Form;
 import org.restlet.data.Protocol;
 import org.restlet.data.Status;
-import org.restlet.engine.http.header.HeaderConstants;
+import org.restlet.engine.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.slf4j.Logger;

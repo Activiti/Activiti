@@ -79,7 +79,7 @@ public class SecuredResource extends ServerResource {
   /**
    * Get a request attribute value, decoded. 
    */
-  protected String getAttribute(String name) {
+  public String getAttribute(String name) {
     return decode((String) getRequest().getAttributes().get(name));
   }
   

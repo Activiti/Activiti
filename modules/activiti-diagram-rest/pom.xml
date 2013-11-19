@@ -126,12 +126,4 @@
       </build>
     </profile>
   </profiles>
-  
-  <repositories>
-    <repository>
-      <id>Alfresco thirdparty</id>
-      <url>https://maven.alfresco.com/nexus/content/repositories/thirdparty/</url>
-    </repository>
-  </repositories>
-
 </project>
