@@ -16,6 +16,7 @@ package org.activiti.engine.impl.persistence;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.history.DefaultHistoryManager;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;

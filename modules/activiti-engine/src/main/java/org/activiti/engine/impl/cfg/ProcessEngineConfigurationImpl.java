@@ -110,7 +110,7 @@ import org.activiti.engine.impl.form.JuelFormEngine;
 import org.activiti.engine.impl.form.LongFormType;
 import org.activiti.engine.impl.form.StringFormType;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.history.HistoryManager;
+import org.activiti.engine.impl.history.DefaultHistoryManager;
 import org.activiti.engine.impl.history.parse.FlowNodeHistoryParseHandler;
 import org.activiti.engine.impl.history.parse.ProcessHistoryParseHandler;
 import org.activiti.engine.impl.history.parse.StartEventHistoryParseHandler;
@@ -138,6 +138,7 @@ import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandle
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
+import org.activiti.engine.impl.persistence.DefaultHistoryManagerSessionFactory;
 import org.activiti.engine.impl.persistence.GenericManagerFactory;
 import org.activiti.engine.impl.persistence.GroupEntityManagerFactory;
 import org.activiti.engine.impl.persistence.MembershipEntityManagerFactory;
@@ -695,7 +696,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(TaskEntityManager.class));
       addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManager.class));
-      addSessionFactory(new GenericManagerFactory(HistoryManager.class));
+      
+      addSessionFactory(new DefaultHistoryManagerSessionFactory());
       
       addSessionFactory(new UserEntityManagerFactory());
       addSessionFactory(new GroupEntityManagerFactory());
