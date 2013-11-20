@@ -115,7 +115,7 @@ public class ExecutionCollectionResourceTest extends BaseRestTestCase {
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
     assertNotNull(waitingExecution);
     assertEquals(signalExecution.getId(), waitingExecution.getId());
-    
+    client.release();
   }
   
   /**
@@ -156,5 +156,6 @@ public class ExecutionCollectionResourceTest extends BaseRestTestCase {
     assertEquals(1, vars.size());
     
     assertEquals("Variable set when signal event is receieved", vars.get("myVar"));
+    client.release();
   }
 }

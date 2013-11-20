@@ -14,6 +14,7 @@
 package org.activiti.rest.service.api.identity;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
@@ -21,7 +22,6 @@ import org.restlet.data.Status;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Put;
-import org.restlet.resource.ResourceException;
 
 /**
  * @author Frederik Heremans
@@ -42,7 +42,7 @@ public class UserInfoResource extends BaseUserResource {
     
     String existingValue = ActivitiUtil.getIdentityService().getUserInfo(user.getId(), key);
     if(existingValue == null) {
-      throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND.getCode(), "User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null, null);
+      throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
     }
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
@@ -90,7 +90,7 @@ public class UserInfoResource extends BaseUserResource {
     
     String existingValue = ActivitiUtil.getIdentityService().getUserInfo(user.getId(), key);
     if(existingValue == null) {
-      throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND.getCode(), "User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null, null);
+      throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
     }
     
     return key;

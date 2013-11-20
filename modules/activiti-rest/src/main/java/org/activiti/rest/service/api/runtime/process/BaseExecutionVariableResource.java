@@ -148,7 +148,7 @@ public class BaseExecutionVariableResource extends SecuredResource {
     }
     
     if(!isNew && !hasVariable) {
-      throw new ResourceException(new Status(Status.CLIENT_ERROR_NOT_FOUND.getCode(), "Execution '" + execution.getId() + "' doesn't have a variable with name: '"+ name + "'.", null, null));
+      throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable with name: '"+ name + "'.", null);
     }
     
     if(scope == RestVariableScope.LOCAL) {
