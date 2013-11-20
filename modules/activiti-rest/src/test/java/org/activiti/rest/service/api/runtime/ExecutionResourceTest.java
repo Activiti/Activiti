@@ -84,6 +84,7 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     
     assertTrue(responseNode.get("processInstanceUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, parentExecution.getId())));
+    client.release();
   }
   
   /**
@@ -98,6 +99,7 @@ public class ExecutionResourceTest extends BaseRestTestCase {
       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
       assertEquals("Could not find an execution with id 'unexisting'.", expected.getStatus().getDescription());
     }
+    client.release();
   }
   
   /**
@@ -128,6 +130,7 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     
     // Check if process is actually ended
     assertNull(runtimeService.createExecutionQuery().executionId(signalExecution.getId()).singleResult());
+    client.release();
 
   }
   
@@ -311,6 +314,7 @@ public class ExecutionResourceTest extends BaseRestTestCase {
       assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
       assertEquals("Invalid action: 'badaction'.", expected.getStatus().getDescription());
     }
+    client.release();
   }
   
 }

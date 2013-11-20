@@ -10,6 +10,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
+import org.apache.commons.io.IOUtils;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -53,12 +54,12 @@ public class JobExceptionStacktraceResourceTest extends BaseRestTestCase {
     Representation response = client.get();
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     
-    String stack = response.getText();
+    String stack = IOUtils.toString(response.getStream());
     assertNotNull(stack);
     assertEquals(managementService.getJobExceptionStacktrace(timerJob.getId()), stack);
     
     // Also check content-type
-    assertEquals(MediaType.TEXT_PLAIN.getName(), getMediaType(client));
+    assertTrue(getMediaType(client).contains(MediaType.TEXT_PLAIN.getName()));
    
   }
   

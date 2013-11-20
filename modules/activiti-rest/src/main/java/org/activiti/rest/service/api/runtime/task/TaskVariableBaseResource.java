@@ -209,7 +209,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
     }
     
     if(!isNew && !hasVariable) {
-      throw new ResourceException(new Status(Status.CLIENT_ERROR_NOT_FOUND.getCode(), "Task '" + task.getId() + "' doesn't have a variable with name: '"+ name + "'.", null, null));
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a variable with name: '"+ name + "'.", null);
     }
     
     if(scope == RestVariableScope.LOCAL) {

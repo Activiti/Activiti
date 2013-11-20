@@ -13,15 +13,14 @@
 
 package org.activiti.rest.service.api.management;
 
-import java.io.ByteArrayInputStream;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.runtime.Job;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.SecuredResource;
 import org.restlet.data.MediaType;
-import org.restlet.representation.InputRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 
 /**
@@ -30,7 +29,7 @@ import org.restlet.resource.Get;
 public class JobExceptionStacktraceResource extends SecuredResource {
 
   @Get
-  public InputRepresentation getJobStacktrace() {
+  public Representation getJobStacktrace() {
     if (authenticate() == false)
       return null;
 
@@ -42,7 +41,7 @@ public class JobExceptionStacktraceResource extends SecuredResource {
       throw new ActivitiObjectNotFoundException("Job with id '" + job.getId() + "' doesn't have an exception stacktrace.", String.class);
     }
     
-    return new InputRepresentation(new ByteArrayInputStream(stackTrace.getBytes()), MediaType.TEXT_PLAIN);
+    return new StringRepresentation(stackTrace, MediaType.TEXT_PLAIN);
   }
 
   
