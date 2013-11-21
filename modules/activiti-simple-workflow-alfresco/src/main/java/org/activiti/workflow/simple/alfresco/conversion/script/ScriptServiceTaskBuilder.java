@@ -28,11 +28,16 @@ public class ScriptServiceTaskBuilder {
 
 	protected StringBuilder finalScript;
 	protected ServiceTask serviceTask;
+	protected String runAs;
 	
 	protected static final String SET_EXECUTION_VARIABLE_TEMPLATE = "execution.setVariable(''{0}'', {1});";
 	
 	public ScriptServiceTaskBuilder() {
 		finalScript = new StringBuilder("\n");
+  }
+	
+	public void setRunAs(String runAs) {
+	  this.runAs = runAs;
   }
 	
 	public ServiceTask build() {
@@ -45,6 +50,13 @@ public class ScriptServiceTaskBuilder {
 			serviceTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
 			serviceTask.setImplementation(AlfrescoConversionConstants.CLASSNAME_SCRIPT_DELEGATE);
 			serviceTask.getFieldExtensions().add(scriptFieldElement);
+			
+			if(runAs != null) {
+				scriptFieldElement = new FieldExtension();
+				scriptFieldElement.setFieldName(AlfrescoConversionConstants.SCRIPT_DELEGATE_RUN_AS_FIELD_NAME);
+				scriptFieldElement.setExpression(runAs);
+				serviceTask.getFieldExtensions().add(scriptFieldElement);
+			}
 		}
 		return serviceTask;
 	}

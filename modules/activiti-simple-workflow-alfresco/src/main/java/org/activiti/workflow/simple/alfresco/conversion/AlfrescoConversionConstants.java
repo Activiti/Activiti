@@ -158,6 +158,7 @@ public interface AlfrescoConversionConstants {
 	String PARAMETER_ADD_PROPERTY_TO_OUTPUT = "property-output";
 	String PARAMETER_REFERENCE_MANY = "reference-many";
 	String PARAMETER_FORCE_NOTOFICATIONS = "force-notifications";
+	String PARAMETER_SCRIPT_TASK_RUNAS = "run-as";
 	
 	
 	// Artifact keys
@@ -173,6 +174,7 @@ public interface AlfrescoConversionConstants {
 	String CLASSNAME_SCRIPT_DELEGATE = "org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate";
 	String SCRIPT_TASK_LISTENER_SCRIPT_FIELD_NAME = "script";
 	String SCRIPT_DELEGATE_SCRIPT_FIELD_NAME = "script";
+	String SCRIPT_DELEGATE_RUN_AS_FIELD_NAME = "runAS";
 	String TASK_LISTENER_EVENT_CREATE = "create";
 	String TASK_LISTENER_EVENT_COMPLETE = "complete";
 

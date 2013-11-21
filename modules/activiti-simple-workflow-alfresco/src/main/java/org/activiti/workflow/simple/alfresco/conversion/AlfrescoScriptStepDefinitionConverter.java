@@ -41,10 +41,15 @@ public class AlfrescoScriptStepDefinitionConverter extends BaseStepDefinitionCon
   	ScriptServiceTaskBuilder builder = new ScriptServiceTaskBuilder();
   	builder.add(stepDefinition.getScript());
   	
+  	if(stepDefinition.getParameters() != null && stepDefinition.getParameters().containsKey(AlfrescoConversionConstants.PARAMETER_SCRIPT_TASK_RUNAS)) {
+  		builder.setRunAs((String) stepDefinition.getParameters().get(AlfrescoConversionConstants.PARAMETER_SCRIPT_TASK_RUNAS));
+  	}
+  	
   	ServiceTask serviceTask = builder.build();
   	serviceTask.setName(stepDefinition.getName());
   	serviceTask.setDefaultFlow(stepDefinition.getDescription());
   	serviceTask.setId(conversion.getUniqueNumberedId(ConversionConstants.SERVICE_TASK_ID_PREFIX));
+  	
     addFlowElement(conversion, serviceTask, true);
     
     return serviceTask;

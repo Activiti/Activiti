@@ -16,6 +16,9 @@ package org.activiti.engine.impl.cmd;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
@@ -30,7 +33,6 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
  */
 public class DecrementJobRetriesCmd implements Command<Object> {
 
-  private static final long serialVersionUID = 1L;
   protected String jobId;
   protected Throwable exception;
 
@@ -53,6 +55,16 @@ public class DecrementJobRetriesCmd implements Command<Object> {
       job.setExceptionStacktrace(getExceptionStacktrace());
     }
     
+    // Dispatch both an update and a retry-decrement event
+    ActivitiEventDispatcher eventDispatcher = commandContext.getEventDispatcher();
+    if(eventDispatcher.isEnabled()) {
+    	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
+    			ActivitiEventType.ENTITY_UPDATED, job));
+    	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
+    			ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
+    }
+  
+    // Notify job-executor that a new job was added, when this transaction is committed
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
     MessageAddedNotification messageAddedNotification = new MessageAddedNotification(jobExecutor);
     TransactionContext transactionContext = commandContext.getTransactionContext();

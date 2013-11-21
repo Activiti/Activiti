@@ -581,6 +581,234 @@ executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdc
       This is useful where the systems are mission critical and logges should be seriously checked,  by means of a log analyzer for example.
     
     </para>
-  </section>  
+  </section> 
+  
+  <section id="eventDispatcher">
+    <title>[API AND NAMING NOT FINAL YET] Event handlers</title>
+    <para>
+      An event mechanism has been introduced in Activiti 5.15. It allows you to get notified when various events occur within the engine.
+      Take a look at <link linkend="eventDispatcherEventTypes">all supported event types</link> for an overview of the events available.
+    </para>
+    <para>
+      You can either add event listeners <link linkend="eventDispatcherConfiguration">through the configuration</link> or add event listeners 
+      <link linkend="eventDispatcherConfigurationRuntime">at runtime using the API</link>. It's also possible to register a listener for certain types of events as opposed to getting
+      notified when any type of event is dispatched.
+    </para>
+    <para>
+       All events dispatched are a subtype of <literal>org.activiti.engine.delegate.event.ActivitiEvent</literal>. The event exposes (if available) the <literal>type</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal>
+       and <literal>processDefinitionId</literal>. Certain events contain additional context related to the event that occured, additional information about additional playload can be
+       found in the list of <link linkend="eventDispatcherEventTypes">all supported event types</link>.
+    </para>
+    
+      <section id="eventDispatcherListener">
+        <title>Event listener implementation</title>
+        <para>
+          The only requirement an event-listener has, is to implement <literal>org.activiti.engine.delegate.event.ActivitiEventListener</literal>. Below is an example implementation
+          of a listener, which outputs all events received to the standard-out, with exception of events related to job-execution: 
+          <programlisting>
+public class MyEventListener implements ActivitiEventListener {
+
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    switch (event.getType()) {
+    
+      case JOB_EXECUTION_SUCCESS:
+        System.out.println("A job well done!");
+        break;
+  
+      case JOB_EXECUTION_FAILURE:
+        System.out.println("A job has failed...");
+        break;
+        
+      default:
+        System.out.println("Event received: " + event.getType());
+    }
+  }
+
+  @Override
+  public boolean isFailOnException() {
+    // The logic in the onEvent method of this listener is not critical, exceptions
+    // can be ignored if logging fails...
+    return false;
+  }
+}</programlisting>
+        </para>
+        <para>
+          The <literal>isFailOnException()</literal> method determines the behaviour in case the <literal>onEvent(..)</literal> method
+          throws an exception when an event is dispatched. In case <literal>false</literal> is returned, the exception is
+          ignored. When <literal>true</literal> is returned, the exception is not ignored and bubbles up, effectively
+          failing the current ongoing command. In case the event was part of an API-call (or any other transactional operation, eg. job-execution),
+          the transaction will be rolled back. In case the behaviour in the event-listener
+          is not business-critical, it's recommended to return <literal>false</literal>.
+        </para>
+        <para>
+           There are a few base implementations provided by activiti to facilitate common usecases of event-listeners. These can be used as base-class or as an example listener implementation:
+           <itemizedlist>
+              <listitem>
+                <para>
+                  <emphasis role="bold">org.activiti.engine.delegate.event.BaseEntityEventListener</emphasis>:
+                  An event-listener base-class that can be used to listen for entity-related events for a specific type of entity or for all entities. It hides away the
+                  type-checking and offers 4 methods that should be overridden: <literal>onCreate(..)</literal>, <literal>onUpdate(..)</literal> and <literal>onDelete(..)</literal> when an entity is created, updated or deleted. For all other entity-related events, the
+                  <literal>onEntityEvent(..)</literal>is called.
+                </para>
+              </listitem>
+           </itemizedlist>
+        </para>
+      </section> 
+    <section id="eventDispatcherConfiguration">
+        <title>Configuration and setup</title>
+        <para>
+          If event-listener is configured in the process engine configuration, it will be active when the process engine starts and will remain active after 
+          subsequent reboots of the engine.
+        </para>
+        <para>
+          The property <literal>eventListeners</literal> expects a list of <literal>org.activiti.engine.delegate.event.ActivitiEventListener</literal> instances. As usual, you can either declare an inline
+          bean definition or use a <literal>ref</literal> to an existing bean instead.
+          The snippet below adds an event-listener to the configuration, that is notified when any event is dispatched, regardless of it's type:
+                <programlisting>
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration&quot;&gt;
+    ...
+    &lt;property name=&quot;eventListeners&quot;&gt;
+      &lt;list&gt;
+         &lt;bean class=&quot;org.activiti.engine.example.MyEventListener&quot; /&gt;
+      &lt;/list&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        </para>
+        <para>
+          To get notified when certain types of events get dispatched, use the <literal>typedEventListeners</literal> property, which expects a map. The key of a map-entry is a comma-seperated list of event-names (or a single event-name). 
+          The value of a map-entry is a list of <literal>org.activiti.engine.delegate.event.ActivitiEventListener</literal> instances. 
+          The snippet below adds an event-listener to the configuration, that is notified when a job execution was successful or failed:
+                <programlisting>
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration&quot;&gt;
+    ...
+    &lt;property name=&quot;typedEventListeners&quot;&gt;
+      &lt;map&gt;
+        &lt;entry key=&quot;JOB_EXECUTION_SUCCESS,JOB_EXECUTION_FAILURE&quot; &gt;
+          &lt;list&gt;
+            &lt;bean class=&quot;org.activiti.engine.example.MyJobEventListener&quot; /&gt;
+          &lt;/list&gt;
+        &lt;/entry&gt;
+      &lt;/map&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+        </para>
+        <para>The order of dispatching events is determined on the order the listeners were added. First, all normal event-listeners are called (<literal>eventListeners</literal> property) in the order they are defined in the <literal>list</literal>. 
+        After that, all typed event listeners (<literal>typedEventListeners</literal> properties) are called, if an event of the right type is dispatched.</para>
+      </section> 
+      <section id="eventDispatcherConfigurationRuntime">
+        <title>Adding listeners at runtime</title>
+        <para>It's possible to add and remove additional event-listeners to the engine by using the API (<literal>RuntimeService</literal>):
+        <programlisting>
+/**
+ * Adds an event-listener which will be notified of ALL events by the dispatcher.
+ * @param listenerToAdd the listener to add
+ */
+void addEventListener(ActivitiEventListener listenerToAdd);
+
+/**
+ * Adds an event-listener which will only be notified when an event occurs, which type is in the given types.
+ * @param listenerToAdd the listener to add
+ * @param types types of events the listener should be notified for
+ */
+void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... types);
+
+/**
+ * Removes the given listener from this dispatcher. The listener will no longer be notified,
+ * regardless of the type(s) it was registered for in the first place.
+ * @param listenerToRemove listener to remove
+ */
+ void removeEventListener(ActivitiEventListener listenerToRemove);</programlisting>
+        </para>
+        <para>
+          Please note that the listeners added at runtime <emphasis role="bold">are not retained when the engine is rebooted.</emphasis>
+        </para>
+      </section> 
+      <section id="eventDispatcherCustomEvents">
+        <title>Dispatching events through API</title>
+        <para>We opened up the event-dispatching mechanism through the API, to allow you to dispatch custom events to any listeners that are registered in the engine. It's recommended
+        (although not enforced) to only dispatch <literal>ActivitiEvents</literal> with type <literal>CUSTOM</literal>. Dispatching the event can be done using the <literal>RuntimeService</literal>:
+        <programlisting>
+/**
+ * Dispatches the given event to any listeners that are registered.
+ * @param event event to dispatch.
+ * 
+ * @throws ActivitiException if an exception occurs when dispatching the event or when the {@link ActivitiEventDispatcher}
+ * is disabled.
+ * @throws ActivitiIllegalArgumentException when the given event is not suitable for dispatching.
+ */
+ void dispatchEvent(ActivitiEvent event);</programlisting>
+        </para>
+      </section> 
+      
+       <section id="eventDispatcherEventTypes">
+        <title>Supported event types</title>
+        <para>Listed below are all event types that can occur in the engine. Each type corresponds to an enum value in the <literal>org.activiti.engine.delegate.event.ActivitiEventType</literal>.</para>
+        
+        <table id="eventTypes">
+          <title>Supported events</title>
+          <tgroup cols='3'>
+            <thead>
+              <row>
+                <entry>Event name</entry>
+                <entry>Description</entry>
+                <entry>Event classes</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>ENTITY_CREATED</entry>
+                <entry>A new entity is created. The new entity is contained in the event.</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ENTITY_UPDATED</entry>
+                <entry>An existing is updated. The updated entity is contained in the event.</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ENTITY_DELETED</entry>
+                <entry>An existing entity is deleted. The deleted entity is contained in the event.</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>JOB_EXECUTION_SUCCESS</entry>
+                <entry>A job has been executed successfully. The event contains the job that was executed.</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>JOB_EXECUTION_FAILURE</entry>
+                <entry>The execution of a job has failed. The event contains the job that was executed and the exception.</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal> and <literal>org.activiti...ActivitiExceptionEvent</literal></entry>
+              </row>
+              <row>
+                <entry>JOB_RETRIES_DECREMENTED</entry>
+                <entry>The number of job retries have been decremented due to a failed job. The event contains the job that was updated.</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>TIMER_FIRED</entry>
+                <entry>A timer has been fired. The event contains the job that was executed?</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+    </section> 
+    
+      <section id="eventDispatcherRemarks">
+        <title>Additional remarks</title>
+        <para>
+          <emphasis role="bold">Only listeners are notified in the engine the events are dispatched from.</emphasis> So in case you have different engines - running against the same database - only events that originated
+          in the engine the listener is registered for, are dispatched to that listener. The events that occur in the other engine are not dispatched to the listeners, regardless of the fact
+          they are running in the same JVM or not. 
+        </para>
+        <para>
+          Certain event-types (related to entities) expose the targetted entity. Depending on the type or event, these entities cannot be updated anymore (eg. when the entity is deleted). <emphasis role="bold">It's not recommended to
+          update these entities directly from within the event</emphasis>. Rather, use the <literal>EngineServices</literal> exposed by the event to interact in a more safe way with the engine. Even then, you need to 
+          be cautious with updates/operations on entities that are involved in the generated events.
+        </para>
+      </section> 
+  </section> 
 
 </chapter>

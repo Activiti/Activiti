@@ -20,6 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.JobNotFoundException;
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
@@ -335,5 +336,11 @@ public class CommandContext {
   }
   public FailedJobCommandFactory getFailedJobCommandFactory() {
     return failedJobCommandFactory;
+  }
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+	  return processEngineConfiguration;
+  }
+  public ActivitiEventDispatcher getEventDispatcher() {
+  	return processEngineConfiguration.getEventDispatcher();
   }
 }

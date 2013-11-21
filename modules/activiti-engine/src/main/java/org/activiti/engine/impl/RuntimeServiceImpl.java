@@ -20,10 +20,15 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.AddEventListenerCommand;
 import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.DispatchEventCommand;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
@@ -31,6 +36,7 @@ import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
 import org.activiti.engine.impl.cmd.HasExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.MessageEventReceivedCmd;
+import org.activiti.engine.impl.cmd.RemoveEventListenerCommand;
 import org.activiti.engine.impl.cmd.RemoveExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetProcessInstanceBusinessKeyCmd;
@@ -270,5 +276,25 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   
   public void messageEventReceivedAsync(String messageName, String executionId) {
 	  commandExecutor.execute(new MessageEventReceivedCmd(messageName, executionId, true));
+  }
+
+	@Override
+  public void addEventListener(ActivitiEventListener listenerToAdd) {
+		commandExecutor.execute(new AddEventListenerCommand(listenerToAdd));
+  }
+
+	@Override
+  public void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... types) {
+		commandExecutor.execute(new AddEventListenerCommand(listenerToAdd, types));
+  }
+
+	@Override
+  public void removeEventListener(ActivitiEventListener listenerToRemove) {
+		commandExecutor.execute(new RemoveEventListenerCommand(listenerToRemove));
+  }
+
+	@Override
+  public void dispatchEvent(ActivitiEvent event) {
+		commandExecutor.execute(new DispatchEventCommand(event));
   }
 }
