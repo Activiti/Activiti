@@ -289,7 +289,3 @@ alter table ACT_RE_MODEL
     foreign key (DEPLOYMENT_ID_) 
     references ACT_RE_DEPLOYMENT (ID_);        
     
--- see http://stackoverflow.com/questions/675398/how-can-i-constrain-multiple-columns-to-prevent-duplicates-but-ignore-null-value
-create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION
-   (case when BUSINESS_KEY_ is null then null else PROC_DEF_ID_ end,
-    case when BUSINESS_KEY_ is null then null else BUSINESS_KEY_ end);

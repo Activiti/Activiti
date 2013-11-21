@@ -12,8 +12,7 @@ create table ACT_HI_PROCINST (
     SUPER_PROCESS_INSTANCE_ID_ varchar(64),
     DELETE_REASON_ varchar(4000),
     primary key (ID_),
-    unique (PROC_INST_ID_),
-    unique ACT_UNIQ_HI_BUS_KEY (PROC_DEF_ID_, BUSINESS_KEY_)
+    unique (PROC_INST_ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_HI_ACTINST (

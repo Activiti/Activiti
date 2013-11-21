@@ -63,8 +63,7 @@ create table ACT_RU_EXECUTION (
   IS_EVENT_SCOPE_ boolean,
   SUSPENSION_STATE_ integer,
   CACHED_ENT_STATE_ integer,
-    primary key (ID_),
-    unique (PROC_DEF_ID_, BUSINESS_KEY_)
+    primary key (ID_)
 );
 
 create table ACT_RU_JOB (

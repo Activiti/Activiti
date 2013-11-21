@@ -201,10 +201,6 @@ alter table ACT_RU_EXECUTION
     foreign key (PROC_DEF_ID_) 
     references ACT_RE_PROCDEF (ID_);    
     
-alter table ACT_RU_EXECUTION
-    add constraint ACT_UNIQ_RU_BUS_KEY
-    unique(PROC_DEF_ID_, BUSINESS_KEY_);
-    
 alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_TSKASS_TASK
     foreign key (TASK_ID_)
