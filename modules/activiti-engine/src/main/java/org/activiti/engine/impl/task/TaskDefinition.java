@@ -165,6 +165,7 @@ public class TaskDefinition implements Serializable {
       this.addTaskListener(TaskListener.EVENTNAME_CREATE, taskListener);
       this.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, taskListener);
       this.addTaskListener(TaskListener.EVENTNAME_COMPLETE, taskListener);
+      this.addTaskListener(TaskListener.EVENTNAME_DELETE, taskListener);
       
     } else {
       List<TaskListener> taskEventListeners = taskListeners.get(eventName);
