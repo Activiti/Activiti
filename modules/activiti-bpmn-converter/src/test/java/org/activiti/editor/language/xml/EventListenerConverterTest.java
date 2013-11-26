@@ -23,7 +23,7 @@ public class EventListenerConverterTest extends AbstractConverterTest {
   }
   
   protected String getResource() {
-    return "eventlistenersmodel.bpmn";
+    return "eventlistenersmodel.bpmn20.xml";
   }
   
   private void validateModel(BpmnModel model) {
