@@ -42,6 +42,16 @@ public enum ActivitiEventType {
 	ENTITY_DELETED,
 	
 	/**
+	 * Existing entity has been suspended.							
+	 */
+	ENTITY_SUSPENDED,
+	
+	/**
+	 * Existing entity has been activated.							
+	 */
+	ENTITY_ACTIVATED,
+	
+	/**
 	 * Timer has been fired successfully.
 	 */
 	TIMER_FIRED,
@@ -65,7 +75,17 @@ public enum ActivitiEventType {
 	 * An event type to be used by custom events. These types of events are never thrown by the engine itself,
 	 * only be an external API call to dispatch an event.
 	 */
-	CUSTOM;
+	CUSTOM,
+	
+	/**
+	 * The process-engine that dispatched this event has been created and is ready for use.
+	 */
+	ENGINE_CREATED,
+	
+	/**
+	 * The process-engine that dispatched this event has been closed and cannot be used anymore.
+	 */
+	ENGINE_CLOSED;
 	
 	
 	public static final ActivitiEventType[] EMPTY_ARRAY =  new ActivitiEventType[] {};

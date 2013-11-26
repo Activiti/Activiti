@@ -13,9 +13,13 @@
 package org.activiti.engine.impl.bpmn.parser.factory;
 
 import org.activiti.bpmn.model.ActivitiListener;
+import org.activiti.bpmn.model.EventListener;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
+import org.activiti.engine.impl.bpmn.helper.DelegateActivitiEventListener;
+import org.activiti.engine.impl.bpmn.helper.DelegateExpressionActivitiEventListener;
 import org.activiti.engine.impl.bpmn.listener.DelegateExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.listener.DelegateExpressionTaskListener;
 import org.activiti.engine.impl.bpmn.listener.ExpressionExecutionListener;
@@ -56,5 +60,15 @@ public class DefaultListenerFactory extends AbstractBehaviorFactory implements L
     return new DelegateExpressionExecutionListener(expressionManager.createExpression(activitiListener.getImplementation()), 
             createFieldDeclarations(activitiListener.getFieldExtensions()));
   }
-  
+
+	@Override
+	public ActivitiEventListener createClassDelegateEventListener(EventListener eventListener) {
+		return new DelegateActivitiEventListener(eventListener.getImplementation());
+	}
+
+	@Override
+	public ActivitiEventListener createDelegateExpressionEventListener(EventListener eventListener) {
+		return new DelegateExpressionActivitiEventListener(expressionManager.createExpression(
+				eventListener.getImplementation()));
+	}
 }

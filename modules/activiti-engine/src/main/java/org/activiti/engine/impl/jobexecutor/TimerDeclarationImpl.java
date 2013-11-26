@@ -22,7 +22,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.StartProcessVariableScope;
+import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -116,7 +116,7 @@ public class TimerDeclarationImpl implements Serializable {
     // evaluating variables but other context, evaluating should happen nevertheless
     VariableScope scopeForExpression = executionEntity;
     if(scopeForExpression == null) {
-      scopeForExpression = StartProcessVariableScope.getSharedInstance();
+      scopeForExpression = NoExecutionVariableScope.getSharedInstance();
     }
 
     Object dueDateValue = description.getValue(scopeForExpression);

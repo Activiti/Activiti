@@ -34,6 +34,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<Artifact> artifactList = new ArrayList<Artifact>();
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
+  protected List<EventListener> eventListeners = new ArrayList<EventListener>();
 
   public String getDocumentation() {
     return documentation;
@@ -168,6 +169,15 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     this.candidateStarterGroups = candidateStarterGroups;
   }
   
+  public List<EventListener> getEventListeners() {
+	  return eventListeners;
+  }
+  
+  public void setEventListeners(List<EventListener> eventListeners) {
+	  this.eventListeners = eventListeners;
+  }
+  
+  
   @SuppressWarnings("unchecked")
   public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsOfType(Class<FlowElementType> type) {
     List<FlowElementType> flowElements = new ArrayList<FlowElementType>();
@@ -210,6 +220,13 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     candidateStarterGroups = new ArrayList<String>();
     if (otherElement.getCandidateStarterGroups() != null && otherElement.getCandidateStarterGroups().size() > 0) {
       candidateStarterGroups.addAll(otherElement.getCandidateStarterGroups());
+    }
+    
+    eventListeners = new ArrayList<EventListener>();
+    if(otherElement.getEventListeners() != null && !otherElement.getEventListeners().isEmpty()) {
+    	for(EventListener listener : otherElement.getEventListeners()) {
+    		eventListeners.add(listener.clone());
+    	}
     }
   }
 }

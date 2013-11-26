@@ -13,6 +13,9 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
@@ -24,9 +27,6 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
-
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -109,7 +109,6 @@ public class DeploymentEntityManager extends AbstractManager {
             ((JobEntity)job).delete();        
           }
         }
-       
       }
       
       // remove message event subscriptions:
@@ -151,7 +150,6 @@ public class DeploymentEntityManager extends AbstractManager {
     return getDbSqlSession().selectList(query, deploymentQuery, page);
   }
   
-  @SuppressWarnings("unchecked")
   public List<String> getDeploymentResourceNames(String deploymentId) {
     return getDbSqlSession().getSqlSession().selectList("selectResourceNamesByDeploymentId", deploymentId);
   }

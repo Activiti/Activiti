@@ -28,11 +28,15 @@
     <property name="beans">
       <map>
         <entry key="eventListener" value-ref="eventListener" />
+        <entry key="testEventListener" value-ref="testEventListener" />
       </map>
     </property>
   </bean>
   
   <!-- The actual event-listener instance -->
   <bean id="eventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  
+   <!-- An event-listener instance used from within an expression in BPMN XML-->
+  <bean id="testEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
   
 </beans>

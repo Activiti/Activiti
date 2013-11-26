@@ -141,7 +141,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertTrue(event instanceof ActivityEntityEvent);
 		ActivityEntityEvent entityEvent = (ActivityEntityEvent) event;
 		assertTrue(entityEvent.getEntity() instanceof Job);
-		assertEquals(entity.getId(), entityEvent.getEntity().getId());
+		assertEquals(entity.getId(), ((Job) entityEvent.getEntity()).getId());
 	}
 	
 	@Override

@@ -17,37 +17,32 @@ import java.util.List;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.delegate.event.ActivityEntityEvent;
 
-public class TestActivitiEntityEventListener implements ActivitiEventListener {
+/**
+ * Event listener that keeps a static list of all events received.
+ * 
+ * @author Frederik Heremans
+ */
+public class StaticTestActivitiEventListener implements ActivitiEventListener {
 
-	private List<ActivitiEvent> eventsReceived;
-	private Class<?> entityClass;
+	private static List<ActivitiEvent> eventsReceived = new ArrayList<ActivitiEvent>();
 	
-	public TestActivitiEntityEventListener(Class<?> entityClass) {
-		this.entityClass = entityClass;
-		
-		eventsReceived = new ArrayList<ActivitiEvent>();
-  }
-	
-	public List<ActivitiEvent> getEventsReceived() {
+	public static List<ActivitiEvent> getEventsReceived() {
 	  return eventsReceived;
   }
 	
-	public void clearEventsReceived() {
+	public static void clearEventsReceived() {
 		eventsReceived.clear();
 	}
 	
 	@Override
 	public void onEvent(ActivitiEvent event) {
-		if(event instanceof ActivityEntityEvent && entityClass.isAssignableFrom(((ActivityEntityEvent) event).getEntity().getClass())) {
-			eventsReceived.add(event);
-		}
+		eventsReceived.add(event);
 	}
 
 	@Override
 	public boolean isFailOnException() {
-		return true;
+		return false;
 	}
 
 }

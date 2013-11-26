@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.impl.el.StartProcessVariableScope;
+import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 
@@ -57,7 +57,7 @@ public class FormPropertyHandler {
       // Execution is null, the form-property is used in a start-form. Default value
       // should be available (ACT-1028) even though no execution is available.
       if (defaultExpression != null) {
-        modelValue = defaultExpression.getValue(StartProcessVariableScope.getSharedInstance());
+        modelValue = defaultExpression.getValue(NoExecutionVariableScope.getSharedInstance());
       }
     }
 

@@ -16,7 +16,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivityEntityEvent;
-import org.activiti.engine.impl.db.PersistentObject;
 
 /**
  * Base class for all {@link ActivitiEvent} implementations, related to entities.
@@ -25,9 +24,9 @@ import org.activiti.engine.impl.db.PersistentObject;
  */
 public class ActivitiEntityEventImpl extends ActivitiEventImpl implements ActivityEntityEvent {
 
-	protected PersistentObject entity;
+	protected Object entity;
 	
-	public ActivitiEntityEventImpl(PersistentObject entity, ActivitiEventType type) {
+	public ActivitiEntityEventImpl(Object entity, ActivitiEventType type) {
 		super(type);
 		if(entity == null) {
 			throw new ActivitiIllegalArgumentException("Entity cannot be null.");
@@ -36,7 +35,7 @@ public class ActivitiEntityEventImpl extends ActivitiEventImpl implements Activi
   }
 	
 	@Override
-	public PersistentObject getEntity() {
+	public Object getEntity() {
 		return entity;
 	}
 }

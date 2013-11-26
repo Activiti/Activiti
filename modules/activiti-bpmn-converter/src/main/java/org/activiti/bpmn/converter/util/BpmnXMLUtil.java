@@ -14,6 +14,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.child.ActivitiEventListenerParser;
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.converter.child.CancelEventDefinitionParser;
 import org.activiti.bpmn.converter.child.CompensateEventDefinitionParser;
@@ -56,6 +57,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     addGenericParser(new DocumentationParser());
     addGenericParser(new ErrorEventDefinitionParser());
     addGenericParser(new ExecutionListenerParser());
+    addGenericParser(new ActivitiEventListenerParser());
     addGenericParser(new FieldExtensionParser());
     addGenericParser(new FormPropertyParser());
     addGenericParser(new IOSpecificationParser());

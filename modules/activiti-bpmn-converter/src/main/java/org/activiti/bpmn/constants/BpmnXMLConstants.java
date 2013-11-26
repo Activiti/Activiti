@@ -65,8 +65,10 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_EXTENSIONS = "extensionElements";
   
   public static final String ELEMENT_EXECUTION_LISTENER = "executionListener";
+  public static final String ELEMENT_EVENT_LISTENER = "eventListener";
   public static final String ELEMENT_TASK_LISTENER = "taskListener";
   public static final String ATTRIBUTE_LISTENER_EVENT = "event";
+  public static final String ATTRIBUTE_LISTENER_EVENTS = "events";
   public static final String ATTRIBUTE_LISTENER_CLASS = "class";
   public static final String ATTRIBUTE_LISTENER_EXPRESSION = "expression";
   public static final String ATTRIBUTE_LISTENER_DELEGATEEXPRESSION = "delegateExpression";
