@@ -590,9 +590,9 @@ executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdc
       Take a look at <link linkend="eventDispatcherEventTypes">all supported event types</link> for an overview of the events available.
     </para>
     <para>
-      You can either add event listeners <link linkend="eventDispatcherConfiguration">through the configuration</link> or add event listeners 
-      <link linkend="eventDispatcherConfigurationRuntime">at runtime using the API</link>. It's also possible to register a listener for certain types of events as opposed to getting
-      notified when any type of event is dispatched.
+      It's possible to register a listener for certain types of events as opposed to getting notified when any type of event is dispatched.
+      You can either add engine-wide event listeners <link linkend="eventDispatcherConfiguration">through the configuration</link>, add engine-wide event listeners 
+      <link linkend="eventDispatcherConfigurationRuntime">at runtime using the API</link> or add event-listeners to <link linkend="eventDispatcherConfigurationProcessDefinition">specific process definitions in the BPMN XML</link>. 
     </para>
     <para>
        All events dispatched are a subtype of <literal>org.activiti.engine.delegate.event.ActivitiEvent</literal>. The event exposes (if available) the <literal>type</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal>
@@ -724,6 +724,53 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
           Please note that the listeners added at runtime <emphasis role="bold">are not retained when the engine is rebooted.</emphasis>
         </para>
       </section> 
+      <section id="eventDispatcherConfigurationProcessDefinition">
+        <title>Adding listeners to process definitions</title>
+        <para>It's possible to add listeners to a specific process-definition. The listeners will only be called for events
+        related to the process definition and to all events related to process instances that are started with that specific process
+        definition. The listener implementations can be defined using a fully qualified classname or an expression that resolves to a bean that implements
+        the listener interface.
+        </para>
+        <para>The snippet below adds 2 listeners to a process-definition. The first listener will receive events of any type, with a listener implementation based on a fully-qualified class name.
+        The second listener is only notified when a job is successfully executed or when it failed, using a listener that has been defined in the <literal>beans</literal> property of the process engine configuration.</para>
+        <programlisting>
+&lt;process id="testEventListeners"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:eventListener class=&quot;org.activiti.engine.test.MyEventListener&quot; /&gt;
+    &lt;activiti:eventListener delegateExpression=&quot;${testEventListener}&quot; events=&quot;JOB_EXECUTION_SUCCESS,JOB_EXECUTION_FAILURE&quot; /&gt;
+  &lt;/extensionElements&gt;
+        
+  ...
+
+&lt;/process&gt;</programlisting>        
+        
+      <para>Please note that:
+        <itemizedlist>
+          <listitem>
+            <para>
+              Event-listeners can only be declared on the <literal>process</literal> element, as a child-element of the <literal>extensionElements</literal>. Listeners cannot be defined on individual activities in the process.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              Expressions used in the <literal>delegateExpression</literal> do not have access to the execution-context, as other expressions (eg. in gateways) have. They can only reference beans defined in the <literal>beans</literal> property of the 
+              process engine configuration or when using spring (and the beans property is abscent) to any spring-bean that implements the listener interface.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              When using the <literal>class</literal> attribute of a listener, there will only be a single instance of that class created. Make sure the listener implementations do not rely on member-fields or ensure safe usage from multiple threads/contexts.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              When an illegal event-type is used in the <literal>events</literal> attribute, an exception will be thrown when the process-definition is deployed (effectievly failing the deployment). When an illegal value for <literal>class</literal> or <literal>delegateExecution</literal> is supplied (either unexisting class, unexisting bean referenced or delegate not implementing listener interface), an exception will
+              be thrown when the process is started (or when the first valid event for that process-definition is dispatched to the listener). Make sure the referenced classes are on the classpath and that the expressions resolve to a valid instance.
+            </para>
+          </listitem>
+        </itemizedlist>
+      </para>
+      </section> 
       <section id="eventDispatcherCustomEvents">
         <title>Dispatching events through API</title>
         <para>We opened up the event-dispatching mechanism through the API, to allow you to dispatch custom events to any listeners that are registered in the engine. It's recommended
@@ -756,6 +803,16 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
               </row>
             </thead>
             <tbody>
+              <row>
+                <entry>ENGINE_CREATED</entry>
+                <entry>The process-engine this listener is attached to, has been created and is ready for API-calls.</entry>
+                <entry><literal>org.activiti...ActivitiEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ENGINE_CLOSED</entry>
+                <entry>The process-engine this listener is attached to, has been closed. API-calls to the engine are no longer possible.</entry>
+                <entry><literal>org.activiti...ActivitiEvent</literal></entry>
+              </row>
               <row>
                 <entry>ENTITY_CREATED</entry>
                 <entry>A new entity is created. The new entity is contained in the event.</entry>

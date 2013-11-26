@@ -35,8 +35,6 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.GroupQueryImpl;
@@ -115,22 +113,12 @@ public class DbSqlSession implements Session {
     }
     insertedObjects.add(persistentObject);
     cachePut(persistentObject, false);
-    
-    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-	    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, persistentObject));
-    }
   }
   
   // update ///////////////////////////////////////////////////////////////////
   
   public void update(PersistentObject persistentObject) {
     cachePut(persistentObject, false);
-    
-    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-	    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, persistentObject));
-    }
   }
   
   // delete ///////////////////////////////////////////////////////////////////
@@ -148,11 +136,6 @@ public class DbSqlSession implements Session {
     }
     
     deleteOperations.add(new CheckedDeleteOperation(persistentObject));
-    
-    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, persistentObject));
-    }
   }
 
   public interface DeleteOperation {

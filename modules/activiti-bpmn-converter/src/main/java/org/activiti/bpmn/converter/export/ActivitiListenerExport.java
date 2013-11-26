@@ -20,8 +20,10 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.EventListener;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.UserTask;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,10 +37,42 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
     if(element instanceof UserTask) {
       didWriteExtensionStartElement =  writeListeners(ELEMENT_TASK_LISTENER, ((UserTask) element).getTaskListeners(), didWriteExtensionStartElement, xtw);
     }
+    
+    // In case of a process-element, write the event-listeners
+    if(element instanceof Process) {
+    	didWriteExtensionStartElement = writeEventListeners(((Process) element).getEventListeners(), didWriteExtensionStartElement, xtw);
+    }
+    
     return didWriteExtensionStartElement;
   }
   
-  private static boolean writeListeners(String xmlElementName, List<ActivitiListener> listenerList, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+  protected static boolean writeEventListeners(List<EventListener> eventListeners,
+      boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+  	
+  	if(eventListeners != null && !eventListeners.isEmpty()) {
+  		for(EventListener eventListener : eventListeners) {
+  			if (!didWriteExtensionStartElement) { 
+          xtw.writeStartElement(ELEMENT_EXTENSIONS);
+          didWriteExtensionStartElement = true;
+        }
+  			
+  			 xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_EVENT_LISTENER, ACTIVITI_EXTENSIONS_NAMESPACE);
+  			 BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_EVENTS, eventListener.getEvents(), xtw);
+  			 
+  			 if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType())) {
+           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CLASS, eventListener.getImplementation(), xtw);
+         } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(eventListener.getImplementationType())) {
+           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_DELEGATEEXPRESSION, eventListener.getImplementation(), xtw);
+         }
+  			 
+  			 xtw.writeEndElement();
+  		}
+  	}
+  	
+	  return didWriteExtensionStartElement;
+  }
+
+	private static boolean writeListeners(String xmlElementName, List<ActivitiListener> listenerList, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     if (listenerList != null) {
       
       for (ActivitiListener listener : listenerList) {

@@ -29,15 +29,15 @@ import org.activiti.engine.delegate.VariableScope;
  * 
  * @author Frederik Heremans
  */
-public class StartProcessVariableScope implements VariableScope {
+public class NoExecutionVariableScope implements VariableScope {
   
-  private static final StartProcessVariableScope INSTANCE = new StartProcessVariableScope();
+  private static final NoExecutionVariableScope INSTANCE = new NoExecutionVariableScope();
 
   /**
-   * Since a {@link StartProcessVariableScope} has no state, it's safe to use the same
+   * Since a {@link NoExecutionVariableScope} has no state, it's safe to use the same
    * instance to prevent too many useless instances created.
    */
-  public static StartProcessVariableScope getSharedInstance()  {
+  public static NoExecutionVariableScope getSharedInstance()  {
     return INSTANCE;
   }
   

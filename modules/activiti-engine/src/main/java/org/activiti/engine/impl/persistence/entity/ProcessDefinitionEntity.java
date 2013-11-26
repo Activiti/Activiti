@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
@@ -59,9 +60,12 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
   protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
   protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
+  // TODO: serialisation support?
+  protected transient ActivitiEventSupport eventSupport;
   
   public ProcessDefinitionEntity() {
     super(null);
+    eventSupport = new ActivitiEventSupport();
   }
   
   public ExecutionEntity createProcessInstance(String businessKey, ActivityImpl initial) {
@@ -310,5 +314,9 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void addCandidateStarterGroupIdExpression(Expression groupId) {
     candidateStarterGroupIdExpressions.add(groupId);
+  }
+  
+  public ActivitiEventSupport getEventSupport() {
+	  return eventSupport;
   }
 }

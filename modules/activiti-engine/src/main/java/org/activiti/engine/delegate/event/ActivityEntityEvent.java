@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.delegate.event;
 
-import org.activiti.engine.impl.db.PersistentObject;
 
 /**
  * An {@link ActivitiEvent} related to a single entity.
@@ -24,5 +23,5 @@ public interface ActivityEntityEvent extends ActivitiEvent {
 	/**
 	 * @return the entity that is targeted by this event.
 	 */
-	PersistentObject getEntity();
+	Object getEntity();
 }
