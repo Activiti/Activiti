@@ -15,18 +15,20 @@ package org.activiti.engine.test.api.event;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
-public class TestActivitiEntityEventListener implements ActivitiEventListener {
+/**
+ * Test event listener that only records events related to activities ({@link ActivitiActivityEvent}s).
+ *  
+ * @author Frederik Heremans
+ */
+public class TestActivitiActivityEventListener implements ActivitiEventListener {
 
 	private List<ActivitiEvent> eventsReceived;
-	private Class<?> entityClass;
 	
-	public TestActivitiEntityEventListener(Class<?> entityClass) {
-		this.entityClass = entityClass;
-		
+	public TestActivitiActivityEventListener() {
 		eventsReceived = new ArrayList<ActivitiEvent>();
   }
 	
@@ -40,14 +42,13 @@ public class TestActivitiEntityEventListener implements ActivitiEventListener {
 	
 	@Override
 	public void onEvent(ActivitiEvent event) {
-		if(event instanceof ActivitiEntityEvent && entityClass.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())) {
+		if(event instanceof ActivitiActivityEvent) {
 			eventsReceived.add(event);
 		}
 	}
 
 	@Override
 	public boolean isFailOnException() {
-		return true;
+		return false;
 	}
-
 }

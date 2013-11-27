@@ -14,7 +14,7 @@ package org.activiti.engine.test.api.event;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivityEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Model;
 
@@ -41,7 +41,7 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 			// Check create event
 			assertEquals(1, listener.getEventsReceived().size());
 			assertEquals(ActivitiEventType.ENTITY_CREATED, listener.getEventsReceived().get(0).getType());
-			assertEquals(model.getId(), ((Model) ((ActivityEntityEvent) listener.getEventsReceived().get(0)).getEntity()).getId());
+			assertEquals(model.getId(), ((Model) ((ActivitiEntityEvent) listener.getEventsReceived().get(0)).getEntity()).getId());
 			listener.clearEventsReceived();
 			
 			// Update model
@@ -50,7 +50,7 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 			repositoryService.saveModel(model);
 			assertEquals(1, listener.getEventsReceived().size());
 			assertEquals(ActivitiEventType.ENTITY_UPDATED, listener.getEventsReceived().get(0).getType());
-			assertEquals(model.getId(), ((Model) ((ActivityEntityEvent) listener.getEventsReceived().get(0)).getEntity()).getId());
+			assertEquals(model.getId(), ((Model) ((ActivitiEntityEvent) listener.getEventsReceived().get(0)).getEntity()).getId());
 			listener.clearEventsReceived();
 			
 			// Test additional update-methods (source and extra-source)
@@ -65,7 +65,7 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 			repositoryService.deleteModel(model.getId());
 			assertEquals(1, listener.getEventsReceived().size());
 			assertEquals(ActivitiEventType.ENTITY_DELETED, listener.getEventsReceived().get(0).getType());
-			assertEquals(model.getId(), ((Model) ((ActivityEntityEvent) listener.getEventsReceived().get(0)).getEntity()).getId());
+			assertEquals(model.getId(), ((Model) ((ActivitiEntityEvent) listener.getEventsReceived().get(0)).getEntity()).getId());
 			listener.clearEventsReceived();
 			
 		} finally {

@@ -14,14 +14,21 @@ package org.activiti.engine.delegate.event;
 
 
 /**
- * An {@link ActivitiEvent} related to a single entity.
+ * An {@link ActivitiEvent} related to an activity within an execution;
  * 
  * @author Frederik Heremans
  */
-public interface ActivityEntityEvent extends ActivitiEvent {
+public interface ActivitiSignalEvent extends ActivitiActivityEvent {
+
+	/**
+	 * @return the name of the signal. Returns null, if no specific signal name has been specified
+	 * when signaling.
+	 */
+	public String getSignalName();
 	
 	/**
-	 * @return the entity that is targeted by this event.
+	 * @return the payload that was passed when signaling. Returns null, if no payload was passed.
 	 */
-	Object getEntity();
+	public Object getSignalData();
+
 }

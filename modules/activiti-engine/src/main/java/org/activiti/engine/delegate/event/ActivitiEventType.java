@@ -85,7 +85,12 @@ public enum ActivitiEventType {
 	/**
 	 * The process-engine that dispatched this event has been closed and cannot be used anymore.
 	 */
-	ENGINE_CLOSED;
+	ENGINE_CLOSED,
+	
+	/**
+	 * An activity has received a signal. Dispatched after the activity has responded to the signal.
+	 */
+	ACTIVITY_SIGNALLED;
 	
 	
 	public static final ActivitiEventType[] EMPTY_ARRAY =  new ActivitiEventType[] {};

@@ -12,30 +12,28 @@
  */
 package org.activiti.engine.delegate.event.impl;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 /**
- * Base class for all {@link ActivitiEvent} implementations, related to entities.
+ * Implementation of an {@link ActivitiActivityEvent}.
  * 
  * @author Frederik Heremans
  */
-public class ActivitiEntityEventImpl extends ActivitiEventImpl implements ActivitiEntityEvent {
+public class ActivitiActivityEventImpl extends ActivitiEventImpl implements ActivitiActivityEvent {
 
-	protected Object entity;
+	protected String activityId;
 	
-	public ActivitiEntityEventImpl(Object entity, ActivitiEventType type) {
-		super(type);
-		if(entity == null) {
-			throw new ActivitiIllegalArgumentException("Entity cannot be null.");
-		}
-	  this.entity = entity;
+	public ActivitiActivityEventImpl(ActivitiEventType type) {
+	  super(type);
+  }
+
+	@Override
+  public String getActivityId() {
+		return activityId;
   }
 	
-	@Override
-	public Object getEntity() {
-		return entity;
-	}
+	public void setActivityId(String activityId) {
+	  this.activityId = activityId;
+  }
 }

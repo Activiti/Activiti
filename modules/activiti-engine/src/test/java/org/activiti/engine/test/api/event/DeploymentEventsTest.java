@@ -14,7 +14,7 @@ package org.activiti.engine.test.api.event;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivityEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 
@@ -41,9 +41,9 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 			
 			// Check create-event
 			assertEquals(1, listener.getEventsReceived().size());
-			assertTrue(listener.getEventsReceived().get(0) instanceof ActivityEntityEvent);
+			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 			
-			ActivityEntityEvent event = (ActivityEntityEvent) listener.getEventsReceived().get(0);
+			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 			assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
 			listener.clearEventsReceived();
@@ -51,9 +51,9 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 			// Check update event when category is updated
 			repositoryService.setDeploymentCategory(deployment.getId(), "test");
 			assertEquals(1, listener.getEventsReceived().size());
-			assertTrue(listener.getEventsReceived().get(0) instanceof ActivityEntityEvent);
+			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 			
-			event = (ActivityEntityEvent) listener.getEventsReceived().get(0);
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
 			assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
 			assertEquals("test", ((Deployment) event.getEntity()).getCategory());
@@ -62,9 +62,9 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 		  // Check delete event when category is updated
 			repositoryService.deleteDeployment(deployment.getId(), true);
 			assertEquals(1, listener.getEventsReceived().size());
-			assertTrue(listener.getEventsReceived().get(0) instanceof ActivityEntityEvent);
+			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 			
-			event = (ActivityEntityEvent) listener.getEventsReceived().get(0);
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
 			assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
 			listener.clearEventsReceived();

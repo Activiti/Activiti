@@ -16,7 +16,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
-import org.activiti.engine.delegate.event.ActivityEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 /**
  * Base class for all {@link ActivitiEvent} implementations, represents an exception occured, related 
@@ -24,7 +24,7 @@ import org.activiti.engine.delegate.event.ActivityEntityEvent;
  * 
  * @author Frederik Heremans
  */
-public class ActivitiEntityExceptionEventImpl extends ActivitiEventImpl implements ActivityEntityEvent, ActivitiExceptionEvent {
+public class ActivitiEntityExceptionEventImpl extends ActivitiEventImpl implements ActivitiEntityEvent, ActivitiExceptionEvent {
 
 	protected Object entity;
 	protected Throwable cause;

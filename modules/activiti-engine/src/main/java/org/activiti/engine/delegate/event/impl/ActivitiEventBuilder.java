@@ -12,10 +12,12 @@
  */
 package org.activiti.engine.delegate.event.impl;
 
+import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
-import org.activiti.engine.delegate.event.ActivityEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -41,10 +43,10 @@ public class ActivitiEventBuilder {
 	/**
 	 * @param type type of event
 	 * @param entity the entity this event targets
-	 * @return an {@link ActivityEntityEvent}. In case an {@link ExecutionContext} is active, the execution related
+	 * @return an {@link ActivitiEntityEvent}. In case an {@link ExecutionContext} is active, the execution related
 	 * event fields will be populated. If not, execution details will be reteived from the {@link Object} if possible.
 	 */
-	public static ActivityEntityEvent createEntityEvent(ActivitiEventType type, Object entity) {
+	public static ActivitiEntityEvent createEntityEvent(ActivitiEventType type, Object entity) {
 		ActivitiEntityEventImpl newEvent = new ActivitiEntityEventImpl(entity, type);
 
 		// In case an execution-context is active, populate the event fields related to the execution
@@ -55,9 +57,9 @@ public class ActivitiEventBuilder {
 	/**
 	 * @param type type of event
 	 * @param entity the entity this event targets
-	 * @return an {@link ActivityEntityEvent}
+	 * @return an {@link ActivitiEntityEvent}
 	 */
-	public static ActivityEntityEvent createEntityEvent(ActivitiEventType type, Object entity, String executionId,
+	public static ActivitiEntityEvent createEntityEvent(ActivitiEventType type, Object entity, String executionId,
 			String processInstanceId, String processDefinitionId) {
 		ActivitiEntityEventImpl newEvent = new ActivitiEntityEventImpl(entity, type);
 
@@ -71,10 +73,10 @@ public class ActivitiEventBuilder {
 	 * @param type type of event
 	 * @param entity the entity this event targets
 	 * @param cause the cause of the event
-	 * @return an {@link ActivityEntityEvent} that is also instance of {@link ActivitiExceptionEvent}. 
+	 * @return an {@link ActivitiEntityEvent} that is also instance of {@link ActivitiExceptionEvent}. 
 	 * In case an {@link ExecutionContext} is active, the execution related event fields will be populated.
 	 */
-	public static ActivityEntityEvent createEntityExceptionEvent(ActivitiEventType type, Object entity, Throwable cause) {
+	public static ActivitiEntityEvent createEntityExceptionEvent(ActivitiEventType type, Object entity, Throwable cause) {
 		ActivitiEntityExceptionEventImpl newEvent = new ActivitiEntityExceptionEventImpl(entity, type, cause);
 
 		// In case an execution-context is active, populate the event fields related to the execution
@@ -86,15 +88,36 @@ public class ActivitiEventBuilder {
 	 * @param type type of event
 	 * @param entity the entity this event targets
 	 * @param cause the cause of the event
-	 * @return an {@link ActivityEntityEvent} that is also instance of {@link ActivitiExceptionEvent}. 
+	 * @return an {@link ActivitiEntityEvent} that is also instance of {@link ActivitiExceptionEvent}. 
 	 */
-	public static ActivityEntityEvent createEntityExceptionEvent(ActivitiEventType type, Object entity, Throwable cause, String executionId,
+	public static ActivitiEntityEvent createEntityExceptionEvent(ActivitiEventType type, Object entity, Throwable cause, String executionId,
 			String processInstanceId, String processDefinitionId) {
 		ActivitiEntityExceptionEventImpl newEvent = new ActivitiEntityExceptionEventImpl(entity, type, cause);
 
 		newEvent.setExecutionId(executionId);
 		newEvent.setProcessInstanceId(processInstanceId);
 		newEvent.setProcessDefinitionId(processDefinitionId);
+		return newEvent;
+	}
+	
+	public static ActivitiActivityEvent createActivityEvent(ActivitiEventType type, String activityId, String executionId, String processInstanceId, String processDefinitionId) {
+		ActivitiActivityEventImpl newEvent = new ActivitiActivityEventImpl(type);
+		newEvent.setActivityId(activityId);
+		newEvent.setExecutionId(executionId);
+		newEvent.setProcessDefinitionId(processDefinitionId);
+		newEvent.setProcessInstanceId(processInstanceId);
+		return newEvent;
+	}
+	
+	public static ActivitiSignalEvent createSignalEvent(ActivitiEventType type, String activityId, String signalName, Object signalData, 
+			String executionId, String processInstanceId, String processDefinitionId) {
+		ActivitiSignalEventImpl newEvent = new ActivitiSignalEventImpl(type);
+		newEvent.setActivityId(activityId);
+		newEvent.setExecutionId(executionId);
+		newEvent.setProcessDefinitionId(processDefinitionId);
+		newEvent.setProcessInstanceId(processInstanceId);
+		newEvent.setSignalName(signalName);
+		newEvent.setSignalData(signalData);
 		return newEvent;
 	}
 	
@@ -108,8 +131,8 @@ public class ActivitiEventBuilder {
 			}
 		} else {
 			// Fallback to fetching context from the object itself
-			if(event instanceof ActivityEntityEvent) {
-				Object persistendObject = ((ActivityEntityEvent) event).getEntity();
+			if(event instanceof ActivitiEntityEvent) {
+				Object persistendObject = ((ActivitiEntityEvent) event).getEntity();
 				if(persistendObject instanceof Job) {
 					event.setExecutionId(((Job) persistendObject).getExecutionId());
 					event.setProcessInstanceId(((Job) persistendObject).getProcessInstanceId());

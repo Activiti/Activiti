@@ -14,7 +14,7 @@ package org.activiti.engine.test.api.event;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivityEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
@@ -31,7 +31,7 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 	private TestActivitiEntityEventListener identityLinkListener;
 	
 	/**
-	 * Test create, update and delete events of deployment entities.
+	 * Test create, update and delete events of process definitions.
 	 */
 	@Deployment(resources= {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
 	public void testProcessDefinitionEvents() throws Exception {
@@ -43,9 +43,9 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 			
 			// Check create-event
 			assertEquals(1, listener.getEventsReceived().size());
-			assertTrue(listener.getEventsReceived().get(0) instanceof ActivityEntityEvent);
+			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 			
-			ActivityEntityEvent event = (ActivityEntityEvent) listener.getEventsReceived().get(0);
+			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
 			listener.clearEventsReceived();
@@ -53,9 +53,9 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 			// Check update event when category is updated
 			repositoryService.setProcessDefinitionCategory(processDefinition.getId(), "test");
 			assertEquals(1, listener.getEventsReceived().size());
-			assertTrue(listener.getEventsReceived().get(0) instanceof ActivityEntityEvent);
+			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 			
-			event = (ActivityEntityEvent) listener.getEventsReceived().get(0);
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
 			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
 			assertEquals("test", ((ProcessDefinition) event.getEntity()).getCategory());
@@ -66,10 +66,10 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 			repositoryService.activateProcessDefinitionById(processDefinition.getId());
 			
 			assertEquals(2, listener.getEventsReceived().size());
-			event = (ActivityEntityEvent) listener.getEventsReceived().get(0);
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
 			assertEquals(ActivitiEventType.ENTITY_SUSPENDED, event.getType());
-			event = (ActivityEntityEvent) listener.getEventsReceived().get(1);
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
 			assertEquals(ActivitiEventType.ENTITY_ACTIVATED, event.getType());
 			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
 			listener.clearEventsReceived();
@@ -79,9 +79,9 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 			deploymentId = null;
 			
 			assertEquals(1, listener.getEventsReceived().size());
-			assertTrue(listener.getEventsReceived().get(0) instanceof ActivityEntityEvent);
+			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 			
-			event = (ActivityEntityEvent) listener.getEventsReceived().get(0);
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
 			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
 			listener.clearEventsReceived();
@@ -100,10 +100,10 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 			repositoryService.addCandidateStarterGroup(processDefinition.getId(), "sales");
 			assertEquals(2, identityLinkListener.getEventsReceived().size());
 			
-			ActivityEntityEvent event = (ActivityEntityEvent) identityLinkListener.getEventsReceived().get(0);
+			ActivitiEntityEvent event = (ActivitiEntityEvent) identityLinkListener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 			assertTrue(event.getEntity() instanceof IdentityLink);
-			event = (ActivityEntityEvent) identityLinkListener.getEventsReceived().get(1);
+			event = (ActivitiEntityEvent) identityLinkListener.getEventsReceived().get(1);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 			assertTrue(event.getEntity() instanceof IdentityLink);
 			identityLinkListener.clearEventsReceived();
@@ -112,10 +112,10 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 			repositoryService.deleteCandidateStarterUser(processDefinition.getId(), "kermit");
 			repositoryService.deleteCandidateStarterGroup(processDefinition.getId(), "sales");
 			assertEquals(2, identityLinkListener.getEventsReceived().size());
-			event = (ActivityEntityEvent) identityLinkListener.getEventsReceived().get(0);
+			event = (ActivitiEntityEvent) identityLinkListener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
 			assertTrue(event.getEntity() instanceof IdentityLink);
-			event = (ActivityEntityEvent) identityLinkListener.getEventsReceived().get(1);
+			event = (ActivitiEntityEvent) identityLinkListener.getEventsReceived().get(1);
 			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
 			assertTrue(event.getEntity() instanceof IdentityLink);
 	}
