@@ -161,13 +161,10 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
 		event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 		assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-		assertTrue(event.getEntity() instanceof IdentityLink);
-		link = (IdentityLink) event.getEntity();
-		assertEquals("kermit", link.getUserId());
-		assertEquals("candidate", link.getType());
-		assertEquals(task.getExecutionId(), event.getExecutionId());
-		assertEquals(task.getProcessDefinitionId(), event.getProcessDefinitionId());
-		assertEquals(task.getProcessInstanceId(), event.getProcessInstanceId());
+		event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+		assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
+		event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
+		assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
 	}
 	
 
