@@ -87,10 +87,25 @@ public enum ActivitiEventType {
 	 */
 	ENGINE_CLOSED,
 	
+	ACTIVITY_COMPLETE,
+	
 	/**
 	 * An activity has received a signal. Dispatched after the activity has responded to the signal.
 	 */
-	ACTIVITY_SIGNALLED;
+	ACTIVITY_SIGNALLED,
+	
+	/**
+	 * An activity is about to be executed as a compensation for another activity. The event targets the
+	 * activity that is about to be executed for compensation.
+	 */
+	ACTIVITY_COMPENSATE,
+	
+	/**
+	 * An activity has received a message event. Dispatched before the actual message has been received by
+	 * the activity. This event will be either followed by a {@link #ACTIVITY_SIGNALLED} event or {@link #ACTIVITY_COMPLETE}
+	 * for the involved activity, if the message was delivered successfully.
+	 */
+	ACTIVITY_MESSAGE_RECEIVED;
 	
 	
 	public static final ActivitiEventType[] EMPTY_ARRAY =  new ActivitiEventType[] {};

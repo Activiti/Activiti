@@ -12,12 +12,11 @@
  */
 package org.activiti.engine.test.api.event;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -28,7 +27,6 @@ import org.activiti.engine.test.Deployment;
 public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 
 	private TestActivitiEntityEventListener listener;
-	private TestActivitiEntityEventListener identityLinkListener;
 	
 	/**
 	 * Test create, update and delete events of process definitions.
@@ -87,47 +85,12 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 			listener.clearEventsReceived();
 	}
 	
-	@Deployment(resources= {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
-	public void testProcessDefinitionIdentityLinkEvents() throws Exception {
-			ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-					.processDefinitionKey("oneTaskProcess")
-					.singleResult();
-			
-			assertNotNull(processDefinition);
-			
-			// Add candidate user and group
-			repositoryService.addCandidateStarterUser(processDefinition.getId(), "kermit");
-			repositoryService.addCandidateStarterGroup(processDefinition.getId(), "sales");
-			assertEquals(2, identityLinkListener.getEventsReceived().size());
-			
-			ActivitiEntityEvent event = (ActivitiEntityEvent) identityLinkListener.getEventsReceived().get(0);
-			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-			assertTrue(event.getEntity() instanceof IdentityLink);
-			event = (ActivitiEntityEvent) identityLinkListener.getEventsReceived().get(1);
-			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-			assertTrue(event.getEntity() instanceof IdentityLink);
-			identityLinkListener.clearEventsReceived();
-			
-			// Delete identity links
-			repositoryService.deleteCandidateStarterUser(processDefinition.getId(), "kermit");
-			repositoryService.deleteCandidateStarterGroup(processDefinition.getId(), "sales");
-			assertEquals(2, identityLinkListener.getEventsReceived().size());
-			event = (ActivitiEntityEvent) identityLinkListener.getEventsReceived().get(0);
-			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-			assertTrue(event.getEntity() instanceof IdentityLink);
-			event = (ActivitiEntityEvent) identityLinkListener.getEventsReceived().get(1);
-			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-			assertTrue(event.getEntity() instanceof IdentityLink);
-	}
-	
 	@Override
 	protected void initializeServices() {
 	  super.initializeServices();
 	  
 	  listener = new TestActivitiEntityEventListener(ProcessDefinition.class);
-	  identityLinkListener = new TestActivitiEntityEventListener(IdentityLink.class);
 	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
-	  processEngineConfiguration.getEventDispatcher().addEventListener(identityLinkListener);
 	}
 	
 	@Override
@@ -135,10 +98,8 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 	  super.tearDown();
 	  
 	  if(listener != null) {
-	  	identityLinkListener.clearEventsReceived();
 	  	listener.clearEventsReceived();
 	  	processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
-	  	processEngineConfiguration.getEventDispatcher().removeEventListener(identityLinkListener);
 	  }
 	}
 }

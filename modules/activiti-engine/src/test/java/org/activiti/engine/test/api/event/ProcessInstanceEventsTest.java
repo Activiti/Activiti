@@ -44,6 +44,9 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 			assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), event.getProcessInstanceId());
+			assertEquals(processInstance.getId(), event.getExecutionId());
+			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			listener.clearEventsReceived();
 			
 			// Check update event when suspended/activated
@@ -54,9 +57,15 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
 			assertEquals(ActivitiEventType.ENTITY_SUSPENDED, event.getType());
+			assertEquals(processInstance.getId(), event.getProcessInstanceId());
+			assertEquals(processInstance.getId(), event.getExecutionId());
+			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
 			assertEquals(ActivitiEventType.ENTITY_ACTIVATED, event.getType());
 			assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), event.getProcessInstanceId());
+			assertEquals(processInstance.getId(), event.getExecutionId());
+			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			listener.clearEventsReceived();
 			
 			// Check update event when process-definition is supended (should cascade suspend/activate all process instances)
@@ -67,9 +76,15 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
 			assertEquals(ActivitiEventType.ENTITY_SUSPENDED, event.getType());
+			assertEquals(processInstance.getId(), event.getProcessInstanceId());
+			assertEquals(processInstance.getId(), event.getExecutionId());
+			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
 			assertEquals(ActivitiEventType.ENTITY_ACTIVATED, event.getType());
 			assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), event.getProcessInstanceId());
+			assertEquals(processInstance.getId(), event.getExecutionId());
+			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			listener.clearEventsReceived();
 			
 			// Check update-event when business-key is updated
@@ -78,6 +93,9 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
 			assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
+			assertEquals(processInstance.getId(), event.getProcessInstanceId());
+			assertEquals(processInstance.getId(), event.getExecutionId());
+			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			listener.clearEventsReceived();
 			
 			runtimeService.deleteProcessInstance(processInstance.getId(), "Testing events");
@@ -85,6 +103,9 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
 			assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), event.getProcessInstanceId());
+			assertEquals(processInstance.getId(), event.getExecutionId());
+			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			listener.clearEventsReceived();
 	}
 	

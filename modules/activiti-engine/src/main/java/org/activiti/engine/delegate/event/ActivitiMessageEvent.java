@@ -14,21 +14,20 @@ package org.activiti.engine.delegate.event;
 
 
 /**
- * An {@link ActivitiEvent} related to a signal being sent to an activity.
+ * An {@link ActivitiEvent} related to an message being sent to an activity.
  * 
  * @author Frederik Heremans
  */
-public interface ActivitiSignalEvent extends ActivitiActivityEvent {
+public interface ActivitiMessageEvent extends ActivitiActivityEvent {
 
 	/**
-	 * @return the name of the signal. Returns null, if no specific signal name has been specified
-	 * when signaling.
+	 * @return the name of the message.
 	 */
-	public String getSignalName();
+	public String getMessageName();
 	
 	/**
-	 * @return the payload that was passed when signaling. Returns null, if no payload was passed.
+	 * @return the payload that was passed when sending the message. Returns null, if no payload was passed.
 	 */
-	public Object getSignalData();
+	public Object getMessageData();
 
 }

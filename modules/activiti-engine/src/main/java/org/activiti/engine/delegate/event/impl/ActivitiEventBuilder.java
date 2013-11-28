@@ -12,15 +12,17 @@
  */
 package org.activiti.engine.delegate.event.impl;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -121,26 +123,55 @@ public class ActivitiEventBuilder {
 		return newEvent;
 	}
 	
+	public static ActivitiMessageEvent createMessageEvent(ActivitiEventType type, String activityId, String messageName, Object payload, 
+			String executionId, String processInstanceId, String processDefinitionId) {
+		ActivitiMessageEventImpl newEvent = new ActivitiMessageEventImpl(type);
+		newEvent.setActivityId(activityId);
+		newEvent.setExecutionId(executionId);
+		newEvent.setProcessDefinitionId(processDefinitionId);
+		newEvent.setProcessInstanceId(processInstanceId);
+		newEvent.setMessageName(messageName);
+		newEvent.setMessageData(payload);
+		return newEvent;
+	}
+	
 	protected static void populateEventWithCurrentContext(ActivitiEventImpl event) {
+		boolean extractedFromContext = false;
 		if(Context.isExecutionContextActive()) {
 			ExecutionContext executionContext = Context.getExecutionContext();
 			if(executionContext != null) {
+				extractedFromContext = true;
 				event.setExecutionId(executionContext.getExecution().getId());
 				event.setProcessInstanceId(executionContext.getExecution().getProcessInstanceId());
 				event.setProcessDefinitionId(executionContext.getExecution().getProcessDefinitionId());
 			}
-		} else {
-			// Fallback to fetching context from the object itself
+		} 
+		
+		// Fallback to fetching context from the object itself
+		if(!extractedFromContext){
 			if(event instanceof ActivitiEntityEvent) {
 				Object persistendObject = ((ActivitiEntityEvent) event).getEntity();
 				if(persistendObject instanceof Job) {
 					event.setExecutionId(((Job) persistendObject).getExecutionId());
 					event.setProcessInstanceId(((Job) persistendObject).getProcessInstanceId());
 					event.setProcessDefinitionId(((Job) persistendObject).getProcessDefinitionId());
-				} else if(persistendObject instanceof ExecutionEntity) {
-					event.setExecutionId(((ExecutionEntity) persistendObject).getId());
-					event.setProcessInstanceId(((ExecutionEntity) persistendObject).getProcessInstanceId());
-					event.setProcessDefinitionId(((ExecutionEntity) persistendObject).getProcessDefinitionId());
+				} else if(persistendObject instanceof DelegateExecution) {
+					event.setExecutionId(((DelegateExecution) persistendObject).getId());
+					event.setProcessInstanceId(((DelegateExecution) persistendObject).getProcessInstanceId());
+					event.setProcessDefinitionId(((DelegateExecution) persistendObject).getProcessDefinitionId());
+				} else if(persistendObject instanceof IdentityLinkEntity) {
+					IdentityLinkEntity idLink = (IdentityLinkEntity) persistendObject;
+					if(idLink.getProcessDefinitionId() != null) {
+						event.setProcessDefinitionId(idLink.getProcessDefId());
+					} else if(idLink.getProcessInstance() != null) {
+						event.setProcessDefinitionId(idLink.getProcessInstance().getProcessDefinitionId());
+						event.setProcessInstanceId(idLink.getProcessInstanceId());
+						event.setExecutionId(idLink.getProcessInstanceId());
+					} else if(idLink.getTask() != null) {
+						event.setProcessDefinitionId(idLink.getTask().getProcessDefinitionId());
+						event.setProcessInstanceId(idLink.getTask().getProcessInstanceId());
+						event.setExecutionId(idLink.getTask().getExecutionId());
+					}
 				}
 			}
 		}
