@@ -125,6 +125,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     setName(this.getName());
     setDescription(this.getDescription());
     setPriority(this.getPriority());
+    setCategory(this.getCategory());
     setCreateTime(this.getCreateTime());
     setDueDate(this.getDueDate());
     setParentTaskId(this.getParentTaskId());
@@ -513,9 +514,12 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     }
   }
   
+  public void setCategoryWithoutCascade(String category) {
+	  this.category = category;
+  }
+  
   public void setCategory(String category) {
   	this.category = category;
-  	
   	 
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext!=null) {
@@ -524,7 +528,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         .recordTaskCategoryChange(id, category);
     }
   }
-
+  
   public void setPriorityWithoutCascade(int priority) {
     this.priority = priority;
   }

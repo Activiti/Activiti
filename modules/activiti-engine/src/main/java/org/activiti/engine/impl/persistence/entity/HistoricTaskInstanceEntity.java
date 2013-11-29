@@ -81,6 +81,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     persistentState.put("taskDefinitionKey", taskDefinitionKey);
     persistentState.put("formKey", formKey);
     persistentState.put("priority", priority);
+    persistentState.put("category", category);
     if(parentTaskId != null) {
       persistentState.put("parentTaskId", parentTaskId);
     }
