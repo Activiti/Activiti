@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivityEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -61,8 +61,8 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 		}
 		
 		// First event received should be creation of Process-instance
-		assertTrue(testListenerBean.getEventsReceived().get(0) instanceof ActivityEntityEvent);
-		ActivityEntityEvent event = (ActivityEntityEvent) testListenerBean.getEventsReceived().get(0);
+		assertTrue(testListenerBean.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+		ActivitiEntityEvent event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(0);
 		assertTrue(event.getEntity() instanceof ProcessInstance);
 		assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
 		

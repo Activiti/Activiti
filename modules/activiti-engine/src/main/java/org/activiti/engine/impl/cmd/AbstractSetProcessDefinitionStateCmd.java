@@ -20,8 +20,6 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
@@ -159,17 +157,6 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
           currentStartIndex += processInstances.size();
           processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
         }
-      }
-      
-      if(Context.getCommandContext().getEventDispatcher().isEnabled()) {
-      	ActivitiEventType eventType = null;
-      	if(getProcessDefinitionSuspensionState() == SuspensionState.ACTIVE) {
-      		eventType = ActivitiEventType.ENTITY_ACTIVATED;
-      	} else {
-      		eventType = ActivitiEventType.ENTITY_SUSPENDED;
-      	}
-      	Context.getCommandContext().getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createEntityEvent(eventType, processDefinition));
       }
     }
   }

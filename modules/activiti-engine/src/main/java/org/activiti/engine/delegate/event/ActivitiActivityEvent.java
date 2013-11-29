@@ -14,14 +14,16 @@ package org.activiti.engine.delegate.event;
 
 
 /**
- * An {@link ActivitiEvent} related to a single entity.
+ * An {@link ActivitiEvent} related to an activity within an execution;
  * 
  * @author Frederik Heremans
  */
-public interface ActivityEntityEvent extends ActivitiEvent {
-	
+public interface ActivitiActivityEvent extends ActivitiEvent {
+
 	/**
-	 * @return the entity that is targeted by this event.
+	 * @return the id of the activity this event is related to. This corresponds to an 
+	 * id defined in the process definition.
 	 */
-	Object getEntity();
+	public String getActivityId();
+
 }

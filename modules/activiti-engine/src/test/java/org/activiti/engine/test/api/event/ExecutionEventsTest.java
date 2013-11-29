@@ -12,32 +12,31 @@
  */
 package org.activiti.engine.test.api.event;
 
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
- * Test case for all {@link ActivitiEvent}s related to process definitions.
+ * Test case for all {@link ActivitiEvent}s related to executions.
  * 
  * @author Frederik Heremans
  */
-public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
+public class ExecutionEventsTest extends PluggableActivitiTestCase {
 
 	private TestActivitiEntityEventListener listener;
 	
 	/**
-	 * Test create, update and delete events of process definitions.
+	 * Test create, update and delete events of process instances.
 	 */
 	@Deployment(resources= {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
-	public void testProcessDefinitionEvents() throws Exception {
-			ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-					.processDefinitionKey("oneTaskProcess")
-					.singleResult();
+	public void testExecutionEvents() throws Exception {
+			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 			
-			assertNotNull(processDefinition);
+			assertNotNull(processInstance);
 			
 			// Check create-event
 			assertEquals(1, listener.getEventsReceived().size());
@@ -45,51 +44,57 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 			
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
-			listener.clearEventsReceived();
-			
-			// Check update event when category is updated
-			repositoryService.setProcessDefinitionCategory(processDefinition.getId(), "test");
-			assertEquals(1, listener.getEventsReceived().size());
-			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
-			
-			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-			assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
-			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
-			assertEquals("test", ((ProcessDefinition) event.getEntity()).getCategory());
+			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
 			listener.clearEventsReceived();
 			
 			// Check update event when suspended/activated
-			repositoryService.suspendProcessDefinitionById(processDefinition.getId());
-			repositoryService.activateProcessDefinitionById(processDefinition.getId());
+			runtimeService.suspendProcessInstanceById(processInstance.getId());
+			runtimeService.activateProcessInstanceById(processInstance.getId());
 			
 			assertEquals(2, listener.getEventsReceived().size());
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
 			assertEquals(ActivitiEventType.ENTITY_SUSPENDED, event.getType());
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
 			assertEquals(ActivitiEventType.ENTITY_ACTIVATED, event.getType());
-			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
 			listener.clearEventsReceived();
 			
-		  // Check delete event when category is updated
-			repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
-			deploymentId = null;
+			// Check update event when process-definition is supended (should cascade suspend/activate all process instances)
+			repositoryService.suspendProcessDefinitionById(processInstance.getProcessDefinitionId(), true, null);
+			repositoryService.activateProcessDefinitionById(processInstance.getProcessDefinitionId(), true, null);
 			
+			assertEquals(2, listener.getEventsReceived().size());
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+			assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+			assertEquals(ActivitiEventType.ENTITY_SUSPENDED, event.getType());
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+			assertEquals(ActivitiEventType.ENTITY_ACTIVATED, event.getType());
+			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
+			listener.clearEventsReceived();
+			
+			// Check update-event when business-key is updated
+			runtimeService.updateBusinessKey(processInstance.getId(), "thekey");
 			assertEquals(1, listener.getEventsReceived().size());
-			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
+			assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
+			listener.clearEventsReceived();
+			
+			runtimeService.deleteProcessInstance(processInstance.getId(), "Testing events");
 			
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+			assertEquals(processInstance.getId(), ((Execution) event.getEntity()).getId());
 			listener.clearEventsReceived();
 	}
+	
 	
 	@Override
 	protected void initializeServices() {
 	  super.initializeServices();
 	  
-	  listener = new TestActivitiEntityEventListener(ProcessDefinition.class);
+	  listener = new TestActivitiEntityEventListener(Execution.class);
 	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
 	}
 	

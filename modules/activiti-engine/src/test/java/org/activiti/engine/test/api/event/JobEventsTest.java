@@ -16,7 +16,7 @@ import java.util.Calendar;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivityEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
@@ -54,7 +54,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertEquals(1, listener.getEventsReceived().size());
 		event = listener.getEventsReceived().get(0);
 		assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
-		Job updatedJob = (Job) ((ActivityEntityEvent) event).getEntity();
+		Job updatedJob = (Job) ((ActivitiEntityEvent) event).getEntity();
 		assertEquals(5, updatedJob.getRetries());
 		checkEventContext(event, theJob, true);
 		
@@ -125,7 +125,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		
 		event = listener.getEventsReceived().get(3);
 		assertEquals(ActivitiEventType.JOB_RETRIES_DECREMENTED, event.getType());
-		assertEquals(0, ((Job) ((ActivityEntityEvent) event).getEntity()).getRetries());
+		assertEquals(0, ((Job) ((ActivitiEntityEvent) event).getEntity()).getRetries());
 		checkEventContext(event, theJob, true);
 	}
 	
@@ -138,8 +138,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 			assertEquals(entity.getProcessInstanceId(), event.getExecutionId());
 		}
 		
-		assertTrue(event instanceof ActivityEntityEvent);
-		ActivityEntityEvent entityEvent = (ActivityEntityEvent) event;
+		assertTrue(event instanceof ActivitiEntityEvent);
+		ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
 		assertTrue(entityEvent.getEntity() instanceof Job);
 		assertEquals(entity.getId(), ((Job) entityEvent.getEntity()).getId());
 	}

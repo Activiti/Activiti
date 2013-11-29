@@ -75,16 +75,16 @@ public class BaseEntityEventListener implements ActivitiEventListener {
 	}
 
 	/**
-	 * @return true, if the event is an {@link ActivityEntityEvent} and (if needed) the entityClass
+	 * @return true, if the event is an {@link ActivitiEntityEvent} and (if needed) the entityClass
 	 * set in this instance, is assignable from the entity class in the event. 
 	 */
 	protected boolean isValidEvent(ActivitiEvent event) {
 		boolean valid = false;
-		if(event instanceof ActivityEntityEvent) {
+		if(event instanceof ActivitiEntityEvent) {
 			if(entityClass == null) {
 				valid = true;
 			} else {
-				valid = entityClass.isAssignableFrom(((ActivityEntityEvent) event).getEntity().getClass());
+				valid = entityClass.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass());
 			}
 		}
 		return valid;

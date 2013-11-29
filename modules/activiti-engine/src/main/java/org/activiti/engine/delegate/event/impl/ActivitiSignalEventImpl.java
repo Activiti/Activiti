@@ -12,30 +12,38 @@
  */
 package org.activiti.engine.delegate.event.impl;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 
 /**
- * Base class for all {@link ActivitiEvent} implementations, related to entities.
+ * An {@link ActivitiSignalEvent} implementation.
  * 
  * @author Frederik Heremans
  */
-public class ActivitiEntityEventImpl extends ActivitiEventImpl implements ActivitiEntityEvent {
+public class ActivitiSignalEventImpl extends ActivitiActivityEventImpl implements ActivitiSignalEvent {
 
-	protected Object entity;
+	protected String signalName;
+	protected Object signalData;
 	
-	public ActivitiEntityEventImpl(Object entity, ActivitiEventType type) {
-		super(type);
-		if(entity == null) {
-			throw new ActivitiIllegalArgumentException("Entity cannot be null.");
-		}
-	  this.entity = entity;
+	public ActivitiSignalEventImpl(ActivitiEventType type) {
+	  super(type);
+  }
+
+	@Override
+  public String getSignalName() {
+		return signalName;
   }
 	
+	public void setSignalName(String signalName) {
+	  this.signalName = signalName;
+  }
+
 	@Override
-	public Object getEntity() {
-		return entity;
-	}
+  public Object getSignalData() {
+		return signalData;
+  }
+	
+	public void setSignalData(Object signalData) {
+	  this.signalData = signalData;
+  }
 }

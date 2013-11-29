@@ -96,11 +96,22 @@ public class IdentityLinkEntityManager extends AbstractManager {
       deleteIdentityLink(identityLink, false);
     }
     
-    // Identity links from cache
+    // Identity links from cache, if not already deleted
     List<IdentityLinkEntity> identityLinksFromCache = Context.getCommandContext().getDbSqlSession().findInCache(IdentityLinkEntity.class);
+    boolean alreadyDeleted = false;
     for (IdentityLinkEntity identityLinkEntity : identityLinksFromCache) {
       if (processInstanceId.equals(identityLinkEntity.getProcessInstanceId())) {
-        deleteIdentityLink(identityLinkEntity, false);
+      	alreadyDeleted = false;
+      	for(IdentityLinkEntity deleted : identityLinks) {
+      		if(deleted.getId() != null && deleted.getId().equals(identityLinkEntity.getId())) {
+      			alreadyDeleted = true;
+      			break;
+      		}
+      	}
+      	
+      	if(!alreadyDeleted) {
+      		deleteIdentityLink(identityLinkEntity, false);
+      	}
       }
     }
   }
