@@ -20,6 +20,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -132,6 +133,18 @@ public class ActivitiEventBuilder {
 		newEvent.setProcessInstanceId(processInstanceId);
 		newEvent.setMessageName(messageName);
 		newEvent.setMessageData(payload);
+		return newEvent;
+	}
+	
+	public static ActivitiVariableEvent createVariableEvent(ActivitiEventType type, String variableName, Object variableValue, String taskId, 
+			String executionId, String processInstanceId, String processDefinitionId) {
+		ActivitiVariableEventImpl newEvent = new ActivitiVariableEventImpl(type);
+		newEvent.setVariableName(variableName);
+		newEvent.setVariableValue(variableValue);
+		newEvent.setTaskId(taskId);
+		newEvent.setExecutionId(executionId);
+		newEvent.setProcessDefinitionId(processDefinitionId);
+		newEvent.setProcessInstanceId(processInstanceId);
 		return newEvent;
 	}
 	

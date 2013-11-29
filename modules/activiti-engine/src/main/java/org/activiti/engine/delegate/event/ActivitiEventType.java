@@ -92,7 +92,7 @@ public enum ActivitiEventType {
 	/**
 	 * An activity has received a signal. Dispatched after the activity has responded to the signal.
 	 */
-	ACTIVITY_SIGNALLED,
+	ACTIVITY_SIGNALED,
 	
 	/**
 	 * An activity is about to be executed as a compensation for another activity. The event targets the
@@ -105,7 +105,22 @@ public enum ActivitiEventType {
 	 * the activity. This event will be either followed by a {@link #ACTIVITY_SIGNALLED} event or {@link #ACTIVITY_COMPLETE}
 	 * for the involved activity, if the message was delivered successfully.
 	 */
-	ACTIVITY_MESSAGE_RECEIVED;
+	ACTIVITY_MESSAGE_RECEIVED,
+	
+	/**
+	 * A new variable has been created.
+	 */
+	VARIABLE_CREATED,
+	
+	/**
+	 * An existing variable has been updated.
+	 */
+	VARIABLE_UPDATED,
+	
+	/**
+	 * An existing variable has been deleted.
+	 */
+	VARIABLE_DELETED;
 	
 	
 	public static final ActivitiEventType[] EMPTY_ARRAY =  new ActivitiEventType[] {};
