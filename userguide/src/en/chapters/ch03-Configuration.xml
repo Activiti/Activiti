@@ -864,6 +864,11 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
                 <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
               </row>
               <row>
+                <entry>ACTIVITY_COMPLETED</entry>
+                <entry>An activity is completed successfully</entry>
+                <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
+              </row>
+              <row>
                 <entry>ACTIVITY_SIGNALED</entry>
                 <entry>An activity received a signal</entry>
                 <entry><literal>org.activiti...ActivitiSignalEvent</literal></entry>

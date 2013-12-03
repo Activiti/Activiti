@@ -12,6 +12,9 @@
  */
 package org.activiti.engine.impl.pvm.runtime;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -42,6 +45,12 @@ public class AtomicOperationActivityExecute implements AtomicOperation {
     log.debug("{} executes {}: {}", execution, activity, activityBehavior.getClass().getName());
     
     try {
+    	if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+      			ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution.getActivity().getId(), execution.getId(), 
+      					execution.getProcessInstanceId(), execution.getProcessDefinitionId()));
+      }
+    	
       activityBehavior.execute(execution);
     } catch (RuntimeException e) {
       throw e;
