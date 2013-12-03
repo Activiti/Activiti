@@ -87,7 +87,15 @@ public enum ActivitiEventType {
 	 */
 	ENGINE_CLOSED,
 	
-	ACTIVITY_COMPLETE,
+	/**
+	 * An activiyt is starting to execute. This event is dispatch right before an activity is executed.
+	 */
+	ACTIVITY_STARTED,
+	
+	/**
+	 * An activity has been completed successfully.
+	 */
+	ACTIVITY_COMPLETED,
 	
 	/**
 	 * An activity has received a signal. Dispatched after the activity has responded to the signal.
