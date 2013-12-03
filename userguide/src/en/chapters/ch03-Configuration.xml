@@ -829,6 +829,16 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
               <row>
+                <entry>ENTITY_SUSPENDED</entry>
+                <entry>An existing entity is suspended. The suspended entity is contained in the event. Will be dispatched for ProcessDefinitions, ProcessInstances and Tasks.</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ENTITY_ACTIVATED</entry>
+                <entry>An existing entity is activated. The activated entity is contained in the event. Will be dispatched for ProcessDefinitions, ProcessInstances and Tasks.</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
                 <entry>JOB_EXECUTION_SUCCESS</entry>
                 <entry>A job has been executed successfully. The event contains the job that was executed.</entry>
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
@@ -847,6 +857,42 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
                 <entry>TIMER_FIRED</entry>
                 <entry>A timer has been fired. The event contains the job that was executed?</entry>
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ACTIVITY_STARTED</entry>
+                <entry>An activity is starting to execute</entry>
+                <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ACTIVITY_SIGNALED</entry>
+                <entry>An activity received a signal</entry>
+                <entry><literal>org.activiti...ActivitiSignalEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ACTIVITY_MESSAGE_RECEIVED</entry>
+                <entry>An activity received a message. Dispatched before the activity receives the message. When received, a <literal>ACTIVITY_SIGNAL</literal> or <literal>ACTIVITY_STARTED</literal> will
+                be dispatched for this activity, depending on the type (boudnary-event or event-subprocess start-event)</entry>
+                <entry><literal>org.activiti...ActivitiMessageEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ACTIVITY_COMPENSATE</entry>
+                <entry>An activity is about to be compensated. The event contains the id of the activity that is will be executed for compensation.</entry>
+                <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>VARIABLE_CREATED</entry>
+                <entry>A variable has been created. The event contais the variable name, value and related execution and task (if any).</entry>
+                <entry><literal>org.activiti...ActivitiVariableEvent</literal></entry>
+              </row>
+              <row>
+                <entry>VARIABLE_UPDATED</entry>
+                <entry>An existing variable has been updated. The event contais the variable name, updated value and related execution and task (if any).</entry>
+                <entry><literal>org.activiti...ActivitiVariableEvent</literal></entry>
+              </row>
+              <row>
+                <entry>VARIABLE_DELETED</entry>
+                <entry>An existing variable has been deleted. The event contais the variable name, last known value and related execution and task (if any).</entry>
+                <entry><literal>org.activiti...ActivitiVariableEvent</literal></entry>
               </row>
             </tbody>
           </tgroup>

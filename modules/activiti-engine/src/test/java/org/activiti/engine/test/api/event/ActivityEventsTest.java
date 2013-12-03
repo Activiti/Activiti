@@ -52,7 +52,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 		assertEquals(1, listener.getEventsReceived().size());
 		assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiSignalEvent);
 		ActivitiSignalEvent signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);
-		assertEquals(ActivitiEventType.ACTIVITY_SIGNALLED, signalEvent.getType());
+		assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
 		assertEquals("receivePayment", signalEvent.getActivityId());
 		assertEquals(executionWithSignal.getId(), signalEvent.getExecutionId());
 		assertEquals(executionWithSignal.getProcessInstanceId(), signalEvent.getProcessInstanceId());
@@ -68,7 +68,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 		assertEquals(1, listener.getEventsReceived().size());
 		assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiSignalEvent);
 		signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);
-		assertEquals(ActivitiEventType.ACTIVITY_SIGNALLED, signalEvent.getType());
+		assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
 		assertEquals("shipOrder", signalEvent.getActivityId());
 		assertEquals(executionWithSignalEvent.getId(), signalEvent.getExecutionId());
 		assertEquals(executionWithSignalEvent.getProcessInstanceId(), signalEvent.getProcessInstanceId());
@@ -97,7 +97,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 
 		assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiSignalEvent);
 		ActivitiSignalEvent signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);
-		assertEquals(ActivitiEventType.ACTIVITY_SIGNALLED, signalEvent.getType());
+		assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
 		assertEquals("shipOrder", signalEvent.getActivityId());
 		assertEquals(executionWithSignalEvent.getId(), signalEvent.getExecutionId());
 		assertEquals(executionWithSignalEvent.getProcessInstanceId(), signalEvent.getProcessInstanceId());
@@ -134,7 +134,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 		// Next, an signal-event is expected, as a result of the message
 		assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiSignalEvent);
 		ActivitiSignalEvent signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(1);
-		assertEquals(ActivitiEventType.ACTIVITY_SIGNALLED, signalEvent.getType());
+		assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
 		assertEquals("shipOrder", signalEvent.getActivityId());
 		assertEquals(executionWithMessage.getId(), signalEvent.getExecutionId());
 		assertEquals(executionWithMessage.getProcessInstanceId(), signalEvent.getProcessInstanceId());
@@ -203,7 +203,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 		// Also, a signal-event is received, representing the boundary-event being executed.
 		assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiSignalEvent);
 		ActivitiSignalEvent signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(1);
-		assertEquals(ActivitiEventType.ACTIVITY_SIGNALLED, signalEvent.getType());
+		assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
 		assertEquals("throwCompensation", signalEvent.getActivityId());
 		assertEquals(processInstance.getId(), signalEvent.getExecutionId());
 		assertEquals(processInstance.getProcessInstanceId(), signalEvent.getProcessInstanceId());
