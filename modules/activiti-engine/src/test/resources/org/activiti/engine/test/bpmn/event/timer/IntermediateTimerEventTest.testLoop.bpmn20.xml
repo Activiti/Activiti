@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+	xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" 
+	xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="testLoop">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="timer" />
+
+		<intermediateCatchEvent id="timer">
+			<timerEventDefinition>
+				<timeDuration>PT5M</timeDuration>
+			</timerEventDefinition>
+		</intermediateCatchEvent>
+		<sequenceFlow id="flow2" sourceRef="timer" targetRef="checkCompletion" />
+
+		<scriptTask id="checkCompletion" scriptFormat="javascript">
+			<script>
+				 <![CDATA[
+				 
+				    var counter = execution.getVariable('counter');
+				    if (!counter) {
+				      counter = 0;
+				    }
+				    var newCounter = counter + 1;
+				    execution.setVariable('counter', newCounter);
+				    
+                    if (newCounter == 3) {
+                      execution.setVariable('completed', true);
+                    } else {
+                      execution.setVariable('completed', false);
+                    }				    
+				    
+                ]]>
+			</script>
+		</scriptTask>
+		<sequenceFlow id="flowToGW" sourceRef="checkCompletion" targetRef="exclusivegateway" />
+		<exclusiveGateway id="exclusivegateway" name="Exclusive Gateway" default="flow4"></exclusiveGateway>
+		<sequenceFlow id="flow3" sourceRef="exclusivegateway" targetRef="theEnd">
+			<conditionExpression xsi:type="tFormalExpression">${completed}</conditionExpression>
+		</sequenceFlow>
+		<sequenceFlow id="flow4" sourceRef="exclusivegateway" targetRef="timer"> </sequenceFlow>
+
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>
