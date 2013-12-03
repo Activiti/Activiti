@@ -291,6 +291,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 	    </section>
 	    <section id="bpmnSignalEventDefinitionQuery">
 	    	<title>Querying for Signal Event subscriptions</title>
+	    	<para>
 	    	It is possible to query for all executions which have subscribed to a specific signal event:
 	    	<programlisting>
  List&lt;Execution&gt; executions = runtimeService.createExecutionQuery()
@@ -298,8 +299,30 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
       .list();
 	    	</programlisting>
 	    	We could then use the <code>signalEventReceived(String signalName, String executionId)</code> method 
-	    	to deliver the signal to these executions.	    		    	
+	    	to deliver the signal to these executions.
+	    	</para>	    		    	
 	    </section> 
+	    
+	    <section id="bpmnSignalEventDefinitionScope">
+	       <title>Signal event scope</title>
+	       <para>
+	           By default, signals are <emphasis>broadcasted process engine wide</emphasis>. This means that you
+	           can throw a signal event in a process instance, and other process instances with different process definitions
+	           can react on the occurence of this event.
+	       </para>
+	       <para>
+                However, sometimes it is wanted to react to a signal event only within the <emphasis>same process instance</emphasis>.
+                A use case for example is a synchronization mechanism in the process instance, if two or more activities are
+                mutually exclusive.
+	       </para>
+	       <para>
+	           To restrict the <emphasis>scope</emphasis> of the signal event, add the (non-BPMN 2.0 standard!) <emphasis>scope attribute</emphasis>
+	           to the signal event definition:
+	           <programlisting>
+&lt;signal id=&quot;alertSignal&quot; name=&quot;alert&quot; activiti:scope&quot;processInstance&quot;/&gt;</programlisting>
+	           The default value for this is attribute is <emphasis>&quot;global&quot;</emphasis>.
+	       </para>
+	    </section>
 	    
 	    <section id="bpmnSignalEventDefinitionExample">
 	    	<title>Signal Event example(s)</title>
