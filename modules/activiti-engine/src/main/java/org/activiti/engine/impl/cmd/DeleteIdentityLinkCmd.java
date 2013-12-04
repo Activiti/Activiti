@@ -68,9 +68,9 @@ public class DeleteIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
   protected Void execute(CommandContext commandContext, TaskEntity task) {
 
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
-      task.setAssignee(null);
+      task.setAssignee(null, true, true);
     } else if (IdentityLinkType.OWNER.equals(type)) {
-        task.setOwner(null);
+        task.setOwner(null, true);
     } else {
       task.deleteIdentityLink(userId, groupId, type);
     }
