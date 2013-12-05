@@ -481,16 +481,16 @@ public class TaskResourceTest extends BaseRestTestCase {
       
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
       
-      // Claiming without assignee fails
+      task.setAssignee("fred");
+      // Claiming without assignee should set asisgnee to null
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("action", "claim");
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("An assignee is required when claiming a task.", expected.getStatus().getDescription());
-      }
+      
+      client.post(requestNode);
+      task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      assertNotNull(task);
+      assertNull(task.getAssignee());
+      assertEquals(1L, taskService.createTaskQuery().taskCandidateUser("newAssignee").count());
 
       // Claim the task and check result
       requestNode.put("assignee", "newAssignee");
