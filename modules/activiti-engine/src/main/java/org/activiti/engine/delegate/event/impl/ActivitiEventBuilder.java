@@ -26,6 +26,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.runtime.Job;
+import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
 /**
