@@ -56,6 +56,6 @@ public class ThrowEventXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     ThrowEvent throwEvent = (ThrowEvent) element;
-    writeEventDefinitions(throwEvent.getEventDefinitions(), xtw);
+    writeEventDefinitions(throwEvent, throwEvent.getEventDefinitions(), xtw);
   }
 }
