@@ -88,7 +88,7 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
       throw new ActivitiIllegalArgumentException("Attachment name is required.");
     }
 
-    Attachment createdAttachment = ActivitiUtil.getTaskService().createAttachment(req.getType(), task.getId(), null, req.getName(),
+    Attachment createdAttachment = ActivitiUtil.getTaskService().createAttachment(req.getType(), task.getId(), task.getProcessInstanceId(), req.getName(),
             req.getDescription(), req.getExternalUrl());
 
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory().createAttachmentResponse(this, createdAttachment);
@@ -125,7 +125,7 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
       throw new ActivitiIllegalArgumentException("Attachment content is required.");
     }
     
-    Attachment createdAttachment = ActivitiUtil.getTaskService().createAttachment(type, task.getId(), null, name,
+    Attachment createdAttachment = ActivitiUtil.getTaskService().createAttachment(type, task.getId(), task.getProcessInstanceId(), name,
             description, uploadItem.getInputStream());
     
     setStatus(Status.SUCCESS_CREATED);

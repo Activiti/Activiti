@@ -128,8 +128,37 @@ public enum ActivitiEventType {
 	/**
 	 * An existing variable has been deleted.
 	 */
-	VARIABLE_DELETED;
+	VARIABLE_DELETED,
 	
+	/**
+	 * A task as been assigned. This is thrown alongside with an {@link #ENTITY_UPDATED} event.
+	 */
+	TASK_ASSIGNED,
+	
+	/**
+	 * A task has been completed. Dispatched before the task entity is deleted ({@link #ENTITY_DELETED}).
+	 * If the task is part of a process, this event is dispatched before the process moves on, as a result of
+	 * the task completion. In that case, a {@link #ACTIVITY_COMPLETED} will be dispatched after an event of this type
+	 * for the activity corresponding to the task. 
+	 */
+	TASK_COMPLETED,
+	
+	/**
+	 * A new membership has been created.
+	 */
+	MEMBERSHIP_CREATED,
+	
+	/**
+	 * A single membership has been deleted.
+	 */
+	MEMBERSHIP_DELETED,
+	
+	/**
+	 * All memberships in the related group have been deleted. No individual {@link #MEMBERSHIP_DELETED} events will
+	 * be dispatched due to possible performance reasons. The event is dispatched before the memberships are deleted,
+	 * so they can still be accessed in the dispatch method of the listener.
+	 */
+	MEMBERSHIPS_DELETED;
 	
 	public static final ActivitiEventType[] EMPTY_ARRAY =  new ActivitiEventType[] {};
 	

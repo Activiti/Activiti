@@ -117,7 +117,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void handleAssignments(TaskEntity task, ActivityExecution execution) {
     if (taskDefinition.getAssigneeExpression() != null) {
-      task.setAssignee((String) taskDefinition.getAssigneeExpression().getValue(execution));
+      task.setAssignee((String) taskDefinition.getAssigneeExpression().getValue(execution), true, false);
     }
     
     if (taskDefinition.getOwnerExpression() != null) {
