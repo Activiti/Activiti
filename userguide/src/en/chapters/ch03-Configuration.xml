@@ -899,9 +899,52 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
                 <entry>An existing variable has been deleted. The event contais the variable name, last known value and related execution and task (if any).</entry>
                 <entry><literal>org.activiti...ActivitiVariableEvent</literal></entry>
               </row>
+              <row>
+                <entry>TASK_ASSIGNED</entry>
+                <entry>A task has been assigned to a user. The event contains the task</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>TASK_COMPLETED</entry>
+                <entry>A task has been completed. This is dispatched before the <literal>ENTITY_DELETE</literal> event. In case the task is part of a process, this event will be
+                fired before the process has moved on and will be followed by a <literal>ACTIVITY_COMPLETE</literal> event, targeting the activity that represents the completed task.</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>MEMBERSHIP_CREATED</entry>
+                <entry>A user has been added to a group. The event contains the id's of the user and group involved.</entry>
+                <entry><literal>org.activiti...ActivitiMembershipEvent</literal></entry>
+              </row>
+              <row>
+                <entry>MEMBERSHIP_DELETED</entry>
+                <entry>A user has been removed from a group. The event contains the id's of the user and group involved.</entry>
+                <entry><literal>org.activiti...ActivitiMembershipEvent</literal></entry>
+              </row>
+              <row>
+                <entry>MEMBERSHIPS_DELETED</entry>
+                <entry>All members will be removed from a group. The event is thrown before the members are removed, so they are still accessible. No individual
+                <literal>MEMBERSHIP_DELETED</literal> events will be thrown if all members are deleted at once, for performance reasons.</entry>
+                <entry><literal>org.activiti...ActivitiMembershipEvent</literal></entry>
+              </row>
             </tbody>
           </tgroup>
         </table>
+        <para>
+          All <literal>ENTITY_*</literal> events are related to entities inside the engine. The list below show an overview of what entity-events are dispatched
+          for which entities:
+          
+          <itemizedlist>
+            <listitem>
+              <para><emphasis role="bold"><literal>ENTITY_CREATED, ENTITY_DELETED</literal></emphasis>: Attachment, Comment, Deployment, Execution, Group, IdentityLink, Job, Model, ProcessDefinition, ProcessInstance, Task, User.</para>
+            </listitem>
+            <listitem>
+              <para><emphasis role="bold"><literal>ENTITY_UPDATED</literal></emphasis>: Attachment, Deployment, Execution, Group, IdentityLink, Job, Model, ProcessDefinition, ProcessInstance, Task, User.</para>
+            </listitem>
+            <listitem>
+              <para><emphasis role="bold"><literal>ENTITY_SUSPENDED, ENTITY_ACTIVATED</literal></emphasis>: ProcessDefinition, ProcessInstance/Execution, Task.</para>
+            </listitem>
+          </itemizedlist>
+        </para>
     </section> 
     
       <section id="eventDispatcherRemarks">
@@ -912,9 +955,11 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
           they are running in the same JVM or not. 
         </para>
         <para>
-          Certain event-types (related to entities) expose the targetted entity. Depending on the type or event, these entities cannot be updated anymore (eg. when the entity is deleted). <emphasis role="bold">It's not recommended to
-          update these entities directly from within the event</emphasis>. Rather, use the <literal>EngineServices</literal> exposed by the event to interact in a more safe way with the engine. Even then, you need to 
-          be cautious with updates/operations on entities that are involved in the generated events.
+          Certain event-types (related to entities) expose the targetted entity. Depending on the type or event, these entities cannot be updated anymore (eg. when the entity is deleted). If possible, use the <literal>EngineServices</literal> exposed by the event to interact in a safe way with the engine. Even then, you need to 
+          be cautious with updates/operations on entities that are involved in the dispatched event.
+        </para>
+        <para>
+          No entity-events are dispatched related to history, as they all have a runtime-counterpart which have their events dispatched.
         </para>
       </section> 
   </section> 
