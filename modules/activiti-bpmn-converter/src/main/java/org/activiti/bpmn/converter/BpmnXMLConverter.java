@@ -343,13 +343,13 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 					}
 					new DocumentationParser().parseChildElement(xtr, parentElement, model);
 				
-				} else if (ELEMENT_TEXT_ANNOTATION.equals(xtr.getLocalName())) {
+				} else if (activeProcess == null && ELEMENT_TEXT_ANNOTATION.equals(xtr.getLocalName())) {
 				  String elementId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
           TextAnnotation textAnnotation = (TextAnnotation) new TextAnnotationXMLConverter().convertXMLToElement(xtr);
           textAnnotation.setId(elementId);
           model.getGlobalArtifacts().add(textAnnotation);
           
-				} else if (ELEMENT_ASSOCIATION.equals(xtr.getLocalName())) {
+				} else if (activeProcess == null && ELEMENT_ASSOCIATION.equals(xtr.getLocalName())) {
           String elementId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
           Association association = (Association) new AssociationXMLConverter().convertXMLToElement(xtr);
           association.setId(elementId);
