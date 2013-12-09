@@ -604,14 +604,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       log.debug("using database type: {}", databaseType);
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      log.error("Exception while initializing Database connection", e);
     } finally {
       try {
         if (connection!=null) {
           connection.close();
         }
       } catch (SQLException e) {
-        e.printStackTrace();
+          log.error("Exception while closing the Database connection", e);
       }
     }
   }
