@@ -356,7 +356,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           model.getGlobalArtifacts().add(association);
 				
 				} else if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
-          new ExtensionElementsParser().parse(xtr, activeSubProcessList, activeProcess, model);
+				  // simple fix of ACT-1854
+				  if (activeProcess != null){
+				    new ExtensionElementsParser().parse(xtr, activeSubProcessList, activeProcess, model);
+				  }
 				
 				} else if (ELEMENT_SUBPROCESS.equals(xtr.getLocalName())) {
           new SubProcessParser().parse(xtr, activeSubProcessList, activeProcess);
