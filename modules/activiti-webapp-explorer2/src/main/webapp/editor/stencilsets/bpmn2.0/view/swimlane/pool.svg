@@ -76,12 +76,6 @@
 	/>
 	
     <text x="13" y="125" font-size="12" id="text_name" oryx:fittoelem="caption" oryx:align="middle center" oryx:anchors="left" oryx:rotate="270" fill="black" stroke="black"></text>
-	
-	<g id="multiInstance">
-		<path
-			id="multiinstancepath" 
-			oryx:anchors="bottom" fill="none" stroke="black" d="M296 240 v8 M300 240 v8 M304 240 v8" stroke-width="2" 
-		/>
-	</g>
+    
   </g>
 </svg>

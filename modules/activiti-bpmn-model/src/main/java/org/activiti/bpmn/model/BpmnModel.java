@@ -48,8 +48,11 @@ public class BpmnModel {
 	protected int nextFlowIdCounter = 1;
 
 	public Process getMainProcess() {
-	  Process process = getProcess(null);
-	  return process;
+	  if (getPools().size() > 0) {
+	    return getProcess(getPools().get(0).getId());
+	  } else {
+	    return getProcess(null);
+	  }
 	}
 
 	public Process getProcess(String poolRef) {
