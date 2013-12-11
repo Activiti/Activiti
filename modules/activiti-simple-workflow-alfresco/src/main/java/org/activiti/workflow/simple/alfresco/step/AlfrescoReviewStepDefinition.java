@@ -41,7 +41,7 @@ public class AlfrescoReviewStepDefinition extends AbstractStepDefinitionContaine
   
   private static final long serialVersionUID = 1L;
   
-	protected String assignmentPropertyName;
+  protected String assignmentPropertyName;
   protected HumanStepAssignmentType assignmentType = HumanStepAssignmentType.USER;
   protected FormDefinition form;
   protected String requiredApprovalCount;
@@ -119,22 +119,22 @@ public class AlfrescoReviewStepDefinition extends AbstractStepDefinitionContaine
 	}
 
 	@Override
-	public void setValues(StepDefinition otherDefinition) {
-		if(!(otherDefinition instanceof AlfrescoReviewStepDefinition)) {
+	public void setValues(StepDefinition stepDefinition) {
+		if(!(stepDefinition instanceof AlfrescoReviewStepDefinition)) {
 				throw new SimpleWorkflowException("An instance of AlfrescoReviewStepDefinition is required to set values");
 		}
 		
-		AlfrescoReviewStepDefinition def = (AlfrescoReviewStepDefinition) otherDefinition;
-		setName(def.getName());
-		setId(def.getId());
-		setDescription(def.getDescription());
-		setEndProcessOnReject(def.isEndProcessOnReject());
-		setAssignmentType(def.getAssignmentType());
-		setRequiredApprovalCount(def.getRequiredApprovalCount());
-		setAssignmentPropertyName(def.getAssignmentPropertyName());
+		AlfrescoReviewStepDefinition reviewStepDefinition = (AlfrescoReviewStepDefinition) stepDefinition;
+		setName(reviewStepDefinition.getName());
+		setId(reviewStepDefinition.getId());
+		setDescription(reviewStepDefinition.getDescription());
+		setEndProcessOnReject(reviewStepDefinition.isEndProcessOnReject());
+		setAssignmentType(reviewStepDefinition.getAssignmentType());
+		setRequiredApprovalCount(reviewStepDefinition.getRequiredApprovalCount());
+		setAssignmentPropertyName(reviewStepDefinition.getAssignmentPropertyName());
 		
-		if(def.getParameters() != null) {
-			setParameters(new HashMap<String, Object>(def.getParameters()));
+		if(reviewStepDefinition.getParameters() != null) {
+			setParameters(new HashMap<String, Object>(reviewStepDefinition.getParameters()));
 		}
 	}
 
