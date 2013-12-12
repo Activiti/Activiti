@@ -59,6 +59,7 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
   protected String key;
   protected String name;
   protected String description;
+  protected String category;
   protected FormDefinition startFormDefinition;
   protected ParallelStepsDefinition currentParallelStepsDefinition;
   protected ChoiceStepsDefinition currentChoiceStepsDefinition;
@@ -117,7 +118,20 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
     return this;
   }
   
-  @JsonSerialize(include=Inclusion.NON_EMPTY)
+  public String getCategory() {
+	return category;
+  }
+
+  public void setCategory(String category) {
+	this.category = category;
+  }
+  
+  public WorkflowDefinition category(String category) {
+	  setCategory(category);
+	  return this;
+  }
+
+@JsonSerialize(include=Inclusion.NON_EMPTY)
   public Map<String, Object> getParameters() {
 	  return parameters;
   }
