@@ -31,11 +31,11 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
 
   public static boolean writeListeners(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     if(element instanceof HasExecutionListeners) {
-      didWriteExtensionStartElement =  writeListeners(ELEMENT_EXECUTION_LISTENER, ((HasExecutionListeners) element).getExecutionListeners(), didWriteExtensionStartElement, xtw);
+      didWriteExtensionStartElement = writeListeners(ELEMENT_EXECUTION_LISTENER, ((HasExecutionListeners) element).getExecutionListeners(), didWriteExtensionStartElement, xtw);
     }
     // In case of a usertaks, also add task-listeners
     if(element instanceof UserTask) {
-      didWriteExtensionStartElement =  writeListeners(ELEMENT_TASK_LISTENER, ((UserTask) element).getTaskListeners(), didWriteExtensionStartElement, xtw);
+      didWriteExtensionStartElement = writeListeners(ELEMENT_TASK_LISTENER, ((UserTask) element).getTaskListeners(), didWriteExtensionStartElement, xtw);
     }
     
     // In case of a process-element, write the event-listeners
