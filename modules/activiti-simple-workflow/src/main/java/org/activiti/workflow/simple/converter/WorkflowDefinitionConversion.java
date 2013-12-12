@@ -183,6 +183,10 @@ public class WorkflowDefinitionConversion {
   public Object getArtifact(String artifactKey) {
     return additionalArtifacts.get(artifactKey);
   }
+  
+  public Map<String, Object> getAdditionalArtifacts() {
+	  return additionalArtifacts;
+  }
 
   public void setArtifact(String artifactKey, Object artifact) {
     additionalArtifacts.put(artifactKey, artifact);

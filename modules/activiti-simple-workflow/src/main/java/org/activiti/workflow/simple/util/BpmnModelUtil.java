@@ -26,11 +26,9 @@ public class BpmnModelUtil {
 	public static List<FlowElement> findSucessorFlowElementsFor(
 			Process process, FlowElement sourceFlowElement) {
 		List<FlowElement> successors = new ArrayList<FlowElement>();
-		for (SequenceFlow sequenceFlow : process
-				.findFlowElementsOfType(SequenceFlow.class)) {
+		for (SequenceFlow sequenceFlow : process.findFlowElementsOfType(SequenceFlow.class)) {
 			if (sequenceFlow.getSourceRef().equals(sourceFlowElement.getId())) {
-				successors.add(process.getFlowElement(sequenceFlow
-						.getTargetRef()));
+				successors.add(process.getFlowElement(sequenceFlow.getTargetRef()));
 			}
 		}
 		return successors;
