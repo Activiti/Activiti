@@ -26,11 +26,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class ActivitiListenerParser extends BaseChildElementParser {
   
-	protected ActivitiListener listener;
-	
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     
-    listener = new ActivitiListener();
+    ActivitiListener listener = new ActivitiListener();
     BpmnXMLUtil.addXMLLocation(listener, xtr);
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_CLASS))) {
       listener.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_CLASS));
@@ -45,7 +43,9 @@ public abstract class ActivitiListenerParser extends BaseChildElementParser {
       model.addProblem("Element 'class' or 'expression' is mandatory on executionListener", xtr);
     }
     listener.setEvent(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_EVENT));
-    
+    addListenerToParent(listener, parentElement);
     parseChildElements(xtr, listener, model, new FieldExtensionParser());
   }
+  
+  public abstract void addListenerToParent(ActivitiListener listener, BaseElement parentElement);
 }

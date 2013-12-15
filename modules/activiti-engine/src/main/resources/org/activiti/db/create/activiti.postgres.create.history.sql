@@ -12,8 +12,7 @@ create table ACT_HI_PROCINST (
     SUPER_PROCESS_INSTANCE_ID_ varchar(64),
     DELETE_REASON_ varchar(4000),
     primary key (ID_),
-    unique (PROC_INST_ID_),
-    unique (PROC_DEF_ID_, BUSINESS_KEY_)
+    unique (PROC_INST_ID_)
 );
 
 create table ACT_HI_ACTINST (
@@ -52,6 +51,7 @@ create table ACT_HI_TASKINST (
     PRIORITY_ integer,
     DUE_DATE_ timestamp,
     FORM_KEY_ varchar(255),
+    CATEGORY_ varchar(255),
     primary key (ID_)
 );
 

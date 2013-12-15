@@ -51,6 +51,7 @@ create table ACT_HI_TASKINST (
     PRIORITY_ integer,
     DUE_DATE_ timestamp,
     FORM_KEY_ varchar(255),
+    CATEGORY_ varchar(255),
     primary key (ID_)
 );
 
@@ -141,8 +142,4 @@ create index ACT_IDX_HI_IDENT_LNK_USER on ACT_HI_IDENTITYLINK(USER_ID_);
 create index ACT_IDX_HI_IDENT_LNK_TASK on ACT_HI_IDENTITYLINK(TASK_ID_);
 create index ACT_IDX_HI_IDENT_LNK_PROCINST on ACT_HI_IDENTITYLINK(PROC_INST_ID_);
 
-alter table ACT_HI_PROCINST
-    add constraint ACT_UNIQ_HI_BUS_KEY
-    unique(PROC_DEF_ID_, BUSINESS_KEY_);
-    
 create index ACT_IDX_HI_ACT_INST_EXEC on ACT_HI_ACTINST(EXECUTION_ID_, ACT_ID_);    

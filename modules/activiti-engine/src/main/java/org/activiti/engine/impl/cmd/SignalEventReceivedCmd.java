@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +35,31 @@ public class SignalEventReceivedCmd implements Command<Void> {
     
   protected final String eventName;
   protected final String executionId;
-  protected final Map<String, Object> variables;
+  protected final Serializable payload;
+  protected final boolean async;
 
-  public SignalEventReceivedCmd(String eventName, String executionId, Map<String, Object> variables) {
+  public SignalEventReceivedCmd(String eventName, String executionId, Map<String, Object> processVariables) {
     this.eventName = eventName;
     this.executionId = executionId;
-    this.variables = variables;
+    if (processVariables != null) {
+    	if (processVariables instanceof Serializable){
+    		this.payload = (Serializable) processVariables;
+    	}
+    	else{	
+    		this.payload = new HashMap<String, Object>(processVariables);
+    	}
+    }
+    else{
+    	this.payload = null;
+    }
+    this.async = false;
+  }
+
+  public SignalEventReceivedCmd(String eventName, String executionId, boolean async) {
+  	this.eventName = eventName;
+  	this.executionId = executionId;
+  	this.async = async;
+  	this.payload = null;
   }
 
   public Void execute(CommandContext commandContext) {
@@ -70,15 +90,12 @@ public class SignalEventReceivedCmd implements Command<Void> {
       }
     }
         
-    HashMap<String, Object> payload = null;
-    if(variables != null) {
-      payload = new HashMap<String, Object>(variables);
-    }
+    
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : signalEvents) {
       // We only throw the event to globally scoped signals. 
       // Process instance scoped signals must be thrown within the process itself 
       if (signalEventSubscriptionEntity.isGlobalScoped()) {
-        signalEventSubscriptionEntity.eventReceived(payload, false);
+        signalEventSubscriptionEntity.eventReceived(payload, async);
       }
     }
     

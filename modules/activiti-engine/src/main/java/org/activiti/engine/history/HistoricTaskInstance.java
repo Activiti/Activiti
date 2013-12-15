@@ -76,11 +76,14 @@ public interface HistoricTaskInstance {
   /** Task form key. */
   String getFormKey();
   
-  /** Task priority **/
+  /** Task priority */
   int getPriority();
   
-  /** Task due date **/
+  /** Task due date */
   Date getDueDate();
+  
+  /** Task category */
+  String getCategory();
   
   /** The parent task of this task, in case this task was a subtask */
   String getParentTaskId();

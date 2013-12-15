@@ -77,6 +77,10 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     dockersArrayNode.add(dockNode);
     flowElementNode.put("dockers", dockersArrayNode);
     
+    if (boundaryEvent.isCancelActivity() == false) {
+      propertiesNode.put(PROPERTY_CANCEL_ACTIVITY, PROPERTY_VALUE_NO);
+    }
+    
     addEventProperties(boundaryEvent, propertiesNode);
   }
   
@@ -84,11 +88,12 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     BoundaryEvent boundaryEvent = new BoundaryEvent();
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
     if (STENCIL_EVENT_BOUNDARY_TIMER.equals(stencilId)) {
-      convertJsonToTimerDefinition(elementNode, boundaryEvent);
       boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
+      convertJsonToTimerDefinition(elementNode, boundaryEvent);
     } else if (STENCIL_EVENT_BOUNDARY_ERROR.equals(stencilId)) {
       convertJsonToErrorDefinition(elementNode, boundaryEvent);
     } else if (STENCIL_EVENT_BOUNDARY_SIGNAL.equals(stencilId)) {
+      boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
       convertJsonToSignalDefinition(elementNode, boundaryEvent);
     }
     boundaryEvent.setAttachedToRefId(lookForAttachedRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES)));

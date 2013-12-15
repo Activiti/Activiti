@@ -31,6 +31,7 @@
   <update id="updateExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
     update ${prefix}ACT_RU_EXECUTION set
       REV_ = #{revisionNext, jdbcType=INTEGER},
+      BUSINESS_KEY_ = #{businessKey, jdbcType=VARCHAR},
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       ACT_ID_ = #{activityId, jdbcType=VARCHAR},
       IS_ACTIVE_ = #{isActive, jdbcType=BOOLEAN},
@@ -236,6 +237,9 @@
       </if>
       <if test="processDefinitionKey != null">
         and P.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processDefinitionName != null">
+        and P.NAME_ = #{processDefinitionName}
       </if>
       <if test="executionId != null">
         and RES.ID_ = #{executionId}

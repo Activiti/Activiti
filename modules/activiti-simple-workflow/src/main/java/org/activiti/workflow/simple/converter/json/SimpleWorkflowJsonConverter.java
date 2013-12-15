@@ -16,12 +16,18 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.List;
 
+import org.activiti.workflow.simple.definition.ChoiceStepsDefinition;
+import org.activiti.workflow.simple.definition.DelayStepDefinition;
 import org.activiti.workflow.simple.definition.FeedbackStepDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.ListConditionStepDefinition;
+import org.activiti.workflow.simple.definition.ListStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.ScriptStepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.activiti.workflow.simple.definition.form.BooleanPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.DatePropertyDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ReferencePropertyDefinition;
@@ -45,7 +51,7 @@ public class SimpleWorkflowJsonConverter {
 	/**
 	 * @param inputStream the stream to read the JSON from.
 	 * @return The workflow definition instance, read from the given input-stream.
-	 * @throws ActivitiException when an error occurs while reading or parsing the definition.
+	 * @throws SimpleWorkflowException when an error occurs while reading or parsing the definition.
 	 */
 	public WorkflowDefinition readWorkflowDefinition(InputStream inputStream) throws SimpleWorkflowException {
 		try {
@@ -58,7 +64,7 @@ public class SimpleWorkflowJsonConverter {
 	/**
 	 * @param bytes array representing the definition JSON.
 	 * @return The workflow definition instance, parsed from the given array.
-	 * @throws ActivitiException when an error occurs while parsing the definition.
+	 * @throws SimpleWorkflowException when an error occurs while parsing the definition.
 	 */
 	public WorkflowDefinition readWorkflowDefinition(byte[] bytes) throws SimpleWorkflowException {
 		try {
@@ -77,8 +83,29 @@ public class SimpleWorkflowJsonConverter {
 	}
 	
 	/**
+	 * @param inputStream the stream to read the JSON from.
+	 * @return The workflow definition instance, read from the given input-stream.
+	 * @throws SimpleWorkflowException when an error occurs while reading or parsing the definition.
+	 */
+	public FormDefinition readFormDefinition(InputStream inputStream) {
+		try {
+	    return getObjectMapper().readValue(inputStream, FormDefinition.class);
+    } catch (Exception e) {
+    	throw wrapExceptionRead(e);
+    }
+	}
+	
+	public void writeFormDefinition(FormDefinition definition, Writer writer) {
+		try {
+	    getObjectMapper().writeValue(writer, definition);
+    } catch (Exception e) {
+    	throw wrapExceptionWrite(e);
+    }
+	}
+	
+	/**
 	 * @param e exception to wrap
-	 * @return an {@link ActivitiException} to throw, wrapping the given exception.
+	 * @return an {@link SimpleWorkflowException} to throw, wrapping the given exception.
 	 */
 	protected SimpleWorkflowException wrapExceptionRead(Exception e) {
 	  return new SimpleWorkflowException("Error while parsing JSON", e);
@@ -86,7 +113,7 @@ public class SimpleWorkflowJsonConverter {
 	
 	/**
 	 * @param e exception to wrap
-	 * @return an {@link ActivitiException} to throw, wrapping the given exception.
+	 * @return an {@link SimpleWorkflowException} to throw, wrapping the given exception.
 	 */
 	protected SimpleWorkflowException wrapExceptionWrite(Exception e) {
 		return new SimpleWorkflowException("Error while writing JSON", e);
@@ -102,10 +129,11 @@ public class SimpleWorkflowJsonConverter {
 
 					// Register all property-definition model classes as sub-types
 					objectMapper.registerSubtypes(ListPropertyDefinition.class, TextPropertyDefinition.class,
-					    ReferencePropertyDefinition.class, DatePropertyDefinition.class, NumberPropertyDefinition.class);
+					    ReferencePropertyDefinition.class, DatePropertyDefinition.class, NumberPropertyDefinition.class, BooleanPropertyDefinition.class);
 
 					// Register all step-types
-					objectMapper.registerSubtypes(HumanStepDefinition.class, FeedbackStepDefinition.class, ParallelStepsDefinition.class, ScriptStepDefinition.class);
+					objectMapper.registerSubtypes(HumanStepDefinition.class, FeedbackStepDefinition.class, ParallelStepsDefinition.class, ChoiceStepsDefinition.class, 
+					    ListStepDefinition.class, ListConditionStepDefinition.class, ScriptStepDefinition.class, DelayStepDefinition.class);
 					// Register additional sub-types to allow custom model entities to be
 					// deserialized correctly
 					if (additionalModelClasses != null) {

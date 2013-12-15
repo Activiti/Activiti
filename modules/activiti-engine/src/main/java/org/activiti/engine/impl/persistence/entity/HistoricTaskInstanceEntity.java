@@ -42,6 +42,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected int priority;
   protected Date dueDate;
   protected Date claimTime;
+  protected String category;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricTaskInstanceEntity() {
@@ -80,6 +81,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     persistentState.put("taskDefinitionKey", taskDefinitionKey);
     persistentState.put("formKey", formKey);
     persistentState.put("priority", priority);
+    persistentState.put("category", category);
     if(parentTaskId != null) {
       persistentState.put("parentTaskId", parentTaskId);
     }
@@ -141,7 +143,13 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   public void setDueDate(Date dueDate) {
     this.dueDate = dueDate;
   }
-  public String getOwner() {
+  public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public String getOwner() {
     return owner;
   }
   public void setOwner(String owner) {

@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.14-SNAPSHOT', 1);
+values ('schema.version', '5.15-SNAPSHOT', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.14-SNAPSHOT)', 1);
+values ('schema.history', 'create(5.15-SNAPSHOT)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -118,6 +118,7 @@ create table ACT_RU_TASK (
     PRIORITY_ INTEGER,
     CREATE_TIME_ TIMESTAMP(6),
     DUE_DATE_ TIMESTAMP(6),
+    CATEGORY_ NVARCHAR2(255),
     SUSPENSION_STATE_ INTEGER,
     primary key (ID_)
 );
@@ -288,7 +289,3 @@ alter table ACT_RE_MODEL
     foreign key (DEPLOYMENT_ID_) 
     references ACT_RE_DEPLOYMENT (ID_);        
     
--- see http://stackoverflow.com/questions/675398/how-can-i-constrain-multiple-columns-to-prevent-duplicates-but-ignore-null-value
-create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION
-   (case when BUSINESS_KEY_ is null then null else PROC_DEF_ID_ end,
-    case when BUSINESS_KEY_ is null then null else BUSINESS_KEY_ end);

@@ -1,0 +1,313 @@
+{
+    "resourceId": "canvas",
+    "properties": {
+        "name": "User registration",
+        "documentation": "",
+        "process_id": "formPropertiesProcess",
+        "process_author": "",
+        "process_executable": "Yes",
+        "process_version": "",
+        "process_namespace": "http://www.activiti.org/processdef",
+        "executionlisteners": ""
+    },
+    "stencil": {
+        "id": "BPMNDiagram"
+    },
+    "childShapes": [{
+        "resourceId": "cadastrar",
+        "properties": {
+            "overrideid": "register",
+            "name": "Insert Data",
+            "documentation": "",
+            "formproperties": "{\"totalCount\": 5, \"items\": [{\"formproperty_id\": \"duplicated\", \"formproperty_name\": \"duplicated\", \"formproperty_type\": \"string\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"duplicated\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"name\", \"formproperty_name\": \"name\", \"formproperty_type\": \"string\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"name\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"age\", \"formproperty_name\": \"age\", \"formproperty_type\": \"long\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"age\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"isMan\", \"formproperty_name\": \"isMan\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"isMan\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"remove\", \"formproperty_name\": \"remove\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"remove\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}]}",
+            "initiator": "",
+            "formkeydefinition": "teste",
+            "executionlisteners": ""
+        },
+        "stencil": {
+            "id": "StartNoneEvent"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-7DB064BE-D4FF-4FAC-8ABE-B411508701A6"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 75,
+                "y": 70
+            },
+            "upperLeft": {
+                "x": 45,
+                "y": 40
+            }
+        },
+        "dockers": []
+    }, {
+        "resourceId": "editar",
+        "properties": {
+            "overrideid": "edit",
+            "name": "Edit",
+            "documentation": "",
+            "formkeydefinition": "teste2",
+            "duedatedefinition": "",
+            "prioritydefinition": "",
+            "usertaskassignment": {
+                "totalCount": 1,
+                "items": [{
+                    "assignment_type": "assignee",
+                    "resourceassignmentexpr": "kermit"
+                }]
+            },
+            "formproperties": "{\"totalCount\": 5, \"items\": [{\"formproperty_id\": \"duplicated\", \"formproperty_name\": \"duplicated\", \"formproperty_type\": \"long\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"duplicated\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"name\", \"formproperty_name\": \"name\", \"formproperty_type\": \"string\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"name\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"age\", \"formproperty_name\": \"age\", \"formproperty_type\": \"long\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"age\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"No\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"isMan\", \"formproperty_name\": \"isMan\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"isMan\", \"formproperty_required\": \"\", \"formproperty_readable\": \"No\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"}, {\"formproperty_id\": \"remove\", \"formproperty_name\": \"remove\", \"formproperty_type\": \"boolean\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"remove\", \"formproperty_required\": \"Yes\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"undefined\"},{\"formproperty_id\": \"testEnum\", \"formproperty_name\": \"testEnum\", \"formproperty_type\": \"enum\", \"formproperty_expression\": \"\", \"formproperty_variable\": \"testEnum\", \"formproperty_required\": \"\", \"formproperty_readable\": \"\", \"formproperty_writeable\": \"\", \"formproperty_formvalues\": \"{\\\"totalCount\\\": 2, \\\"items\\\": [{\\\"formproperty_formvalue_id\\\": \\\"enum1\\\", \\\"formproperty_formvalue_name\\\": \\\"enum1\\\"}, {\\\"formproperty_formvalue_id\\\": \\\"enum2\\\", \\\"formproperty_formvalue_name\\\": \\\"enum2\\\"}]}\"}]}",
+            "tasklisteners": "{\"totalCount\":0,\"items\":[]}",
+            "asynchronousdefinition": "No",
+            "exclusivedefinition": "Yes",
+            "looptype": "None",
+            "multiinstance_sequential": "Yes",
+            "multiinstance_cardinality": "",
+            "multiinstance_collection": "",
+            "multiinstance_variable": "",
+            "multiinstance_condition": "",
+            "isforcompensation": "false"
+        },
+        "stencil": {
+            "id": "UserTask"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-288E87B0-A482-45EE-A36F-458C624FFF50"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 235,
+                "y": 95
+            },
+            "upperLeft": {
+                "x": 135,
+                "y": 15
+            }
+        },
+        "dockers": []
+    }, {
+        "resourceId": "sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6",
+        "properties": {
+            "overrideid": "sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6",
+            "name": "",
+            "documentation": ""
+        },
+        "stencil": {
+            "id": "ExclusiveGateway"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "removerInd"
+        }, {
+            "resourceId": "naoRemoverInd"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 355,
+                "y": 75
+            },
+            "upperLeft": {
+                "x": 315,
+                "y": 35
+            }
+        },
+        "dockers": []
+    }, {
+        "resourceId": "fim",
+        "properties": {
+            "overrideid": "fim",
+            "name": "End",
+            "documentation": "",
+            "executionlisteners": ""
+        },
+        "stencil": {
+            "id": "EndNoneEvent"
+        },
+        "childShapes": [],
+        "outgoing": [],
+        "bounds": {
+            "lowerRight": {
+                "x": 538,
+                "y": 69
+            },
+            "upperLeft": {
+                "x": 510,
+                "y": 41
+            }
+        },
+        "dockers": []
+    }, {
+        "resourceId": "sid-288E87B0-A482-45EE-A36F-458C624FFF50",
+        "properties": {
+            "overrideid": "sid-288E87B0-A482-45EE-A36F-458C624FFF50",
+            "name": "",
+            "documentation": "",
+            "conditionsequenceflow": "",
+            "defaultflow": "None",
+            "conditionalflow": "None"
+        },
+        "stencil": {
+            "id": "SequenceFlow"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 315.25,
+                "y": 55
+            },
+            "upperLeft": {
+                "x": 235.21875,
+                "y": 55
+            }
+        },
+        "dockers": [{
+            "x": 50,
+            "y": 40
+        }, {
+            "x": 20,
+            "y": 20
+        }],
+        "target": {
+            "resourceId": "sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6"
+        }
+    }, {
+        "resourceId": "sid-7DB064BE-D4FF-4FAC-8ABE-B411508701A6",
+        "properties": {
+            "showdiamondmarker": false,
+            "overrideid": "sid-7DB064BE-D4FF-4FAC-8ABE-B411508701A6",
+            "name": "",
+            "documentation": "",
+            "conditionsequenceflow": "",
+            "defaultflow": "None",
+            "conditionalflow": "None"
+        },
+        "stencil": {
+            "id": "SequenceFlow"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "editar"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 134.51315307617188,
+                "y": 55
+            },
+            "upperLeft": {
+                "x": 75.54327392578125,
+                "y": 55
+            }
+        },
+        "dockers": [{
+            "x": 15,
+            "y": 15
+        }, {
+            "x": 68.1953125,
+            "y": 40
+        }],
+        "target": {
+            "resourceId": "editar"
+        }
+    }, {
+        "resourceId": "removerInd",
+        "properties": {
+            "overrideid": "removerInd",
+            "name": "Remove Data",
+            "documentation": "",
+            "conditionsequenceflow": "${execution.getVariable(\"remove\") == true}",
+            "defaultflow": "None",
+            "conditionalflow": "None"
+        },
+        "stencil": {
+            "id": "SequenceFlow"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "fim"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 509.7109375,
+                "y": 55
+            },
+            "upperLeft": {
+                "x": 355.1953125,
+                "y": 55
+            }
+        },
+        "dockers": [{
+            "x": 20,
+            "y": 20
+        }, {
+            "x": 14,
+            "y": 14
+        }],
+        "target": {
+            "resourceId": "fim"
+        }
+    }, {
+        "resourceId": "naoRemoverInd",
+        "properties": {
+            "overrideid": "naoRemoverInd",
+            "name": "",
+            "documentation": "",
+            "conditionsequenceflow": "${execution.getVariable(\"remove\") == false}",
+            "defaultflow": "None",
+            "conditionalflow": "None"
+        },
+        "stencil": {
+            "id": "SequenceFlow"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "editar"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 334.7529677861486,
+                "y": 134
+            },
+            "upperLeft": {
+                "x": 185,
+                "y": 74.5155448942603
+            }
+        },
+        "dockers": [{
+            "x": 20,
+            "y": 20
+        }, {
+            "x": 334,
+            "y": 134
+        }, {
+            "x": 185,
+            "y": 134
+        }, {
+            "x": 50,
+            "y": 40
+        }],
+        "target": {
+            "resourceId": "editar"
+        }
+    }],
+    "bounds": {
+        "lowerRight": {
+            "x": 1485,
+            "y": 1050
+        },
+        "upperLeft": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    "stencilset": {
+        "url": "../stencilsets/bpmn2.0/bpmn2.0.json",
+        "namespace": "http://b3mn.org/stencilset/bpmn2.0#"
+    },
+    "ssextensions": []
+}

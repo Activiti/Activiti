@@ -32,6 +32,7 @@ public class MessageParser implements BpmnXMLConstants {
       String itemRef = parseItemRef(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_REF), model);
       Message message = new Message(messageId, messageName, itemRef);
       BpmnXMLUtil.addXMLLocation(message, xtr);
+      BpmnXMLUtil.parseChildElements(ELEMENT_MESSAGE, message, xtr, model);
       model.addMessage(message);
     }
   }

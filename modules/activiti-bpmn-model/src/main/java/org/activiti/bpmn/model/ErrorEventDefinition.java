@@ -25,4 +25,15 @@ public class ErrorEventDefinition extends EventDefinition {
   public void setErrorCode(String errorCode) {
     this.errorCode = errorCode;
   }
+  
+  public ErrorEventDefinition clone() {
+    ErrorEventDefinition clone = new ErrorEventDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(ErrorEventDefinition otherDefinition) {
+    super.setValues(otherDefinition);
+    setErrorCode(otherDefinition.getErrorCode());
+  }
 }

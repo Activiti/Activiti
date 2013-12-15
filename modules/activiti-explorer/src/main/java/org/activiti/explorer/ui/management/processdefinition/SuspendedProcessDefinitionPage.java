@@ -15,7 +15,6 @@ package org.activiti.explorer.ui.management.processdefinition;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.data.LazyLoadingContainer;
 import org.activiti.explorer.data.LazyLoadingQuery;
-import org.activiti.explorer.navigation.ActiveProcessDefinitionNavigator;
 import org.activiti.explorer.navigation.SuspendedProcessDefinitionNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 import org.activiti.explorer.ui.management.ManagementPage;
@@ -80,12 +79,12 @@ public class SuspendedProcessDefinitionPage extends ManagementPage {
           
           // Update URL
           ExplorerApp.get().setCurrentUriFragment(
-                  new UriFragment(ActiveProcessDefinitionNavigator.ACTIVE_PROC_DEF_URI_PART, processDefinitionId));
+                  new UriFragment(SuspendedProcessDefinitionNavigator.SUSPENDED_PROC_DEF_URI_PART, processDefinitionId));
           
         } else {
           // Nothing selected
           setDetailComponent(null);
-          ExplorerApp.get().setCurrentUriFragment(new UriFragment(ActiveProcessDefinitionNavigator.ACTIVE_PROC_DEF_URI_PART));
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(SuspendedProcessDefinitionNavigator.SUSPENDED_PROC_DEF_URI_PART));
         }
       }
       

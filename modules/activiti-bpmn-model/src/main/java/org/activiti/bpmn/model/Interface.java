@@ -27,4 +27,23 @@ public class Interface extends BaseElement {
   public void setOperations(List<Operation> operations) {
     this.operations = operations;
   }
+  
+  public Interface clone() {
+    Interface clone = new Interface();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(Interface otherElement) {
+    super.setValues(otherElement);
+    setName(otherElement.getName());
+    setImplementationRef(otherElement.getImplementationRef());
+    
+    operations = new ArrayList<Operation>();
+    if (otherElement.getOperations() != null && otherElement.getOperations().size() > 0) {
+      for (Operation operation : otherElement.getOperations()) {
+        operations.add(operation.clone());
+      }
+    }
+  }
 }

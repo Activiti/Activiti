@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+  <process id="variableProcess">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="theEnd">
+      <extensionElements>
+        <activiti:executionListener event="take" class="org.activiti.engine.test.api.event.VariableEventsExecutionListener" />
+      </extensionElements>
+    </sequenceFlow>
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

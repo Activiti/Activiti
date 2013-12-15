@@ -20,4 +20,16 @@ public class ItemDefinition extends BaseElement {
   public void setItemKind(String itemKind) {
     this.itemKind = itemKind;
   }
+  
+  public ItemDefinition clone() {
+    ItemDefinition clone = new ItemDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(ItemDefinition otherElement) {
+    super.setValues(otherElement);
+    setStructureRef(otherElement.getStructureRef());
+    setItemKind(otherElement.getItemKind());
+  }
 }

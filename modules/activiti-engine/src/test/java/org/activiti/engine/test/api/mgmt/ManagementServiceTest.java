@@ -22,6 +22,7 @@ import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -89,7 +90,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       managementService.executeJob(timerJob.getId());
       fail("RuntimeException from within the script task expected");
     } catch(RuntimeException re) {
-      assertTextPresent("This is an exception thrown from scriptTask", re.getMessage());
+      assertTextPresent("This is an exception thrown from scriptTask", re.getCause().getMessage());
     }
     
     // Fetch the task to see that the exception that occurred is persisted
@@ -241,5 +242,12 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     
     // Clean up
     managementService.executeJob(timerJob.getId());
+  }
+  
+  // https://jira.codehaus.org/browse/ACT-1816:
+  // ManagementService doesn't seem to give actual table Name for EventSubscriptionEntity.class
+  public void testGetTableName() {
+	  String table = managementService.getTableName(EventSubscriptionEntity.class);
+	  assertEquals("ACT_RU_EVENT_SUBSCR", table);
   }
 }

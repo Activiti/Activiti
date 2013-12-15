@@ -7,15 +7,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class ExtensionElement {
+public class ExtensionElement extends BaseElement {
 
   protected String name;
   protected String namespacePrefix;
   protected String namespace;
   protected String elementText;
   protected Map<String, List<ExtensionElement>> childElements = new LinkedHashMap<String, List<ExtensionElement>>();
-  protected Map<String, List<ExtensionAttribute>> attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
-  
+
   public String getElementText() {
     return elementText;
   }
@@ -56,20 +55,31 @@ public class ExtensionElement {
   public void setChildElements(Map<String, List<ExtensionElement>> childElements) {
     this.childElements = childElements;
   }
-  public Map<String, List<ExtensionAttribute>> getAttributes() {
-    return attributes;
+  
+  public ExtensionElement clone() {
+    ExtensionElement clone = new ExtensionElement();
+    clone.setValues(this);
+    return clone;
   }
-  public void addAttribute(ExtensionAttribute attribute) {
-    if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
-      List<ExtensionAttribute> attributeList = null;
-      if (this.attributes.containsKey(attribute.getName()) == false) {
-        attributeList = new ArrayList<ExtensionAttribute>();
-        this.attributes.put(attribute.getName(), attributeList);
+  
+  public void setValues(ExtensionElement otherElement) {
+    setName(otherElement.getName());
+    setNamespace(otherElement.getNamespacePrefix());
+    setNamespace(otherElement.getNamespace());
+    setElementText(otherElement.getElementText());
+    
+    childElements = new LinkedHashMap<String, List<ExtensionElement>>();
+    if (otherElement.getChildElements() != null && otherElement.getChildElements().size() > 0) {
+      for (String key : otherElement.getChildElements().keySet()) {
+        List<ExtensionElement> otherElementList = otherElement.getChildElements().get(key);
+        if (otherElementList != null && otherElementList.size() > 0) {
+          List<ExtensionElement> elementList = new ArrayList<ExtensionElement>();
+          for (ExtensionElement extensionElement : otherElementList) {
+            elementList.add(extensionElement.clone());
+          }
+          childElements.put(key, elementList);
+        }
       }
-      this.attributes.get(attribute.getName()).add(attribute);
     }
-  }
-  public void setAttributes(Map<String, List<ExtensionAttribute>> attributes) {
-    this.attributes = attributes;
   }
 }

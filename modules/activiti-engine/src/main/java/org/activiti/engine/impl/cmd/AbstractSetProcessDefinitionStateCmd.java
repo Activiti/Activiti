@@ -157,9 +157,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
           currentStartIndex += processInstances.size();
           processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
         }
-        
       }
-      
     }
   }
   

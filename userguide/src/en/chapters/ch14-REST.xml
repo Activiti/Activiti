@@ -15,13 +15,13 @@
       </para>
       <para><emphasis role="bold">It's recommended to use Basic Authentication in combination with HTTPS.</emphasis></para>
       <para>It's possible to remove authentication from certain resources or adding additional authorisation on top of being an authenticated user (eg. being part of group X allows a user to execute request with URL Y). 
-      This can be achieved by using an implementation of <literal>org.activiti.rest.filter.RestAuthenticator</literal> which has 2 methods:
+      This can be achieved by using an implementation of <literal>org.activiti.rest.common.filter.RestAuthenticator</literal> which has 2 methods:
       <itemizedlist>
         <listitem><para><emphasis><literal>boolean requestRequiresAuthentication(Request request)</literal></emphasis>: Called before a request is checked for authentication (valid username and password is passed in header). If this method returns true, the method needs authentication. If false is returned, the request will be done regardless of the request being authenticated. If false is returned, <literal>isRequestAuthorized</literal> will not be called either for this request.</para></listitem>
         <listitem><para><emphasis><literal>boolean isRequestAuthorized(Request request)</literal></emphasis>: Called after a user is successfully authenticated against the Activiti identity-management but before the request is actually executed. Can be used to check if a certain request is valid for the authenticated user. If true is returned, the request is considered authorised and is executed. When false is returned, the request is not executed and the client gets an appropriate error.</para></listitem>
       </itemizedlist>
       </para>
-      <para>The custom RestAuthenticator should be set on the <literal>org.activiti.rest.application.ActivitiRestServicesApplication</literal>that is used in the RestletServlet. 
+      <para>The custom RestAuthenticator should be set on the <literal>org.activiti.rest.service.application.ActivitiRestServicesApplication</literal>that is used in the RestletServlet. 
       The easiest way for this to create a subclass of the <literal>ActivitiRestServicesApplication</literal> and use the custom implementation classname in the servlet-mapping:</para>
       
       <programlisting>
@@ -280,7 +280,7 @@
 { 
   "name" : "variableName",
   "value" : "variableValue",
-  "operator" : "equals",
+  "operation" : "equals",
   "type" : "string"
 }</programlisting>
             <table>
@@ -463,8 +463,8 @@
                 </tbody>
               </tgroup>
             </table>
-            It's possible to support additional variable-types with a custom JSON representation (either simple value or complex/nested JSON object). By extending the <literal>initializeVariableConverters()</literal> method on <literal>org.activiti.rest.api.RestResponseFactory</literal>,
-            you can add additional <literal>org.activiti.rest.api.engine.variable.RestVariableConverter</literal> classes to support converting your POJO's to a format suitable for transerring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
+            It's possible to support additional variable-types with a custom JSON representation (either simple value or complex/nested JSON object). By extending the <literal>initializeVariableConverters()</literal> method on <literal>org.activiti.rest.service.api.RestResponseFactory</literal>,
+            you can add additional <literal>org.activiti.rest.service.api.engine.variable.RestVariableConverter</literal> classes to support converting your POJO's to a format suitable for transerring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
         </para>
        </section>
     </section>
@@ -2699,7 +2699,7 @@
        <emphasis role="bold">Request body (start by message):</emphasis>
             <programlisting>
 {
-   "processDefinitionKey":"newOrderMessage",
+   "message":"newOrderMessage",
    "businessKey":"myBusinessKey",
    "variables": [
       {
@@ -2906,7 +2906,7 @@
     {
         "name" : "myVariable",
         "value" : 1234,
-        "operator" : "equals",
+        "operation" : "equals",
         "type" : "long"
     },
     ...
@@ -4135,7 +4135,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
     {
         "name" : "myVariable",
         "value" : 1234,
-        "operator" : "equals",
+        "operation" : "equals",
         "type" : "long"
     },
     ...
@@ -4145,7 +4145,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
     {
         "name" : "processVariable",
         "value" : "some string",
-        "operator" : "equals",
+        "operation" : "equals",
         "type" : "string"
     },
     ...
@@ -4877,10 +4877,22 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Only return tasks assigned to the given user.</entry>
                   </row>
                   <row>
+                    <entry>assigneeLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks assigned with an assignee like the given value.</entry>
+                  </row>
+                  <row>
                     <entry>owner</entry>
                     <entry>No</entry>
                     <entry>String</entry>
                     <entry>Only return tasks owned by the given user.</entry>
+                  </row>
+                  <row>
+                    <entry>ownerLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks assigned with an owner like the given value.</entry>
                   </row>
                   <row>
                     <entry>unassigned</entry>
@@ -4937,6 +4949,36 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Only return tasks which are part of the process instance with the given business key.</entry>
                   </row>
                   <row>
+                    <entry>processInstanceBusinessKeyLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of the process instance which has a business key like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKey</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with the given key.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionKeyLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with a key like the given value.</entry>
+                  </row>
+                   <row>
+                    <entry>processDefinitionName</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with the given name.</entry>
+                  </row>
+                  <row>
+                    <entry>processDefinitionNameLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks which are part of a process instance which has a process definition with a name like the given value.</entry>
+                  </row>
+                  <row>
                     <entry>executionId</entry>
                     <entry>No</entry>
                     <entry>String</entry>
@@ -4977,6 +5019,24 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>No</entry>
                     <entry>ISO Date</entry>
                     <entry>Only return tasks which are due after the given date.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutDueDate</entry>
+                    <entry>No</entry>
+                    <entry>boolean</entry>
+                    <entry>Only return tasks which don't have a due date. The property is ignored if the value is <literal>false</literal>.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutDueDate</entry>
+                    <entry>No</entry>
+                    <entry>boolean</entry>
+                    <entry>Only return tasks which don't have a due date. The property is ignored if the value is <literal>false</literal>.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutDueDate</entry>
+                    <entry>No</entry>
+                    <entry>boolean</entry>
+                    <entry>Only return tasks which don't have a due date. The property is ignored if the value is <literal>false</literal>.</entry>
                   </row>
                   <row>
                     <entry>excludeSubTasks</entry>
@@ -5083,7 +5143,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ],
@@ -5228,7 +5288,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
   "action" : "claim",
   "assignee" : "userWhoClaims"
 }</programlisting>
-      Claims the task by the given assignee. The assignee is required.
+      Claims the task by the given assignee. If the assignee is <literal>null</literal>, the task is assigned to no-one, claimable agian.
        </para>
        <para>
          <emphasis role="bold">Delegate a task - Body JSON:</emphasis>
@@ -7478,7 +7538,7 @@ Only the attachment name is required to create a new attachment.
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ]
@@ -7748,6 +7808,12 @@ Only the attachment name is required to create a new attachment.
                   <entry>The process definition key of the historic task instance.</entry>
                 </row>
                 <row>
+                  <entry>processDefinitionKeyLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process definition key of the historic task instance, which matches the given value.</entry>
+                </row>
+                <row>
                   <entry>processDefinitionId</entry>
                   <entry>No</entry>
                   <entry>String</entry>
@@ -7759,6 +7825,12 @@ Only the attachment name is required to create a new attachment.
                   <entry>String</entry>
                   <entry>The process definition name of the historic task instance.</entry>
                 </row>
+                 <row>
+                  <entry>processDefinitionNameLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process definition name of the historic task instance, which matches the given value.</entry>
+                </row>
                 <row>
                   <entry>processBusinessKey</entry>
                   <entry>No</entry>
@@ -7766,10 +7838,22 @@ Only the attachment name is required to create a new attachment.
                   <entry>The process instance business key of the historic task instance.</entry>
                 </row>
                 <row>
+                  <entry>processBusinessKeyLike</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The process instance business key of the historic task instance that matches the given value.</entry>
+                </row>
+                <row>
                   <entry>executionId</entry>
                   <entry>No</entry>
                   <entry>String</entry>
                   <entry>The execution id of the historic task instance.</entry>
+                </row>
+                <row>
+                  <entry>taskDefinitionKey</entry>
+                  <entry>No</entry>
+                  <entry>String</entry>
+                  <entry>The task definition key for tasks part of a process</entry>
                 </row>
                 <row>
                   <entry>taskName</entry>
@@ -7886,10 +7970,46 @@ Only the attachment name is required to create a new attachment.
                   <entry>Return only historic task instances that have a due date before this date.</entry>
                 </row>
                 <row>
+                  <entry>withoutDueDate</entry>
+                  <entry>No</entry>
+                  <entry>Boolean</entry>
+                  <entry>Return only historic task instances that haveno due-date. When <literal>false</literal> is provided as value, this parameter is ignored.</entry>
+                </row>
+                <row>
+                  <entry>completedOn</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that have been completed on this date.</entry>
+                </row>
+                <row>
+                  <entry>completedAfter</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that have been completed after this date.</entry>
+                </row>
+                <row>
+                  <entry>completedBefore</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that have been completed before this date.</entry>
+                </row>
+                <row>
                   <entry>taskCreatedOn</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that were created on this date.</entry>
+                </row>
+                <row>
+                  <entry>taskCreatedBefore</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that were created before this date.</entry>
+                </row>
+                <row>
+                  <entry>taskCreatedAfter</entry>
+                  <entry>No</entry>
+                  <entry>Date</entry>
+                  <entry>Return only historic task instances that were created after this date.</entry>
                 </row>
                 <row>
                   <entry>includeTaskLocalVariables</entry>
@@ -8001,7 +8121,7 @@ Only the attachment name is required to create a new attachment.
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ]
@@ -8513,7 +8633,7 @@ Only the attachment name is required to create a new attachment.
     {
       "name" : "myVariable",
       "value" : 1234,
-      "operator" : "equals",
+      "operation" : "equals",
       "type" : "long"
     }
   ]
@@ -9318,8 +9438,8 @@ Only the attachment name is required to create a new attachment.
             <programlisting>
 {
    "next.dbid":"101",
-   "schema.history":"create(5.14-SNAPSHOT)",
-   "schema.version":"5.14-SNAPSHOT"
+   "schema.history":"create(5.15-SNAPSHOT)",
+   "schema.version":"5.15-SNAPSHOT"
 }</programlisting>
           <table>
               <title>Get engine properties - Response codes</title>
@@ -9353,7 +9473,7 @@ Only the attachment name is required to create a new attachment.
             <programlisting>
 {
    "name":"default",
-   "version":"5.14-SNAPSHOT",
+   "version":"5.15-SNAPSHOT",
    "resourceUrl":"file://activiti/activiti.cfg.xml",
    "exception":null
 }</programlisting>
@@ -9958,7 +10078,8 @@ Only the attachment name is required to create a new attachment.
 {
   "firstName":"Tijs",
   "lastName":"Barrez",
-  "email":"no-reply@alfresco.org"
+  "email":"no-reply@alfresco.org",
+  "password":"pass123"
 }</programlisting>
       All request values are optional. For example, you can only include the 'firstName' attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: <literal>{"firstName" : null}</literal> will clear the firstName of the user).
        </para>
@@ -10006,7 +10127,8 @@ Only the attachment name is required to create a new attachment.
   "id":"tijs",
   "firstName":"Tijs",
   "lastName":"Barrez",
-  "email":"no-reply@alfresco.org"
+  "email":"no-reply@alfresco.org",
+  "password":"pass123"
 }</programlisting>
        </para>
         <para>
@@ -11006,7 +11128,7 @@ Only the attachment name is required to create a new attachment.
   <section>
 
     <title>Legacy REST - General Usage</title>
-    <para><emphasis role="bold">The folowing section contains documentation of the Legacy REST-api, which has been deprecated since the 5.14-SNAPSHOT release. The REST-urls will not be removed in the future but will not be maintained. Any future additions and improvements will be done to the new REST API.</emphasis></para>
+    <para><emphasis role="bold">The folowing section contains documentation of the Legacy REST-api, which has been deprecated since the 5.15-SNAPSHOT release. The REST-urls will not be removed in the future but will not be maintained. Any future additions and improvements will be done to the new REST API.</emphasis></para>
     <para>
       Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat.
       By default the Activiti Engine will connect to a standalone H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder.

@@ -12,7 +12,9 @@
  */
 package org.activiti.workflow.simple;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
@@ -20,7 +22,11 @@ import java.io.Writer;
 import java.util.Collections;
 
 import org.activiti.workflow.simple.converter.json.SimpleWorkflowJsonConverter;
+import org.activiti.workflow.simple.definition.ChoiceStepsDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.ListConditionStepDefinition;
+import org.activiti.workflow.simple.definition.ListStepDefinition;
+import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
@@ -83,6 +89,7 @@ public class JsonConverterTest {
 		textProp.setName("textProp");
 		textProp.setWritable(false);
 		formDefinition.addFormProperty(textProp);
+		textProp.getParameters().put("custom-parameter", "This is a test");
 		
 		NumberPropertyDefinition numberProp = new NumberPropertyDefinition();
 		numberProp.setMandatory(true);
@@ -109,7 +116,7 @@ public class JsonConverterTest {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Writer writer = new OutputStreamWriter(baos);
 		converter.writeWorkflowDefinition(workflowDefinition, writer);
-
+		
 		// Parse definition based on written JSON
 		WorkflowDefinition parsedDefinition = converter.readWorkflowDefinition(baos.toByteArray());
 		assertEquals(workflowDefinition.getSteps().size(), parsedDefinition.getSteps().size());
@@ -132,21 +139,117 @@ public class JsonConverterTest {
 				// Encountered step with form attached to it, should be last step
 				assertEquals(3, index);
 				assertEquals("123", humanStep.getForm().getFormKey());
-				assertEquals(originalStep.getForm().getFormProperties().size(), 
-						humanStep.getForm().getFormProperties().size());
+				assertEquals(originalStep.getForm().getFormPropertyDefinitions().size(), 
+						humanStep.getForm().getFormPropertyDefinitions().size());
 				
 				// Check form-fields, generic fields
-				for(int i=0; i<originalStep.getForm().getFormProperties().size(); i++) {
-					FormPropertyDefinition origDef = originalStep.getForm().getFormProperties().get(i);
-					FormPropertyDefinition parsedDef = humanStep.getForm().getFormProperties().get(i);
+				for(int i=0; i<originalStep.getForm().getFormPropertyDefinitions().size(); i++) {
+					FormPropertyDefinition origDef = originalStep.getForm().getFormPropertyDefinitions().get(i);
+					FormPropertyDefinition parsedDef = humanStep.getForm().getFormPropertyDefinitions().get(i);
 					
 					assertEquals(origDef.getName(), parsedDef.getName());
 					assertEquals(origDef.isMandatory(), parsedDef.isMandatory());
 					assertEquals(origDef.isWritable(), parsedDef.isWritable());
 					assertEquals(origDef.getClass(), parsedDef.getClass());
+					
+					if(parsedDef instanceof TextPropertyDefinition) {
+						assertTrue(parsedDef.getParameters() != null);
+						assertEquals(1L, parsedDef.getParameters().size());
+						assertEquals("This is a test", parsedDef.getParameters().get("custom-parameter"));
+					}
 				}
 			}
 			index++;
 		}
 	}
+	
+	@Test
+  public void testChoiceConversion() {
+    // Create definition
+	  WorkflowDefinition workflowDefinition = new WorkflowDefinition()
+    .name("testWorkflow")
+    .description("This is a test workflow")
+    .inChoice()
+      .inList()
+        .addCondition("test", "==", "'hello'")
+        .addCondition("test2", "==", "'world'")
+        .addHumanStep("first task", "kermit")
+      .endList()
+      .inList()
+        .addHumanStep("gonzo task", "gonzo")
+      .endList()
+    .endChoice();
+
+    // Write result to byte-array
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    Writer writer = new OutputStreamWriter(baos);
+    converter.writeWorkflowDefinition(workflowDefinition, writer);
+
+    // Parse definition based on written JSON
+    WorkflowDefinition parsedDefinition = converter.readWorkflowDefinition(baos.toByteArray());
+
+    // Check if parsed definition matches the original one
+    assertEquals(workflowDefinition.getName(), parsedDefinition.getName());
+    assertEquals(workflowDefinition.getDescription(), parsedDefinition.getDescription());
+    ChoiceStepsDefinition choiceDef = null;
+    for (StepDefinition step : parsedDefinition.getSteps()) {
+      if (step instanceof ChoiceStepsDefinition) {
+        choiceDef = (ChoiceStepsDefinition) step;
+      }
+    }
+    assertNotNull(choiceDef);
+    assertEquals(2, choiceDef.getStepList().size());
+    
+    ListConditionStepDefinition<ChoiceStepsDefinition> listSteps = choiceDef.getStepList().get(0);
+    assertEquals(2, listSteps.getConditions().size());
+    assertEquals("test", listSteps.getConditions().get(0).getLeftOperand());
+    assertEquals("==", listSteps.getConditions().get(0).getOperator());
+    assertEquals("'hello'", listSteps.getConditions().get(0).getRightOperand());
+    
+    listSteps = choiceDef.getStepList().get(1);
+    assertEquals(0, listSteps.getConditions().size());
+  }
+	
+	@Test
+  public void testParallelConversion() {
+    // Create definition
+    WorkflowDefinition workflowDefinition = new WorkflowDefinition()
+    .name("testWorkflow")
+    .description("This is a test workflow")
+    .inParallel()
+      .inList()
+        .addHumanStep("first task", "kermit")
+        .addHumanStep("second task", "kermit")
+      .endList()
+      .inList()
+        .addHumanStep("gonzo task", "gonzo")
+      .endList()
+    .endParallel();
+
+    // Write result to byte-array
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    Writer writer = new OutputStreamWriter(baos);
+    converter.writeWorkflowDefinition(workflowDefinition, writer);
+
+    // Parse definition based on written JSON
+    WorkflowDefinition parsedDefinition = converter.readWorkflowDefinition(baos.toByteArray());
+
+    // Check if parsed definition matches the original one
+    assertEquals(workflowDefinition.getName(), parsedDefinition.getName());
+    assertEquals(workflowDefinition.getDescription(), parsedDefinition.getDescription());
+    ParallelStepsDefinition parallelDef = null;
+    for (StepDefinition step : parsedDefinition.getSteps()) {
+      if (step instanceof ParallelStepsDefinition) {
+        parallelDef = (ParallelStepsDefinition) step;
+      }
+    }
+    assertNotNull(parallelDef);
+    assertEquals(2, parallelDef.getStepList().size());
+    
+    ListStepDefinition<ParallelStepsDefinition> listSteps = parallelDef.getStepList().get(0);
+    assertEquals(2, listSteps.getSteps().size());
+    
+    listSteps = parallelDef.getStepList().get(1);
+    assertEquals(1, listSteps.getSteps().size());
+  }
 }

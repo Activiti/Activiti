@@ -40,6 +40,8 @@ public class CompensateEventDefinitionParser extends BaseChildElementParser {
       eventDefinition.setWaitForCompletion(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION)));
     }
     
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_COMPENSATEDEFINITION, eventDefinition, xtr, model);
+    
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 }

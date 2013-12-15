@@ -46,4 +46,18 @@ public class IOParameter extends BaseElement {
   public void setTargetExpression(String targetExpression) {
     this.targetExpression = targetExpression;
   }
+  
+  public IOParameter clone() {
+    IOParameter clone = new IOParameter();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(IOParameter otherElement) {
+    super.setValues(otherElement);
+    setSource(otherElement.getSource());
+    setSourceExpression(otherElement.getSourceExpression());
+    setTarget(otherElement.getTarget());
+    setTargetExpression(otherElement.getTargetExpression());
+  }
 }

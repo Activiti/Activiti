@@ -1290,8 +1290,10 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     manager.getTransaction().commit();
     manager.close();
     
+    Task task = taskService.createTaskQuery().processInstanceId(executionId).taskName("my task").singleResult();
+    
     runtimeService.setVariable(executionId, variableName, entity);
-    runtimeService.signal(executionId);
+    taskService.complete(task.getId());
     
     List<HistoricDetail> variableUpdates = historyService.createHistoricDetailQuery().processInstanceId(executionId).variableUpdates().list();
     

@@ -28,6 +28,7 @@ public interface EditorJsonConstants {
   final String EDITOR_BOUNDS_X = "x";
   final String EDITOR_BOUNDS_Y = "y";
   final String EDITOR_DOCKERS = "dockers";
+  final String EDITOR_OUTGOING = "outgoing";
   
   final String EDITOR_PROPERTIES_GENERAL_ITEMS = "items";
 }

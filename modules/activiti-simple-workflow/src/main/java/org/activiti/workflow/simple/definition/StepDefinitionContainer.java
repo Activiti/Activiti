@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author Joram Barrez
  */
-public interface StepDefinitionContainer<T> extends StepDefinition {
+public interface StepDefinitionContainer<T> {
   
   List<StepDefinition> getSteps();
 

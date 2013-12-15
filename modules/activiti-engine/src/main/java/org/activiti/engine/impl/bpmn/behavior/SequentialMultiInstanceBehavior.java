@@ -43,7 +43,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     
     setLoopVariable(execution, NUMBER_OF_INSTANCES, nrOfInstances);
     setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, 0);
-    setLoopVariable(execution, LOOP_COUNTER, 0);
+    setLoopVariable(execution, getCollectionElementIndexVariable(), 0);
     setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
     logLoopDetails(execution, "initialized", 0, 0, 1, nrOfInstances);
     
@@ -58,12 +58,12 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
   public void leave(ActivityExecution execution) {
     callActivityEndListeners(execution);
     
-    int loopCounter = getLoopVariable(execution, LOOP_COUNTER) + 1;
+    int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable()) + 1;
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
     
-    setLoopVariable(execution, LOOP_COUNTER, loopCounter);
+    setLoopVariable(execution, getCollectionElementIndexVariable(), loopCounter);
     setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
     logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
     

@@ -35,4 +35,21 @@ public class DataGridRow {
   public void setFields(List<DataGridField> fields) {
     this.fields = fields;
   }
+  
+  public DataGridRow clone() {
+    DataGridRow clone = new DataGridRow();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(DataGridRow otherRow) {
+    setIndex(otherRow.getIndex());
+    
+    fields = new ArrayList<DataGridField>();
+    if (otherRow.getFields() != null && otherRow.getFields().size() > 0) {
+      for (DataGridField field : otherRow.getFields()) {
+        fields.add(field.clone());
+      }
+    }
+  }
 }

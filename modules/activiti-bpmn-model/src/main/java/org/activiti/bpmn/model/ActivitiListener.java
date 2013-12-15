@@ -49,4 +49,23 @@ public class ActivitiListener extends BaseElement {
   public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
     this.fieldExtensions = fieldExtensions;
   }
+  
+  public ActivitiListener clone() {
+    ActivitiListener clone = new ActivitiListener();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(ActivitiListener otherListener) {
+    setEvent(otherListener.getEvent());
+    setImplementation(otherListener.getImplementation());
+    setImplementationType(otherListener.getImplementationType());
+    
+    fieldExtensions = new ArrayList<FieldExtension>();
+    if (otherListener.getFieldExtensions() != null && otherListener.getFieldExtensions().size() > 0) {
+      for (FieldExtension extension : otherListener.getFieldExtensions()) {
+        fieldExtensions.add(extension.clone());
+      }
+    }
+  }
 }

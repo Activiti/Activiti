@@ -39,7 +39,8 @@
         TASK_DEF_KEY_,
         FORM_KEY_,
         PRIORITY_,
-        DUE_DATE_
+        DUE_DATE_,
+        CATEGORY_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processDefinitionId, jdbcType=VARCHAR},
@@ -58,7 +59,8 @@
         #{taskDefinitionKey ,jdbcType=VARCHAR},
         #{formKey ,jdbcType=VARCHAR},
         #{priority, jdbcType=INTEGER},
-        #{dueDate, jdbcType=TIMESTAMP}
+        #{dueDate, jdbcType=TIMESTAMP},
+        #{category, jdbcType=VARCHAR}
       )
   </insert>
 
@@ -79,7 +81,8 @@
       TASK_DEF_KEY_ = #{taskDefinitionKey ,jdbcType=VARCHAR},
       FORM_KEY_ = #{formKey ,jdbcType=VARCHAR},
       PRIORITY_ = #{priority, jdbcType=INTEGER},
-      DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP}
+      DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP},
+      CATEGORY_ = #{category, jdbcType=VARCHAR}
     where ID_ = #{id}
   </update>
 
@@ -110,6 +113,7 @@
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER" />
     <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP" />
+    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
   </resultMap>
   
   <resultMap id="historicTaskInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
@@ -131,6 +135,7 @@
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER" />
     <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP" />
+    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
     <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -161,7 +166,7 @@
 
   <select id="selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
   	${limitBefore}
-    select RES.* ${limitBetween}
+    select distinct RES.* ${limitBetween}
     <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
@@ -240,13 +245,16 @@
   </sql>
   
   <sql id="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
-    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null">
+    <if test="candidateUser != null || candidateGroups != null">
+      inner join ${prefix}ACT_HI_IDENTITYLINK HI on HI.TASK_ID_ = RES.ID_
+    </if>
+    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null">
       inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
     </if>
-    <if test="processDefinitionKey != null || processDefinitionName != null">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionName != null || processDefinitionNameLike != null">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
-    <foreach collection="variables" index="index" item="var">
+    <foreach collection="queryVariableValues" index="index" item="var">
       <choose>
         <when test="var.local">
           inner join ${prefix}ACT_HI_VARINST A${index} on RES.ID_ = A${index}.TASK_ID_ 
@@ -266,8 +274,14 @@
       <if test="processDefinitionKey != null">
         and D.KEY_ = #{processDefinitionKey}
       </if>
+      <if test="processDefinitionKeyLike != null">
+        and D.KEY_ like #{processDefinitionKeyLike}
+      </if>
       <if test="processDefinitionName != null">
         and D.NAME_ = #{processDefinitionName}
+      </if>
+      <if test="processDefinitionNameLike != null">
+        and D.NAME_ like #{processDefinitionNameLike}
       </if>
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
@@ -275,8 +289,14 @@
       <if test="processInstanceBusinessKey != null">
         and HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}
       </if>
+      <if test="processInstanceBusinessKeyLike != null">
+        and HPI.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}
+      </if>
       <if test="taskDefinitionKey != null">
         and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
+      </if>
+      <if test="taskDefinitionKeyLike != null">
+        and RES.TASK_DEF_KEY_ like #{taskDefinitionKeyLike}
       </if>
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
@@ -317,6 +337,12 @@
       <if test="taskPriority != null">
         and RES.PRIORITY_ = #{taskPriority}
       </if>
+      <if test="taskMinPriority != null">
+        and RES.PRIORITY_ &gt;= #{taskMinPriority}
+      </if>
+      <if test="taskMaxPriority != null">
+        and RES.PRIORITY_ &lt;= #{taskMaxPriority}
+      </if>
       <if test="unfinished">
         and RES.END_TIME_ is null
       </if>
@@ -344,6 +370,44 @@
       <if test="creationDate != null">
         and RES.START_TIME_ = #{creationDate}
       </if>
+      <if test="creationBeforeDate != null">
+        and RES.START_TIME_ &lt; #{creationBeforeDate}
+      </if>
+      <if test="creationAfterDate != null">
+        and RES.START_TIME_ &gt; #{creationAfterDate}
+      </if>
+      <if test="completedDate != null">
+        and RES.END_TIME_ = #{completedDate}
+      </if>
+      <if test="completedBeforeDate != null">
+        and RES.END_TIME_ &lt; #{completedBeforeDate}
+      </if>
+      <if test="completedAfterDate != null">
+        and RES.END_TIME_ &gt; #{completedAfterDate}
+      </if>
+      <if test="category != null">
+        and RES.CATEGORY_ = #{category}
+      </if>
+      <if test="candidateUser != null || candidateGroups != null">
+        and RES.ASSIGNEE_ is null
+        and HI.TYPE_ = 'candidate'
+        and
+        (
+          <if test="candidateUser != null">
+            HI.USER_ID_ = #{candidateUser}
+          </if>
+          <if test="candidateUser != null &amp;&amp; candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+            or
+          </if>
+          <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+            HI.GROUP_ID_ IN
+            <foreach item="group" index="index" collection="candidateGroups"
+                     open="(" separator="," close=")">
+              #{group}
+            </foreach>
+          </if>
+        )
+      </if>
       <if test="involvedUser != null">
         and (
           exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
@@ -351,7 +415,7 @@
           or RES.OWNER_ = #{involvedUser}
           )
       </if>
-      <foreach item="queryVar" collection="variables" index="index">
+      <foreach item="queryVar" collection="queryVariableValues" index="index">
         <if test="!queryVar.local">
           <!-- When process instance variable is queried for, taskId should be null -->
           and A${index}.TASK_ID_ is null
@@ -426,23 +490,23 @@
   </sql>
 
   <select id="selectHistoricTaskInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-    	${limitBefore}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
     </if>
     ${sql}
     <if test="resultType == 'LIST_PAGE'">
-    	${limitAfter}
+      ${limitAfter}
     </if>
   </select>
   
   <select id="selectHistoricTaskInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-        ${limitBeforeNativeQuery}
-  	</if>
-  	${sql} 
     <if test="resultType == 'LIST_PAGE'">
-  		${limitAfter}
-  	</if>
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
   </select>
 
   <select id="selectHistoricTaskInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">

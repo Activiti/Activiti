@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -91,6 +93,11 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
         .findExecutionById(executionId);
       execution.addJob(this);
     }
+    
+    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
+    }
   }
   
   public void delete() {
@@ -108,11 +115,17 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
         .findExecutionById(executionId);
       execution.removeJob(this);
     }
+    
+    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
+    }
   }
 
   public void setExecution(ExecutionEntity execution) {
     executionId = execution.getId();
     processInstanceId = execution.getProcessInstanceId();
+    processDefinitionId = execution.getProcessDefinitionId();
     execution.addJob(this);
   }
 

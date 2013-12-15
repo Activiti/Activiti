@@ -21,6 +21,8 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
@@ -125,7 +127,7 @@ public class BpmnDeployer implements Deployer {
     ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
     DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-      
+      List<TimerEntity> timers = new ArrayList<TimerEntity>();
       if (deployment.isNew()) {
         int processDefinitionVersion;
 
@@ -151,7 +153,7 @@ public class BpmnDeployer implements Deployer {
         processDefinition.setId(processDefinitionId);
 
         removeObsoleteTimers(processDefinition);
-        addTimerDeclarations(processDefinition);
+        addTimerDeclarations(processDefinition, timers);
         
         removeObsoleteMessageEventSubscriptions(processDefinition, latestProcessDefinition);
         addMessageEventSubscriptions(processDefinition);
@@ -159,7 +161,12 @@ public class BpmnDeployer implements Deployer {
         dbSqlSession.insert(processDefinition);
         addAuthorizations(processDefinition);
 
+        scheduleTimers(timers);
         
+        if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+        			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition));
+        }
       } else {
         String deploymentId = deployment.getId();
         processDefinition.setDeploymentId(deploymentId);
@@ -181,17 +188,23 @@ public class BpmnDeployer implements Deployer {
     }
   }
 
+  private void scheduleTimers(List<TimerEntity> timers) {
+    for (TimerEntity timer : timers) {
+      Context
+        .getCommandContext()
+        .getJobEntityManager()
+        .schedule(timer);
+    }
+  }
+
   @SuppressWarnings("unchecked")
-  protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition) {
+  protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition, List<TimerEntity> timers) {
     List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
     if (timerDeclarations!=null) {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
         TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
         timer.setProcessDefinitionId(processDefinition.getId());
-        Context
-          .getCommandContext()
-          .getJobEntityManager()
-          .schedule(timer);
+        timers.add(timer);
       }
     }
   }

@@ -28,7 +28,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 /**
  * @author Joram Barrez
  */
-public class BoundaryEventParseHandler extends AbstractBpmnParseHandler<BoundaryEvent> {
+public class BoundaryEventParseHandler extends AbstractFlowNodeBpmnParseHandler<BoundaryEvent> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return BoundaryEvent.class;

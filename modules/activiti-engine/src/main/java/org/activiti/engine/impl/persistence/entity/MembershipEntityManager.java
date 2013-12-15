@@ -16,6 +16,8 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.persistence.AbstractManager;
 
 
@@ -29,6 +31,11 @@ public class MembershipEntityManager extends AbstractManager implements Membersh
     membershipEntity.setUserId(userId);
     membershipEntity.setGroupId(groupId);
     getDbSqlSession().insert(membershipEntity);
+    
+    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIP_CREATED, groupId, userId));
+    }
   }
 
   public void deleteMembership(String userId, String groupId) {
@@ -36,6 +43,11 @@ public class MembershipEntityManager extends AbstractManager implements Membersh
     parameters.put("userId", userId);
     parameters.put("groupId", groupId);
     getDbSqlSession().delete("deleteMembership", parameters);
+    
+    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIP_DELETED, groupId, userId));
+    }
   }
   
 

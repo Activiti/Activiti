@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.14-SNAPSHOT', 1);
+values ('schema.version', '5.15-SNAPSHOT', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.14-SNAPSHOT)', 1);
+values ('schema.history', 'create(5.15-SNAPSHOT)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -118,6 +118,7 @@ create table ACT_RU_TASK (
     PRIORITY_ integer,
     CREATE_TIME_ timestamp,
     DUE_DATE_ timestamp,
+    CATEGORY_ varchar(255),
     SUSPENSION_STATE_ integer,
     primary key (ID_)
 );
@@ -199,10 +200,6 @@ alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PROCDEF 
     foreign key (PROC_DEF_ID_) 
     references ACT_RE_PROCDEF (ID_);    
-    
-alter table ACT_RU_EXECUTION
-    add constraint ACT_UNIQ_RU_BUS_KEY
-    unique(PROC_DEF_ID_, BUSINESS_KEY_);
     
 alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_TSKASS_TASK

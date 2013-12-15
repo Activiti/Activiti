@@ -7,31 +7,32 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
 
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
     <packaging>pom</packaging>
-    <version>5.14-SNAPSHOT</version>
+    <version>5.15-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.framework.version>4.0.0.RC2</spring.framework.version>
+        <spring.framework.version>4.0.RELEASE</spring.framework.version>
         <mule.version>3.3.0</mule.version>
         <cxf.version>2.6.1</cxf.version>
-        <restlet.version>2.0.15</restlet.version>
+        <restlet.version>2.1.4</restlet.version>
         <batik.version>1.7</batik.version>
 
         <!-- OSGi bundles properties -->
-        <activiti.artifact/>
-        <activiti.osgi.import.activiti.version>
-            version="[$(version;==;${activiti.osgi.version.clean}),$(version;=+;${activiti.osgi.version.clean}))"
-        </activiti.osgi.import.activiti.version>
-        <activiti.osgi.import.strict.version>
-            version="[$(version;===;${activiti.osgi.version.clean}),$(version;==+;${activiti.osgi.version.clean}))"
-        </activiti.osgi.import.strict.version>
-        <activiti.osgi.import.default.version>[$(version;==;$(@)),$(version;+;$(@)))
-        </activiti.osgi.import.default.version>
+        <activiti.artifact />
+        <activiti.osgi.import.activiti.version>version="[$(version;==;${activiti.osgi.version.clean}),$(version;=+;${activiti.osgi.version.clean}))"</activiti.osgi.import.activiti.version>
+        <activiti.osgi.import.strict.version>version="[$(version;===;${activiti.osgi.version.clean}),$(version;==+;${activiti.osgi.version.clean}))"</activiti.osgi.import.strict.version>
+        <activiti.osgi.import.default.version>[$(version;==;$(@)),$(version;+;$(@)))</activiti.osgi.import.default.version>
         <activiti.osgi.import.defaults>
         </activiti.osgi.import.defaults>
-        <activiti.osgi.import.before.defaults/>
-        <activiti.osgi.import.additional/>
-        <activiti.osgi.export.additional/>
+        <activiti.osgi.import.before.defaults />
+        <activiti.osgi.import.additional />
+        <activiti.osgi.export.additional />
         <activiti.osgi.import.pkg>
             org.activiti.*;${activiti.osgi.import.activiti.version},
             ${activiti.osgi.import.before.defaults},
@@ -39,14 +40,11 @@
             ${activiti.osgi.import.additional},
             *
         </activiti.osgi.import.pkg>
-        <activiti.osgi.activator/>
+        <activiti.osgi.activator />
         <activiti.osgi.failok>false</activiti.osgi.failok>
-        <activiti.osgi.export>${activiti.osgi.export.pkg};${activiti.osgi.version};-noimport:=true
-        </activiti.osgi.export>
-        <!--
-        <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
-        <activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg>
-        -->
+        <activiti.osgi.export>${activiti.osgi.export.pkg};${activiti.osgi.version};-noimport:=true</activiti.osgi.export>
+        <!-- <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
+          <activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg> -->
         <activiti.osgi.export.pkg>
             ${activiti.artifact}*,
             ${activiti.osgi.export.additional}
@@ -55,14 +53,21 @@
         <activiti.osgi.version>version=${project.version}</activiti.osgi.version>
         <activiti.osgi.split.pkg>-split-package:=first</activiti.osgi.split.pkg>
         <activiti.osgi.import>${activiti.osgi.import.pkg}</activiti.osgi.import>
-        <activiti.osgi.dynamic/>
+        <activiti.osgi.dynamic />
         <activiti.osgi.symbolic.name>${activiti.artifact}</activiti.osgi.symbolic.name>
         <activiti.osgi.exclude.dependencies>false</activiti.osgi.exclude.dependencies>
-        <activiti.osgi.remove.headers>Ignore-Package,Include-Resource,Private-Package,Bundle-DocURL
-        </activiti.osgi.remove.headers>
+        <activiti.osgi.remove.headers>Ignore-Package,Include-Resource,Private-Package,Bundle-DocURL</activiti.osgi.remove.headers>
         <activiti.osgi.include.resource>{maven-resources}</activiti.osgi.include.resource>
         <activiti.osgi.embed></activiti.osgi.embed>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>activiti-third-party</id>
+            <name>Activiti third party</name>
+            <url>https://maven.alfresco.com/nexus/content/repositories/thirdparty/</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -163,7 +168,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>5.1.26</version>
+                <version>5.1.27</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -352,26 +357,6 @@
                 <optional>true</optional>
             </dependency>
             <dependency>
-                <groupId>org.restlet.jee</groupId>
-                <artifactId>org.restlet</artifactId>
-                <version>${restlet.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.restlet.jee</groupId>
-                <artifactId>org.restlet.ext.servlet</artifactId>
-                <version>${restlet.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.restlet.jee</groupId>
-                <artifactId>org.restlet.ext.jackson</artifactId>
-                <version>${restlet.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.restlet.jee</groupId>
-                <artifactId>org.restlet.ext.fileupload</artifactId>
-                <version>${restlet.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-jdk14</artifactId>
                 <version>1.7.2</version>
@@ -379,12 +364,6 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>${spring.framework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                 <optional>true</optional>
                 <version>${spring.framework.version}</version>
             </dependency>
             <dependency>
@@ -443,7 +422,7 @@
             <dependency>
                 <groupId>postgresql</groupId>
                 <artifactId>postgresql</artifactId>
-                <version>9.0-802.jdbc4</version>
+                <version>9.0-801.jdbc4</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -508,6 +487,11 @@
                 <version>${batik.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.imgscalr</groupId>
+                <artifactId>imgscalr-lib</artifactId>
+                <version>4.2</version>
+            </dependency>
+            <dependency>
                 <groupId>math.geom</groupId>
                 <artifactId>javaGeom</artifactId>
                 <version>0.11.0</version>
@@ -561,48 +545,6 @@
         <module>modules/activiti-engine</module>
     </modules>
 
-    <repositories>
-        <repository>
-            <id>activiti</id>
-            <name>Activiti</name>
-            <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-        </repository>
-        <repository>
-            <id>activiti-third-party</id>
-            <name>Activiti third party</name>
-            <url>https://maven.alfresco.com/nexus/content/repositories/activiti-thirdparty/</url>
-        </repository>
-        <repository>
-            <id>jboss</id>
-            <name>JBoss Repository</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>maven-restlet</id>
-            <name>Public online Restlet repository</name>
-            <url>http://maven.restlet.org</url>
-        </repository>
-        <repository>
-            <id>vaadin-addons</id>
-            <url>http://maven.vaadin.com/vaadin-addons</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>maven2.java.net</id>
-            <name>Java.net Repository for Maven 2</name>
-            <url>http://download.java.net/maven/2/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>sonatype-snapshot-repo</id>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <url>https://repository.sonatype.org/content/repositories/apache-snapshots</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <build>
         <plugins>
             <plugin>
@@ -640,8 +582,8 @@
                         <Bundle-SymbolicName>${activiti.osgi.symbolic.name}</Bundle-SymbolicName>
                         <Bundle-Activator>${activiti.osgi.activator}</Bundle-Activator>
                         <Export-Package>${activiti.osgi.export}</Export-Package>
-                        <Import-Package>org.activiti.osgi*;resolution:=optional, ${activiti.osgi.import}
-                        </Import-Package>
+                        <Import-Package>org.activiti.osgi;resolution:=optional,
+                            ${activiti.osgi.import}</Import-Package>
                         <DynamicImport-Package>${activiti.osgi.dynamic}</DynamicImport-Package>
                         <Private-Package>${activiti.osgi.private.pkg}</Private-Package>
                         <Implementation-Title>Activiti</Implementation-Title>
@@ -667,7 +609,8 @@
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>2.3.2</version>
                 </plugin>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <!--This plugin's configuration is used to store Eclipse m2e settings
+                  only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -692,6 +635,16 @@
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.4.2</version>
+                    <configuration>
+                        <mavenExecutorId>forked-path</mavenExecutorId>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <arguments>${arguments} -Psonatype-oss-release</arguments>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -708,6 +661,7 @@
             <modules>
                 <module>modules/activiti-bpmn-model</module>
                 <module>modules/activiti-bpmn-converter</module>
+                <module>modules/activiti-engine</module>
                 <module>modules/activiti-bpmn-layout</module>
                 <module>modules/activiti-json-converter</module>
                 <module>modules/activiti-simple-workflow</module>
@@ -735,6 +689,31 @@
                             <execution>
                                 <goals>
                                     <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -784,7 +763,8 @@
             </modules>
         </profile>
         <profile>
-            <!-- this profile prevents that tests are executed while running the qa/build.xml test.demo.setup target -->
+            <!-- this profile prevents that tests are executed while running the
+              qa/build.xml test.demo.setup target -->
             <id>nodocs</id>
             <activation>
                 <property>
@@ -831,7 +811,8 @@
             </modules>
         </profile>
         <profile>
-            <!-- Profile used by the start-explorer.sh script to build the Explorer webapp and all its dependencies -->
+            <!-- Profile used by the start-explorer.sh script to build the Explorer
+              webapp and all its dependencies -->
             <id>buildWebappDependencies</id>
             <modules>
                 <module>modules/activiti-bpmn-model</module>
@@ -868,7 +849,8 @@
             </build>
         </profile>
         <profile>
-            <!-- Profile used by the start-rest.sh script to build the Explorer webapp and all its dependencies -->
+            <!-- Profile used by the start-rest.sh script to build the Explorer
+              webapp and all its dependencies -->
             <id>buildRestappDependencies</id>
             <modules>
                 <module>modules/activiti-bpmn-model</module>
@@ -902,18 +884,6 @@
         </profile>
     </profiles>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>alfresco.snapshot.repo</id>
-            <url>https://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-        <repository>
-            <id>alfresco.release.repo</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
-        </repository>
-    </distributionManagement>
-
     <!-- Various information, not used by the build -->
 
     <url>http://activiti.org</url>
@@ -925,73 +895,66 @@
     </licenses>
     <organization>
         <name>Alfresco</name>
-        <url>http://alfresco.com</url>
+        <url>http://www.alfresco.com</url>
     </organization>
     <developers>
         <developer>
-            <name>Tom Baeyens</name>
+            <name>Tijs Rademakers</name>
             <organization>Alfresco</organization>
-            <url>http://alfresco.com</url>
+            <url>http://www.alfresco.com</url>
         </developer>
         <developer>
             <name>Joram Barrez</name>
             <organization>Alfresco</organization>
-            <url>http://alfresco.com</url>
+            <url>http://www.alfresco.com</url>
         </developer>
         <developer>
             <name>Frederik Heremans</name>
             <organization>Alfresco</organization>
-            <url>http://alfresco.com</url>
-        </developer>
-        <developer>
-            <name>Tijs Rademakers</name>
-            <organization>Alfresco</organization>
-            <url>http://alfresco.com</url>
-        </developer>
-        <developer>
-            <name>Bernd Ruecker</name>
-            <organization>camunda</organization>
-            <url>http://camunda.com</url>
-        </developer>
-        <developer>
-            <name>Falko Menge</name>
-            <organization>camunda</organization>
-            <url>http://camunda.com</url>
-        </developer>
-        <developer>
-            <name>Nils Preusker</name>
-            <organization>camunda</organization>
-            <url>http://camunda.com</url>
-        </developer>
-        <developer>
-            <name>Christian Lipphardt</name>
-            <organization>camunda</organization>
-            <url>http://camunda.com</url>
-        </developer>
-        <developer>
-            <name>Kristin Polenz</name>
-            <organization>camunda</organization>
-            <url>http://camunda.com</url>
-        </developer>
-        <developer>
-            <name>Gero Decker</name>
-            <organization>Signavio</organization>
-            <url>http://signavio.com</url>
+            <url>http://www.alfresco.com</url>
         </developer>
         <developer>
             <name>Erik Winlöf</name>
             <organization>Alfresco</organization>
-            <url>http://alfresco.com</url>
+            <url>http://www.alfresco.com</url>
         </developer>
         <developer>
-            <name>Nick Burch</name>
-            <organization>Alfresco</organization>
-            <url>http://alfresco.com</url>
+            <name>Josh Long</name>
+            <organization>Pivotal</organization>
+            <url>http://gopivotal.com</url>
+        </developer>
+        <developer>
+            <name>Etienne Studer</name>
+            <organization>Edorasware</organization>
+            <url>http://www.edorasware.com</url>
+        </developer>
+        <developer>
+            <name>José Antonio Álvarez</name>
+            <organization>Edorasware</organization>
+            <url>http://www.edorasware.com</url>
+        </developer>
+        <developer>
+            <name>Guy Brand</name>
+            <organization>Edorasware</organization>
+            <url>http://www.edorasware.com</url>
+        </developer>
+        <developer>
+            <name>Martin Grofcik</name>
+            <organization>Edorasware</organization>
+            <url>http://www.edorasware.com</url>
+        </developer>
+        <developer>
+            <name>Christian Muelder</name>
+            <organization>Next Level Integration</organization>
+            <url>http://next-level-integration.com/</url>
         </developer>
         <developer>
             <name>Christian Stettler</name>
-            <organization>Mimacom</organization>
-            <url>http://mimacom.com</url>
+        </developer>
+        <developer>
+            <name>Saeid Mirzaei</name>
+            <organization>Atos worldline</organization>
+            <url>http://www.worldline.com/</url>
         </developer>
     </developers>
     <issueManagement>
@@ -1003,7 +966,8 @@
         <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
     </ciManagement>
     <scm>
-        <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
-        <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
+        <url>git@github.com:Activiti/Activiti.git</url>
+        <connection>scm:git:git@github.com:Activiti/Activiti.git</connection>
+        <developerConnection>scm:git:git@github.com:Activiti/Activiti.git</developerConnection>
     </scm>
 </project>

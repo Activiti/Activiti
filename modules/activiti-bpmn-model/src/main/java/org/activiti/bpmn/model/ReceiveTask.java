@@ -17,4 +17,13 @@ package org.activiti.bpmn.model;
  */
 public class ReceiveTask extends Task {
 
+  public ReceiveTask clone() {
+    ReceiveTask clone = new ReceiveTask();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(ManualTask otherElement) {
+    super.setValues(otherElement);
+  }
 }

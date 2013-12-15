@@ -60,8 +60,22 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** Only select tasks which are assigned to the given user. */
   TaskQuery taskAssignee(String assignee);
   
+  /** 
+   * Only select tasks which were last assigned to an assignee like
+   * the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  TaskQuery taskAssigneeLike(String assigneeLike);
+  
   /** Only select tasks for which the given user is the owner. */
   TaskQuery taskOwner(String owner);
+  
+  /** 
+   * Only select tasks which were last assigned to an owner like
+   * the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  TaskQuery taskOwnerLike(String ownerLike);
   
   /** Only select tasks which don't have an assignee. */
   TaskQuery taskUnassigned();
@@ -97,22 +111,30 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery processInstanceId(String processInstanceId);
   
   /** Only select tasks foe the given business key */
-  TaskQuery processInstanceBusinessKey(String processInstanceBusinessKey);  
+  TaskQuery processInstanceBusinessKey(String processInstanceBusinessKey);
+  
+  /** Only select tasks with a business key  like the given value
+   * The syntax is that of SQL: for example usage: processInstanceBusinessKeyLike("%activiti%"). 
+   */
+  TaskQuery processInstanceBusinessKeyLike(String processInstanceBusinessKeyLike);
 
   /** Only select tasks for the given execution. */
   TaskQuery executionId(String executionId);
   
-  /** Only select tasks that are created on the given date. **/
+  /** Only select tasks that are created on the given date. */
   TaskQuery taskCreatedOn(Date createTime);
   
-  /** Only select tasks that are created before the given date. **/
+  /** Only select tasks that are created before the given date. */
   TaskQuery taskCreatedBefore(Date before);
 
-  /** Only select tasks that are created after the given date. **/
+  /** Only select tasks that are created after the given date. */
   TaskQuery taskCreatedAfter(Date after);
   
-  /** Only select tasks that have no parent (i.e. do not select subtasks). **/
+  /** Only select tasks that have no parent (i.e. do not select subtasks). */
   TaskQuery excludeSubtasks();
+  
+  /** Only select tasks with the given category. */
+  TaskQuery taskCategory(String category);
 
   /** 
    * Only select tasks with the given taskDefinitionKey.
@@ -170,6 +192,46 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value);
   
+  /** Only select tasks which have a local variable value greater than the
+   * passed value when they ended. Booleans, Byte-arrays and
+   * {@link Serializable} objects (which are not primitive type wrappers) are
+   * not supported.
+   * @param name cannot be null.
+   * @param value cannot be null. */
+  TaskQuery taskVariableValueGreaterThan(String name, Object value);
+
+  /** Only select tasks which have a local variable value greater than or
+   * equal to the passed value when they ended. Booleans, Byte-arrays and
+   * {@link Serializable} objects (which are not primitive type wrappers) are
+   * not supported.
+   * @param name cannot be null.
+   * @param value cannot be null. */
+  TaskQuery taskVariableValueGreaterThanOrEqual(String name, Object value);
+
+  /** Only select tasks which have a local variable value less than the
+   * passed value when the ended.Booleans,
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type
+   * wrappers) are not supported.
+   * @param name cannot be null.
+   * @param value cannot be null. */
+  TaskQuery taskVariableValueLessThan(String name, Object value);
+
+  /** Only select tasks which have a local variable value less than or equal
+   * to the passed value when they ended. Booleans,
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type
+   * wrappers) are not supported.
+   * @param name cannot be null.
+   * @param value cannot be null. */
+  TaskQuery taskVariableValueLessThanOrEqual(String name, Object value);
+
+  /** Only select tasks which have a local variable value like the given value
+   * when they ended. This can be used on string variables only.
+   * @param name cannot be null.
+   * @param value cannot be null. The string can include the
+   *          wildcard character '%' to express like-strategy: starts with
+   *          (string%), ends with (%string) or contains (%string%). */
+  TaskQuery taskVariableValueLike(String name, String value);
+  
   /**
    * Only select tasks which are part of a process that has a variable
    * with the given name set to the given value.
@@ -212,11 +274,58 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value);
   
+  /** Only select tasks which have a global variable value greater than the
+   * passed value when they ended. Booleans, Byte-arrays and
+   * {@link Serializable} objects (which are not primitive type wrappers) are
+   * not supported.
+   * @param name cannot be null.
+   * @param value cannot be null. */
+  TaskQuery processVariableValueGreaterThan(String name, Object value);
+
+  /** Only select tasks which have a global variable value greater than or
+   * equal to the passed value when they ended. Booleans, Byte-arrays and
+   * {@link Serializable} objects (which are not primitive type wrappers) are
+   * not supported.
+   * @param name cannot be null.
+   * @param value cannot be null. */
+  TaskQuery processVariableValueGreaterThanOrEqual(String name, Object value);
+
+  /** Only select tasks which have a global variable value less than the
+   * passed value when the ended.Booleans,
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type
+   * wrappers) are not supported.
+   * @param name cannot be null.
+   * @param value cannot be null. */
+  TaskQuery processVariableValueLessThan(String name, Object value);
+
+  /** Only select tasks which have a global variable value less than or equal
+   * to the passed value when they ended. Booleans,
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type
+   * wrappers) are not supported.
+   * @param name cannot be null.
+   * @param value cannot be null. */
+  TaskQuery processVariableValueLessThanOrEqual(String name, Object value);
+
+  /** Only select tasks which have a global variable value like the given value
+   * when they ended. This can be used on string variables only.
+   * @param name cannot be null.
+   * @param value cannot be null. The string can include the
+   *          wildcard character '%' to express like-strategy: starts with
+   *          (string%), ends with (%string) or contains (%string%). */
+  TaskQuery processVariableValueLike(String name, String value);
+  
   /**
    * Only select tasks which are part of a process instance which has the given
    * process definition key.
    */
   TaskQuery processDefinitionKey(String processDefinitionKey);
+  
+  /**
+   * Only select tasks which are part of a process instance which has a
+   * process definition key like the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  TaskQuery processDefinitionKeyLike(String processDefinitionKeyLike);
   
   /**
    * Only select tasks which are part of a process instance which has the given
@@ -229,6 +338,13 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    * process definition name.
    */
   TaskQuery processDefinitionName(String processDefinitionName);
+  
+  /**
+   * Only select tasks which are part of a process instance which has a
+   * process definition name like the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  TaskQuery processDefinitionNameLike(String processDefinitionNameLike);
   
   /**
    * Only select tasks with the given due date.

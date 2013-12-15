@@ -12,14 +12,16 @@
  */
 package org.activiti.workflow.simple.converter.step;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
+import org.activiti.workflow.simple.definition.ListStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
-import org.activiti.workflow.simple.util.BpmnModelUtil;
 
 /**
  * {@link StepDefinitionConverter} for converting a {@link ParallelStepsDefinition} to the following BPMN 2.0 structure:
@@ -53,18 +55,40 @@ public class ParallelStepsDefinitionConverter extends BaseStepDefinitionConverte
 
     // Convert all other steps, disabling activity id updates which makes all 
     // generated steps have a sequence flow to the first gateway
-    conversion.setUpdateLastActivityEnabled(false);
-    conversion.convertSteps(parallelStepsDefinition.getSteps());
-    conversion.setUpdateLastActivityEnabled(true);
+    WorkflowDefinitionConversionFactory conversionFactory = conversion.getConversionFactory();
+    List<FlowElement> endElements = new ArrayList<FlowElement>();
+    for (ListStepDefinition<ParallelStepsDefinition> stepListDefinition : parallelStepsDefinition.getStepList()) {
+      
+      for (int i = 0; i < stepListDefinition.getSteps().size(); i++) {
+        if (i == 0) {
+          conversion.setSequenceflowGenerationEnabled(false);
+        } else {
+          conversion.setSequenceflowGenerationEnabled(true);
+        }
+        StepDefinition step = stepListDefinition.getSteps().get(i);
+        FlowElement flowElement = (FlowElement) conversionFactory.getStepConverterFor(step).convertStepDefinition(step, conversion);
+        
+        if (i == 0) {
+          addSequenceFlow(conversion, forkGateway.getId(), flowElement.getId());
+        }
+        
+        if ((i + 1) == stepListDefinition.getSteps().size()) {
+          endElements.add(flowElement);
+        }
+      }
+    }
+    
+    conversion.setSequenceflowGenerationEnabled(false);
     
     // Second parallel gateway
     ParallelGateway joinGateway = createParallelGateway(conversion);
     conversion.setLastActivityId(joinGateway.getId());
     
-    // Create sequenceflow from all generated steps to the second gateway
-    List<FlowElement> successorsOfFork = BpmnModelUtil.findSucessorFlowElementsFor(conversion.getProcess(), forkGateway);
-    for (FlowElement successorOfFork : successorsOfFork) {
-      addSequenceFlow(conversion, successorOfFork.getId(), joinGateway.getId());
+    conversion.setSequenceflowGenerationEnabled(true);
+    
+    // Create sequence flow from all generated steps to the second gateway
+    for (FlowElement endElement : endElements) {
+      addSequenceFlow(conversion, endElement.getId(), joinGateway.getId());
     }
     
     return forkGateway;
