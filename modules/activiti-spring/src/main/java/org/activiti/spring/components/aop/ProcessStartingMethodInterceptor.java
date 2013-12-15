@@ -15,12 +15,6 @@
  */
 package org.activiti.spring.components.aop;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Future;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -31,10 +25,20 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * {@link org.aopalliance.intercept.MethodInterceptor} that starts a business process
@@ -44,130 +48,184 @@ import org.springframework.util.StringUtils;
  */
 public class ProcessStartingMethodInterceptor implements MethodInterceptor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+    private ParameterNameDiscoverer parameterNameDiscoverer;
 
-	/**
-	 * injected reference - can be obtained via a {@link org.activiti.spring.ProcessEngineFactoryBean}
-	 */
-	protected ProcessEngine processEngine;
+    private Logger log = LoggerFactory.getLogger(getClass());
 
-	/**
-	 * @param processEngine takes a reference to a {@link org.activiti.engine.ProcessEngine}
-	 */
-	public ProcessStartingMethodInterceptor(ProcessEngine processEngine) {
-		this.processEngine = processEngine;
-	}
+    /**
+     * injected reference - can be obtained via a {@link org.activiti.spring.ProcessEngineFactoryBean}
+     */
+    protected ProcessEngine processEngine;
 
-	boolean shouldReturnProcessInstance(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
-		return (result instanceof ProcessInstance || methodInvocation.getMethod().getReturnType().isAssignableFrom(ProcessInstance.class));
-	}
+    /**
+     * @param processEngine takes a reference to a {@link org.activiti.engine.ProcessEngine}
+     */
+    public ProcessStartingMethodInterceptor(ProcessEngine processEngine) {
+        this(processEngine, new DefaultParameterNameDiscoverer());
+    }
 
-	boolean shouldReturnProcessInstanceId(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
-		return startProcess.returnProcessInstanceId() && (result instanceof String || methodInvocation.getMethod().getReturnType().isAssignableFrom(String.class));
-	}
+    public ProcessStartingMethodInterceptor(ProcessEngine processEngine, ParameterNameDiscoverer parameterNameDiscoverer) {
+        this.parameterNameDiscoverer = parameterNameDiscoverer;
+        this.processEngine = processEngine;
+    }
 
-	@SuppressWarnings("unused")
-	boolean shouldReturnAsyncResultWithProcessInstance(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
-		return (result instanceof Future || methodInvocation.getMethod().getReturnType().isAssignableFrom(Future.class));
-	}
+    boolean shouldReturnProcessInstance(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
+        return (result instanceof ProcessInstance || methodInvocation.getMethod().getReturnType().isAssignableFrom(ProcessInstance.class));
+    }
 
-	public Object invoke(MethodInvocation invocation) throws Throwable {
+    boolean shouldReturnProcessInstanceId(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
+        return startProcess.returnProcessInstanceId() && (result instanceof String || methodInvocation.getMethod().getReturnType().isAssignableFrom(String.class));
+    }
 
-		Method method = invocation.getMethod();
+    @SuppressWarnings("unused")
+    boolean shouldReturnAsyncResultWithProcessInstance(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
+        return (result instanceof Future || methodInvocation.getMethod().getReturnType().isAssignableFrom(Future.class));
+    }
 
-		StartProcess startProcess = AnnotationUtils.getAnnotation(method, StartProcess.class);
+    public Object invoke(MethodInvocation invocation) throws Throwable {
 
-		String processKey = startProcess.processKey();
+        Method method = invocation.getMethod();
 
-		Assert.hasText(processKey, "you must provide the name of process to start");
+        StartProcess startProcess = AnnotationUtils.getAnnotation(method, StartProcess.class);
 
-		Object result;
-		try {
-			result = invocation.proceed();
-			Map<String, Object> vars = this.processVariablesFromAnnotations(invocation);
+        String processKey = startProcess.processKey();
 
-			String businessKey = this.processBusinessKey(invocation);
+        Assert.hasText(processKey, "you must provide the name of process to start");
 
-			log.info("variables for the started process: {}", vars.toString());
+        Object result;
+        try {
+            result = invocation.proceed();
+            Map<String, Object> vars = this.processVariablesFromAnnotations(invocation);
 
-			RuntimeService runtimeService = this.processEngine.getRuntimeService();
-			ProcessInstance pi ;
-			if (null != businessKey && StringUtils.hasText(businessKey)) {
-				pi = runtimeService.startProcessInstanceByKey(processKey, businessKey, vars);
-				log.info("the business key for the started process is '{}'", businessKey);
-			} else {
-				pi = runtimeService.startProcessInstanceByKey(processKey, vars);
-			}
+            String businessKey = this.processBusinessKey(invocation);
 
-			String pId = pi.getId();
+            log.info("variables for the started process: {}", vars.toString());
 
-			if (invocation.getMethod().getReturnType().equals(void.class))
-				return null;
+            RuntimeService runtimeService = this.processEngine.getRuntimeService();
+            ProcessInstance pi;
+            if (null != businessKey && StringUtils.hasText(businessKey)) {
+                pi = runtimeService.startProcessInstanceByKey(processKey, businessKey, vars);
+                log.info("the business key for the started process is '{}'", businessKey);
+            } else {
+                pi = runtimeService.startProcessInstanceByKey(processKey, vars);
+            }
 
-			if (shouldReturnProcessInstance(startProcess, invocation, result))
-				return pi;
+            String pId = pi.getId();
 
-			if (shouldReturnProcessInstanceId(startProcess, invocation, result))
-				return pId;
+            if (invocation.getMethod().getReturnType().equals(void.class))
+                return null;
 
-			if (shouldReturnAsyncResultWithProcessInstance(startProcess, invocation, result)) {
-				return new AsyncResult<ProcessInstance>(pi);
-			}
+            if (shouldReturnProcessInstance(startProcess, invocation, result))
+                return pi;
 
-		} catch (Throwable th) {
-			throw new RuntimeException(th);
-		}
-		return result;
-	}
+            if (shouldReturnProcessInstanceId(startProcess, invocation, result))
+                return pId;
 
-	protected String processBusinessKey(MethodInvocation invocation) throws Throwable {
-		Map<BusinessKey, String> businessKeyAnnotations = this.mapOfAnnotationValues( BusinessKey.class ,invocation);
-		if (businessKeyAnnotations.size() == 1) {
-			BusinessKey processId = businessKeyAnnotations.keySet().iterator().next();
-			return businessKeyAnnotations.get(processId);
-		}
-		return null;
-	}
+            if (shouldReturnAsyncResultWithProcessInstance(startProcess, invocation, result)) {
+                return new AsyncResult<ProcessInstance>(pi);
+            }
 
-	@SuppressWarnings("unchecked")
-	private <K extends Annotation, V> Map<K, V> mapOfAnnotationValues(Class<K> annotationType, MethodInvocation invocation) {
-		Method method = invocation.getMethod();
-		Annotation[][] annotations = method.getParameterAnnotations();
-		Map<K, V> vars = new HashMap<K, V>();
-		int paramIndx = 0;
-		for (Annotation[] annPerParam : annotations) {
-			for (Annotation annotation : annPerParam) {
-				if (!annotationType.isAssignableFrom(annotation.getClass())) {
-					continue;
-				}
-				K pv = (K) annotation;
-				V v = (V) invocation.getArguments()[paramIndx];
-				vars.put(pv, v);
+        } catch (Throwable th) {
+            throw new RuntimeException(th);
+        }
+        return result;
+    }
 
-			}
-			paramIndx += 1;
-		}
-		return vars;
-	}
+    String processBusinessKey(MethodInvocation invocation) throws Throwable {
+        List<Argument> arguments = mapOfAnnotationValues(BusinessKey.class, invocation);
+        if (arguments.size() == 1) {
+            for (Argument argument : arguments) {
+                if (argument.getAnnotations().length > 0) {
+                    Annotation[] annotations = argument.getAnnotations();
+                    for (Annotation annotation : annotations) {
+                        if (annotation instanceof BusinessKey) {
+                            Object o = argument.getValue();
+                            Assert.isTrue(o instanceof String);
+                            return (String) o;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    static class Argument {
+        private int index;
+        private Annotation[] annotations;
+        private Object value;
+        private String argumentName;
+
+        private String getArgumentName() {
+            return argumentName;
+        }
+
+        public Argument(int indx, Annotation[] annotations, String argumentName, Object value) {
+            this.index = indx;
+            this.argumentName = argumentName;
+            this.annotations = annotations == null ? new Annotation[0] : annotations;
+            this.value = value;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public Annotation[] getAnnotations() {
+            return annotations;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+    }
 
 
-	/**
-	 * if there any arguments with the {@link org.activiti.engine.annotations.ProcessVariable} annotation,
-	 * then we feed those parameters into the business process
-	 *
-	 * @param invocation the invocation of the method as passed to the {@link org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)} method
-	 * @return returns the map of process variables extracted from the parameters
-	 * @throws Throwable thrown anything goes wrong
-	 */
-	protected Map<String, Object> processVariablesFromAnnotations(MethodInvocation invocation) throws Throwable {
+    <K extends Annotation, V> List<Argument> mapOfAnnotationValues(Class<K> annotationType, MethodInvocation invocation) {
+        Method method = invocation.getMethod();
+        String[] argumentNames = this.parameterNameDiscoverer.getParameterNames(method);
+        Annotation[][] annotations = method.getParameterAnnotations();
+        List<Argument> argumentList = new ArrayList<Argument>();
+        int paramIndex = 0;
+        for (Annotation[] ann : annotations) {
+            for (Annotation annotation : ann) {
+                if (!annotationType.isAssignableFrom(annotation.getClass())) {
+                    continue; // don't need this one
+                }
+                V value = (V) invocation.getArguments()[paramIndex];
+                Argument argument = new Argument(paramIndex, ann, argumentNames[paramIndex], value);
+                argumentList.add(argument);
+            }
+            paramIndex += 1;
+        }
+        return argumentList;
 
-		Map<ProcessVariable, Object> vars = this.mapOfAnnotationValues(ProcessVariable.class, invocation);
+    }
 
-		Map<String, Object> varNameToValueMap = new HashMap<String, Object>();
-		for (ProcessVariable processVariable : vars.keySet()) {
-			varNameToValueMap.put(processVariable.value(), vars.get(processVariable));
-		}
-		return varNameToValueMap;
+    /**
+     * if there any arguments with the {@link  ProcessVariable} annotation,
+     * then we feed those parameters into the business process
+     *
+     * @param invocation the invocation of the method as passed to the {@link org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)} method
+     */
+    Map<String, Object> processVariablesFromAnnotations(MethodInvocation invocation) throws Throwable {
+        List<Argument> args = mapOfAnnotationValues(ProcessVariable.class, invocation);
+        Map<String, Object> vars = new HashMap<String, Object>();
+        for (Argument argument : args) {
+            Annotation[] annotations = argument.getAnnotations();
+            for (Annotation a : annotations) {
+                if (a instanceof ProcessVariable) {
+                    ProcessVariable processVariable = (ProcessVariable) a;
+                    String processVariableAnnotationValue = StringUtils.hasText(processVariable.value()) ? processVariable.value() : argument.getArgumentName();
+                    vars.put(processVariableAnnotationValue, argument.getValue());
+                }
+            }
+        }
+        return vars;
+    }
 
-	}
+    public void setParameterNameDiscoverer(ParameterNameDiscoverer parameterNameDiscoverer) {
+        this.parameterNameDiscoverer = parameterNameDiscoverer;
+    }
+
 }

@@ -15,15 +15,7 @@
  */
 package org.activiti.spring.components.aop;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.activiti.spring.annotations.ProcessId;
-import org.activiti.spring.annotations.ProcessVariable;
-import org.activiti.spring.annotations.ProcessVariables;
-import org.activiti.spring.annotations.State;
+import org.activiti.spring.annotations.*;
 import org.activiti.spring.components.registry.ActivitiStateHandlerRegistration;
 import org.activiti.spring.components.registry.ActivitiStateHandlerRegistry;
 import org.springframework.aop.support.AopUtils;
@@ -40,10 +32,15 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * the idea is that this bean post processor is responsible for registering all beans
- * that have the {@link org.activiti.engine.annotations.State} annotation.
+ * that have the {@link State} annotation.
  *
  * @author Josh Long
  * @since 5.3
@@ -51,104 +48,94 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("unused") // registered through XML
 public class ActivitiStateAnnotationBeanPostProcessor implements BeanPostProcessor, BeanClassLoaderAware, BeanFactoryAware, InitializingBean, Ordered {
 
-	private volatile ActivitiStateHandlerRegistry registry;
+    private volatile ActivitiStateHandlerRegistry registry;
 
-	private volatile int order = Ordered.LOWEST_PRECEDENCE;
+    private volatile int order = Ordered.LOWEST_PRECEDENCE;
 
-	private volatile BeanFactory beanFactory;
+    private volatile BeanFactory beanFactory;
 
-	private volatile ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+    private volatile ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
-	public void setBeanFactory(BeanFactory beanFactory) {
-		this.beanFactory = beanFactory;
-	}
+    public void setBeanFactory(BeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
+    }
 
-	public void setBeanClassLoader(ClassLoader classLoader) {
-		this.beanClassLoader = classLoader;
-	}
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        this.beanClassLoader = classLoader;
+    }
 
-	public int getOrder() {
-		return this.order;
-	}
+    public int getOrder() {
+        return this.order;
+    }
 
-	public void afterPropertiesSet() {
-		Assert.notNull(this.beanClassLoader, "beanClassLoader must not be null");
-		Assert.notNull(this.beanFactory, "beanFactory must not be null");
-	}
+    public void afterPropertiesSet() {
+        Assert.notNull(this.beanClassLoader, "beanClassLoader must not be null");
+        Assert.notNull(this.beanFactory, "beanFactory must not be null");
+    }
 
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		return bean;
-	}
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
 
-	public void setRegistry(ActivitiStateHandlerRegistry registry) {
-		this.registry = registry;
-	}
+    public void setRegistry(ActivitiStateHandlerRegistry registry) {
+        this.registry = registry;
+    }
 
-	public Object postProcessAfterInitialization(final Object bean,
-																							 final String beanName) throws BeansException {
-		// first sift through and get all the methods
-		// then get all the annotations
-		// then build the metadata and register the metadata
-		final Class<?> targetClass = AopUtils.getTargetClass(bean);
-		final org.activiti.spring.annotations.ActivitiComponent component = targetClass.getAnnotation(org.activiti.spring.annotations.ActivitiComponent.class);
+    public Object postProcessAfterInitialization(final Object bean, final String beanName) throws BeansException {
+        // first sift through and get all the methods
+        // then get all the annotations
+        // then build the metadata and register the metadata
 
-		ReflectionUtils.doWithMethods(targetClass,
-				new ReflectionUtils.MethodCallback() {
-					@SuppressWarnings("unchecked")
-					public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
+        final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
-						State state = AnnotationUtils.getAnnotation(method, State.class);
+        final ActivitiComponent component = targetClass.getAnnotation(ActivitiComponent.class);
 
-						String processName = component.processKey();
+        ReflectionUtils.doWithMethods(targetClass, new ReflectionUtils.MethodCallback() {
+                    @SuppressWarnings("unchecked")
+                    public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
+                        State state = AnnotationUtils.getAnnotation(method, State.class);
+                        String processName = component.processKey();
+                        if (StringUtils.hasText(state.process())) {
+                            processName = state.process();
+                        }
+                        String stateName = state.state();
+                        if (!StringUtils.hasText(stateName)) {
+                            stateName = state.value();
+                        }
+                        Assert.notNull(stateName, "You must provide a stateName!");
+                        Map<Integer, String> vars = new HashMap<Integer, String>();
+                        Annotation[][] paramAnnotationsArray = method.getParameterAnnotations();
+                        int ctr = 0;
+                        int pvMapIndex = -1;
+                        int procIdIndex = -1;
+                        for (Annotation[] paramAnnotations : paramAnnotationsArray) {
+                            ctr += 1;
+                            for (Annotation pa : paramAnnotations) {
+                                if (pa instanceof ProcessVariable) {
+                                    ProcessVariable pv = (ProcessVariable) pa;
+                                    String pvName = pv.value();
+                                    vars.put(ctr, pvName);
+                                } else if (pa instanceof ProcessVariables) {
+                                    pvMapIndex = ctr;
+                                } else if (pa instanceof ProcessId) {
+                                    procIdIndex = ctr;
+                                }
+                            }
+                        }
+                        ActivitiStateHandlerRegistration registration = new ActivitiStateHandlerRegistration(vars,
+                                method, bean, stateName, beanName, pvMapIndex,
+                                procIdIndex, processName);
+                        registry.registerActivitiStateHandler(registration);
+                    }
+                },
+                new ReflectionUtils.MethodFilter() {
+                    public boolean matches(Method method) {
+                        return null != AnnotationUtils.getAnnotation(method,
+                                State.class);
+                    }
+                }
+        );
 
-						if (StringUtils.hasText(state.process())) {
-							processName = state.process();
-						}
-
-						String stateName = state.state();
-
-						if (!StringUtils.hasText(stateName)) {
-							stateName = state.value();
-						}
-
-						Assert.notNull(stateName, "You must provide a stateName!");
-
-						Map<Integer, String> vars = new HashMap<Integer, String>();
-						Annotation[][] paramAnnotationsArray = method.getParameterAnnotations();
-
-						int ctr = 0;
-						int pvMapIndex = -1;
-						int procIdIndex = -1;
-
-						for (Annotation[] paramAnnotations : paramAnnotationsArray) {
-							ctr += 1;
-
-							for (Annotation pa : paramAnnotations) {
-								if (pa instanceof ProcessVariable) {
-									ProcessVariable pv = (ProcessVariable) pa;
-									String pvName = pv.value();
-									vars.put(ctr, pvName);
-								} else if (pa instanceof ProcessVariables) {
-									pvMapIndex = ctr;
-								} else if (pa instanceof ProcessId  ) {
-									procIdIndex = ctr;
-								}
-							}
-						}
-
-						ActivitiStateHandlerRegistration registration = new ActivitiStateHandlerRegistration(vars,
-								method, bean, stateName, beanName, pvMapIndex,
-								procIdIndex, processName);
-						registry.registerActivitiStateHandler(registration);
-					}
-				},
-				new ReflectionUtils.MethodFilter() {
-					public boolean matches(Method method) {
-						return null != AnnotationUtils.getAnnotation(method,
-								State.class);
-					}
-				});
-
-		return bean;
-	}
+        return bean;
+    }
 }

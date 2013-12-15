@@ -18,6 +18,7 @@ package org.activiti.spring.components.config.xml;
 
 import org.activiti.spring.components.ActivitiContextUtils;
 import org.activiti.spring.components.aop.ProcessStartAnnotationBeanPostProcessor;
+import org.activiti.spring.components.config.StateHandlerAnnotationBeanFactoryPostProcessor;
 import org.activiti.spring.components.scope.ProcessScope;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -32,10 +33,12 @@ import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 /**
- * registers support for handling the annotations in the org.activiti.engine.annotations package.
- * <p/>
- * The first major component is the state handlers. For this to work, a BeanFactoryPostProcessor is registered which in turn registers a
- * {@link org.activiti.spring.components.registry.ActivitiStateHandlerRegistry} if none exists.
+ * Registers support for handling the annotations in the {@code org.activiti.engine.annotations} package.
+ *
+ * Registers a {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor}
+ * that in turn registers a  {@link org.activiti.spring.components.registry.ActivitiStateHandlerRegistry},
+ * if none exist.
+ *
  *
  * @author Josh Long
  * @since 5.3
