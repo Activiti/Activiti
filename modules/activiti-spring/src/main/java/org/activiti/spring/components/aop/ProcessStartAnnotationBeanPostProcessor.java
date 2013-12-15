@@ -35,7 +35,7 @@ import org.springframework.util.ClassUtils;
  * are passed to the business process.
  *
  * @author Josh Long
- * @since 5,3
+ * @since 5.3
  */
 public class ProcessStartAnnotationBeanPostProcessor extends ProxyConfig implements BeanPostProcessor, InitializingBean {
 
