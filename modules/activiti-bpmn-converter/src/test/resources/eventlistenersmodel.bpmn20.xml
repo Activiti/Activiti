@@ -5,6 +5,11 @@
 		<activiti:eventListener events="ENTITY_CREATE" class="org.activiti.test.MyListener" />  	
 		<activiti:eventListener class="org.activiti.test.AllEventTypesListener" />
 		<activiti:eventListener events="ENTITY_DELETE" delegateExpression="${myListener}" />
+		<activiti:eventListener events="ENTITY_DELETE" throwEvent="signal" signalName="theSignal" />
+		<activiti:eventListener events="ENTITY_DELETE" throwEvent="globalSignal" signalName="theSignal" />
+		<activiti:eventListener events="ENTITY_DELETE" throwEvent="message" messageName="theMessage" />
+		<activiti:eventListener events="ENTITY_DELETE" throwEvent="error" errorCode="123" />
+		<activiti:eventListener events="ENTITY_DELETE" throwEvent="error" errorCode="123" entityType="job" />
   	</extensionElements>
     <endEvent id="sid-F7795B38-72CD-41A4-9549-6CFB7D3E5FB5"></endEvent>
     <sequenceFlow id="sid-C6C56AC3-9561-49E0-A58A-624F6CB8BB82" sourceRef="sid-F62B554B-FF4F-475E-94FF-A3F44EDA6A6A" targetRef="servicetask"></sequenceFlow>

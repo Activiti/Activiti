@@ -12,22 +12,17 @@
  */
 package org.activiti.engine.delegate.event;
 
+
 /**
- * Describes a class that listens for {@link ActivitiEvent}s dispatched by the engine.
- *  
+ * An {@link ActivitiEvent} related to an error being sent to an activity.
+ * 
  * @author Frederik Heremans
  */
-public interface ActivitiEventListener {
+public interface ActivitiErrorEvent extends ActivitiActivityEvent {
 
 	/**
-	 * Called when an event has been fired
-	 * @param event the event
+	 * @return the error-code of the error. Returns null, if no specific error-code has been specified
+	 * when the error was thrown.
 	 */
-	void onEvent(ActivitiEvent event);
-	
-	/**
-	 * @return whether or not the current operation should fail when this listeners execution
-	 * throws an exception. 
-	 */
-	boolean isFailOnException();
+	public String getErrorCode();
 }

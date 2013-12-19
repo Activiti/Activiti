@@ -14,6 +14,7 @@ package org.activiti.engine.impl.bpmn.helper;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
@@ -21,39 +22,44 @@ import org.activiti.engine.impl.el.NoExecutionVariableScope;
 /**
  * An {@link ActivitiEventListener} implementation which resolves an expression
  * to a delegate {@link ActivitiEventListener} instance and uses this for event notification.
- *  
+ * <br><br>
+ * In case an entityClass was passed in the constructor, only events that are {@link ActivitiEntityEvent}'s
+ * that target an entity of the given type, are dispatched to the delegate.
+ * 
  * @author Frederik Heremans
  */
-public class DelegateExpressionActivitiEventListener implements ActivitiEventListener {
+public class DelegateExpressionActivitiEventListener extends BaseDelegateEventListener {
 
 	protected Expression expression;
-
 	protected boolean failOnException = true;
 
-	public DelegateExpressionActivitiEventListener(Expression expression) {
+	public DelegateExpressionActivitiEventListener(Expression expression, Class<?> entityClass) {
 		this.expression = expression;
+		setEntityClass(entityClass);
 	}
 
 	@Override
 	public void onEvent(ActivitiEvent event) {
-		NoExecutionVariableScope scope = new NoExecutionVariableScope();
-
-		Object delegate = expression.getValue(scope);
-		if (delegate instanceof ActivitiEventListener) {
-			// Cache result of isFailOnException() from delegate-instance untill next
-			// event is received. This prevents us from having to resolve the expression twice when
-			// an error occurs.
-			failOnException = ((ActivitiEventListener) delegate).isFailOnException();
+		if(isValidEvent(event)) {
+			NoExecutionVariableScope scope = new NoExecutionVariableScope();
 			
-			// Call the delegate
-			((ActivitiEventListener) delegate).onEvent(event);
-		} else {
-			
-			// Force failing, since the exception we're about to throw cannot be ignored, because it
-			// did not originate from the listener itself
-			failOnException = true;
-			throw new ActivitiIllegalArgumentException("Delegate expression " + expression
-			    + " did not resolve to an implementation of " + ActivitiEventListener.class.getName());
+			Object delegate = expression.getValue(scope);
+			if (delegate instanceof ActivitiEventListener) {
+				// Cache result of isFailOnException() from delegate-instance until next
+				// event is received. This prevents us from having to resolve the expression twice when
+				// an error occurs.
+				failOnException = ((ActivitiEventListener) delegate).isFailOnException();
+				
+				// Call the delegate
+				((ActivitiEventListener) delegate).onEvent(event);
+			} else {
+				
+				// Force failing, since the exception we're about to throw cannot be ignored, because it
+				// did not originate from the listener itself
+				failOnException = true;
+				throw new ActivitiIllegalArgumentException("Delegate expression " + expression
+						+ " did not resolve to an implementation of " + ActivitiEventListener.class.getName());
+			}
 		}
 	}
 

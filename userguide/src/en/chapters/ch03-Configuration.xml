@@ -584,7 +584,7 @@ executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdc
   </section> 
   
   <section id="eventDispatcher">
-    <title>[API AND NAMING NOT FINAL YET] Event handlers</title>
+    <title>Event handlers</title>
     <para>
       An event mechanism has been introduced in Activiti 5.15. It allows you to get notified when various events occur within the engine.
       Take a look at <link linkend="eventDispatcherEventTypes">all supported event types</link> for an overview of the events available.
@@ -728,9 +728,11 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
         <title>Adding listeners to process definitions</title>
         <para>It's possible to add listeners to a specific process-definition. The listeners will only be called for events
         related to the process definition and to all events related to process instances that are started with that specific process
-        definition. The listener implementations can be defined using a fully qualified classname or an expression that resolves to a bean that implements
-        the listener interface.
+        definition. The listener implementations can be defined using a fully qualified classname, an expression that resolves to a bean that implements
+        the listener interface or can be configured to throw a message/signal/error BPMN event.
         </para>
+        <section>
+        <title>Listeners executing user-defined logic</title>
         <para>The snippet below adds 2 listeners to a process-definition. The first listener will receive events of any type, with a listener implementation based on a fully-qualified class name.
         The second listener is only notified when a job is successfully executed or when it failed, using a listener that has been defined in the <literal>beans</literal> property of the process engine configuration.</para>
         <programlisting>
@@ -742,9 +744,78 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
         
   ...
 
-&lt;/process&gt;</programlisting>        
+&lt;/process&gt;</programlisting>
+      <para>For events related to entities, it's also possible to add listeners to a process-definition that get only notified when enitity-events occur for a certain
+      entity type. The snippet below shows how this can be achieved. It can be used along for ALL entity-events (first example) or for specific event types only (second example).</para>   
+        <programlisting>
+&lt;process id="testEventListeners"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:eventListener class=&quot;org.activiti.engine.test.MyEventListener&quot; entityType=&quot;task&quot; /&gt;
+    &lt;activiti:eventListener delegateExpression=&quot;${testEventListener}&quot; events=&quot;ENTITY_CREATED&quot; entityType=&quot;task&quot; /&gt;
+  &lt;/extensionElements&gt;
         
-      <para>Please note that:
+  ...
+
+&lt;/process&gt;</programlisting>
+
+ <para>For events related to entities, it's also possible to add listeners to a process-definition that get notified only enitity-events occur for a certain
+      entity type. The snippet below shows how this can be done. It can be used along for ALL entity-events (first example) or for specific event types only (second example).</para>   
+        <programlisting>
+&lt;process id="testEventListeners"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:eventListener class=&quot;org.activiti.engine.test.MyEventListener&quot; entityType=&quot;task&quot; /&gt;
+    &lt;activiti:eventListener delegateExpression=&quot;${testEventListener}&quot; events=&quot;ENTITY_CREATED&quot; entityType=&quot;task&quot; /&gt;
+  &lt;/extensionElements&gt;
+        
+  ...
+
+&lt;/process&gt;</programlisting>
+<para>Supported values for the <literal>entityType</literal> are: <literal>attachment</literal>, <literal>comment</literal>, <literal>execution</literal>,<literal>identity-link</literal>, <literal>job</literal>, <literal>process-instance</literal>, 
+<literal>process-definition</literal>, <literal>task</literal>.</para>
+</section>
+<section>
+        <title>Listeners throwing BPMN events</title>
+        <para>
+          <link linkend="experimental">
+            <emphasis role="bold">[EXPERIMENTAL]</emphasis>
+          </link>
+        </para>
+        <para>Another way of handling events being dispatched is to throw a BPMN event. Please bare in mind that it only makes sense to throw BPMN-events with certain kinds of
+        activiti event types. For example, throwing a BPMN event when the process-instance is deleted will result in an error. The snippet below shows how to throw a signal inside process-instance, throw a signal to an external
+        process (global), throw a message-event inside the process-instance and throw an error-event inside the process-instance. Instead of using the <literal>class</literal> or <literal>delegateExpression</literal>,
+        the attribute <literal>throwEvent</literal> is used, along with an additional attribute, specific to the type of event being thrown.</para>
+        <programlisting>
+&lt;process id="testEventListeners"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:eventListener throwEvent=&quot;signal&quot; signalName=&quot;My signal&quot; events=&quot;TASK_ASSIGNED&quot; /&gt;
+  &lt;/extensionElements&gt;
+&lt;/process&gt;</programlisting>
+        <programlisting>
+&lt;process id="testEventListeners"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:eventListener throwEvent=&quot;globalSignal&quot; signalName=&quot;My signal&quot; events=&quot;TASK_ASSIGNED&quot; /&gt;
+  &lt;/extensionElements&gt;
+&lt;/process&gt;</programlisting>
+        <programlisting>
+&lt;process id="testEventListeners"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:eventListener throwEvent=&quot;message&quot; messageName=&quot;My message&quot; events=&quot;TASK_ASSIGNED&quot; /&gt;
+  &lt;/extensionElements&gt;
+&lt;/process&gt;</programlisting>
+        <programlisting>
+&lt;process id="testEventListeners"&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:eventListener throwEvent=&quot;error&quot; errorCode=&quot;123&quot; events=&quot;TASK_ASSIGNED&quot; /&gt;
+  &lt;/extensionElements&gt;
+&lt;/process&gt;</programlisting>
+
+<para>If additional logic is needed to decide wether or not to throw the BPMN-event, it's possible to extend the listener-classes provided by Activiti. By overriding the <literal>isValidEvent(ActivitiEvent event)</literal>
+in your subclass, BPMN-event throwing can be prevented. The classes involved are <literal>org.activiti.engine.test.api.event.SignalThrowingEventListenerTest</literal>, <literal>org.activiti.engine.impl.bpmn.helper.MessageThrowingEventListener</literal> and <literal>org.activiti.engine.impl.bpmn.helper.ErrorThrowingEventListener</literal>.</para>
+       
+      </section>
+       <section>
+        <title>Notes on listeners on a process-definition</title>
+      <para>
         <itemizedlist>
           <listitem>
             <para>
@@ -764,12 +835,13 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
           </listitem>
           <listitem>
             <para>
-              When an illegal event-type is used in the <literal>events</literal> attribute, an exception will be thrown when the process-definition is deployed (effectievly failing the deployment). When an illegal value for <literal>class</literal> or <literal>delegateExecution</literal> is supplied (either unexisting class, unexisting bean referenced or delegate not implementing listener interface), an exception will
+              When an illegal event-type is used in the <literal>events</literal> attribute or illegal <literal>throwEvent</literal> value is used, an exception will be thrown when the process-definition is deployed (effectievly failing the deployment). When an illegal value for <literal>class</literal> or <literal>delegateExecution</literal> is supplied (either unexisting class, unexisting bean referenced or delegate not implementing listener interface), an exception will
               be thrown when the process is started (or when the first valid event for that process-definition is dispatched to the listener). Make sure the referenced classes are on the classpath and that the expressions resolve to a valid instance.
             </para>
           </listitem>
         </itemizedlist>
       </para>
+</section>
       </section> 
       <section id="eventDispatcherCustomEvents">
         <title>Dispatching events through API</title>
@@ -878,6 +950,19 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
                 <entry>An activity received a message. Dispatched before the activity receives the message. When received, a <literal>ACTIVITY_SIGNAL</literal> or <literal>ACTIVITY_STARTED</literal> will
                 be dispatched for this activity, depending on the type (boudnary-event or event-subprocess start-event)</entry>
                 <entry><literal>org.activiti...ActivitiMessageEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ACTIVITY_ERROR_RECEIVED</entry>
+                <entry>An activity has received an error event. Dispatched before the actual error has been handled by
+                 the activity. The event's <literal>activityId</literal> contains a reference to the error-handling activity.
+                 This event will be either followed by a <literal>ACTIVITY_SIGNALLED</literal> event or <literal>ACTIVITY_COMPLETE</literal>
+                  for the involved activity, if the error was delivered successfully.</entry>
+                <entry><literal>org.activiti...ActivitiErrorEvent</literal></entry>
+              </row>
+              <row>
+                <entry>UNCAUGHT_BPMN_ERROR</entry>
+                <entry>An uncaught BPMN error has been thrown. The process did not have any handlers for that specific error. The event's <literal>activityId</literal> will be empty.</entry>
+                <entry><literal>org.activiti...ActivitiErrorEvent</literal></entry>
               </row>
               <row>
                 <entry>ACTIVITY_COMPENSATE</entry>
