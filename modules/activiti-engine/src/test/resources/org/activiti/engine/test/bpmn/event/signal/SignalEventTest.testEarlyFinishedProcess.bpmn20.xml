@@ -25,7 +25,7 @@
     <startEvent id="startevent2" name="Start"></startEvent>
     <endEvent id="endevent2" name="End"></endEvent>
     <intermediateThrowEvent id="signalintermediatethrowevent1" name="SignalThrowEvent">
-      <signalEventDefinition signalRef="signal1"></signalEventDefinition>
+      <signalEventDefinition signalRef="killSignal"></signalEventDefinition>
     </intermediateThrowEvent>
     <sequenceFlow id="flow6" sourceRef="startevent2" targetRef="signalintermediatethrowevent1"></sequenceFlow>
     <userTask id="usertask1" name="User Task" activiti:candidateGroups="group1"></userTask>
