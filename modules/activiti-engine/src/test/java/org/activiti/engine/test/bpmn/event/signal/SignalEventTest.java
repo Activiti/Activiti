@@ -376,13 +376,10 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   }
   
   @Deployment 
-  public void testEarlyFinishedProcess() {
-	 	Map<String, Object> variableMap = new HashMap<String, Object>();
-		variableMap.put("name", "Activiti");
+  public void testEarlyFinishedProcess() {	 	
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-				"callerProcess", variableMap);
+				"callerProcess");
 		assertNotNull(processInstance.getId());
-	
 		
   }
 
