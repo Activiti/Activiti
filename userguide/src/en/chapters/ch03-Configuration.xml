@@ -373,6 +373,21 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     </para>
     
     <para>
+        Concretely, the following applies for MySQL version
+        <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">&lt;5.6:</emphasis> No millisecond precision available. DDL files available (look for files containing <emphasis>mysql55</emphasis>). Auto creation/update will work out of the box.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis role="bold">5.6.0 - 5.6.3:</emphasis> No millisecond precision availble. Auto creation/update will NOT work. It is advised to upgrade to a newer database version anyway. DDL files for <emphasis>mysql 5.5</emphasis> could be used if really needed.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis role="bold">5.6.4+:</emphasis>Millisecond precision available. DDL files available (default file containing <emphasis>mysql</emphasis>). Auto creation/update works out of the box.</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>
         Do note that in the case of upgrading the MySQL database later on and the Activiti tables are
         already created/upgraded, the column type change will have to be done manually!
     </para>
