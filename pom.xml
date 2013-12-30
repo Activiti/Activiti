@@ -60,14 +60,6 @@
     <activiti.osgi.include.resource>{maven-resources}</activiti.osgi.include.resource>
     <activiti.osgi.embed></activiti.osgi.embed>
   </properties>
-  
-  <repositories>
-    <repository>
-      <id>activiti-third-party</id>
-      <name>Activiti third party</name>
-      <url>https://maven.alfresco.com/nexus/content/repositories/thirdparty/</url>
-    </repository>
-  </repositories>
 
   <dependencyManagement>
     <dependencies>
@@ -492,9 +484,9 @@
         <version>4.2</version>
       </dependency>
       <dependency>
-        <groupId>math.geom</groupId>
+        <groupId>math.geom2d</groupId>
         <artifactId>javaGeom</artifactId>
-        <version>0.11.0</version>
+        <version>0.11.1</version>
       </dependency>
       <!-- Webapps -->
       <dependency>

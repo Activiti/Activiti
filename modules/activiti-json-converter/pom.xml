@@ -117,7 +117,7 @@
       <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
     <dependency>
-      <groupId>math.geom</groupId>
+      <groupId>math.geom2d</groupId>
       <artifactId>javaGeom</artifactId>
     </dependency>
     <dependency>
