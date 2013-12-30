@@ -220,6 +220,9 @@
     </annotation>
     <simpleType>
       <restriction base="string">
+        <enumeration value="camel"/>
+        <enumeration value="mail"/>
+        <enumeration value="mule"/>
         <enumeration value="shell"/>
       </restriction>
     </simpleType>
