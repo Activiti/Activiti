@@ -10,24 +10,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.delegate.event;
+package org.activiti.engine.delegate.event.impl;
+
+import org.activiti.engine.delegate.event.ActivitiErrorEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 
 /**
- * Describes a class that listens for {@link ActivitiEvent}s dispatched by the engine.
- *  
+ * Implementation of an {@link ActivitiErrorEvent}.
  * @author Frederik Heremans
  */
-public interface ActivitiEventListener {
+public class ActivitiErrorEventImpl extends ActivitiActivityEventImpl implements ActivitiErrorEvent {
 
-	/**
-	 * Called when an event has been fired
-	 * @param event the event
-	 */
-	void onEvent(ActivitiEvent event);
+	protected String errorCode;
 	
-	/**
-	 * @return whether or not the current operation should fail when this listeners execution
-	 * throws an exception. 
-	 */
-	boolean isFailOnException();
+	public ActivitiErrorEventImpl(ActivitiEventType type) {
+	  super(type);
+  }
+	
+	public void setErrorCode(String errorCode) {
+	  this.errorCode = errorCode;
+  }
+	
+	@Override
+	public String getErrorCode() {
+	  return errorCode;
+	}
+
 }

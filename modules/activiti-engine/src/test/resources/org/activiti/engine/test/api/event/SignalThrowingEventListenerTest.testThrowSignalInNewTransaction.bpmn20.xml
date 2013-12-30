@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <signal id="mySignal" name="Signal" />
+
+  <process id="testSignal">
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="eventSubProcess" />
+
+    <subProcess id="eventSubProcess">
+      <startEvent id="subStart" />
+      
+    <sequenceFlow sourceRef="subStart" targetRef="service" />
+    
+    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.FailingAsyncService" activiti:async="true" />
+      
+      <sequenceFlow sourceRef="service" targetRef="subEnd" />
+      <endEvent id="subEnd" />
+    </subProcess>
+
+    <boundaryEvent id="boundary" attachedToRef="eventSubProcess"
+      cancelActivity="false">
+      <signalEventDefinition signalRef="mySignal" />
+    </boundaryEvent>
+    <sequenceFlow sourceRef="boundary" targetRef="boundaryTask" />
+
+  <userTask id="boundaryTask" />
+    <sequenceFlow sourceRef="eventSubProcess" targetRef="end" />
+
+    <endEvent id="end" />
+
+  </process>
+
+</definitions>

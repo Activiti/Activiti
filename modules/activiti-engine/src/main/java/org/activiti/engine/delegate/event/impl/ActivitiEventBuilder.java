@@ -15,6 +15,7 @@ package org.activiti.engine.delegate.event.impl;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiErrorEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
@@ -25,8 +26,8 @@ import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
-import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
 /**
@@ -43,6 +44,14 @@ public class ActivitiEventBuilder {
 	 */
 	public static ActivitiEvent createGlobalEvent(ActivitiEventType type) {
 		ActivitiEventImpl newEvent = new ActivitiEventImpl(type);
+		return newEvent;
+	}
+	
+	public static ActivitiEvent createEvent(ActivitiEventType type, String executionId, String processInstanceId, String processDefinitionId) {
+		ActivitiEventImpl newEvent = new ActivitiEventImpl(type);
+		newEvent.setExecutionId(executionId);
+		newEvent.setProcessDefinitionId(processDefinitionId);
+		newEvent.setProcessInstanceId(processInstanceId);
 		return newEvent;
 	}
 	
@@ -139,6 +148,16 @@ public class ActivitiEventBuilder {
 		return newEvent;
 	}
 	
+	public static ActivitiErrorEvent createErrorEvent(ActivitiEventType type, String activityId, String errorCode, String executionId, String processInstanceId, String processDefinitionId) {
+		ActivitiErrorEventImpl newEvent = new ActivitiErrorEventImpl(type);
+		newEvent.setActivityId(activityId);
+		newEvent.setExecutionId(executionId);
+		newEvent.setProcessDefinitionId(processDefinitionId);
+		newEvent.setProcessInstanceId(processInstanceId);
+		newEvent.setErrorCode(errorCode);
+		return newEvent;
+	}
+	
 	public static ActivitiVariableEvent createVariableEvent(ActivitiEventType type, String variableName, Object variableValue, String taskId, 
 			String executionId, String processInstanceId, String processDefinitionId) {
 		ActivitiVariableEventImpl newEvent = new ActivitiVariableEventImpl(type);
@@ -199,6 +218,8 @@ public class ActivitiEventBuilder {
 					event.setProcessInstanceId(((Task)persistendObject).getProcessInstanceId());
 					event.setExecutionId(((Task)persistendObject).getExecutionId());
 					event.setProcessDefinitionId(((Task)persistendObject).getProcessDefinitionId());
+				} else if(persistendObject instanceof ProcessDefinition) {
+					event.setProcessDefinitionId(((ProcessDefinition) persistendObject).getId());
 				}
 			}
 		}

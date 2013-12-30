@@ -15,6 +15,7 @@ package org.activiti.engine.test.api.event;
 import java.util.Collections;
 
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
+import org.activiti.engine.delegate.event.ActivitiErrorEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
@@ -345,7 +346,84 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 		assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
 		assertEquals("compensationDone", signalEvent.getSignalName());
 		assertNull(signalEvent.getSignalData());
+		
+		// Check if the process is still alive
+		processInstance = runtimeService.createProcessInstanceQuery()
+				.processInstanceId(processInstance.getId())
+				.singleResult();
+		
+		assertNotNull(processInstance);
 	}
+	
+	/**
+	 * Test events related to error-events
+	 */
+	@Deployment
+	public void testActivityErrorEvents() throws Exception {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("errorProcess");
+		assertNotNull(processInstance);
+		
+		// Error-handling should have ended the process
+		ProcessInstance afterErrorInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId())
+				.singleResult();
+		assertNull(afterErrorInstance);
+		
+		ActivitiErrorEvent errorEvent = null;
+		
+		for(ActivitiEvent event : listener.getEventsReceived()) {
+			if(event instanceof ActivitiErrorEvent) {
+				if(errorEvent == null) {
+					errorEvent = (ActivitiErrorEvent) event;
+				} else {
+					fail("Only one ActivityErrorEvent expected");
+				}
+			}
+		}
+		
+		assertNotNull(errorEvent);
+		assertEquals(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, errorEvent.getType());
+		assertEquals("catchError", errorEvent.getActivityId());
+		assertEquals("123", errorEvent.getErrorCode());
+		assertEquals(processInstance.getId(), errorEvent.getProcessInstanceId());
+		assertEquals(processInstance.getProcessDefinitionId(), errorEvent.getProcessDefinitionId());
+		assertFalse(processInstance.getId().equals(errorEvent.getExecutionId()));
+	}
+	
+	
+	/**
+	 * Test events related to error-events, thrown from within process-execution (eg. service-task).
+	 */
+	@Deployment
+	public void testActivityErrorEventsFromBPMNError() throws Exception {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("errorProcess");
+		assertNotNull(processInstance);
+		
+		// Error-handling should have ended the process
+		ProcessInstance afterErrorInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId())
+				.singleResult();
+		assertNull(afterErrorInstance);
+		
+		ActivitiErrorEvent errorEvent = null;
+		
+		for(ActivitiEvent event : listener.getEventsReceived()) {
+			if(event instanceof ActivitiErrorEvent) {
+				if(errorEvent == null) {
+					errorEvent = (ActivitiErrorEvent) event;
+				} else {
+					fail("Only one ActivityErrorEvent expected");
+				}
+			}
+		}
+		
+		assertNotNull(errorEvent);
+		assertEquals(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, errorEvent.getType());
+		assertEquals("catchError", errorEvent.getActivityId());
+		assertEquals("23", errorEvent.getErrorCode());
+		assertEquals(processInstance.getId(), errorEvent.getProcessInstanceId());
+		assertEquals(processInstance.getProcessDefinitionId(), errorEvent.getProcessDefinitionId());
+		assertFalse(processInstance.getId().equals(errorEvent.getExecutionId()));
+	}
+	
 	
 
 	@Override
