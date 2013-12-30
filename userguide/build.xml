@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="activiti.userguide" default="build.userguide">
-	<property name="locale" value="zh"/>
 
 	<!-- 
 	Special thanks to Las Vogel for his great online instructions
@@ -82,7 +81,7 @@
 			<fileset dir="src" />
 		</copy>
 		<antcall target="windows.convert.line.endings"/>
-		<replace value="" dir="target/prepared-src/${locale}/chapters" encoding="UTF-8">
+		<replace value="" dir="target/prepared-src/en/chapters">
 			<include name="*.xml"/>
 			<replacetoken><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">]]></replacetoken>
@@ -91,8 +90,8 @@
 
 	<target name="windows.convert.line.endings" if="is.windows">
 		<echo message="CONVERTING CRLF for windows"/>
-		<fixcrlf srcdir="target/prepared-src/${locale}/chapters" includes="*.xml"
-         eol="crlf" eof="remove" encoding="UTF-8" />	
+		<fixcrlf srcdir="target/prepared-src/en/chapters" includes="*.xml"
+         eol="crlf" eof="remove" />	
 	</target>
 
 	<target name="build.html"
@@ -102,37 +101,37 @@
 		<echo message="Executing docbook XSLT on userguide source files." />
 		<echo message="On failure, make sure that you have installed the Xalan libs by executing the 'install.xalan.libs' target in the 'userguide' folder."></echo>
 		<xslt style="${html.stylesheet}" extension=".html" basedir="target/prepared-src" destdir="target/html">
-			<include name="${locale}/index.xml" />
+			<include name="en/index.xml" />
 			<param name="html.stylesheet" expression="style.css" />
 			<!-- <classpath refid="xslt.classpath" /> 
 			      Does not work -> known bug!! 
 			      Will NEVER use the xalan libs, but always the com.sun.xslt stuff (==crap). 
 			      Call the 'install.xalan.libs' first to get it working.-->
 		</xslt>
-		<copy todir="target/html/${locale}">
+		<copy todir="target/html/en">
 			<fileset dir="target/prepared-src">
 				<include name="style.css" />
 			</fileset>
-      <fileset dir="src/${locale}">
+      <fileset dir="src/en">
         <include name="images/**" />
       </fileset>
-			<fileset dir="src/${locale}/js">
+			<fileset dir="src/en/js">
 		    <include name="**" />
 			</fileset>
 		</copy>
 		
 		<!-- post html generation prettifying -->
 		<!-- TODO: replace with something more intelligent -->
-		<replace file="target/html/${locale}/index.html">
+		<replace file="target/html/en/index.html">
 		  <replacetoken><![CDATA[<link href="style.css" rel="stylesheet" type="text/css">]]></replacetoken>
 			<replacevalue><![CDATA[<link href="style.css" rel="stylesheet" type="text/css">
 				<script type="text/javascript" src="prettify.js"></script>]]></replacevalue>
 		</replace>
-		<replace file="target/html/${locale}/index.html">
+		<replace file="target/html/en/index.html">
 		  <replacetoken><![CDATA[<body bgcolor="white"]]></replacetoken>
 		  <replacevalue><![CDATA[<body onload="prettyPrint()" bgcolor="white"]]></replacevalue>
 		</replace>
-		<replace file="target/html/${locale}/index.html">
+		<replace file="target/html/en/index.html">
 		  <replacetoken><![CDATA[programlisting]]></replacetoken>
 		  <replacevalue><![CDATA[prettyprint]]></replacevalue>
 		</replace>
@@ -142,7 +141,7 @@
 	<target name="build.pdf">
 		<mkdir dir="target/tmp" />
 		<xslt style="${fo.stylesheet}" extension=".fo" basedir="src" destdir="target/tmp">
-      <include name="${locale}/index.xml" />
+      <include name="en/index.xml" />
 	    <param name="section.autolabel" expression="1" />
 	  </xslt>
     <taskdef name="fop" 
