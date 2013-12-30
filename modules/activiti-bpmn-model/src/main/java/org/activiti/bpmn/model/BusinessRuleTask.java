@@ -56,4 +56,19 @@ public class BusinessRuleTask extends Task {
   public void setClassName(String className) {
     this.className = className;
   }
+  
+  public BusinessRuleTask clone() {
+    BusinessRuleTask clone = new BusinessRuleTask();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(BusinessRuleTask otherElement) {
+    super.setValues(otherElement);
+    setResultVariableName(otherElement.getResultVariableName());
+    setExclude(otherElement.isExclude());
+    setClassName(otherElement.getClassName());
+    ruleNames = new ArrayList<String>(otherElement.getRuleNames());
+    inputVariables = new ArrayList<String>(otherElement.getInputVariables());
+  }
 }

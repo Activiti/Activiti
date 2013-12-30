@@ -171,6 +171,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public void complete(String taskId, Map<String, Object> variables) {
     commandExecutor.execute(new CompleteTaskCmd(taskId, variables));
   }
+  
+  public void complete(String taskId, Map<String, Object> variables,boolean localScope) {
+  	commandExecutor.execute(new CompleteTaskCmd(taskId, variables, localScope));
+  }
 
   public void delegateTask(String taskId, String userId) {
     commandExecutor.execute(new DelegateTaskCmd(taskId, userId));

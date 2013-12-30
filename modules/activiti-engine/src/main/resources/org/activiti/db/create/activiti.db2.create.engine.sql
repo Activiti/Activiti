@@ -61,8 +61,6 @@ create table ACT_RU_EXECUTION (
     IS_CONCURRENT_ smallint check(IS_CONCURRENT_ in (1,0)),
     IS_SCOPE_ smallint check(IS_SCOPE_ in (1,0)),
     IS_EVENT_SCOPE_ smallint check(IS_EVENT_SCOPE_ in (1,0)),
-	UNI_BUSINESS_KEY varchar (255)  not null  generated always as (case when "BUSINESS_KEY_" is null then "ID_" else "BUSINESS_KEY_" end),
-	UNI_PROC_DEF_ID varchar (64)  not null  generated always as (case when "PROC_DEF_ID_" is null then "ID_" else "PROC_DEF_ID_" end),
 	SUSPENSION_STATE_ integer,
 	CACHED_ENT_STATE_ integer,
     primary key (ID_)
@@ -120,6 +118,7 @@ create table ACT_RU_TASK (
     PRIORITY_ integer,
     CREATE_TIME_ timestamp,
     DUE_DATE_ timestamp,
+    CATEGORY_ varchar(255),
     SUSPENSION_STATE_ integer,
     primary key (ID_)
 );
@@ -165,7 +164,6 @@ create table ACT_RU_EVENT_SUBSCR (
     primary key (ID_)
 );
 
-create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION(UNI_PROC_DEF_ID, UNI_BUSINESS_KEY);
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
 create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);

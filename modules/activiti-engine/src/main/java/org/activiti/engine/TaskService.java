@@ -189,6 +189,17 @@ public interface TaskService {
    * @throws ActivitiObjectNotFoundException when no task exists with the given id.
    */
   void complete(String taskId, Map<String, Object> variables);
+  
+  /**
+   * Called when the task is successfully executed, 
+   * and the required task paramaters are given by the end-user.
+   * @param taskId the id of the task to complete, cannot be null.
+   * @param variables task parameters. May be null or empty.
+   * @param localScope If true, the provided variables will be stored task-local, 
+   * 									 instead of process instance wide (which is the default for {@link #complete(String, Map)}).
+   * @throws ActivitiObjectNotFoundException when no task exists with the given id.
+   */
+  void complete(String taskId, Map<String, Object> variables, boolean localScope);
 
   /**
    * Changes the assignee of the given task to the given userId.

@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
@@ -42,12 +44,22 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
 
   public void insertUser(User user) {
     getDbSqlSession().insert((PersistentObject) user);
+    
+    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, user));
+    }
   }
   
   public void updateUser(UserEntity updatedUser) {
     CommandContext commandContext = Context.getCommandContext();
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.update(updatedUser);
+    
+    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedUser));
+    }
   }
 
   public UserEntity findUserById(String userId) {
@@ -65,6 +77,11 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
       getDbSqlSession().delete("deleteMembershipsByUserId", userId);
 
       user.delete();
+      
+      if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, user));
+      }
     }
   }
   

@@ -1,243 +1,240 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<name>Activiti - Webapp - Explorer V2</name>
-	<artifactId>activiti-webapp-explorer2</artifactId>
-	<packaging>war</packaging>
+  <name>Activiti - Webapp - Explorer V2</name>
+  <artifactId>activiti-webapp-explorer2</artifactId>
+  <packaging>war</packaging>
 
-	<parent>
-		<groupId>org.activiti</groupId>
-		<artifactId>activiti-root</artifactId>
-		<relativePath>../..</relativePath>
-		<version>5.15-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <relativePath>../..</relativePath>
+    <version>5.15-SNAPSHOT</version>
+  </parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.zeroturnaround</groupId>
-				<artifactId>jrebel-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>generate-rebel-xml</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
-				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/ui-jar.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
+  <repositories>
+    <repository>
+      <id>vaadin-addons</id>
+      <url>http://maven.vaadin.com/vaadin-addons</url>
+    </repository>
+  </repositories>
 
-			<!-- A simple Jetty test server at http://localhost:8080/activiti-webapp-explorer2 
-				can be launched with the Maven goal jetty:run and stopped with jetty:stop -->
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.24</version>
-				<configuration>
-					<stopPort>9966</stopPort>
-					<stopKey>activiti-webapp-explorer2</stopKey>
-					<!-- Redeploy every x seconds if changes are detected, 0 for no automatic 
-						redeployment -->
-					<scanIntervalSeconds>0</scanIntervalSeconds>
-					<!-- make sure Jetty also finds the widgetset -->
-					<webAppConfig>
-						<contextPath>/activiti-explorer2</contextPath>
-						<baseResource implementation="org.mortbay.resource.ResourceCollection">
-							<!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
-							<!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
-							<resourcesAsCSV>src/main/webapp</resourcesAsCSV>
-						</baseResource>
-					</webAppConfig>
-				</configuration>
-			</plugin>
-		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.zeroturnaround
-										</groupId>
-										<artifactId>
-											jrebel-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.0.7,)
-										</versionRange>
-										<goals>
-											<goal>generate</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.zeroturnaround</groupId>
+        <artifactId>jrebel-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-rebel-xml</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2.1</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/ui-jar.xml</descriptor>
+          </descriptors>
+        </configuration>
+      </plugin>
 
-	<profiles>
-		<profile>
-			<id>compile-widgetset</id>
-			<build>
-				<plugins>
-					<!-- Compile custom GWT components or widget dependencies with the GWT compiler -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<version>2.3.0</version>
-						<configuration>
-							<webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
-							<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-							<runTarget>clean</runTarget>
-							<soyc>false</soyc>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-						      <goal>resources</goal>
-									<goal>compile</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>com.vaadin</groupId>
-						<artifactId>vaadin-maven-plugin</artifactId>
-						<version>1.0.2</version>
-						<executions>
-							<execution>
-							    <phase>prepare-package</phase>
-								<goals>
-									<goal>update-widgetset</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+      <!-- A simple Jetty test server at http://localhost:8080/activiti-webapp-explorer2 
+        can be launched with the Maven goal jetty:run and stopped with jetty:stop -->
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.24</version>
+        <configuration>
+          <stopPort>9966</stopPort>
+          <stopKey>activiti-webapp-explorer2</stopKey>
+          <!-- Redeploy every x seconds if changes are detected, 0 for no 
+            automatic redeployment -->
+          <scanIntervalSeconds>0</scanIntervalSeconds>
+          <!-- make sure Jetty also finds the widgetset -->
+          <webAppConfig>
+            <contextPath>/activiti-explorer2</contextPath>
+            <baseResource implementation="org.mortbay.resource.ResourceCollection">
+              <!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
+              <!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
+              <resourcesAsCSV>src/main/webapp</resourcesAsCSV>
+            </baseResource>
+          </webAppConfig>
+        </configuration>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings 
+          only. It has no influence on the Maven build itself. -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.zeroturnaround
+                    </groupId>
+                    <artifactId>
+                      jrebel-maven-plugin
+                    </artifactId>
+                    <versionRange>
+                      [1.0.7,)
+                    </versionRange>
+                    <goals>
+                      <goal>generate</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>compile-widgetset</id>
+      <build>
+        <plugins>
+          <!-- Compile custom GWT components or widget dependencies with 
+            the GWT compiler -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <version>2.3.0</version>
+            <configuration>
+              <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
+              <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+              <runTarget>clean</runTarget>
+              <soyc>false</soyc>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>resources</goal>
+                  <goal>compile</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-maven-plugin</artifactId>
+            <version>1.0.2</version>
+            <executions>
+              <execution>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>update-widgetset</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 
-	<dependencies>
+  <dependencies>
 
-		<!-- Activiti -->
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-engine</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-spring</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-explorer</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-modeler</artifactId>
-			<exclusions>
-			 <exclusion>
-			     <groupId>xalan</groupId>
-			     <artifactId>xalan</artifactId>
-			 </exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-diagram-rest</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-simple-workflow</artifactId>
-		</dependency>
+    <!-- Activiti -->
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-explorer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-modeler</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>xalan</groupId>
+          <artifactId>xalan</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-diagram-rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-simple-workflow</artifactId>
+    </dependency>
 
-		<!-- Database -->
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency>
+    <!-- Database -->
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
 
-		<!-- Running example processes -->
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-		</dependency>
+    <!-- Running example processes -->
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+    </dependency>
 
-		<!-- Testing -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-servlet</artifactId>
-        </dependency>
-		
-		<!-- Vaadin addons -->
-		<!-- Must be defined both in activiti-explorer and activiti-webapp-explorer, as otherwise the gwt compiler won't find it -->
- 		<dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>dcharts-widget</artifactId>
-            <version>0.10.0</version>
-        </dependency>
+    <!-- Testing -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-	</dependencies>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
+    </dependency>
 
-	<repositories>
-		<repository>
-			<id>buzzmedia</id>
-			<url>http://maven.thebuzzmedia.com</url> <!-- ImageScalr -->
-		</repository>
-		<repository>
-			<id>Alfresco thirdparty</id>
-			<url>https://maven.alfresco.com/nexus/content/repositories/thirdparty/</url>
-		</repository>
-	</repositories>
+    <!-- Vaadin addons -->
+    <!-- Must be defined both in activiti-explorer and activiti-webapp-explorer, 
+      as otherwise the gwt compiler won't find it -->
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>dcharts-widget</artifactId>
+      <version>0.10.0</version>
+    </dependency>
 
+  </dependencies>
 </project>

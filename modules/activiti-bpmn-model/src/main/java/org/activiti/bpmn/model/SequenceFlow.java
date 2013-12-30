@@ -13,6 +13,7 @@
 package org.activiti.bpmn.model;
 
 
+
 /**
  * @author Tijs Rademakers
  */
@@ -42,5 +43,18 @@ public class SequenceFlow extends FlowElement {
   }
   public String toString() {
     return sourceRef + " --> " + targetRef;
+  }
+  
+  public SequenceFlow clone() {
+    SequenceFlow clone = new SequenceFlow();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(SequenceFlow otherFlow) {
+    super.setValues(otherFlow);
+    setConditionExpression(otherFlow.getConditionExpression());
+    setSourceRef(otherFlow.getSourceRef());
+    setTargetRef(otherFlow.getTargetRef());
   }
 }

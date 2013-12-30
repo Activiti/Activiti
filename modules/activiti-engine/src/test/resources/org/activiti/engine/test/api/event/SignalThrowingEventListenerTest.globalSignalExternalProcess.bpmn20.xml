@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <signal id="mySignal" name="Signal" />
+  
+  <process id="globalSignalProcessExternal">
+    <startEvent id="Start" />
+    <sequenceFlow sourceRef="Start" targetRef="signal" />
+    <intermediateCatchEvent id="signal">
+      <signalEventDefinition signalRef="mySignal" />
+    </intermediateCatchEvent>
+
+    <sequenceFlow sourceRef="signal" targetRef="End" />
+    <endEvent id="End" />
+  </process>
+
+</definitions>

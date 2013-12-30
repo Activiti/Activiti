@@ -20,37 +20,38 @@ import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 
 /**
- * Marker interface for all 'patterns' that are known by the simple workflow API.
+ * Marker interface for all 'patterns' that are known by the simple workflow
+ * API.
  * 
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-@JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="type")
+@JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "type")
 public interface StepDefinition extends Serializable {
+	
   String getId();
-  
+
   void setId(String id);
-  
+
   /**
    * Create a clone of this {@link StepDefinition} instance.
    */
   StepDefinition clone();
-  
+
   /**
    * Sets the properties of this {@link StepDefinition} instance based in the
-   * properties present in the given definition. 
+   * properties present in the given definition.
    */
-   void setValues(StepDefinition otherDefinition);
-   
-   /**
-    * @return custom parameter map.
-    */
-   Map<String, Object> getParameters();
-   
-   /**
-    * Set the custom parameters.
-    */
-   void setParameters(Map<String, Object> parameters);
-  
-  
+  void setValues(StepDefinition otherDefinition);
+
+  /**
+   * @return custom parameter map.
+   */
+  Map<String, Object> getParameters();
+
+  /**
+   * Set the custom parameters.
+   */
+  void setParameters(Map<String, Object> parameters);
+
 }

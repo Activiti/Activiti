@@ -100,4 +100,14 @@ public class FormAppearance
         return field;
     }
     
+    public FormSet getFormSet(String id) {
+    	if(appearanceElements != null) {
+    		for(FormAppearanceElement element : appearanceElements) {
+    				if(element instanceof FormSet && id.equals(element.getId())) {
+    					return (FormSet) element;
+    				}
+    		}
+    	}
+    	return null;
+    }
 }

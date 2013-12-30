@@ -28,13 +28,14 @@ import org.activiti.rest.service.HttpMultipartRepresentation;
 import org.activiti.rest.service.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
-import org.restlet.engine.http.header.HeaderConstants;
+import org.restlet.engine.header.Header;
+import org.restlet.engine.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+import org.restlet.util.Series;
 
 /**
  * Test for all REST-operations related to a single execution variable.
@@ -81,6 +82,8 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     assertEquals("variable", responseNode.get("name").asText());
     assertEquals("string", responseNode.get("type").asText());
     
+    client.release();
+    
     // Illegal scope
     client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, processInstance.getId(), "variable") + "?scope=illegal");
     try {
@@ -90,6 +93,7 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
       assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
       assertEquals("Invalid variable scope: 'illegal'", expected.getStatus().getDescription());
     }
+    client.release();
     
     // Unexisting process
     client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, "unexisting", "variable"));
@@ -100,6 +104,7 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
       assertEquals("execution unexisting doesn't exist", expected.getStatus().getDescription());
     }
+    client.release();
     
     // Unexisting variable
     client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, processInstance.getId(), "unexistingVariable"));
@@ -110,6 +115,7 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
       assertEquals("Execution '" + processInstance.getId() + "' doesn't have a variable with name: 'unexistingVariable'.", expected.getStatus().getDescription());
     }
+    client.release();
   }
   
   /**
@@ -141,6 +147,7 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
       actualResponseBytesAsText = client.getResponse().getEntityAsText();
       assertEquals("This is a binary piece of text", actualResponseBytesAsText);
       assertEquals(MediaType.APPLICATION_OCTET_STREAM.getName(), getMediaType(client));
+      client.release();
   }
   
   /**
@@ -167,6 +174,7 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     assertTrue(readSerializable instanceof TestSerializableVariable);
     assertEquals("This is some field", ((TestSerializableVariable) readSerializable).getSomeField());
     assertEquals(MediaType.APPLICATION_JAVA_OBJECT.getName(), getMediaType(client));
+    client.release();
   }
   
   /**
@@ -197,6 +205,7 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
       assertEquals("Execution '" + processInstance.getId() + "' doesn't have a variable with name: 'unexistingVariable'.", expected.getStatus().getDescription());
     }
+    client.release();
   }
   
   /**
@@ -237,6 +246,7 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
       assertEquals("Execution '" + childExecution.getId() + "' doesn't have a variable 'myVariable' in scope global", expected.getStatus().getDescription());
     }
+    client.release();
   }
   
   /**
@@ -312,7 +322,7 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
       assertEquals("Execution '" + childExecution.getId() + "' doesn't have a variable with name: 'unexistingVariable'.", expected.getStatus().getDescription());
     }
-    
+    client.release();
   }
   
   /**
@@ -389,10 +399,12 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     assertTrue(variableValue instanceof byte[]);
     assertEquals("This is binary content", new String((byte[]) variableValue));
     
+    client.release();
   }
   
   protected String getMediaType(ClientResource client) {
-    Form headers = (Form) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
+    @SuppressWarnings("unchecked")
+    Series<Header> headers = (Series<Header>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
     return headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE);
   }
 }

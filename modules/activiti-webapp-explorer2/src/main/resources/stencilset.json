@@ -31,7 +31,7 @@
       "popular" : true
     } ]
   }, {
-    "name" : "diagrambase",
+    "name" : "processbase",
     "properties" : [ {
       "id" : "process_id",
       "type" : "String",
@@ -928,6 +928,127 @@
       } ]
     } ]
   }, {
+    "name" : "eventListener",
+    "properties" : [ {
+      "id" : "eventlisteners",
+      "type" : "multiplecomplex",
+      "title" : "Event listeners",
+      "value" : "",
+      "description" : "Event listeners for events related to the process definition.",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "event_listener_events",
+        "name" : "Events",
+        "type" : "String",
+        "description" : "Listener events.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      }, {
+        "id" : "event_listener_class",
+        "name" : "Class",
+        "type" : "String",
+        "description" : "Listener implementation class.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      }, {
+        "id" : "event_listener_delegate_expression",
+        "name" : "Delegate expression",
+        "type" : "String",
+        "description" : "Listener delegate expression definition.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      },{
+        "id" : "event_listener_entity_type",
+        "name" : "Entity type",
+        "type" : "Choice",
+        "description" : "Listener entity type.",
+        "value" : "",
+        "width" : 100,
+        "optional" : true,
+        "items" : [ {
+          "id" : "attachment",
+          "title" : "Attachment",
+          "value" : "attachment",
+          "refToView" : ""
+        }, {
+          "id" : "comment",
+          "title" : "Comment",
+          "value" : "comment",
+          "refToView" : ""
+        }, {
+          "id" : "execution",
+          "title" : "Execution",
+          "value" : "execution",
+          "refToView" : ""
+        }, {
+          "id" : "identity-link",
+          "title" : "Indentity link",
+          "value" : "identity-link",
+          "refToView" : ""
+        }, {
+          "id" : "job",
+          "title" : "Job",
+          "value" : "job",
+          "refToView" : ""
+        }, {
+          "id" : "process-definition",
+          "title" : "Process definition",
+          "value" : "process-definition",
+          "refToView" : ""
+        }, {
+          "id" : "process-instance",
+          "title" : "Process instance",
+          "value" : "process-instance",
+          "refToView" : ""
+        }, {
+          "id" : "execution",
+          "title" : "Execution",
+          "value" : "execution",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "event_listener_throw_event",
+        "name" : "Throw event",
+        "type" : "Choice",
+        "description" : "Listener event type to throw.",
+        "value" : "",
+        "width" : 100,
+        "optional" : true,
+        "items" : [ {
+          "id" : "signal",
+          "title" : "Signal",
+          "value" : "signal",
+          "refToView" : ""
+        }, {
+          "id" : "globalSignal",
+          "title" : "Glocal signal",
+          "value" : "globalSignal",
+          "refToView" : ""
+        }, {
+          "id" : "message",
+          "title" : "Message",
+          "value" : "message",
+          "refToView" : ""
+        }, {
+          "id" : "error",
+          "title" : "Error",
+          "value" : "error",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "event_listener_throw_event_ref",
+        "name" : "Signal/Message name - Error code",
+        "type" : "String",
+        "description" : "Signal name, Message name or error-code.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      } ]
+    } ]
+  }, {
     "name" : "customformdefinition",
     "properties" : [ {
       "id" : "customformdefinition",
@@ -1054,7 +1175,7 @@
     "groups" : [ "Diagram" ],
     "mayBeRoot" : true,
     "hide" : true,
-    "propertyPackages" : [ "baseattributes", "diagrambase", "executionlistenersbase" ],
+    "propertyPackages" : [ "baseattributes", "processbase", "executionlistenersbase", "eventListener" ],
     "roles" : [ ]
   }, {
     "type" : "node",
@@ -1236,6 +1357,27 @@
     "groups" : [ "Gateways" ],
     "propertyPackages" : [ "elementbase", "baseattributes" ],
     "roles" : [ "sequence_start", "sequence_end", "GatewaysMorph", "all" ]
+  }, {
+    "type" : "node",
+    "id" : "Pool",
+    "title" : "Pool",
+    "groups" : ["Swimlanes"],
+    "description" : "Pools and Lanes represent responsibilities for activities in a process. A pool or a lane can be an organization, a role or a system.",
+    "view" : "swimlane/pool.svg",
+    "icon" : "swimlane/pool.png",
+    "propertyPackages" : [ "elementbase", "baseattributes", "processbase" ],
+    "roles" : [ "all", "messageflow_start", "messageflow_end", "fromtoall", "canContainArtifacts" ],
+    "layout" : [{"type" : "layout.bpmn2_0.pool", "orientation" : "horizontal"}]
+  }, {
+    "type" : "node",
+    "id" : "Lane",
+    "title" : "Lane",
+    "groups" : ["Swimlanes"],
+    "description" : "Pools and lanes represent responsibilities for activities in a process. A pool or a lane can be an organization, a role or a system. Lanes subdivide pools or other lanes hierarchically.",
+    "view" : "swimlane/lane.svg",
+    "icon" : "swimlane/lane.png",
+    "propertyPackages" : [ "elementbase", "baseattributes" ],
+    "roles": [ "PoolChild", "fromtoall", "canContainArtifacts" ]
   }, {
     "type" : "node",
     "id" : "BoundaryErrorEvent",
@@ -1421,6 +1563,12 @@
     }, {
       "role" : "EventSubProcess",
       "contains" : [ "sequence_start", "sequence_end", "from_task_event", "to_task_event", "TextAnnotation" ]
+    }, {
+      "role" : "Pool",
+      "contains" : [ "Lane" ]
+    }, {
+       "role" : "Lane",
+       "contains" : [ "all" ]
     } ],
     "morphingRules" : [ {
       "role" : "ActivitiesMorph",

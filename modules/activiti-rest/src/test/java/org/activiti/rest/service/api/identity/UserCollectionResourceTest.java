@@ -119,6 +119,7 @@ public class UserCollectionResourceTest extends BaseRestTestCase {
       requestNode.put("id", "testuser");
       requestNode.put("firstName", "Frederik");
       requestNode.put("lastName", "Heremans");
+      requestNode.put("password", "test");
       requestNode.put("email", "no-reply@activiti.org");
       
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_COLLECTION, "testuser"));

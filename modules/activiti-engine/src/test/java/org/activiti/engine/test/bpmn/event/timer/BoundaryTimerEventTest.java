@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
@@ -29,6 +31,21 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  */
 public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
+  
+  private static boolean listenerExcecutedStartEvent = false;
+  private static boolean listenerExcecutedEndEvent = false;
+  
+  public static class MyExecutionListener implements ExecutionListener {
+    private static final long serialVersionUID = 1L;
+
+    public void notify(DelegateExecution execution) throws Exception {
+      if ("end".equals(execution.getEventName())) {
+        listenerExcecutedEndEvent = true;
+      } else if ("start".equals(execution.getEventName())) {
+        listenerExcecutedStartEvent = true;
+      }
+    }    
+  }
   
   /*
    * Test for when multiple boundary timer events are defined on the same user
@@ -100,6 +117,10 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
     assertEquals(0L, jobQuery.count());
+    
+    // start execution listener is not executed
+    assertFalse(listenerExcecutedStartEvent);
+    assertTrue(listenerExcecutedEndEvent);
 
     // which means the process has ended
     assertProcessEnded(pi.getId());

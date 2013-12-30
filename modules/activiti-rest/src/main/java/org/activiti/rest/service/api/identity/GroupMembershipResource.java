@@ -14,11 +14,11 @@
 package org.activiti.rest.service.api.identity;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
-import org.restlet.resource.ResourceException;
 
 /**
  * @author Frederik Heremans
@@ -39,8 +39,7 @@ public class GroupMembershipResource extends BaseGroupResource {
      .memberOfGroup(group.getId())
      .userId(userId)
      .count() != 1) {
-     throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND.getCode(), "User '" + userId + 
-             "' is not part of group '" + group.getId() + "'.", null, null);
+     throw new ActivitiObjectNotFoundException("User '" + userId + "' is not part of group '" + group.getId() + "'.", null);
    }
    
    ActivitiUtil.getIdentityService().deleteMembership(userId, group.getId());

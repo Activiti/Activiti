@@ -21,6 +21,13 @@
     </activiti.artifact>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>vaadin-addons</id>
+      <url>http://maven.vaadin.com/vaadin-addons</url>
+    </repository>
+  </repositories>
+
   <build>
     <plugins>
       <plugin>
@@ -61,7 +68,8 @@
     </plugins>
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <!--This plugin's configuration is used to store Eclipse m2e settings 
+          only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
@@ -114,10 +122,10 @@
       <artifactId>activiti-json-converter</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-simple-workflow</artifactId>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-simple-workflow</artifactId>
     </dependency>
-    
+
     <!-- Logging, using Log4j as SLF4J implementation -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -169,9 +177,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.thebuzzmedia</groupId>
+      <groupId>org.imgscalr</groupId>
       <artifactId>imgscalr-lib</artifactId>
-      <version>3.1</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -189,18 +196,19 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    
+
     <!-- Vaadin add-ons -->
-    <!-- Must be defined both in activiti-explorer and activiti-webapp-explorer, as otherwise the gwt compiler won't find it -->
+    <!-- Must be defined both in activiti-explorer and activiti-webapp-explorer, 
+      as otherwise the gwt compiler won't find it -->
     <dependency>
-        <groupId>org.vaadin.addons</groupId>
-        <artifactId>dcharts-widget</artifactId>
-        <version>0.10.0</version>
-        <scope>compile</scope>
-     </dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>dcharts-widget</artifactId>
+      <version>0.10.0</version>
+      <scope>compile</scope>
+    </dependency>
 
   </dependencies>
-  
+
   <profiles>
     <profile>
       <id>distro</id>
@@ -224,16 +232,4 @@
       </build>
     </profile>
   </profiles>
-
-  <repositories>
-    <repository>
-      <id>buzzmedia</id>
-      <url>http://maven.thebuzzmedia.com</url> <!-- ImageScalr -->
-    </repository>
-    <repository>
-        <id>vaadin-addons</id>
-        <url>http://maven.vaadin.com/vaadin-addons</url>
-    </repository>
-  </repositories>
-
 </project>

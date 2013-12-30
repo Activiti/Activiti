@@ -18,12 +18,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -352,4 +352,25 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 	    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
 	    assertEquals(0, managementService.createJobQuery().count()); 
   }
+  
+  @Deployment
+  public void testSignalUserTask() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("catchSignal");
+    
+    Execution execution = runtimeService.createExecutionQuery()
+            .processInstanceId(pi.getId())
+            .activityId("waitState")
+            .singleResult();
+    
+    assertNotNull(execution);
+    
+    try {
+      runtimeService.signal(execution.getId());
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      // Exception expected
+    }
+    
+  }
+
 }

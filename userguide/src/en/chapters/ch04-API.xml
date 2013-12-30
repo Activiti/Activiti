@@ -81,7 +81,7 @@ FormService formService = processEngine.getFormService();</programlisting>
     </para>
     
     <para>
-        Wile the <literal>RepositoryService</literal> is rather about static information (ie. data that doesn't change, or at least not a lot),
+        While the <literal>RepositoryService</literal> is rather about static information (ie. data that doesn't change, or at least not a lot),
         the <emphasis role="bold">RuntimeService</emphasis> is quite the opposite. It deals with starting new process instances of process definitions.
         As said above, a <literal>process definition</literal> defines the structure and behaviour of the different steps in a process.
         A process instance is one execution of such a process definition. For each process definition there typically are many 

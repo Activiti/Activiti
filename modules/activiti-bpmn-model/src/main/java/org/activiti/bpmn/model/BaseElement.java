@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author Tijs Rademakers
  */
-public class BaseElement implements HasExtensionAttributes {
+public abstract class BaseElement implements HasExtensionAttributes {
   
   protected String id;
   protected int xmlRowNumber;
@@ -107,4 +107,38 @@ public class BaseElement implements HasExtensionAttributes {
   public void setAttributes(Map<String, List<ExtensionAttribute>> attributes) {
     this.attributes = attributes;
   }
+  
+  public void setValues(BaseElement otherElement) {
+    setId(otherElement.getId());
+    
+    extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
+    if (otherElement.getExtensionElements() != null && otherElement.getExtensionElements().size() > 0) {
+      for (String key : otherElement.getExtensionElements().keySet()) {
+        List<ExtensionElement> otherElementList = otherElement.getExtensionElements().get(key);
+        if (otherElementList != null && otherElementList.size() > 0) {
+          List<ExtensionElement> elementList = new ArrayList<ExtensionElement>();
+          for (ExtensionElement extensionElement : otherElementList) {
+            elementList.add(extensionElement.clone());
+          }
+          extensionElements.put(key, elementList);
+        }
+      }
+    }
+    
+    attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
+    if (otherElement.getAttributes() != null && otherElement.getAttributes().size() > 0) {
+      for (String key : otherElement.getAttributes().keySet()) {
+        List<ExtensionAttribute> otherAttributeList = otherElement.getAttributes().get(key);
+        if (otherAttributeList != null && otherAttributeList.size() > 0) {
+          List<ExtensionAttribute> attributeList = new ArrayList<ExtensionAttribute>();
+          for (ExtensionAttribute extensionAttribute : otherAttributeList) {
+            attributeList.add(extensionAttribute.clone());
+          }
+          attributes.put(key, attributeList);
+        }
+      }
+    }
+  }
+  
+  public abstract BaseElement clone();
 }

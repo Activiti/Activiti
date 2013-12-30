@@ -77,6 +77,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected Date completedDate;
   protected Date completedAfterDate;
   protected Date completedBeforeDate;
+  protected String category;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
 
@@ -395,6 +396,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery withoutTaskDueDate() {
     this.withoutDueDate = true;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery taskCategory(String category) {
+    this.category = category;
     return this;
   }
   

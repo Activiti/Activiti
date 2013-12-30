@@ -29,7 +29,6 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
-import org.activiti.engine.task.Task;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -74,9 +73,6 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
       LOGGER.info("Initializing demo models");
       initDemoModelData();
     }
-    
-    initDemoStandaloneTasks();
-    
   }
   
   public void setProcessEngine(ProcessEngine processEngine) {
@@ -226,35 +222,6 @@ protected void initDemoProcessDefinitions() {
         LOGGER.warn("Failed to read editor JSON", e);
       }
     }
-  }
-  
-  protected void initDemoStandaloneTasks() {
-    
-    List<User> users = identityService.createUserQuery().list();
-    List<Group> groups = identityService.createGroupQuery().groupType("assignment").list();
-    Random random = new Random();
-    
-    String loremIpsum = "Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et " +
-    		"dolore magna aliqua Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat" +
-    		" Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur Excepteur sint occaecat " +
-    		"cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum";
-    String[] words = loremIpsum.split(" ");
-    
-    for (int i=0; i<100; i++) {
-      
-      Task task = taskService.newTask();
-      task.setName(randomSentence(words, 6));
-      task.setDescription(randomSentence(words, 15));
-      taskService.saveTask(task);
-      
-      if (random.nextBoolean()) {
-        taskService.setAssignee(task.getId(), users.get(random.nextInt(users.size())).getId());
-      } else {
-        taskService.addCandidateGroup(task.getId(), groups.get(random.nextInt(groups.size())).getId());
-      }
-      
-    }
-    
   }
   
   protected String randomSentence(String[] words, int length) {

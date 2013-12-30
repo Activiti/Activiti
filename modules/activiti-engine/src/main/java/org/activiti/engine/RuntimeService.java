@@ -16,6 +16,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
@@ -583,5 +587,35 @@ public interface RuntimeService {
    * @throws ActivitiException if the execution has not subscribed to the signal
    */
   void messageEventReceivedAsync(String messageName, String executionId);
+  
+  /**
+	 * Adds an event-listener which will be notified of ALL events by the dispatcher.
+	 * @param listenerToAdd the listener to add
+	 */
+	void addEventListener(ActivitiEventListener listenerToAdd);
+	
+	/**
+	 * Adds an event-listener which will only be notified when an event occurs, which type is in the given types.
+	 * @param listenerToAdd the listener to add
+	 * @param types types of events the listener should be notified for
+	 */
+	void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... types);
+	
+	/**
+	 * Removes the given listener from this dispatcher. The listener will no longer be notified,
+	 * regardless of the type(s) it was registered for in the first place.
+	 * @param listenerToRemove listener to remove
+	 */
+	 void removeEventListener(ActivitiEventListener listenerToRemove);
+	 
+	/**
+	 * Dispatches the given event to any listeners that are registered.
+	 * @param event event to dispatch.
+	 * 
+	 * @throws ActivitiException if an exception occurs when dispatching the event or when the {@link ActivitiEventDispatcher}
+	 * is disabled.
+	 * @throws ActivitiIllegalArgumentException when the given event is not suitable for dispatching.
+	 */
+	 void dispatchEvent(ActivitiEvent event);
 
 }

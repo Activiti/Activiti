@@ -26,7 +26,7 @@ import org.codehaus.jackson.node.ArrayNode;
  */
 public interface ActivityProcessor {
 
-  public void processFlowElements(Collection<FlowElement> flowElements, BpmnModel model, ArrayNode shapesArrayNode, 
+  public void processFlowElements(Collection<? extends FlowElement> flowElements, BpmnModel model, ArrayNode shapesArrayNode, 
       double subProcessX, double subProcessY);
   
   public void processJsonElements(JsonNode shapesArrayNode, JsonNode modelNode, BaseElement parentElement, Map<String, JsonNode> shapeMap);

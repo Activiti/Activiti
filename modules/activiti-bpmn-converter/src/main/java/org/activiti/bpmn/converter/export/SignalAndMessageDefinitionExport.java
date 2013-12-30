@@ -12,6 +12,7 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
 
@@ -67,7 +68,12 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
         }
       }
       xtw.writeAttribute(ATTRIBUTE_ID, messageId);
-      xtw.writeAttribute(ATTRIBUTE_NAME, message.getName());
+      if (StringUtils.isNotEmpty(message.getName())) {
+        xtw.writeAttribute(ATTRIBUTE_NAME, message.getName());
+      }
+      if (StringUtils.isNotEmpty(message.getItemRef())) {
+        xtw.writeAttribute(ATTRIBUTE_ITEM_REF, message.getItemRef());
+      }
       xtw.writeEndElement();
     }
   }

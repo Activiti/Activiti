@@ -19,6 +19,14 @@
       org.activiti.rest.service
     </activiti.artifact>
   </properties>
+  
+  <repositories>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Public online Restlet repository</name>
+      <url>http://maven.restlet.org</url>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>
@@ -117,6 +125,7 @@
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.fileupload</artifactId>
+      <version>${restlet.version}</version>
     </dependency>
 
     <dependency>

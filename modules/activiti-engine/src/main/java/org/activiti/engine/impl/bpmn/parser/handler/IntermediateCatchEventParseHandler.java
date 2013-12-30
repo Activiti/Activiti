@@ -28,7 +28,7 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
 /**
  * @author Joram Barrez
  */
-public class IntermediateCatchEventParseHandler extends AbstractActivityBpmnParseHandler<IntermediateCatchEvent> {
+public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnParseHandler<IntermediateCatchEvent> {
   
   public Class< ? extends BaseElement> getHandledType() {
     return IntermediateCatchEvent.class;

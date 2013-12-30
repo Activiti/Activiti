@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <error id="error" errorCode="123" />
+  <error id="error2" errorCode="456" />
+  <process id="testError">
+  
+    <extensionElements>
+      <activiti:eventListener events="TASK_ASSIGNED" throwEvent="error" errorCode="123" />
+    </extensionElements>
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="userTask" />
+    
+    <userTask id="userTask" />
+    
+    <boundaryEvent id="catchError" attachedToRef="userTask">
+      <errorEventDefinition errorRef="error" />
+    </boundaryEvent>
+    <boundaryEvent id="catchError2" attachedToRef="userTask">
+      <errorEventDefinition errorRef="error2" />
+    </boundaryEvent>
+    
+    <sequenceFlow id="flow3" sourceRef="catchError" targetRef="escalatedTask" />
+    
+    <userTask id="escalatedTask" name="Escalated Task" />
+    
+     <sequenceFlow sourceRef="catchError2" targetRef="escalatedTask2" />
+    
+    <userTask id="escalatedTask2" name="Escalated Task" />
+    <sequenceFlow id="flow4" sourceRef="userTask" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

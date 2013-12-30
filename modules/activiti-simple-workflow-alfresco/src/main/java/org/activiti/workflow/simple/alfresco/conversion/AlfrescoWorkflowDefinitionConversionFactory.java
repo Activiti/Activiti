@@ -13,8 +13,12 @@
 package org.activiti.workflow.simple.alfresco.conversion;
 
 import org.activiti.workflow.simple.alfresco.export.AlfrescoArtifactExporter;
+import org.activiti.workflow.simple.alfresco.step.AlfrescoEmailStepDefinition;
+import org.activiti.workflow.simple.alfresco.step.AlfrescoEndProcessStepDefinition;
+import org.activiti.workflow.simple.alfresco.step.AlfrescoReviewStepDefinition;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.ScriptStepDefinition;
 
 /**
  * {@link WorkflowDefinitionConversionFactory} which has additional listeners which
@@ -37,9 +41,16 @@ public class AlfrescoWorkflowDefinitionConversionFactory extends WorkflowDefinit
 		// Add additional listeners for Alfresco-specific listeners
 		defaultWorkflowDefinitionConversionListeners.add(new InitializeAlfrescoModelsConversionListener());
 		
-		// Custom step converters
+		// Overrides of default step converters
 		defaultStepConverters.put(HumanStepDefinition.class, new AlfrescoHumanStepDefinitionConverter());
+		defaultStepConverters.put(ScriptStepDefinition.class, new AlfrescoScriptStepDefinitionConverter());
+		
+		// Custom step converters for Alfresco steps
+		defaultStepConverters.put(AlfrescoEmailStepDefinition.class, new AlfrescoEmailStepConverter());
+		defaultStepConverters.put(AlfrescoReviewStepDefinition.class, new AlfrescoReviewStepConverter());
+		defaultStepConverters.put(AlfrescoEndProcessStepDefinition.class, new AlfrescoEndProcessStepConverter());
   }
+	
 	
 	public AlfrescoArtifactExporter getArtifactExporter() {
 	  return artifactExporter;

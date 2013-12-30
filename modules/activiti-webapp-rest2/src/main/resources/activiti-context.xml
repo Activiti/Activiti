@@ -41,6 +41,13 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 		<property name="mailServerHost" value="localhost" />
 		<property name="mailServerPort" value="5025" />
 		<property name="jobExecutorActivate" value="false" />
+        <property name="customFormTypes">
+          <list>
+            <bean class="org.activiti.rest.form.UserFormType"/>
+            <bean class="org.activiti.rest.form.ProcessDefinitionFormType"/> 
+            <bean class="org.activiti.rest.form.MonthFormType"/>   
+          </list>
+        </property>
 	</bean>
 
 	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">

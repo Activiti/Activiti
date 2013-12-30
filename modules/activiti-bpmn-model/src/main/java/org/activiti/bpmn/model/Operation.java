@@ -41,4 +41,23 @@ public class Operation extends BaseElement {
   public void setErrorMessageRef(List<String> errorMessageRef) {
     this.errorMessageRef = errorMessageRef;
   }
+  
+  public Operation clone() {
+    Operation clone = new Operation();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(Operation otherElement) {
+    super.setValues(otherElement);
+    setName(otherElement.getName());
+    setImplementationRef(otherElement.getImplementationRef());
+    setInMessageRef(otherElement.getInMessageRef());
+    setOutMessageRef(otherElement.getOutMessageRef());
+    
+    errorMessageRef = new ArrayList<String>();
+    if (otherElement.getErrorMessageRef() != null && otherElement.getErrorMessageRef().size() > 0) {
+      errorMessageRef.addAll(otherElement.getErrorMessageRef());
+    }
+  }
 }

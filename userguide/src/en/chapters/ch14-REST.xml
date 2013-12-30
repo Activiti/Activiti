@@ -2699,7 +2699,7 @@
        <emphasis role="bold">Request body (start by message):</emphasis>
             <programlisting>
 {
-   "processDefinitionKey":"newOrderMessage",
+   "message":"newOrderMessage",
    "businessKey":"myBusinessKey",
    "variables": [
       {
@@ -5288,7 +5288,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
   "action" : "claim",
   "assignee" : "userWhoClaims"
 }</programlisting>
-      Claims the task by the given assignee. The assignee is required.
+      Claims the task by the given assignee. If the assignee is <literal>null</literal>, the task is assigned to no-one, claimable agian.
        </para>
        <para>
          <emphasis role="bold">Delegate a task - Body JSON:</emphasis>

@@ -48,4 +48,15 @@ public class Signal extends BaseElement {
     this.scope = scope;
   }
   
+  public Signal clone() {
+    Signal clone = new Signal();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(Signal otherElement) {
+    super.setValues(otherElement);
+    setName(otherElement.getName());
+    setScope(otherElement.getScope());
+  }
 }

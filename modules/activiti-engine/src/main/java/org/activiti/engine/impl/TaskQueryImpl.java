@@ -60,6 +60,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected Date createTime;
   protected Date createTimeBefore;
   protected Date createTimeAfter;
+  protected String category;
   protected String key;
   protected String keyLike;
   protected String processDefinitionKey;
@@ -293,6 +294,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public TaskQuery taskCreatedAfter(Date after) {
     this.createTimeAfter = after;
     return this;
+  }
+  
+  public TaskQuery taskCategory(String category) {
+  	this.category = category;
+  	return this;
   }
   
   public TaskQuery taskDefinitionKey(String key) {

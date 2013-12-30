@@ -416,7 +416,11 @@ public class DbSqlSession implements Session {
   // deserialized objects /////////////////////////////////////////////////////
   
   public void addDeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstanceEntity variableInstanceEntity) {
-    deserializedObjects.add(new DeserializedObject(deserializedObject, serializedBytes, variableInstanceEntity));
+    addDeserializedObject(new DeserializedObject(deserializedObject, serializedBytes, variableInstanceEntity));
+  }
+  
+  public void addDeserializedObject(DeserializedObject deserializedObject) {
+  	deserializedObjects.add(deserializedObject);
   }
 
   // flush ////////////////////////////////////////////////////////////////////
@@ -895,6 +899,25 @@ public class DbSqlSession implements Session {
       Exception exception = null;
       byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
       String ddlStatements = new String(bytes);
+      
+      // Special DDL handling for certain databases
+      try {
+    	String databaseType = dbSqlSessionFactory.getDatabaseType();
+    	if (databaseType.equals("mysql")) {
+	     DatabaseMetaData databaseMetaData = connection.getMetaData();
+	     int majorVersion = databaseMetaData.getDatabaseMajorVersion();
+	     int minorVersion = databaseMetaData.getDatabaseMinorVersion();
+	     log.info("Found MySQL: majorVersion=" + majorVersion + " minorVersion=" + minorVersion);
+	      
+	     // Special care for MySQL < 5.6
+	     if (majorVersion <= 5 && minorVersion < 6) {
+	       ddlStatements = updateDdlForMySqlVersionLowerThan56(ddlStatements);
+	     }
+    	}
+      } catch (Exception e) {
+        log.info("Could not get database metadata", e);
+      }
+      
       BufferedReader reader = new BufferedReader(new StringReader(ddlStatements));
       String line = readNextTrimmedLine(reader);
       while (line != null) {
@@ -955,6 +978,32 @@ public class DbSqlSession implements Session {
     } catch (Exception e) {
       throw new ActivitiException("couldn't "+operation+" db schema: "+exceptionSqlStatement, e);
     }
+  }
+  
+  /**
+   * MySQL is funny when it comes to timestamps and dates.
+   *  
+   * More specifically, for a DDL statement like 'MYCOLUMN timestamp(3)':
+   *   - MySQL 5.6.4+ has support for timestamps/dates with millisecond (or smaller) precision. 
+   *     The DDL above works and the data in the table will have millisecond precision
+   *   - MySQL < 5.5.3 allows the DDL statement, but ignores it.
+   *     The DDL above works but the data won't have millisecond precision
+   *   - MySQL 5.5.3 < [version] < 5.6.4 gives and exception when using the DDL above.
+   *   
+   * Also, the 5.5 and 5.6 branches of MySQL are both actively developed and patched.
+   * 
+   * Hence, when doing auto-upgrade/creation of the Activiti tables, the default 
+   * MySQL DDL file is used and all timestamps/datetimes are converted to not use the 
+   * millisecond precision by string replacement done in the method below.
+   * 
+   * If using the DDL files directly (which is a sane choice in production env.),
+   * there is a distinction between MySQL version < 5.6.
+   */
+  protected String updateDdlForMySqlVersionLowerThan56(String ddlStatements) {
+	  return ddlStatements.replace("timestamp(3)", "timestamp")
+			  			  .replace("datetime(3)", "datetime")
+			  			  .replace("TIMESTAMP(3)", "TIMESTAMP")
+			  			  .replace("DATETIME(3)", "DATETIME");
   }
 
   protected String addSqlStatementPiece(String sqlStatement, String line) {

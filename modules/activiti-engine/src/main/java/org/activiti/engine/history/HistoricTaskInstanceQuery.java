@@ -252,6 +252,11 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   HistoricTaskInstanceQuery taskCompletedAfter(Date endDate);
   
   /**
+   * Only select tasks with the given category. This is an optional field and allows to 'tag' tasks as belonging to a certain category.
+   */
+  HistoricTaskInstanceQuery taskCategory(String category);
+  
+  /**
    * Only select tasks which have a local task variable with the given name
    * set to the given value.
    */

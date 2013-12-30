@@ -88,6 +88,6 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     BoundaryEvent boundaryEvent = (BoundaryEvent) element;
-    writeEventDefinitions(boundaryEvent.getEventDefinitions(), xtw);
+    writeEventDefinitions(boundaryEvent, boundaryEvent.getEventDefinitions(), xtw);
   }
 }

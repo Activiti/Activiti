@@ -65,6 +65,7 @@ import org.activiti.bpmn.converter.util.InputStreamProvider;
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
+import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
@@ -75,6 +76,7 @@ import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.TextAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -341,6 +343,18 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 					}
 					new DocumentationParser().parseChildElement(xtr, parentElement, model);
 				
+				} else if (activeProcess == null && ELEMENT_TEXT_ANNOTATION.equals(xtr.getLocalName())) {
+				  String elementId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
+          TextAnnotation textAnnotation = (TextAnnotation) new TextAnnotationXMLConverter().convertXMLToElement(xtr);
+          textAnnotation.setId(elementId);
+          model.getGlobalArtifacts().add(textAnnotation);
+          
+				} else if (activeProcess == null && ELEMENT_ASSOCIATION.equals(xtr.getLocalName())) {
+          String elementId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
+          Association association = (Association) new AssociationXMLConverter().convertXMLToElement(xtr);
+          association.setId(elementId);
+          model.getGlobalArtifacts().add(association);
+				
 				} else if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
           new ExtensionElementsParser().parse(xtr, activeSubProcessList, activeProcess, model);
 				
@@ -384,6 +398,11 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 			}
 
 			for (Process process : model.getProcesses()) {
+			  for (Pool pool : model.getPools()) {
+			    if (process.getId().equals(pool.getProcessRef())) {
+			      pool.setExecutable(process.isExecutable());
+			    }
+			  }
 			  processFlowElements(process.getFlowElements(), process);
 			}
 

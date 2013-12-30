@@ -140,15 +140,6 @@
     
   </dependencies>
   
-  <repositories>
-    <!-- This repo declaration is here for as this will be part of the distro -->
-    <repository>
-      <id>activiti</id>
-      <name>Activiti</name>
-      <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-    </repository>
-  </repositories>
-
   <properties>
     <activiti.artifact>
       org.activiti.engine
@@ -166,7 +157,6 @@
       org.apache.xerces;resolution:=optional,
       org.activiti.camel;resolution:=optional,
       org.activiti.camel.impl;resolution:=optional,
-      org.activiti.osgi;resolution:=optional,
       org.springframework;resolution:=optional,
       org.drools;resolution:=optional,
       com.fasterxml;resolution:=optional,

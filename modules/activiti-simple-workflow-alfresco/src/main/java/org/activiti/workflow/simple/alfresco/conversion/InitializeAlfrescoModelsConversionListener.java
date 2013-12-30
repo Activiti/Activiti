@@ -13,22 +13,33 @@
 package org.activiti.workflow.simple.alfresco.conversion;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.conversion.form.AlfrescoFormCreator;
+import org.activiti.workflow.simple.alfresco.conversion.script.PropertyReference;
 import org.activiti.workflow.simple.alfresco.model.M2Aspect;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Namespace;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
 import org.activiti.workflow.simple.alfresco.model.config.Configuration;
+import org.activiti.workflow.simple.alfresco.model.config.Extension;
 import org.activiti.workflow.simple.alfresco.model.config.Form;
 import org.activiti.workflow.simple.alfresco.model.config.FormField;
 import org.activiti.workflow.simple.alfresco.model.config.FormFieldControl;
@@ -36,7 +47,12 @@ import org.activiti.workflow.simple.alfresco.model.config.FormFieldControlParame
 import org.activiti.workflow.simple.alfresco.model.config.Module;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
-import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.AbstractConditionStepListContainer;
+import org.activiti.workflow.simple.definition.AbstractStepDefinitionContainer;
+import org.activiti.workflow.simple.definition.AbstractStepListContainer;
+import org.activiti.workflow.simple.definition.FormStepDefinition;
+import org.activiti.workflow.simple.definition.ListConditionStepDefinition;
+import org.activiti.workflow.simple.definition.ListStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
@@ -79,22 +95,28 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		}
 		
 		M2Model model = addContentModel(conversion, processId);
-		addModule(conversion, processId);
+		addExtension(conversion, processId);
 		
 		// In case the same property definitions are used across multiple forms, we need to identify this
 		// up-front and create an aspect for this that can be shared due to the fact that you cannot define the same
 		// property twice in a the same content-model namespace
 		addAspectsForReusedProperties(conversion.getWorkflowDefinition(), model, processId);
+		
+		// Add list of property references
+		conversion.setArtifact(ARTIFACT_PROPERTY_REFERENCES, new ArrayList<PropertyReference>());
 	}
 
 	@Override
 	public void afterStepsConversion(WorkflowDefinitionConversion conversion) {
+		M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
+		M2Namespace modelNamespace = model.getNamespaces().get(0);
+		
 		for(FlowElement flowElement : conversion.getProcess().getFlowElements()) {
 			if(flowElement instanceof StartEvent) {
 				StartEvent startEvent = (StartEvent) flowElement;
 				if(startEvent.getFormKey() == null) {
 					
-					Module module = AlfrescoConversionUtil.getModule(conversion);
+					Module module = AlfrescoConversionUtil.getExtension(conversion).getModules().get(0);
 					Configuration detailsForm = module.addConfiguration(EVALUATOR_STRING_COMPARE, 
 							MessageFormat.format(EVALUATOR_CONDITION_ACTIVITI, conversion.getProcess().getId()));
 					
@@ -105,15 +127,14 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 						
 						// Create the content model for the start-task
 						M2Type type = new M2Type();
-						M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
+					
 						model.getTypes().add(type);
-						M2Namespace modelNamespace = model.getNamespaces().get(0);
 						type.setName(AlfrescoConversionUtil.getQualifiedName(modelNamespace.getPrefix(),
 								AlfrescoConversionConstants.START_TASK_SIMPLE_NAME));
 						type.setParentName(AlfrescoConversionConstants.DEFAULT_START_FORM_TYPE);
 						
 						// Create a form-config for the start-task
-						Module shareModule = AlfrescoConversionUtil.getModule(conversion);
+						Module shareModule = AlfrescoConversionUtil.getExtension(conversion).getModules().get(0);
 						Configuration configuration = shareModule.addConfiguration(AlfrescoConversionConstants.EVALUATOR_TASK_TYPE
 								, type.getName());
 						Form formConfig = configuration.createForm();
@@ -138,7 +159,80 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 				}
 			}
 		}
+		
+		
+
+		// Check all elements that can contain PropertyReferences or need additional builders invoked
+		List<PropertyReference> references = AlfrescoConversionUtil.getPropertyReferences(conversion);
+		for(FlowElement element : conversion.getProcess().getFlowElements()) {
+			if(element instanceof SequenceFlow) {
+				resolvePropertyRefrencesInSequenceFlow((SequenceFlow) element, modelNamespace, references);
+			} else if(element instanceof IntermediateCatchEvent) {
+				resolvePropertyRefrencesInCatchEvent((IntermediateCatchEvent) element, modelNamespace, references);
+			} else if(element instanceof ServiceTask)  {
+				resolvePropertyRefrencesInServiceTask((ServiceTask) element, modelNamespace, references);
+			} else if(element instanceof UserTask) {
+				addScriptListenersToUserTask((UserTask) element, conversion);
+			}
+		}
+		
+		// Check if all property-references reference a valid property
+		if(references != null && !references.isEmpty()) {
+			for(PropertyReference reference : references) {
+				reference.validate(model);
+			}
+		}
+		
 	}
+	
+	protected void addScriptListenersToUserTask(UserTask userTask, WorkflowDefinitionConversion conversion) {
+		// Add create-script-listener if it has been used in this conversion
+		if(AlfrescoConversionUtil.hasTaskScriptTaskListenerBuilder(conversion, userTask.getId(), 
+				AlfrescoConversionConstants.TASK_LISTENER_EVENT_CREATE)) {
+			userTask.getTaskListeners().add(AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
+					AlfrescoConversionConstants.TASK_LISTENER_EVENT_CREATE).build());
+		}
+		
+		// Add complete-script-listener if it has been used in this conversion
+		if(AlfrescoConversionUtil.hasTaskScriptTaskListenerBuilder(conversion, userTask.getId(), 
+				AlfrescoConversionConstants.TASK_LISTENER_EVENT_COMPLETE)) {
+			userTask.getTaskListeners().add(AlfrescoConversionUtil.getScriptTaskListenerBuilder(conversion, userTask.getId(), 
+					AlfrescoConversionConstants.TASK_LISTENER_EVENT_COMPLETE).build());
+		}
+  }
+	
+	protected void resolvePropertyRefrencesInSequenceFlow(SequenceFlow sequenceFlow, M2Namespace modelNamespace, List<PropertyReference> references) {
+		if(sequenceFlow.getConditionExpression() != null && PropertyReference.containsPropertyReference(sequenceFlow.getConditionExpression())) {
+			sequenceFlow.setConditionExpression(PropertyReference.replaceAllPropertyReferencesInString(sequenceFlow.getConditionExpression(), modelNamespace.getPrefix(), references, false));
+		}
+	}
+	
+	protected void resolvePropertyRefrencesInCatchEvent(IntermediateCatchEvent event, M2Namespace modelNamespace, List<PropertyReference> references) {
+		if(event.getEventDefinitions() != null && !event.getEventDefinitions().isEmpty()) {
+			for(EventDefinition def : event.getEventDefinitions()) {
+				if(def instanceof TimerEventDefinition) {
+					TimerEventDefinition timer = (TimerEventDefinition) def;
+					if(timer.getTimeDate() != null && PropertyReference.isPropertyReference(timer.getTimeDate())) {
+						timer.setTimeDate(PropertyReference.createReference(timer.getTimeDate()).getPropertyReferenceExpression(modelNamespace.getPrefix()));
+					}
+				}
+			}
+		}
+	}
+	
+	protected void resolvePropertyRefrencesInServiceTask(ServiceTask serviceTask, M2Namespace modelNamespace, List<PropertyReference> references) {
+		if(serviceTask.getFieldExtensions() != null && !serviceTask.getFieldExtensions().isEmpty()) {
+			for(FieldExtension extension : serviceTask.getFieldExtensions()) {
+				String value = extension.getExpression();
+				if(value != null && !value.isEmpty() && PropertyReference.containsPropertyReference(value)) {
+					value = PropertyReference.replaceAllPropertyReferencesInString(value, modelNamespace.getPrefix(), references, true);
+					extension.setExpression(value);
+				}
+			}
+		}
+	}
+	
+	
 	
 	protected String generateUniqueProcessId(WorkflowDefinitionConversion conversion) {
 		String processId = AlfrescoConversionUtil.getValidIdString(
@@ -153,11 +247,8 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		// Add start-form properties
 		addDefinitionsToMap(workflowDefinition.getStartFormDefinition(), definitionMap);
 		
-		for(StepDefinition step : workflowDefinition.getSteps()) {
-			if(step instanceof HumanStepDefinition) {
-				addDefinitionsToMap(((HumanStepDefinition) step).getForm(), definitionMap);
-			}
-		}
+		// Run through steps recursivelye, looking for properties
+		addAspectsForReusedProperties(workflowDefinition.getSteps(), model, processId, definitionMap);
 		
 		// Check if the map contains values other than null, this indicates duplicate properties are found
 		for(Entry<String, FormPropertyDefinition> entry : definitionMap.entrySet()) {
@@ -169,7 +260,28 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 				model.getAspects().add(aspect);
 			}
 		}
-  }
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+  protected void addAspectsForReusedProperties(List<StepDefinition> steps, M2Model model, String processId, Map<String, FormPropertyDefinition> definitionMap) {
+		for (StepDefinition step : steps) {
+			if (step instanceof FormStepDefinition) {
+				addDefinitionsToMap(((FormStepDefinition) step).getForm(), definitionMap);
+			} else if(step instanceof AbstractStepListContainer<?>) {
+        List<ListStepDefinition<?>> stepList = ((AbstractStepListContainer) step).getStepList();
+        for(ListStepDefinition<?> list : stepList) {
+        	addAspectsForReusedProperties(list.getSteps(), model, processId, definitionMap);
+        }
+      } else if(step instanceof AbstractConditionStepListContainer<?>) {
+        List<ListConditionStepDefinition<?>> stepList = ((AbstractConditionStepListContainer) step).getStepList();
+        for(ListConditionStepDefinition<?> list : stepList) {
+        	addAspectsForReusedProperties(list.getSteps(), model, processId, definitionMap);
+        }
+      } else if(step instanceof AbstractStepDefinitionContainer<?>) {
+      	addAspectsForReusedProperties(((AbstractStepDefinitionContainer<WorkflowDefinition>) step).getSteps(), model, processId, definitionMap);
+      }
+		}
+	}
 	
 	protected void addDefinitionsToMap(FormDefinition formDefinition, Map<String, FormPropertyDefinition> definitionMap) {
 		if(formDefinition != null && formDefinition.getFormGroups() != null) {
@@ -224,11 +336,13 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 		return model;
   }
 	
-	protected void addModule(WorkflowDefinitionConversion conversion, String processId) {
+	protected void addExtension(WorkflowDefinitionConversion conversion, String processId) {
 		// Create form-configuration
+		Extension extension = new Extension();
 		Module module = new Module();
+		extension.addModule(module);
 		module.setId(MessageFormat.format(MODULE_ID, processId));
-		AlfrescoConversionUtil.storeModule(module, conversion);
+		AlfrescoConversionUtil.storeExtension(extension, conversion);
   }
 	
 	protected void populateDefaultDetailFormConfig(Configuration configuration) {

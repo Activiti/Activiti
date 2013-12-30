@@ -18,6 +18,8 @@ import java.util.Map;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 /**
  * Defines one property in a {@link FormDefinition}.
@@ -29,8 +31,11 @@ import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 public abstract class FormPropertyDefinition {
 
   protected String name;
+  protected String displayName;
   protected boolean mandatory;
   protected boolean writable;
+  protected String type;
+  protected String value;
   
   protected Map<String, Object> parameters = new HashMap<String, Object>(); 
   
@@ -42,7 +47,15 @@ public abstract class FormPropertyDefinition {
     this.name = propertyName;
   }
 
-  public boolean isMandatory() {
+  public String getDisplayName() {
+	return displayName;
+  }
+
+  public void setDisplayName(String displayName) {
+	this.displayName = displayName;
+  }
+
+public boolean isMandatory() {
     return mandatory;
   }
 
@@ -58,10 +71,28 @@ public abstract class FormPropertyDefinition {
 	  this.writable = writable;
   }
   
-  public void setParameters(Map<String, Object> parameters) {
+  public String getType() {
+	return type;
+  }
+
+  public void setType(String type) {
+	this.type = type;
+  }
+  
+  
+  public String getValue() {
+	return value;
+  }
+
+  public void setValue(String value) {
+	this.value = value;
+  }
+
+public void setParameters(Map<String, Object> parameters) {
 	  this.parameters = parameters;
   }
   
+  @JsonSerialize(include=Inclusion.NON_EMPTY)
   public Map<String, Object> getParameters() {
 	  return parameters;
   }

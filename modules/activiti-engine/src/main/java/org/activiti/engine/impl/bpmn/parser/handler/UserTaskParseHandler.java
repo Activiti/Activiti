@@ -93,6 +93,11 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
       taskDefinition.setDueDateExpression(expressionManager.createExpression(userTask.getDueDate()));
     }
     
+    // Category
+    if (StringUtils.isNotEmpty(userTask.getCategory())) {
+    	taskDefinition.setCategoryExpression(expressionManager.createExpression(userTask.getCategory()));
+    }
+    
     // Priority
     if (StringUtils.isNotEmpty(userTask.getPriority())) {
       taskDefinition.setPriorityExpression(expressionManager.createExpression(userTask.getPriority()));

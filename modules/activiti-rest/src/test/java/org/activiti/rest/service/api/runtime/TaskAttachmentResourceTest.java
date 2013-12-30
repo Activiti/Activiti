@@ -28,9 +28,9 @@ import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Parameter;
 import org.restlet.data.Status;
-import org.restlet.engine.http.header.HeaderConstants;
+import org.restlet.engine.header.Header;
+import org.restlet.engine.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
@@ -236,7 +236,7 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       assertEquals("This is binary content", responseBodyString);
       
       // Check response headers
-      Series<Parameter> headers = (Series<Parameter>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
+      Series<Header> headers = (Series<Header>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
       assertEquals("application/octet-stream", headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE));
 
     
@@ -271,7 +271,7 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
       
       // Check response headers
-      Series<Parameter> headers = (Series<Parameter>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
+      Series<Header> headers = (Series<Header>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
       assertEquals("application/xml", headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE));
     
     } finally {

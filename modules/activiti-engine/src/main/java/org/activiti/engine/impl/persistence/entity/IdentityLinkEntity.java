@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.task.IdentityLink;
@@ -86,6 +88,11 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
    
     Context.getCommandContext().getHistoryManager()
       .recordIdentityLinkCreated(this);
+    
+    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
+    }
   }
   
   public boolean isUser() {

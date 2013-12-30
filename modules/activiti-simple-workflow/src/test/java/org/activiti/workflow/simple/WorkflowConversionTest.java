@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -114,14 +116,24 @@ public class WorkflowConversionTest {
       .name("testWorkflow")
       .description("This is a test workflow")
       .inParallel()
-        .addHumanStep("first task", "kermit")
-        .addHumanStep("second step", "gonzo")
-        .addHumanStep("thrid task", "mispiggy")
+        .inList()
+          .addHumanStep("first task", "kermit")
+        .endList()
+        .inList()
+          .addHumanStep("second step", "gonzo")
+        .endList()
+        .inList()
+          .addHumanStep("third task", "mispiggy")
+        .endList()
       .endParallel()
       .addHumanStep("Task in between", "kermit")
       .inParallel()
-        .addHumanStep("fourth task", "gonzo")
-        .addHumanStep("fifth step", "gonzo")
+        .inList()
+          .addHumanStep("fourth task", "gonzo")
+        .endList()
+        .inList()
+          .addHumanStep("fifth step", "gonzo")
+        .endList()
       .endParallel();
     
     // Validate
@@ -142,6 +154,111 @@ public class WorkflowConversionTest {
     
     // There should be two task open now for gonzo
     assertEquals(2, taskService.createTaskQuery().taskAssignee("gonzo").count());
+  }
+  
+  @Test
+  public void testUserTasksInChoice() throws Exception {
+    TaskService taskService = activitiRule.getTaskService();
+    
+    WorkflowDefinition workflowDefinition = new WorkflowDefinition()
+      .name("testWorkflow")
+      .description("This is a test workflow")
+      .inChoice()
+        .inList()
+          .addCondition("test", "==", "'hello'")
+          .addHumanStep("first task", "kermit")
+          .addHumanStep("second task", "kermit")
+        .endList()
+        .inList()
+          .addHumanStep("gonzo task", "gonzo")
+        .endList()
+      .endChoice()
+      .addHumanStep("last task", "kermit");
+    
+    // Validate
+    Map<String, Object> varMap = new HashMap<String, Object>();
+    varMap.put("test", "hello");
+    String definitionKey = convertAndDeploy(workflowDefinition);
+    ProcessInstance instance = activitiRule.getRuntimeService().startProcessInstanceByKey(definitionKey, varMap);
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    assertEquals(0, taskService.createTaskQuery().taskAssignee("gonzo").count());
+    
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("first task", task.getName());
+    taskService.complete(task.getId());
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("second task", task.getName());
+    taskService.complete(task.getId());
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("last task", task.getName());
+    taskService.complete(task.getId());
+    
+    assertEquals(0, activitiRule.getRuntimeService().createProcessInstanceQuery().processInstanceId(instance.getId()).count());
+    
+    varMap = new HashMap<String, Object>();
+    varMap.put("test", "world");
+    instance = activitiRule.getRuntimeService().startProcessInstanceByKey(definitionKey, varMap);
+    assertEquals(0, taskService.createTaskQuery().taskAssignee("kermit").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("gonzo").count());
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("gonzo task", task.getName());
+    taskService.complete(task.getId());
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("last task", task.getName());
+    taskService.complete(task.getId());
+    
+    assertEquals(0, activitiRule.getRuntimeService().createProcessInstanceQuery().processInstanceId(instance.getId()).count());
+  }
+  
+  @Test
+  public void testMultipleConditionsInChoice() throws Exception {
+    TaskService taskService = activitiRule.getTaskService();
+    
+    WorkflowDefinition workflowDefinition = new WorkflowDefinition()
+      .name("testWorkflow")
+      .description("This is a test workflow")
+      .inChoice()
+        .inList()
+          .addCondition("test", "==", "'hello'")
+          .addCondition("test2", "==", "'world'")
+          .addHumanStep("first task", "kermit")
+        .endList()
+        .inList()
+          .addHumanStep("gonzo task", "gonzo")
+        .endList()
+      .endChoice();
+    
+    // Validate
+    Map<String, Object> varMap = new HashMap<String, Object>();
+    varMap.put("test", "hello");
+    varMap.put("test2", "world");
+    String definitionKey = convertAndDeploy(workflowDefinition);
+    ProcessInstance instance = activitiRule.getRuntimeService().startProcessInstanceByKey(definitionKey, varMap);
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    assertEquals(0, taskService.createTaskQuery().taskAssignee("gonzo").count());
+    
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("first task", task.getName());
+    taskService.complete(task.getId());
+    
+    assertEquals(0, activitiRule.getRuntimeService().createProcessInstanceQuery().processInstanceId(instance.getId()).count());
+    
+    varMap = new HashMap<String, Object>();
+    varMap.put("test", "world");
+    varMap.put("test2", "world");
+    instance = activitiRule.getRuntimeService().startProcessInstanceByKey(definitionKey, varMap);
+    assertEquals(0, taskService.createTaskQuery().taskAssignee("kermit").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("gonzo").count());
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("gonzo task", task.getName());
+    taskService.complete(task.getId());
+    
+    assertEquals(0, activitiRule.getRuntimeService().createProcessInstanceQuery().processInstanceId(instance.getId()).count());
   }
   
   @Test
@@ -272,35 +389,35 @@ public class WorkflowConversionTest {
     .description("This is a test workflow")
     .addFeedbackStep("Test feedback", "kermit");
   
-  activitiRule.getRuntimeService().startProcessInstanceByKey(convertAndDeploy(workflowDefinition));
-  
-  // First, a task should be assigned to kermit to select the people
-  assertEquals(1, taskService.createTaskQuery().count());
-  assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
-  Task task = taskService.createTaskQuery().singleResult();
-  
-  // Completing the task using the predefined process variable (normally done through the form)
-  TaskService taskService = activitiRule.getTaskService();
-  taskService.complete(task.getId(), CollectionUtil.singletonMap(FeedbackStepDefinitionConverter.VARIABLE_FEEDBACK_PROVIDERS, Arrays.asList("gonzo", "fozzie")));
-  
-  // Three tasks should be available now
-  assertEquals(3, taskService.createTaskQuery().count());
-  assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
-  assertEquals(1, taskService.createTaskQuery().taskAssignee("gonzo").count());
-  assertEquals(1, taskService.createTaskQuery().taskAssignee("fozzie").count());
-  
-  // Completing the feedback tasks first should only leave the 'gather feedback' task for kermit open
-  for (Task feedbackTask : taskService.createTaskQuery().list()) {
-    if (!feedbackTask.getAssignee().equals("kermit")) {
-      activitiRule.getTaskService().complete(feedbackTask.getId());
+    activitiRule.getRuntimeService().startProcessInstanceByKey(convertAndDeploy(workflowDefinition));
+    
+    // First, a task should be assigned to kermit to select the people
+    assertEquals(1, taskService.createTaskQuery().count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    Task task = taskService.createTaskQuery().singleResult();
+    
+    // Completing the task using the predefined process variable (normally done through the form)
+    TaskService taskService = activitiRule.getTaskService();
+    taskService.complete(task.getId(), CollectionUtil.singletonMap(FeedbackStepDefinitionConverter.VARIABLE_FEEDBACK_PROVIDERS, Arrays.asList("gonzo", "fozzie")));
+    
+    // Three tasks should be available now
+    assertEquals(3, taskService.createTaskQuery().count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("gonzo").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("fozzie").count());
+    
+    // Completing the feedback tasks first should only leave the 'gather feedback' task for kermit open
+    for (Task feedbackTask : taskService.createTaskQuery().list()) {
+      if (!feedbackTask.getAssignee().equals("kermit")) {
+        activitiRule.getTaskService().complete(feedbackTask.getId());
+      }
     }
-  }
-  assertEquals(1, taskService.createTaskQuery().count());
-  assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
-  
-  // Completing this last task should finish the process
-  activitiRule.getTaskService().complete(activitiRule.getTaskService().createTaskQuery().singleResult().getId());
-  assertEquals(0, activitiRule.getRuntimeService().createProcessInstanceQuery().count());
+    assertEquals(1, taskService.createTaskQuery().count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("kermit").count());
+    
+    // Completing this last task should finish the process
+    activitiRule.getTaskService().complete(activitiRule.getTaskService().createTaskQuery().singleResult().getId());
+    assertEquals(0, activitiRule.getRuntimeService().createProcessInstanceQuery().count());
   }
   
   // Helper methods -----------------------------------------------------------------------------

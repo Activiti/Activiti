@@ -22,11 +22,10 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import org.activiti.explorer.Constants;
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Mode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.thebuzzmedia.imgscalr.Scalr;
-import com.thebuzzmedia.imgscalr.Scalr.Mode;
 
 
 /**
