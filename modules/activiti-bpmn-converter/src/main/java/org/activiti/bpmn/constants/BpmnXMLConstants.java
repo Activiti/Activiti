@@ -69,9 +69,19 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_TASK_LISTENER = "taskListener";
   public static final String ATTRIBUTE_LISTENER_EVENT = "event";
   public static final String ATTRIBUTE_LISTENER_EVENTS = "events";
+  public static final String ATTRIBUTE_LISTENER_ENTITY_TYPE = "entityType";
   public static final String ATTRIBUTE_LISTENER_CLASS = "class";
   public static final String ATTRIBUTE_LISTENER_EXPRESSION = "expression";
   public static final String ATTRIBUTE_LISTENER_DELEGATEEXPRESSION = "delegateExpression";
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE = "throwEvent";
+  public static final String ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME = "signalName";
+  public static final String ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME = "messageName";
+  public static final String ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE = "errorCode";
+  
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL = "signal";
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL = "globalSignal";
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_MESSAGE = "message";
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_ERROR = "error";
   
   public static final String ATTRIBUTE_VALUE_TRUE = "true";
   public static final String ATTRIBUTE_VALUE_FALSE = "false";

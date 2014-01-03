@@ -477,6 +477,78 @@
     </complexType>
   </element>
   
+  <element name="eventListener">
+    <annotation>
+      <documentation>
+        Extension element for defining event-listeners on a process-definition.
+      </documentation>
+    </annotation>
+    <complexType>
+      <attribute name="events">
+        <annotation>
+          <documentation>
+           Comma-separated list of event-types an event-listener is configured to be notified of. Can also be a single event-type.  
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="entityType">
+        <annotation>
+          <documentation>
+           Type of entity that should be targeted by events for which the event-listener should be notified. 
+          </documentation>
+        </annotation>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="attachment" />
+            <enumeration value="comment" />
+            <enumeration value="execution" />
+            <enumeration value="identity-link" />
+            <enumeration value="job" />
+            <enumeration value="process-definition" />
+            <enumeration value="process-instance" />
+            <enumeration value="task" />
+          </restriction>
+        </simpleType>
+      </attribute>
+      <attribute name="throwEvent">
+        <annotation>
+          <documentation>
+           Type of event to be throw as a response to a matching activiti-event being dispatched.
+          </documentation>
+        </annotation>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="signal" />
+            <enumeration value="globalSignal" />
+            <enumeration value="message" />
+            <enumeration value="error" />
+          </restriction>
+        </simpleType>
+      </attribute>
+      <attribute name="signalName">
+        <annotation>
+          <documentation>
+           Name of a signal.  
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="messageName">
+        <annotation>
+          <documentation>
+           Name of a message.  
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="errorCode">
+        <annotation>
+          <documentation>
+           Error-code of an error event.  
+          </documentation>
+        </annotation>
+      </attribute>
+    </complexType>
+  </element>
+  
   <element name="in">
     <annotation>
       <documentation>

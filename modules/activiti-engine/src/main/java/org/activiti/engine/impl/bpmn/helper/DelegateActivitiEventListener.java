@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.bpmn.helper;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.util.ReflectUtil;
@@ -20,22 +21,29 @@ import org.activiti.engine.impl.util.ReflectUtil;
 /**
  * An {@link ActivitiEventListener} implementation which uses a classname to
  * create a delegate {@link ActivitiEventListener} instance to use for event notification.
+ * <br><br>
+ * 
+ * In case an entityClass was passed in the constructor, only events that are {@link ActivitiEntityEvent}'s
+ * that target an entity of the given type, are dispatched to the delegate.
  *  
  * @author Frederik Heremans
  */
-public class DelegateActivitiEventListener implements ActivitiEventListener {
+public class DelegateActivitiEventListener extends BaseDelegateEventListener {
 
 	protected String className;
 	protected ActivitiEventListener delegateInstance;
 	protected boolean failOnException = true;
 
-	public DelegateActivitiEventListener(String className) {
+	public DelegateActivitiEventListener(String className, Class<?> entityClass) {
 		this.className = className;
+		setEntityClass(entityClass);
 	}
 
 	@Override
 	public void onEvent(ActivitiEvent event) {
-		getDelegateInstance().onEvent(event);
+		if(isValidEvent(event)) {
+			getDelegateInstance().onEvent(event);
+		}
 	}
 
 	@Override

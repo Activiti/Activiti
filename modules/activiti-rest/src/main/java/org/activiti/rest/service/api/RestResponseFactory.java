@@ -418,7 +418,7 @@ public class RestResponseFactory {
       result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK, attachment.getTaskId()));
     }
     if(attachment.getProcessInstanceId() != null) {
-      result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, attachment.getProcessInstanceId()));
+      result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, attachment.getProcessInstanceId()));
     }
     return result ;
   }
