@@ -13,13 +13,15 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  */
-package org.activiti.spring.components.config;
+package org.activiti.spring.components.support;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.spring.components.ActivitiContextUtils;
 import org.activiti.spring.components.registry.StateHandlerRegistry;
+import org.activiti.spring.components.support.util.BeanDefinitionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -40,51 +42,11 @@ import org.springframework.util.StringUtils;
  *
  * @author Josh Long
  */
-public class StateHandlerAnnotationBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
+public class StateHandlerBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 
-     private Logger log = LoggerFactory.getLogger(getClass());
-
-
-    public StateHandlerAnnotationBeanFactoryPostProcessor() {
-    }
-/*
-
-    public StateHandlerAnnotationBeanFactoryPostProcessor(ProcessEngine pe) {
-        setProcessEngine(pe);
-    }
-*/
+    private Logger log = LoggerFactory.getLogger(getClass());
 
 
-    private String processEngineBeanName;
-
-    public void setProcessEngineBeanName(String beanName) {
-        this.processEngineBeanName = beanName;
-    }
-
-    private BeanDefinition beanDefinition(ConfigurableListableBeanFactory configurableListableBeanFactory,
-                                          String beanName, Class<?> type) {
-
-
-        String[] beanNames = configurableListableBeanFactory.getBeanNamesForType(type, true, true);
-
-        Assert.isTrue(beanNames.length > 0, "there must be at least one ProcessEngine");
-
-        String beanIdToReturn = null;
-
-        // case 1: theyve specified a beanName that matches
-        if (StringUtils.hasText(beanName)) {
-            for (String b : beanNames)
-                if (b.equals(beanName)) {
-                    beanIdToReturn = b;
-                }
-        } else {
-            if (beanNames.length == 1) {
-                beanIdToReturn = beanNames[0];
-            }
-        }
-      //  Assert.isTrue(beanIdToReturn != null, "please ensure there is either only one ProcessEngine in the context or that it's disambiguated using the processEngineBeanName property");
-        return beanIdToReturn == null ? null :  configurableListableBeanFactory.getBeanDefinition(beanIdToReturn);
-    }
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
@@ -93,21 +55,20 @@ public class StateHandlerAnnotationBeanFactoryPostProcessor implements BeanFacto
         if (beanFactory instanceof BeanDefinitionRegistry) {
             BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 
-            BeanDefinition beanDefinition = beanDefinition( beanFactory, activitiBeanRegistryBeanName, StateHandlerRegistry.class );
-            if(null == beanDefinition){
+
+            BeanDefinition beanDefinition = BeanDefinitionUtils.beanDefinition(beanFactory, activitiBeanRegistryBeanName, StateHandlerRegistry.class);
+            if (null == beanDefinition) {
 
                 String registryClassName = StateHandlerRegistry.class.getName();
                 log.info("registering a {} instance under bean name {}.", registryClassName, activitiBeanRegistryBeanName);
 
 
-          //      String[] processEngineBeanNames = beanFactory.getBeanNamesForType(ProcessEngine.class);
-
-                BeanDefinition processEngineBeanDefinition = beanDefinition( beanFactory,  "processEngine", ProcessEngine.class);
+                BeanDefinition processEngineBeanDefinition = BeanDefinitionUtils.beanDefinition(beanFactory, "processEngine", ProcessEngine.class);
 
 
                 RootBeanDefinition rootBeanDefinition = new RootBeanDefinition();
                 rootBeanDefinition.setBeanClassName(registryClassName);
-                rootBeanDefinition.getPropertyValues().addPropertyValue("processEngine",  processEngineBeanDefinition);
+                rootBeanDefinition.getPropertyValues().addPropertyValue("processEngine", processEngineBeanDefinition);
 
                 BeanDefinitionHolder holder = new BeanDefinitionHolder(rootBeanDefinition, activitiBeanRegistryBeanName);
                 BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
@@ -119,15 +80,5 @@ public class StateHandlerAnnotationBeanFactoryPostProcessor implements BeanFacto
         }
     }
 
-    private boolean beanAlreadyConfigured(BeanDefinitionRegistry registry, String beanName, Class clz) {
-        if (registry.isBeanNameInUse(beanName)) {
-            BeanDefinition bDef = registry.getBeanDefinition(beanName);
-            if (bDef.getBeanClassName().equals(clz.getName())) {
-                return true; // so the beans already registered, and of the right type. so we assume the user is overriding our configuration
-            } else {
-                throw new IllegalStateException("The bean name '" + beanName + "' is reserved.");
-            }
-        }
-        return false;
-    }
+
 }

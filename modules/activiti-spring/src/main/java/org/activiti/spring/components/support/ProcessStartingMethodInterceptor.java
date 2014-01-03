@@ -1,4 +1,4 @@
-package org.activiti.spring.components.aop;
+package org.activiti.spring.components.support;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;

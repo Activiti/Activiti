@@ -13,7 +13,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  */
-package org.activiti.spring.components.aop;
+package org.activiti.spring.components.support;
 
 import org.activiti.spring.annotations.*;
 import org.activiti.spring.components.registry.StateHandlerRegistration;

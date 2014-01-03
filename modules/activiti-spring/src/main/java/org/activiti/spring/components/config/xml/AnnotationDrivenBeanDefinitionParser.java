@@ -17,9 +17,9 @@ package org.activiti.spring.components.config.xml;
 
 
 import org.activiti.spring.components.ActivitiContextUtils;
-import org.activiti.spring.components.aop.ProcessStartingBeanPostProcessor;
-import org.activiti.spring.components.config.StateHandlerAnnotationBeanFactoryPostProcessor;
-import org.activiti.spring.components.scope.ProcessScope;
+import org.activiti.spring.components.support.ProcessStartingBeanPostProcessor;
+import org.activiti.spring.components.support.StateHandlerBeanFactoryPostProcessor;
+import org.activiti.spring.components.support.ProcessScopeBeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -60,7 +60,7 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
     }
 
     private void registerStateHandlerAnnotationBeanFactoryPostProcessor(Element element, ParserContext context) {
-        Class<StateHandlerAnnotationBeanFactoryPostProcessor> clz = StateHandlerAnnotationBeanFactoryPostProcessor.class;
+        Class<StateHandlerBeanFactoryPostProcessor> clz = StateHandlerBeanFactoryPostProcessor.class;
         BeanDefinitionBuilder postProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(clz.getName());
 
         BeanDefinitionHolder postProcessorHolder = new BeanDefinitionHolder(
@@ -72,7 +72,7 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
     }
 
     private void registerProcessScope(Element element, ParserContext parserContext) {
-        Class<ProcessScope> clz = ProcessScope.class;
+        Class<ProcessScopeBeanFactoryPostProcessor> clz = ProcessScopeBeanFactoryPostProcessor.class;
         BeanDefinitionBuilder processScopeBDBuilder = BeanDefinitionBuilder.genericBeanDefinition(clz);
         AbstractBeanDefinition scopeBeanDefinition = processScopeBDBuilder.getBeanDefinition();
         scopeBeanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);

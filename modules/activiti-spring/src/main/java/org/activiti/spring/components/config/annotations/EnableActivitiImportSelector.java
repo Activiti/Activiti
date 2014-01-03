@@ -1,29 +1,25 @@
 package org.activiti.spring.components.config.annotations;
 
-import org.activiti.bpmn.model.*;
 import org.activiti.engine.*;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringJobExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
-import org.activiti.spring.components.aop.ProcessStartingBeanPostProcessor;
-import org.activiti.spring.components.config.StateHandlerAnnotationBeanFactoryPostProcessor;
+import org.activiti.spring.components.support.ProcessStartingBeanPostProcessor;
+import org.activiti.spring.components.support.StateHandlerBeanFactoryPostProcessor;
 import org.activiti.spring.components.registry.StateHandlerRegistry;
+import org.activiti.spring.components.support.ProcessScopeBeanFactoryPostProcessor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DeferredImportSelector;
 import org.springframework.context.annotation.ImportSelector;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.Assert;
 
@@ -42,7 +38,8 @@ import java.util.*;
  *
  * @author Josh Long
  */
-public class EnableActivitiImportSelector implements /*Deferred*/ImportSelector {
+public class EnableActivitiImportSelector
+        implements ImportSelector {
 
     @Override
     public String[] selectImports(AnnotationMetadata importingClassMetadata) {
@@ -116,8 +113,8 @@ public class EnableActivitiImportSelector implements /*Deferred*/ImportSelector 
         }
 
         @Bean
-        public static StateHandlerAnnotationBeanFactoryPostProcessor stateHandlerAnnotationBeanFactoryPostProcessor( ) {
-            return new StateHandlerAnnotationBeanFactoryPostProcessor( );
+        public static StateHandlerBeanFactoryPostProcessor stateHandlerAnnotationBeanFactoryPostProcessor() {
+            return new StateHandlerBeanFactoryPostProcessor();
         }
 
         @Bean
@@ -128,6 +125,11 @@ public class EnableActivitiImportSelector implements /*Deferred*/ImportSelector 
         @Bean
         public StateHandlerRegistry stateHandlerRegistry(ProcessEngine processEngine) {
             return new StateHandlerRegistry(processEngine);
+        }
+
+        @Bean
+        public static ProcessScopeBeanFactoryPostProcessor processScope() {
+            return new ProcessScopeBeanFactoryPostProcessor();
         }
 
         @Bean
@@ -204,8 +206,9 @@ public class EnableActivitiImportSelector implements /*Deferred*/ImportSelector 
                 }
             }
 
-            if (dataSourceMap.containsKey(defaultName))
+            if (dataSourceMap.containsKey(defaultName)) {
                 ds = dataSourceMap.get(defaultName);
+            }
 
             Assert.notNull(ds, "there must be at least one valid DataSource");
             return ds;

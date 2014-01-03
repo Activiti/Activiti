@@ -1,14 +1,13 @@
 package org.activiti.spring.test.components;
 
-import org.activiti.spring.components.scope.ProcessScope;
+import org.activiti.spring.components.support.ProcessScopeBeanFactoryPostProcessor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
 
-@Scope(ProcessScope.PROCESS_SCOPE_NAME)
+@Scope(ProcessScopeBeanFactoryPostProcessor.PROCESS_SCOPE_NAME)
 public class ScopedCustomer implements Serializable, InitializingBean{
 	public ScopedCustomer() {
 	}

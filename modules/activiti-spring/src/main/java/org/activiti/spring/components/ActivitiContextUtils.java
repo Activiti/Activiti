@@ -15,7 +15,7 @@
  */
 package org.activiti.spring.components;
 
-import org.activiti.spring.components.config.StateHandlerAnnotationBeanFactoryPostProcessor;
+import org.activiti.spring.components.support.StateHandlerBeanFactoryPostProcessor;
 
 /**
  * @author Josh Long
@@ -24,7 +24,7 @@ import org.activiti.spring.components.config.StateHandlerAnnotationBeanFactoryPo
 public class ActivitiContextUtils {
 
 	public static final String ANNOTATION_STATE_HANDLER_BEAN_FACTORY_POST_PROCESSOR_BEAN_NAME
-            = StateHandlerAnnotationBeanFactoryPostProcessor.class.getName() ;
+            = StateHandlerBeanFactoryPostProcessor.class.getName() ;
 	/**
 	 * the name of the default registry used to store all state handling components
 	 */
