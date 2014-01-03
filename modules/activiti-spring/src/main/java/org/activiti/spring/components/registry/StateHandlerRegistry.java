@@ -49,6 +49,13 @@ public class StateHandlerRegistry extends ReceiveTaskActivityBehavior implements
 
     private BeanFactory beanFactory;
 
+    public StateHandlerRegistry() {
+    }
+
+    public StateHandlerRegistry(ProcessEngine processEngine) {
+        this.setProcessEngine(processEngine);
+    }
+
     private volatile ConcurrentHashMap<String, StateHandlerRegistration> registrations = new ConcurrentHashMap<String, StateHandlerRegistration>();
 
     private ProcessEngine processEngine;

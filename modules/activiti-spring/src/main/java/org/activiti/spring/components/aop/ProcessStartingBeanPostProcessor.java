@@ -26,6 +26,7 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -50,18 +51,20 @@ public class ProcessStartingBeanPostProcessor extends ProxyConfig implements Bea
 
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
+        this.advisor = new ProcessStartingPointcutAdvisor(this.processEngine);
+    }
+
+
+    public ProcessStartingBeanPostProcessor(ProcessEngine processEngine) {
+        setProcessEngine(processEngine);
     }
 
     public ProcessStartingBeanPostProcessor() {
-        try {
-            afterPropertiesSet();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void afterPropertiesSet() throws Exception {
-        this.advisor = new ProcessStartingPointcutAdvisor(this.processEngine);
+        Assert.notNull(this.processEngine, "the process engine must not be null");
+        Assert.notNull(this.advisor, "the advisor must not be null");
     }
 
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {

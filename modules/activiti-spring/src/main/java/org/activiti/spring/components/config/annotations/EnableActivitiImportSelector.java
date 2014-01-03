@@ -5,6 +5,9 @@ import org.activiti.engine.*;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringJobExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
+import org.activiti.spring.components.aop.ProcessStartingBeanPostProcessor;
+import org.activiti.spring.components.config.StateHandlerAnnotationBeanFactoryPostProcessor;
+import org.activiti.spring.components.registry.StateHandlerRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +42,7 @@ import java.util.*;
  *
  * @author Josh Long
  */
-public class EnableActivitiImportSelector implements DeferredImportSelector {
+public class EnableActivitiImportSelector implements /*Deferred*/ImportSelector {
 
     @Override
     public String[] selectImports(AnnotationMetadata importingClassMetadata) {
@@ -113,8 +116,23 @@ public class EnableActivitiImportSelector implements DeferredImportSelector {
         }
 
         @Bean
+        public static StateHandlerAnnotationBeanFactoryPostProcessor stateHandlerAnnotationBeanFactoryPostProcessor( ) {
+            return new StateHandlerAnnotationBeanFactoryPostProcessor( );
+        }
+
+        @Bean
         public ManagementService managementService(ProcessEngine processEngine) {
             return processEngine.getManagementService();
+        }
+
+        @Bean
+        public StateHandlerRegistry stateHandlerRegistry(ProcessEngine processEngine) {
+            return new StateHandlerRegistry(processEngine);
+        }
+
+        @Bean
+        public ProcessStartingBeanPostProcessor processStartingBeanPostProcessor(ProcessEngine processEngine) {
+            return new ProcessStartingBeanPostProcessor(processEngine);
         }
 
         private PlatformTransactionManager platformTransactionManager(final DataSource dataSource) {

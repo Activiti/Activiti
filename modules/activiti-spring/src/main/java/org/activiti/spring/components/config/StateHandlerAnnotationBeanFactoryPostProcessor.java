@@ -28,6 +28,8 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 
 /**
@@ -40,32 +42,48 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
  */
 public class StateHandlerAnnotationBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 
-    private ProcessEngine processEngine;
-    private Logger log = LoggerFactory.getLogger(getClass());
+     private Logger log = LoggerFactory.getLogger(getClass());
 
-    public void setProcessEngine(ProcessEngine processEngine) {
-        this.processEngine = processEngine;
+
+    public StateHandlerAnnotationBeanFactoryPostProcessor() {
     }
+/*
 
     public StateHandlerAnnotationBeanFactoryPostProcessor(ProcessEngine pe) {
         setProcessEngine(pe);
     }
+*/
 
 
-    private void configureDefaultActivitiRegistry(String registryBeanName, BeanDefinitionRegistry registry) {
+    private String processEngineBeanName;
+
+    public void setProcessEngineBeanName(String beanName) {
+        this.processEngineBeanName = beanName;
+    }
+
+    private BeanDefinition beanDefinition(ConfigurableListableBeanFactory configurableListableBeanFactory,
+                                          String beanName, Class<?> type) {
 
 
-        if (!beanAlreadyConfigured(registry, registryBeanName, StateHandlerRegistry.class)) {
-            String registryName = StateHandlerRegistry.class.getName();
-            log.info("registering a {} instance under bean name {}.", registryName, ActivitiContextUtils.ACTIVITI_REGISTRY_BEAN_NAME);
+        String[] beanNames = configurableListableBeanFactory.getBeanNamesForType(type, true, true);
 
-            RootBeanDefinition rootBeanDefinition = new RootBeanDefinition();
-            rootBeanDefinition.setBeanClassName(registryName);
-            rootBeanDefinition.getPropertyValues().addPropertyValue("processEngine", this.processEngine);
+        Assert.isTrue(beanNames.length > 0, "there must be at least one ProcessEngine");
 
-            BeanDefinitionHolder holder = new BeanDefinitionHolder(rootBeanDefinition, registryBeanName);
-            BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
+        String beanIdToReturn = null;
+
+        // case 1: theyve specified a beanName that matches
+        if (StringUtils.hasText(beanName)) {
+            for (String b : beanNames)
+                if (b.equals(beanName)) {
+                    beanIdToReturn = b;
+                }
+        } else {
+            if (beanNames.length == 1) {
+                beanIdToReturn = beanNames[0];
+            }
         }
+      //  Assert.isTrue(beanIdToReturn != null, "please ensure there is either only one ProcessEngine in the context or that it's disambiguated using the processEngineBeanName property");
+        return beanIdToReturn == null ? null :  configurableListableBeanFactory.getBeanDefinition(beanIdToReturn);
     }
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -74,7 +92,26 @@ public class StateHandlerAnnotationBeanFactoryPostProcessor implements BeanFacto
 
         if (beanFactory instanceof BeanDefinitionRegistry) {
             BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
-            configureDefaultActivitiRegistry(activitiBeanRegistryBeanName, registry);
+
+            BeanDefinition beanDefinition = beanDefinition( beanFactory, activitiBeanRegistryBeanName, StateHandlerRegistry.class );
+            if(null == beanDefinition){
+
+                String registryClassName = StateHandlerRegistry.class.getName();
+                log.info("registering a {} instance under bean name {}.", registryClassName, activitiBeanRegistryBeanName);
+
+
+          //      String[] processEngineBeanNames = beanFactory.getBeanNamesForType(ProcessEngine.class);
+
+                BeanDefinition processEngineBeanDefinition = beanDefinition( beanFactory,  "processEngine", ProcessEngine.class);
+
+
+                RootBeanDefinition rootBeanDefinition = new RootBeanDefinition();
+                rootBeanDefinition.setBeanClassName(registryClassName);
+                rootBeanDefinition.getPropertyValues().addPropertyValue("processEngine",  processEngineBeanDefinition);
+
+                BeanDefinitionHolder holder = new BeanDefinitionHolder(rootBeanDefinition, activitiBeanRegistryBeanName);
+                BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
+            }
 
         } else {
             log.info("BeanFactory is not a BeanDefinitionRegistry. " +
