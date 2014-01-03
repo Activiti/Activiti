@@ -1,18 +1,3 @@
-/*
- * Copyright 2010 the original author or authors
- *
- *     Licensed under the Apache License, Version 2.0 (the "License");
- *     you may not use this file except in compliance with the License.
- *     You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *     Unless required by applicable law or agreed to in writing, software
- *     distributed under the License is distributed on an "AS IS" BASIS,
- *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *     See the License for the specific language governing permissions and
- *     limitations under the License.
- */
 package org.activiti.spring.components.aop;
 
 import org.activiti.engine.ProcessEngine;
@@ -46,7 +31,7 @@ import java.util.concurrent.Future;
  *
  * @author Josh Long
  */
-public class ProcessStartingMethodInterceptor implements MethodInterceptor {
+class ProcessStartingMethodInterceptor implements MethodInterceptor {
 
     private ParameterNameDiscoverer parameterNameDiscoverer;
 
@@ -69,16 +54,16 @@ public class ProcessStartingMethodInterceptor implements MethodInterceptor {
         this.processEngine = processEngine;
     }
 
-    boolean shouldReturnProcessInstance(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
+    private boolean shouldReturnProcessInstance(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
         return (result instanceof ProcessInstance || methodInvocation.getMethod().getReturnType().isAssignableFrom(ProcessInstance.class));
     }
 
-    boolean shouldReturnProcessInstanceId(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
+    private boolean shouldReturnProcessInstanceId(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
         return startProcess.returnProcessInstanceId() && (result instanceof String || methodInvocation.getMethod().getReturnType().isAssignableFrom(String.class));
     }
 
     @SuppressWarnings("unused")
-    boolean shouldReturnAsyncResultWithProcessInstance(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
+    private boolean shouldReturnAsyncResultWithProcessInstance(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
         return (result instanceof Future || methodInvocation.getMethod().getReturnType().isAssignableFrom(Future.class));
     }
 
@@ -131,7 +116,7 @@ public class ProcessStartingMethodInterceptor implements MethodInterceptor {
         return result;
     }
 
-    String processBusinessKey(MethodInvocation invocation) throws Throwable {
+    private String processBusinessKey(MethodInvocation invocation) throws Throwable {
         List<Argument> arguments = mapOfAnnotationValues(BusinessKey.class, invocation);
         if (arguments.size() == 1) {
             for (Argument argument : arguments) {
@@ -150,7 +135,7 @@ public class ProcessStartingMethodInterceptor implements MethodInterceptor {
         return null;
     }
 
-    static class Argument {
+    private static class Argument {
         private int index;
         private Annotation[] annotations;
         private Object value;
@@ -181,7 +166,7 @@ public class ProcessStartingMethodInterceptor implements MethodInterceptor {
     }
 
 
-    <K extends Annotation, V> List<Argument> mapOfAnnotationValues(Class<K> annotationType, MethodInvocation invocation) {
+    private <K extends Annotation, V> List<Argument> mapOfAnnotationValues(Class<K> annotationType, MethodInvocation invocation) {
         Method method = invocation.getMethod();
         String[] argumentNames = this.parameterNameDiscoverer.getParameterNames(method);
         Annotation[][] annotations = method.getParameterAnnotations();
@@ -203,12 +188,12 @@ public class ProcessStartingMethodInterceptor implements MethodInterceptor {
     }
 
     /**
-     * if there any arguments with the {@link  ProcessVariable} annotation,
+     * if there any arguments with the {@link  org.activiti.spring.annotations.ProcessVariable} annotation,
      * then we feed those parameters into the business process
      *
      * @param invocation the invocation of the method as passed to the {@link org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)} method
      */
-    Map<String, Object> processVariablesFromAnnotations(MethodInvocation invocation) throws Throwable {
+    private Map<String, Object> processVariablesFromAnnotations(MethodInvocation invocation) {
         List<Argument> args = mapOfAnnotationValues(ProcessVariable.class, invocation);
         Map<String, Object> vars = new HashMap<String, Object>();
         for (Argument argument : args) {
@@ -229,3 +214,4 @@ public class ProcessStartingMethodInterceptor implements MethodInterceptor {
     }
 
 }
+

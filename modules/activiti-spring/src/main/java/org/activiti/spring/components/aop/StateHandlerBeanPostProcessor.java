@@ -16,8 +16,8 @@
 package org.activiti.spring.components.aop;
 
 import org.activiti.spring.annotations.*;
-import org.activiti.spring.components.registry.ActivitiStateHandlerRegistration;
-import org.activiti.spring.components.registry.ActivitiStateHandlerRegistry;
+import org.activiti.spring.components.registry.StateHandlerRegistration;
+import org.activiti.spring.components.registry.StateHandlerRegistry;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
@@ -46,9 +46,9 @@ import java.util.Map;
  * @since 5.3
  */
 @SuppressWarnings("unused") // registered through XML
-public class ActivitiStateAnnotationBeanPostProcessor implements BeanPostProcessor, BeanClassLoaderAware, BeanFactoryAware, InitializingBean, Ordered {
+public class StateHandlerBeanPostProcessor implements BeanPostProcessor, BeanClassLoaderAware, BeanFactoryAware, InitializingBean, Ordered {
 
-    private volatile ActivitiStateHandlerRegistry registry;
+    private volatile StateHandlerRegistry registry;
 
     private volatile int order = Ordered.LOWEST_PRECEDENCE;
 
@@ -77,7 +77,7 @@ public class ActivitiStateAnnotationBeanPostProcessor implements BeanPostProcess
         return bean;
     }
 
-    public void setRegistry(ActivitiStateHandlerRegistry registry) {
+    public void setRegistry(StateHandlerRegistry registry) {
         this.registry = registry;
     }
 
@@ -88,7 +88,7 @@ public class ActivitiStateAnnotationBeanPostProcessor implements BeanPostProcess
 
         final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
-        final ActivitiComponent component = targetClass.getAnnotation(ActivitiComponent.class);
+        final ProcessHandler component = targetClass.getAnnotation(ProcessHandler.class);
 
         ReflectionUtils.doWithMethods(targetClass, new ReflectionUtils.MethodCallback() {
                     @SuppressWarnings("unchecked")
@@ -122,9 +122,7 @@ public class ActivitiStateAnnotationBeanPostProcessor implements BeanPostProcess
                                 }
                             }
                         }
-                        ActivitiStateHandlerRegistration registration = new ActivitiStateHandlerRegistration(vars,
-                                method, bean, stateName, beanName, pvMapIndex,
-                                procIdIndex, processName);
+                        StateHandlerRegistration registration = new StateHandlerRegistration(vars, method, bean, stateName, beanName, pvMapIndex, procIdIndex, processName);
                         registry.registerActivitiStateHandler(registration);
                     }
                 },

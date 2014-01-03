@@ -30,7 +30,7 @@ import java.lang.annotation.Annotation;
  *
  * @author Mark Fisher
  */
-public class MetaAnnotationMatchingPointcut implements Pointcut {
+  public class MetaAnnotationMatchingPointcut implements Pointcut {
 
 	private final ClassFilter classFilter;
 

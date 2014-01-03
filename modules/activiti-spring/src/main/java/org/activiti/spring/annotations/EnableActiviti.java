@@ -1,5 +1,6 @@
-package org.activiti.spring.components.config.annotation;
+package org.activiti.spring.annotations;
 
+import org.activiti.spring.components.config.annotations.EnableActivitiImportSelector;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.TransactionManagementConfigurationSelector;
 
@@ -17,6 +18,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(TransactionManagementConfigurationSelector.class)
+@Import(EnableActivitiImportSelector.class)
 public @interface EnableActiviti {
 }

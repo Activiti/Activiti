@@ -17,18 +17,31 @@ package org.activiti.spring.components.aop;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.Future;
 
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.spring.annotations.BusinessKey;
+import org.activiti.spring.annotations.ProcessVariable;
 import org.activiti.spring.annotations.StartProcess;
 import org.activiti.spring.components.aop.util.MetaAnnotationMatchingPointcut;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.aop.support.ComposablePointcut;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * AOP advice for methods annotated with (by default) {@link StartProcess}.
@@ -43,7 +56,7 @@ import org.springframework.aop.support.ComposablePointcut;
  * @author Josh Long
  * @since 5.3
  */
-public class ProcessStartingPointcutAdvisor implements PointcutAdvisor, Serializable {
+    class ProcessStartingPointcutAdvisor implements PointcutAdvisor, Serializable {
 
 
 	/**
@@ -104,4 +117,3 @@ public class ProcessStartingPointcutAdvisor implements PointcutAdvisor, Serializ
 
 
 }
-

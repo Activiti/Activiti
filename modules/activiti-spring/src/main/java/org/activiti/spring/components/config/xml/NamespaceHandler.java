@@ -23,8 +23,8 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * @author Josh Long
  * @since 5.3
  */
-public class ActivitiNamespaceHandler extends NamespaceHandlerSupport {
+public class NamespaceHandler extends NamespaceHandlerSupport {
 	public void init() {
-		registerBeanDefinitionParser("annotation-driven", new ActivitiAnnotationDrivenBeanDefinitionParser());
+		registerBeanDefinitionParser("annotation-driven", new AnnotationDrivenBeanDefinitionParser());
 	}
 }

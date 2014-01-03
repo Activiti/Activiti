@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- * an instance of a bean discovered to both have an {@link org.activiti.spring.annotations.ActivitiComponent}
+ * an instance of a bean discovered to both have an {@link org.activiti.spring.annotations.ProcessHandler}
  * and one or more {@link org.activiti.engine.annotations.ActivitiComponent} annotations present.
  * <p/>
  * Describes the metadata extracted from the bean at configuration time
@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Josh Long
  * @since 1.0
  */
-public class ActivitiStateHandlerRegistration {
+public class StateHandlerRegistration {
 	private Map<Integer, String> processVariablesExpected = new ConcurrentHashMap<Integer, String>();
 	private Method handlerMethod;
 	private Object handler;
@@ -42,10 +42,10 @@ public class ActivitiStateHandlerRegistration {
 	private int processIdIndex = -1;
 	private String processName;
 
-	public ActivitiStateHandlerRegistration(
-			Map<Integer, String> processVariablesExpected, Method handlerMethod,
-			Object handler, String stateName, String beanName,
-			int processVariablesIndex, int processIdIndex, String processName) {
+	public StateHandlerRegistration(
+            Map<Integer, String> processVariablesExpected, Method handlerMethod,
+            Object handler, String stateName, String beanName,
+            int processVariablesIndex, int processIdIndex, String processName) {
 		this.processVariablesExpected = processVariablesExpected;
 		this.handlerMethod = handlerMethod;
 		this.handler = handler;

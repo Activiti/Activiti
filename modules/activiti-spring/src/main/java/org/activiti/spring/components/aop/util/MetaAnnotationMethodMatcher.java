@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
  * @author Mark Fisher
  *
  */
-public class MetaAnnotationMethodMatcher extends AnnotationMethodMatcher {
+ public class MetaAnnotationMethodMatcher extends AnnotationMethodMatcher {
 
 	private final Class<? extends Annotation> annotationType;
 

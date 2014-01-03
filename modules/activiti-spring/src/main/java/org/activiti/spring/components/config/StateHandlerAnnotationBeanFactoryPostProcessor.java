@@ -17,7 +17,7 @@ package org.activiti.spring.components.config;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.spring.components.ActivitiContextUtils;
-import org.activiti.spring.components.registry.ActivitiStateHandlerRegistry;
+import org.activiti.spring.components.registry.StateHandlerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -34,7 +34,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
  * this class is responsible for registering the other {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor}s
  * and {@link BeanFactoryPostProcessor}s.
  * <p/>
- * Particularly, this will register the {@link ActivitiStateHandlerRegistry} which is used to react to states.
+ * Particularly, this will register the {@link org.activiti.spring.components.registry.StateHandlerRegistry} which is used to react to states.
  *
  * @author Josh Long
  */
@@ -47,11 +47,16 @@ public class StateHandlerAnnotationBeanFactoryPostProcessor implements BeanFacto
         this.processEngine = processEngine;
     }
 
+    public StateHandlerAnnotationBeanFactoryPostProcessor(ProcessEngine pe) {
+        setProcessEngine(pe);
+    }
+
+
     private void configureDefaultActivitiRegistry(String registryBeanName, BeanDefinitionRegistry registry) {
 
 
-        if (!beanAlreadyConfigured(registry, registryBeanName, ActivitiStateHandlerRegistry.class)) {
-            String registryName = ActivitiStateHandlerRegistry.class.getName();
+        if (!beanAlreadyConfigured(registry, registryBeanName, StateHandlerRegistry.class)) {
+            String registryName = StateHandlerRegistry.class.getName();
             log.info("registering a {} instance under bean name {}.", registryName, ActivitiContextUtils.ACTIVITI_REGISTRY_BEAN_NAME);
 
             RootBeanDefinition rootBeanDefinition = new RootBeanDefinition();
@@ -64,13 +69,16 @@ public class StateHandlerAnnotationBeanFactoryPostProcessor implements BeanFacto
     }
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+
+        String activitiBeanRegistryBeanName = ActivitiContextUtils.ACTIVITI_REGISTRY_BEAN_NAME;
+
         if (beanFactory instanceof BeanDefinitionRegistry) {
             BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
-            configureDefaultActivitiRegistry(ActivitiContextUtils.ACTIVITI_REGISTRY_BEAN_NAME, registry);
+            configureDefaultActivitiRegistry(activitiBeanRegistryBeanName, registry);
 
         } else {
             log.info("BeanFactory is not a BeanDefinitionRegistry. " +
-                    "The default '{}' cannot be configured.", ActivitiContextUtils.ACTIVITI_REGISTRY_BEAN_NAME);
+                    "The default '{}' cannot be configured.", activitiBeanRegistryBeanName);
         }
     }
 
