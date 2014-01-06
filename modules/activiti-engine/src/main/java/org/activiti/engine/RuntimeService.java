@@ -561,6 +561,30 @@ public interface RuntimeService {
    * been received and has been correlated to an execution with id 'executionId'. 
    * 
    * The waiting execution is notified synchronously.
+   * <p> 
+   * Variables are set for the scope of the execution of the message event subscribed 
+   * to the message name. For example:
+   * <p>
+   * <li>The scope for an intermediate message event in the main process is that of 
+   * the process instance</li>
+   * <li>The scope for an intermediate message event in a subprocess is that of the 
+   * subprocess</li>
+   * <li>The scope for a boundary message event is that of the execution for the Activity 
+   * the event is attached to</li>
+   * <p>
+   * Variables are set according to the following algorithm, applied separately to each variable:
+   * 
+   * <p>
+   * <li>If the scope of the execution already contains a variable by the provided name as a 
+   * <strong>local</strong> variable, its value is overwritten to the provided value.</li>
+   * <li>If the scope of the execution does <strong>not</strong> contain a variable by the 
+   * provided name as a local variable, the variable is set to the parent scope of the execution, if there is one. 
+   * If there is no parent execution scope, the current execution scope is used. 
+   * This applies recursively up the parent execution chain until, if no execution contains a local variable by the provided name, 
+   * ultimately the root execution is reached and the variable value is set there.</li>
+   * <p>
+   * In practice for most cases, this algorithm will set variables to the scope of the  execution at 
+   * the process instance’s root level, if there is no execution-local variable by the provided name. 
    * 
    * @param messageName
    *          the name of the message event
