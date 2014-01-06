@@ -18,13 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.bpmn.model.ActivitiListener;
-
 import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polyline2D;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -369,9 +368,10 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       
       if (subShapesMap.size() > 0) {
         List<String> removeSubFlowsList = new ArrayList<String>();
-        for (FlowElement flowElement : process.findFlowElementsOfType(SequenceFlow.class)) {
+        List<SequenceFlow> sequenceFlowList = process.findFlowElementsOfType(SequenceFlow.class);
+        for (FlowElement flowElement : sequenceFlowList) {
           SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
-          if (subShapesMap.containsKey(sequenceFlow.getSourceRef())) {
+          if (process.getFlowElement(flowElement.getId()) != null && subShapesMap.containsKey(sequenceFlow.getSourceRef())) {
             SubProcess subProcess = subShapesMap.get(sequenceFlow.getSourceRef());
             subProcess.addFlowElement(sequenceFlow);
             removeSubFlowsList.add(sequenceFlow.getId());
@@ -443,7 +443,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   
   private List<EventListener> convertJsonToEventListeners(JsonNode listenersNode) {
     List<EventListener> eventListeners = new ArrayList<EventListener>();
-    
+    if (StringUtils.isEmpty(listenersNode.asText())) return eventListeners;
     try {
       listenersNode = objectMapper.readTree(listenersNode.asText());
     } catch (Exception e) {
