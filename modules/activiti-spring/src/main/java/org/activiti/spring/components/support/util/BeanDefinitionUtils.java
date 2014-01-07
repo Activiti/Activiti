@@ -9,24 +9,24 @@ import org.springframework.util.StringUtils;
  *
  */
 public abstract class BeanDefinitionUtils {
-    public static BeanDefinition beanDefinition(ConfigurableListableBeanFactory configurableListableBeanFactory,
-                                                String beanName, Class<?> type) {
 
-
-        String[] beanNames = configurableListableBeanFactory.getBeanNamesForType(type, true, true);
-
-        Assert.isTrue(beanNames.length > 0, "there must be at least one ProcessEngine");
-
+    public static BeanDefinition findBeanDefinitionByBeanNameOrType(ConfigurableListableBeanFactory configurableListableBeanFactory,
+                                                                    String possibleBeanName, Class<?> type) {
+        String[] existingBeans = configurableListableBeanFactory.getBeanNamesForType(type, true, true);
+        Assert.isTrue(existingBeans.length > 0, "there must be at least one bean for the type "+ type);
         String beanIdToReturn = null;
 
-        if (StringUtils.hasText(beanName)) {
-            for (String b : beanNames)
-                if (b.equals(beanName)) {
-                    beanIdToReturn = b;
+        if (StringUtils.hasText(possibleBeanName)) {
+            for (String existingBean : existingBeans) {
+                if (existingBean.equals(possibleBeanName)) {
+                    beanIdToReturn = existingBean;
                 }
-        } else {
-            if (beanNames.length == 1) {
-                beanIdToReturn = beanNames[0];
+            }
+        }
+        else {
+
+            if (existingBeans.length == 1) {
+                beanIdToReturn = existingBeans[0];
             }
         }
         return beanIdToReturn == null ? null : configurableListableBeanFactory.getBeanDefinition(beanIdToReturn);

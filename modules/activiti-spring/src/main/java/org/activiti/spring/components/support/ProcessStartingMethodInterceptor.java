@@ -10,7 +10,6 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -23,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * {@link org.aopalliance.intercept.MethodInterceptor} that starts a business process
@@ -33,26 +32,24 @@ import java.util.concurrent.Future;
  */
 class ProcessStartingMethodInterceptor implements MethodInterceptor {
 
-    private ParameterNameDiscoverer parameterNameDiscoverer;
+    public ProcessStartingMethodInterceptor(ParameterNameDiscoverer parameterNameDiscoverer,
+                                            SharedProcessInstanceHolder sharedProcessInstanceHolder,
+                                            ProcessEngine processEngine) {
+        this.parameterNameDiscoverer = parameterNameDiscoverer;
+        this.sharedProcessInstanceHolder = sharedProcessInstanceHolder;
+        this.processEngine = processEngine;
+    }
+
+    private final ParameterNameDiscoverer parameterNameDiscoverer;
 
     private Logger log = LoggerFactory.getLogger(getClass());
+
+    private final SharedProcessInstanceHolder sharedProcessInstanceHolder;
 
     /**
      * injected reference - can be obtained via a {@link org.activiti.spring.ProcessEngineFactoryBean}
      */
-    protected ProcessEngine processEngine;
-
-    /**
-     * @param processEngine takes a reference to a {@link org.activiti.engine.ProcessEngine}
-     */
-    public ProcessStartingMethodInterceptor(ProcessEngine processEngine) {
-        this(processEngine, new DefaultParameterNameDiscoverer());
-    }
-
-    public ProcessStartingMethodInterceptor(ProcessEngine processEngine, ParameterNameDiscoverer parameterNameDiscoverer) {
-        this.parameterNameDiscoverer = parameterNameDiscoverer;
-        this.processEngine = processEngine;
-    }
+    protected final ProcessEngine processEngine;
 
     private boolean shouldReturnProcessInstance(StartProcess startProcess, MethodInvocation methodInvocation, Object result) {
         return (result instanceof ProcessInstance || methodInvocation.getMethod().getReturnType().isAssignableFrom(ProcessInstance.class));
@@ -67,36 +64,66 @@ class ProcessStartingMethodInterceptor implements MethodInterceptor {
         return (result instanceof Future || methodInvocation.getMethod().getReturnType().isAssignableFrom(Future.class));
     }
 
-    public Object invoke(MethodInvocation invocation) throws Throwable {
+
+    public Object invoke(final MethodInvocation invocation) throws Throwable {
 
         Method method = invocation.getMethod();
 
         StartProcess startProcess = AnnotationUtils.getAnnotation(method, StartProcess.class);
 
-        String processKey = startProcess.processKey();
+        final String processKey = startProcess.processKey();
 
         Assert.hasText(processKey, "you must provide the name of process to start");
 
         Object result;
         try {
+
+
+            /**
+             * Heres how this is supposed to work:
+             *
+             * we have a SharedProcessInstance object floating around in the bean context that is in essence a proxy to
+             * a thread-local which keeps track of the current ProcessInstance object.
+             *
+             * You should thus be able to inject a {@link org.activiti.engine.runtime.ProcessInstance proess instance} anywhere
+             * and access it so long as you're in the body of an Activiti handler.
+             *
+             *
+             */
+
+            /**
+             * Little bit of trickery here: we expose the processInstanceFuture to the method invocation to inject.
+             */
+            sharedProcessInstanceHolder.registerProcessInstanceCallable(
+                    new Callable<ProcessInstance>() {
+                        // our callable is wrapped in a cache
+                        // so it'll only be called once.
+                        @Override
+                        public ProcessInstance call() throws Exception {
+                            ProcessStartingMethodInterceptor that = ProcessStartingMethodInterceptor.this;
+                            Map<String, Object> vars = that.processVariablesFromAnnotations(invocation);
+                            String businessKey = that.processBusinessKey(invocation);
+                            log.info("variables for the started process: {}", vars.toString());
+
+                            RuntimeService runtimeService = ProcessStartingMethodInterceptor.this.processEngine.getRuntimeService();
+                            ProcessInstance pi;
+                            if (null != businessKey && StringUtils.hasText(businessKey)) {
+                                pi = runtimeService.startProcessInstanceByKey(processKey, businessKey, vars);
+                                log.info("the business key for the started process is '{}'", businessKey);
+                            } else {
+                                pi = runtimeService.startProcessInstanceByKey(processKey, vars);
+                            }
+                            return pi;
+                        }
+                    });
+
             result = invocation.proceed();
-            Map<String, Object> vars = this.processVariablesFromAnnotations(invocation);
 
-            String businessKey = this.processBusinessKey(invocation);
-
-            log.info("variables for the started process: {}", vars.toString());
-
-            RuntimeService runtimeService = this.processEngine.getRuntimeService();
-            ProcessInstance pi;
-            if (null != businessKey && StringUtils.hasText(businessKey)) {
-                pi = runtimeService.startProcessInstanceByKey(processKey, businessKey, vars);
-                log.info("the business key for the started process is '{}'", businessKey);
-            } else {
-                pi = runtimeService.startProcessInstanceByKey(processKey, vars);
-            }
+            // this should either retrieve the cached ProcessInstance or
+            // itll run the callable above to obtain a ProcessInstnace
+            ProcessInstance pi = sharedProcessInstanceHolder.sharedProcessInstance();
 
             String pId = pi.getId();
-
             if (invocation.getMethod().getReturnType().equals(void.class))
                 return null;
 
@@ -116,7 +143,7 @@ class ProcessStartingMethodInterceptor implements MethodInterceptor {
         return result;
     }
 
-    private String processBusinessKey(MethodInvocation invocation) throws Throwable {
+    private String processBusinessKey(MethodInvocation invocation) {
         List<Argument> arguments = mapOfAnnotationValues(BusinessKey.class, invocation);
         if (arguments.size() == 1) {
             for (Argument argument : arguments) {
@@ -191,7 +218,8 @@ class ProcessStartingMethodInterceptor implements MethodInterceptor {
      * if there any arguments with the {@link  org.activiti.spring.annotations.ProcessVariable} annotation,
      * then we feed those parameters into the business process
      *
-     * @param invocation the invocation of the method as passed to the {@link org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)} method
+     * @param invocation the invocation of the method as passed to the
+     *     {@link org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)} method
      */
     private Map<String, Object> processVariablesFromAnnotations(MethodInvocation invocation) {
         List<Argument> args = mapOfAnnotationValues(ProcessVariable.class, invocation);
@@ -209,9 +237,6 @@ class ProcessStartingMethodInterceptor implements MethodInterceptor {
         return vars;
     }
 
-    public void setParameterNameDiscoverer(ParameterNameDiscoverer parameterNameDiscoverer) {
-        this.parameterNameDiscoverer = parameterNameDiscoverer;
-    }
 
 }
 

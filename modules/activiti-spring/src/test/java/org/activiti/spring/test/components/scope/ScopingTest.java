@@ -93,10 +93,10 @@ public class ScopingTest {
 
 		this.taskService.claim(t.getId(), "me");
 
-		logger.info("sleeping for 10 seconds while a user performs his task. " +
+		logger.info("sleeping for 2 seconds while a user performs his task. " +
 				"The first transaction has committed. A new one will start in 10 seconds");
 
-		Thread.sleep(1000 * 5);
+		Thread.sleep(1000 * 2);
 
 		this.taskService.complete(t.getId());
 

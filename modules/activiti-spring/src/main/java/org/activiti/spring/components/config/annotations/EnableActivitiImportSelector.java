@@ -4,10 +4,8 @@ import org.activiti.engine.*;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringJobExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
-import org.activiti.spring.components.support.ProcessStartingBeanPostProcessor;
-import org.activiti.spring.components.support.StateHandlerBeanFactoryPostProcessor;
+import org.activiti.spring.components.support.*;
 import org.activiti.spring.components.registry.StateHandlerRegistry;
-import org.activiti.spring.components.support.ProcessScopeBeanFactoryPostProcessor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +36,7 @@ import java.util.*;
  *
  * @author Josh Long
  */
-public class EnableActivitiImportSelector
-        implements ImportSelector {
+public class EnableActivitiImportSelector implements ImportSelector {
 
     @Override
     public String[] selectImports(AnnotationMetadata importingClassMetadata) {
@@ -69,20 +66,19 @@ public class EnableActivitiImportSelector
         @Bean
         public SpringProcessEngineConfiguration springProcessEngineConfiguration() {
             ActivitiConfigurer configurer = activitiConfigurer(activitiConfigurers);
-
-            final DataSource finalDataSource = dataSource(configurer, dataSources);
-            final SpringJobExecutor springJobExecutor = springJobExecutor();
-            final SpringProcessEngineConfiguration springProcessEngineConfiguration = new SpringProcessEngineConfiguration();
-            final PlatformTransactionManager platformTransactionManager = platformTransactionManager(finalDataSource);
-
-            springProcessEngineConfiguration.setDataSource(finalDataSource);
-            springProcessEngineConfiguration.setTransactionManager(platformTransactionManager);
-            springProcessEngineConfiguration.setJobExecutor(springJobExecutor);
-            springProcessEngineConfiguration.setDeploymentResources(resources(configurer));
-
-            configurer.postProcessSpringProcessEngineConfiguration(springProcessEngineConfiguration);
-
-            return springProcessEngineConfiguration;
+            List<Resource> processDefinitionResources = new ArrayList<Resource>();
+            configurer.processDefinitionResources(processDefinitionResources);
+            SpringProcessEngineConfiguration engine = new SpringProcessEngineConfiguration();
+            if (processDefinitionResources.size() > 0) {
+                engine.setDeploymentResources(processDefinitionResources.toArray(
+                        new Resource[processDefinitionResources.size()]));
+            }
+            DataSource dataSource = dataSource(configurer, dataSources);
+            engine.setDataSource(dataSource);
+            engine.setTransactionManager(platformTransactionManager(dataSource));
+            engine.setJobExecutor(springJobExecutor());
+            configurer.postProcessSpringProcessEngineConfiguration(engine);
+            return engine;
         }
 
         @Bean
@@ -112,10 +108,10 @@ public class EnableActivitiImportSelector
             return processEngine.getHistoryService();
         }
 
-        @Bean
+ /*       @Bean
         public static StateHandlerBeanFactoryPostProcessor stateHandlerAnnotationBeanFactoryPostProcessor() {
             return new StateHandlerBeanFactoryPostProcessor();
-        }
+        }*/
 
         @Bean
         public ManagementService managementService(ProcessEngine processEngine) {
@@ -128,16 +124,26 @@ public class EnableActivitiImportSelector
         }
 
         @Bean
-        public static ProcessScopeBeanFactoryPostProcessor processScope() {
-            return new ProcessScopeBeanFactoryPostProcessor();
+        public static ProcessScopeBeanFactoryPostProcessor processScope(   ) {
+            return new ProcessScopeBeanFactoryPostProcessor(  );
         }
 
         @Bean
-        public ProcessStartingBeanPostProcessor processStartingBeanPostProcessor(ProcessEngine processEngine) {
-            return new ProcessStartingBeanPostProcessor(processEngine);
+        public SharedProcessInstanceFactoryBean processInstanceFactoryBean(SharedProcessInstanceHolder sharedProcessInstanceHolder) {
+            return new SharedProcessInstanceFactoryBean(sharedProcessInstanceHolder);
         }
 
-        private PlatformTransactionManager platformTransactionManager(final DataSource dataSource) {
+        @Bean
+        public SharedProcessInstanceHolder processScopeContextHolder() {
+            return new SharedProcessInstanceHolder();
+        }
+
+        @Bean
+        public ProcessStartingBeanPostProcessor processStartingBeanPostProcessor(ProcessEngine processEngine, SharedProcessInstanceHolder sharedProcessInstanceHolder) {
+            return new ProcessStartingBeanPostProcessor(processEngine, sharedProcessInstanceHolder);
+        }
+
+        protected PlatformTransactionManager platformTransactionManager(final DataSource dataSource) {
             return first(this.platformTransactionManagers, new ObjectFactory<PlatformTransactionManager>() {
                 @Override
                 public PlatformTransactionManager getObject() throws BeansException {
@@ -146,7 +152,7 @@ public class EnableActivitiImportSelector
             });
         }
 
-        private SpringJobExecutor springJobExecutor() {
+        protected SpringJobExecutor springJobExecutor() {
             return first(this.springJobExecutors, new ObjectFactory<SpringJobExecutor>() {
                 @Override
                 public SpringJobExecutor getObject() throws BeansException {
@@ -161,17 +167,26 @@ public class EnableActivitiImportSelector
             });
         }
 
-        private ActivitiConfigurer activitiConfigurer(final List<ActivitiConfigurer> activitiConfigurers) {
+        protected ActivitiConfigurer activitiConfigurer(final List<ActivitiConfigurer> activitiConfigurers) {
 
             return new ActivitiConfigurer() {
                 @Override
                 public void processDefinitionResources(List<Resource> resourceList) {
-
                     List<Resource> resources = new ArrayList<Resource>();
-                    resources.add(new ClassPathResource("classpath:/processes/**bpmn20.xml"));
+
+                    // lets first see if any exist in the default place:
+                    ClassPathResource defaultClassPathResourceMatcher =
+                            new ClassPathResource("classpath:/processes/**bpmn20.xml");
+
+                    if (defaultClassPathResourceMatcher.exists()) {
+                        resources.add(defaultClassPathResourceMatcher);
+                    }
+
                     if (activitiConfigurers != null && activitiConfigurers.size() > 0)
                         for (ActivitiConfigurer ac : activitiConfigurers)
                             ac.processDefinitionResources(resources);
+
+                    resourceList.addAll(resources);
                 }
 
                 @Override
@@ -215,7 +230,7 @@ public class EnableActivitiImportSelector
         }
 
         private static <T> T first(List<T> tList, ObjectFactory<T> tObjectFactory) {
-            T rt = null;
+            T rt;
             if (tList != null && tList.size() > 0) {
                 rt = tList.iterator().next();
             } else {
@@ -224,12 +239,6 @@ public class EnableActivitiImportSelector
             return rt;
         }
 
-        private Resource[] resources(ActivitiConfigurer activitiConfigurer) {
-            List<Resource> defaultResources = new ArrayList<Resource>();
-            if (null != activitiConfigurer) {
-                activitiConfigurer.processDefinitionResources(defaultResources);
-            }
-            return defaultResources.toArray(new Resource[defaultResources.size()]);
-        }
+
     }
 }

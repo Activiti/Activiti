@@ -17,9 +17,10 @@
 package org.activiti.spring.components.support;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.activiti.bpmn.model.*;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.context.Context;
@@ -36,12 +37,12 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.scope.ScopedObject;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.*;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.config.Scope;
+import org.springframework.beans.factory.config.*;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
@@ -55,81 +56,58 @@ import org.springframework.util.ClassUtils;
  */
 public class ProcessScopeBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 
-    /**
-     * Map of the {@code processVariables}. Supports correct, scoped access to process variables so that
-     * <p/>
-     * {@code [at]Value("#{ processVariables['customerId'] }") long customerId; }
-     */
+
     public final static String PROCESS_SCOPE_PROCESS_VARIABLES_SINGLETON = "processVariables";
+
     public final static String PROCESS_SCOPE_NAME = "process";
 
-    private ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
-
-    private boolean proxyTargetClass = true;
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    /**
-     * creates a proxy that dispatches invocations to the currently bound {@link ProcessInstance}
-     *
-     * @return shareable {@link ProcessInstance}
-     */
-    private Object createSharedProcessInstance() {
-        ProxyFactory proxyFactoryBean = new ProxyFactory(ProcessInstance.class, new MethodInterceptor() {
-            public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-                String methodName = methodInvocation.getMethod().getName();
-                logger.info("method invocation for {}.", methodName);
-                if (methodName.equals("toString")){
-                    return "SharedProcessInstance";
+
+    private final String oneAndOnlyOneMessage =
+            "there should be one and only one " + ProcessEngine.class.getName() + " process-engine reference in the context.";
+
+    private Map<String, Object> processVariablesMap =
+            new ConcurrentHashMap<String, Object>() {
+                @Override
+                public Object get(java.lang.Object o) {
+
+                    Assert.isInstanceOf(String.class, o, "the 'key' must be a String");
+
+                    String varName = (String) o;
+
+                    ProcessInstance processInstance = Context.getExecutionContext().getProcessInstance();
+                    ExecutionEntity executionEntity = (ExecutionEntity) processInstance;
+                    if (executionEntity.getVariableNames().contains(varName)) {
+                        return executionEntity.getVariable(varName);
+                    }
+
+                    throw new RuntimeException(
+                            String.format("no processVariable by the name of '%s' is available!", varName));
                 }
-                ProcessInstance processInstance = Context.getExecutionContext().getProcessInstance();
-                Method method = methodInvocation.getMethod();
-                Object[] args = methodInvocation.getArguments();
-                return method.invoke(processInstance, args);
-            }
-        });
-        return proxyFactoryBean.getProxy(this.classLoader);
-    }
-
-
-    private final ConcurrentHashMap<String, Object> processVariablesMap = new ConcurrentHashMap<String, Object>() {
-        @Override
-        public java.lang.Object get(java.lang.Object o) {
-
-            Assert.isInstanceOf(String.class, o, "the 'key' must be a String");
-
-            String varName = (String) o;
-
-            ProcessInstance processInstance = Context.getExecutionContext().getProcessInstance();
-            ExecutionEntity executionEntity = (ExecutionEntity) processInstance;
-            if (executionEntity.getVariableNames().contains(varName)) {
-                return executionEntity.getVariable(varName);
-            }
-            throw new RuntimeException("no processVariable by the name of '" + varName + "' is available!");
-        }
-    };
+            };
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
-        Assert.isInstanceOf(BeanDefinitionRegistry.class, beanFactory,
-                "BeanFactory was not a BeanDefinitionRegistry, so ProcessScopeBeanFactoryPostProcessor cannot be used.");
+        String[] processEngineBeanNames = beanFactory.getBeanNamesForType(ProcessEngine.class);
 
-        final String processScopeName = PROCESS_SCOPE_NAME;
+        Assert.isTrue(processEngineBeanNames.length == 1, oneAndOnlyOneMessage);
+
+        RuntimeBeanReference processEngineRuntimeBeanReference = new RuntimeBeanReference( processEngineBeanNames[0]) ;
+
+        String processScopeName = PROCESS_SCOPE_NAME;
+
+        Assert.isInstanceOf(BeanDefinitionRegistry.class, beanFactory,
+                "BeanFactory was not a BeanDefinitionRegistry, so " + ProcessScopeBeanFactoryPostProcessor.class.getName() + " cannot be used.");
 
         BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 
-        BeanDefinition processEngineBeanDefinition = BeanDefinitionUtils.beanDefinition(beanFactory, "processEngine", ProcessEngine.class);
-
-        RootBeanDefinition processScopeRootBeanDefinition = new RootBeanDefinition(ProcessScope.class);
-        processScopeRootBeanDefinition.getPropertyValues().add("processEngine", processEngineBeanDefinition);
-
-        registry.registerBeanDefinition(processScopeName, processScopeRootBeanDefinition);
+        final boolean proxyTargetClass = true;
 
         for (String beanName : beanFactory.getBeanDefinitionNames()) {
             BeanDefinition definition = beanFactory.getBeanDefinition(beanName);
-            // Replace this or any of its inner beans with scoped proxy if it has this scope
             boolean scoped = processScopeName.equals(definition.getScope());
+
             Scopifier scopifier = new Scopifier(registry, processScopeName, proxyTargetClass, scoped);
             scopifier.visitBeanDefinition(definition);
             if (scoped) {
@@ -137,13 +115,16 @@ public class ProcessScopeBeanFactoryPostProcessor implements BeanFactoryPostProc
             }
         }
 
+        registry.registerBeanDefinition(processScopeName,
+                BeanDefinitionBuilder.genericBeanDefinition(ProcessScope.class)
+                        .addConstructorArgReference(processEngineRuntimeBeanReference.getBeanName())
+                        .getBeanDefinition());
         beanFactory.registerSingleton(PROCESS_SCOPE_PROCESS_VARIABLES_SINGLETON, this.processVariablesMap);
-        beanFactory.registerResolvableDependency(ProcessInstance.class, createSharedProcessInstance());
+
+
     }
 
-
 }
-
 
 class ProcessScope implements Scope, InitializingBean, DisposableBean, BeanFactoryAware {
     @Override
@@ -164,6 +145,13 @@ class ProcessScope implements Scope, InitializingBean, DisposableBean, BeanFacto
     private ProcessEngine processEngine;
 
     private RuntimeService runtimeService;
+
+    public ProcessScope() {
+    }
+
+    public ProcessScope(ProcessEngine processEngine) {
+        this.processEngine = processEngine;
+    }
 
     // set through Namespace reflection if nothing else
     @SuppressWarnings("unused")

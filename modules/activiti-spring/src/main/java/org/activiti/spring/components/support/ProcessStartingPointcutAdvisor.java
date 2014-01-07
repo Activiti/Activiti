@@ -27,6 +27,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.aop.support.ComposablePointcut;
+import org.springframework.core.DefaultParameterNameDiscoverer;
 
 /**
  * AOP advice for methods annotated with (by default) {@link StartProcess}.
@@ -46,32 +47,41 @@ class ProcessStartingPointcutAdvisor implements PointcutAdvisor, Serializable {
     /**
      * annotations that shall be scanned
      */
-    private Set<Class<? extends Annotation>> annotations = new HashSet<Class<? extends Annotation>>(Arrays.asList(StartProcess.class));
+    private Set<Class<? extends Annotation>> annotations;
 
     /**
      * the {@link org.aopalliance.intercept.MethodInterceptor} that handles launching the business process.
      */
-    protected MethodInterceptor advice;
+    private MethodInterceptor advice;
 
     /**
      * matches any method containing the {@link StartProcess} annotation.
      */
-    protected Pointcut pointcut;
+    private Pointcut pointcut;
 
     /**
      * the injected reference to the {@link org.activiti.engine.ProcessEngine}
      */
-    protected ProcessEngine processEngine;
+    private ProcessEngine processEngine;
 
-    public ProcessStartingPointcutAdvisor(ProcessEngine pe) {
+    private SharedProcessInstanceHolder sharedProcessInstanceHolder;
+
+    public ProcessStartingPointcutAdvisor(ProcessEngine pe, SharedProcessInstanceHolder sharedProcessInstanceHolder) {
         this.processEngine = pe;
+        this.sharedProcessInstanceHolder = sharedProcessInstanceHolder;
+
+
+        this.annotations = new HashSet<Class<? extends Annotation>>();
+        this.annotations.add(StartProcess.class);
+
         this.pointcut = buildPointcut();
         this.advice = buildAdvise();
 
     }
 
     protected MethodInterceptor buildAdvise() {
-        return new ProcessStartingMethodInterceptor(this.processEngine);
+        return new ProcessStartingMethodInterceptor(
+                new DefaultParameterNameDiscoverer(), this.sharedProcessInstanceHolder, this.processEngine);
     }
 
     public Pointcut getPointcut() {

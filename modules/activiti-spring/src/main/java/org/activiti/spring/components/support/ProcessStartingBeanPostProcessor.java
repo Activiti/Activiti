@@ -49,20 +49,16 @@ public class ProcessStartingBeanPostProcessor extends ProxyConfig implements Bea
 
     private volatile ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
-    public void setProcessEngine(ProcessEngine processEngine) {
+    private SharedProcessInstanceHolder sharedProcessInstanceHolder;
+
+    public ProcessStartingBeanPostProcessor(ProcessEngine processEngine, SharedProcessInstanceHolder sharedProcessInstanceHolder) {
         this.processEngine = processEngine;
-        this.advisor = new ProcessStartingPointcutAdvisor(this.processEngine);
-    }
-
-
-    public ProcessStartingBeanPostProcessor(ProcessEngine processEngine) {
-        setProcessEngine(processEngine);
-    }
-
-    public ProcessStartingBeanPostProcessor() {
+        this.sharedProcessInstanceHolder = sharedProcessInstanceHolder;
+        this.advisor = new ProcessStartingPointcutAdvisor(this.processEngine, this.sharedProcessInstanceHolder);
     }
 
     public void afterPropertiesSet() throws Exception {
+        Assert.notNull(this.sharedProcessInstanceHolder, "the sharedProcessInstanceHolder must not be null.");
         Assert.notNull(this.processEngine, "the process engine must not be null");
         Assert.notNull(this.advisor, "the advisor must not be null");
     }

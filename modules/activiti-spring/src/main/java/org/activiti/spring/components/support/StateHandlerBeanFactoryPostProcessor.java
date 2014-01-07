@@ -21,7 +21,6 @@ import org.activiti.spring.components.registry.StateHandlerRegistry;
 import org.activiti.spring.components.support.util.BeanDefinitionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -30,8 +29,6 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 
 /**
@@ -56,14 +53,14 @@ public class StateHandlerBeanFactoryPostProcessor implements BeanFactoryPostProc
             BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 
 
-            BeanDefinition beanDefinition = BeanDefinitionUtils.beanDefinition(beanFactory, activitiBeanRegistryBeanName, StateHandlerRegistry.class);
+            BeanDefinition beanDefinition = BeanDefinitionUtils.findBeanDefinitionByBeanNameOrType(beanFactory, activitiBeanRegistryBeanName, StateHandlerRegistry.class);
             if (null == beanDefinition) {
 
                 String registryClassName = StateHandlerRegistry.class.getName();
                 log.info("registering a {} instance under bean name {}.", registryClassName, activitiBeanRegistryBeanName);
 
 
-                BeanDefinition processEngineBeanDefinition = BeanDefinitionUtils.beanDefinition(beanFactory, "processEngine", ProcessEngine.class);
+                BeanDefinition processEngineBeanDefinition = BeanDefinitionUtils.findBeanDefinitionByBeanNameOrType(beanFactory, "processEngine", ProcessEngine.class);
 
 
                 RootBeanDefinition rootBeanDefinition = new RootBeanDefinition();
