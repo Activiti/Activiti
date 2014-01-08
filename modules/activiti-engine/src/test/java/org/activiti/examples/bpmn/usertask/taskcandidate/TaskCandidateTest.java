@@ -12,6 +12,7 @@
  */
 package org.activiti.examples.bpmn.usertask.taskcandidate;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,16 +23,12 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez, Saeid Mirzaei
  */
 public class TaskCandidateTest extends PluggableActivitiTestCase {
 
-  private static Logger logger = LoggerFactory.getLogger(TaskCandidateTest.class);
-  
   private static final String KERMIT = "kermit";
 
   private static final String GONZO = "gonzo";
@@ -164,10 +161,27 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testMultipleCandidateUsers() {
-    runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample");
+    runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample", Collections.singletonMap("Variable", (Object)"var"));
 
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
+    
+    List<Task> tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).list();
+    assertEquals(1, tasks.size());
+    
+    Task task = tasks.get(0);
+    taskService.setVariableLocal(task.getId(), "taskVar", 123);
+    tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).includeProcessVariables().includeTaskLocalVariables().list();
+    task = tasks.get(0);
+    
+    assertEquals(1, task.getProcessVariables().size());
+    assertEquals(1, task.getTaskLocalVariables().size());
+    taskService.addUserIdentityLink(task.getId(), GONZO, "test");
+    
+    tasks = taskService.createTaskQuery().taskInvolvedUser(GONZO).includeProcessVariables().includeTaskLocalVariables().list();
+    assertEquals(1, tasks.size());
+    assertEquals(1, task.getProcessVariables().size());
+    assertEquals(1, task.getTaskLocalVariables().size());
   }
 
   @Deployment
