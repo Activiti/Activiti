@@ -64,13 +64,18 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CLASS, eventListener.getImplementation(), xtw);
          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(eventListener.getImplementationType())) {
            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_DELEGATEEXPRESSION, eventListener.getImplementation(), xtw);
-         } else if(ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())
-        		 || ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())) {
+         } else if(ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())) {
         	 BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME, eventListener.getImplementation(), xtw);
+        	 BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL, xtw);
+         } else if(ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())) {
+        	 BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME, eventListener.getImplementation(), xtw);
+        	 BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL, xtw);
          } else if(ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(eventListener.getImplementationType())) {
         	 BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME, eventListener.getImplementation(), xtw);
+        	 BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_MESSAGE, xtw);
          } else if(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(eventListener.getImplementationType())) {
         	 BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE, eventListener.getImplementation(), xtw);
+        	 BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_ERROR, xtw);
          }
   			 
   			 xtw.writeEndElement();
