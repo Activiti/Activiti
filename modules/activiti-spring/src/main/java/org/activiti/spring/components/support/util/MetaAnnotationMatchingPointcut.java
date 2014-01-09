@@ -30,60 +30,60 @@ import java.lang.annotation.Annotation;
  *
  * @author Mark Fisher
  */
-  public class MetaAnnotationMatchingPointcut implements Pointcut {
+public class MetaAnnotationMatchingPointcut implements Pointcut {
 
-	private final ClassFilter classFilter;
+    private final ClassFilter classFilter;
 
-	private final MethodMatcher methodMatcher;
-
-
-	/**
-	 * Create a new MetaAnnotationMatchingPointcut for the given annotation type.
-	 *
-	 * @param classAnnotationType the annotation type to look for at the class level
-	 * @param checkInherited			whether to explicitly check the superclasses and
-	 *                            interfaces for the annotation type as well (even if the annotation type
-	 *                            is not marked as inherited itself)
-	 */
-	public MetaAnnotationMatchingPointcut(Class<? extends Annotation> classAnnotationType, boolean checkInherited) {
-		this.classFilter = new AnnotationClassFilter(classAnnotationType, checkInherited);
-		this.methodMatcher = MethodMatcher.TRUE;
-	}
-
-	/**
-	 * Create a new MetaAnnotationMatchingPointcut for the given annotation type.
-	 *
-	 * @param classAnnotationType	the annotation type to look for at the class level
-	 *                             (can be <code>null</code>)
-	 * @param methodAnnotationType the annotation type to look for at the method level
-	 *                             (can be <code>null</code>)
-	 */
-	public MetaAnnotationMatchingPointcut(
-			Class<? extends Annotation> classAnnotationType, Class<? extends Annotation> methodAnnotationType) {
-
-		Assert.isTrue((classAnnotationType != null || methodAnnotationType != null),
-				"Either Class annotation type or Method annotation type needs to be specified (or both)");
-
-		if (classAnnotationType != null) {
-			this.classFilter = new AnnotationClassFilter(classAnnotationType);
-		} else {
-			this.classFilter = ClassFilter.TRUE;
-		}
-
-		if (methodAnnotationType != null) {
-			this.methodMatcher = new MetaAnnotationMethodMatcher(methodAnnotationType);
-		} else {
-			this.methodMatcher = MethodMatcher.TRUE;
-		}
-	}
+    private final MethodMatcher methodMatcher;
 
 
-	public ClassFilter getClassFilter() {
-		return this.classFilter;
-	}
+    /**
+     * Create a new MetaAnnotationMatchingPointcut for the given annotation type.
+     *
+     * @param classAnnotationType the annotation type to look for at the class level
+     * @param checkInherited      whether to explicitly check the superclasses and
+     *                            interfaces for the annotation type as well (even if the annotation type
+     *                            is not marked as inherited itself)
+     */
+    public MetaAnnotationMatchingPointcut(Class<? extends Annotation> classAnnotationType, boolean checkInherited) {
+        this.classFilter = new AnnotationClassFilter(classAnnotationType, checkInherited);
+        this.methodMatcher = MethodMatcher.TRUE;
+    }
 
-	public MethodMatcher getMethodMatcher() {
-		return this.methodMatcher;
-	}
+    /**
+     * Create a new MetaAnnotationMatchingPointcut for the given annotation type.
+     *
+     * @param classAnnotationType  the annotation type to look for at the class level
+     *                             (can be <code>null</code>)
+     * @param methodAnnotationType the annotation type to look for at the method level
+     *                             (can be <code>null</code>)
+     */
+    public MetaAnnotationMatchingPointcut(
+            Class<? extends Annotation> classAnnotationType, Class<? extends Annotation> methodAnnotationType) {
+
+        Assert.isTrue((classAnnotationType != null || methodAnnotationType != null),
+                "Either Class annotation type or Method annotation type needs to be specified (or both)");
+
+        if (classAnnotationType != null) {
+            this.classFilter = new AnnotationClassFilter(classAnnotationType);
+        } else {
+            this.classFilter = ClassFilter.TRUE;
+        }
+
+        if (methodAnnotationType != null) {
+            this.methodMatcher = new MetaAnnotationMethodMatcher(methodAnnotationType);
+        } else {
+            this.methodMatcher = MethodMatcher.TRUE;
+        }
+    }
+
+
+    public ClassFilter getClassFilter() {
+        return this.classFilter;
+    }
+
+    public MethodMatcher getMethodMatcher() {
+        return this.methodMatcher;
+    }
 }
 

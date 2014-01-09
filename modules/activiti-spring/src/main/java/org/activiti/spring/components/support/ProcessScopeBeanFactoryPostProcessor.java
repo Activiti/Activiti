@@ -16,17 +16,11 @@
 
 package org.activiti.spring.components.support;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.activiti.bpmn.model.*;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.spring.components.support.util.BeanDefinitionUtils;
 import org.activiti.spring.components.support.util.Scopifier;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -40,88 +34,80 @@ import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
- * binds variables to a currently executing Activiti business process (a {@link org.activiti.engine.runtime.ProcessInstance}).
  * <p/>
- * Parts of this code are lifted wholesale from Dave Syer's work on the Spring 3.1 RefreshScope.
+ * Binds variables to a currently executing Activiti business process
+ * (specifically, to the {@link org.activiti.engine.runtime.ProcessInstance process instance}).
+ * <p/>
+ * <strong>NB</strong>: Parts of this code are lifted wholesale from
+ * <A href="https://twitter.com/david_syer">Dr. Syer's</A> {@code RefreshScope} implementation
+ * <A href="https://jira.springsource.org/browse/SPR-8075?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel">
+ * from this JIRA ticket</a>.
  *
  * @author Josh Long
  * @since 5.3
  */
 public class ProcessScopeBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 
-
     public final static String PROCESS_SCOPE_PROCESS_VARIABLES_SINGLETON = "processVariables";
 
     public final static String PROCESS_SCOPE_NAME = "process";
 
-
-
-
     private final String oneAndOnlyOneMessage =
-            "there should be one and only one " + ProcessEngine.class.getName() + " process-engine reference in the context.";
+            String.format("there should be one and only one %s process-engine in the context.", ProcessEngine.class.getName());
 
     private Map<String, Object> processVariablesMap =
-            new ConcurrentHashMap<String, Object>() {
-                @Override
-                public Object get(java.lang.Object o) {
+        new ConcurrentHashMap<String, Object>() {
+            @Override
+            public Object get(java.lang.Object o) {
 
-                    Assert.isInstanceOf(String.class, o, "the 'key' must be a String");
+                Assert.isInstanceOf(String.class, o, "the 'key' must be a String");
 
-                    String varName = (String) o;
+                String varName = (String) o;
 
-                    ProcessInstance processInstance = Context.getExecutionContext().getProcessInstance();
-                    ExecutionEntity executionEntity = (ExecutionEntity) processInstance;
-                    if (executionEntity.getVariableNames().contains(varName)) {
-                        return executionEntity.getVariable(varName);
-                    }
-
-                    throw new RuntimeException(
-                            String.format("no processVariable by the name of '%s' is available!", varName));
+                ProcessInstance processInstance = Context.getExecutionContext().getProcessInstance();
+                ExecutionEntity executionEntity = (ExecutionEntity) processInstance;
+                if (executionEntity.getVariableNames().contains(varName)) {
+                    return executionEntity.getVariable(varName);
                 }
-            };
+
+                throw new RuntimeException(
+                        String.format("no processVariable by the name of '%s' is available!", varName));
+            }
+        };
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
         String[] processEngineBeanNames = beanFactory.getBeanNamesForType(ProcessEngine.class);
-
         Assert.isTrue(processEngineBeanNames.length == 1, oneAndOnlyOneMessage);
-
-        RuntimeBeanReference processEngineRuntimeBeanReference = new RuntimeBeanReference( processEngineBeanNames[0]) ;
-
+        RuntimeBeanReference processEngineRuntimeBeanReference = new RuntimeBeanReference(processEngineBeanNames[0]);
         String processScopeName = PROCESS_SCOPE_NAME;
-
         Assert.isInstanceOf(BeanDefinitionRegistry.class, beanFactory,
                 "BeanFactory was not a BeanDefinitionRegistry, so " + ProcessScopeBeanFactoryPostProcessor.class.getName() + " cannot be used.");
-
         BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
-
         final boolean proxyTargetClass = true;
 
         for (String beanName : beanFactory.getBeanDefinitionNames()) {
             BeanDefinition definition = beanFactory.getBeanDefinition(beanName);
             boolean scoped = processScopeName.equals(definition.getScope());
-
             Scopifier scopifier = new Scopifier(registry, processScopeName, proxyTargetClass, scoped);
             scopifier.visitBeanDefinition(definition);
             if (scoped) {
                 Scopifier.createScopedProxy(beanName, definition, registry, proxyTargetClass);
             }
         }
-
         registry.registerBeanDefinition(processScopeName,
                 BeanDefinitionBuilder.genericBeanDefinition(ProcessScope.class)
                         .addConstructorArgReference(processEngineRuntimeBeanReference.getBeanName())
                         .getBeanDefinition());
         beanFactory.registerSingleton(PROCESS_SCOPE_PROCESS_VARIABLES_SINGLETON, this.processVariablesMap);
-
-
     }
 
 }
@@ -137,8 +123,6 @@ class ProcessScope implements Scope, InitializingBean, DisposableBean, BeanFacto
     }
 
     private ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
-
-    private boolean proxyTargetClass = true;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -179,7 +163,7 @@ class ProcessScope implements Scope, InitializingBean, DisposableBean, BeanFacto
                 persistVariable(name, scopedObject);
             }
             return createDirtyCheckingProxy(name, scopedObject);
-        } catch (Throwable th) {
+        } catch (Exception th) {
             logger.warn("couldn't return value from process scope! {}", ExceptionUtils.getStackTrace(th));
         } finally {
             if (executionEntity != null) {
@@ -244,9 +228,9 @@ class ProcessScope implements Scope, InitializingBean, DisposableBean, BeanFacto
         this.runtimeService = this.processEngine.getRuntimeService();
     }
 
-    private Object createDirtyCheckingProxy(final String name, final Object scopedObject) throws Throwable {
+    protected Object createDirtyCheckingProxy(final String name, final Object scopedObject) {
         ProxyFactory proxyFactoryBean = new ProxyFactory(scopedObject);
-        proxyFactoryBean.setProxyTargetClass(this.proxyTargetClass);
+        proxyFactoryBean.setProxyTargetClass(true);
         proxyFactoryBean.addAdvice(new MethodInterceptor() {
             public Object invoke(MethodInvocation methodInvocation) throws Throwable {
                 Object result = methodInvocation.proceed();
@@ -257,7 +241,7 @@ class ProcessScope implements Scope, InitializingBean, DisposableBean, BeanFacto
         return proxyFactoryBean.getProxy(this.classLoader);
     }
 
-    private void persistVariable(String variableName, Object scopedObject) {
+    protected void persistVariable(String variableName, Object scopedObject) {
         ProcessInstance processInstance = Context.getExecutionContext().getProcessInstance();
         ExecutionEntity executionEntity = (ExecutionEntity) processInstance;
         Assert.isTrue(scopedObject instanceof Serializable, "the scopedObject is not " + Serializable.class.getName() + "!");

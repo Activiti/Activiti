@@ -12,16 +12,14 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 /**
- * <P>
- * Go to state-holder for the thread-local
- * {@link org.activiti.engine.runtime.ProcessInstance processInstance} state.
- *
- * <p>
- * Not for external use.
+ * <EM>Not for external use.</EM>
+ * <p/>
+ * Guards thread-local state for {@link org.activiti.engine.runtime.ProcessInstance processInstance}.
  *
  * @author Josh Long
+ * @see org.activiti.engine.runtime.ProcessInstance
  */
-  public class SharedProcessInstanceHolder {
+public class SharedProcessInstanceHolder {
 
     private final Callable<ProcessInstance> defaultProcessInstanceCallable =
             new Callable<ProcessInstance>() {

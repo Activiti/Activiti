@@ -17,36 +17,25 @@ package org.activiti.spring.components.config.xml;
 
 
 import org.activiti.spring.components.support.ProcessScopeBeanFactoryPostProcessor;
-import org.activiti.spring.components.support.ProcessStartingBeanPostProcessor;
 import org.activiti.spring.components.support.SharedProcessInstanceFactoryBean;
 import org.activiti.spring.components.support.SharedProcessInstanceHolder;
-import org.activiti.spring.components.support.util.BeanDefinitionUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.parsing.BeanComponentDefinition;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.core.Conventions;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 /**
- * Registers support for handling the annotations in the {@code org.activiti.engine.annotations} package.
- * <p/>
- * Registers a {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor}
- * that in turn registers a  {@link org.activiti.spring.components.registry.StateHandlerRegistry},
- * if none exist.
+ * Registers the {@code process} scope and associated expression-language variable, {@code processVariables}.
  *
  * @author Josh Long
+ * @see org.activiti.spring.annotations.EnableActiviti for Java configuration-centric alternative.
+ * @see org.activiti.engine.ProcessEngine
  * @since 5.3
  */
 public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
-
-    private final String processEngineAttribute = "process-engine";
 
     private RuntimeBeanReference processEngineRuntimeBeanReference;
 
@@ -54,6 +43,7 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
 
     public BeanDefinition parse(Element element, ParserContext parserContext) {
         // process-engine
+        String processEngineAttribute = "process-engine";
         String procEngineRef = element.getAttribute(processEngineAttribute);
         Assert.hasText(procEngineRef, "you must specify a process-engine attribute");
         this.processEngineRuntimeBeanReference = new RuntimeBeanReference(procEngineRef);
@@ -63,7 +53,6 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
 
         registerSharedProcessInstanceFactoryBean(element, parserContext);
         registerProcessScopeBeanFactoryPostProcessor(element, parserContext);
-        registerProcessStartingBeanPostProcessor(element, parserContext);
 
         return null;
     }
@@ -74,50 +63,30 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
     }
 
     private RuntimeBeanReference registerSharedProcessInstanceFactoryBean(Element element, ParserContext parserContext) {
-
         BeanDefinition sharedProcessInstanceFactoryBeanBeanDefinition =
                 build(SharedProcessInstanceFactoryBean.class)
                         .addConstructorArgReference(this.sharedProcessInstanceHolderRuntimeBeanReference.getBeanName())
                         .getBeanDefinition();
-
         String sharedProcessInstanceHolderBeanDefinitionName = parserContext.getReaderContext().registerWithGeneratedName(
                 sharedProcessInstanceFactoryBeanBeanDefinition);
-
         return new RuntimeBeanReference(sharedProcessInstanceHolderBeanDefinitionName);
     }
 
     private RuntimeBeanReference registerSharedProcessInstanceHolder(Element element, ParserContext parserContext) {
         BeanDefinition sharedProcessInstanceHolderBeanDefinition = build(SharedProcessInstanceHolder.class).getBeanDefinition();
         String sharedProcessInstanceHolderBeanDefinitionName =
-                parserContext.getReaderContext().registerWithGeneratedName(
-                        sharedProcessInstanceHolderBeanDefinition);
+                parserContext.getReaderContext().registerWithGeneratedName(sharedProcessInstanceHolderBeanDefinition);
         return new RuntimeBeanReference(sharedProcessInstanceHolderBeanDefinitionName);
     }
 
-    private void registerProcessStartingBeanPostProcessor(Element element, ParserContext parserContext) {
-        Class<?> startingBeanPostProcessorClass = ProcessStartingBeanPostProcessor.class;
-
-        BeanDefinition processStartingBPP = build(startingBeanPostProcessorClass)
-                .addConstructorArgReference(this.processEngineRuntimeBeanReference.getBeanName())
-                .addConstructorArgReference(this.sharedProcessInstanceHolderRuntimeBeanReference.getBeanName())
-                .getBeanDefinition();
-
-        parserContext.getRegistry().registerBeanDefinition(
-                startingBeanPostProcessorClass.getName(), processStartingBPP);
-    }
-
     private void registerProcessScopeBeanFactoryPostProcessor(Element element, ParserContext parserContext) {
-
         Class<?> processScopeBeanFactoryPostProcessorClass = ProcessScopeBeanFactoryPostProcessor.class;
-
         BeanDefinition processStartingBPPBeanDefinition = build(processScopeBeanFactoryPostProcessorClass)
-                .addConstructorArgReference(  this.processEngineRuntimeBeanReference.getBeanName())
+//                .addConstructorArgReference(this.processEngineRuntimeBeanReference.getBeanName())
                 .getBeanDefinition();
-
         parserContext.getRegistry().registerBeanDefinition(
                 processScopeBeanFactoryPostProcessorClass.getName(),
                 processStartingBPPBeanDefinition);
-
     }
 }
 
