@@ -103,8 +103,22 @@ public class DbSqlSession implements Session {
     this.connectionMetadataDefaultCatalog = catalog;
     this.connectionMetadataDefaultSchema = schema;
   }
-
+  
+  // Touch  ///////////////////////////////////////////////////////////////////
+  // brings the given persistenObject to the top if it already exists
+  public void touch(PersistentObject persistentObject) {
+	  if (persistentObject.getId()==null) {
+		  throw new ActivitiException("Cannot touch " + persistentObject.getClass() + " with no id");
+	  }
+	  if (insertedObjects.contains(persistentObject)) {
+		  insertedObjects.remove(persistentObject);
+		  insertedObjects.add(persistentObject);
+		  cachePut(persistentObject, false);
+	  } 
+   }
+	  
   // insert ///////////////////////////////////////////////////////////////////
+  
   
   public void insert(PersistentObject persistentObject) {
     if (persistentObject.getId()==null) {
@@ -1125,4 +1139,6 @@ public class DbSqlSession implements Session {
   public DbSqlSessionFactory getDbSqlSessionFactory() {
     return dbSqlSessionFactory;
   }
+
+
 }

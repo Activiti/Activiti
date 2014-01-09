@@ -349,8 +349,10 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 		    variableInstance.setValue(null);
 		    variableInstance.setType(newType);
 		    variableInstance.forceUpdate();
-	  }
-    variableInstance.setValue(value);
+		    variableInstance.setValue(value);
+		    VariableInstanceEntity.touch(variableInstance);
+	  } else
+		  variableInstance.setValue(value);
 
     Context.getCommandContext().getHistoryManager()
       .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
