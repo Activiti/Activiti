@@ -17,14 +17,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -377,10 +375,8 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   
   @Deployment 
   public void testEarlyFinishedProcess() {	 	
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-				"callerProcess");
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callerProcess");
 		assertNotNull(processInstance.getId());
-		
   }
 
 }
