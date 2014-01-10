@@ -80,6 +80,22 @@ ALTER TABLE ACT_RU_EVENT_SUBSCR DROP COLUMN CREATED_;
 ALTER TABLE ACT_RU_EVENT_SUBSCR CHANGE CREATED_TEMP_ CREATED_ timestamp(3) DEFAULT CURRENT_TIMESTAMP(3);
 
 
- 
+alter table ACT_RE_DEPLOYMENT 
+    add TENANT_ID_ varchar(255); 
+    
+alter table ACT_RE_PROCDEF 
+    add TENANT_ID_ varchar(255);
+    
+alter table ACT_RU_EXECUTION
+    add TENANT_ID_ varchar(255);    
+    
+alter table ACT_RU_TASK
+    add TENANT_ID_ varchar(255);  
+    
+alter table ACT_RU_JOB
+    add TENANT_ID_ varchar(255); 
+    
+alter table ACT_RE_MODEL
+    add TENANT_ID_ varchar(255);      
 
 update ACT_GE_PROPERTY set VALUE_ = '5.15-SNAPSHOT' where NAME_ = 'schema.version';

@@ -49,6 +49,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected String category;
   protected String deploymentId;
   protected String resourceName;
+  protected String tenantId;
   protected Integer historyLevel;
   protected StartFormHandler startFormHandler;
   protected String diagramResourceName;
@@ -81,8 +82,14 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     processInstance.setProcessDefinition(processDefinition);
     // Do not initialize variable map (let it happen lazily)
 
+    // Set business key (if any)
     if (businessKey != null) {
     	processInstance.setBusinessKey(businessKey);
+    }
+    
+    // Inherit tenant id (if any)
+    if (getTenantId() != null) {
+    	processInstance.setTenantId(getTenantId());
     }
     
     // Reset the process instance in order to have the db-generated process instance id available
@@ -212,8 +219,16 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   public void setResourceName(String resourceName) {
     this.resourceName = resourceName;
   }
+  
+  public String getTenantId() {
+		return tenantId;
+	}
 
-  public Integer getHistoryLevel() {
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public Integer getHistoryLevel() {
     return historyLevel;
   }
 

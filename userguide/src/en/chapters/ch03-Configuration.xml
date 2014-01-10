@@ -363,7 +363,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     </para>
     
     <para>
-        <emphasis role="bold">Note for MySQL users:</emphasis> MySQL version lower than 5.6.4 have 
+        <emphasis role="bold">Note for MySQL users:</emphasis> MySQL version lower than 5.6.4 has 
         no support for timestamps or dates with millisecond precision. To make things even worse,
         some version will throw an exception when trying to create such a column but other versions don't.
         When doing auto-creation/upgrade, the engine will change the DDL when executing it.

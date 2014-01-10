@@ -107,6 +107,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   protected StartingExecution startingExecution;
   
+  /** The tenant identifier (if any) */
+  protected String tenantId;
+  
   // state/type of execution ////////////////////////////////////////////////// 
   
   /** indicates if this execution represents an active path of execution.
@@ -268,6 +271,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected ExecutionEntity newExecution() {
     ExecutionEntity newExecution = new ExecutionEntity();
     newExecution.executions = new ArrayList<ExecutionEntity>();
+    
+    // Inherit tenant id (if any)
+    if (getTenantId() != null) {
+    	newExecution.setTenantId(getTenantId());
+    }
 
     Context
       .getCommandContext()
@@ -558,6 +566,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
     // At the moment, only AtomicOperationTransitionCreateScope can be performed asynchronously,
     // so there is no need to pass it to the handler
+    
+    // Inherit tenant id (if applicable)
+    if (getTenantId() != null) {
+    	message.setTenantId(getTenantId());
+    }
 
     Context
       .getCommandContext()
@@ -1441,7 +1454,15 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return activityName;
   }
   
-  public Map<String, Object> getProcessVariables() {
+  public String getTenantId() {
+		return tenantId;
+	}
+  
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
       for (VariableInstanceEntity variableInstance: queryVariables) {

@@ -54,7 +54,10 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected DelegationState delegationState;
   protected String candidateUser;
   protected String candidateGroup;
-  private List<String> candidateGroups;
+  protected List<String> candidateGroups;
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
   protected String processInstanceId;
   protected String executionId;
   protected Date createTime;
@@ -259,6 +262,27 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     
     this.candidateGroups = candidateGroups;
     return this;
+  }
+  
+  public TaskQuery taskTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("task tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public TaskQuery taskTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("task tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public TaskQuery taskWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
   }
   
   public TaskQueryImpl processInstanceId(String processInstanceId) {
@@ -536,6 +560,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return orderBy(TaskQueryProperty.DUE_DATE);
   }
   
+  @Override
+  public TaskQuery orderByTenantId() {
+  	return orderBy(TaskQueryProperty.TENANT_ID);
+  }
+  
   public String getMssqlOrDB2OrderBy() {
     String specialOrderBy = super.getOrderBy();
     if (specialOrderBy != null && specialOrderBy.length() > 0) {
@@ -645,4 +674,14 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public boolean getExcludeSubtasks() {
     return excludeSubtasks;
   }
+	public String getTenantId() {
+		return tenantId;
+	}
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+	public boolean isWithoutTenantId() {
+		return withoutTenantId;
+	}
+  
 }

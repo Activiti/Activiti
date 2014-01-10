@@ -106,6 +106,21 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    *   When passed group list is empty or <code>null</code>. 
    */
   TaskQuery taskCandidateGroupIn(List<String> candidateGroups);
+  
+	/**
+	 * Only select tasks that have the given tenant id.
+	 */
+  TaskQuery taskTenantId(String tenantId);
+
+	/**
+	 * Only select tasks with a tenant id like the given one.
+	 */
+  TaskQuery taskTenantIdLike(String tenantIdLike);
+	
+	/**
+	 * Only select tasks that do not have a tenant id.
+	 */
+  TaskQuery taskWithoutTenantId();
 
   /** Only select tasks for the given process instance id. */
   TaskQuery processInstanceId(String processInstanceId);
@@ -414,4 +429,7 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   
   /** Order by due date (needs to be followed by {@link #asc()} or {@link #desc()}). */
   TaskQuery orderByDueDate();
+  
+	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  TaskQuery orderByTenantId();
 }

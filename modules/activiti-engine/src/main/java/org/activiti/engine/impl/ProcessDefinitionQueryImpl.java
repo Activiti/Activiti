@@ -53,6 +53,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   protected SuspensionState suspensionState;
   protected String authorizationUserId;
   protected String procDefId;
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
   
   protected String eventSubscriptionName;
   protected String eventSubscriptionType;
@@ -178,6 +181,27 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return this;
   }
   
+  public ProcessDefinitionQuery processDefinitionTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("processDefinition tenantId is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public ProcessDefinitionQuery processDefinitionTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("process definition tenantId is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public ProcessDefinitionQuery processDefinitionWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
+  }
+  
   public ProcessDefinitionQuery messageEventSubscription(String messageName) {
     return eventSubscription("message", messageName);
   }
@@ -244,6 +268,10 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   
   public ProcessDefinitionQuery orderByProcessDefinitionName() {
     return orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_NAME);
+  }
+  
+  public ProcessDefinitionQuery orderByTenantId() {
+    return orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_TENANT_ID);
   }
   
   //results ////////////////////////////////////////////
@@ -318,8 +346,17 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   public String getCategoryNotEquals() {
     return categoryNotEquals;
   }
+  public String getTenantId() {
+		return tenantId;
+	}
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+	public boolean isWithoutTenantId() {
+		return withoutTenantId;
+	}
 
-  public ProcessDefinitionQueryImpl startableByUser(String userId) {
+	public ProcessDefinitionQueryImpl startableByUser(String userId) {
     if (userId == null) {
       throw new ActivitiIllegalArgumentException("userId is null");
     }

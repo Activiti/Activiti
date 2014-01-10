@@ -28,6 +28,7 @@ create table ACT_RE_DEPLOYMENT (
     ID_ nvarchar(64),
     NAME_ nvarchar(255),
     CATEGORY_ nvarchar(255),
+    TENANT_ID_ nvarchar(255),
     DEPLOY_TIME_ datetime,
     primary key (ID_)
 );
@@ -45,6 +46,7 @@ create table ACT_RE_MODEL (
     DEPLOYMENT_ID_ nvarchar(64),
     EDITOR_SOURCE_VALUE_ID_ nvarchar(64),
     EDITOR_SOURCE_EXTRA_VALUE_ID_ nvarchar(64),
+    TENANT_ID_ nvarchar(255),
     primary key (ID_)
 );
 
@@ -63,6 +65,7 @@ create table ACT_RU_EXECUTION (
     IS_EVENT_SCOPE_ tinyint,
     SUSPENSION_STATE_ tinyint,
     CACHED_ENT_STATE_ int,
+    TENANT_ID_ nvarchar(255),
     primary key (ID_)
 );
 
@@ -83,6 +86,7 @@ create table ACT_RU_JOB (
     REPEAT_ nvarchar(255),
     HANDLER_TYPE_ nvarchar(255),
     HANDLER_CFG_ nvarchar(4000),
+    TENANT_ID_ nvarchar(255),
     primary key (ID_)
 );
 
@@ -99,6 +103,7 @@ create table ACT_RE_PROCDEF (
     DESCRIPTION_ nvarchar(4000),
     HAS_START_FORM_KEY_ tinyint,
     SUSPENSION_STATE_ tinyint,
+    TENANT_ID_ nvarchar(255),
     primary key (ID_)
 );
 
@@ -120,6 +125,7 @@ create table ACT_RU_TASK (
     DUE_DATE_ datetime,
     CATEGORY_ nvarchar(255),
     SUSPENSION_STATE_ int,
+    TENANT_ID_ nvarchar(255),
     primary key (ID_)
 );
 

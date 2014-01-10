@@ -84,6 +84,21 @@ public interface JobQuery extends Query<JobQuery, Job> {
 
   /** Only select jobs that failed due to an exception with the given message. */
   JobQuery exceptionMessage(String exceptionMessage);
+  
+  /**
+	 * Only select jobs that have the given tenant id.
+	 */
+  JobQuery jobTenantId(String tenantId);
+
+	/**
+	 * Only select jobs with a tenant id like the given one.
+	 */
+  JobQuery jobTenantIdLike(String tenantIdLike);
+	
+	/**
+	 * Only select jobs that do not have a tenant id.
+	 */
+  JobQuery jobWithoutTenantId();
 
   //sorting //////////////////////////////////////////
   
@@ -101,4 +116,8 @@ public interface JobQuery extends Query<JobQuery, Job> {
   
   /** Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   JobQuery orderByExecutionId();
+  
+	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  JobQuery orderByTenantId();
+  
 }

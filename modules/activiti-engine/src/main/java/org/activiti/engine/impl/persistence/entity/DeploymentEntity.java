@@ -35,6 +35,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   protected String id;
   protected String name;
   protected String category;
+  protected String tenantId;
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
   protected boolean isNew;
@@ -122,6 +123,14 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
 
   public void setCategory(String category) {
     this.category = category;
+  }
+  
+  public String getTenantId() {
+  	return tenantId;
+  }
+
+  public void setTenantId(String tenantId) {
+  	this.tenantId = tenantId;
   }
 
   public void setResources(Map<String, ResourceEntity> resources) {

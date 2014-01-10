@@ -45,6 +45,7 @@ create table ACT_RE_MODEL (
     DEPLOYMENT_ID_ varchar(64),
     EDITOR_SOURCE_VALUE_ID_ varchar(64),
     EDITOR_SOURCE_EXTRA_VALUE_ID_ varchar(64),
+    TENANT_ID_ varchar(255),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
@@ -63,6 +64,7 @@ create table ACT_RU_EXECUTION (
     IS_EVENT_SCOPE_ TINYINT,
     SUSPENSION_STATE_ integer,
     CACHED_ENT_STATE_ integer,
+    TENANT_ID_ varchar(255),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
@@ -83,6 +85,7 @@ create table ACT_RU_JOB (
     REPEAT_ varchar(255),
     HANDLER_TYPE_ varchar(255),
     HANDLER_CFG_ varchar(4000),
+    TENANT_ID_ varchar(255),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
@@ -120,6 +123,7 @@ create table ACT_RU_TASK (
     DUE_DATE_ datetime,
     CATEGORY_ varchar(255),
     SUSPENSION_STATE_ integer,
+    TENANT_ID_ varchar(255),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 

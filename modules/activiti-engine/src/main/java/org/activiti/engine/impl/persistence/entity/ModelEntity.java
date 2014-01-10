@@ -43,6 +43,7 @@ public class ModelEntity implements Serializable, Model, HasRevision, Persistent
   protected String deploymentId;
   protected String editorSourceValueId;
   protected String editorSourceExtraValueId;
+  protected String tenantId;
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -160,5 +161,13 @@ public class ModelEntity implements Serializable, Model, HasRevision, Persistent
   public void setRevision(int revision) {
     this.revision = revision;
   }
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
   
 }
