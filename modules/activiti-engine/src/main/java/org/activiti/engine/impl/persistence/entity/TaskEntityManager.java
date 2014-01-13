@@ -197,7 +197,7 @@ public class TaskEntityManager extends AbstractManager {
   	HashMap<String, Object> params = new HashMap<String, Object>();
   	params.put("deploymentId", deploymentId);
   	params.put("tenantId", newTenantId);
-  	getDbSqlSession().getSqlSession().update("updateTaskTenantIdForDeployment", params);
+  	getDbSqlSession().update("updateTaskTenantIdForDeployment", params);
   }
   
 }

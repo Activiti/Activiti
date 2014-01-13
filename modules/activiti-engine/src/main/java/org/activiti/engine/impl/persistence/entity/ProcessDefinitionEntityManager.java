@@ -102,7 +102,7 @@ public class ProcessDefinitionEntityManager extends AbstractManager {
   	HashMap<String, Object> params = new HashMap<String, Object>();
   	params.put("deploymentId", deploymentId);
   	params.put("tenantId", newTenantId);
-  	getDbSqlSession().getSqlSession().update("updateProcessDefinitionTenantIdForDeploymentId", params);
+  	getDbSqlSession().update("updateProcessDefinitionTenantIdForDeploymentId", params);
   }
  
 }

@@ -150,6 +150,7 @@ public class ExecutionEntityManager extends AbstractManager {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("activityId", activityRef);
     parameters.put("parentExecutionId", parentExecutionId);
+    
     return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parameters);
   }
 
@@ -171,7 +172,7 @@ public class ExecutionEntityManager extends AbstractManager {
   	HashMap<String, Object> params = new HashMap<String, Object>();
   	params.put("deploymentId", deploymentId);
   	params.put("tenantId", newTenantId);
-  	getDbSqlSession().getSqlSession().update("updateExecutionTenantIdForDeployment", params);
+  	getDbSqlSession().update("updateExecutionTenantIdForDeployment", params);
   }
 
 }

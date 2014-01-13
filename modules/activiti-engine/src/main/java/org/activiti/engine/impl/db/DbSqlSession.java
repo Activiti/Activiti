@@ -135,6 +135,11 @@ public class DbSqlSession implements Session {
     cachePut(persistentObject, false);
   }
   
+  public void update(String statement, Object parameters) {
+     String updateStatement = dbSqlSessionFactory.mapStatement(statement);
+     getSqlSession().update(updateStatement, parameters);
+  }
+  
   // delete ///////////////////////////////////////////////////////////////////
 
   public void delete(String statement, Object parameter) {
