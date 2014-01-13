@@ -81,6 +81,27 @@
       ) 
   </update>
   
+    <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
+       Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance0 -->
+  <update id="updateTaskTenantIdForDeployment_mysql" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_TASK set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      ID_ in (
+
+          SELECT tempTask.tempId
+          FROM (
+                SELECT T.ID_ as tempId
+                FROM  ${prefix}ACT_RU_TASK T
+                inner join ${prefix}ACT_RE_PROCDEF P on T.PROC_DEF_ID_  = P.ID_
+                inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
+                where D.ID_ = 1
+                
+        ) AS tempTask 
+
+    )
+  </update>
+  
   <!-- TASK DELETE -->
   <delete id="deleteTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
     delete from ${prefix}ACT_RU_TASK where ID_ = #{id} and REV_ = #{revision}

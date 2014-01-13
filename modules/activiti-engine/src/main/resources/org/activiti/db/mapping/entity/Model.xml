@@ -35,7 +35,8 @@
       META_INFO_ = #{metaInfo, jdbcType=VARCHAR},
       DEPLOYMENT_ID_ = #{deploymentId, jdbcType=VARCHAR},
       EDITOR_SOURCE_VALUE_ID_ = #{editorSourceValueId, jdbcType=VARCHAR},
-      EDITOR_SOURCE_EXTRA_VALUE_ID_ = #{editorSourceExtraValueId, jdbcType=VARCHAR}
+      EDITOR_SOURCE_EXTRA_VALUE_ID_ = #{editorSourceExtraValueId, jdbcType=VARCHAR},
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR} and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
