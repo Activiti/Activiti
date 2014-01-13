@@ -96,7 +96,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
       execution.addJob(this);
       
       // Inherit tenant if (if applicable)
-      if (execution.getTenantId() != null) {
+      if (execution != null && execution.getTenantId() != null) {
       	setTenantId(execution.getTenantId());
       }
     }

@@ -18,6 +18,19 @@
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
+  <!-- JOB UPDATE STATEMENTS -->
+  <update id="updateJobTenantIdForDeployment" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_JOB set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      ID_ in (
+        SELECT J.ID_ from ${prefix}ACT_RU_JOB J
+        inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_  = P.ID_
+        inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
+        where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+      ) 
+  </update>
+  
   <!-- JOB RESULTMAP (FOR TIMER AND MESSAGE) -->
 
   <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.JobEntity">

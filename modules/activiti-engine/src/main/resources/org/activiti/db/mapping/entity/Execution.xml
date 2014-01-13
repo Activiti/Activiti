@@ -47,6 +47,18 @@
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
   
+  <update id="updateExecutionTenantIdForDeployment" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_EXECUTION set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      ID_ in (
+        SELECT E.ID_ from ${prefix}ACT_RU_EXECUTION E
+        inner join ${prefix}ACT_RE_PROCDEF P on E.PROC_DEF_ID_  = P.ID_
+        inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
+        where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+      ) 
+  </update>
+  
   <!-- EXECUTION DELETE -->
   
   <delete id="deleteExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">

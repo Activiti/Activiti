@@ -115,7 +115,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     dbSqlSession.insert(this);
     
     // Inherit tenant id (if applicable)
-    if (execution.getTenantId() != null) {
+    if (execution != null && execution.getTenantId() != null) {
     	setTenantId(execution.getTenantId());
     }
     

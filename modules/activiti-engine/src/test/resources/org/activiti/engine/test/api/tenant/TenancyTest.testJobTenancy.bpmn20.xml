@@ -5,7 +5,11 @@
 	<process id="testJobTenancy">
 		<documentation>This is a process for testing purposes</documentation>
 
-		<startEvent id="theStart" />
+		<startEvent id="theStart" >
+		   <timerEventDefinition>
+                <timeDate>2025-03-11T12:13:14</timeDate>
+            </timerEventDefinition>
+		</startEvent>
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="timer" />
 		<intermediateCatchEvent id="timer">
 			<timerEventDefinition>

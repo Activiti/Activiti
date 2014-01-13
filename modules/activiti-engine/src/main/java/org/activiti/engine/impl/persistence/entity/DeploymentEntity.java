@@ -75,6 +75,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("category", this.category);
+    persistentState.put("tenantId", tenantId);
     return persistentState;
   }
   

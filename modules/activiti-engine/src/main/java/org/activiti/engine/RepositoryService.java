@@ -89,6 +89,40 @@ public interface RepositoryService {
    * for the given deploymentId.
    */
   InputStream getResourceAsStream(String deploymentId, String resourceName);
+  
+  /**
+   * 
+   * EXPERIMENTAL FEATURE!
+   * 
+   * Changes the tenant identifier of a deployment to match the given tenant identifier.
+   * This change will cascade to any related entity:
+   * - process definitions related to the deployment
+   * - process instances related to those process definitions
+   * - executions related to those process instances
+   * - tasks related to those process instances
+   * - jobs related to the process definitions and process instances
+   * 
+   * This method can be used in the case that there was no tenant identifier set
+   * on the deployment or those entities before.
+   * 
+   * This method can be used to remove a tenant identifier from the 
+   * deployment and related entities (simply pass null).
+   * 
+   * Important: no optimistic locking will be done while executing the tenant identifier change!
+   * 
+   * This is an experimental feature, mainly because it WILL NOT work
+   * properly in a clustered environment without special care:
+   * suppose some process instance is in flight. The process definition is in the
+   * process definition cache. When a task or job is created when continuing the process
+   * instance, the process definition cache will be consulted to get the process definition
+   * and from it the tenant identifier. Since it's cached, it will not be the new tenant identifier.
+   * This method does clear the cache for this engineinstance , but it will not be cleared
+   * on other nodes in a cluster (unless using a shared process definition cache). 
+   * 
+   * @param deploymentId The id of the deployment of which the tenant identifier will be changed.
+   * @param newTenantId The new tenant identifier.
+   */
+  void changeDeploymentTenantId(String deploymentId, String newTenantId);
 
   /** Query process definitions. */
   ProcessDefinitionQuery createProcessDefinitionQuery();

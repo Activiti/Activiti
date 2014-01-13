@@ -208,6 +208,12 @@ public class BpmnDeployer implements Deployer {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
         TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
         timer.setProcessDefinitionId(processDefinition.getId());
+        
+        // Inherit timer (if appliccable)
+        if (processDefinition.getTenantId() != null) {
+        	timer.setTenantId(processDefinition.getTenantId());
+        }
+        
         timers.add(timer);
       }
     }

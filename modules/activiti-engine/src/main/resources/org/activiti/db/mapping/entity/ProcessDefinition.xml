@@ -33,6 +33,17 @@
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
+  
+  <update id="updateProcessDefinitionTenantIdForDeploymentId" parameterType="java.util.Map">
+    update ${prefix}ACT_RE_PROCDEF set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      ID_ in (
+        SELECT P.ID_ from ${prefix}ACT_RE_PROCDEF P
+        inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
+        where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+      ) 
+  </update>
 
   <!-- PROCESSDEFINITION DELETE -->
 

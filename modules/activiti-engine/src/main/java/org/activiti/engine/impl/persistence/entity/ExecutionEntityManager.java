@@ -166,5 +166,12 @@ public class ExecutionEntityManager extends AbstractManager {
   public long findExecutionCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectExecutionCountByNativeQuery", parameterMap);
   }
+  
+  public void updateExecutionTenantIdForDeployment(String deploymentId, String newTenantId) {
+  	HashMap<String, Object> params = new HashMap<String, Object>();
+  	params.put("deploymentId", deploymentId);
+  	params.put("tenantId", newTenantId);
+  	getDbSqlSession().getSqlSession().update("updateExecutionTenantIdForDeployment", params);
+  }
 
 }
