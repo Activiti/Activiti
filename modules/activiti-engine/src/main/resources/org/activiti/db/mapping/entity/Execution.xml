@@ -73,7 +73,7 @@
                 FROM  ${prefix}ACT_RU_EXECUTION E
                 inner join ${prefix}ACT_RE_PROCDEF P on E.PROC_DEF_ID_  = P.ID_
                 inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
-                where D.ID_ = 1
+                where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
                 
         ) AS tempExecution 
 
