@@ -74,7 +74,6 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 		
 		// One of the 2 threads should get an optimistic lock exception
 		assertEquals(1, exceptions.size());
-		assertTrue(exceptions.get(0) instanceof ActivitiOptimisticLockingException);
 		
 		// One variable should be set
 		Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
