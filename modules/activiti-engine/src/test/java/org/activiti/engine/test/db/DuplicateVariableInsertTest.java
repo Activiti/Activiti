@@ -35,7 +35,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 	 * a barrier for starting and a barrier for completing the command, so they each insert a new variable guaranteed.
 	 */
 	public void testDuplicateVariableInsertOnExecution() throws Exception {
-		String processDefinitionId = deployOneTaskProcess();
+		String processDefinitionId = deployOneTaskTestProcess();
 		final ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId);
 		
 		final CyclicBarrier startBarrier = new CyclicBarrier(2);
@@ -88,7 +88,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 	 * a barrier for starting and a barrier for completing the command, so they each insert a new variable guaranteed.
 	 */
 	public void testDuplicateVariableInsertOnTask() throws Exception {
-		String processDefinitionId = deployOneTaskProcess();
+		String processDefinitionId = deployOneTaskTestProcess();
 		final ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId);
 		final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 		
