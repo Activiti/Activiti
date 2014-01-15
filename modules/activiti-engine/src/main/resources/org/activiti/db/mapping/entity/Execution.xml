@@ -296,7 +296,7 @@
         and INST.BUSINESS_KEY_ = #{businessKey}
       </if>
       <if test="activityId != null">
-        and RES.ACT_ID_ = #{activityId} and IS_ACTIVE_ = #{isActive}
+        and RES.ACT_ID_ = #{activityId} and RES.IS_ACTIVE_ = #{isActive}
       </if>
       <if test="parentId != null">
         and RES.PARENT_ID_ = #{parentId}

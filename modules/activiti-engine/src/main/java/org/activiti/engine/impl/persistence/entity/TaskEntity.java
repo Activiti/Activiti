@@ -95,6 +95,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   protected List<VariableInstanceEntity> queryVariables;
   
+  protected boolean forcedUpdate;
+  
   public TaskEntity() {
   }
 
@@ -230,11 +232,19 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     
     persistentState.put("suspensionState", this.suspensionState);
     
+    if (forcedUpdate) {
+      persistentState.put("forcedUpdate", Boolean.TRUE);
+    }
+    
     return persistentState;
   }
   
   public int getRevisionNext() {
     return revision+1;
+  }
+  
+  public void forceUpdate() {
+    this.forcedUpdate = true;
   }
 
   // variables ////////////////////////////////////////////////////////////////
