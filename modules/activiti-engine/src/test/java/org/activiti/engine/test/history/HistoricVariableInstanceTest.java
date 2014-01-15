@@ -26,6 +26,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 import org.activiti.engine.impl.test.AbstractActivitiTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -35,23 +36,10 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Christian Lipphardt (camunda)
+ * @author Joram Barrez
  */
-public class HistoricVariableInstanceTest extends AbstractActivitiTestCase {
+public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
 
-  @Override
-  protected void initializeProcessEngine() {
-    processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
-    .setJdbcDriver("org.h2.Driver")
-    .setJdbcUrl("jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000")
-    .setJdbcUsername("sa")
-    .setJdbcPassword("")
-    .setDatabaseSchemaUpdate(ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_TRUE)
-    .setJobExecutorActivate(false)
-    .setHistory(HistoryLevel.FULL.getKey());
-    
-    processEngine = processEngineConfiguration.buildProcessEngine();
-  }
-  
   @Deployment(resources={
     "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
     "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"       

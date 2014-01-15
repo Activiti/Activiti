@@ -70,6 +70,8 @@ create table ACT_HI_VARINST (
     LONG_ bigint,
     TEXT_ varchar(4000),
     TEXT2_ varchar(4000),
+    CREATE_TIME_ timestamp,
+    LAST_UPDATED_TIME_ timestamp,
     primary key (ID_)
 );
 

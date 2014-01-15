@@ -15,18 +15,22 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Christian Lipphardt (camunda)
+ * @author Joram Barrez
  */
 public class HistoricVariableInstanceEntity implements ValueFields, HistoricVariableInstance, PersistentObject, HasRevision, Serializable {
 
@@ -41,6 +45,9 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   protected String processInstanceId;
   protected String executionId;
   protected String taskId;
+  
+  protected Date createTime;
+  protected Date lastUpdatedTime;
   
   protected Long longValue;
   protected Double doubleValue;
@@ -66,6 +73,10 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     
     historicVariableInstance.copyValue(variableInstance);
     
+    Date time = ClockUtil.getCurrentTime();
+    historicVariableInstance.setCreateTime(time);
+    historicVariableInstance.setLastUpdatedTime(time);
+    
     Context.getCommandContext()
       .getDbSqlSession()
       .insert(historicVariableInstance);
@@ -83,6 +94,8 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     if (variableInstance.getByteArrayValueId()!=null) {
       setByteArrayValue(variableInstance.getByteArrayValue().getBytes());
     }
+    
+    this.lastUpdatedTime = ClockUtil.getCurrentTime();
   }
 
   public void delete() {
@@ -95,14 +108,18 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   }
 
   public Object getPersistentState() {
-    List<Object> state = new ArrayList<Object>(5);
-    // type???
-    state.add(textValue);
-    state.add(textValue2);
-    state.add(doubleValue);
-    state.add(longValue);
-    state.add(byteArrayRef.getId());
-    return state;
+  	HashMap<String, Object> persistentState = new HashMap<String, Object>();
+  	
+  	persistentState.put("textValue", textValue);
+  	persistentState.put("textValue2", textValue2);
+  	persistentState.put("doubleValue", doubleValue);
+  	persistentState.put("longValue", longValue);
+  	persistentState.put("byteArrayRef", byteArrayRef.getId());
+  	
+  	persistentState.put("createTime", createTime);
+  	persistentState.put("lastUpdatedTime", lastUpdatedTime);
+  	
+  	return persistentState;
   }
   
   public int getRevisionNext() {
@@ -237,7 +254,23 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     this.taskId = taskId;
   }
   
-  public String getExecutionId() {
+  public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getLastUpdatedTime() {
+		return lastUpdatedTime;
+	}
+
+	public void setLastUpdatedTime(Date lastUpdatedTime) {
+		this.lastUpdatedTime = lastUpdatedTime;
+	}
+
+	public String getExecutionId() {
     return executionId;
   }
   
