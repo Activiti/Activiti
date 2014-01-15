@@ -168,6 +168,108 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
 	
 	</section>
 	
+	<section id="advanced.tenancy">
+	
+	   <title>Multitenancy</title>
+	   
+	   <para>
+	       Multitenancy in general is a concept where the software is capable of serving multiple different
+	       organizations. Key is that the data is partitioned and no organization can see the data of other ones.
+	       In this context, such an organization (or a departement, or a team or ...) is called a <emphasis>tenant</emphasis>.
+	   </para>
+	   
+	   <para>
+	       Note that this is fundamentally different from a multi-instance setup, where an Activiti Process Engine instance
+	       is running for each organization separately (and with a different database schema). Altough Activiti is lightweight,
+	       and running a Process Engine instance doesn't take much resources, it does add complexity and more maintenance.
+	       But, for some use cases it might be the right solution.
+	   </para>
+	   
+	   <para>
+          Multitenancy in Activiti is mainly implemented around partitioning the data. It is important to 
+          note that <emphasis role="bod">Activiti does not enforce multi tenancy rules</emphasis>.
+          This means it will not verify when querying and using data whether the user doing the operation
+          is belonging to the correct tenant. This should be done in the layer calling the Activiti engine.
+          Activiti does make sure that tenant information can be stored and used when retrieving process data.
+	   </para>
+	   
+	   <para>
+	       When deploying process definition to the Activiti Process Engine it is possible to pass a <emphasis>tenant identifier</emphasis>.
+	       This is a string (eg. a UUID, departement id, etc.), limited to 256 characters which is uniquely identifies the tenant:
+	       <programlisting>
+ repositoryService.createDeployment()
+            .addClassPathResource(...)
+            .tenantId("myTenantId")
+            .deploy();</programlisting>    
+	       Passing a tenant id during a deployment has following implications:
+		   <itemizedlist>
+	        <listitem>
+	           <para>
+	               All the process definitions contained in the deployment inherit the tenant identifier from this deployment. 
+	           </para>
+	        </listitem>
+	        <listitem>
+               <para>
+                    All process instances started from those process definitions inherit this tenant identifier from the process definition.            
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                    All tasks created at runtime when executing the process instance inherit this tenant identifier from the process instance.
+                    Standalone tasks can have a tenant identifier too.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                    All executions created during process instance execution inherit this tenant identifier from the process instance.            
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                    All jobs (timers and async continuations) inherit the tenant identifier from either the process definition (eg. timer start event)
+                    or the process instance (when a job is created at runtime, eg. an async continuation). This could potentially be used
+                    for giving priority to some tenants in a custom job executor.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                    All the historic entities (historic process instance, task and activities) inherit the tenant identifier from their runtime counterparts.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                    As a side note, models can have a tenant identifier too (models are used eg. by the Activiti Modeler to store bpmn 2.0 models) .           
+               </para>
+            </listitem>
+	      </itemizedlist>
+	   </para>
+	
+	   <para>
+	       To actually make use of the tenant identifier on the process data, all the query API's have the capability to filter on tenant.
+	       For example (and can be replaced by the relevant query implementation of the other entities):
+	       <programlisting>
+runtimeService.createProcessInstanceQuery()
+    <emphasis role="bold">.processInstanceTenantId("myTenantId")</emphasis>
+    .processDefinitionKey("myProcessDefinitionKey")
+    .variableValueEquals("myVar", "someValue")
+    .list()</programlisting>
+        The query API's also allow to filter on the tenant identifier with <emphasis>like</emphasis> semantics 
+        and also to filter out entities without tenant id. 
+	   </para>
+	   
+	   <para>
+	       <emphasis role="bold">Do note that all of the above does not conflict with running multiple Activiti instances in a cluster.</emphasis>
+	   </para>
+	   
+	   <para>
+	       [Experimental] It is possible to change the tenant identifier by calling the <emphasis>changeDeploymentTenantId(String deploymentId, String newTenantId)</emphasis>
+	       method on the <emphasis>repositoryService</emphasis>. This will change the tenant identifier everywhere it was inherited before.
+	       This can be useful when going from a non-multitenant setup to a multitenant configuration.
+	       See the Javadoc on the method for more detailed information.
+	   </para>
+	 
+	</section>
+	
 	<section id="advanced.safe.bpmn.xml">
 	
 	   <title>Enable safe BPMN 2.0 xml</title>
@@ -197,5 +299,7 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
 	   </para>
 	
 	</section>
+	
+	
 	
 </chapter>
