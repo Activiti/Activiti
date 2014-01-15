@@ -25,7 +25,7 @@ import org.activiti.engine.query.Query;
 public interface HistoricActivityInstanceQuery extends Query<HistoricActivityInstanceQuery, HistoricActivityInstance>{
 
   /** Only select historic activity instances with the given id (primary key within history tables). */
-  HistoricActivityInstanceQuery activityInstanceId(String processInstanceId);
+  HistoricActivityInstanceQuery activityInstanceId(String activityInstanceId);
   
   /** Only select historic activity instances with the given process instance.
    * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
