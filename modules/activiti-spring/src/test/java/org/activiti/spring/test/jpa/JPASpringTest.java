@@ -78,6 +78,8 @@ public class JPASpringTest extends SpringActivitiTestCase {
         // If approved, the processsInstance should be finished, gateway based on loanRequest.approved value
         assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
 
+        // Cleanup
+        deleteDeployments();
     }
 
     //  @Deployment(resources = {"org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml"})
@@ -116,21 +118,26 @@ public class JPASpringTest extends SpringActivitiTestCase {
         task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertNotNull(task);
         assertEquals("Send rejection letter", task.getName());
+
+        // Cleanup
+        deleteDeployments();
     }
 
 
     protected void before() {
-
-        for (Deployment deployment : repositoryService.createDeploymentQuery().list())
-            repositoryService.deleteDeployment(deployment.getId());
-
-
         String[] defs = {"org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml"};
         for (String pd : defs)
             repositoryService.createDeployment()
                     .addClasspathResource(pd)
                     .deploy();
     }
+
+    protected void deleteDeployments() {
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
+    }
+    
 /*
     @Before
     public void before() {
