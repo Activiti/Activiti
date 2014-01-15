@@ -34,7 +34,8 @@
         ASSIGNEE_,
         START_TIME_,
         END_TIME_,
-        DURATION_
+        DURATION_,
+        TENANT_ID_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processDefinitionId, jdbcType=VARCHAR},
@@ -48,7 +49,8 @@
         #{assignee ,jdbcType=VARCHAR},
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
-        #{durationInMillis ,jdbcType=BIGINT}
+        #{durationInMillis ,jdbcType=BIGINT},
+        #{tenantId, jdbcType=VARCHAR}
       )
   </insert>
 
@@ -85,6 +87,7 @@
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- HISTORIC ACTIVITY INSTANCE SELECT -->
@@ -132,6 +135,15 @@
       </if>
       <if test="assignee != null">
         and RES.ASSIGNEE_ = #{assignee}
+      </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}
+      </if>
+      <if test="withoutTenantId">
+        and RES.TENANT_ID_ is null
       </if>
       <if test="unfinished">
         and RES.END_TIME_ is null

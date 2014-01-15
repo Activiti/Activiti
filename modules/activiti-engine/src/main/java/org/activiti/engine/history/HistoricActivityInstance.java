@@ -61,4 +61,7 @@ public interface HistoricActivityInstance {
 
   /** Difference between {@link #getEndTime()} and {@link #getStartTime()}.  */
   Long getDurationInMillis();
+  
+  /** Returns the tenant identifier for the historic activity */
+  String getTenantId();
 }

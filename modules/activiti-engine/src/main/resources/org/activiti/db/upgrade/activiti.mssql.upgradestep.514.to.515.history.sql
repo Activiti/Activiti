@@ -9,3 +9,12 @@ alter table ACT_HI_VARINST
 alter table ACT_HI_VARINST
     add LAST_UPDATED_TIME_ datetime; 
     
+alter table ACT_HI_PROCINST
+    add TENANT_ID_ nvarchar(255); 
+       
+alter table ACT_HI_ACTINST
+    add TENANT_ID_ nvarchar(255); 
+    
+alter table ACT_HI_TASKINST
+    add TENANT_ID_ nvarchar(255);       
+    

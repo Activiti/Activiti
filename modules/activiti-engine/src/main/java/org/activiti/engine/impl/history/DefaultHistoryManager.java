@@ -21,7 +21,6 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -42,7 +41,6 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Event;
-import org.activiti.engine.task.IdentityLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,8 +131,12 @@ public void recordProcessInstanceStart(ExecutionEntity processInstance) {
       Date now = ClockUtil.getCurrentTime();
       historicActivityInstance.setStartTime(now);
       
-      getDbSqlSession()
-        .insert(historicActivityInstance);
+      // Inherit tenant id (if applicable)
+      if (processInstance.getTenantId() != null) {
+      	historicActivityInstance.setTenantId(processInstance.getTenantId());
+      }
+      
+      getDbSqlSession().insert(historicActivityInstance);
     }
   }
   
@@ -205,6 +207,11 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
     		historicActivityInstance.setActivityName((String) executionEntity.getActivity().getProperty("name"));
     		historicActivityInstance.setActivityType((String) executionEntity.getActivity().getProperty("type"));
     		historicActivityInstance.setStartTime(ClockUtil.getCurrentTime());
+    		
+    	  // Inherit tenant id (if applicable)
+        if (executionEntity.getTenantId() != null) {
+        	historicActivityInstance.setTenantId(executionEntity.getTenantId());
+        }
     		
     		getDbSqlSession().insert(historicActivityInstance);
     	}

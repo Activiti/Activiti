@@ -78,6 +78,9 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected Date completedAfterDate;
   protected Date completedBeforeDate;
   protected String category;
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
 
@@ -457,6 +460,28 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
   
+  public HistoricTaskInstanceQuery taskTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("task tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public HistoricTaskInstanceQuery taskTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("task tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public HistoricTaskInstanceQuery taskWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
+  }
+  
+  
   public HistoricTaskInstanceQuery includeTaskLocalVariables() {
     this.includeTaskLocalVariables = true;
     return this;
@@ -553,6 +578,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public HistoricTaskInstanceQuery orderByTaskPriority() {
     orderBy(HistoricTaskInstanceQueryProperty.TASK_PRIORITY);
     return this;
+  }
+  
+  public HistoricTaskInstanceQuery orderByTenantId() {
+  	orderBy(HistoricTaskInstanceQueryProperty.TENANT_ID_);
+  	return this;
   }
   
   public String getMssqlOrDB2OrderBy() {

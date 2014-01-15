@@ -50,6 +50,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected Set<String> processInstanceIds;
   protected String involvedUser;
   protected boolean includeProcessVariables;
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -156,6 +159,27 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return this;
   }
   
+  public HistoricProcessInstanceQuery processInstanceTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public HistoricProcessInstanceQuery processInstanceTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public HistoricProcessInstanceQuery processInstanceWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
+  }
+  
   public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
     return orderBy(HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
   }
@@ -178,6 +202,10 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   
   public HistoricProcessInstanceQuery orderByProcessInstanceId() {
     return orderBy(HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
+  }
+  
+  public HistoricProcessInstanceQuery orderByTenantId() {
+  	return orderBy(HistoricProcessInstanceQueryProperty.TENANT_ID);
   }
   
   public String getMssqlOrDB2OrderBy() {

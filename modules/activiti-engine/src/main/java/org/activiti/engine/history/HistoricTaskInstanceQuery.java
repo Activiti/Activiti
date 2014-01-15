@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.task.Task;
 
@@ -25,6 +26,7 @@ import org.activiti.engine.task.Task;
  * Allows programmatic querying for {@link HistoricTaskInstance}s.
  * 
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQuery, HistoricTaskInstance> {
 
@@ -419,6 +421,15 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    *          (string%), ends with (%string) or contains (%string%). */
   HistoricTaskInstanceQuery processVariableValueLike(String name, String value);
   
+	/** Only select tasks that have the given tenant id. */
+  HistoricTaskInstanceQuery taskTenantId(String tenantId);
+
+	/** Only select tasks with a tenant id like the given one. */
+  HistoricTaskInstanceQuery taskTenantIdLike(String tenantIdLike);
+	
+	/** Only select tasks that do not have a tenant id. */
+  HistoricTaskInstanceQuery taskWithoutTenantId();
+  
   /**
    * Include local task variables in the task query result
    */
@@ -484,4 +495,8 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   
   /** Order by task priority key (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskPriority();
+  
+	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricTaskInstanceQuery orderByTenantId();
+  
 }
