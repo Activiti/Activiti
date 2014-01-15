@@ -49,7 +49,7 @@ public class HistoricTaskWrapper implements Task {
     setOwner(historicTaskInstance.getOwner());
     setAssignee(historicTaskInstance.getAssignee());
     
-    // TODO: add tenant id
+    setTenantId(historicTaskInstance.getTenantId());
   }
 
   public String getId() {
