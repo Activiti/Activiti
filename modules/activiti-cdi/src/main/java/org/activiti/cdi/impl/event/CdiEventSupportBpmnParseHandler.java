@@ -42,8 +42,10 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.cdi.BusinessProcessEventType;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
@@ -111,17 +113,17 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
   }
   
   private void addCompleteListener(ActivityImpl activity) {
-    UserTaskActivityBehavior behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+	UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(activity.getActivityBehavior());
     behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_COMPLETE, new CdiTaskListener(activity.getId(), BusinessProcessEventType.COMPLETE_TASK));
   }
 
   private void addAssignListener(ActivityImpl activity) {
-    UserTaskActivityBehavior behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+    UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(activity.getActivityBehavior());
     behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, new CdiTaskListener(activity.getId(), BusinessProcessEventType.ASSIGN_TASK));
   }
 
   private void addCreateListener(ActivityImpl activity) {
-    UserTaskActivityBehavior behavior = (UserTaskActivityBehavior) activity.getActivityBehavior();
+	UserTaskActivityBehavior behavior = getUserTaskActivityBehavior(activity.getActivityBehavior());
     behavior.getTaskDefinition().addTaskListener(TaskListener.EVENTNAME_CREATE, new CdiTaskListener(activity.getId(), BusinessProcessEventType.CREATE_TASK));
   }
 
@@ -133,4 +135,13 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
     activity.addExecutionListener(ExecutionListener.EVENTNAME_START, new CdiExecutionListener(activity.getId(), BusinessProcessEventType.START_ACTIVITY));
   }
 
+  private UserTaskActivityBehavior getUserTaskActivityBehavior(ActivityBehavior behavior) {
+	  if (behavior instanceof UserTaskActivityBehavior) {
+		  return (UserTaskActivityBehavior)behavior;
+	  } else if (behavior instanceof MultiInstanceActivityBehavior) {
+		  return (UserTaskActivityBehavior)((MultiInstanceActivityBehavior)behavior).getInnerActivityBehavior();
+	  }
+	  
+	  return null;
+  }
 }
