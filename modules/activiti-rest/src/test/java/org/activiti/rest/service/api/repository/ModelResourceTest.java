@@ -49,6 +49,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       model.setName("Model name");
       model.setVersion(2);
       model.setDeploymentId(deploymentId);
+      model.setTenantId("myTenant");
       repositoryService.saveModel(model);
       
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
@@ -67,6 +68,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       assertEquals("Model metainfo", responseNode.get("metaInfo").getTextValue());
       assertEquals(deploymentId, responseNode.get("deploymentId").getTextValue());
       assertEquals(model.getId(), responseNode.get("id").getTextValue());
+      assertEquals("myTenant", responseNode.get("tenantId").getTextValue());
       
       assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
       assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
@@ -173,6 +175,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       requestNode.put("metaInfo", "Updated metainfo");
       requestNode.put("deploymentId", deploymentId);
       requestNode.put("version", 3);
+      requestNode.put("tenantId", "myTenant");
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_MODEL, model.getId()));
       Representation response = client.put(requestNode);
@@ -189,6 +192,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       assertEquals("Updated metainfo", responseNode.get("metaInfo").getTextValue());
       assertEquals(deploymentId, responseNode.get("deploymentId").getTextValue());
       assertEquals(model.getId(), responseNode.get("id").getTextValue());
+      assertEquals("myTenant", responseNode.get("tenantId").getTextValue());
       
       assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
       assertEquals(updateTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
@@ -219,6 +223,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       model.setKey("Model key");
       model.setMetaInfo("Model metainfo");
       model.setName("Model name");
+      model.setTenantId("myTenant");
       model.setVersion(2);
       repositoryService.saveModel(model);
       
@@ -235,6 +240,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       requestNode.put("metaInfo", (String) null);
       requestNode.put("deploymentId", (String) null);
       requestNode.put("version", (String) null);
+      requestNode.put("tenantId", (String) null);
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_MODEL, model.getId()));
       Representation response = client.put(requestNode);
@@ -250,12 +256,22 @@ public class ModelResourceTest extends BaseRestTestCase {
       assertNull(responseNode.get("version").getTextValue());
       assertNull(responseNode.get("metaInfo").getTextValue());
       assertNull(responseNode.get("deploymentId").getTextValue());
+      assertNull(responseNode.get("tenantId").getTextValue());
       assertEquals(model.getId(), responseNode.get("id").getTextValue());
       
       assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
       assertEquals(updateTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
       
       assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
+      
+      model = repositoryService.getModel(model.getId());
+      assertNull(model.getName());
+      assertNull(model.getKey());
+      assertNull(model.getCategory());
+      assertNull(model.getMetaInfo());
+      assertNull(model.getDeploymentId());
+      assertNull(model.getTenantId());
+      
     } finally
     {
       try {

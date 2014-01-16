@@ -35,6 +35,9 @@ public class ExecutionQueryRequest {
   private String messageEventSubscriptionName;
   private List<QueryVariable> variables;
   private List<QueryVariable> processInstanceVariables;
+  private String tenantId;
+  private String tenantIdLike;
+  private Boolean withoutTenantId;
   
   @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  
   public List<QueryVariable> getVariables() {
@@ -139,4 +142,29 @@ public class ExecutionQueryRequest {
   public void setParentId(String parentId) {
     this.parentId = parentId;
   }
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+
+	public void setTenantIdLike(String tenantIdLike) {
+		this.tenantIdLike = tenantIdLike;
+	}
+
+	public Boolean getWithoutTenantId() {
+		return withoutTenantId;
+	}
+
+	public void setWithoutTenantId(Boolean withoutTenantId) {
+		this.withoutTenantId = withoutTenantId;
+	}
+  
 }

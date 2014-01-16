@@ -44,6 +44,7 @@ public class ExecutionBaseResource extends SecuredResource {
     allowedSortProperties.put("processDefinitionId", ExecutionQueryProperty.PROCESS_DEFINITION_ID);
     allowedSortProperties.put("processDefinitionKey", ExecutionQueryProperty.PROCESS_DEFINITION_KEY);
     allowedSortProperties.put("processInstanceId", ExecutionQueryProperty.PROCESS_INSTANCE_ID);
+    allowedSortProperties.put("tenantId", ExecutionQueryProperty.TENANT_ID);
   }
 
   protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest, Form urlQuery) {
@@ -85,6 +86,19 @@ public class ExecutionBaseResource extends SecuredResource {
     if(queryRequest.getProcessInstanceVariables() != null) {
       addVariables(query, queryRequest.getProcessInstanceVariables(), true);
     }
+    
+    if(queryRequest.getTenantId() != null) {
+    	query.executionTenantId(queryRequest.getTenantId());
+    }
+    
+    if(queryRequest.getTenantIdLike() != null) {
+    	query.executionTenantIdLike(queryRequest.getTenantIdLike());
+    }
+    
+    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+    	query.executionWithoutTenantId();
+    }
+    
     return new ExecutionPaginateList(this).paginateList(urlQuery, query, "processInstanceId", allowedSortProperties);
   }
 

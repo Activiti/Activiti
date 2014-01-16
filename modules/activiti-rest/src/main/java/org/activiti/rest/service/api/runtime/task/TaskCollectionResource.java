@@ -176,6 +176,18 @@ public class TaskCollectionResource extends TaskBaseResource {
       request.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", query));
     }
     
+    if(names.contains("tenantId")) {
+      request.setTenantId(getQueryParameter("tenantId", query));
+    }
+    
+    if(names.contains("tenantIdLike")) {
+    	request.setTenantIdLike(getQueryParameter("tenantIdLike", query));
+    }
+    
+    if(names.contains("withoutTenantId") && Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", query))) {
+    	request.setWithoutTenantId(Boolean.TRUE);
+    }
+    
     return getTasksFromQueryRequest(request);
   }
 }
