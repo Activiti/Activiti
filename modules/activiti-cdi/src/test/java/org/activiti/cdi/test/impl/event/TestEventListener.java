@@ -23,6 +23,7 @@ import org.activiti.cdi.annotation.event.AssignTask;
 import org.activiti.cdi.annotation.event.BusinessProcess;
 import org.activiti.cdi.annotation.event.CompleteTask;
 import org.activiti.cdi.annotation.event.CreateTask;
+import org.activiti.cdi.annotation.event.DeleteTask;
 import org.activiti.cdi.annotation.event.EndActivity;
 import org.activiti.cdi.annotation.event.StartActivity;
 import org.activiti.cdi.annotation.event.TakeTransition;
@@ -43,6 +44,8 @@ public class TestEventListener {
     assignTask1 = 0;
     completeTask1 = 0;
     completeTask2 = 0;
+    completeTask3 = 0;
+    deleteTask3 = 0;
     
     eventsReceivedByKey.clear();
     eventsReceived.clear();
@@ -85,8 +88,10 @@ public class TestEventListener {
   private int assignTask1 = 0;
   private int completeTask1 = 0;
   private int completeTask2 = 0;
+  private int completeTask3 = 0;
   private int createTask1 = 0;
   private int createTask2 = 0;
+  private int deleteTask3 = 0;
     
   public void onStartActivityService1(@Observes @StartActivity("service1") BusinessProcessEvent businessProcessEvent) {    
     startActivityService1 += 1;
@@ -136,6 +141,14 @@ public class TestEventListener {
     completeTask2 += 1;
   }
   
+  public void onCompleteTask3(@Observes @CompleteTask("usertask3") BusinessProcessEvent businessProcessEvent) {
+    completeTask3 += 1;
+  }
+  
+  public void onDeleteTask3(@Observes @DeleteTask("usertask3") BusinessProcessEvent businessProcessEvent) {
+    deleteTask3 += 1;
+  }
+  
   public int getEndActivityService1() {
     return endActivityService1;
   }
@@ -164,6 +177,10 @@ public class TestEventListener {
     return completeTask2;
   }
   
+  public int getCompleteTask3() {
+    return completeTask3;
+  }
+  
   public int getCreateTask2() {
     return createTask2;
   }
@@ -182,5 +199,9 @@ public class TestEventListener {
   
   public int getTakeTransitiont3() {
     return takeTransitiont3;
+  }
+  
+  public int getDeleteTask3() {
+    return deleteTask3;
   }
 }
