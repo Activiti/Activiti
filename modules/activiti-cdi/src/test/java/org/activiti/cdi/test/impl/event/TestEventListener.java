@@ -34,6 +34,15 @@ public class TestEventListener {
     startActivityService1 = 0;
     endActivityService1 = 0;
     takeTransitiont1 = 0;
+    takeTransitiont2 = 0;
+    takeTransitiont3 = 0;
+    startActivityService2 = 0;
+    endActivityService2 = 0;
+    createTask1 = 0;
+    createTask2 = 0;
+    assignTask1 = 0;
+    completeTask1 = 0;
+    completeTask2 = 0;
     
     eventsReceivedByKey.clear();
     eventsReceived.clear();
@@ -68,7 +77,11 @@ public class TestEventListener {
   
   private int startActivityService1 = 0;
   private int endActivityService1 = 0;
+  private int startActivityService2 = 0;
+  private int endActivityService2 = 0;
   private int takeTransitiont1 = 0;
+  private int takeTransitiont2 = 0;
+  private int takeTransitiont3 = 0;
   private int assignTask1 = 0;
   private int completeTask1 = 0;
   private int completeTask2 = 0;
@@ -82,9 +95,25 @@ public class TestEventListener {
   public void onEndActivityService1(@Observes @EndActivity("service1") BusinessProcessEvent businessProcessEvent) {
     endActivityService1 += 1;
   }
+  
+  public void onStartActivityService2(@Observes @StartActivity("service2") BusinessProcessEvent businessProcessEvent) {    
+    startActivityService2 += 1;
+  }
+
+  public void onEndActivityService2(@Observes @EndActivity("service2") BusinessProcessEvent businessProcessEvent) {
+    endActivityService2 += 1;
+  }
 
   public void takeTransitiont1(@Observes @TakeTransition("t1") BusinessProcessEvent businessProcessEvent) {
     takeTransitiont1 += 1;    
+  }
+  
+  public void takeTransitiont2(@Observes @TakeTransition("t2") BusinessProcessEvent businessProcessEvent) {
+    takeTransitiont2 += 1;    
+  }
+  
+  public void takeTransitiont3(@Observes @TakeTransition("t3") BusinessProcessEvent businessProcessEvent) {
+    takeTransitiont3 += 1;    
   }
   
   public void onCreateTask1(@Observes @CreateTask("usertask1") BusinessProcessEvent businessProcessEvent) {
@@ -131,12 +160,27 @@ public class TestEventListener {
     return completeTask1;
   }
   
-  
   public int getCompleteTask2() {
     return completeTask2;
   }
   
   public int getCreateTask2() {
     return createTask2;
+  }
+  
+  public int getStartActivityService2() {
+    return startActivityService2;
+  }
+  
+  public int getEndActivityService2() {
+    return endActivityService2;
+  }
+  
+  public int getTakeTransitiont2() {
+    return takeTransitiont2;
+  }
+  
+  public int getTakeTransitiont3() {
+    return takeTransitiont3;
   }
 }

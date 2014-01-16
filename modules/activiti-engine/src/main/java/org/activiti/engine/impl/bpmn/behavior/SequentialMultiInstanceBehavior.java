@@ -56,12 +56,14 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
    * Handles the completion of one instance, and executes the logic for the sequential behavior.    
    */
   public void leave(ActivityExecution execution) {
-    callActivityEndListeners(execution);
-    
     int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable()) + 1;
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
+    
+    if (loopCounter != nrOfInstances && !completionConditionSatisfied(execution)) {
+      callActivityEndListeners(execution);
+    }
     
     setLoopVariable(execution, getCollectionElementIndexVariable(), loopCounter);
     setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
