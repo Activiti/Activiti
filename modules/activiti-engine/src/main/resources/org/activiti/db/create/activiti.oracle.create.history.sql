@@ -70,8 +70,6 @@ create table ACT_HI_VARINST (
     DOUBLE_ NUMBER(*,10),
     LONG_ NUMBER(19,0),
     TEXT_ NVARCHAR2(2000),
-    CREATE_TIME_ timestamp not null,
-    LAST_UPDATED_TIME_ timestamp not null,
     TEXT2_ NVARCHAR2(2000),
     CREATE_TIME_ TIMESTAMP(6),
     LAST_UPDATED_TIME_ TIMESTAMP(6),
