@@ -58,6 +58,9 @@ public class ModelResource extends BaseModelResource {
     if(request.isVersionChanged()) {
       model.setVersion(request.getVersion());
     }
+    if(request.isTenantIdChanged()) {
+    	model.setTenantId(request.getTenantId());
+    }
     
     ActivitiUtil.getRepositoryService().saveModel(model);
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()

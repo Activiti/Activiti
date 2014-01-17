@@ -52,6 +52,7 @@ public class TaskBaseResource extends SecuredResource {
     properties.put("priority", TaskQueryProperty.PRIORITY);
     properties.put("executionId", TaskQueryProperty.EXECUTION_ID);
     properties.put("processInstanceId", TaskQueryProperty.PROCESS_INSTANCE_ID);
+    properties.put("tenantId", TaskQueryProperty.TENANT_ID);
   }
 
   protected DelegationState getDelegationState(String delegationState) {
@@ -242,6 +243,18 @@ public class TaskBaseResource extends SecuredResource {
     
     if(request.getProcessInstanceVariables() != null) {
       addProcessvariables(taskQuery, request.getProcessInstanceVariables());
+    }
+    
+    if(request.getTenantId() != null) {
+    	taskQuery.taskTenantId(request.getTenantId());
+    }
+    
+    if(request.getTenantIdLike() != null) {
+    	taskQuery.taskTenantIdLike(request.getTenantIdLike());
+    }
+    
+    if(Boolean.TRUE.equals(request.getWithoutTenantId())) {
+    	taskQuery.taskWithoutTenantId();
     }
     
     return new TaskPaginateList(this).paginateList(query, taskQuery, "id", properties);

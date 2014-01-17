@@ -18,6 +18,7 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
@@ -47,6 +48,7 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
 			
 			// Create link-attachment
 			Attachment attachment = taskService.createAttachment("test", task.getId(), processInstance.getId(), "attachment name", "description", "http://activiti.org");
+			assertNull(attachment.getUserId());
 			assertEquals(1, listener.getEventsReceived().size());
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
@@ -58,7 +60,10 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
 			listener.clearEventsReceived();
 			
 			// Create binary attachment
+			Authentication.setAuthenticatedUserId("testuser");
 			attachment = taskService.createAttachment("test", task.getId(), processInstance.getId(), "attachment name", "description", new ByteArrayInputStream("test".getBytes()));
+			assertNotNull(attachment.getUserId());
+			assertEquals("testuser", attachment.getUserId());
 			assertEquals(1, listener.getEventsReceived().size());
 			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());

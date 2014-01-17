@@ -8,8 +8,6 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.codehaus.jackson.JsonNode;
-import org.restlet.Client;
-import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
@@ -41,6 +39,7 @@ public class DeploymentCollectionResourceTest extends BaseRestTestCase {
       Deployment secondDeployment = repositoryService.createDeployment().name("Deployment 2")
               .category("ABC")
               .addClasspathResource("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml")
+              .tenantId("myTenant")
               .deploy();
       
       String baseUrl = RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION);
@@ -62,6 +61,22 @@ public class DeploymentCollectionResourceTest extends BaseRestTestCase {
       url = baseUrl +"?categoryNotEquals=DEF";
       assertResultsPresentInDataResponse(url, secondDeployment.getId());
       
+      // Check tenantId filtering
+      url = baseUrl +"?tenantId=myTenant";
+      assertResultsPresentInDataResponse(url, secondDeployment.getId());
+      
+      // Check tenantId filtering
+      url = baseUrl +"?tenantId=unexistingTenant";
+      assertResultsPresentInDataResponse(url);
+      
+      // Check tenantId like filtering
+      url = baseUrl +"?tenantIdLike="+ encode("%enant");
+      assertResultsPresentInDataResponse(url, secondDeployment.getId());
+      
+      // Check without tenantId filtering
+      url = baseUrl +"?withoutTenantId=true";
+      assertResultsPresentInDataResponse(url, firstDeployment.getId());
+      
       // Check ordering by name
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION)
               + "?sort=name&order=asc");
@@ -82,6 +97,17 @@ public class DeploymentCollectionResourceTest extends BaseRestTestCase {
       assertEquals(2L, dataNode.size());
       assertEquals(firstDeployment.getId(), dataNode.get(0).get("id").getTextValue());
       assertEquals(secondDeployment.getId(), dataNode.get(1).get("id").getTextValue());
+      client.release();
+      
+      // Check ordering by tenantId
+      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION)
+              + "?sort=tenantId&order=desc");
+      response = client.get();
+      
+      dataNode = objectMapper.readTree(response.getStream()).get("data");
+      assertEquals(2L, dataNode.size());
+      assertEquals(secondDeployment.getId(), dataNode.get(0).get("id").getTextValue());
+      assertEquals(firstDeployment.getId(), dataNode.get(1).get("id").getTextValue());
       client.release();
       
       // Check paging

@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -74,6 +75,7 @@ public class TaskResourceTest extends BaseRestTestCase {
     assertEquals(task.getPriority(), responseNode.get("priority").asInt());
     assertTrue(responseNode.get("parentTaskId").isNull());
     assertTrue(responseNode.get("delegationState").isNull());
+    assertTrue(responseNode.get("tenantId").isNull());
     
     assertTrue(responseNode.get("executionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, task.getExecutionId())));
@@ -81,6 +83,15 @@ public class TaskResourceTest extends BaseRestTestCase {
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, task.getProcessInstanceId())));
     assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(task.getProcessDefinitionId()))));
+    
+    // Set tenant on deployment
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+    
+    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
+    response = client.get();
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    responseNode = objectMapper.readTree(response.getStream());
+    assertEquals("myTenant", responseNode.get("tenantId").asText());
   }
   
   /**
@@ -126,6 +137,7 @@ public class TaskResourceTest extends BaseRestTestCase {
       assertTrue(responseNode.get("executionId").isNull());
       assertTrue(responseNode.get("processInstanceId").isNull());
       assertTrue(responseNode.get("processDefinitionId").isNull());
+      assertTrue(responseNode.get("tenantId").isNull());
       
       assertTrue(responseNode.get("parentTaskUrl").asText().endsWith(
               RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, parentTask.getId())));

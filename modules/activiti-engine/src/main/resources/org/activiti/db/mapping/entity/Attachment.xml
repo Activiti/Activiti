@@ -21,10 +21,11 @@
   <!-- ATTACHMENT INSERT -->
 
   <insert id="insertAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
-    insert into ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_)
+    insert into ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
+      #{userId ,jdbcType=VARCHAR},
       #{name ,jdbcType=VARCHAR},
       #{description ,jdbcType=VARCHAR},
       #{type ,jdbcType=VARCHAR},

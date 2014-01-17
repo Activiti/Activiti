@@ -16,6 +16,7 @@ package org.activiti.rest.service.api.runtime;
 import java.util.Calendar;
 import java.util.List;
 
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
@@ -258,6 +259,25 @@ public class TaskCollectionResourceTest extends BaseRestTestCase {
       // Due before filtering
       url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?dueBefore=" + getISODateString(inBetweenTaskCreation.getTime());
       assertResultsPresentInDataResponse(url, adhocTask.getId());
+      
+      // Without tenantId filtering before tenant set
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?withoutTenantId=true";
+      assertResultsPresentInDataResponse(url, adhocTask.getId(), processTask.getId());
+
+      // Set tenant on deployment
+      managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+      
+      // Without tenantId filtering after tenant set, only adhoc task should remain
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?withoutTenantId=true";
+      assertResultsPresentInDataResponse(url, adhocTask.getId());
+      
+      // Tenant id filtering
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?tenantId=myTenant";
+      assertResultsPresentInDataResponse(url, processTask.getId());
+      
+      // Tenant id like filtering
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?tenantIdLike=" + encode("%enant");
+      assertResultsPresentInDataResponse(url, processTask.getId());
       
       // Suspend process-instance to have a supended task
       runtimeService.suspendProcessInstanceById(processInstance.getId());

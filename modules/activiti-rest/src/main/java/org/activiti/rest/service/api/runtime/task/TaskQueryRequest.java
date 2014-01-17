@@ -63,6 +63,9 @@ public class TaskQueryRequest {
   private Boolean active;
   private Boolean includeTaskLocalVariables;
   private Boolean includeProcessVariables;
+  private String tenantId;
+  private String tenantIdLike;
+  private Boolean withoutTenantId;
   
   private List<QueryVariable> taskVariables;
   private List<QueryVariable> processInstanceVariables;
@@ -377,5 +380,29 @@ public class TaskQueryRequest {
   
   public void setProcessDefinitionName(String processDefinitionName) {
 	  this.processDefinitionName = processDefinitionName;
+  }
+  
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  
+  public String getTenantId() {
+	  return tenantId;
+  }
+  
+  public void setTenantIdLike(String tenantIdLike) {
+	  this.tenantIdLike = tenantIdLike;
+  }
+  
+  public String getTenantIdLike() {
+	  return tenantIdLike;
+  }
+  
+  public void setWithoutTenantId(Boolean withoutTenantId) {
+	  this.withoutTenantId = withoutTenantId;
+  }
+  
+  public Boolean getWithoutTenantId() {
+	  return withoutTenantId;
   }
 }
