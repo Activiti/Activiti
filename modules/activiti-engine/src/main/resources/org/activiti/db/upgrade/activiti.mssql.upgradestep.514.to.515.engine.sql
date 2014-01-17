@@ -9,8 +9,11 @@ alter table ACT_RE_DEPLOYMENT
 alter table ACT_RE_PROCDEF 
     add TENANT_ID_ nvarchar(255); 
     
-alter table ACT_RE_PROCDEF 
-    add TENANT_ID_ nvarchar(255); 
+alter table ACT_RU_EXECUTION 
+    add TENANT_ID_ nvarchar(255);
+    
+alter table ACT_RU_TASK 
+    add TENANT_ID_ nvarchar(255);      
     
 alter table ACT_RU_JOB
     add TENANT_ID_ nvarchar(255); 
