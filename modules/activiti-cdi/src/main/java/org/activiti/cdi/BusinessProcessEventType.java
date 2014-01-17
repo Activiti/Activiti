@@ -41,6 +41,9 @@ public interface BusinessProcessEventType {
   /** Signifies that a task has been created **/
   public static final BusinessProcessEventType COMPLETE_TASK = new DefaultBusinessProcessEventType(TaskListener.EVENTNAME_COMPLETE);
 
+  /** Signifies that a task has been deleted **/
+  public static final BusinessProcessEventType DELETE_TASK = new DefaultBusinessProcessEventType(TaskListener.EVENTNAME_DELETE);
+  
   static class DefaultBusinessProcessEventType implements BusinessProcessEventType {
 
     protected final String typeName;
