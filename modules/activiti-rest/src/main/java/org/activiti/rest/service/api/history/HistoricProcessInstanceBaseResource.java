@@ -45,6 +45,7 @@ public class HistoricProcessInstanceBaseResource extends SecuredResource {
     allowedSortProperties.put("startTime", HistoricProcessInstanceQueryProperty.START_TIME);
     allowedSortProperties.put("endTime", HistoricProcessInstanceQueryProperty.END_TIME);
     allowedSortProperties.put("duration", HistoricProcessInstanceQueryProperty.DURATION);
+    allowedSortProperties.put("tenantId", HistoricProcessInstanceQueryProperty.TENANT_ID);
   }
 
   protected DataResponse getQueryResponse(HistoricProcessInstanceQueryRequest queryRequest, Form urlQuery) {
@@ -104,6 +105,18 @@ public class HistoricProcessInstanceBaseResource extends SecuredResource {
     }
     if (queryRequest.getVariables() != null) {
       addVariables(query, queryRequest.getVariables());
+    }
+    
+    if(queryRequest.getTenantId() != null) {
+    	query.processInstanceTenantId(queryRequest.getTenantId());
+    }
+    
+    if(queryRequest.getTenantIdLike() != null) {
+    	query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
+    }
+    
+    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+    	query.processInstanceWithoutTenantId();
     }
 
     return new HistoricProcessInstancePaginateList(this).paginateList(urlQuery, query, "processInstanceId", allowedSortProperties);

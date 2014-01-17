@@ -537,6 +537,7 @@ public class RestResponseFactory {
             RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_HISTORY_PROCESS, false));
       }
     }
+    result.setTenantId(processInstance.getTenantId());
     return result;
   }
   
@@ -557,6 +558,7 @@ public class RestResponseFactory {
     result.setParentTaskId(taskInstance.getParentTaskId());
     result.setPriority(taskInstance.getPriority());
     result.setProcessDefinitionId(taskInstance.getProcessDefinitionId());
+    result.setTenantId(taskInstance.getTenantId());
     if (taskInstance.getProcessDefinitionId() != null) {
       result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, taskInstance.getProcessDefinitionId()));
     }
@@ -602,6 +604,7 @@ public class RestResponseFactory {
     result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, activityInstance.getId()));
     result.setStartTime(activityInstance.getStartTime());
     result.setTaskId(activityInstance.getTaskId());
+    result.setTenantId(activityInstance.getTenantId());
     return result;
   }
   

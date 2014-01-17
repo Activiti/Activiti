@@ -7456,7 +7456,8 @@ Only the attachment name is required to create a new attachment.
       "deleteReason" : null,
       "superProcessInstanceId" : "3",
       "url" : "http://localhost:8182/history/historic-process-instances/5",
-      "variables": null
+      "variables": null,
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -7570,6 +7571,24 @@ Only the attachment name is required to create a new attachment.
                   <entry>An indication if the historic process instance variables should be returned as well.</entry>
                 </row>
                 <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                <row>
                   <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
@@ -7624,7 +7643,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "local",
           "value": "myTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -7709,7 +7729,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "local",
           "value": "myTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -7880,7 +7901,8 @@ Only the attachment name is required to create a new attachment.
   "dueDate" : "2013-04-20T12:11:13.134+0000",
   "parentTaskId" : null,
   "url" : "http://localhost:8182/history/historic-task-instances/5",
-  "variables": null
+  "variables": null,
+  "tenantId":null
 }</programlisting>
       </para>
     </section>
@@ -8137,6 +8159,24 @@ Only the attachment name is required to create a new attachment.
                   <entry>An indication if the historic task instance global variables should be returned as well.</entry>
                 </row>
                 <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return historic task instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return historic task instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns historic task instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                <row>
                   <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
@@ -8207,7 +8247,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "global",
           "value": "myProcessTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -8308,7 +8349,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "global",
           "value": "myProcessTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -8498,6 +8540,24 @@ Only the attachment name is required to create a new attachment.
                   <entry>The process definition id of the historic activity instance.</entry>
                 </row>
                 <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                <row>
                   <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
@@ -8547,7 +8607,8 @@ Only the attachment name is required to create a new attachment.
       "assignee" : "fozzie",
       "startTime" : "2013-04-17T10:17:43.902+0000",
       "endTime" : "2013-04-18T14:06:32.715+0000",
-      "durationInMillis" : 86400056
+      "durationInMillis" : 86400056,
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -8616,7 +8677,8 @@ Only the attachment name is required to create a new attachment.
       "assignee" : "fozzie",
       "startTime" : "2013-04-17T10:17:43.902+0000",
       "endTime" : "2013-04-18T14:06:32.715+0000",
-      "durationInMillis" : 86400056
+      "durationInMillis" : 86400056,
+      "tenantId":null
     }
   ],
   "total": 1,

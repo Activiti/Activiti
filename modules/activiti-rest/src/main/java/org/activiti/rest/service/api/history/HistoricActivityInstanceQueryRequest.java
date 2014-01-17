@@ -29,6 +29,9 @@ public class HistoricActivityInstanceQueryRequest {
   private String taskAssignee;
   private String processInstanceId;
   private String processDefinitionId;
+  private String tenantId;
+  private String tenantIdLike;
+  private Boolean withoutTenantId;
   
   public String getActivityId() {
     return activityId;
@@ -84,4 +87,22 @@ public class HistoricActivityInstanceQueryRequest {
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
   }
+	public String getTenantId() {
+		return tenantId;
+	}
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+	public void setTenantIdLike(String tenantIdLike) {
+		this.tenantIdLike = tenantIdLike;
+	}
+	public Boolean getWithoutTenantId() {
+		return withoutTenantId;
+	}
+	public void setWithoutTenantId(Boolean withoutTenantId) {
+		this.withoutTenantId = withoutTenantId;
+	}
 }

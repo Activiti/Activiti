@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -71,6 +72,9 @@ public class HistoricTaskInstanceCollectionResourceTest extends BaseRestTestCase
     taskService.setOwner(task.getId(), "test");
     taskService.setDueDate(task.getId(), new GregorianCalendar(2013, 0, 1).getTime());
     
+    // Set tenant on deployment
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+    
     ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
     Task task2 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
     
@@ -109,6 +113,17 @@ public class HistoricTaskInstanceCollectionResourceTest extends BaseRestTestCase
     
     created.set(Calendar.YEAR, 2000);
     assertResultsPresentInDataResponse(url + "?taskCreatedAfter=" + dateFormat.format(created.getTime()), 3, task1.getId(), task2.getId());
+    
+    // Without tenant id
+    assertResultsPresentInDataResponse(url + "?withoutTenantId=true", 2, task.getId(), task1.getId());
+    
+    // Tenant id
+    assertResultsPresentInDataResponse(url + "?tenantId=myTenant", 1, task2.getId());
+    assertResultsPresentInDataResponse(url + "?tenantId=anotherTenant", 0);
+    
+    // Tenant id like
+    assertResultsPresentInDataResponse(url + "?tenantIdLike=" + encode("%enant"), 1, task2.getId());
+    assertResultsPresentInDataResponse(url + "?tenantIdLike=anotherTenant", 0);
   }
   
   protected void assertResultsPresentInDataResponse(String url, int numberOfResultsExpected, String... expectedTaskIds) throws JsonProcessingException, IOException {
