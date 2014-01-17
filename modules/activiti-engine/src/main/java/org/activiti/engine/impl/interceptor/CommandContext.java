@@ -318,7 +318,7 @@ public class CommandContext {
   public HistoryManager getHistoryManager() {
     return getSession(HistoryManager.class);
   }
-
+  
   // getters and setters //////////////////////////////////////////////////////
 
   public TransactionContext getTransactionContext() {

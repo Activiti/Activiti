@@ -270,6 +270,85 @@ runtimeService.createProcessInstanceQuery()
 	 
 	</section>
 	
+	<section id="advanced.custom.sql.queries">
+	
+	   <title>Execute custom SQL</title>
+	   
+	   <para>
+	       The Activiti API allows for interacting with the database using a high level API. For example, for retrieving data
+	       the Query API and the Native Query API are powerful in its usage. However, for some use cases they might not be
+	       flexible enough. The following section describes how a completely custom SQL statement (select, insert, update and delete are possible)
+	       can be executed against the Activiti data store, but completely within the configured Process Engine (and thus levering the transaction setup for example). 
+	   </para>
+	   
+	   <para>
+	       To define custom SQL statements, the Activiti engine leverages the capabilities of its underlying framework, MyBatis.
+	       The first thing to do when using custom SQL, is to create a MyBatis mapper class. More info can be read 
+	       <ulink url="http://mybatis.github.io/mybatis-3/java-api.html">in the MyBatis user guide</ulink>. For example,
+	       suppose that for some use case not the whole task data is needed, but only a small subset of it.
+	       A Mapper that could do this, looks as follows:
+	       <programlisting>
+public interface MyTestMapper {
+
+    @Select(&quot;SELECT ID_ as id, NAME_ as name, CREATE_TIME_ as createTime FROM ACT_RU_TASK&quot;)
+    List&lt;Map&lt;String, Object&gt;&gt; selectTasks();
+    
+}</programlisting>
+            This mapper must be provided to the Process Engine configuration as follows:
+            <programlisting>
+...
+&lt;property name="customMybatisMappers"&gt;
+  &lt;set&gt;
+    &lt;value&gt;org.activiti.standalone.cfg.MyTestMapper&lt;/value&gt;
+  &lt;/set&gt;
+&lt;/property&gt;
+...</programlisting>
+            Notice that this is an interface. The underlying MyBatis framework will make an instance
+            of it that can be used at runtime. Also notice that the return value of the method is not typed,
+            but a list of maps (which corresponds to the list of rows with column values). Typing is possible
+            with the MyBatis mappers if wanted. 
+	   </para>
+	   
+	   <para>
+	       To execute the query above, the <emphasis>managementService.executeCustomSql</emphasis> method
+	       must be used. This method takes in a <emphasis>CustomSqlExecution</emphasis> instance. This is a wrapper
+	       that hides the internal bits of the engine otherwise needed to make it work.    
+	   </para>
+	   
+	   <para>
+	       Unfortunately, Java generics make it a bit less readable than it could have been. The two generic types below
+	       are the mapper class and the return type class. However, the actual logic is simply to call the mapper method and return
+	       its results (if applicable).
+	       <programlisting>
+CustomSqlExecution&lt;MyTestMapper, List&lt;Map&lt;String, Object&gt;&gt;&gt; customSqlExecution = 
+          new AbstractCustomSqlExecution&lt;MyTestMapper, List&lt;Map&lt;String, Object&gt;&gt;&gt;(MyTestMapper.class) {
+            
+  public List&lt;Map&lt;String, Object&gt;&gt; execute(MyTestMapper customMapper) {
+    return customMapper.selectTasks();
+  }
+        
+};
+      
+List&lt;Map&lt;String, Object&gt;&gt; results = managementService.executeCustomSql(customSqlExecution);</programlisting>
+	       The Map entries in the list above will only contain <emphasis>id, name and create time</emphasis> in this case and not the full task object.
+	   </para>
+	   
+	   <para>
+	       Any SQL is possible when using the approach above. Another more complex example:
+	       <programlisting>
+    @Select({
+        &quot;SELECT task.ID_ as taskId, variable.LONG_ as variableValue FROM ACT_RU_VARIABLE variable&quot;,
+        &quot;inner join ACT_RU_TASK task on variable.TASK_ID_ = task.ID_&quot;,
+        &quot;where variable.NAME_ = #{variableName}&quot;
+    })
+    List&lt;Map&lt;String, Object&gt;&gt; selectTaskWithSpecificVariable(String variableName);	       
+	       </programlisting>
+	       Using this method, the task table will be joined with the variables table. Only where the variable has a certain name
+	       is retained, and the task id and the corresponding numerical value is returned.
+	   </para>
+	   
+	</section>
+	
 	<section id="advanced.safe.bpmn.xml">
 	
 	   <title>Enable safe BPMN 2.0 xml</title>
