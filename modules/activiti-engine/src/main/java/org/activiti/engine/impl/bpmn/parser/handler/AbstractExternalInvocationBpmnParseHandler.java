@@ -45,16 +45,22 @@ public abstract class AbstractExternalInvocationBpmnParseHandler<T extends FlowN
       if (fieldExtension.getFieldName().equals("html")) {
         textOrHtmlDefined = true;
       }
+			if (fieldExtension.getFieldName().equals("htmlVar")) {
+				textOrHtmlDefined = true;
+			}
       if (fieldExtension.getFieldName().equals("text")) {
         textOrHtmlDefined = true;
       }
+			if (fieldExtension.getFieldName().equals("textVar")) {
+				textOrHtmlDefined = true;
+			}
     }
 
     if (!toDefined) {
       bpmnParse.getBpmnModel().addProblem("No recipient is defined on the mail activity", task);
     }
     if (!textOrHtmlDefined) {
-      bpmnParse.getBpmnModel().addProblem("Text or html field should be provided", task);
+      bpmnParse.getBpmnModel().addProblem("Text, html, textVar or htmlVar field should be provided", task);
     }
   }
 
