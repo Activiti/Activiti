@@ -35,6 +35,7 @@ public class HistoricActivityInstanceResponse {
   protected Date startTime;
   protected Date endTime;
   protected Long durationInMillis;
+  protected String tenantId;
   
   public String getId() {
     return id;
@@ -125,5 +126,11 @@ public class HistoricActivityInstanceResponse {
   }
   public void setDurationInMillis(Long durationInMillis) {
     this.durationInMillis = durationInMillis;
+  }
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  public String getTenantId() {
+	  return tenantId;
   }
 }

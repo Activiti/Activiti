@@ -2,6 +2,7 @@ package org.activiti.rest.service.api.management;
 
 import java.util.Calendar;
 
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -51,6 +52,17 @@ public class JobResourceTest extends BaseRestTestCase {
     assertEquals(timerJob.getProcessInstanceId(), responseNode.get("processInstanceId").getTextValue());
     assertEquals(timerJob.getRetries(), responseNode.get("retries").getIntValue());
     assertEquals(timerJob.getDuedate(), getDateFromISOString(responseNode.get("dueDate").getTextValue()));
+    assertTrue(responseNode.get("tenantId").isNull());
+    response.release();
+    
+    // Set tenant on deployment
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+    
+    response = client.get();
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals("myTenant", responseNode.get("tenantId").getTextValue());
   }
   
   /**

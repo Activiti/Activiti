@@ -26,6 +26,7 @@ import org.activiti.engine.impl.util.ClockUtil;
 /**
  * @author Tom Baeyens
  * @author Christian Stettler
+ * @author Joram Barrez
  */
 public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance {
 
@@ -36,6 +37,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   protected String startUserId;
   protected String startActivityId;
   protected String superProcessInstanceId;
+  protected String tenantId;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricProcessInstanceEntity() {
@@ -50,6 +52,11 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     startUserId = Authentication.getAuthenticatedUserId();
     startActivityId = processInstance.getActivityId();
     superProcessInstanceId = processInstance.getSuperExecution() != null ? processInstance.getSuperExecution().getProcessInstanceId() : null;
+    
+    // Inherit tenant id (if applicable)
+    if (processInstance.getTenantId() != null) {
+    	tenantId = processInstance.getTenantId();
+    }
   }
 
   
@@ -103,7 +110,15 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     this.superProcessInstanceId = superProcessInstanceId;
   }
   
-  public Map<String, Object> getProcessVariables() {
+  public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
       for (HistoricVariableInstanceEntity variableInstance: queryVariables) {

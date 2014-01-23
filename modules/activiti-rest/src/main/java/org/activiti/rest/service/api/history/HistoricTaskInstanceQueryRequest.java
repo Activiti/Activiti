@@ -69,6 +69,9 @@ public class HistoricTaskInstanceQueryRequest {
   private Boolean includeProcessVariables;
   private List<QueryVariable> taskVariables;
   private List<QueryVariable> processVariables;
+  private String tenantId;
+  private String tenantIdLike;
+  private Boolean withoutTenantId;
 
   public String getTaskId() {
     return taskId;
@@ -415,6 +418,28 @@ public class HistoricTaskInstanceQueryRequest {
   public void setProcessVariables(List<QueryVariable> processVariables) {
     this.processVariables = processVariables;
   }
-  
-  
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+
+	public void setTenantIdLike(String tenantIdLike) {
+		this.tenantIdLike = tenantIdLike;
+	}
+
+	public Boolean getWithoutTenantId() {
+		return withoutTenantId;
+	}
+
+	public void setWithoutTenantId(Boolean withoutTenantId) {
+		this.withoutTenantId = withoutTenantId;
+	}
 }

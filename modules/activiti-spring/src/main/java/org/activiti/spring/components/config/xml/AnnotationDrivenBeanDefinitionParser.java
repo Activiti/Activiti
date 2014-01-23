@@ -16,9 +16,6 @@
 package org.activiti.spring.components.config.xml;
 
 
-import org.activiti.spring.components.support.ProcessScopeBeanFactoryPostProcessor;
-import org.activiti.spring.components.support.SharedProcessInstanceFactoryBean;
-import org.activiti.spring.components.support.SharedProcessInstanceHolder;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -49,10 +46,10 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
         this.processEngineRuntimeBeanReference = new RuntimeBeanReference(procEngineRef);
 
         // shared process instance holder
-        this.sharedProcessInstanceHolderRuntimeBeanReference = registerSharedProcessInstanceHolder(element, parserContext);
-
-        registerSharedProcessInstanceFactoryBean(element, parserContext);
-        registerProcessScopeBeanFactoryPostProcessor(element, parserContext);
+//        this.sharedProcessInstanceHolderRuntimeBeanReference = registerSharedProcessInstanceHolder(element, parserContext);
+//
+//        registerSharedProcessInstanceFactoryBean(element, parserContext);
+//        registerProcessScopeBeanFactoryPostProcessor(element, parserContext);
 
         return null;
     }
@@ -61,7 +58,7 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
         return BeanDefinitionBuilder.genericBeanDefinition(clz)
                 .setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
     }
-
+/*
     private RuntimeBeanReference registerSharedProcessInstanceFactoryBean(Element element, ParserContext parserContext) {
         BeanDefinition sharedProcessInstanceFactoryBeanBeanDefinition =
                 build(SharedProcessInstanceFactoryBean.class)
@@ -87,6 +84,6 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
         parserContext.getRegistry().registerBeanDefinition(
                 processScopeBeanFactoryPostProcessorClass.getName(),
                 processStartingBPPBeanDefinition);
-    }
+    }*/
 }
 

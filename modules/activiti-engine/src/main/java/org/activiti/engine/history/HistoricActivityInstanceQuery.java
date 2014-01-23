@@ -20,11 +20,12 @@ import org.activiti.engine.query.Query;
  * Programmatic querying for {@link HistoricActivityInstance}s.
  * 
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public interface HistoricActivityInstanceQuery extends Query<HistoricActivityInstanceQuery, HistoricActivityInstance>{
 
   /** Only select historic activity instances with the given id (primary key within history tables). */
-  HistoricActivityInstanceQuery activityInstanceId(String processInstanceId);
+  HistoricActivityInstanceQuery activityInstanceId(String activityInstanceId);
   
   /** Only select historic activity instances with the given process instance.
    * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
@@ -53,6 +54,16 @@ public interface HistoricActivityInstanceQuery extends Query<HistoricActivityIns
 
   /** Only select historic activity instances that are not finished yet. */
   HistoricActivityInstanceQuery unfinished();
+  
+	/** Only select historic activity instances that have the given tenant id. */
+  HistoricActivityInstanceQuery activityTenantId(String tenantId);
+
+	/** Only select historic activity instances with a tenant id like the given one. */
+  HistoricActivityInstanceQuery activityTenantIdLike(String tenantIdLike);
+	
+	/** Only select historic activity instances that do not have a tenant id. */
+  HistoricActivityInstanceQuery activityWithoutTenantId();
+  
 
   // ordering /////////////////////////////////////////////////////////////////
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
@@ -84,4 +95,8 @@ public interface HistoricActivityInstanceQuery extends Query<HistoricActivityIns
   
   /** Order by processDefinitionId (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByProcessDefinitionId();
+  
+	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricActivityInstanceQuery orderByTenantId();
+  
 }

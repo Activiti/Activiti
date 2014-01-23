@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -48,6 +49,9 @@ public class HistoricActivityInstanceCollectionResourceTest extends BaseRestTest
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
+    
+    // Set tenant on deployment
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
     
     ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -86,6 +90,17 @@ public class HistoricActivityInstanceCollectionResourceTest extends BaseRestTest
     assertResultsPresentInDataResponse(url + "?taskAssignee=fozzie", 1, "processTask2");
     
     assertResultsPresentInDataResponse(url + "?taskAssignee=fozzie2", 0);
+    
+    // Without tenant ID, only activities for processinstance1
+    assertResultsPresentInDataResponse(url + "?withoutTenantId=true", 3);
+    
+    // Tenant id
+    assertResultsPresentInDataResponse(url + "?tenantId=myTenant", 2, "theStart", "processTask");
+    assertResultsPresentInDataResponse(url + "?tenantId=anotherTenant");
+    
+    // Tenant id like
+    assertResultsPresentInDataResponse(url + "?tenantIdLike=" + encode("%enant"), 2, "theStart", "processTask");
+    assertResultsPresentInDataResponse(url + "?tenantIdLike=anotherTenant");
   }
   
   protected void assertResultsPresentInDataResponse(String url, int numberOfResultsExpected, String... expectedActivityIds) throws JsonProcessingException, IOException {

@@ -372,5 +372,11 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     }
     
   }
+  
+  @Deployment 
+  public void testEarlyFinishedProcess() {	 	
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callerProcess");
+		assertNotNull(processInstance.getId());
+  }
 
 }

@@ -4,10 +4,7 @@ import org.activiti.engine.*;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringJobExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
-import org.activiti.spring.components.config.ActivitiConfigurer;
-import org.activiti.spring.components.support.ProcessScopeBeanFactoryPostProcessor;
-import org.activiti.spring.components.support.SharedProcessInstanceFactoryBean;
-import org.activiti.spring.components.support.SharedProcessInstanceHolder;
+import org.activiti.spring.annotations.ActivitiConfigurer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +99,7 @@ public class ActivitiConfiguration {
         return processEngine.getManagementService();
     }
 
+/*
     @Bean
     public static ProcessScopeBeanFactoryPostProcessor processScope() {
         return new ProcessScopeBeanFactoryPostProcessor();
@@ -116,6 +114,7 @@ public class ActivitiConfiguration {
     public SharedProcessInstanceHolder processScopeContextHolder() {
         return new SharedProcessInstanceHolder();
     }
+*/
 
 
     protected PlatformTransactionManager platformTransactionManager(final DataSource dataSource) {

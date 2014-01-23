@@ -186,7 +186,9 @@ public class CommandContext {
     if (this.exception == null) {
       this.exception = exception;
     } else {
-    	LogMDC.putMDCExecution(Context.getExecutionContext().getExecution());    	    
+      if (Context.isExecutionContextActive()) {
+        LogMDC.putMDCExecution(Context.getExecutionContext().getExecution());
+      }
     	log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);    	
     	LogMDC.clear();
     }
@@ -318,7 +320,7 @@ public class CommandContext {
   public HistoryManager getHistoryManager() {
     return getSession(HistoryManager.class);
   }
-
+  
   // getters and setters //////////////////////////////////////////////////////
 
   public TransactionContext getTransactionContext() {

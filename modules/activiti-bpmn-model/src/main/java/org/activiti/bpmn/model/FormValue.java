@@ -35,6 +35,7 @@ public class FormValue extends BaseElement {
   }
   
   public void setValues(FormValue otherValue) {
+    super.setValues(otherValue);
     setName(otherValue.getName());
   }
 }

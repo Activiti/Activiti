@@ -68,6 +68,8 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   protected final ByteArrayRef exceptionByteArrayRef = new ByteArrayRef();
   
   protected String exceptionMessage;
+  
+  protected String tenantId;
 
   public void execute(CommandContext commandContext) {
     ExecutionEntity execution = null;
@@ -92,6 +94,11 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
         .getExecutionEntityManager()
         .findExecutionById(executionId);
       execution.addJob(this);
+      
+      // Inherit tenant if (if applicable)
+      if (execution != null && execution.getTenantId() != null) {
+      	setTenantId(execution.getTenantId());
+      }
     }
     
     if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -251,10 +258,16 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   public void setExceptionMessage(String exceptionMessage) {
     this.exceptionMessage = StringUtils.abbreviate(exceptionMessage, MAX_EXCEPTION_MESSAGE_LENGTH);
   }
-  
+  public String getTenantId() {
+		return tenantId;
+	}
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+	
   // common methods  //////////////////////////////////////////////////////////
 
-  @Override
+	@Override
   public String toString() {
     return "JobEntity [id=" + id + "]";
   }

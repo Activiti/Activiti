@@ -121,6 +121,12 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       TimerEntity timer = new TimerEntity();
       timer.setProcessDefinitionId(processDefinition.getId());
+      
+      // Inherit tenant identifier (if applicable)
+      if (processDefinition.getTenantId() != null) {
+      	timer.setTenantId(processDefinition.getTenantId());
+      }
+      
       timer.setDuedate(executionDate);
       timer.setJobHandlerType(getDelayedExecutionJobHandlerType());
       timer.setJobHandlerConfiguration(TimerChangeProcessDefinitionSuspensionStateJobHandler

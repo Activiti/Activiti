@@ -162,13 +162,30 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   
   @SuppressWarnings("unchecked")
   public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsOfType(Class<FlowElementType> type) {
-    List<FlowElementType> flowElements = new ArrayList<FlowElementType>();
+    List<FlowElementType> foundFlowElements = new ArrayList<FlowElementType>();
     for (FlowElement flowElement : this.getFlowElements()) {
       if (type.isInstance(flowElement)) {
-        flowElements.add((FlowElementType) flowElement);
+        foundFlowElements.add((FlowElementType) flowElement);
+      }
+      if (flowElement instanceof SubProcess) {
+        foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
       }
     }
-    return flowElements;
+    return foundFlowElements;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsInSubProcessOfType(SubProcess subProcess, Class<FlowElementType> type) {
+    List<FlowElementType> foundFlowElements = new ArrayList<FlowElementType>();
+    for (FlowElement flowElement : subProcess.getFlowElements()) {
+      if (type.isInstance(flowElement)) {
+        foundFlowElements.add((FlowElementType) flowElement);
+      }
+      if (flowElement instanceof SubProcess) {
+        foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
+      }
+    }
+    return foundFlowElements;
   }
   
   public Process clone() {

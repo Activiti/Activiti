@@ -157,10 +157,24 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryByInvalidActivityId() {
-    ExecutionQuery query = runtimeService.createExecutionQuery().activityId("invalid");
+  	ExecutionQuery query = runtimeService.createExecutionQuery().activityId("invalid");
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
+  }
+  
+  /**
+   * Validate fix for ACT-1896
+   */
+  public void testQueryByActivityIdAndBusinessKeyWithChildren() {
+    ExecutionQuery query = runtimeService.createExecutionQuery().activityId("receivePayment")
+    		.processInstanceBusinessKey("BUSINESS-KEY-1", true);
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+    
+    Execution execution = query.singleResult();
+    assertNotNull(execution);
+    assertEquals("receivePayment", execution.getActivityId());
   }
   
   public void testQueryPaging() {

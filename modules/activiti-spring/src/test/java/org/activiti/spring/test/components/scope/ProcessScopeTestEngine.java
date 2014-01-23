@@ -31,7 +31,6 @@ class ProcessScopeTestEngine {
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("customerId", customerId);
 
-
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("component-waiter", vars);
 
         Map<String, Object> runtimeVars = runtimeService.getVariables(processInstance.getId());

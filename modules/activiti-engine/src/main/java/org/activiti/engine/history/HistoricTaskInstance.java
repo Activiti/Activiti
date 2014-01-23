@@ -87,6 +87,9 @@ public interface HistoricTaskInstance {
   
   /** The parent task of this task, in case this task was a subtask */
   String getParentTaskId();
+  
+  /** Returns the tenant identifier for this historic task */
+  String getTenantId();
 
   /** Returns the local task variables if requested in the task query */
   Map<String, Object> getTaskLocalVariables();

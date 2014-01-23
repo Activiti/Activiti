@@ -7,7 +7,7 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
-    insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, SUSPENSION_STATE_)
+    insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, SUSPENSION_STATE_, TENANT_ID_)
     values (#{id, jdbcType=VARCHAR},
     		1,
             #{category, jdbcType=VARCHAR},
@@ -19,7 +19,8 @@
             #{diagramResourceName, jdbcType=VARCHAR},
             #{description, jdbcType=VARCHAR},
             #{hasStartFormKey, jdbcType=BOOLEAN},
-            #{suspensionState, jdbcType=INTEGER})
+            #{suspensionState, jdbcType=INTEGER},
+            #{tenantId, jdbcType=VARCHAR})
   </insert>
   
   <!-- PROCESSDEFINITION UPDATE -->
@@ -31,6 +32,13 @@
       CATEGORY_ = #{category, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateProcessDefinitionTenantIdForDeploymentId" parameterType="java.util.Map">
+    update ${prefix}ACT_RE_PROCDEF set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      DEPLOYMENT_ID_ = #{deploymentId, jdbcType=VARCHAR}
   </update>
 
   <!-- PROCESSDEFINITION DELETE -->
@@ -50,6 +58,7 @@
     <result property="version" column="VERSION_" jdbcType="INTEGER"/>
     <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
     <result property="resourceName" column="RESOURCE_NAME_" jdbcType="VARCHAR"/>
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="diagramResourceName" column="DGRM_RESOURCE_NAME_" jdbcType="VARCHAR"/>
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
     <result property="hasStartFormKey" column="HAS_START_FORM_KEY_" jdbcType="BOOLEAN"/>
@@ -122,10 +131,29 @@
         and RES.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
       <if test="latest">
-        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = RES.KEY_)
+        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = RES.KEY_ 
+             <if test="tenantId != null">
+	           and RES.TENANT_ID_ = #{tenantId}
+	         </if>
+	         <if test="tenantIdLike != null">
+	           and RES.TENANT_ID_ like #{tenantIdLike}
+	         </if>
+	         <if test="withoutTenantId">
+	           and TENANT_ID_ is null
+	         </if>
+        )
       </if>
       <if test="suspensionState != null">
         and (RES.SUSPENSION_STATE_ = #{suspensionState.stateCode})
+      </if>
+       <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}
+      </if>
+      <if test="withoutTenantId">
+        and RES.TENANT_ID_ is null
       </if>
       <if test="eventSubscriptionType != null">
       	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName}) 

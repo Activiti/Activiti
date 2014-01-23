@@ -1,4 +1,4 @@
-package org.activiti.spring.components.config;
+package org.activiti.spring.annotations;
 
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.core.io.Resource;

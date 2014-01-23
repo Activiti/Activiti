@@ -7,7 +7,7 @@
   <!-- EXECUTION INSERT -->
 
   <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
-    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_, CACHED_ENT_STATE_)
+    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -22,7 +22,8 @@
       #{parentId, jdbcType=VARCHAR},
       #{superExecutionId, jdbcType=VARCHAR},
       #{suspensionState, jdbcType=INTEGER},
-      #{cachedEntityState, jdbcType=INTEGER}
+      #{cachedEntityState, jdbcType=INTEGER},
+      #{tenantId, jdbcType=VARCHAR}
     )
   </insert>
 
@@ -44,6 +45,39 @@
       CACHED_ENT_STATE_ = #{cachedEntityState, jdbcType=INTEGER}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateExecutionTenantIdForDeployment" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_EXECUTION set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      ID_ in (
+        SELECT E.ID_ from ${prefix}ACT_RU_EXECUTION E
+        inner join ${prefix}ACT_RE_PROCDEF P on E.PROC_DEF_ID_  = P.ID_
+        inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
+        where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+      ) 
+  </update>
+  
+  <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
+       Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance0 -->
+  <update id="updateExecutionTenantIdForDeployment_mysql" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_EXECUTION set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      ID_ in (
+
+          SELECT tempExecution.tempId
+          FROM (
+                SELECT E.ID_ as tempId
+                FROM  ${prefix}ACT_RU_EXECUTION E
+                inner join ${prefix}ACT_RE_PROCDEF P on E.PROC_DEF_ID_  = P.ID_
+                inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
+                where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+                
+        ) AS tempExecution 
+
+    )
   </update>
   
   <!-- EXECUTION DELETE -->
@@ -69,6 +103,7 @@
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
     <result property="cachedEntityState" column="CACHED_ENT_STATE_" jdbcType="INTEGER"/>
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
   </resultMap>
   
   <resultMap id="executionAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
@@ -86,6 +121,7 @@
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
     <result property="cachedEntityState" column="CACHED_ENT_STATE_" jdbcType="INTEGER"/>
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -260,7 +296,7 @@
         and INST.BUSINESS_KEY_ = #{businessKey}
       </if>
       <if test="activityId != null">
-        and RES.ACT_ID_ = #{activityId} and IS_ACTIVE_ = #{isActive}
+        and RES.ACT_ID_ = #{activityId} and RES.IS_ACTIVE_ = #{isActive}
       </if>
       <if test="parentId != null">
         and RES.PARENT_ID_ = #{parentId}
@@ -283,6 +319,15 @@
         <if test="suspensionState.stateCode == 2">
         	and (RES.SUSPENSION_STATE_ = 2)
         </if>
+      </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}
+      </if>
+      <if test="withoutTenantId">
+        and RES.TENANT_ID_ is null
       </if>
       <if test="involvedUser != null">
         and EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{involvedUser})

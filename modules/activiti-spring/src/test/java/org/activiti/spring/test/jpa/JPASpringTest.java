@@ -19,7 +19,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.annotations.EnableActiviti;
-import org.activiti.spring.components.config.AbstractActivitiConfigurer;
+import org.activiti.spring.annotations.AbstractActivitiConfigurer;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.openjpa.jdbc.sql.H2Dictionary;
@@ -137,12 +137,24 @@ public class JPASpringTest extends SpringActivitiTestCase {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
+    
+/*
+    @Before
+    public void before() {
+        RepositoryService repositoryService = this.processEngine.getRepositoryService();
+
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
+    }*/
+
+
 }
 
 @Configuration
 @EnableActiviti
 @EnableTransactionManagement(proxyTargetClass = true)
-class JPAConfiguration {
+class JPAConfiguration  {
 
     @Bean
     public OpenJpaVendorAdapter openJpaVendorAdapter() {
@@ -199,4 +211,8 @@ class JPAConfiguration {
         return new LoanRequestBean();
     }
 } //end of @Configuration
+
+
+
+
 

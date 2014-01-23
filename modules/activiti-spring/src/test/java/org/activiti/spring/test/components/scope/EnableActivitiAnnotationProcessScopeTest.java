@@ -3,8 +3,8 @@ package org.activiti.spring.test.components.scope;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.annotations.EnableActiviti;
-import org.activiti.spring.components.config.AbstractActivitiConfigurer;
-import org.activiti.spring.components.config.ActivitiConfigurer;
+import org.activiti.spring.annotations.AbstractActivitiConfigurer;
+import org.activiti.spring.annotations.ActivitiConfigurer;
 import org.h2.Driver;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +28,7 @@ public class EnableActivitiAnnotationProcessScopeTest {
     @Configuration
     @EnableActiviti
     public static class SimpleConfiguration {
+
 
         @Bean
         @Scope("process")

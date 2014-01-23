@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <signal id="killSignal" name="KillProcessSignal"></signal>
+ 
+  <process id="callerProcess" name="callerProcess" isExecutable="true">
+    <startEvent id="startevent" name="Start"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="startevent" targetRef="callactivity"></sequenceFlow>
+    <callActivity id="callactivity" name="Call activity" calledElement="CaleeProcess"></callActivity>
+    <sequenceFlow id="flow2" sourceRef="callactivity" targetRef="timerEvent"></sequenceFlow>
+    <boundaryEvent id="boundarysignal" name="Signal" attachedToRef="callactivity" cancelActivity="true">
+      <signalEventDefinition signalRef="killSignal"></signalEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow3" sourceRef="boundarysignal" targetRef="endevent"></sequenceFlow>
+    <intermediateCatchEvent id="timerEvent" name="WaitForEternity">
+      <timerEventDefinition>
+        <timeDuration>P1D</timeDuration>
+      </timerEventDefinition>
+    </intermediateCatchEvent>
+    <sequenceFlow id="flow4" sourceRef="timerEvent" targetRef="endevent"></sequenceFlow>
+    <endEvent id="endevent" name="End"></endEvent> 
+</process>
+
+  <process id="CaleeProcess" name="CalledProcess" isExecutable="true">
+    
+    <startEvent id="startevent2" name="Start"></startEvent>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <intermediateThrowEvent id="signalintermediatethrowevent1" name="SignalThrowEvent">
+      <signalEventDefinition signalRef="killSignal"></signalEventDefinition>
+    </intermediateThrowEvent>
+    <sequenceFlow id="flow6" sourceRef="startevent2" targetRef="signalintermediatethrowevent1"></sequenceFlow>
+    <userTask id="usertask1" name="User Task" activiti:candidateGroups="group1"></userTask>
+    <sequenceFlow id="flow7" sourceRef="signalintermediatethrowevent1" targetRef="usertask1"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="usertask1" targetRef="endevent2"></sequenceFlow>
+  </process>
+  
+</definitions>

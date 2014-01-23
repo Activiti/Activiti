@@ -90,6 +90,10 @@ public class BpmnDeployer implements Deployer {
         for (ProcessDefinitionEntity processDefinition: bpmnParse.getProcessDefinitions()) {
           processDefinition.setResourceName(resourceName);
           
+          if (deployment.getTenantId() != null) {
+          	processDefinition.setTenantId(deployment.getTenantId()); // process definition inherits the tenant id
+          }
+          
           String diagramResourceName = getDiagramResourceForProcess(resourceName, processDefinition.getKey(), resources);
                    
           // Only generate the resource when deployment is new to prevent modification of deployment resources 
@@ -204,6 +208,12 @@ public class BpmnDeployer implements Deployer {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
         TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
         timer.setProcessDefinitionId(processDefinition.getId());
+        
+        // Inherit timer (if appliccable)
+        if (processDefinition.getTenantId() != null) {
+        	timer.setTenantId(processDefinition.getTenantId());
+        }
+        
         timers.add(timer);
       }
     }

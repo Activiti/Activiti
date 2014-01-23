@@ -73,6 +73,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   protected static final List<ExtensionAttribute> defaultActivityAttributes = Arrays.asList(
       new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS), 
       new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE), 
+      new ExtensionAttribute(ATTRIBUTE_DEFAULT), 
       new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION)
   );
   

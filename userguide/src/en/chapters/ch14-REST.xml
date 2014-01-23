@@ -520,9 +520,27 @@
                     <entry>Only return deployments which don't have the given category.</entry>
                   </row>
                   <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return deployments with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return deployments with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns deployments without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                  <row>
                     <entry>sort</entry>
                     <entry>No</entry>
-                    <entry>'id' (default), 'name' or 'deploytime'</entry>
+                    <entry>'id' (default), 'name', 'deploytime' or 'tenantId'</entry>
                     <entry>Property to sort on, to be used toghether with the 'order'.</entry>
                   </row>
                   <row>
@@ -561,7 +579,8 @@
       "name": "activiti-examples.bar",
       "deploymentTime": "2010-10-13T14:54:26.750+02:00",
       "category": "examples",
-      "url": "http://localhost:8081/service/repository/deployments/10"
+      "url": "http://localhost:8081/service/repository/deployments/10",
+      "tenantId": null
     }
   ],
   "total": 1,
@@ -632,7 +651,8 @@
   "name": "activiti-examples.bar",
   "deploymentTime": "2010-10-13T14:54:26.750+02:00",
   "category": "examples",
-  "url": "http://localhost:8081/service/repository/deployments/10"
+  "url": "http://localhost:8081/service/repository/deployments/10",
+  "tenantId" : null
 }</programlisting>
     </para>
     </section>
@@ -647,6 +667,7 @@
         </para>
         <para>The request should body should contain data of type <emphasis>multipart/form-data</emphasis>. There should be only exactly file in the request, any additional files will be ignored. The deployment name is the name
         of the file-field passed in. If multiple resources need to be deployed in a single deployment, compress the resources in a zip and make sure the file-name ends with <literal>.bar</literal> or <literal>.zip</literal>.</para>
+        <para>An additional parameter (form-field) can be passed in the request body with name <literal>tenantId</literal>. The value of this field will be used as the id of the tenant this deployment is done in.</para>
         <para>
           <table>
               <title>Create a new deployment - Response codes</title>
@@ -678,7 +699,8 @@
   "name": "activiti-examples.bar",
   "deploymentTime": "2010-10-13T14:54:26.750+02:00",
   "category": null,
-  "url": "http://localhost:8081/service/repository/deployments/10"
+  "url": "http://localhost:8081/service/repository/deployments/10",
+  "tenantId" : "myTenant"
 }</programlisting>
     </para>
   </section>
@@ -1918,10 +1940,28 @@
                     <entry>Boolean</entry>
                     <entry>If <literal>true</literal>, only deployed models are returned. If <literal>false</literal>, only undeployed models are returned (deploymentId is null).</entry>
                   </row>
+                   <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns models without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
                   <row>
                     <entry>sort</entry>
                     <entry>No</entry>
-                    <entry>'id' (default), 'category', 'createTime', 'key', 'lastUpdateTime', 'name' and 'version'</entry>
+                    <entry>'id' (default), 'category', 'createTime', 'key', 'lastUpdateTime', 'name', 'version' or 'tenantId'</entry>
                     <entry>Property to sort on, to be used toghether with the 'order'.</entry>
                   </row>
                   <row>
@@ -1970,7 +2010,8 @@
          "url":"http://localhost:8182/repository/models/10",
          "createTime":"2013-06-12T14:31:08.612+0000",
          "lastUpdateTime":"2013-06-12T14:31:08.612+0000",
-         "deploymentUrl":"http://localhost:8182/repository/deployments/7"
+         "deploymentUrl":"http://localhost:8182/repository/deployments/7",
+         "tenantId":null
       },
       
       ...
@@ -2050,7 +2091,8 @@
    "deploymentId":"2",
    "deploymentUrl":"http://localhost:8182/repository/deployments/2",
    "createTime":"2013-06-12T12:31:19.861+0000",
-   "lastUpdateTime":"2013-06-12T12:31:19.861+0000"
+   "lastUpdateTime":"2013-06-12T12:31:19.861+0000",
+   "tenantId":null
 }</programlisting>
     </para>
     </section>
@@ -2069,7 +2111,8 @@
    "category":"Model category",
    "version":2,
    "metaInfo":"Model metainfo",
-   "deploymentId":"2"
+   "deploymentId":"2",
+   "tenantId":"updatedTenant"
 }</programlisting>
    All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only updating the name of the model, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the model-value will be updated to null. Example: <literal>{"metaInfo" : null}</literal> will clear the metaInfo of the model).
     </para>
@@ -2110,7 +2153,8 @@
    "deploymentId":"2",
    "deploymentUrl":"http://localhost:8182/repository/deployments/2",
    "createTime":"2013-06-12T12:31:19.861+0000",
-   "lastUpdateTime":"2013-06-12T12:31:19.861+0000"
+   "lastUpdateTime":"2013-06-12T12:31:19.861+0000",
+   "tenantId":""updatedTenant"
 }</programlisting>
     </para>
     </section>
@@ -2129,7 +2173,8 @@
    "category":"Model category",
    "version":1,
    "metaInfo":"Model metainfo",
-   "deploymentId":"2"
+   "deploymentId":"2",
+   "tenantId":"tenant""
 }</programlisting>
    All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only setting the name of the model, leaving all other fields null.
     </para>
@@ -2166,7 +2211,8 @@
    "deploymentId":"2",
    "deploymentUrl":"http://localhost:8182/repository/deployments/2",
    "createTime":"2013-06-12T12:31:19.861+0000",
-   "lastUpdateTime":"2013-06-12T12:31:19.861+0000"
+   "lastUpdateTime":"2013-06-12T12:31:19.861+0000",
+   "tenantId":"tenant"
 }</programlisting>
     </para>
     </section>
@@ -2525,7 +2571,8 @@
    "businessKey":"myBusinessKey",
    "suspended":false,
    "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
-   "activityId":"processTask"
+   "activityId":"processTask",
+   "tenantId": null
 }</programlisting>
     </para>
 </section>
@@ -2747,7 +2794,8 @@
    "businessKey":"myBusinessKey",
    "suspended":false,
    "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
-   "activityId":"processTask"
+   "activityId":"processTask",
+   "tenantId" : null
 }</programlisting>
     </para>
 </section>
@@ -2831,10 +2879,28 @@
                     <entry>Indication to include process variables in the result.</entry>
                   </row>
                   <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns proces instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                  <row>
                     <entry>sort</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Sort field, should be either one of <literal>id</literal> (default), <literal>processDefinitionId</literal> or <literal>processDefinitionKey</literal>.</entry>
+                    <entry>Sort field, should be either one of <literal>id</literal> (default), <literal>processDefinitionId</literal>, <literal>tenantId</literal> or <literal>processDefinitionKey</literal>.</entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
@@ -2877,7 +2943,8 @@
          "businessKey":"myBusinessKey",
          "suspended":false,
          "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
-         "activityId":"processTask"
+         "activityId":"processTask",
+         "tenantId" : null
       },
       
       ...
@@ -2952,7 +3019,8 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
          "businessKey":"myBusinessKey",
          "suspended":false,
          "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
-         "activityId":"processTask"
+         "activityId":"processTask",
+         "tenantId" : null
       },
       
       ...
@@ -3819,7 +3887,8 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
    "processInstanceId":"5",
    "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
    "suspended":false,
-   "activityId":null
+   "activityId":null,
+   "tenantId": null
 }</programlisting>
     </para>
   </section>
@@ -3920,7 +3989,8 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
    "processInstanceId":"5",
    "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
    "suspended":false,
-   "activityId":null
+   "activityId":null,
+   "tenantId" : null
 }</programlisting>
     </para>
   </section>
@@ -4049,11 +4119,29 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                     <entry>String</entry>
                     <entry>Only return executions wich are a direct child of the given execution.</entry>
                   </row>
+                    <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns executions without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
                   <row>
                     <entry>sort</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Sort field, should be either one of <literal>processInstanceId</literal> (default), <literal>processDefinitionId</literal> or <literal>processDefinitionKey</literal>.</entry>
+                    <entry>Sort field, should be either one of <literal>processInstanceId</literal> (default), <literal>processDefinitionId</literal>, <literal>processDefinitionKey</literal> or <literal>tenantId</literal>.</entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
@@ -4098,7 +4186,8 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
          "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
-         "activityId":null
+         "activityId":null,
+         "tenantId":null
       },
       {
          "id":"7",
@@ -4108,7 +4197,8 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
          "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
-         "activityId":"processTask"
+         "activityId":"processTask",
+         "tenantId":null
       }
    ],
    "total":2,
@@ -4193,7 +4283,8 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
          "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
-         "activityId":null
+         "activityId":null,
+         "tenantId":null
       },
       {
          "id":"7",
@@ -4203,7 +4294,8 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
          "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
-         "activityId":"processTask"
+         "activityId":"processTask",
+         "tenantId":null
       }
    ],
    "total":2,
@@ -4806,7 +4898,8 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
   "processInstance" : "http://localhost:8182/runtime/process-instances/5",
   "suspended" : false,
   "taskDefinitionKey" : "theTask",
-  "url" : "http://localhost:8182/runtime/tasks/8"
+  "url" : "http://localhost:8182/runtime/tasks/8",
+  "tenantId" : null
 }</programlisting>
       <itemizedlist>
           <listitem>
@@ -5063,6 +5156,24 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Indication to include process variables in the result.</entry>
                   </row>
                   <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns tasks without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                  <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                   </row>
                 </tbody>
@@ -5113,7 +5224,8 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
       "processInstance" : "http://localhost:8182/runtime/process-instances/5",
       "suspended" : false,
       "taskDefinitionKey" : "theTask",
-      "url" : "http://localhost:8182/runtime/tasks/8"
+      "url" : "http://localhost:8182/runtime/tasks/8",
+      "tenantId" : null
     }
   ],
   "total": 1,
@@ -5204,7 +5316,8 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
       "processInstance" : "http://localhost:8182/runtime/process-instances/5",
       "suspended" : false,
       "taskDefinitionKey" : "theTask",
-      "url" : "http://localhost:8182/runtime/tasks/8"
+      "url" : "http://localhost:8182/runtime/tasks/8",
+      "tenantId" : null
     }
   ],
   "total": 1,
@@ -7343,7 +7456,8 @@ Only the attachment name is required to create a new attachment.
       "deleteReason" : null,
       "superProcessInstanceId" : "3",
       "url" : "http://localhost:8182/history/historic-process-instances/5",
-      "variables": null
+      "variables": null,
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -7457,6 +7571,24 @@ Only the attachment name is required to create a new attachment.
                   <entry>An indication if the historic process instance variables should be returned as well.</entry>
                 </row>
                 <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                <row>
                   <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
@@ -7511,7 +7643,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "local",
           "value": "myTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -7596,7 +7729,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "local",
           "value": "myTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -7767,7 +7901,8 @@ Only the attachment name is required to create a new attachment.
   "dueDate" : "2013-04-20T12:11:13.134+0000",
   "parentTaskId" : null,
   "url" : "http://localhost:8182/history/historic-task-instances/5",
-  "variables": null
+  "variables": null,
+  "tenantId":null
 }</programlisting>
       </para>
     </section>
@@ -8024,6 +8159,24 @@ Only the attachment name is required to create a new attachment.
                   <entry>An indication if the historic task instance global variables should be returned as well.</entry>
                 </row>
                 <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return historic task instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return historic task instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns historic task instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                <row>
                   <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
@@ -8094,7 +8247,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "global",
           "value": "myProcessTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -8195,7 +8349,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "global",
           "value": "myProcessTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -8385,6 +8540,24 @@ Only the attachment name is required to create a new attachment.
                   <entry>The process definition id of the historic activity instance.</entry>
                 </row>
                 <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                <row>
                   <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
@@ -8434,7 +8607,8 @@ Only the attachment name is required to create a new attachment.
       "assignee" : "fozzie",
       "startTime" : "2013-04-17T10:17:43.902+0000",
       "endTime" : "2013-04-18T14:06:32.715+0000",
-      "durationInMillis" : 86400056
+      "durationInMillis" : 86400056,
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -8503,7 +8677,8 @@ Only the attachment name is required to create a new attachment.
       "assignee" : "fozzie",
       "startTime" : "2013-04-17T10:17:43.902+0000",
       "endTime" : "2013-04-18T14:06:32.715+0000",
-      "durationInMillis" : 86400056
+      "durationInMillis" : 86400056,
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -9543,7 +9718,8 @@ Only the attachment name is required to create a new attachment.
    "executionUrl":"http://localhost:8182/runtime/executions/7",
    "retries":3,
    "exceptionMessage":null,
-   "dueDate":"2013-06-04T22:05:05.474+0000"
+   "dueDate":"2013-06-04T22:05:05.474+0000",
+   "tenantId":null
 }</programlisting>
           <table>
               <title>Get a single job - Response codes</title>
@@ -9811,8 +9987,26 @@ Only the attachment name is required to create a new attachment.
                     <entry>String</entry>
                   </row>
                   <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return jobs with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return jobs with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns jobs without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                  <row>
                     <entry>sort</entry>
-                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>dueDate</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal> or <literal>retries</literal>.</entry>
+                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>dueDate</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal>, <literal>retries</literal> or <literal>tenantId</literal>.</entry>
                     <entry>String</entry>
                   </row>
                   <row>
@@ -9838,7 +10032,8 @@ Only the attachment name is required to create a new attachment.
          "executionUrl":"http://localhost:8182/runtime/executions/12",
          "retries":0,
          "exceptionMessage":"Can't find scripting engine for 'unexistinglanguage'",
-         "dueDate":"2013-06-07T10:00:24.653+0000"
+         "dueDate":"2013-06-07T10:00:24.653+0000",
+         "tenantId":null
       },
       
       ...

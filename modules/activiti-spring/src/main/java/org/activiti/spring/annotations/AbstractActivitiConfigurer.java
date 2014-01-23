@@ -1,4 +1,4 @@
-package org.activiti.spring.components.config;
+package org.activiti.spring.annotations;
 
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.core.io.ClassPathResource;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simple no-op implementation of {@link org.activiti.spring.components.config.ActivitiConfigurer} that is
+ * Simple no-op implementation of {@link ActivitiConfigurer} that is
  * suitable as a base-class for other implementations.
  *
  * @author Josh Long

@@ -86,6 +86,18 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       queryRequest.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", urlQuery));
     }
     
+    if(getQueryParameter("tenantId", urlQuery) != null) {
+      queryRequest.setTenantId(getQueryParameter("tenantId", urlQuery));
+    }
+    
+    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
+      queryRequest.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    }
+    
+    if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", urlQuery))) {
+      queryRequest.setWithoutTenantId(Boolean.TRUE);
+    }
+    
     return getQueryResponse(queryRequest, urlQuery);
   }
   

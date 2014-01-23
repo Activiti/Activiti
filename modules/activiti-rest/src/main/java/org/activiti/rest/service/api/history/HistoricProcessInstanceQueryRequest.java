@@ -42,6 +42,9 @@ public class HistoricProcessInstanceQueryRequest {
   private String startedBy;
   private Boolean includeProcessVariables;
   private List<QueryVariable> variables;
+  private String tenantId;
+  private String tenantIdLike;
+  private Boolean withoutTenantId;
   
   public String getProcessInstanceId() {
     return processInstanceId;
@@ -171,4 +174,29 @@ public class HistoricProcessInstanceQueryRequest {
   public void setVariables(List<QueryVariable> variables) {
     this.variables = variables;
   }
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+
+	public void setTenantIdLike(String tenantIdLike) {
+		this.tenantIdLike = tenantIdLike;
+	}
+
+	public Boolean getWithoutTenantId() {
+		return withoutTenantId;
+	}
+
+	public void setWithoutTenantId(Boolean withoutTenantId) {
+		this.withoutTenantId = withoutTenantId;
+	}
+   
 }

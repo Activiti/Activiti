@@ -23,6 +23,7 @@ import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.AddEditorSourceExtraForModelCmd;
 import org.activiti.engine.impl.cmd.AddEditorSourceForModelCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.impl.cmd.CreateModelCmd;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeleteIdentityLinkForProcessDefinitionCmd;
@@ -107,6 +108,11 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public InputStream getResourceAsStream(String deploymentId, String resourceName) {
     return commandExecutor.execute(new GetDeploymentResourceCmd(deploymentId, resourceName));
+  }
+  
+  @Override
+  public void changeDeploymentTenantId(String deploymentId, String newTenantId) {
+  	commandExecutor.execute(new ChangeDeploymentTenantIdCmd(deploymentId, newTenantId));
   }
 
   public DeploymentQuery createDeploymentQuery() {

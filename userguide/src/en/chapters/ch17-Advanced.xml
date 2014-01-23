@@ -168,6 +168,187 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
 	
 	</section>
 	
+	<section id="advanced.tenancy">
+	
+	   <title>Multitenancy</title>
+	   
+	   <para>
+	       Multitenancy in general is a concept where the software is capable of serving multiple different
+	       organizations. Key is that the data is partitioned and no organization can see the data of other ones.
+	       In this context, such an organization (or a departement, or a team or ...) is called a <emphasis>tenant</emphasis>.
+	   </para>
+	   
+	   <para>
+	       Note that this is fundamentally different from a multi-instance setup, where an Activiti Process Engine instance
+	       is running for each organization separately (and with a different database schema). Altough Activiti is lightweight,
+	       and running a Process Engine instance doesn't take much resources, it does add complexity and more maintenance.
+	       But, for some use cases it might be the right solution.
+	   </para>
+	   
+	   <para>
+          Multitenancy in Activiti is mainly implemented around partitioning the data. It is important to 
+          note that <emphasis role="bod">Activiti does not enforce multi tenancy rules</emphasis>.
+          This means it will not verify when querying and using data whether the user doing the operation
+          is belonging to the correct tenant. This should be done in the layer calling the Activiti engine.
+          Activiti does make sure that tenant information can be stored and used when retrieving process data.
+	   </para>
+	   
+	   <para>
+	       When deploying process definition to the Activiti Process Engine it is possible to pass a <emphasis>tenant identifier</emphasis>.
+	       This is a string (eg. a UUID, departement id, etc.), limited to 256 characters which is uniquely identifies the tenant:
+	       <programlisting>
+ repositoryService.createDeployment()
+            .addClassPathResource(...)
+            .tenantId("myTenantId")
+            .deploy();</programlisting>    
+	       Passing a tenant id during a deployment has following implications:
+		   <itemizedlist>
+	        <listitem>
+	           <para>
+	               All the process definitions contained in the deployment inherit the tenant identifier from this deployment. 
+	           </para>
+	        </listitem>
+	        <listitem>
+               <para>
+                    All process instances started from those process definitions inherit this tenant identifier from the process definition.            
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                    All tasks created at runtime when executing the process instance inherit this tenant identifier from the process instance.
+                    Standalone tasks can have a tenant identifier too.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                    All executions created during process instance execution inherit this tenant identifier from the process instance.            
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                    All jobs (timers and async continuations) inherit the tenant identifier from either the process definition (eg. timer start event)
+                    or the process instance (when a job is created at runtime, eg. an async continuation). This could potentially be used
+                    for giving priority to some tenants in a custom job executor.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                    All the historic entities (historic process instance, task and activities) inherit the tenant identifier from their runtime counterparts.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                    As a side note, models can have a tenant identifier too (models are used eg. by the Activiti Modeler to store bpmn 2.0 models) .           
+               </para>
+            </listitem>
+	      </itemizedlist>
+	   </para>
+	
+	   <para>
+	       To actually make use of the tenant identifier on the process data, all the query API's have the capability to filter on tenant.
+	       For example (and can be replaced by the relevant query implementation of the other entities):
+	       <programlisting>
+runtimeService.createProcessInstanceQuery()
+    <emphasis role="bold">.processInstanceTenantId("myTenantId")</emphasis>
+    .processDefinitionKey("myProcessDefinitionKey")
+    .variableValueEquals("myVar", "someValue")
+    .list()</programlisting>
+        The query API's also allow to filter on the tenant identifier with <emphasis>like</emphasis> semantics 
+        and also to filter out entities without tenant id. 
+	   </para>
+	   
+	   <para>
+	       <emphasis role="bold">Do note that all of the above does not conflict with running multiple Activiti instances in a cluster.</emphasis>
+	   </para>
+	   
+	   <para>
+	       [Experimental] It is possible to change the tenant identifier by calling the <emphasis>changeDeploymentTenantId(String deploymentId, String newTenantId)</emphasis>
+	       method on the <emphasis>repositoryService</emphasis>. This will change the tenant identifier everywhere it was inherited before.
+	       This can be useful when going from a non-multitenant setup to a multitenant configuration.
+	       See the Javadoc on the method for more detailed information.
+	   </para>
+	 
+	</section>
+	
+	<section id="advanced.custom.sql.queries">
+	
+	   <title>Execute custom SQL</title>
+	   
+	   <para>
+	       The Activiti API allows for interacting with the database using a high level API. For example, for retrieving data
+	       the Query API and the Native Query API are powerful in its usage. However, for some use cases they might not be
+	       flexible enough. The following section describes how a completely custom SQL statement (select, insert, update and delete are possible)
+	       can be executed against the Activiti data store, but completely within the configured Process Engine (and thus levering the transaction setup for example). 
+	   </para>
+	   
+	   <para>
+	       To define custom SQL statements, the Activiti engine leverages the capabilities of its underlying framework, MyBatis.
+	       The first thing to do when using custom SQL, is to create a MyBatis mapper class. More info can be read 
+	       <ulink url="http://mybatis.github.io/mybatis-3/java-api.html">in the MyBatis user guide</ulink>. For example,
+	       suppose that for some use case not the whole task data is needed, but only a small subset of it.
+	       A Mapper that could do this, looks as follows:
+	       <programlisting>
+public interface MyTestMapper {
+
+    @Select(&quot;SELECT ID_ as id, NAME_ as name, CREATE_TIME_ as createTime FROM ACT_RU_TASK&quot;)
+    List&lt;Map&lt;String, Object&gt;&gt; selectTasks();
+    
+}</programlisting>
+            This mapper must be provided to the Process Engine configuration as follows:
+            <programlisting>
+...
+&lt;property name="customMybatisMappers"&gt;
+  &lt;set&gt;
+    &lt;value&gt;org.activiti.standalone.cfg.MyTestMapper&lt;/value&gt;
+  &lt;/set&gt;
+&lt;/property&gt;
+...</programlisting>
+            Notice that this is an interface. The underlying MyBatis framework will make an instance
+            of it that can be used at runtime. Also notice that the return value of the method is not typed,
+            but a list of maps (which corresponds to the list of rows with column values). Typing is possible
+            with the MyBatis mappers if wanted. 
+	   </para>
+	   
+	   <para>
+	       To execute the query above, the <emphasis>managementService.executeCustomSql</emphasis> method
+	       must be used. This method takes in a <emphasis>CustomSqlExecution</emphasis> instance. This is a wrapper
+	       that hides the internal bits of the engine otherwise needed to make it work.    
+	   </para>
+	   
+	   <para>
+	       Unfortunately, Java generics make it a bit less readable than it could have been. The two generic types below
+	       are the mapper class and the return type class. However, the actual logic is simply to call the mapper method and return
+	       its results (if applicable).
+	       <programlisting>
+CustomSqlExecution&lt;MyTestMapper, List&lt;Map&lt;String, Object&gt;&gt;&gt; customSqlExecution = 
+          new AbstractCustomSqlExecution&lt;MyTestMapper, List&lt;Map&lt;String, Object&gt;&gt;&gt;(MyTestMapper.class) {
+            
+  public List&lt;Map&lt;String, Object&gt;&gt; execute(MyTestMapper customMapper) {
+    return customMapper.selectTasks();
+  }
+        
+};
+      
+List&lt;Map&lt;String, Object&gt;&gt; results = managementService.executeCustomSql(customSqlExecution);</programlisting>
+	       The Map entries in the list above will only contain <emphasis>id, name and create time</emphasis> in this case and not the full task object.
+	   </para>
+	   
+	   <para>
+	       Any SQL is possible when using the approach above. Another more complex example:
+	       <programlisting>
+    @Select({
+        &quot;SELECT task.ID_ as taskId, variable.LONG_ as variableValue FROM ACT_RU_VARIABLE variable&quot;,
+        &quot;inner join ACT_RU_TASK task on variable.TASK_ID_ = task.ID_&quot;,
+        &quot;where variable.NAME_ = #{variableName}&quot;
+    })
+    List&lt;Map&lt;String, Object&gt;&gt; selectTaskWithSpecificVariable(String variableName);	       
+	       </programlisting>
+	       Using this method, the task table will be joined with the variables table. Only where the variable has a certain name
+	       is retained, and the task id and the corresponding numerical value is returned.
+	   </para>
+	   
+	</section>
+	
 	<section id="advanced.safe.bpmn.xml">
 	
 	   <title>Enable safe BPMN 2.0 xml</title>
@@ -197,5 +378,7 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
 	   </para>
 	
 	</section>
+	
+	
 	
 </chapter>

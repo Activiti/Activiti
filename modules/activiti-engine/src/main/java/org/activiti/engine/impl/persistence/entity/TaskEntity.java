@@ -91,7 +91,11 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   protected String eventName;
   
+  protected String tenantId;
+  
   protected List<VariableInstanceEntity> queryVariables;
+  
+  protected boolean forcedUpdate;
   
   public TaskEntity() {
   }
@@ -111,6 +115,11 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     CommandContext commandContext = Context.getCommandContext();
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.insert(this);
+    
+    // Inherit tenant id (if applicable)
+    if (execution != null && execution.getTenantId() != null) {
+    	setTenantId(execution.getTenantId());
+    }
     
     if(execution != null) {
       execution.addTask(this);
@@ -148,7 +157,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   
   /**  Creates a new task.  Embedded state and create time will be initialized.
-   * But this task still will have to be persisted. See {@link #insert(ExecutionEntity)}. */
+   * But this task still will have to be persisted. See {@link #insert(ExecutionEntity))}. */
   public static TaskEntity create() {
     TaskEntity task = new TaskEntity();
     task.isIdentityLinksInitialized = true;
@@ -223,11 +232,19 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     
     persistentState.put("suspensionState", this.suspensionState);
     
+    if (forcedUpdate) {
+      persistentState.put("forcedUpdate", Boolean.TRUE);
+    }
+    
     return persistentState;
   }
   
   public int getRevisionNext() {
     return revision+1;
+  }
+  
+  public void forceUpdate() {
+    this.forcedUpdate = true;
   }
 
   // variables ////////////////////////////////////////////////////////////////
@@ -872,7 +889,13 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     }
     return variables;
   }
-  public List<VariableInstanceEntity> getQueryVariables() {
+  public String getTenantId() {
+		return tenantId;
+	}
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+	public List<VariableInstanceEntity> getQueryVariables() {
     if(queryVariables == null && Context.getCommandContext() != null) {
       queryVariables = new VariableInitializingList();
     }

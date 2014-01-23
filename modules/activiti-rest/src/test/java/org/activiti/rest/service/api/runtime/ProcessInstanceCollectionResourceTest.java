@@ -16,6 +16,7 @@ package org.activiti.rest.service.api.runtime;
 import java.util.Calendar;
 import java.util.Map;
 
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
@@ -118,6 +119,40 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     assertResultsPresentInDataResponse(url, id);
     
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?subProcessInstanceId=anotherId";
+    assertResultsPresentInDataResponse(url);
+  }
+  
+  /**
+   * Test getting a list of process instance, using all tenant filters.
+   */
+  @Deployment(resources = {"org/activiti/rest/service/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
+  public void testGetProcessInstancesTenant() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
+    String id = processInstance.getId();
+    
+    // Test without tenant id
+    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?withoutTenantId=true";
+    assertResultsPresentInDataResponse(url, id);
+    
+    // Update the tenant for the deployment
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+    
+    // Test tenant id
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?tenantId=myTenant";
+    assertResultsPresentInDataResponse(url, id);
+    
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?tenantId=anotherTenant";
+    assertResultsPresentInDataResponse(url);
+    
+    // Test tenant id like
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?tenantIdLike=" + encode("%enant");
+    assertResultsPresentInDataResponse(url, id);
+    
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?tenantIdLike=" + encode("%what");
+    assertResultsPresentInDataResponse(url);
+    
+    // Test without tenant id
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?withoutTenantId=true";
     assertResultsPresentInDataResponse(url);
   }
   

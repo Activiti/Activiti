@@ -38,6 +38,7 @@ public class HistoricTaskWrapper implements Task {
   protected Date dueDate;
   protected String category;
   protected String parentTaskId;
+  protected String tenantId;
 
   public HistoricTaskWrapper(HistoricTaskInstance historicTaskInstance) {
     this.id = historicTaskInstance.getId();
@@ -47,6 +48,8 @@ public class HistoricTaskWrapper implements Task {
     setPriority(historicTaskInstance.getPriority());
     setOwner(historicTaskInstance.getOwner());
     setAssignee(historicTaskInstance.getAssignee());
+    
+    setTenantId(historicTaskInstance.getTenantId());
   }
 
   public String getId() {
@@ -150,8 +153,16 @@ public class HistoricTaskWrapper implements Task {
   public boolean isSuspended() {
     return false;
   }
+  
+  public String getTenantId() {
+		return tenantId;
+	}
 
-  public Map<String, Object> getTaskLocalVariables() {
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public Map<String, Object> getTaskLocalVariables() {
     return null;
   }
 

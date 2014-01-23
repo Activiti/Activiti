@@ -7,7 +7,7 @@
   <!-- MODEL INSERT -->
   
   <insert id="insertModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
-    insert into ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_, VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_)
+    insert into ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_, VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_)
     values(#{id, jdbcType=VARCHAR}, 
            1,
            #{name, jdbcType=VARCHAR}, 
@@ -19,7 +19,8 @@
            #{metaInfo, jdbcType=VARCHAR}, 
            #{deploymentId, jdbcType=VARCHAR},
            #{editorSourceValueId, jdbcType=VARCHAR}, 
-           #{editorSourceExtraValueId, jdbcType=VARCHAR})
+           #{editorSourceExtraValueId, jdbcType=VARCHAR},
+           #{tenantId, jdbcType=VARCHAR})
   </insert>
   
   <!-- MODEL UPDATE -->
@@ -34,7 +35,8 @@
       META_INFO_ = #{metaInfo, jdbcType=VARCHAR},
       DEPLOYMENT_ID_ = #{deploymentId, jdbcType=VARCHAR},
       EDITOR_SOURCE_VALUE_ID_ = #{editorSourceValueId, jdbcType=VARCHAR},
-      EDITOR_SOURCE_EXTRA_VALUE_ID_ = #{editorSourceExtraValueId, jdbcType=VARCHAR}
+      EDITOR_SOURCE_EXTRA_VALUE_ID_ = #{editorSourceExtraValueId, jdbcType=VARCHAR},
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR} and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
@@ -60,6 +62,7 @@
     <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR" />
     <result property="editorSourceValueId" column="EDITOR_SOURCE_VALUE_ID_" jdbcType="VARCHAR" />
     <result property="editorSourceExtraValueId" column="EDITOR_SOURCE_EXTRA_VALUE_ID_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- MODEL SELECT -->
@@ -115,6 +118,15 @@
       </if>
       <if test="latest">
         and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_MODEL where KEY_ = RES.KEY_)
+      </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}
+      </if>
+      <if test="withoutTenantId">
+        and RES.TENANT_ID_ is null
       </if>
     </where>
   </sql>

@@ -16,9 +16,12 @@ package org.activiti.rest.service.api.history;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -45,10 +48,15 @@ public class HistoricProcessInstanceCollectionResourceTest extends BaseRestTestC
    */
   @Deployment
   public void testQueryProcessInstances() throws Exception {
+  	Calendar startTime = Calendar.getInstance();
+  	ClockUtil.setCurrentTime(startTime.getTime());
+  	
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
     
+    startTime.add(Calendar.DAY_OF_YEAR, 1);
+    ClockUtil.setCurrentTime(startTime.getTime());
     ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
     String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCES);
@@ -63,15 +71,36 @@ public class HistoricProcessInstanceCollectionResourceTest extends BaseRestTestC
     
     assertResultsPresentInDataResponse(url + "?processDefinitionKey=oneTaskProcess", processInstance.getId(), processInstance2.getId());
     
+    // Without tenant ID, before setting tenant
+    assertResultsPresentInDataResponse(url + "?withoutTenantId=true", processInstance.getId(), processInstance2.getId());
+    
+    // Set tenant on deployment
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+    startTime.add(Calendar.DAY_OF_YEAR, 1);
+    ClockUtil.setCurrentTime(startTime.getTime());
+    ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    // Without tenant ID, after setting tenant
+    assertResultsPresentInDataResponse(url + "?withoutTenantId=true", processInstance.getId(), processInstance2.getId());
+    
+    // Tenant id
+    assertResultsPresentInDataResponse(url + "?tenantId=myTenant", processInstance3.getId());
+    assertResultsPresentInDataResponse(url + "?tenantId=anotherTenant");
+    
+    // Tenant id like
+    assertResultsPresentInDataResponse(url + "?tenantIdLike=" + encode("%enant"), processInstance3.getId());
+    assertResultsPresentInDataResponse(url + "?tenantIdLike=anotherTenant");
+    
     ClientResource client = getAuthenticatedClient(url + "?processDefinitionKey=oneTaskProcess&sort=startTime");
     Representation response = client.get();
     
     // Check status and size
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
-    assertEquals(2, dataNode.size());
+    assertEquals(3, dataNode.size());
     assertEquals(processInstance.getId(), dataNode.get(0).get("id").asText());
     assertEquals(processInstance2.getId(), dataNode.get(1).get("id").asText());
+    assertEquals(processInstance3.getId(), dataNode.get(2).get("id").asText());
   }
   
   protected void assertResultsPresentInDataResponse(String url, String... expectedResourceIds) throws JsonProcessingException, IOException {
