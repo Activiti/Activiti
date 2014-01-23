@@ -137,18 +137,6 @@ public class JPASpringTest extends SpringActivitiTestCase {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
-    
-/*
-    @Before
-    public void before() {
-        RepositoryService repositoryService = this.processEngine.getRepositoryService();
-
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(), true);
-        }
-    }*/
-
-
 }
 
 @Configuration
