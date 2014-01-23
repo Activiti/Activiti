@@ -10,7 +10,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.cfg;
+package org.activiti.engine.cfg;
+
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 
 /**
@@ -27,5 +29,13 @@ public interface ProcessEngineConfigurator {
    * which allows tweaking it programmatically.
    */
   void configure(ProcessEngineConfigurationImpl processEngineConfiguration);
+  
+  /**
+   * When the {@link ProcessEngineConfigurator} instances are used, they are first
+   * ordered by this priority number (lowest to highest).
+   * If you have dependencies between {@link ProcessEngineConfigurator}
+   * instances, use the priorities accordingly to order them as needed.
+   */
+  int getPriority();
 
 }

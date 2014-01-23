@@ -19,10 +19,11 @@ import java.util.Map;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.spi.InitialContextFactory;
 
+import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
+import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurator;
 
 
 /**
@@ -37,7 +38,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurator;
  * 
  * @author Joram Barrez
  */
-public class LDAPConfigurator implements ProcessEngineConfigurator {
+public class LDAPConfigurator extends AbstractProcessEngineConfigurator {
   
   /* Server connection params */
   

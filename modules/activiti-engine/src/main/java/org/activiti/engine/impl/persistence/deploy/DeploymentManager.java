@@ -121,7 +121,6 @@ public class DeploymentManager {
     ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
     
     for (ProcessDefinition processDefinition : processDefinitions) {
-      processDefinitionCache.remove(processDefinition.getId());
       
       // Since all process definitions are deleted by a single query, we should dispatch the
       // events in this loop
@@ -138,6 +137,10 @@ public class DeploymentManager {
     if(eventDispatcher.isEnabled()) {
     	eventDispatcher.dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, deployment));
+    }
+    
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      processDefinitionCache.remove(processDefinition.getId());
     }
   }
   

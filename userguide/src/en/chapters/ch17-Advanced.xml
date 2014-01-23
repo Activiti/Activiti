@@ -349,6 +349,81 @@ List&lt;Map&lt;String, Object&gt;&gt; results = managementService.executeCustomS
 	   
 	</section>
 	
+	<section id="advanced.process.engine.configurators">
+	
+	   <title>Advanced Process Engine configuration with a ProcessEngineConfigurator</title>
+	   
+	   <para>
+	       An advanced way of hooking into the process engine configuration is through the use of a 
+	       <emphasis>ProcessEngineConfigurator</emphasis>. The idea is that an implementation of the 
+	       <emphasis>org.activiti.engine.cfg.ProcessEngineConfigurator</emphasis> interface is created and injected 
+	       into the process engine configuration:
+	       <programlisting>
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;...SomeProcessEngineConfigurationClass&quot;&gt;
+
+    ...
+        
+    &lt;property name=&quot;configurators&quot;&gt;
+        &lt;list&gt;
+            &lt;bean class=&quot;com.mycompany.MyConfigurator&quot;&gt;
+                ...
+            &lt;/bean&gt;  
+        &lt;/list&gt;
+    &lt;/property&gt;
+    
+    ...
+        
+&lt;/bean&gt;        	       
+	       </programlisting> 
+	   </para>
+	   
+	   <para>
+	       There are two methods required to implement this interface. The <emphasis>configure</emphasis> method,
+	       which gets a <emphasis>ProcessEngineConfiguration</emphasis> instance as parameter. The custom
+	       configuration can be added this way, and this method will guaranteed be called <emphasis role="bold">before the process engine is created,
+	       but after all default configuration has been done</emphasis>.
+	       The other method is the <emphasis>getPriority</emphasis> method, which allows for ordering
+	       the configurators in the case where some configurators are dependent on each other.
+	   </para>
+	   
+	   <para>
+            An example of such a configurator is the <link linkend="chapter_ldap">LDAP integration</link>, where the 
+            configurator is used to replace the default user and group manager classes with one that is capable
+            of handling an LDAP user store.	 So basically a configurator allows to change or tweak the process
+            engine quite heavily and is meant for very advanced use cases. Another example is to swap the 
+            process definition cache with a customized version:
+            <programlisting>
+public class ProcessDefinitionCacheConfigurator extends AbstractProcessEngineConfigurator {
+    
+    public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
+            MyCache myCache = new MyCache();
+            processEngineConfiguration.setProcessDefinitionCache(enterpriseProcessDefinitionCache);
+    }
+
+}</programlisting>  
+	   </para>
+	
+	   <para>
+            Process Engine configurators can also be auto discovered from the classpath using the 
+            <ulink url="http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html">ServiceLoader</ulink> approach.
+            This means that a jar with the configurator implementation must be put on the classpath, containing
+            a file in the <emphasis>META-INF/services</emphasis> folder in the jar called <emphasis role="bold">org.activiti.engine.cfg.ProcessEngineConfigurator i</emphasis>.
+            The content of the file needs to be the fully qualified classname of the custom implementation.
+            When the process engine is booted, the logging will show that these configurators are found:
+            <programlisting>
+INFO  org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl  - Found 1 auto-discoverable Process Engine Configurators
+INFO  org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl  - Found 1 Process Engine Configurators in total:
+INFO  org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl  - class org.activiti.MyCustomConfigurator</programlisting>
+	   </para>
+	   
+	   <para>
+	       Note that this ServiceLoader approach might not work in certain environments. It can be 
+	       explicitely disabled using the <emphasis>enableConfiguratorServiceLoader</emphasis> property
+	       of the ProcessEngineConfiguration (true by default).
+	   </para>
+	
+	</section>
+	
 	<section id="advanced.safe.bpmn.xml">
 	
 	   <title>Enable safe BPMN 2.0 xml</title>
