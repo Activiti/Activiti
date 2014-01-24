@@ -14,6 +14,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,6 +104,10 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
 
 	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
+	}
+	
+	public Date getTime() {
+		return getStartTime();
 	}
 	
 	// common methods  //////////////////////////////////////////////////////////

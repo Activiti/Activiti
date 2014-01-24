@@ -59,7 +59,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     return this;
   }
 
-  public HistoricVariableInstanceQuery processInstanceId(String processInstanceId) {
+  public HistoricVariableInstanceQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }

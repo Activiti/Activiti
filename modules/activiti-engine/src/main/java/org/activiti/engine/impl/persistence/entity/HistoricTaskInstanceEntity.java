@@ -180,6 +180,9 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
 	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
 	}
+	public Date getTime() {
+		return getStartTime();
+	}
 	public Long getWorkTimeInMillis() {
     if (endTime == null || claimTime == null) {
       return null;

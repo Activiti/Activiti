@@ -25,7 +25,7 @@ import org.activiti.engine.impl.history.HistoryLevel;
  * @author Christian Lipphardt (camunda)
  * @author ruecker
  */
-public interface HistoricVariableInstance {
+public interface HistoricVariableInstance extends HistoricData {
   
   /** The unique DB id */
   String getId();

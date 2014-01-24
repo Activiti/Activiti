@@ -14,10 +14,8 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.context.Context;
@@ -276,6 +274,10 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   
   public void setExecutionId(String executionId) {
     this.executionId = executionId;
+  }
+  
+  public Date getTime() {
+    return getCreateTime();
   }
 
   // common methods  //////////////////////////////////////////////////////////
