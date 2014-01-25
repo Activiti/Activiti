@@ -199,5 +199,11 @@ public class TaskEntityManager extends AbstractManager {
   	params.put("tenantId", newTenantId);
   	getDbSqlSession().update("updateTaskTenantIdForDeployment", params);
   }
-  
+
+  public void updateProcessDefinitionVersion(String processInstanceId, String newProcessDefinitionId) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("processInstanceId", processInstanceId);
+    params.put("processDefinitionId", newProcessDefinitionId);
+    getDbSqlSession().update("updateProcessDefinitionVersion", params);
+  }
 }

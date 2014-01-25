@@ -66,6 +66,13 @@
     where ID_ = #{id}
   </update>
 
+  <update id="updateProcessDefinitionVersion" parameterType="java.util.Map">
+    update ${prefix}ACT_HI_PROCINST
+      set PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR}
+    where
+      PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR}
+  </update>
+
   <!-- HISTORIC PROCESS INSTANCE DELETE -->
   
   <delete id="deleteHistoricProcessInstance">

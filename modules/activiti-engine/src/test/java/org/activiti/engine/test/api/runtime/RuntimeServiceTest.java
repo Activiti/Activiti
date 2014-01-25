@@ -827,6 +827,28 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
    }
   }
 
+  @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testUpdateProcessDefinitionVersion() {
+    ProcessInstance process = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    // deployment version 2
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml")
+        .deploy();
+    ProcessDefinition processDefinition = repositoryService
+        .createProcessDefinitionQuery()
+        .latestVersion()
+        .singleResult();
+    assertEquals(2, processDefinition.getVersion());
+
+    runtimeService.updateProcessDefinitionVersion(process.getProcessInstanceId(), 2);
+    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
+    assertEquals(processInstance.getProcessDefinitionId(), processDefinition.getId());
+
+    // clean
+    repositoryService.deleteDeployment(deployment.getId());
+  }
+
   private void startSignalCatchProcesses() {
     for (int i = 0; i < 3; i++) {
       runtimeService.startProcessInstanceByKey("catchAlertSignal");

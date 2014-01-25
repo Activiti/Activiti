@@ -45,6 +45,7 @@ import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.UpdateProcessDefinitionVersionCommand;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.runtime.NativeProcessInstanceQuery;
@@ -296,5 +297,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 	@Override
   public void dispatchEvent(ActivitiEvent event) {
 		commandExecutor.execute(new DispatchEventCommand(event));
+  }
+
+  @Override
+  public void updateProcessDefinitionVersion(String processInstanceId, Integer version) {
+    commandExecutor.execute(new UpdateProcessDefinitionVersionCommand(processInstanceId, version));
   }
 }

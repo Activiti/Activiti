@@ -175,4 +175,11 @@ public class ExecutionEntityManager extends AbstractManager {
   	getDbSqlSession().update("updateExecutionTenantIdForDeployment", params);
   }
 
+  public void updateProcessDefinitionVersion(String processInstanceId, String processDefinitionId) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("processInstanceId", processInstanceId);
+    params.put("processInstanceId", processDefinitionId);
+    getDbSqlSession().update("updateProcessDefinitionVersion", params);
+  }
+
 }

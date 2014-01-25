@@ -58,6 +58,13 @@
         where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
       ) 
   </update>
+
+  <update id="updateProcessDefinitionVersion" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_EXECUTION set
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR}
+    where
+      PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR}
+  </update>
   
   <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
        Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance0 -->

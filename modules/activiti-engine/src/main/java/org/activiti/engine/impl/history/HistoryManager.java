@@ -222,4 +222,6 @@ public interface HistoryManager extends Session {
 	public abstract void updateProcessBusinessKeyInHistory(
 			ExecutionEntity processInstance);
 
+  public abstract void updateProcessDefinitionVersion(
+      String processInstanceId, String newProcessDefinitionId);
 }

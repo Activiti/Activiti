@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -143,5 +144,13 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
 
   public long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectHistoricProcessInstanceCountByNativeQuery", parameterMap);
+  }
+
+  public void updateProcessDefinitionVersion(String processInstanceId, String newProcessDefinitionId) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("processInstanceId", processInstanceId);
+    params.put("processDefinitionId", newProcessDefinitionId);
+    getDbSqlSession().update("updateProcessDefinitionVersion", params);
+
   }
 }
