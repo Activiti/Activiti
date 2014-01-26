@@ -61,9 +61,12 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
     
+    //  ACT-1271: As execution listeners are normally called in take() method, we perform this check to make sure that 
+    // they 'll be called only when take() won't be executed.
     if (loopCounter != nrOfInstances && !completionConditionSatisfied(execution)) {
       callActivityEndListeners(execution);
     }
+    //
     
     setLoopVariable(execution, getCollectionElementIndexVariable(), loopCounter);
     setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
