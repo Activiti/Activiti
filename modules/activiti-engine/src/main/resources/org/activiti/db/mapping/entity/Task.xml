@@ -81,7 +81,7 @@
       ) 
   </update>
 
-  <update id="updateProcessDefinitionVersion" parameterType="java.util.Map">
+  <update id="updateProcessDefinitionVersionForRunningTask" parameterType="java.util.Map">
     update ${prefix}ACT_RU_TASK
       set PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR}
     where

@@ -69,6 +69,6 @@ public class HistoricActivityInstanceEntityManager extends AbstractManager {
     HashMap<String, Object> params = new HashMap<String, Object>();
     params.put("processInstanceId", processInstanceId);
     params.put("processDefinitionId", newProcessDefinitionId);
-    getDbSqlSession().update("updateProcessDefinitionVersion", params);
+    getDbSqlSession().update("updateProcessDefinitionVersionForHistoricActivity", params);
   }
 }

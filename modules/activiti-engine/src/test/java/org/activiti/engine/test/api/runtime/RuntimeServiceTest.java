@@ -21,6 +21,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -831,21 +832,50 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
   public void testUpdateProcessDefinitionVersion() {
     ProcessInstance process = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-    // deployment version 2
+    // deploy version 2
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment()
         .addClasspathResource("org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml")
         .deploy();
-    ProcessDefinition processDefinition = repositoryService
+
+    ProcessDefinition processDefinitionVersion2 = repositoryService
         .createProcessDefinitionQuery()
         .latestVersion()
         .singleResult();
-    assertEquals(2, processDefinition.getVersion());
+    assertEquals(2, processDefinitionVersion2.getVersion());
 
+    // update to new version
     runtimeService.updateProcessDefinitionVersion(process.getProcessInstanceId(), 2);
-    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertEquals(processInstance.getProcessDefinitionId(), processDefinition.getId());
 
-    // clean
+    // recheck
+    List<HistoricActivityInstance> list = historyService.createHistoricActivityInstanceQuery().list();
+    for (HistoricActivityInstance historicActivityInstance : list) {
+      assertEquals(historicActivityInstance.getProcessDefinitionId(), processDefinitionVersion2.getId());
+    }
+
+    List<HistoricTaskInstance> list1 = historyService.createHistoricTaskInstanceQuery().list();
+    for (HistoricTaskInstance historicTaskInstance : list1) {
+      assertEquals(historicTaskInstance.getProcessDefinitionId(), processDefinitionVersion2.getId());
+    }
+
+    List<HistoricProcessInstance> list2 = historyService.createHistoricProcessInstanceQuery().list();
+    for (HistoricProcessInstance historicProcessInstance : list2) {
+      assertEquals(historicProcessInstance.getProcessDefinitionId(), processDefinitionVersion2.getId());
+    }
+
+    List<Task> list3 = taskService.createTaskQuery().list();
+    for (Task task : list3) {
+      assertEquals(task.getProcessDefinitionId(), processDefinitionVersion2.getId());
+    }
+
+    List<ProcessInstance> list4 = runtimeService.createProcessInstanceQuery().list();
+    for (ProcessInstance processInstance : list4) {
+      assertEquals(processInstance.getProcessDefinitionId(), processDefinitionVersion2.getId());
+    }
+
+    // clean data
+    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
+    historyService.deleteHistoricProcessInstance(processInstance.getId());
     repositoryService.deleteDeployment(deployment.getId());
   }
 

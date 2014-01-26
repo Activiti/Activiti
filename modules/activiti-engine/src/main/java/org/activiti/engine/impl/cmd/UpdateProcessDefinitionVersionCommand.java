@@ -20,6 +20,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
@@ -56,13 +57,16 @@ public class UpdateProcessDefinitionVersionCommand implements Command<Void> {
       throw new ActivitiException("Can't find process definition by id with " + processDefinitionId);
     }
 
-    String newProcessDefinitionId = processDefinition.getId();
-
-    long count = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinition.getKey())
-        .processDefinitionVersion(version).count();
+    ProcessDefinitionQuery newProcessDefinitionQuery = repositoryService.createProcessDefinitionQuery()
+        .processDefinitionKey(processDefinition.getKey())
+        .processDefinitionVersion(version);
+    long count = newProcessDefinitionQuery.count();
     if (count == 0) {
       throw new ActivitiException("Can't update process definition version: can't find version of " + version);
     }
+
+    ProcessDefinition newProcessDefinition = newProcessDefinitionQuery.singleResult();
+    String newProcessDefinitionId = newProcessDefinition.getId();
 
     commandContext.getExecutionEntityManager().updateProcessDefinitionVersion(processInstanceId, newProcessDefinitionId);
     commandContext.getTaskEntityManager().updateProcessDefinitionVersion(processInstanceId, newProcessDefinitionId);

@@ -59,11 +59,11 @@
       ) 
   </update>
 
-  <update id="updateProcessDefinitionVersion" parameterType="java.util.Map">
+  <update id="updateProcessDefinitionVersionForExecution" parameterType="java.util.Map">
     update ${prefix}ACT_RU_EXECUTION set
-      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR}
+      PROC_DEF_ID_ = #{processDefinitionId}
     where
-      PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR}
+      PROC_INST_ID_ = #{processInstanceId}
   </update>
   
   <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause

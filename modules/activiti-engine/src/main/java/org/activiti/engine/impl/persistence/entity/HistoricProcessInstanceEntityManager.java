@@ -150,7 +150,7 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
     HashMap<String, Object> params = new HashMap<String, Object>();
     params.put("processInstanceId", processInstanceId);
     params.put("processDefinitionId", newProcessDefinitionId);
-    getDbSqlSession().update("updateProcessDefinitionVersion", params);
+    getDbSqlSession().update("updateProcessDefinitionVersionForHistoricProcessInstance", params);
 
   }
 }

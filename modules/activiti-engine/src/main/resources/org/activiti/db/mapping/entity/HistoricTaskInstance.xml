@@ -88,7 +88,7 @@
     where ID_ = #{id}
   </update>
 
-  <update id="updateProcessDefinitionVersion" parameterType="java.util.Map">
+  <update id="updateProcessDefinitionVersionForHistoricTask" parameterType="java.util.Map">
     update ${prefix}ACT_HI_TASKINST
       set PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR}
     where
