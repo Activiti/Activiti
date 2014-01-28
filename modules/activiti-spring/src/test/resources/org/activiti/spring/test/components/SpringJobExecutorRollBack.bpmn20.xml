@@ -13,7 +13,7 @@
     <sequenceFlow id="flow2" name="" sourceRef="usertask1" targetRef="endevent1"></sequenceFlow>
     <sequenceFlow id="flow3" name="" sourceRef="boundarytimer1" targetRef="endevent1">
       <extensionElements>
-        <activiti:executionListener event="take" class="org.activiti.spring.test.components.jobexecutor.ForcedRollbackExecutionListener"></activiti:executionListener>
+        <activiti:executionListener event="take" class="org.activiti.spring.test.jobexecutor.ForcedRollbackExecutionListener"></activiti:executionListener>
       </extensionElements>
     </sequenceFlow>
   </process>

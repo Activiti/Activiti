@@ -11,35 +11,34 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * @author Josh Long
- * @since 5,3
- */
 
-public class Delegate1 implements JavaDelegate,InitializingBean {
+public class Delegate1 implements JavaDelegate, InitializingBean {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
 
-	@Autowired private ProcessInstance processInstance ;
+    @Autowired
+    private ProcessInstance processInstance;
 
-	@Autowired private StatefulObject statefulObject;
+    @Autowired
+    private StatefulObject statefulObject;
 
-	public void execute(DelegateExecution execution) throws Exception {
 
-		 String pid = this.processInstance.getId();
 
-		log.info("the processInstance#id is {}", pid) ;
+    public void execute(DelegateExecution execution) throws Exception {
 
-		Assert.assertNotNull("the 'scopedCustomer' reference can't be null", statefulObject);
-		String uuid =  UUID.randomUUID().toString();
-		statefulObject.setName(uuid);
-		log.info("the 'uuid' value given to the ScopedCustomer#name property is '{}' in {}", uuid, getClass().getName());
+        String pid = this.processInstance.getId();
 
-		this.statefulObject.increment();
-	}
+        log.info("the processInstance#id is {}", pid);
 
-	public void afterPropertiesSet() throws Exception {
-	 Assert.assertNotNull("the processInstance must not be null", this.processInstance) ;
+        Assert.assertNotNull("the 'scopedCustomer' reference can't be null", statefulObject);
+        String uuid = UUID.randomUUID().toString();
+        statefulObject.setName(uuid);
+        log.info("the 'uuid' value given to the ScopedCustomer#name property is '{}' in {}", uuid, getClass().getName());
 
-	}
+        this.statefulObject.increment();
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        Assert.assertNotNull("the processInstance must not be null", this.processInstance);
+    }
 }
