@@ -6,6 +6,7 @@ import org.activiti.spring.annotations.EnableActiviti;
 import org.activiti.spring.annotations.AbstractActivitiConfigurer;
 import org.activiti.spring.annotations.ActivitiConfigurer;
 import org.h2.Driver;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
+@Ignore // Ignored for the moment. Josh is working on this.
 public class EnableActivitiAnnotationProcessScopeTest {
 
     private ProcessScopeTestEngine processScopeTestEngine;

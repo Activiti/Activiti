@@ -5,6 +5,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:org/activiti/spring/test/components/ScopingTests-context.xml")
+@Ignore // Ignored for the moment. Josh is working on this.
 public class XmlNamespaceProcessScopeTest {
 
     private ProcessScopeTestEngine processScopeTestEngine;
