@@ -224,7 +224,7 @@ public class RestResponseFactory {
     if (value != null) {
       // Try converting the value
       for (RestVariableConverter c : variableConverters) {
-        if (value.getClass().isAssignableFrom(c.getVariableType())) {
+        if (c.getVariableType().isAssignableFrom(value.getClass())) {
           converter = c;
           break;
         }
