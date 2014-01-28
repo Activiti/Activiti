@@ -191,15 +191,13 @@ class JPAConfiguration {
 		return new AbstractActivitiConfigurer() {
 
 			@Override
-			public void postProcessSpringProcessEngineConfiguration(
-			    SpringProcessEngineConfiguration engine) {
+			public void postProcessSpringProcessEngineConfiguration(SpringProcessEngineConfiguration engine) {
 				engine.setTransactionManager(transactionManager);
 				engine.setJpaEntityManagerFactory(emf);
 				engine.setJpaHandleTransaction(false);
 				engine.setJobExecutorActivate(false);
 				engine.setJpaCloseEntityManager(false);
-				engine
-				    .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
+				engine.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
 			}
 		};
 	}

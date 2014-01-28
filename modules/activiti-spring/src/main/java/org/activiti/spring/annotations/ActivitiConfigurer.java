@@ -7,10 +7,10 @@ import javax.sql.DataSource;
 import java.util.List;
 
 public interface ActivitiConfigurer {
+	
 	void processDefinitionResources(List<Resource> resourceList);
 
-	void postProcessSpringProcessEngineConfiguration(
-	    SpringProcessEngineConfiguration springProcessEngineConfiguration);
+	void postProcessSpringProcessEngineConfiguration(SpringProcessEngineConfiguration springProcessEngineConfiguration);
 
 	DataSource dataSource();
 }

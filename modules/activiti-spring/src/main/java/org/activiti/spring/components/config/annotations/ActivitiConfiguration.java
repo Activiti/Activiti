@@ -1,6 +1,21 @@
 package org.activiti.spring.components.config.annotations;
 
-import org.activiti.engine.*;
+import java.sql.Driver;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringJobExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
@@ -15,13 +30,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.util.Assert;
-
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * {@code @Configuration} class that registers a
@@ -64,16 +74,15 @@ public class ActivitiConfiguration {
 		engine.setDataSource(dataSource);
 		engine.setTransactionManager(platformTransactionManager(dataSource));
 		engine.setJobExecutor(springJobExecutor());
+		engine.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
 		configurer.postProcessSpringProcessEngineConfiguration(engine);
 		return engine;
 	}
 
 	@Bean
-	public ProcessEngineFactoryBean processEngine(
-	    SpringProcessEngineConfiguration springProcessEngineConfiguration) {
+	public ProcessEngineFactoryBean processEngine(SpringProcessEngineConfiguration springProcessEngineConfiguration) {
 		ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
-		processEngineFactoryBean
-		    .setProcessEngineConfiguration(springProcessEngineConfiguration);
+		processEngineFactoryBean.setProcessEngineConfiguration(springProcessEngineConfiguration);
 		return processEngineFactoryBean;
 	}
 
@@ -101,6 +110,11 @@ public class ActivitiConfiguration {
 	public ManagementService managementService(ProcessEngine processEngine) {
 		return processEngine.getManagementService();
 	}
+	
+	@Bean
+	public FormService formService(ProcessEngine processEngine) {
+		return processEngine.getFormService();
+	}
 
 	/*
 	 * @Bean public static ProcessScopeBeanFactoryPostProcessor processScope() {
@@ -115,8 +129,7 @@ public class ActivitiConfiguration {
 	 * return new SharedProcessInstanceHolder(); }
 	 */
 
-	protected PlatformTransactionManager platformTransactionManager(
-	    final DataSource dataSource) {
+	protected PlatformTransactionManager platformTransactionManager(final DataSource dataSource) {
 		return first(this.platformTransactionManagers,
 		    new ObjectFactory<PlatformTransactionManager>() {
 			    @Override
@@ -143,8 +156,7 @@ public class ActivitiConfiguration {
 		    });
 	}
 
-	protected ActivitiConfigurer activitiConfigurer(
-	    final List<ActivitiConfigurer> activitiConfigurers) {
+	protected ActivitiConfigurer activitiConfigurer(final List<ActivitiConfigurer> activitiConfigurers) {
 
 		return new ActivitiConfigurer() {
 			@Override
@@ -152,8 +164,7 @@ public class ActivitiConfiguration {
 				List<Resource> resources = new ArrayList<Resource>();
 
 				// lets first see if any exist in the default place:
-				Resource defaultClassPathResourceMatcher = new ClassPathResource(
-				    "classpath:/processes/**bpmn20.xml");
+				Resource defaultClassPathResourceMatcher = new ClassPathResource("classpath:/processes/**bpmn20.xml");
 
 				if (defaultClassPathResourceMatcher.exists()) {
 					resources.add(defaultClassPathResourceMatcher);
@@ -169,11 +180,11 @@ public class ActivitiConfiguration {
 			}
 
 			@Override
-			public void postProcessSpringProcessEngineConfiguration(
-			    SpringProcessEngineConfiguration springProcessEngineConfiguration) {
-				for (ActivitiConfigurer configurer : activitiConfigurers) {
-					configurer
-					    .postProcessSpringProcessEngineConfiguration(springProcessEngineConfiguration);
+			public void postProcessSpringProcessEngineConfiguration(SpringProcessEngineConfiguration springProcessEngineConfiguration) {
+				if (activitiConfigurers != null) {
+					for (ActivitiConfigurer configurer : activitiConfigurers) {
+						configurer.postProcessSpringProcessEngineConfiguration(springProcessEngineConfiguration);
+					}
 				}
 			}
 
@@ -185,11 +196,10 @@ public class ActivitiConfiguration {
 	}
 
 	/**
-	 * sifts through beans available and returns the right one based on some
-	 * common heuristics:
+	 * Sifts through beans available and returns the right one based on some common heuristics
 	 */
-	private DataSource dataSource(ActivitiConfigurer activitiConfigurer,
-	    Map<String, DataSource> dataSourceMap) {
+	@SuppressWarnings("unchecked")
+  private DataSource dataSource(ActivitiConfigurer activitiConfigurer, Map<String, DataSource> dataSourceMap) {
 		DataSource ds = null;
 		if (activitiConfigurer != null) {
 			DataSource dataSource = activitiConfigurer.dataSource();
@@ -198,18 +208,37 @@ public class ActivitiConfiguration {
 			}
 		}
 
-		String defaultName = "activitiDataSource";
-		if (dataSourceMap.size() > 0) {
-			for (DataSource d : dataSourceMap.values()) {
-				ds = d;
+		if (dataSourceMap != null) {
+		
+			if (dataSourceMap.size() > 0) {
+				for (DataSource d : dataSourceMap.values()) {
+					ds = d;
+				}
+			}
+	
+			String defaultName = "activitiDataSource";
+			if (dataSourceMap.containsKey(defaultName)) {
+				ds = dataSourceMap.get(defaultName);
+			}
+			
+		}
+
+		// If no datasource is found at this point, we create a simple in-memory H2
+		if (ds == null) {
+			
+			try {
+				SimpleDriverDataSource simpleDriverDataSource = new SimpleDriverDataSource();
+				simpleDriverDataSource.setDriverClass((Class<? extends Driver>) Class.forName("org.h2.Driver"));
+				simpleDriverDataSource.setUrl("jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000");
+				simpleDriverDataSource.setUsername("sa");
+				simpleDriverDataSource.setPassword("");
+				ds = simpleDriverDataSource;
+			} catch (ClassNotFoundException e) {
+				throw new ActivitiException("No dataSource bean was found. Tried to create default H2 in memory database, "
+						+ "but couldn't find the driver on the classpath");
 			}
 		}
-
-		if (dataSourceMap.containsKey(defaultName)) {
-			ds = dataSourceMap.get(defaultName);
-		}
-
-		Assert.notNull(ds, "there must be at least one valid DataSource");
+		
 		return ds;
 	}
 

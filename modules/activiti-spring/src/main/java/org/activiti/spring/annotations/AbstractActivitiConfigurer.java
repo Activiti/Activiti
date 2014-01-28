@@ -29,8 +29,7 @@ public class AbstractActivitiConfigurer implements ActivitiConfigurer {
 		return null;
 	}
 
-	protected List<ClassPathResource> classPathResourcesForProcessDefinitions(
-	    String... pds) {
+	protected List<ClassPathResource> classPathResourcesForProcessDefinitions(String... pds) {
 		List<ClassPathResource> classPathResources = new ArrayList<ClassPathResource>();
 		for (String pd : pds) {
 			classPathResources.add(new ClassPathResource(pd));
