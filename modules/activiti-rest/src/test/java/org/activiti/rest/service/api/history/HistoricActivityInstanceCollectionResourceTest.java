@@ -53,7 +53,7 @@ public class HistoricActivityInstanceCollectionResourceTest extends BaseRestTest
     // Set tenant on deployment
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
     
-    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", "myTenant");
 
     String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_ACTIVITY_INSTANCES);
     

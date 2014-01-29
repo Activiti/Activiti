@@ -42,4 +42,13 @@ alter table ACT_RE_MODEL
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_MODEL');  
 
+alter table ACT_RE_PROCDEF
+    drop unique ACT_UNIQ_PROCDEF;
+    
+alter table ACT_RE_PROCDEF
+    add constraint ACT_UNIQ_PROCDEF
+    unique (KEY_,VERSION_, TENANT_ID_);  
+    
+Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_PROCDEF');
+
 update ACT_GE_PROPERTY set VALUE_ = '5.15-SNAPSHOT' where NAME_ = 'schema.version';

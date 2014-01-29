@@ -88,6 +88,22 @@ public interface RuntimeService {
    *           when no process definition is deployed with the given key.
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey, Map<String, Object> variables);
+  
+  /**
+   * Similar to {@link #startProcessInstanceByKey(String)}, but using a specific tenant identifier.
+   */
+  ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String tenantId);
+
+  /**
+   * Similar to {@link #startProcessInstanceByKey(String, String)}, but using a specific tenant identifier.
+   */
+  ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String businessKey, String tenantId);
+
+  /**
+   * Similar to {@link #startProcessInstanceByKey(String, Map)}, but using a specific tenant identifier.
+   */
+  ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, Map<String, Object> variables, String tenantId);
+  
 
   /**
    * Starts a new process instance in the latest version of the process

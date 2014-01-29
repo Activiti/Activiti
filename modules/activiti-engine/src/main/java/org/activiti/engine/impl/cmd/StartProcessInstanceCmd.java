@@ -40,12 +40,19 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
   protected String processDefinitionId;
   protected Map<String, Object> variables;
   protected String businessKey;
+  protected String tenantId;
   
   public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables) {
     this.processDefinitionKey = processDefinitionKey;
     this.processDefinitionId = processDefinitionId;
     this.businessKey = businessKey;
     this.variables = variables;
+  }
+  
+  public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, 
+  		String businessKey, Map<String, Object> variables, String tenantId) {
+  	this(processDefinitionKey, processDefinitionId, businessKey, variables);
+  	this.tenantId = tenantId;
   }
   
   public ProcessInstance execute(CommandContext commandContext) {
@@ -60,11 +67,16 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
       if (processDefinition == null) {
         throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
       }
-    } else if(processDefinitionKey != null){
+    } else if(processDefinitionKey != null && tenantId == null){
       processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
         throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey +"'", ProcessDefinition.class);
       }
+    } else if (processDefinitionKey != null && tenantId != null) {
+    	 processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+       if (processDefinition == null) {
+         throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey +"' for tenant identifier " + tenantId, ProcessDefinition.class);
+       }
     } else {
       throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
     }

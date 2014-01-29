@@ -185,7 +185,7 @@ alter table ACT_GE_BYTEARRAY
 
 alter table ACT_RE_PROCDEF
     add constraint ACT_UNIQ_PROCDEF
-    unique (KEY_,VERSION_);
+    unique (KEY_,VERSION_, TENANT_ID_);
     
 create index ACT_IDX_EXE_PROCINST on ACT_RU_EXECUTION(PROC_INST_ID_);
 alter table ACT_RU_EXECUTION

@@ -39,10 +39,20 @@ public class TimerStartEventJobHandler implements JobHandler {
             .getProcessEngineConfiguration()
             .getDeploymentManager();
     
-    ProcessDefinition processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(configuration);
+    ProcessDefinition processDefinition = null;
+    if (job.getTenantId() == null) {
+    		processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(configuration);
+    } else {
+    	processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(configuration, job.getTenantId());
+    }
+    
+    if (processDefinition == null) {
+    	throw new ActivitiException("Could not find process definition needed for timer start event");
+    }
+    
     try {
       if(!processDefinition.isSuspended()) {
-        new StartProcessInstanceCmd(configuration, null, null, null).execute(commandContext);
+        new StartProcessInstanceCmd(configuration, null, null, null, job.getTenantId()).execute(commandContext);
       } else {
         log.debug("ignoring timer of suspended process definition {}", processDefinition.getName());
       }
