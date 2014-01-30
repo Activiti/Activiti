@@ -261,6 +261,8 @@ runtimeService.createProcessInstanceQuery()
         <emphasis role="bold">Important implementation detail:</emphasis> due to database quirks (more specifically: null handling in unique constraints)
         the <emphasis>default</emphasis> tenant identifier value indicating <emphasis>no tenant</emphasis> is the <emphasis role="bold">empty string</emphasis>.
         The combination of (process definition key, process definition version, tenant identifier) needs to be unique (and there is a database constraint checking this).
+        Also note that the tenant identifier shouldn't be set to null, as this will effect the queries since certain databases (Oracle) treat empty string as
+        a null value (that's why the query <emphasis>.withoutTenantId</emphasis> does a check against the empty string or null).
         This means that the same process definition (with same process definition key) can be deployed for multiple tenants, each with their own versioning.
         This does not affect the usage when tenancy is not used.    
        </para>
