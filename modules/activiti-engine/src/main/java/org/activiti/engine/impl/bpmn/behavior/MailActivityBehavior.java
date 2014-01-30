@@ -231,13 +231,10 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     return null;
   }
 
-	protected Expression getExpression(ActivityExecution execution,
-			Expression var) {
-		// TODO fix reliance on internal code.
-		ProcessEngineConfigurationImpl svcs = (ProcessEngineConfigurationImpl) execution
-				.getEngineServices();
-		return svcs.getExpressionManager().createExpression(
-				(String) execution.getVariable(var.getExpressionText()));
-	}
+  protected Expression getExpression(ActivityExecution execution, Expression var) {
+    String variable = (String) execution.getVariable(var.getExpressionText());
+    return Context.getProcessEngineConfiguration().getExpressionManager()
+        .createExpression(variable);
+  }
 
 }
