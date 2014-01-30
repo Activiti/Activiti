@@ -35,7 +35,7 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   protected String assignee;
   protected String taskId;
   protected String calledProcessInstanceId;
-  protected String tenantId;
+  protected String tenantId = "";
   
   public Object getPersistentState() {
     Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();

@@ -37,7 +37,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   protected String startUserId;
   protected String startActivityId;
   protected String superProcessInstanceId;
-  protected String tenantId;
+  protected String tenantId = "";
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricProcessInstanceEntity() {

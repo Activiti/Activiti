@@ -108,7 +108,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected StartingExecution startingExecution;
   
   /** The tenant identifier (if any) */
-  protected String tenantId;
+  protected String tenantId = "";
   
   // state/type of execution ////////////////////////////////////////////////// 
   

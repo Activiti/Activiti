@@ -43,7 +43,7 @@ public class ModelEntity implements Serializable, Model, HasRevision, Persistent
   protected String deploymentId;
   protected String editorSourceValueId;
   protected String editorSourceExtraValueId;
-  protected String tenantId;
+  protected String tenantId = "";
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();

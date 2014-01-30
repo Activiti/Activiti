@@ -4,22 +4,22 @@ alter table ACT_RU_TASK
 alter table ACT_RU_EXECUTION drop constraint ACT_UNIQ_RU_BUS_KEY;
 
 alter table ACT_RE_DEPLOYMENT 
-    add TENANT_ID_ varchar(255);    
+    add TENANT_ID_ varchar(255) default '';    
     
 alter table ACT_RE_PROCDEF 
-    add TENANT_ID_ varchar(255);   
+    add TENANT_ID_ varchar(255) default '';   
     
 alter table ACT_RU_EXECUTION
-    add TENANT_ID_ varchar(255);  
+    add TENANT_ID_ varchar(255) default '';  
 
 alter table ACT_RU_TASK
-    add TENANT_ID_ varchar(255);   
+    add TENANT_ID_ varchar(255) default '';   
     
 alter table ACT_RU_JOB
-    add TENANT_ID_ varchar(255);  
+    add TENANT_ID_ varchar(255) default '';  
     
 alter table ACT_RE_MODEL
-    add TENANT_ID_ varchar(255);  
+    add TENANT_ID_ varchar(255) default '';  
     
 alter table ACT_RE_PROCDEF
     drop constraint ACT_UNIQ_PROCDEF;

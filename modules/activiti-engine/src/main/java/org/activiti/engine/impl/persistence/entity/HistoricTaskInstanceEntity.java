@@ -44,7 +44,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected Date dueDate;
   protected Date claimTime;
   protected String category;
-  protected String tenantId;
+  protected String tenantId = "";
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricTaskInstanceEntity() {

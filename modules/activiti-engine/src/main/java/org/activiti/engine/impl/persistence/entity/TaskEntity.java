@@ -91,7 +91,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   protected String eventName;
   
-  protected String tenantId;
+  protected String tenantId = "";
   
   protected List<VariableInstanceEntity> queryVariables;
   

@@ -16,22 +16,22 @@ alter table ACT_RU_EXECUTION
     references ACT_RE_PROCDEF (ID_);
     
 alter table ACT_RE_DEPLOYMENT 
-    add TENANT_ID_ varchar(255); 
+    add TENANT_ID_ varchar(255) default ''; 
     
 alter table ACT_RE_PROCDEF 
-    add TENANT_ID_ varchar(255);     
+    add TENANT_ID_ varchar(255) default '';     
     
 alter table ACT_RU_EXECUTION
-    add TENANT_ID_ varchar(255);    
+    add TENANT_ID_ varchar(255) default '';    
     
 alter table ACT_RU_TASK
-    add TENANT_ID_ varchar(255);  
+    add TENANT_ID_ varchar(255) default '';  
     
 alter table ACT_RU_JOB
-    add TENANT_ID_ varchar(255);   
+    add TENANT_ID_ varchar(255) default '';   
     
 alter table ACT_RE_MODEL
-    add TENANT_ID_ varchar(255);  
+    add TENANT_ID_ varchar(255) default '';  
     
 alter table ACT_RE_PROCDEF
     drop index ACT_UNIQ_PROCDEF;

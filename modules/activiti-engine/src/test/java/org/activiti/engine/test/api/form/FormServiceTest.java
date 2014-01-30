@@ -119,7 +119,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
     StartFormData startForm = formService.getStartFormData(procDefId);
     assertNotNull(startForm);
-    assertEquals(deploymentId, startForm.getDeploymentId());
+    assertEquals(deploymentIdFromDeploymentAnnotation, startForm.getDeploymentId());
     assertEquals("org/activiti/engine/test/api/form/start.form", startForm.getFormKey());
     assertEquals(new ArrayList<FormProperty>(), startForm.getFormProperties());
     assertEquals(procDefId, startForm.getProcessDefinition().getId());
@@ -142,7 +142,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().singleResult();
     String taskId = task.getId();
     TaskFormData taskForm = formService.getTaskFormData(taskId);
-    assertEquals(deploymentId, taskForm.getDeploymentId());
+    assertEquals(deploymentIdFromDeploymentAnnotation, taskForm.getDeploymentId());
     assertEquals("org/activiti/engine/test/api/form/task.form", taskForm.getFormKey());
     assertEquals(new ArrayList<FormProperty>(), taskForm.getFormProperties());
     assertEquals(taskId, taskForm.getTask().getId());

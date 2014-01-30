@@ -35,7 +35,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   protected String id;
   protected String name;
   protected String category;
-  protected String tenantId;
+  protected String tenantId = "";
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
   protected boolean isNew;

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -53,16 +54,16 @@ import org.junit.Assert;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
-  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
-    "ACT_GE_PROPERTY"
-  );
+  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList("ACT_GE_PROPERTY");
 
   protected ProcessEngine processEngine; 
   
-  protected String deploymentId;
+  protected String deploymentIdFromDeploymentAnnotation;
+  protected List<String> deploymentIdsForAutoCleanup = new ArrayList<String>();
   protected Throwable exception;
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
@@ -95,9 +96,10 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       initializeServices();
     }
 
+    String deploymentId = null;
     try {
       
-      deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
+    	deploymentIdFromDeploymentAnnotation = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName()); 
       
       super.runBare();
 
@@ -114,7 +116,16 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       throw e;
       
     } finally {
-      TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
+    	if (deploymentIdFromDeploymentAnnotation != null) {
+    		TestHelper.annotationDeploymentTearDown(processEngine, deploymentIdFromDeploymentAnnotation, getClass(), getName());
+    		deploymentIdFromDeploymentAnnotation = null;
+    	}
+    	
+    	for (String autoDeletedDeploymentId : deploymentIdsForAutoCleanup) {
+    		repositoryService.deleteDeployment(autoDeletedDeploymentId, true);
+    	}
+    	deploymentIdsForAutoCleanup.clear();
+    	
       assertAndEnsureCleanDb();
       ClockUtil.reset();
       
@@ -339,7 +350,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   	Deployment deployment = repositoryService.createDeployment()
   			.addBpmnModel("oneTasktest.bpmn20.xml", bpmnModel).deploy();
   	
-  	this.deploymentId = deployment.getId(); // For auto-cleanup
+  	deploymentIdsForAutoCleanup.add(deployment.getId()); // For auto-cleanup
   	
   	ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
   			.deploymentId(deployment.getId()).singleResult();
@@ -351,8 +362,8 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   	Deployment deployment = repositoryService.createDeployment()
   			.addBpmnModel("twoTasksTestProcess.bpmn20.xml", bpmnModel).deploy();
   	
-  	this.deploymentId = deployment.getId(); // For auto-cleanup
-  	
+  	deploymentIdsForAutoCleanup.add(deployment.getId()); // For auto-cleanup
+
   	ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
   			.deploymentId(deployment.getId()).singleResult();
   	return processDefinition.getId(); 

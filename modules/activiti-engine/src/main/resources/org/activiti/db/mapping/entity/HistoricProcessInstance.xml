@@ -291,7 +291,7 @@
         and RES.TENANT_ID_ like #{tenantIdLike}
       </if>
       <if test="withoutTenantId">
-        and RES.TENANT_ID_ is null
+        and RES.TENANT_ID_ = ''
       </if>
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
         <if test="queryVariableValue.name != null">

@@ -11,7 +11,7 @@ create table ACT_HI_PROCINST (
     END_ACT_ID_ varchar(255),
     SUPER_PROCESS_INSTANCE_ID_ varchar(64),
     DELETE_REASON_ varchar(4000),
-    TENANT_ID_ varchar(255),
+    TENANT_ID_ varchar(255) default '',
     primary key (ID_),
     unique (PROC_INST_ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
@@ -30,7 +30,7 @@ create table ACT_HI_ACTINST (
     START_TIME_ datetime not null,
     END_TIME_ datetime,
     DURATION_ bigint,
-    TENANT_ID_ varchar(255),
+    TENANT_ID_ varchar(255) default '',
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
@@ -54,7 +54,7 @@ create table ACT_HI_TASKINST (
     DUE_DATE_ datetime,
     FORM_KEY_ varchar(255),
     CATEGORY_ varchar(255),
-    TENANT_ID_ varchar(255),
+    TENANT_ID_ varchar(255) default '',
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 

@@ -13,32 +13,32 @@ drop index ACT_UNIQ_RU_BUS_KEY;
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RU_EXECUTION');
 
 alter table ACT_RE_DEPLOYMENT 
-    add TENANT_ID_ varchar(255);
+    add TENANT_ID_ varchar(255) default '';
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_DEPLOYMENT');
 
 alter table ACT_RE_PROCDEF 
-    add TENANT_ID_ varchar(255);
+    add TENANT_ID_ varchar(255) default '';
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_PROCDEF');
 
 alter table ACT_RU_EXECUTION
-    add TENANT_ID_ varchar(255);
+    add TENANT_ID_ varchar(255) default '';
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RU_EXECUTION');  
 
 alter table ACT_RU_TASK
-    add TENANT_ID_ varchar(255);
+    add TENANT_ID_ varchar(255) default '';
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RU_TASK');   
 
 alter table ACT_RU_JOB
-    add TENANT_ID_ varchar(255);
+    add TENANT_ID_ varchar(255) default '';
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RU_JOB');  
 
 alter table ACT_RE_MODEL
-    add TENANT_ID_ varchar(255);
+    add TENANT_ID_ varchar(255) default '';
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_MODEL');  
 

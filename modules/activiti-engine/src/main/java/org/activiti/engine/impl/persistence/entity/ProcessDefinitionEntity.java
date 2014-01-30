@@ -49,7 +49,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected String category;
   protected String deploymentId;
   protected String resourceName;
-  protected String tenantId;
+  protected String tenantId = "";
   protected Integer historyLevel;
   protected StartFormHandler startFormHandler;
   protected String diagramResourceName;

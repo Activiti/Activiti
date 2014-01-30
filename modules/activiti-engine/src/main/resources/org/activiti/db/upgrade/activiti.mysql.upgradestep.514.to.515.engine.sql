@@ -81,22 +81,22 @@ ALTER TABLE ACT_RU_EVENT_SUBSCR CHANGE CREATED_TEMP_ CREATED_ timestamp(3) DEFAU
 
 
 alter table ACT_RE_DEPLOYMENT 
-    add TENANT_ID_ varchar(255); 
+    add TENANT_ID_ varchar(255) default ''; 
     
 alter table ACT_RE_PROCDEF 
-    add TENANT_ID_ varchar(255);
+    add TENANT_ID_ varchar(255) default '';
     
 alter table ACT_RU_EXECUTION
-    add TENANT_ID_ varchar(255);    
+    add TENANT_ID_ varchar(255) default '';    
     
 alter table ACT_RU_TASK
-    add TENANT_ID_ varchar(255);  
+    add TENANT_ID_ varchar(255) default '';  
     
 alter table ACT_RU_JOB
-    add TENANT_ID_ varchar(255); 
+    add TENANT_ID_ varchar(255) default ''; 
     
 alter table ACT_RE_MODEL
-    add TENANT_ID_ varchar(255);   
+    add TENANT_ID_ varchar(255) default '';   
     
     
 alter table ACT_RE_PROCDEF

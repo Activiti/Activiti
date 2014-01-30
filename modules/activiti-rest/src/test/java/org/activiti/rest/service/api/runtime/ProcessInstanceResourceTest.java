@@ -49,7 +49,7 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
     assertEquals("myBusinessKey", responseNode.get("businessKey").getTextValue());
     assertEquals("processTask", responseNode.get("activityId").getTextValue());
     assertFalse(responseNode.get("suspended").getBooleanValue());
-    assertTrue(responseNode.get("tenantId").isNull());
+    assertEquals("", responseNode.get("tenantId").getTextValue());
     
     assertTrue(responseNode.get("url").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));

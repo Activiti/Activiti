@@ -69,7 +69,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   
   protected String exceptionMessage;
   
-  protected String tenantId;
+  protected String tenantId = "";
 
   public void execute(CommandContext commandContext) {
     ExecutionEntity execution = null;

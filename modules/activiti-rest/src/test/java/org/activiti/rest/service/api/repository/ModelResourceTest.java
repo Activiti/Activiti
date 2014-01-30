@@ -270,7 +270,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       assertNull(model.getCategory());
       assertNull(model.getMetaInfo());
       assertNull(model.getDeploymentId());
-      assertNull(model.getTenantId());
+      assertEquals("", model.getTenantId());
       
     } finally
     {
