@@ -185,7 +185,7 @@ public class BpmnDeployer implements Deployer {
         processDefinition.setDeploymentId(deploymentId);
         
         ProcessDefinitionEntity persistedProcessDefinition = null; 
-        if (processDefinition.getTenantId() == null) {
+        if (processDefinition.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
         	persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
         } else {
         	persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKeyAndTenantId(deploymentId, processDefinition.getKey(), processDefinition.getTenantId());
