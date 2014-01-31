@@ -98,4 +98,8 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
     this.resultVariable = resultVariableName;
   }
   
+    public Set<Expression> getRulesDefined(){
+    return rulesExpressions;
+  }
+  
 }
