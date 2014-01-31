@@ -90,6 +90,9 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   /** Upon building of the process engine, a check is performed and 
    * an update of the schema is performed if it is necessary. */
   public static final String DB_SCHEMA_UPDATE_TRUE = "true";
+  
+  /** The tenant id indicating 'no tenant' */
+  public static final String NO_TENANT_ID = "";
 
   protected String processEngineName = ProcessEngines.NAME_DEFAULT;
   protected int idBlockSize = 100;

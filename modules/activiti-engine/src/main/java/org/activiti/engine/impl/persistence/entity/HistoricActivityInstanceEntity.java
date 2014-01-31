@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricActivityInstance;
 
 /**
@@ -35,7 +36,7 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   protected String assignee;
   protected String taskId;
   protected String calledProcessInstanceId;
-  protected String tenantId = "";
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   
   public Object getPersistentState() {
     Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();

@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
@@ -91,7 +92,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   protected String eventName;
   
-  protected String tenantId = "";
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   
   protected List<VariableInstanceEntity> queryVariables;
   

@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -136,7 +137,7 @@ public class BpmnDeployer implements Deployer {
         int processDefinitionVersion;
 
         ProcessDefinitionEntity latestProcessDefinition = null;
-        if (processDefinition.getTenantId() != null) {
+        if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
         	latestProcessDefinition = processDefinitionManager
         			.findLatestProcessDefinitionByKeyAndTenantId(processDefinition.getKey(), processDefinition.getTenantId());
         } else {

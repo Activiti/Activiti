@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -49,7 +50,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected String category;
   protected String deploymentId;
   protected String resourceName;
-  protected String tenantId = "";
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected Integer historyLevel;
   protected StartFormHandler startFormHandler;
   protected String diagramResourceName;
