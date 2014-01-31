@@ -314,6 +314,52 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     assertEquals(varCal.getTime(), processVariables.get("dateVariable"));
   }
   
+  @Deployment(resources = {"org/activiti/rest/service/api/oneTaskProcess.bpmn20.xml"})
+  public void testStartProcessUsingKeyAndTenantId() throws Exception {
+  	org.activiti.engine.repository.Deployment tenantDeployment = null;
+  	
+  	try {
+	  	// Deploy the same process, in another tenant
+	  	tenantDeployment = repositoryService.createDeployment()
+  			.addClasspathResource("org/activiti/rest/service/api/oneTaskProcess.bpmn20.xml")
+  			.tenantId("tenant1")
+  			.deploy();
+  	
+  	ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    
+    // Start using process definition key, in tenant 1
+    requestNode.put("processDefinitionKey", "oneTaskProcess");
+    requestNode.put("tenantId", "tenant1");
+    
+    Representation response = client.post(requestNode);
+    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    
+    // Only one process should have been started
+    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
+    assertNotNull(processInstance);
+    assertEquals("tenant1", processInstance.getTenantId());
+    response.release();
+    
+    // Start using an unexisting tenant
+    requestNode.put("processDefinitionKey", "oneTaskProcess");
+    requestNode.put("tenantId", "tenantThatDoesntExist");
+    
+    try {
+    	response = client.post(requestNode);
+    } catch(ResourceException re) {
+    	assertEquals(Status.CLIENT_ERROR_BAD_REQUEST.getCode(), re.getStatus().getCode());
+    }
+    
+    
+  	} finally {
+  		// Cleanup deployment in tenant
+  		if(tenantDeployment != null) {
+  			repositoryService.deleteDeployment(tenantDeployment.getId(), true);
+  		}
+  	}
+  }
+  
   /**
    * Test starting a process instance, covering all edge-cases.
    */

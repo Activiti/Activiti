@@ -2732,6 +2732,7 @@
 {
    "processDefinitionKey":"oneTaskProcess",
    "businessKey":"myBusinessKey",
+   "tenantId": "tenant1",
    "variables": [
       {
         "name":"myVar",
@@ -2748,6 +2749,7 @@
 {
    "message":"newOrderMessage",
    "businessKey":"myBusinessKey",
+   "tenantId": "tenant1",
    "variables": [
       {
         "name":"myVar",
@@ -2759,7 +2761,7 @@
 }</programlisting>
     </para>
     <para>
-    Only one of <literal>processDefinitionId</literal>, <literal>processDefinitionKey</literal> or <literal>message</literal> can be used in the request body. Both <literal>businessKey</literal> and <literal>variables</literal> are optional.
+    Only one of <literal>processDefinitionId</literal>, <literal>processDefinitionKey</literal> or <literal>message</literal> can be used in the request body. Parameters <literal>businessKey</literal>, <literal>variables</literal> and <literal>tenantId</literal> are optional. If <literal>tenantId</literal> is omitted, the default tenant will be used.
     More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that the variable-scope that is supplied is ignored, process-variables are always <literal>local</literal>.
     </para>
         <para>
