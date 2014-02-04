@@ -225,7 +225,7 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
     	query.taskWithoutTenantId();
     }
     
-    return new HistoricTaskInstancePaginateList(this).paginateList(urlQuery, query, "taskInstanceId", allowedSortProperties);
+    return new HistoricTaskInstancePaginateList(this).paginateList(urlQuery, queryRequest, query, "taskInstanceId", allowedSortProperties);
   }
 
   protected void addTaskVariables(HistoricTaskInstanceQuery taskInstanceQuery, List<QueryVariable> variables) {

@@ -110,6 +110,6 @@ public class HistoricActivityInstanceBaseResource extends SecuredResource {
     	query.activityWithoutTenantId();
     }
 
-    return new HistoricActivityInstancePaginateList(this).paginateList(urlQuery, query, "startTime", allowedSortProperties);
+    return new HistoricActivityInstancePaginateList(this).paginateList(urlQuery, queryRequest, query, "startTime", allowedSortProperties);
   }
 }

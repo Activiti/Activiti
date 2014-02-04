@@ -119,7 +119,7 @@ public class HistoricProcessInstanceBaseResource extends SecuredResource {
     	query.processInstanceWithoutTenantId();
     }
 
-    return new HistoricProcessInstancePaginateList(this).paginateList(urlQuery, query, "processInstanceId", allowedSortProperties);
+    return new HistoricProcessInstancePaginateList(this).paginateList(urlQuery, queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 
   protected void addVariables(HistoricProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {

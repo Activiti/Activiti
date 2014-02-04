@@ -99,7 +99,7 @@ public class ExecutionBaseResource extends SecuredResource {
     	query.executionWithoutTenantId();
     }
     
-    return new ExecutionPaginateList(this).paginateList(urlQuery, query, "processInstanceId", allowedSortProperties);
+    return new ExecutionPaginateList(this).paginateList(urlQuery ,queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 
   protected void addVariables(ExecutionQuery processInstanceQuery, List<QueryVariable> variables, boolean process) {

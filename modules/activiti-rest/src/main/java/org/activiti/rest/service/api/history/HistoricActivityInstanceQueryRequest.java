@@ -13,12 +13,14 @@
 
 package org.activiti.rest.service.api.history;
 
+import org.activiti.rest.common.api.PaginateRequest;
+
 
 
 /**
  * @author Tijs Rademakers
  */
-public class HistoricActivityInstanceQueryRequest {
+public class HistoricActivityInstanceQueryRequest extends PaginateRequest {
 
   private String activityId;
   private String activityInstanceId;
