@@ -66,6 +66,6 @@ public class HistoricDetailBaseResource extends SecuredResource {
       }
     }
 
-    return new HistoricDetailPaginateList(this).paginateList(urlQuery, query, "processInstanceId", allowedSortProperties);
+    return new HistoricDetailPaginateList(this).paginateList(urlQuery, queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 }
