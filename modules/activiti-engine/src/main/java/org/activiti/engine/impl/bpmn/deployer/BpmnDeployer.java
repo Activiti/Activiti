@@ -174,12 +174,13 @@ public class BpmnDeployer implements Deployer {
         dbSqlSession.insert(processDefinition);
         addAuthorizations(processDefinition);
 
-        scheduleTimers(timers);
-        
         if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
         			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition));
         }
+
+        scheduleTimers(timers);
+
       } else {
         String deploymentId = deployment.getId();
         processDefinition.setDeploymentId(deploymentId);
