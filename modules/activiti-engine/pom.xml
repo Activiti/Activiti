@@ -688,7 +688,7 @@
                 <exclude>**/Historic*InstanceTest.java</exclude>
                 <exclude>**/HistoryServiceTest.java</exclude>
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
-                <exclude>**/ProcessInstanceLogQueryTest</exclude>
+                <exclude>**/ProcessInstanceLogQueryTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
             </configuration>
