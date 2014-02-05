@@ -7,7 +7,7 @@ alter table ACT_RE_DEPLOYMENT
     add TENANT_ID_ varchar(255) default '';    
     
 alter table ACT_RE_PROCDEF 
-    add TENANT_ID_ varchar(255) default '';   
+    add TENANT_ID_ varchar(255) not null default '';   
     
 alter table ACT_RU_EXECUTION
     add TENANT_ID_ varchar(255) default '';  
