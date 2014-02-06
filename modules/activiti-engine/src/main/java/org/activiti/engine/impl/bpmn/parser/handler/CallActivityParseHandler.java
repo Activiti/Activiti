@@ -32,6 +32,7 @@ public class CallActivityParseHandler extends AbstractActivityBpmnParseHandler<C
     
     ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, callActivity, BpmnXMLConstants.ELEMENT_CALL_ACTIVITY);
     activity.setScope(true);
+    activity.setAsync(callActivity.isAsynchronous());
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCallActivityBehavior(callActivity));
   }
 
