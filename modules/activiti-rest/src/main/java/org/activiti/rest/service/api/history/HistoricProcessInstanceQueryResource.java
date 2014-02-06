@@ -25,6 +25,7 @@ public class HistoricProcessInstanceQueryResource extends HistoricProcessInstanc
 
   @Post
   public DataResponse queryProcessInstances(HistoricProcessInstanceQueryRequest queryRequest) {
+  	if(authenticate() == false) return null;
     return getQueryResponse(queryRequest, getQuery());
   }
 }

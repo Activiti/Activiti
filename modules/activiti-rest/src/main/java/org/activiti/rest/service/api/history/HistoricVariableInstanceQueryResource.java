@@ -25,6 +25,7 @@ public class HistoricVariableInstanceQueryResource extends HistoricVariableInsta
 
   @Post
   public DataResponse queryVariableInstances(HistoricVariableInstanceQueryRequest queryRequest) {
+  	if(authenticate() == false) return null;
     return getQueryResponse(queryRequest, getQuery());
   }
 }

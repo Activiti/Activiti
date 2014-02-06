@@ -59,6 +59,8 @@ public class DeploymentCollectionResource extends SecuredResource {
   
   @Get
   public DataResponse getDeployments() {
+  	if(!authenticate()) { return null; }
+  	
     DeploymentQuery deploymentQuery = ActivitiUtil.getRepositoryService().createDeploymentQuery();
     
     Form query = getQuery();
@@ -97,6 +99,8 @@ public class DeploymentCollectionResource extends SecuredResource {
   
   @Post
   public DeploymentResponse uploadDeployment(Representation entity) {
+  	if(!authenticate()) { return null; }
+  	
     try {
 
       if(entity == null || entity.getMediaType() == null || !MediaType.MULTIPART_FORM_DATA.isCompatible(entity.getMediaType())) {
