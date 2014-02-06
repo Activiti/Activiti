@@ -202,6 +202,16 @@ public interface RepositoryService {
   void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate);
   
   /**
+   * Similar to {@link #suspendProcessDefinitionByKey(String)}, but only applicable for the given tenant identifier.
+   */
+  void suspendProcessDefinitionByKey(String processDefinitionKey, String tenantId);
+  
+  /**
+   * Similar to {@link #suspendProcessDefinitionByKey(String, boolean, Date)}, but only applicable for the given tenant identifier.
+   */
+  void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate, String tenantId);
+  
+  /**
    * Activates the process definition with the given id. 
    * 
    * @throws ActivitiObjectNotFoundException if no such processDefinition can be found or if the process definition is already in state active.
@@ -239,6 +249,16 @@ public interface RepositoryService {
    * @throws ActivitiException if the process definition is already in state active.
    */
   void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances,  Date activationDate);
+  
+  /**
+   * Similar to {@link #activateProcessDefinitionByKey(String)}, but only applicable for the given tenant identifier. 
+   */
+  void activateProcessDefinitionByKey(String processDefinitionKey, String tenantId);
+  
+  /**
+   * Similar to {@link #activateProcessDefinitionByKey(String, boolean, Date)}, but only applicable for the given tenant identifier. 
+   */
+  void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances,  Date activationDate, String tenantId);
   
   /**
    * Sets the category of the process definition.
