@@ -22,7 +22,7 @@ alter table ACT_RE_MODEL
     add TENANT_ID_ nvarchar(255) default ''; 
     
 alter table ACT_RE_PROCDEF
-    drop constraint ACT_UNIQ_PROCDEF default '';
+    drop constraint ACT_UNIQ_PROCDEF;
     
 alter table ACT_RE_PROCDEF
     add constraint ACT_UNIQ_PROCDEF
