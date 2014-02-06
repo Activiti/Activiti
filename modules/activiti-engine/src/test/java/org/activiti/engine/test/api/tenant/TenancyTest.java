@@ -3,6 +3,7 @@ package org.activiti.engine.test.api.tenant;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -11,6 +12,7 @@ import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.junit.Assert;
 
 /**
  * A test case for the various implications of the tenancy support (tenant id column to entities + query support)
@@ -509,6 +511,49 @@ public class TenancyTest extends PluggableActivitiTestCase {
 		
 		 processInstance = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", tenantB);
 		 assertEquals(procDefIdB, processInstance.getProcessDefinitionId());
+	}
+	
+	public void testSuspendProcessDefinitionTenancy() {
+		
+		// Deploy one process definition for tenant A, and two process definitions versions for tenant B
+		String tentanA = "tenantA";
+		String tenantB = "tenantB";
+		
+		String procDefIdA = deployTestProcessWithTestTenant(tentanA);
+		String procDefIdB = deployTestProcessWithTestTenant(tenantB);
+		String procDefIdB2 = deployTestProcessWithTestTenant(tenantB);
+		
+		// Suspend process definition B
+		repositoryService.suspendProcessDefinitionByKey("oneTaskProcess", tenantB);
+		
+		// Shouldn't be able to start proc defs for tentant B
+		try {
+			runtimeService.startProcessInstanceById(procDefIdB);
+		} catch (ActivitiException e) {}
+		
+		try {
+			runtimeService.startProcessInstanceById(procDefIdB2);
+		} catch (ActivitiException e) {}
+		
+		ProcessInstance processInstance = runtimeService.startProcessInstanceById(procDefIdA);
+		Assert.assertNotNull(processInstance);
+		
+		// Activate process again
+		repositoryService.activateProcessDefinitionByKey("oneTaskProcess", tenantB);
+		
+		processInstance = runtimeService.startProcessInstanceById(procDefIdB);
+		Assert.assertNotNull(processInstance);
+		
+		processInstance = runtimeService.startProcessInstanceById(procDefIdB2);
+		Assert.assertNotNull(processInstance);
+		
+		processInstance = runtimeService.startProcessInstanceById(procDefIdA);
+		Assert.assertNotNull(processInstance);
+		
+		// Suspending with NO tenant id should give an error, cause they both have tenants
+		try {
+			repositoryService.suspendProcessDefinitionByKey("oneTaskProcess");
+		} catch (ActivitiException e) {}
 	}
 
 }
