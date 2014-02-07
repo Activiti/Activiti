@@ -11,35 +11,33 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * @author Josh Long
- * @since 5,3
- */
 
-public class Delegate1 implements JavaDelegate,InitializingBean {
+public class Delegate1 implements JavaDelegate, InitializingBean {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
 
-	@Autowired private ProcessInstance processInstance ;
+    @Autowired
+    private ProcessInstance processInstance;
 
-	@Autowired private StatefulObject statefulObject;
+    @Autowired
+    private StatefulObject statefulObject;
 
-	public void execute(DelegateExecution execution) throws Exception {
 
-		 String pid = this.processInstance.getId();
+    public void execute(DelegateExecution execution) throws Exception {
 
-		log.info("the processInstance#id is {}", pid) ;
+        String pid = this.processInstance.getId();
 
-		Assert.assertNotNull("the 'scopedCustomer' reference can't be null", statefulObject);
-		String uuid =  UUID.randomUUID().toString();
-		statefulObject.setName(uuid);
-		log.info("the 'uuid' value given to the ScopedCustomer#name property is '{}' in {}", uuid, getClass().getName());
+        log.info("the processInstance#id is {}", pid);
 
-		this.statefulObject.increment();
-	}
+        Assert.assertNotNull("the 'scopedCustomer' reference can't be null", statefulObject);
+        String uuid = UUID.randomUUID().toString();
+        statefulObject.setName(uuid);
+        log.info("the 'uuid' value given to the ScopedCustomer#name property is '{}' in {}", uuid, getClass().getName());
 
-	public void afterPropertiesSet() throws Exception {
-	 Assert.assertNotNull("the processInstance must not be null", this.processInstance) ;
+        this.statefulObject.increment();
+    }
 
-	}
+    public void afterPropertiesSet() throws Exception {
+        Assert.assertNotNull("the processInstance must not be null", this.processInstance);
+    }
 }

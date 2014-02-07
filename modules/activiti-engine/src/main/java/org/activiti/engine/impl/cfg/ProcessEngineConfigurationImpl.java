@@ -21,11 +21,15 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.ServiceLoader;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -40,6 +44,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -263,6 +268,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // Configurators ////////////////////////////////////////////////////////////
   
+  protected boolean enableConfiguratorServiceLoader = true; // Enabled by default. In certain environments this should be set to false (eg osgi)
   protected List<ProcessEngineConfigurator> configurators;
   
   // DEPLOYERS ////////////////////////////////////////////////////////////////
@@ -289,6 +295,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected SqlSessionFactory sqlSessionFactory;
   protected TransactionFactory transactionFactory;
+  
+  protected Set<Class<?>> customMybatisMappers;
 
   // ID GENERATOR /////////////////////////////////////////////////////////////
   
@@ -651,6 +659,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         Configuration configuration = parser.getConfiguration();
         configuration.setEnvironment(environment);
         configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
+        
+        if (getCustomMybatisMappers() != null) {
+        	for (Class<?> clazz : getCustomMybatisMappers()) {
+        		configuration.addMapper(clazz);
+        	}
+        }
+        
         configuration = parser.parse();
 
         sqlSessionFactory = new DefaultSqlSessionFactory(configuration);
@@ -666,9 +681,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected InputStream getMyBatisXmlConfigurationSteam() {
     return ReflectUtil.getResourceAsStream(DEFAULT_MYBATIS_MAPPING_FILE);
   }
+  
+  public Set<Class<?>> getCustomMybatisMappers() {
+	return customMybatisMappers;
+  }
 
+  public void setCustomMybatisMappers(Set<Class<?>> customMybatisMappers) {
+	this.customMybatisMappers = customMybatisMappers;
+  }
+  
   // session factories ////////////////////////////////////////////////////////
   
+
   protected void initSessionFactories() {
     if (sessionFactories==null) {
       sessionFactories = new HashMap<Class<?>, SessionFactory>();
@@ -725,10 +749,62 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
   
   protected void initConfigurators() {
+  	
+  	List<ProcessEngineConfigurator> allConfigurators = new ArrayList<ProcessEngineConfigurator>();
+  	
+  	// Configurators that are explicitely added to the config
     if (configurators != null) {
       for (ProcessEngineConfigurator configurator : configurators) {
-        configurator.configure(this);
+        allConfigurators.add(configurator);
       }
+    }
+    
+    // Auto discovery through ServiceLoader
+    if (enableConfiguratorServiceLoader) {
+    	ClassLoader classLoader = getClassLoader();
+    	if (classLoader == null) {
+    		classLoader = ReflectUtil.getClassLoader();
+    	}
+    	
+    	ServiceLoader<ProcessEngineConfigurator> configuratorServiceLoader
+    			= ServiceLoader.load(ProcessEngineConfigurator.class, classLoader);
+    	int nrOfServiceLoadedConfigurators = 0;
+    	for (ProcessEngineConfigurator configurator : configuratorServiceLoader) {
+    		allConfigurators.add(configurator);
+    		nrOfServiceLoadedConfigurators++;
+    	}
+    	
+    	if (nrOfServiceLoadedConfigurators > 0) {
+    		log.info("Found {} auto-discoverable Process Engine Configurator{}", nrOfServiceLoadedConfigurators++, nrOfServiceLoadedConfigurators > 1 ? "s" : "");
+    	}
+    	
+    	if (allConfigurators.size() > 0) {
+    		
+    		// Order them according to the priorities (usefule for dependent configurator)
+	    	Collections.sort(allConfigurators, new Comparator<ProcessEngineConfigurator>() {
+	    		@Override
+	    		public int compare(ProcessEngineConfigurator configurator1, ProcessEngineConfigurator configurator2) {
+	    			int priority1 = configurator1.getPriority();
+	    			int priority2 = configurator2.getPriority();
+	    			
+	    			if (priority1 < priority2) {
+	    				return -1;
+	    			} else if (priority1 > priority2) {
+	    				return 1;
+	    			} 
+	    			return 0;
+	    		}
+				});
+	    	
+	    	// Execute the configurators
+	    	log.info("Found {} Process Engine Configurators in total:", allConfigurators.size());
+	    	for (ProcessEngineConfigurator configurator : allConfigurators) {
+	    		log.info("{}", configurator.getClass());
+	    		configurator.configure(this);
+	    	}
+	    	
+    	}
+    	
     }
   }
   

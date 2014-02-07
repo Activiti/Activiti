@@ -16,6 +16,7 @@ package org.activiti.rest.service.api.runtime;
 import java.util.Calendar;
 import java.util.Map;
 
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
@@ -118,6 +119,40 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     assertResultsPresentInDataResponse(url, id);
     
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?subProcessInstanceId=anotherId";
+    assertResultsPresentInDataResponse(url);
+  }
+  
+  /**
+   * Test getting a list of process instance, using all tenant filters.
+   */
+  @Deployment(resources = {"org/activiti/rest/service/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
+  public void testGetProcessInstancesTenant() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
+    String id = processInstance.getId();
+    
+    // Test without tenant id
+    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?withoutTenantId=true";
+    assertResultsPresentInDataResponse(url, id);
+    
+    // Update the tenant for the deployment
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+    
+    // Test tenant id
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?tenantId=myTenant";
+    assertResultsPresentInDataResponse(url, id);
+    
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?tenantId=anotherTenant";
+    assertResultsPresentInDataResponse(url);
+    
+    // Test tenant id like
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?tenantIdLike=" + encode("%enant");
+    assertResultsPresentInDataResponse(url, id);
+    
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?tenantIdLike=" + encode("%what");
+    assertResultsPresentInDataResponse(url);
+    
+    // Test without tenant id
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?withoutTenantId=true";
     assertResultsPresentInDataResponse(url);
   }
   
@@ -277,6 +312,52 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     assertEquals(123.456, processVariables.get("doubleVariable"));
     assertEquals(Boolean.TRUE, processVariables.get("booleanVariable"));
     assertEquals(varCal.getTime(), processVariables.get("dateVariable"));
+  }
+  
+  @Deployment(resources = {"org/activiti/rest/service/api/oneTaskProcess.bpmn20.xml"})
+  public void testStartProcessUsingKeyAndTenantId() throws Exception {
+  	org.activiti.engine.repository.Deployment tenantDeployment = null;
+  	
+  	try {
+	  	// Deploy the same process, in another tenant
+	  	tenantDeployment = repositoryService.createDeployment()
+  			.addClasspathResource("org/activiti/rest/service/api/oneTaskProcess.bpmn20.xml")
+  			.tenantId("tenant1")
+  			.deploy();
+  	
+  	ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    
+    // Start using process definition key, in tenant 1
+    requestNode.put("processDefinitionKey", "oneTaskProcess");
+    requestNode.put("tenantId", "tenant1");
+    
+    Representation response = client.post(requestNode);
+    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    
+    // Only one process should have been started
+    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
+    assertNotNull(processInstance);
+    assertEquals("tenant1", processInstance.getTenantId());
+    response.release();
+    
+    // Start using an unexisting tenant
+    requestNode.put("processDefinitionKey", "oneTaskProcess");
+    requestNode.put("tenantId", "tenantThatDoesntExist");
+    
+    try {
+    	response = client.post(requestNode);
+    } catch(ResourceException re) {
+    	assertEquals(Status.CLIENT_ERROR_BAD_REQUEST.getCode(), re.getStatus().getCode());
+    }
+    
+    
+  	} finally {
+  		// Cleanup deployment in tenant
+  		if(tenantDeployment != null) {
+  			repositoryService.deleteDeployment(tenantDeployment.getId(), true);
+  		}
+  	}
   }
   
   /**

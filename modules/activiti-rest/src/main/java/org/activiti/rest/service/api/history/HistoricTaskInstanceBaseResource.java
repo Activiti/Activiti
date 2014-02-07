@@ -52,6 +52,7 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
     allowedSortProperties.put("name", HistoricTaskInstanceQueryProperty.TASK_NAME);
     allowedSortProperties.put("owner", HistoricTaskInstanceQueryProperty.TASK_OWNER);
     allowedSortProperties.put("priority", HistoricTaskInstanceQueryProperty.TASK_PRIORITY);
+    allowedSortProperties.put("tenantId", HistoricTaskInstanceQueryProperty.TENANT_ID_);
   }
 
   protected DataResponse getQueryResponse(HistoricTaskInstanceQueryRequest queryRequest, Form urlQuery) {
@@ -211,8 +212,20 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
     if (queryRequest.getProcessVariables() != null) {
       addProcessVariables(query, queryRequest.getProcessVariables());
     }
-
-    return new HistoricTaskInstancePaginateList(this).paginateList(urlQuery, query, "taskInstanceId", allowedSortProperties);
+    
+    if(queryRequest.getTenantId() != null) {
+    	query.taskTenantId(queryRequest.getTenantId());
+    }
+    
+    if(queryRequest.getTenantIdLike() != null) {
+    	query.taskTenantIdLike(queryRequest.getTenantIdLike());
+    }
+    
+    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+    	query.taskWithoutTenantId();
+    }
+    
+    return new HistoricTaskInstancePaginateList(this).paginateList(urlQuery, queryRequest, query, "taskInstanceId", allowedSortProperties);
   }
 
   protected void addTaskVariables(HistoricTaskInstanceQuery taskInstanceQuery, List<QueryVariable> variables) {

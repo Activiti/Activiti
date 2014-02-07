@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -135,7 +136,15 @@ public class BpmnDeployer implements Deployer {
       if (deployment.isNew()) {
         int processDefinitionVersion;
 
-        ProcessDefinitionEntity latestProcessDefinition = processDefinitionManager.findLatestProcessDefinitionByKey(processDefinition.getKey());
+        ProcessDefinitionEntity latestProcessDefinition = null;
+        if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+        	latestProcessDefinition = processDefinitionManager
+        			.findLatestProcessDefinitionByKeyAndTenantId(processDefinition.getKey(), processDefinition.getTenantId());
+        } else {
+        	latestProcessDefinition = processDefinitionManager
+        			.findLatestProcessDefinitionByKey(processDefinition.getKey());
+        }
+        		
         if (latestProcessDefinition != null) {
           processDefinitionVersion = latestProcessDefinition.getVersion() + 1;
         } else {
@@ -174,10 +183,19 @@ public class BpmnDeployer implements Deployer {
       } else {
         String deploymentId = deployment.getId();
         processDefinition.setDeploymentId(deploymentId);
-        ProcessDefinitionEntity persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
-        processDefinition.setId(persistedProcessDefinition.getId());
-        processDefinition.setVersion(persistedProcessDefinition.getVersion());
-        processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
+        
+        ProcessDefinitionEntity persistedProcessDefinition = null; 
+        if (processDefinition.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+        	persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
+        } else {
+        	persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKeyAndTenantId(deploymentId, processDefinition.getKey(), processDefinition.getTenantId());
+        }
+        
+        if (persistedProcessDefinition != null) {
+        	processDefinition.setId(persistedProcessDefinition.getId());
+        	processDefinition.setVersion(persistedProcessDefinition.getVersion());
+        	processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
+        }
       }
 
       // Add to cache

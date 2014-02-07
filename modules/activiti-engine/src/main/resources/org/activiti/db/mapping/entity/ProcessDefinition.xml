@@ -133,13 +133,13 @@
       <if test="latest">
         and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = RES.KEY_ 
              <if test="tenantId != null">
-	           and RES.TENANT_ID_ = #{tenantId}
+	           and TENANT_ID_ = #{tenantId}
 	         </if>
 	         <if test="tenantIdLike != null">
-	           and RES.TENANT_ID_ like #{tenantIdLike}
+	           and TENANT_ID_ like #{tenantIdLike}
 	         </if>
 	         <if test="withoutTenantId">
-	           and TENANT_ID_ is null
+	           and (TENANT_ID_ = '' or TENANT_ID_ is null)
 	         </if>
         )
       </if>
@@ -153,7 +153,7 @@
         and RES.TENANT_ID_ like #{tenantIdLike}
       </if>
       <if test="withoutTenantId">
-        and RES.TENANT_ID_ is null
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>
       <if test="eventSubscriptionType != null">
       	and (EVT.EVENT_TYPE_ = #{eventSubscriptionType} and EVT.EVENT_NAME_ = #{eventSubscriptionName}) 
@@ -178,15 +178,33 @@
     from ${prefix}ACT_RE_PROCDEF 
     where DEPLOYMENT_ID_ = #{deploymentId}
       and KEY_ = #{processDefinitionKey}
+      and (TENANT_ID_ = '' or TENANT_ID_ is null)
+  </select>
+  
+   <select id="selectProcessDefinitionByDeploymentAndKeyAndTenantId" parameterType="map" resultMap="processDefinitionResultMap">
+    select * 
+    from ${prefix}ACT_RE_PROCDEF 
+    where DEPLOYMENT_ID_ = #{deploymentId}
+      and KEY_ = #{processDefinitionKey}
+      and TENANT_ID_ = #{tenantId}
   </select>
     
   <select id="selectLatestProcessDefinitionByKey" parameterType="string" resultMap="processDefinitionResultMap">
     select *
     from ${prefix}ACT_RE_PROCDEF 
     where KEY_ = #{key} and
-          VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = #{processDefinitionKey})
+          (TENANT_ID_ = ''  or TENANT_ID_ is null) and
+          VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = #{processDefinitionKey} and (TENANT_ID_ = '' or TENANT_ID_ is null))
   </select>
-
+  
+  <select id="selectLatestProcessDefinitionByKeyAndTenantId" parameterType="map" resultMap="processDefinitionResultMap">
+    select *
+    from ${prefix}ACT_RE_PROCDEF 
+    where KEY_ = #{processDefinitionKey} and
+          TENANT_ID_ = #{tenantId} and
+          VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = #{processDefinitionKey} and TENANT_ID_ = #{tenantId})
+  </select>
+  
   <!-- mysql specific sql -->
   <select id="selectProcessDefinitionsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
   	${limitBefore}

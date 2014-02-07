@@ -15,6 +15,7 @@ package org.activiti.rest.service.api.runtime.process;
 
 import java.util.List;
 
+import org.activiti.rest.common.api.PaginateRequest;
 import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
@@ -23,7 +24,7 @@ import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 /**
  * @author Frederik Heremans
  */
-public class ExecutionQueryRequest {
+public class ExecutionQueryRequest extends PaginateRequest {
   private String id;
   private String activityId;
   private String parentId;
@@ -35,6 +36,9 @@ public class ExecutionQueryRequest {
   private String messageEventSubscriptionName;
   private List<QueryVariable> variables;
   private List<QueryVariable> processInstanceVariables;
+  private String tenantId;
+  private String tenantIdLike;
+  private Boolean withoutTenantId;
   
   @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  
   public List<QueryVariable> getVariables() {
@@ -139,4 +143,29 @@ public class ExecutionQueryRequest {
   public void setParentId(String parentId) {
     this.parentId = parentId;
   }
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+
+	public void setTenantIdLike(String tenantIdLike) {
+		this.tenantIdLike = tenantIdLike;
+	}
+
+	public Boolean getWithoutTenantId() {
+		return withoutTenantId;
+	}
+
+	public void setWithoutTenantId(Boolean withoutTenantId) {
+		this.withoutTenantId = withoutTenantId;
+	}
+  
 }

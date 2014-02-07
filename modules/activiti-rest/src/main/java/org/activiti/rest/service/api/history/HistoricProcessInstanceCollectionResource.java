@@ -90,6 +90,18 @@ public class HistoricProcessInstanceCollectionResource extends HistoricProcessIn
       queryRequest.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", urlQuery));
     }
     
+    if(getQueryParameter("tenantId", urlQuery) != null) {
+      queryRequest.setTenantId(getQueryParameter("tenantId", urlQuery));
+    }
+    
+    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
+    	queryRequest.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    }
+    
+    if(getQueryParameter("withoutTenantId", urlQuery) != null) {
+    	queryRequest.setWithoutTenantId(getQueryParameterAsBoolean("withoutTenantId", urlQuery));
+    }
+    
     return getQueryResponse(queryRequest, urlQuery);
   }
 }

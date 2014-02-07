@@ -63,6 +63,7 @@ public class UserPictureResource extends BaseUserResource {
   
   @Put
   public void updateUserPicture(Representation representation) {
+  	if(authenticate() == false) return;
     User user = getUserFromRequest();
     
     if(!MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {

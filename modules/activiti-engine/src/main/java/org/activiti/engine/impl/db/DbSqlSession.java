@@ -1090,6 +1090,10 @@ public class DbSqlSession implements Session {
       dbSchemaDrop();
     }
   }
+  
+  public <T> T getCustomMapper(Class<T> type) {
+	  return sqlSession.getMapper(type);
+  }
 
   // query factory methods ////////////////////////////////////////////////////  
 

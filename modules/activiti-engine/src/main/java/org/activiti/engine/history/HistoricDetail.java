@@ -22,7 +22,7 @@ import java.util.Date;
  * 
  * @author Tom Baeyens
  */
-public interface HistoricDetail {
+public interface HistoricDetail extends HistoricData {
 
   /** The unique DB id for this historic detail */
   String getId();

@@ -65,8 +65,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
         variableInstances.put(variableInstance.getName(), variableInstance);
         variableInstanceList.add(variableInstance);
       }
-    } else if(variableInstanceList == null) {
-    	System.out.println("KAKA");
     }
   }
   

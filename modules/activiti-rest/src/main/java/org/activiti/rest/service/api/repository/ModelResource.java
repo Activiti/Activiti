@@ -29,6 +29,8 @@ public class ModelResource extends BaseModelResource {
 
   @Get
   public ModelResponse getModel() {
+  	if(authenticate() == false) return null;
+  	
     Model model = getModelFromRequest();
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
@@ -37,7 +39,8 @@ public class ModelResource extends BaseModelResource {
   
   @Put
   public ModelResponse updateModel(ModelRequest request) {
-    
+  	if(authenticate() == false) return null;
+  	
     Model model = getModelFromRequest();
     
     if(request.isCategoryChanged()) {
@@ -58,6 +61,9 @@ public class ModelResource extends BaseModelResource {
     if(request.isVersionChanged()) {
       model.setVersion(request.getVersion());
     }
+    if(request.isTenantIdChanged()) {
+    	model.setTenantId(request.getTenantId());
+    }
     
     ActivitiUtil.getRepositoryService().saveModel(model);
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
@@ -66,6 +72,8 @@ public class ModelResource extends BaseModelResource {
 
   @Delete
   public void deleteModel() {
+  	if(authenticate() == false) return;
+  	
     Model model = getModelFromRequest();
     ActivitiUtil.getRepositoryService().deleteModel(model.getId());
     setStatus(Status.SUCCESS_NO_CONTENT);

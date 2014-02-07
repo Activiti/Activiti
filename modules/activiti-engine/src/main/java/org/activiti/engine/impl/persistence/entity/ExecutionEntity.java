@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.EngineServices;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
@@ -108,7 +109,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected StartingExecution startingExecution;
   
   /** The tenant identifier (if any) */
-  protected String tenantId;
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   
   // state/type of execution ////////////////////////////////////////////////// 
   

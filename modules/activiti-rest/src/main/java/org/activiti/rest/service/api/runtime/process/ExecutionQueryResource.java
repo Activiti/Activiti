@@ -25,6 +25,7 @@ public class ExecutionQueryResource extends ExecutionBaseResource {
 
   @Post
   public DataResponse queryProcessInstances(ExecutionQueryRequest queryRequest) {
+  	if(!authenticate()) { return null; }
     return getQueryResponse(queryRequest, getQuery());
   }
 }

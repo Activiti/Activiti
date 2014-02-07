@@ -41,6 +41,7 @@ public class JobCollectionResource extends SecuredResource {
     properties.put("executionId", JobQueryProperty.EXECUTION_ID);
     properties.put("processInstanceId", JobQueryProperty.PROCESS_INSTANCE_ID);
     properties.put("retries", JobQueryProperty.RETRIES);
+    properties.put("tenantId", JobQueryProperty.TENANT_ID);
   }
   
   @Get
@@ -100,6 +101,17 @@ public class JobCollectionResource extends SecuredResource {
     }
     if(names.contains("exceptionMessage")) {
       query.exceptionMessage(getQueryParameter("exceptionMessage", form));
+    }
+    if(names.contains("tenantId")) {
+      query.jobTenantId(getQueryParameter("tenantId", form));
+    }
+    if(names.contains("tenantIdLike")) {
+      query.jobTenantIdLike(getQueryParameter("tenantIdLike", form));
+    }
+    if(names.contains("withoutTenantId")) {
+      if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", form))) {
+        query.jobWithoutTenantId();
+      }
     }
 
     return new JobPaginateList(this).paginateList(form, query, "id", properties);

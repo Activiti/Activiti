@@ -13,6 +13,7 @@
 
 package org.activiti.rest.service.api.runtime;
 
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
@@ -48,11 +49,22 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
     assertEquals("myBusinessKey", responseNode.get("businessKey").getTextValue());
     assertEquals("processTask", responseNode.get("activityId").getTextValue());
     assertFalse(responseNode.get("suspended").getBooleanValue());
+    assertEquals("", responseNode.get("tenantId").getTextValue());
     
     assertTrue(responseNode.get("url").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
     assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(processInstance.getProcessDefinitionId()))));
+    
+    // Check result after tenant has been changed
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+    response = client.get();
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    
+    // Check resulting instance tenant id
+    responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals("myTenant", responseNode.get("tenantId").getTextValue());
   }
   
   /**

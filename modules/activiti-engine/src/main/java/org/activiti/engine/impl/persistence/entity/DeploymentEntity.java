@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.repository.Deployment;
@@ -35,7 +36,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   protected String id;
   protected String name;
   protected String category;
-  protected String tenantId;
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
   protected boolean isNew;

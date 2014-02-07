@@ -14,6 +14,7 @@ package org.activiti.spring.impl.test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
@@ -26,50 +27,49 @@ import org.springframework.test.context.TestContextManager;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-
 /**
  * @author Joram Barrez
+ * @author Josh Long
  */
 @TestExecutionListeners(DependencyInjectionTestExecutionListener.class)
-public abstract class SpringActivitiTestCase extends AbstractActivitiTestCase implements ApplicationContextAware {
+public abstract class SpringActivitiTestCase extends AbstractActivitiTestCase
+    implements ApplicationContextAware {
 
-  protected static Map<String, ProcessEngine> cachedProcessEngines = new HashMap<String, ProcessEngine>();
-  
-  protected TestContextManager testContextManager;
-  
-  @Autowired
-  protected ApplicationContext applicationContext;
-  
-  public SpringActivitiTestCase() {
-    super();
-    this.testContextManager = new TestContextManager(getClass());
-  }
-  
-  @Override
-  public void runBare() throws Throwable {
-    testContextManager.prepareTestInstance(this); // this will initialize all dependencies
-    super.runBare();
-  }
+	// we need a data structure to store all the resolved ProcessEngines and map them to something
+	protected Map<Object, ProcessEngine> cachedProcessEngines = new ConcurrentHashMap<Object, ProcessEngine>();
 
-  @Override
-  protected void initializeProcessEngine() {
-    ContextConfiguration contextConfiguration = getClass().getAnnotation(ContextConfiguration.class);
-    String[] value = contextConfiguration.value();
-    if (value==null) {
-      throw new ActivitiException("value is mandatory in ContextConfiguration");
-    }
-    if (value.length!=1) {
-      throw new ActivitiException("SpringActivitiTestCase requires exactly one value in annotation ContextConfiguration");
-    }
-    String configurationFile = value[0];
-    processEngine = cachedProcessEngines.get(configurationFile);
-    if (processEngine==null) {
-      processEngine = applicationContext.getBean(ProcessEngine.class);
-      cachedProcessEngines.put(configurationFile, processEngine);
-    }
-  }
-  
-  public void setApplicationContext(ApplicationContext applicationContext) {
-    this.applicationContext = applicationContext;
-  }
+	// protected static Map<String, ProcessEngine> cachedProcessEngines = new
+	// HashMap<String, ProcessEngine>();
+
+	protected TestContextManager testContextManager;
+
+	@Autowired
+	protected ApplicationContext applicationContext;
+
+	public SpringActivitiTestCase() {
+		this.testContextManager = new TestContextManager(getClass());
+	}
+
+	@Override
+	public void runBare() throws Throwable {
+		testContextManager.prepareTestInstance(this); // this will initialize all dependencies
+		super.runBare();
+	}
+
+	@Override
+	protected void initializeProcessEngine() {
+		ContextConfiguration contextConfiguration = getClass().getAnnotation(ContextConfiguration.class);
+		String[] value = contextConfiguration.value();
+		boolean hasOneArg = value != null && value.length == 1;
+		String key = hasOneArg ? value[0] : ProcessEngine.class.getName();
+		ProcessEngine engine = this.cachedProcessEngines.containsKey(key) ? 
+				this.cachedProcessEngines.get(key) : this.applicationContext.getBean(ProcessEngine.class);
+
+		this.cachedProcessEngines.put(key, engine);
+		this.processEngine = engine;
+	}
+
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
 }

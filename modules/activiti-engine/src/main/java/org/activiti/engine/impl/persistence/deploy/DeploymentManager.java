@@ -73,6 +73,18 @@ public class DeploymentManager {
     return processDefinition;
   }
 
+  public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId) {
+    ProcessDefinitionEntity processDefinition = Context
+      .getCommandContext()
+      .getProcessDefinitionEntityManager()
+      .findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+    if (processDefinition==null) {
+      throw new ActivitiObjectNotFoundException("no processes deployed with key '"+processDefinitionKey+"' for tenant identifier '" + tenantId + "'", ProcessDefinition.class);
+    }
+    processDefinition = resolveProcessDefinition(processDefinition);
+    return processDefinition;
+  }
+
   public ProcessDefinitionEntity findDeployedProcessDefinitionByKeyAndVersion(String processDefinitionKey, Integer processDefinitionVersion) {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) Context
       .getCommandContext()
@@ -121,7 +133,6 @@ public class DeploymentManager {
     ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
     
     for (ProcessDefinition processDefinition : processDefinitions) {
-      processDefinitionCache.remove(processDefinition.getId());
       
       // Since all process definitions are deleted by a single query, we should dispatch the
       // events in this loop
@@ -138,6 +149,10 @@ public class DeploymentManager {
     if(eventDispatcher.isEnabled()) {
     	eventDispatcher.dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, deployment));
+    }
+    
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      processDefinitionCache.remove(processDefinition.getId());
     }
   }
   

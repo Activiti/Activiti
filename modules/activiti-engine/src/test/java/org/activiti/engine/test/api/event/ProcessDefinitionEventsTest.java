@@ -74,7 +74,7 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 			
 		  // Check delete event when category is updated
 			repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
-			deploymentId = null;
+			deploymentIdFromDeploymentAnnotation = null;
 			
 			assertEquals(1, listener.getEventsReceived().size());
 			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);

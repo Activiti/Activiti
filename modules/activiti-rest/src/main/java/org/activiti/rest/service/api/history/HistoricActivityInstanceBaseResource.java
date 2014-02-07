@@ -45,6 +45,7 @@ public class HistoricActivityInstanceBaseResource extends SecuredResource {
     allowedSortProperties.put("processDefinitionId", HistoricActivityInstanceQueryProperty.PROCESS_DEFINITION_ID);
     allowedSortProperties.put("processInstanceId", HistoricActivityInstanceQueryProperty.PROCESS_INSTANCE_ID);
     allowedSortProperties.put("startTime", HistoricActivityInstanceQueryProperty.START);
+    allowedSortProperties.put("tenantId", HistoricActivityInstanceQueryProperty.TENANT_ID);
   }
   
   @Get
@@ -96,7 +97,19 @@ public class HistoricActivityInstanceBaseResource extends SecuredResource {
     if (queryRequest.getProcessDefinitionId() != null) {
       query.processDefinitionId(queryRequest.getProcessDefinitionId());
     }
+    
+    if(queryRequest.getTenantId() != null) {
+    	query.activityTenantId(queryRequest.getTenantId());
+    }
+    
+    if(queryRequest.getTenantIdLike() != null) {
+    	query.activityTenantIdLike(queryRequest.getTenantIdLike());
+    }
+    
+    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+    	query.activityWithoutTenantId();
+    }
 
-    return new HistoricActivityInstancePaginateList(this).paginateList(urlQuery, query, "startTime", allowedSortProperties);
+    return new HistoricActivityInstancePaginateList(this).paginateList(urlQuery, queryRequest, query, "startTime", allowedSortProperties);
   }
 }

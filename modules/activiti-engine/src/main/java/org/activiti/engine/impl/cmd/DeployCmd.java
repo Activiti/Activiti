@@ -116,12 +116,12 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
       
       // If activation date is set, we first suspend all the process definition
       SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = 
-              new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null);
+              new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null, deployment.getTenantId());
       suspendProcessDefinitionCmd.execute(commandContext);
       
       // And we schedule an activation at the provided date
-      ActivateProcessDefinitionCmd activateProcessDefinitionCmd =
-              new ActivateProcessDefinitionCmd(processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate());
+      ActivateProcessDefinitionCmd activateProcessDefinitionCmd =new ActivateProcessDefinitionCmd(
+      		processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate(), deployment.getTenantId());
       activateProcessDefinitionCmd.execute(commandContext);
     }
   }

@@ -28,12 +28,14 @@ public class DeploymentResponse {
   Date deploymentTime;
   String category;
   String url;
+  String tenantId;
   
   public DeploymentResponse(Deployment deployment, String url) {
     setId(deployment.getId());
     setName(deployment.getName());
     setDeploymentTime(deployment.getDeploymentTime());
     setCategory(deployment.getCategory());
+    setTenantId(deployment.getTenantId());
     setUrl(url);
   }
   
@@ -66,5 +68,11 @@ public class DeploymentResponse {
   }
   public String getUrl() {
     return url;
+  }
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  public String getTenantId() {
+	  return tenantId;
   }
 }
