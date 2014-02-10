@@ -43,11 +43,15 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 			assertNotNull(processDefinition);
 			
 			// Check create-event
-			assertEquals(1, listener.getEventsReceived().size());
+			assertEquals(2, listener.getEventsReceived().size());
 			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 			
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+			
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+			assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
 			assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
 			listener.clearEventsReceived();
 			

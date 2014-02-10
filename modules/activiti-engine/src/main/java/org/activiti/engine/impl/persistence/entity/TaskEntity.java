@@ -131,6 +131,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
+    	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, this));
     }
   }
   

@@ -44,7 +44,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 			
 			// Create link-comment
 			Comment comment = taskService.addComment(task.getId(), task.getProcessInstanceId(), "comment");
-			assertEquals(1, listener.getEventsReceived().size());
+			assertEquals(2, listener.getEventsReceived().size());
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 			assertEquals(processInstance.getId(), event.getProcessInstanceId());
@@ -52,6 +52,9 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			Comment commentFromEvent = (Comment) event.getEntity();
 			assertEquals(comment.getId(), commentFromEvent.getId());
+			
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+			assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
 			listener.clearEventsReceived();
 			
 			// Finally, delete comment
@@ -77,7 +80,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 				
 				// Create link-comment
 				Comment comment = taskService.addComment(task.getId(), null, "comment");
-				assertEquals(1, listener.getEventsReceived().size());
+				assertEquals(2, listener.getEventsReceived().size());
 				ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 				assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 				assertNull(event.getProcessInstanceId());
@@ -85,6 +88,9 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 				assertNull(event.getProcessDefinitionId());
 				Comment commentFromEvent = (Comment) event.getEntity();
 				assertEquals(comment.getId(), commentFromEvent.getId());
+				
+				event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+				assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
 				listener.clearEventsReceived();
 				
 				// Finally, delete comment

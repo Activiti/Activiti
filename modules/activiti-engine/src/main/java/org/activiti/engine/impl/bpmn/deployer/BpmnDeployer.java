@@ -164,6 +164,11 @@ public class BpmnDeployer implements Deployer {
           processDefinitionId = nextId; 
         }
         processDefinition.setId(processDefinitionId);
+        
+        if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+        			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition));
+        }
 
         removeObsoleteTimers(processDefinition);
         addTimerDeclarations(processDefinition, timers);
@@ -176,7 +181,7 @@ public class BpmnDeployer implements Deployer {
 
         if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-        			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition));
+        			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, processDefinition));
         }
 
         scheduleTimers(timers);
