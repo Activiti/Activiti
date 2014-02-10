@@ -8113,19 +8113,19 @@ Only the attachment name is required to create a new attachment.
                   <entry>Return only historic task instances that haveno due-date. When <literal>false</literal> is provided as value, this parameter is ignored.</entry>
                 </row>
                 <row>
-                  <entry>completedOn</entry>
+                  <entry>taskCompletedOn</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have been completed on this date.</entry>
                 </row>
                 <row>
-                  <entry>completedAfter</entry>
+                  <entry>taskCompletedAfter</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have been completed after this date.</entry>
                 </row>
                 <row>
-                  <entry>completedBefore</entry>
+                  <entry>taskCompletedBefore</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have been completed before this date.</entry>
