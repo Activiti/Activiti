@@ -799,7 +799,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 	    	// Execute the configurators
 	    	log.info("Found {} Process Engine Configurators in total:", allConfigurators.size());
 	    	for (ProcessEngineConfigurator configurator : allConfigurators) {
-	    		log.info("{}", configurator.getClass());
+	    		log.info("{} (priority:{})", configurator.getClass(), configurator.getPriority());
 	    		configurator.configure(this);
 	    	}
 	    	
