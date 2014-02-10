@@ -144,6 +144,8 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
   
   @Delete
   public void deleteAllLocalTaskVariables() {
+  	if(!authenticate()) { return; }
+  	
     Task task = getTaskFromRequest();
     Collection<String> currentVariables = ActivitiUtil.getTaskService().getVariablesLocal(task.getId()).keySet();
     ActivitiUtil.getTaskService().removeVariablesLocal(task.getId(), currentVariables);

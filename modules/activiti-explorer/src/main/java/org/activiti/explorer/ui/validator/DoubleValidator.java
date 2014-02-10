@@ -11,21 +11,29 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.service.api.runtime.process;
+package org.activiti.explorer.ui.validator;
 
-import org.activiti.rest.common.api.DataResponse;
-import org.restlet.resource.Post;
-
+import com.vaadin.data.validator.AbstractStringValidator;
 
 
 /**
  * @author Frederik Heremans
  */
-public class ExecutionQueryResource extends ExecutionBaseResource {
+public class DoubleValidator extends AbstractStringValidator {
 
-  @Post
-  public DataResponse queryProcessInstances(ExecutionQueryRequest queryRequest) {
-  	if(!authenticate()) { return null; }
-    return getQueryResponse(queryRequest, getQuery());
+  private static final long serialVersionUID = 8306001395582004472L;
+
+  public DoubleValidator(String errorMessage) {
+    super(errorMessage);
+  }
+
+  @Override
+  protected boolean isValidString(String value) {
+    try {
+        Double.parseDouble(value);
+        return true;
+    } catch (Exception e) {
+        return false;
+    }
   }
 }

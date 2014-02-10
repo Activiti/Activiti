@@ -74,6 +74,7 @@ public class UserInfoResource extends BaseUserResource {
   
   @Delete
   public void deleteUserInfo() {
+  	if(authenticate() == false) return;
     User user = getUserFromRequest();
     String key = getValidKeyFromRequest(user);
     

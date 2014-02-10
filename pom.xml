@@ -757,6 +757,12 @@
       </modules>
     </profile>
     <profile>
+      <id>checkosgi</id>
+      <modules>
+        <module>modules/activiti-osgi</module>
+      </modules>
+    </profile>
+    <profile>
       <!-- this profile prevents that tests are executed while running the 
         qa/build.xml test.demo.setup target -->
       <id>nodocs</id>

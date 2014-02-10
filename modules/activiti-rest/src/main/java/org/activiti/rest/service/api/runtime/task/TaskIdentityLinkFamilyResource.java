@@ -72,6 +72,8 @@ public class TaskIdentityLinkFamilyResource extends TaskBaseResource {
   
   @Delete
   public void deleteIdentityLink() {
+  	if(!authenticate()) { return; }
+  	
     Task task = getTaskFromRequest();
 
     // Extract and validate identity link from URL

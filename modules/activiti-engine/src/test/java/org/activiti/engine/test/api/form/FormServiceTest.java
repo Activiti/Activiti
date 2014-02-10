@@ -168,6 +168,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     properties.put("speaker", "Mike"); // variable name mapping
     properties.put("duration", "45"); // type conversion
     properties.put("free", "true"); // type conversion
+    properties.put("double", "45.5"); // type conversion
 
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
     String processInstanceId = formService.submitStartFormData(procDefId, properties).getId();
@@ -177,6 +178,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     expectedVariables.put("SpeakerName", "Mike");
     expectedVariables.put("duration", new Long(45));
     expectedVariables.put("free", Boolean.TRUE);
+    expectedVariables.put("double", 45.5d);
 
     Map<String, Object> variables = runtimeService.getVariables(processInstanceId);
     assertEquals(expectedVariables, variables);
@@ -210,8 +212,12 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     FormProperty propertyFree = formProperties.get(4);
     assertEquals("free", propertyFree.getId());
     assertEquals("true", propertyFree.getValue());
+    
+    FormProperty propertyDouble = formProperties.get(5);
+    assertEquals("double", propertyDouble.getId());
+    assertEquals("45.5", propertyDouble.getValue());
 
-    assertEquals(5, formProperties.size());
+    assertEquals(6, formProperties.size());
 
     try {
       formService.submitTaskFormData(taskId, new HashMap<String, String>());
@@ -238,6 +244,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     expectedVariables.put("SpeakerName", "Mike");
     expectedVariables.put("duration", new Long(45));
     expectedVariables.put("free", Boolean.TRUE);
+    expectedVariables.put("double", 45.5d);
 
     variables = runtimeService.getVariables(processInstanceId);
     address = (Address) variables.remove("address");
