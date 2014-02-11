@@ -305,9 +305,14 @@ public final class RestUrls {
   public static final String[] URL_PROCESS_INSTANCE_VARIABLE_DATA= {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_VARIABLES, "{1}", SEGMENT_VARIABLE_DATA};
   
   /**
-   * URL template for a comment on a process instance: <i>runtime/process-instances/{0:processInstanceId}/comments/{1:commentId}</i>
+   * URL template for a comment on a process instance: <i>history/historic-process-instances/{0:processInstanceId}/comments/{1:commentId}</i>
    */
-  public static final String[] URL_PROCESS_INSTANCE_COMMENT = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_COMMENTS, "{1}"};
+  public static final String[] URL_HISTORIC_PROCESS_INSTANCE_COMMENT = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_COMMENTS, "{1}"};
+  
+  /**
+   * URL template for comments on a process instance: <i>history/historic-process-instances/{0:processInstanceId}/comments</i>
+   */
+  public static final String[] URL_HISTORIC_PROCESS_INSTANCE_COMMENT_COLLECTION = {SEGMENT_HISTORY_RESOURCES, SEGMENT_HISTORIC_PROCESS_INSTANCE_RESOURCE, "{0}", SEGMENT_COMMENTS};
   
   /**
    * URL template for a process instance's identity links: <i>runtime/process-instances/{0:processInstanceId}/identitylinks</i>

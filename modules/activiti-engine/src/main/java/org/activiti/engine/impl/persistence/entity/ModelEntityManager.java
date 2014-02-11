@@ -47,6 +47,8 @@ public class ModelEntityManager extends AbstractManager {
     if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, model));
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, model));
     }
   }
 

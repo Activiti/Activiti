@@ -46,6 +46,8 @@ public class GroupEntityManager extends AbstractManager implements GroupIdentity
     if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, group));
+    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, group));
     }
   }
 
