@@ -525,12 +525,21 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   
   public void setAssignee(String assignee, boolean dispatchAssignmentEvent, boolean dispatchUpdateEvent) {
+  	CommandContext commandContext = Context.getCommandContext();
+  	
   	if (assignee==null && this.assignee==null) {
+  		
+  		// ACT-1923: even if assignee is unmodified and null, this should be stored in history
+  		if (commandContext!=null) {
+        commandContext
+          .getHistoryManager()
+          .recordTaskAssigneeChange(id, assignee);
+  		}
+  		
       return;
     }
     this.assignee = assignee;
 
-    CommandContext commandContext = Context.getCommandContext();
     // if there is no command context, then it means that the user is calling the 
     // setAssignee outside a service method.  E.g. while creating a new task.
     if (commandContext!=null) {
