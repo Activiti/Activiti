@@ -84,6 +84,10 @@ public class LDAPConfigurator extends AbstractProcessEngineConfigurator {
   protected int groupCacheSize = -1;
   protected long groupCacheExpirationTime = 3600000L; // default: one hour
   
+  public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  	// Nothing to do
+  }
+  
   public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
     LDAPUserManagerFactory ldapUserManagerFactory = getLdapUserManagerFactory();
     processEngineConfiguration.getSessionFactories().put(ldapUserManagerFactory.getSessionType(), ldapUserManagerFactory);

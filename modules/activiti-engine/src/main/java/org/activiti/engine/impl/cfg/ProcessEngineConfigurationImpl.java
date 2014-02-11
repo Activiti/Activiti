@@ -270,7 +270,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // Configurators ////////////////////////////////////////////////////////////
   
   protected boolean enableConfiguratorServiceLoader = true; // Enabled by default. In certain environments this should be set to false (eg osgi)
-  protected List<ProcessEngineConfigurator> configurators;
+  protected List<ProcessEngineConfigurator> configurators; // The injected configurators
+  protected List<ProcessEngineConfigurator> allConfigurators; // Including auto-discovered configurators
   
   // DEPLOYERS ////////////////////////////////////////////////////////////////
 
@@ -384,6 +385,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // init /////////////////////////////////////////////////////////////////////
   
   protected void init() {
+  	initConfigurators();
+  	configuratorsBeforeInit();
     initHistoryLevel();
     initExpressionManager();
     initVariableTypes();
@@ -408,7 +411,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initEventHandlers();
     initFailedJobCommandFactory();
     initEventDispatcher();
-    initConfigurators();
+    configuratorsAfterInit();
   }
 
   // failedJobCommandFactory ////////////////////////////////////////////////////////
@@ -751,7 +754,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected void initConfigurators() {
   	
-  	List<ProcessEngineConfigurator> allConfigurators = new ArrayList<ProcessEngineConfigurator>();
+  	allConfigurators = new ArrayList<ProcessEngineConfigurator>();
   	
   	// Configurators that are explicitely added to the config
     if (configurators != null) {
@@ -801,12 +804,25 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 	    	log.info("Found {} Process Engine Configurators in total:", allConfigurators.size());
 	    	for (ProcessEngineConfigurator configurator : allConfigurators) {
 	    		log.info("{} (priority:{})", configurator.getClass(), configurator.getPriority());
-	    		configurator.configure(this);
 	    	}
 	    	
     	}
     	
     }
+  }
+  
+  protected void configuratorsBeforeInit() {
+  	for (ProcessEngineConfigurator configurator : allConfigurators) {
+  		log.info("Executing configure() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
+  		configurator.beforeInit(this);
+  	}
+  }
+  
+  protected void configuratorsAfterInit() {
+  	for (ProcessEngineConfigurator configurator : allConfigurators) {
+  		log.info("Executing configure() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
+  		configurator.configure(this);
+  	}
   }
   
   // deployers ////////////////////////////////////////////////////////////////
@@ -1398,7 +1414,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public BpmnDeployer getBpmnDeployer() {
+  
+  public List<ProcessEngineConfigurator> getAllConfigurators() {
+		return allConfigurators;
+	}
+
+	public BpmnDeployer getBpmnDeployer() {
     return bpmnDeployer;
   }
 
