@@ -278,6 +278,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     	newExecution.setTenantId(getTenantId());
     }
 
+    if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, newExecution));
+    }
+    
     Context
       .getCommandContext()
       .getDbSqlSession()

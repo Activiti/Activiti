@@ -42,9 +42,13 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertNotNull(theJob);
 		
 		// Check if create-event has been dispatched
-		assertEquals(1, listener.getEventsReceived().size());
+		assertEquals(2, listener.getEventsReceived().size());
 		ActivitiEvent event = listener.getEventsReceived().get(0);
 		assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+		checkEventContext(event, theJob, false);
+		
+		event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+		assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
 		checkEventContext(event, theJob, false);
 		
 		listener.clearEventsReceived();

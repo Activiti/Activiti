@@ -20,10 +20,10 @@ import org.activiti.engine.form.AbstractFormType;
 /**
  * @author Tom Baeyens
  */
-public class LongFormType extends AbstractFormType {
+public class DoubleFormType extends AbstractFormType {
 
   public String getName() {
-    return "double";
+    return "long";
   }
 
   public String getMimeType() {
@@ -34,7 +34,7 @@ public class LongFormType extends AbstractFormType {
     if (propertyValue==null || "".equals(propertyValue)) {
       return null;
     }
-    return new Double(propertyValue);
+    return new Long(propertyValue);
   }
 
   public String convertModelValueToFormValue(Object modelValue) {

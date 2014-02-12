@@ -561,6 +561,7 @@
           <excludes>
             <exclude>**/*TestCase.java</exclude>
           </excludes>
+          <runOrder>alphabetical</runOrder>
         </configuration>
       </plugin>
       <plugin>

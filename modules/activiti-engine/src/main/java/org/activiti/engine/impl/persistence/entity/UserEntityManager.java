@@ -48,6 +48,8 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
     if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, user));
+    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, user));
     }
   }
   

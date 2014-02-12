@@ -30,6 +30,7 @@ import org.apache.commons.mail.SimpleEmail;
 /**
  * @author Joram Barrez
  * @author Frederik Heremans
+ * @author Tim Stephenson
  */
 public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
 
@@ -41,7 +42,9 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
   protected Expression bcc;
   protected Expression subject;
   protected Expression text;
+	protected Expression textVar;
   protected Expression html;
+  protected Expression htmlVar;
   protected Expression charset;
 
   public void execute(ActivityExecution execution) {
@@ -50,8 +53,10 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     String ccStr = getStringFromField(cc, execution);
     String bccStr = getStringFromField(bcc, execution);
     String subjectStr = getStringFromField(subject, execution);
-    String textStr = getStringFromField(text, execution);
-    String htmlStr = getStringFromField(html, execution);
+		String textStr = textVar == null ? getStringFromField(text, execution)
+				: getStringFromField(getExpression(execution, textVar), execution);
+		String htmlStr = htmlVar == null ? getStringFromField(html, execution)
+				: getStringFromField(getExpression(execution, htmlVar), execution);
     String charSetStr = getStringFromField(charset, execution);
 
     Email email = createEmail(textStr, htmlStr);
@@ -71,6 +76,8 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     }
     leave(execution);
   }
+
+  
 
   protected Email createEmail(String text, String html) {
     if (html != null) {
@@ -222,6 +229,12 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
       }
     }
     return null;
+  }
+
+  protected Expression getExpression(ActivityExecution execution, Expression var) {
+    String variable = (String) execution.getVariable(var.getExpressionText());
+    return Context.getProcessEngineConfiguration().getExpressionManager()
+        .createExpression(variable);
   }
 
 }

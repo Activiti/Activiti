@@ -7,6 +7,8 @@ import org.activiti.rest.service.api.history.HistoricDetailCollectionResource;
 import org.activiti.rest.service.api.history.HistoricDetailDataResource;
 import org.activiti.rest.service.api.history.HistoricDetailQueryResource;
 import org.activiti.rest.service.api.history.HistoricProcessInstanceCollectionResource;
+import org.activiti.rest.service.api.history.HistoricProcessInstanceCommentCollectionResource;
+import org.activiti.rest.service.api.history.HistoricProcessInstanceCommentResource;
 import org.activiti.rest.service.api.history.HistoricProcessInstanceIdentityLinkCollectionResource;
 import org.activiti.rest.service.api.history.HistoricProcessInstanceQueryResource;
 import org.activiti.rest.service.api.history.HistoricProcessInstanceResource;
@@ -192,6 +194,8 @@ public class RestServicesInit {
     
     router.attach("/history/historic-process-instances/{processInstanceId}", HistoricProcessInstanceResource.class);
     router.attach("/history/historic-process-instances/{processInstanceId}/identitylinks", HistoricProcessInstanceIdentityLinkCollectionResource.class);
+    router.attach("/history/historic-process-instances/{processInstanceId}/comments", HistoricProcessInstanceCommentCollectionResource.class);
+    router.attach("/history/historic-process-instances/{processInstanceId}/comments/{commentId}", HistoricProcessInstanceCommentResource.class);
     router.attach("/history/historic-process-instances/{processInstanceId}/variables/{variableName}/data", HistoricProcessInstanceVariableDataResource.class);
     router.attach("/history/historic-process-instances", HistoricProcessInstanceCollectionResource.class);
     router.attach("/history/historic-task-instances/{taskId}", HistoricTaskInstanceResource.class);

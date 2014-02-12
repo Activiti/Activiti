@@ -66,6 +66,11 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
       .getDeploymentEntityManager()
       .insertDeployment(deployment);
     
+    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+	    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
+    }
+    
     // Actually deploy
     Context
       .getProcessEngineConfiguration()
@@ -78,7 +83,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     
     if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
 	    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
+	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, deployment));
     }
     
     return deployment;

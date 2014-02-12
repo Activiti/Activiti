@@ -172,6 +172,7 @@
             <exclude>**/*TestCase.java</exclude>
             <exclude>**/RepeatingServiceTaskTest.java</exclude>
           </excludes>
+          <runOrder>alphabetical</runOrder>
         </configuration>
       </plugin>
       <plugin>
@@ -443,6 +444,7 @@
                 <exclude>**/ProcessDiagramRetrievalTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -507,6 +509,7 @@
 							<exclude>**/ProcessDiagramRetrievalTest.java</exclude>
 							<exclude>org/activiti/standalone/**</exclude>
 						</excludes>
+						<runOrder>alphabetical</runOrder>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -557,6 +560,7 @@
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -646,6 +650,7 @@
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -691,6 +696,7 @@
                 <exclude>**/ProcessInstanceLogQueryTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -713,6 +719,7 @@
                 <include>**/JdbcMetaDataTest.java</include>
               </includes>
               <excludes />
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
           <plugin>
