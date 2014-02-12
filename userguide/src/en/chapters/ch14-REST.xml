@@ -1656,7 +1656,7 @@
        <emphasis role="bold">Request body (user):</emphasis>
             <programlisting>
 {
-  "userId" : "kermit"
+  "user" : "kermit"
 }</programlisting>
     </para>
     <para>
