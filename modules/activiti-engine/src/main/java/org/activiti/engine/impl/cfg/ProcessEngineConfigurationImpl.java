@@ -1414,10 +1414,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  
+  public void setEnableConfiguratorServiceLoader(boolean enableConfiguratorServiceLoader) {
+  	this.enableConfiguratorServiceLoader = enableConfiguratorServiceLoader;
+  }
+
   public List<ProcessEngineConfigurator> getAllConfigurators() {
 		return allConfigurators;
-	}
+  }
 
 	public BpmnDeployer getBpmnDeployer() {
     return bpmnDeployer;
