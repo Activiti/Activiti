@@ -16,6 +16,7 @@ package org.activiti.rest.service.api.runtime.task;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.rest.common.api.PaginateRequest;
 import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
@@ -24,7 +25,7 @@ import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 /**
  * @author Frederik Heremans
  */
-public class TaskQueryRequest {
+public class TaskQueryRequest extends PaginateRequest {
 
   private String name;
   private String nameLike;

@@ -102,7 +102,7 @@ public class BaseProcessInstanceResource extends SecuredResource {
     	query.processInstanceWithoutTenantId();
     }
 
-    return new ProcessInstancePaginateList(this).paginateList(urlQuery, query, "id", allowedSortProperties);
+    return new ProcessInstancePaginateList(this).paginateList(urlQuery, queryRequest, query, "id", allowedSortProperties);
   }
 
   protected void addVariables(ProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {

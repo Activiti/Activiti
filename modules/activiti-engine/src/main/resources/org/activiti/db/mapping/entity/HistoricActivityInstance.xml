@@ -143,7 +143,7 @@
         and RES.TENANT_ID_ like #{tenantIdLike}
       </if>
       <if test="withoutTenantId">
-        and RES.TENANT_ID_ is null
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>
       <if test="unfinished">
         and RES.END_TIME_ is null

@@ -180,13 +180,10 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
             "    <userTask id='theTask2' name='Default input' /> " + 
             "  </process>" + 
             "</definitions>";    
-    try {
-      repositoryService.createDeployment().addString("myprocess.bpmn20.xml", flowWithoutConditionNoDefaultFlow).deploy();
-      fail("Could deploy a process definition with a sequence flow out of a XOR Gateway without condition with is not the default flow.");
-    }
-    catch (ActivitiException ex) {
-      assertTrue(ex.getMessage().contains("Exclusive Gateway 'exclusiveGw' has outgoing sequence flow 'flow3' without condition which is not the default flow."));
-    }
+    
+    repositoryService.createDeployment().addString("myprocess.bpmn20.xml", flowWithoutConditionNoDefaultFlow).deploy();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
+    repositoryService.deleteDeployment(deployment.getId(), true);
     
     String defaultFlowWithCondition = "<?xml version='1.0' encoding='UTF-8'?>" +
             "<definitions id='definitions' xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:activiti='http://activiti.org/bpmn' targetNamespace='Examples'>" +
@@ -206,13 +203,10 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
             "    <userTask id='theTask2' name='Default input' /> " + 
             "  </process>" + 
             "</definitions>";    
-    try {
-      repositoryService.createDeployment().addString("myprocess.bpmn20.xml", defaultFlowWithCondition).deploy();
-      fail("Could deploy a process definition with a sequence flow out of a XOR Gateway without condition with is not the default flow.");
-    }
-    catch (ActivitiException ex) {
-      assertTrue(ex.getMessage().contains("Exclusive Gateway 'exclusiveGw' has outgoing sequence flow 'flow3' which is the default flow but has a condition too."));
-    }
+    
+    repositoryService.createDeployment().addString("myprocess.bpmn20.xml", defaultFlowWithCondition).deploy();
+    deployment = repositoryService.createDeploymentQuery().singleResult();
+    repositoryService.deleteDeployment(deployment.getId(), true);
 
     String noOutgoingFlow = "<?xml version='1.0' encoding='UTF-8'?>" +
             "<definitions id='definitions' xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:activiti='http://activiti.org/bpmn' targetNamespace='Examples'>" +
@@ -224,7 +218,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
             "</definitions>";    
     try {
       repositoryService.createDeployment().addString("myprocess.bpmn20.xml", noOutgoingFlow).deploy();
-      fail("Could deploy a process definition with a sequence flow out of a XOR Gateway without condition with is not the default flow.");
+      fail("Could deploy a process definition with a XOR Gateway without outgoing sequence flows.");
     }
     catch (ActivitiException ex) {
       ex.printStackTrace();

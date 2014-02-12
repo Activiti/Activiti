@@ -257,7 +257,7 @@ public class TaskBaseResource extends SecuredResource {
     	taskQuery.taskWithoutTenantId();
     }
     
-    return new TaskPaginateList(this).paginateList(query, taskQuery, "id", properties);
+    return new TaskPaginateList(this).paginateList(query, request, taskQuery, "id", properties);
   }
   
   protected void addTaskvariables(TaskQuery taskQuery, List<QueryVariable> variables) {

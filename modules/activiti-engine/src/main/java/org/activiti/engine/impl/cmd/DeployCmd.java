@@ -66,6 +66,11 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
       .getDeploymentEntityManager()
       .insertDeployment(deployment);
     
+    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+	    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
+    }
+    
     // Actually deploy
     Context
       .getProcessEngineConfiguration()
@@ -78,7 +83,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     
     if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
 	    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
+	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, deployment));
     }
     
     return deployment;
@@ -116,12 +121,12 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
       
       // If activation date is set, we first suspend all the process definition
       SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = 
-              new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null);
+              new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null, deployment.getTenantId());
       suspendProcessDefinitionCmd.execute(commandContext);
       
       // And we schedule an activation at the provided date
-      ActivateProcessDefinitionCmd activateProcessDefinitionCmd =
-              new ActivateProcessDefinitionCmd(processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate());
+      ActivateProcessDefinitionCmd activateProcessDefinitionCmd =new ActivateProcessDefinitionCmd(
+      		processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate(), deployment.getTenantId());
       activateProcessDefinitionCmd.execute(commandContext);
     }
   }

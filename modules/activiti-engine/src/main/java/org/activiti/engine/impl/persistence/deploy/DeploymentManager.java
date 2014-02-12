@@ -73,6 +73,18 @@ public class DeploymentManager {
     return processDefinition;
   }
 
+  public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId) {
+    ProcessDefinitionEntity processDefinition = Context
+      .getCommandContext()
+      .getProcessDefinitionEntityManager()
+      .findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+    if (processDefinition==null) {
+      throw new ActivitiObjectNotFoundException("no processes deployed with key '"+processDefinitionKey+"' for tenant identifier '" + tenantId + "'", ProcessDefinition.class);
+    }
+    processDefinition = resolveProcessDefinition(processDefinition);
+    return processDefinition;
+  }
+
   public ProcessDefinitionEntity findDeployedProcessDefinitionByKeyAndVersion(String processDefinitionKey, Integer processDefinitionVersion) {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) Context
       .getCommandContext()

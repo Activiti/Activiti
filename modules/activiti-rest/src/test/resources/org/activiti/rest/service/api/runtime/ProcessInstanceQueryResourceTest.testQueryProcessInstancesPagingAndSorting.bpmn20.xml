@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="OneTaskCategory">
+
+  <process id="aOneTaskProcess" name="The One Task Process">
+    <documentation>One task process description</documentation>
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="processTask" />
+    <userTask id="processTask" name="Process task" activiti:candidateUsers="kermit" activiti:candidateGroups="sales">
+       <documentation>Process task description</documentation>
+    </userTask>    
+    <sequenceFlow id="flow2" sourceRef="processTask" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+  <process id="bOneTaskProcess" name="The One Task Process">
+    <documentation>One task process description</documentation>
+  
+    <startEvent id="btheStart" />
+    <sequenceFlow id="bflow1" sourceRef="btheStart" targetRef="bprocessTask" />
+    <userTask id="bprocessTask" name="Process task" activiti:candidateUsers="kermit" activiti:candidateGroups="sales">
+       <documentation>Process task description</documentation>
+    </userTask>    
+    <sequenceFlow id="bflow2" sourceRef="bprocessTask" targetRef="btheEnd" />
+    <endEvent id="btheEnd" />
+    
+  </process>
+  <process id="cOneTaskProcess" name="The One Task Process">
+    <documentation>One task process description</documentation>
+  
+    <startEvent id="ctheStart" />
+    <sequenceFlow id="cflow1" sourceRef="ctheStart" targetRef="cprocessTask" />
+    <userTask id="cprocessTask" name="Process task" activiti:candidateUsers="kermit" activiti:candidateGroups="sales">
+       <documentation>Process task description</documentation>
+    </userTask>    
+    <sequenceFlow id="cflow2" sourceRef="cprocessTask" targetRef="ctheEnd" />
+    <endEvent id="ctheEnd" />
+    
+  </process>
+
+</definitions>

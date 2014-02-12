@@ -31,7 +31,7 @@ public class DeploymentResourceResource extends SecuredResource {
 
   @Get
   public DeploymentResourceResponse getDeploymentResource() {
- if(authenticate() == false) return null;
+  	if(authenticate() == false) return null;
     
     String deploymentId = getAttribute("deploymentId");
     if(deploymentId == null) {

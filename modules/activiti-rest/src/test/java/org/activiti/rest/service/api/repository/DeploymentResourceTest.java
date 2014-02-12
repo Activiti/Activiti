@@ -52,7 +52,7 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       String url = responseNode.get("url").getTextValue();
       String tenantId = responseNode.get("tenantId").getTextValue();
       
-      assertNull(tenantId);
+      assertEquals("", tenantId);
       
       assertNotNull(deploymentId);
       assertEquals(1L, repositoryService.createDeploymentQuery().deploymentId(deploymentId).count());
@@ -123,7 +123,7 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       String url = responseNode.get("url").getTextValue();
       String tenantId = responseNode.get("tenantId").getTextValue();
       
-      assertNull(tenantId);
+      assertTrue(tenantId.equals(""));
       assertNotNull(deploymentId);
       assertEquals(1L, repositoryService.createDeploymentQuery().deploymentId(deploymentId).count());
       
@@ -243,7 +243,7 @@ public class DeploymentResourceTest extends BaseRestTestCase {
     String url = responseNode.get("url").getTextValue();
     String tenantId = responseNode.get("tenantId").getTextValue();
     
-    assertNull(tenantId);
+    assertEquals("", tenantId);
     assertNotNull(deploymentId);
     assertEquals(existingDeployment.getId(), deploymentId);
     

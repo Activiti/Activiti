@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
@@ -69,7 +70,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   
   protected String exceptionMessage;
   
-  protected String tenantId;
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
 
   public void execute(CommandContext commandContext) {
     ExecutionEntity execution = null;
@@ -104,6 +105,8 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
     if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, this));
     }
   }
   

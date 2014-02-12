@@ -1656,7 +1656,7 @@
        <emphasis role="bold">Request body (user):</emphasis>
             <programlisting>
 {
-  "userId" : "kermit"
+  "user" : "kermit"
 }</programlisting>
     </para>
     <para>
@@ -2732,6 +2732,7 @@
 {
    "processDefinitionKey":"oneTaskProcess",
    "businessKey":"myBusinessKey",
+   "tenantId": "tenant1",
    "variables": [
       {
         "name":"myVar",
@@ -2748,6 +2749,7 @@
 {
    "message":"newOrderMessage",
    "businessKey":"myBusinessKey",
+   "tenantId": "tenant1",
    "variables": [
       {
         "name":"myVar",
@@ -2759,7 +2761,7 @@
 }</programlisting>
     </para>
     <para>
-    Only one of <literal>processDefinitionId</literal>, <literal>processDefinitionKey</literal> or <literal>message</literal> can be used in the request body. Both <literal>businessKey</literal> and <literal>variables</literal> are optional.
+    Only one of <literal>processDefinitionId</literal>, <literal>processDefinitionKey</literal> or <literal>message</literal> can be used in the request body. Parameters <literal>businessKey</literal>, <literal>variables</literal> and <literal>tenantId</literal> are optional. If <literal>tenantId</literal> is omitted, the default tenant will be used.
     More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that the variable-scope that is supplied is ignored, process-variables are always <literal>local</literal>.
     </para>
         <para>
@@ -7847,6 +7849,267 @@ Only the attachment name is required to create a new attachment.
       The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
     </para>
   </section>
+   <section>
+      <title>Create a new comment on a historic process instance</title>
+        <para>
+          <programlisting>POST history/historic-process-instances/{processInstanceId}/comments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>Create a new comment on a historic process instance - URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to create the comment for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{ 
+  "message" : "This is a comment."
+}</programlisting>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "id" : "123",
+  "url" : "http://localhost:8081/activiti-rest/history/historic-process-instances/100/comments/123",
+  "message" : "This is a comment.",
+  "author" : "kermit"
+}</programlisting>
+          <table>
+              <title>Create a new comment on a historic process instance - Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the comment was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the comment is missing from the request.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested historic process instance was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+   <section>
+      <title>Get all comments on a historic process instance</title>
+        <para>
+          <programlisting>GET history/historic-process-instances/{processInstanceId}/comments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>Get all comments on a process instance - URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to get the comments for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "id" : "123",
+    "url" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
+    "message" : "This is a comment",
+    "author" : "kermit"
+  },
+  { 
+    "id" : "456",
+    "url" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/456",
+    "message" : "This is another comment.",
+    "author" : "gonzo"
+  }
+]</programlisting>
+          <table>
+              <title>Get all comments on a process instance - Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process instance was found and the comments are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+   <section>
+      <title>Get a comment on a historic process instance</title>
+        <para>
+          <programlisting>GET history/historic-process-instances/{processInstanceId}/comments/{commentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>Get a comment on a historic process instance - URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the historic process instance to get the comment for.</entry>
+                  </row>
+                  <row>
+                    <entry>commentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the comment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "id" : "123",
+  "url" : "http://localhost:8081/activiti-rest/history/historic-process-instances/100/comments/123",
+  "message" : "This is a comment.",
+  "author" : "kermit"
+}</programlisting>
+          <table>
+              <title>Get a comment on a historic process instance - Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the historic process instance and comment were found and the comment is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested historic process instance was not found or the historic process instance doesn't have a comment with the given ID.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Delete a comment on a historic process instance</title>
+        <para>
+          <programlisting>DELETE history/historic-process-instances/{processInstanceId}/comments/{commentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>Delete a comment on a historic process instance - URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the historic process instance to delete the comment for.</entry>
+                  </row>
+                  <row>
+                    <entry>commentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the comment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <table>
+            <title>Delete a comment on a historic process instance - Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>204</entry>
+                  <entry>Indicates the historic process instance and comment were found and the comment is deleted. Response body is left empty intentionally.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested task was not found or the historic process instance doesn't have a comment with the given ID.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+  </section>
     <section>
     <title>Get a single historic task instance</title>
     <para>
@@ -8111,19 +8374,19 @@ Only the attachment name is required to create a new attachment.
                   <entry>Return only historic task instances that haveno due-date. When <literal>false</literal> is provided as value, this parameter is ignored.</entry>
                 </row>
                 <row>
-                  <entry>completedOn</entry>
+                  <entry>taskCompletedOn</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have been completed on this date.</entry>
                 </row>
                 <row>
-                  <entry>completedAfter</entry>
+                  <entry>taskCompletedAfter</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have been completed after this date.</entry>
                 </row>
                 <row>
-                  <entry>completedBefore</entry>
+                  <entry>taskCompletedBefore</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have been completed before this date.</entry>

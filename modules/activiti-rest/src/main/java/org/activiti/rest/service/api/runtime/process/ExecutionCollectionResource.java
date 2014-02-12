@@ -90,6 +90,8 @@ public class ExecutionCollectionResource extends ExecutionBaseResource {
   
   @Put
   public void executeExecutionAction(ExecutionActionRequest actionRequest) {
+  	if(!authenticate()) { return; }
+  	
     if(!ExecutionActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(actionRequest.getAction())) {
       throw new ActivitiIllegalArgumentException("Illegal action: '" + actionRequest.getAction() +"'.");
     }

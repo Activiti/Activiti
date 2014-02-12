@@ -181,7 +181,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     String diagramResourceName = processDefinition.getDiagramResourceName();
     assertEquals("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg", diagramResourceName);
     
-    InputStream diagramStream = repositoryService.getResourceAsStream(deploymentId, "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg");
+    InputStream diagramStream = repositoryService.getResourceAsStream(deploymentIdFromDeploymentAnnotation, "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg");
     byte[] diagramBytes = IoUtil.readInputStream(diagramStream, "diagram stream");
     assertEquals(33343, diagramBytes.length);
   }

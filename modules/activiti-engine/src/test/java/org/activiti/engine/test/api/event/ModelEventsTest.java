@@ -39,10 +39,14 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 			repositoryService.saveModel(model);
 			
 			// Check create event
-			assertEquals(1, listener.getEventsReceived().size());
+			assertEquals(2, listener.getEventsReceived().size());
 			assertEquals(ActivitiEventType.ENTITY_CREATED, listener.getEventsReceived().get(0).getType());
 			assertEquals(model.getId(), ((Model) ((ActivitiEntityEvent) listener.getEventsReceived().get(0)).getEntity()).getId());
+			
+			assertEquals(ActivitiEventType.ENTITY_INITIALIZED, listener.getEventsReceived().get(1).getType());
+			assertEquals(model.getId(), ((Model) ((ActivitiEntityEvent) listener.getEventsReceived().get(1)).getEntity()).getId());
 			listener.clearEventsReceived();
+			
 			
 			// Update model
 			model = repositoryService.getModel(model.getId());

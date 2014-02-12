@@ -267,4 +267,173 @@ public class MyBusinessProcessTest {
       </programlisting>
     </para>
   </section>
+  
+  
+  <section id="spring.enable.activiti.annotation">
+  
+    <title>Annotation-based configuration</title>
+    
+    <para>
+        [EXPERIMENTAL] The <emphasis>@EnableActiviti</emphasis> annotation is relatively new and could potentially change in the future.
+    </para>
+    
+    <para>
+        An alternative to XML-based configuration is using the annotation-based way of configuring a Spring environment.
+        This is pretty much similar to doing it the XML-way, except that the <emphasis>@Bean</emphasis> annotation
+        is used and the configuration is written in Java. This has been always possible out-of-the-box with the 
+        Activiti-Spring integration.
+    </para>
+    
+    <para>
+        Building on top of that (available for Spring 3.0+) is the <emphasis>@EnableActiviti</emphasis> anntation. In the simplest form
+        it looks like this:
+        <programlisting>
+  @Configuration
+  @EnableActiviti
+  public static class SimplestConfiguration {
+    
+  }</programlisting>
+        This will create a Spring environment with an Activiti Process Engine configured using 
+          <itemizedlist>
+            <listitem>
+              <para>
+                a default in-memory H2 database, with auto-schema upgrade enabled.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                a simple <emphasis>DataSourceTransactionManager</emphasis>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                a default <emphasis>SpringJobExecutor</emphasis>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                a scanner for bpmn20.xml files residing in the <emphasis>processes/</emphasis> folder.
+              </para>
+            </listitem>
+          </itemizedlist>
+          In such an environment, getting access to the Activiti Engine and services is simply done by injection:
+          <programlisting>
+  @Autowired
+  private ProcessEngine processEngine;
+  
+  @Autowired
+  private RuntimeService runtimeService;
+  
+  @Autowired
+  private TaskService taskService;
+  
+  @Autowired
+  private HistoryService historyService;
+  
+  @Autowired
+  private RepositoryService repositoryService;
+  
+  @Autowired
+  private ManagementService managementService;
+  
+  @Autowired
+  private FormService formService;</programlisting>
+    </para>
+    
+    <para>
+        Of course, these defaults can be customized. For example, if a datasource is configured, that datasource will be
+        used instead of creating the default one. The same applies for the transaction manager, job executor, etc.
+        For example in this piece of configuration:
+        <programlisting>
+  @Configuration
+  @EnableActiviti
+  public static class Config {
+    
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource basicDataSource = new BasicDataSource();
+        basicDataSource.setUsername(&quot;sa&quot;);
+        basicDataSource.setUrl(&quot;jdbc:h2:mem:anotherDatabase&quot;);
+        basicDataSource.setDefaultAutoCommit(false);
+        basicDataSource.setDriverClassName(org.h2.Driver.class.getName());
+        basicDataSource.setPassword(&quot;&quot;);
+        return basicDataSource;
+    }
+    
+  }</programlisting>
+        Another database will be used instead of constructing the default one.        
+    </para>
+    
+    <para>
+        A more elaborate configuration for reference is shown below. Note the use of an <emphasis>AbstractActivitiConfigurer</emphasis>, which exposes
+        access to the Process Engine configuration and can be used to tweak the configuration in detail.
+        <programlisting>
+@Configuration
+@EnableActiviti
+@EnableTransactionManagement(proxyTargetClass = true)
+class JPAConfiguration {
+
+    @Bean
+    public OpenJpaVendorAdapter openJpaVendorAdapter() {
+        OpenJpaVendorAdapter openJpaVendorAdapter = new OpenJpaVendorAdapter();
+        openJpaVendorAdapter.setDatabasePlatform(H2Dictionary.class.getName());
+        return openJpaVendorAdapter;
+    }
+
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource basicDataSource = new BasicDataSource();
+        basicDataSource.setUsername(&quot;sa&quot;);
+        basicDataSource.setUrl(&quot;jdbc:h2:mem:activiti&quot;);
+        basicDataSource.setDefaultAutoCommit(false);
+        basicDataSource.setDriverClassName(org.h2.Driver.class.getName());
+        basicDataSource.setPassword(&quot;&quot;);
+        return basicDataSource;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(
+        OpenJpaVendorAdapter openJpaVendorAdapter, DataSource ds) {
+        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setPersistenceXmlLocation(&quot;classpath:/org/activiti/spring/test/jpa/custom-persistence.xml&quot;);
+        emf.setJpaVendorAdapter(openJpaVendorAdapter);
+        emf.setDataSource(ds);
+        return emf;
+    }
+
+    @Bean
+    public PlatformTransactionManager jpaTransactionManager(
+        EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
+
+    @Bean
+    public AbstractActivitiConfigurer abstractActivitiConfigurer(
+        final EntityManagerFactory emf,
+        final PlatformTransactionManager transactionManager) {
+
+        return new AbstractActivitiConfigurer() {
+
+            @Override
+            public void postProcessSpringProcessEngineConfiguration(SpringProcessEngineConfiguration engine) {
+                engine.setTransactionManager(transactionManager);
+                engine.setJpaEntityManagerFactory(emf);
+                engine.setJpaHandleTransaction(false);
+                engine.setJobExecutorActivate(false);
+                engine.setJpaCloseEntityManager(false);
+                engine.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
+            }
+        };
+    }
+
+    // A random bean
+    @Bean
+    public LoanRequestBean loanRequestBean() {
+        return new LoanRequestBean();
+    }
+}</programlisting>
+    </para>
+  
+  </section>
+  
 </chapter>

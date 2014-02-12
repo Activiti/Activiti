@@ -52,7 +52,7 @@ public class JobResourceTest extends BaseRestTestCase {
     assertEquals(timerJob.getProcessInstanceId(), responseNode.get("processInstanceId").getTextValue());
     assertEquals(timerJob.getRetries(), responseNode.get("retries").getIntValue());
     assertEquals(timerJob.getDuedate(), getDateFromISOString(responseNode.get("dueDate").getTextValue()));
-    assertTrue(responseNode.get("tenantId").isNull());
+    assertEquals(responseNode.get("tenantId").getTextValue(), "");
     response.release();
     
     // Set tenant on deployment

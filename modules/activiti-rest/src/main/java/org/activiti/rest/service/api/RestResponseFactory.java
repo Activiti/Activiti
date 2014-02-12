@@ -224,7 +224,7 @@ public class RestResponseFactory {
     if (value != null) {
       // Try converting the value
       for (RestVariableConverter c : variableConverters) {
-        if (value.getClass().isAssignableFrom(c.getVariableType())) {
+        if (c.getVariableType().isAssignableFrom(value.getClass())) {
           converter = c;
           break;
         }
@@ -377,7 +377,7 @@ public class RestResponseFactory {
     if(taskId != null) {
       result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_COMMENT, taskId, commentId));
     } else if(processInstanceId != null) {
-      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COMMENT, processInstanceId, commentId));
+      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, processInstanceId, commentId));
     }
     return result;
   }

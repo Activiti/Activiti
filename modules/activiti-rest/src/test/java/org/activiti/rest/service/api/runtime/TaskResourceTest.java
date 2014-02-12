@@ -75,7 +75,7 @@ public class TaskResourceTest extends BaseRestTestCase {
     assertEquals(task.getPriority(), responseNode.get("priority").asInt());
     assertTrue(responseNode.get("parentTaskId").isNull());
     assertTrue(responseNode.get("delegationState").isNull());
-    assertTrue(responseNode.get("tenantId").isNull());
+    assertEquals("", responseNode.get("tenantId").getTextValue());
     
     assertTrue(responseNode.get("executionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, task.getExecutionId())));
@@ -137,7 +137,7 @@ public class TaskResourceTest extends BaseRestTestCase {
       assertTrue(responseNode.get("executionId").isNull());
       assertTrue(responseNode.get("processInstanceId").isNull());
       assertTrue(responseNode.get("processDefinitionId").isNull());
-      assertTrue(responseNode.get("tenantId").isNull());
+      assertEquals("", responseNode.get("tenantId").getTextValue());
       
       assertTrue(responseNode.get("parentTaskUrl").asText().endsWith(
               RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, parentTask.getId())));

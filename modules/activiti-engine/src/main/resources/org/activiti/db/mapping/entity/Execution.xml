@@ -327,7 +327,7 @@
         and RES.TENANT_ID_ like #{tenantIdLike}
       </if>
       <if test="withoutTenantId">
-        and RES.TENANT_ID_ is null
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>
       <if test="involvedUser != null">
         and EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{involvedUser})

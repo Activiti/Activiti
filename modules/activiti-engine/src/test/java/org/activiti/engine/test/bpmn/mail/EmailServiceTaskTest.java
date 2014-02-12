@@ -115,6 +115,19 @@ public class EmailServiceTaskTest extends EmailTestCase {
     assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
   }
   
+  @Deployment
+	public void testVariableTemplatedMail() throws Exception {
+		Map<String, Object> vars = new HashMap<String, Object>();
+		vars.put("gender", "male");
+		vars.put("html", "<![CDATA[<html><body>Hello ${gender == 'male' ? 'Mr' : 'Ms' }. <b>Kermit</b><body></html>]]");
+		vars.put("text", "Hello ${gender == 'male' ? 'Mr' : 'Ms' }. Kermit");
+		runtimeService.startProcessInstanceByKey("variableTemplatedMail", vars);
+    
+    List<WiserMessage> messages = wiser.getMessages();
+		assertEquals(1, messages.size());
+    assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
+  }
+  
   // Helper 
   
   public static void assertEmailSend(WiserMessage emailMessage, boolean htmlMail, String subject, String message, 

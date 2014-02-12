@@ -10,10 +10,10 @@ alter table ACT_HI_VARINST
     add LAST_UPDATED_TIME_ timestamp; 
     
 alter table ACT_HI_PROCINST
-    add TENANT_ID_ varchar(255); 
+    add TENANT_ID_ varchar(255) default ''; 
        
 alter table ACT_HI_ACTINST
-    add TENANT_ID_ varchar(255); 
+    add TENANT_ID_ varchar(255) default ''; 
     
 alter table ACT_HI_TASKINST
-    add TENANT_ID_ varchar(255);            
+    add TENANT_ID_ varchar(255) default '';            

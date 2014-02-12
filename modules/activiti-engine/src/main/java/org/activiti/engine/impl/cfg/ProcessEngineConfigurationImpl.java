@@ -114,6 +114,7 @@ import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.event.SignalEventHandler;
 import org.activiti.engine.impl.form.BooleanFormType;
 import org.activiti.engine.impl.form.DateFormType;
+import org.activiti.engine.impl.form.DoubleFormType;
 import org.activiti.engine.impl.form.FormEngine;
 import org.activiti.engine.impl.form.FormTypes;
 import org.activiti.engine.impl.form.JuelFormEngine;
@@ -269,7 +270,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // Configurators ////////////////////////////////////////////////////////////
   
   protected boolean enableConfiguratorServiceLoader = true; // Enabled by default. In certain environments this should be set to false (eg osgi)
-  protected List<ProcessEngineConfigurator> configurators;
+  protected List<ProcessEngineConfigurator> configurators; // The injected configurators
+  protected List<ProcessEngineConfigurator> allConfigurators; // Including auto-discovered configurators
   
   // DEPLOYERS ////////////////////////////////////////////////////////////////
 
@@ -383,6 +385,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // init /////////////////////////////////////////////////////////////////////
   
   protected void init() {
+  	initConfigurators();
+  	configuratorsBeforeInit();
     initHistoryLevel();
     initExpressionManager();
     initVariableTypes();
@@ -407,7 +411,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initEventHandlers();
     initFailedJobCommandFactory();
     initEventDispatcher();
-    initConfigurators();
+    configuratorsAfterInit();
   }
 
   // failedJobCommandFactory ////////////////////////////////////////////////////////
@@ -750,7 +754,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected void initConfigurators() {
   	
-  	List<ProcessEngineConfigurator> allConfigurators = new ArrayList<ProcessEngineConfigurator>();
+  	allConfigurators = new ArrayList<ProcessEngineConfigurator>();
   	
   	// Configurators that are explicitely added to the config
     if (configurators != null) {
@@ -799,13 +803,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 	    	// Execute the configurators
 	    	log.info("Found {} Process Engine Configurators in total:", allConfigurators.size());
 	    	for (ProcessEngineConfigurator configurator : allConfigurators) {
-	    		log.info("{}", configurator.getClass());
-	    		configurator.configure(this);
+	    		log.info("{} (priority:{})", configurator.getClass(), configurator.getPriority());
 	    	}
 	    	
     	}
     	
     }
+  }
+  
+  protected void configuratorsBeforeInit() {
+  	for (ProcessEngineConfigurator configurator : allConfigurators) {
+  		log.info("Executing configure() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
+  		configurator.beforeInit(this);
+  	}
+  }
+  
+  protected void configuratorsAfterInit() {
+  	for (ProcessEngineConfigurator configurator : allConfigurators) {
+  		log.info("Executing configure() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
+  		configurator.configure(this);
+  	}
   }
   
   // deployers ////////////////////////////////////////////////////////////////
@@ -1135,6 +1152,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       formTypes.addFormType(new LongFormType());
       formTypes.addFormType(new DateFormType("dd/MM/yyyy"));
       formTypes.addFormType(new BooleanFormType());
+      formTypes.addFormType(new DoubleFormType());
     }
     if (customFormTypes!=null) {
       for (AbstractFormType customFormType: customFormTypes) {
@@ -1396,7 +1414,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public BpmnDeployer getBpmnDeployer() {
+  public void setEnableConfiguratorServiceLoader(boolean enableConfiguratorServiceLoader) {
+  	this.enableConfiguratorServiceLoader = enableConfiguratorServiceLoader;
+  }
+
+  public List<ProcessEngineConfigurator> getAllConfigurators() {
+		return allConfigurators;
+  }
+
+	public BpmnDeployer getBpmnDeployer() {
     return bpmnDeployer;
   }
 

@@ -16,6 +16,8 @@ package org.activiti.rest.service.api.runtime.process;
 import java.util.List;
 
 import org.activiti.rest.service.api.engine.variable.RestVariable;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 
@@ -30,6 +32,7 @@ public class ProcessInstanceCreateRequest {
   private String message;
   private String businessKey;
   private List<RestVariable> variables;
+  private String tenantId;
   
   public String getProcessDefinitionId() {
     return processDefinitionId;
@@ -61,6 +64,14 @@ public class ProcessInstanceCreateRequest {
     this.message = message;
   }
   
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  
+  public String getTenantId() {
+	  return tenantId;
+  }
+  
   @JsonTypeInfo(use=Id.CLASS, defaultImpl=RestVariable.class)  
   public List<RestVariable> getVariables() {
     return variables;
@@ -68,5 +79,10 @@ public class ProcessInstanceCreateRequest {
   
   public void setVariables(List<RestVariable> variables) {
     this.variables = variables;
+  }
+  
+  @JsonIgnore
+  public boolean isCustomTenantSet() {
+  	return tenantId != null && !StringUtils.isEmpty(tenantId);
   }
 }

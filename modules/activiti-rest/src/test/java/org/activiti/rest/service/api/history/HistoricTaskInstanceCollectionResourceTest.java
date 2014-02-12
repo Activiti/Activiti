@@ -75,7 +75,7 @@ public class HistoricTaskInstanceCollectionResourceTest extends BaseRestTestCase
     // Set tenant on deployment
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
     
-    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", processVariables, "myTenant");
     Task task2 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
     
     String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_TASK_INSTANCES);

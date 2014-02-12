@@ -78,7 +78,7 @@ public class HistoricProcessInstanceCollectionResourceTest extends BaseRestTestC
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
     startTime.add(Calendar.DAY_OF_YEAR, 1);
     ClockUtil.setCurrentTime(startTime.getTime());
-    ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", "myTenant");
     
     // Without tenant ID, after setting tenant
     assertResultsPresentInDataResponse(url + "?withoutTenantId=true", processInstance.getId(), processInstance2.getId());

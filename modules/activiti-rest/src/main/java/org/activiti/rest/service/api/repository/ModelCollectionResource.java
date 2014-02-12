@@ -49,6 +49,8 @@ public class ModelCollectionResource extends BaseModelResource {
   
   @Get
   public DataResponse getModels() {
+  	if(authenticate() == false) return null;
+  	
     ModelQuery modelQuery = ActivitiUtil.getRepositoryService().createModelQuery();
     Form form = getQuery();
     Set<String> names = form.getNames();

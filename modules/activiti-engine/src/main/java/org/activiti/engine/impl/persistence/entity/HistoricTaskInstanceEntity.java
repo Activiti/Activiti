@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -44,7 +45,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected Date dueDate;
   protected Date claimTime;
   protected String category;
-  protected String tenantId;
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricTaskInstanceEntity() {
@@ -179,6 +180,9 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
 	}
 	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
+	}
+	public Date getTime() {
+		return getStartTime();
 	}
 	public Long getWorkTimeInMillis() {
     if (endTime == null || claimTime == null) {

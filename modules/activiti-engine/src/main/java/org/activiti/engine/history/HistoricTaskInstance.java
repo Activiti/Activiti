@@ -23,7 +23,7 @@ import java.util.Map;
  * 
  * @author Tom Baeyens
  */
-public interface HistoricTaskInstance {
+public interface HistoricTaskInstance extends HistoricData {
 
   /** 
    * The unique identifier of this historic task instance. This is the same identifier as the
