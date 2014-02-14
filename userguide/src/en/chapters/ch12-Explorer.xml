@@ -9,7 +9,7 @@
     Activiti Explorer is a web application that is included when you download Activiti from the
     Activiti website. The purpose of Explorer is not a finished, end-user ready application, but 
     rather to excersise and show the functionality of Activiti. As such, Explorer is meant as a demo,
-    or maybe inspiration for people using Activti in there own applications. Out of the box, Explorer 
+    or maybe inspiration for people using Activiti in there own applications. Out of the box, Explorer 
     uses an in-memory database, but it is easy to switch to your own database (see the applicationContext files in the WEB-INF folder).
   </para>
   <para> 
@@ -257,7 +257,7 @@
       to be seen in the list of known reports in Explorer. A 'report process' can be as simple or as complex as wanted.
       The only requirement to actually be able to see the report, is that the process produces a variable
       called <emphasis role="bold">reportData</emphasis> is created. This variable must be a byte array representation
-      of a json object. This variable is stored in the hisory tables of Activiti
+      of a json object. This variable is stored in the history tables of Activiti
       (hence the requirement that history must be enabled for the engine) so it can be retrieved later 
       when the report is saved. 
       <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.reporting.explained.png"/></imageobject></mediaobject>
@@ -328,7 +328,7 @@
         
         <para>
             The following example shows a 'process instance overview' report. The process itself is very easy and
-            contains only a script task (besides start and end) that generates the json dataset using javascript. Altough all of the 
+            contains only a script task (besides start and end) that generates the json dataset using javascript. Although all of the 
             examples in Explorer use scripting, this can very well be done using Java service tasks. The end result of
             running the process should just be the <emphasis>reportData</emphasis> variable that contains the data.
         </para>
