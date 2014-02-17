@@ -308,7 +308,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 	       <para>
 	           By default, signals are <emphasis>broadcasted process engine wide</emphasis>. This means that you
 	           can throw a signal event in a process instance, and other process instances with different process definitions
-	           can react on the occurence of this event.
+	           can react on the occurrence of this event.
 	       </para>
 	       <para>
                 However, sometimes it is wanted to react to a signal event only within the <emphasis>same process instance</emphasis>.
@@ -376,7 +376,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
         
         <para>
       		A message event definition is declared using the <code>messageEventDefinition</code> element. 
-      		The attribute <code>messaageRef</code> references a <code>message</code> element declared as a child element 
+      		The attribute <code>messageRef</code> references a <code>message</code> element declared as a child element 
       		of the <code>definitions</code> root element. The following is an excerpt of a process where two message events
       		is declared and referenced by a start event and an intermediate catching message event.
 <programlisting>
@@ -407,13 +407,13 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
         	<title>Throwing a Message Event</title>
         	<para>
         		As an embeddable process engine, activiti is not concerned with actually receiving a message. This would be environment 
-	        	dependenent and entail platform-specific activities like connecting to a JMS (Java Messaging Service) Queue/Topic or 
+	        	dependent and entail platform-specific activities like connecting to a JMS (Java Messaging Service) Queue/Topic or 
 	        	processing a Webservice or REST request.      	
 	        	The reception of messages is therefore something you have to implement as part of the application or infrastructure into 
 	        	which the process engine is embedded. 
         	</para>       
 	        <para>
-	        	After you have received a messge inside your application, you must decide what to do with it.
+	        	After you have received a message inside your application, you must decide what to do with it.
 	        	If the message should trigger the start of a new process instance, choose between the following methods offered by
 	        	the runtime service:	        	
 	        	<programlisting>
@@ -2957,7 +2957,7 @@ assertEquals("Ship Order", task.getName());</programlisting>
           </para>
           
           <para>
-            Note: Although Actviti provides an identity management component,
+            Note: Although Activiti provides an identity management component,
             which is exposed through the <link linkend="apiEngine">IdentityService</link>,
             no check is done whether a provided user is known by the identity component.
             This allows Activiti to integrate with existing identity management solutions
@@ -3078,7 +3078,7 @@ public class FakeLdapService {
 		    </para>
 		    
 		    <para>
-		      Do note that the Grovy scripting engine is bundled with the groovy-all jar. Before version 2.0,
+		      Do note that the Groovy scripting engine is bundled with the groovy-all jar. Before version 2.0,
 		      the scripting engine was part of the regular Groovy jar. As such, one must now add following dependency:
 		      <programlisting>
 &lt;dependency&gt;
@@ -3485,8 +3485,8 @@ public class ThrowBpmnErrorDelegate implements JavaDelegate {
   public void execute(DelegateExecution execution) throws Exception {
     try {
       executeBusinessLogic();
-    } catch (BusinessExeption e) {
-      throw new BpmnError(&quot;BusinessExeptionOccured&quot;);
+    } catch (BusinessException e) {
+      throw new BpmnError(&quot;BusinessExceptionOccurred&quot;);
     }
   }
 
@@ -3819,7 +3819,7 @@ public class StartProcessInstanceTestDelegateWithInjection {
 			</para>
 			
 			<para>
-			  if you want to plug in your implementation of the rule task, e.g. because you want to use Drools differently or you want to use a completly
+			  if you want to plug in your implementation of the rule task, e.g. because you want to use Drools differently or you want to use a completely
 			  different rule engine, then you can use the class or expression attribute on the BusinessRuleTask and it will behave exactly like a
 			  <ulink url="#bpmnJavaServiceTask">ServiceTask</ulink>
 			</para>
@@ -4224,7 +4224,7 @@ public class StartProcessInstanceTestDelegateWithInjection {
 		  In the first sample, we will do the simplest form of Camel call from an activiti workflow. Let's call it SimpleCamelCall.
 		</para>
 		<para>
-		If you want to define multiple Camel context beans and/or want to use a different bean name, this can be overriden on the Camel task definition like this:
+		If you want to define multiple Camel context beans and/or want to use a different bean name, this can be overridden on the Camel task definition like this:
 		<programlisting>
 &lt;serviceTask id="serviceTask1" activiti:type="camel"&gt;
   &lt;extensionElements&gt;
@@ -4267,7 +4267,7 @@ The route just logs the message body and nothing more. Notice the format of the 
 	           <thead>
 	             <row>
 	               <entry>Endpoint Url Part</entry>
-	               <entry>Desciption</entry>
+	               <entry>Description</entry>
 	             </row>
 	           </thead>
 	           <tbody>
@@ -4379,9 +4379,9 @@ public void configure() throws Exception {
 		<programlisting>
 from("activiti:asyncCamelProcess:serviceTaskAsync2?copyVariablesToProperties=true").
 		</programlisting>
-the following table provides an overview of three availble camel behaviours:
+the following table provides an overview of three available camel behaviours:
 <table>
-<title>Exisiting camel behaviours:</title>
+<title>Existing camel behaviours:</title>
 	         <tgroup cols='3'>
 	           <thead>
 	             <row>
@@ -4412,7 +4412,7 @@ the following table provides an overview of three availble camel behaviours:
 	the above table explains how activiti variables are going to be transfered to Camel. The following table explains how the Camel variables are returned back to Activiti.
 	This can only be configured in route URLs.
 <table>
-<title>Exisiting camel behaviours:</title>
+<title>Existing camel behaviours:</title>
 	         <tgroup cols='3'>
 	           <thead>
 	             <row>	             
@@ -4423,11 +4423,11 @@ the following table provides an overview of three availble camel behaviours:
 	           <tbody>
 	             <row>
 				    <entry>Default</entry>
- 	                <entry>If Camel body is a map, copy each element as Activit varaible, otherwise copy the whole Camel body as "camelBody" activiti variable</entry>
+ 	                <entry>If Camel body is a map, copy each element as Activiti variable, otherwise copy the whole Camel body as "camelBody" activiti variable</entry>
 	             </row>
 	             <row>
 	               <entry>copyVariablesFromProperties</entry>
-	               <entry>Copiy Camel properties as Activiti variables of the same name</entry>
+	               <entry>Copy Camel properties as Activiti variables of the same name</entry>
 	             </row>
                 <row>
 				   <entry>copyCamelBodyToBodyAsString</entry>
@@ -4481,7 +4481,7 @@ the following table provides an overview of three availble camel behaviours:
 			</listitem>
 	        <listitem>
 	          <para>
-			    recieve task name
+			    receive task name
 			  </para>
 			</listitem>
 	 	</itemizedlist>
@@ -5144,7 +5144,7 @@ public class MyTaskCreateListener implements TaskListener {
     &lt;inputDataItem name=&quot;assignee&quot; /&gt;
   &lt;/multiInstanceLoopCharacteristics&gt;
 &lt;/userTask&gt;</programlisting>
-          Suppose the variable <literal>assigneeList</literal> contains the values <literal>[kermit, gonzo, foziee]</literal>.
+          Suppose the variable <literal>assigneeList</literal> contains the values <literal>[kermit, gonzo, fozzie]</literal>.
           In the snippet above, three user tasks will be created in parallel. Each of the executions
           will have a process variable named <literal>assignee</literal> containing one value of the 
           collection, which is used to assign the user task in this example.
@@ -6024,7 +6024,7 @@ public class MyTaskCreateListener implements TaskListener {
       <title>Process Initiation Authorization</title>
       By default everyone is allowed to start a new process instance of deployed process definitions. The process initiation authorization functionality allows to define
       users and groups so that web clients can optionally restrict users to start a new process instance. <emphasis role="bold">NOTE</emphasis> that the authorization definition
-      is <emphasis role="bold">NOT</emphasis> validated by the Activiti Engine in any way. This functionality is only meant for developers to ease the implemention of authorization
+      is <emphasis role="bold">NOT</emphasis> validated by the Activiti Engine in any way. This functionality is only meant for developers to ease the implementation of authorization
       rules in a web client. The syntax is similar to the syntax of user assignment for a user task. 
       A user or group can be assigned as potential initiator of a process using &lt;activiti:potentialStarter&gt; tag. Here is an example:
  <programlisting>

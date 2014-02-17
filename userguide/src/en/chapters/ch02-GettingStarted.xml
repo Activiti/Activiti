@@ -11,7 +11,7 @@
       follow these steps to get the demo setup running with default settings. 
       You'll need a working <ulink url="http://java.sun.com/javase/downloads/index.jsp">Java runtime</ulink> and
       <ulink url="http://tomcat.apache.org/download-70.cgi">Apache Tomcat</ulink> installation (actually, 
-      any web container would work since we only rely on the servlet capablility. But we test on Tomcat primarily).
+      any web container would work since we only rely on the servlet capability. But we test on Tomcat primarily).
       <itemizedlist>
         <listitem>
           <para>Copy the downloaded activiti-explorer.war to the webapps directory of Tomcat.</para>
