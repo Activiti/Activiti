@@ -136,7 +136,7 @@ public class TaskEntityManager extends AbstractManager {
     taskQuery.setMaxResults(20000);
     taskQuery.setFirstResult(0);
     
-    List<Task> instanceList = getDbSqlSession().selectList(query, taskQuery);
+    List<Task> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter(query, taskQuery, taskQuery.getFirstResult(), taskQuery.getMaxResults());
     
     if (instanceList != null && instanceList.size() > 0) {
       if (firstResult > 0) {

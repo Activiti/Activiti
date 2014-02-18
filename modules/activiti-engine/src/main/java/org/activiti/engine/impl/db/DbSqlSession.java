@@ -304,7 +304,16 @@ public class DbSqlSession implements Session {
     }    
     List loadedObjects = sqlSession.selectList(statement, parameter);
     return filterLoadedObjects(loadedObjects);
-  }  
+  }
+  
+  @SuppressWarnings({ "rawtypes" })
+  public List selectListWithRawParameterWithoutFilter(String statement, Object parameter, int firstResult, int maxResults) {
+    statement = dbSqlSessionFactory.mapStatement(statement);    
+    if (firstResult == -1 ||  maxResults == -1) {
+      return Collections.EMPTY_LIST;
+    }    
+    return sqlSession.selectList(statement, parameter);
+  }
 
   public Object selectOne(String statement, Object parameter) {
     statement = dbSqlSessionFactory.mapStatement(statement);
