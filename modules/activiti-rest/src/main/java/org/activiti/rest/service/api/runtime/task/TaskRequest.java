@@ -31,6 +31,7 @@ public class TaskRequest {
   private Date dueDate;
   private int priority;
   private String parentTaskId;
+  private String category;
   
   private boolean ownerSet = false;
   private boolean assigneeSet = false;
@@ -40,6 +41,7 @@ public class TaskRequest {
   private boolean duedateSet = false;
   private boolean prioritySet = false;
   private boolean parentTaskIdSet = false;
+  private boolean categorySet = false;
   
   public String getOwner() {
     return owner;
@@ -97,6 +99,14 @@ public class TaskRequest {
     this.parentTaskId = parentTaskId;
     parentTaskIdSet = true;
   }
+  
+  public void setCategory(String category) {
+	  this.category = category;
+	  categorySet = true;
+  }
+  public String getCategory() {
+	  return category;
+  }
   public boolean isOwnerSet() {
     return ownerSet;
   }
@@ -120,5 +130,8 @@ public class TaskRequest {
   }
   public boolean isParentTaskIdSet() {
     return parentTaskIdSet;
+  }
+  public boolean isCategorySet() {
+	  return categorySet;
   }
 }

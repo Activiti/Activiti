@@ -39,6 +39,7 @@ public class TaskResponse {
   protected boolean suspended;
   protected String taskDefinitionKey;
   protected String tenantId;
+  protected String category;
   
   // References to other resources
   protected String parentTaskId;
@@ -66,6 +67,7 @@ public class TaskResponse {
     setTaskDefinitionKey(task.getTaskDefinitionKey());
     setParentTaskId(task.getParentTaskId());
     setExecutionId(task.getExecutionId());
+    setCategory(task.getCategory());
     setProcessInstanceId(task.getProcessInstanceId());
     setProcessDefinitionId(task.getProcessDefinitionId());
     setTenantId(task.getTenantId());
@@ -178,6 +180,14 @@ public class TaskResponse {
 
   public String getExecutionUrl() {
     return executionUrl;
+  }
+  
+  public void setCategory(String category) {
+	  this.category = category;
+  }
+  
+  public String getCategory() {
+	  return category;
   }
 
   public void setExecutionUrl(String executionUrl) {

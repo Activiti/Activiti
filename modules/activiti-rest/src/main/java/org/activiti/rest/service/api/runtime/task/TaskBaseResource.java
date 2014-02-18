@@ -94,6 +94,9 @@ public class TaskBaseResource extends SecuredResource {
     if(taskRequest.isPrioritySet()) {
       task.setPriority(taskRequest.getPriority());
     }
+    if(taskRequest.isCategorySet()) {
+    	task.setCategory(taskRequest.getCategory());
+    }
 
     if(taskRequest.isDelegationStateSet()) {
       DelegationState delegationState = getDelegationState(taskRequest.getDelegationState());
