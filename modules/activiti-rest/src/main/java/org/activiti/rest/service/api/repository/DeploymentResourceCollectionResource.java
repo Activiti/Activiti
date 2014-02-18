@@ -33,7 +33,7 @@ public class DeploymentResourceCollectionResource extends SecuredResource {
 
   @Get
   public List<DeploymentResourceResponse> getDeploymentResources() {
- if(authenticate() == false) return null;
+  	if(authenticate() == false) return null;
     
     String deploymentId = getAttribute("deploymentId");
     

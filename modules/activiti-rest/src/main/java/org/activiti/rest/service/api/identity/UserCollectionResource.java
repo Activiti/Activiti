@@ -87,6 +87,8 @@ public class UserCollectionResource extends SecuredResource {
   
   @Post
   public UserResponse createUser(UserRequest request) {
+  	if(authenticate() == false) return null;
+  	
     if(request.getId() == null) {
       throw new ActivitiIllegalArgumentException("Id cannot be null.");
     }

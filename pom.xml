@@ -561,6 +561,7 @@
           <excludes>
             <exclude>**/*TestCase.java</exclude>
           </excludes>
+          <runOrder>alphabetical</runOrder>
         </configuration>
       </plugin>
       <plugin>
@@ -753,6 +754,12 @@
       <id>checksimpleworkflow</id>
       <modules>
         <module>modules/activiti-simple-workflow</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>checkosgi</id>
+      <modules>
+        <module>modules/activiti-osgi</module>
       </modules>
     </profile>
     <profile>

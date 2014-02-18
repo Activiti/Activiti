@@ -379,7 +379,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           <para><emphasis role="bold">&lt;5.6:</emphasis> No millisecond precision available. DDL files available (look for files containing <emphasis>mysql55</emphasis>). Auto creation/update will work out of the box.</para>
         </listitem>
         <listitem>
-          <para><emphasis role="bold">5.6.0 - 5.6.3:</emphasis> No millisecond precision availble. Auto creation/update will NOT work. It is advised to upgrade to a newer database version anyway. DDL files for <emphasis>mysql 5.5</emphasis> could be used if really needed.</para>
+          <para><emphasis role="bold">5.6.0 - 5.6.3:</emphasis> No millisecond precision available. Auto creation/update will NOT work. It is advised to upgrade to a newer database version anyway. DDL files for <emphasis>mysql 5.5</emphasis> could be used if really needed.</para>
         </listitem>
         <listitem>
           <para><emphasis role="bold">5.6.4+:</emphasis>Millisecond precision available. DDL files available (default file containing <emphasis>mysql</emphasis>). Auto creation/update works out of the box.</para>
@@ -602,7 +602,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
  log4j.appender.consoleAppender.layout.ConversionPattern =ProcessDefinitionId=%X{mdcProcessDefinitionID}
 executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdcBusinessKey=%X{mdcBusinessKey} %m%n"
       </programlisting>
-      This is useful where the systems are mission critical and logges should be seriously checked,  by means of a log analyzer for example.
+      This is useful where the systems are mission critical and logs should be seriously checked,  by means of a log analyzer for example.
     
     </para>
   </section> 
@@ -620,7 +620,7 @@ executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdc
     </para>
     <para>
        All events dispatched are a subtype of <literal>org.activiti.engine.delegate.event.ActivitiEvent</literal>. The event exposes (if available) the <literal>type</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal>
-       and <literal>processDefinitionId</literal>. Certain events contain additional context related to the event that occured, additional information about additional playload can be
+       and <literal>processDefinitionId</literal>. Certain events contain additional context related to the event that occurred, additional information about additional playload can be
        found in the list of <link linkend="eventDispatcherEventTypes">all supported event types</link>.
     </para>
     
@@ -700,7 +700,7 @@ public class MyEventListener implements ActivitiEventListener {
 &lt;/bean&gt;</programlisting>
         </para>
         <para>
-          To get notified when certain types of events get dispatched, use the <literal>typedEventListeners</literal> property, which expects a map. The key of a map-entry is a comma-seperated list of event-names (or a single event-name). 
+          To get notified when certain types of events get dispatched, use the <literal>typedEventListeners</literal> property, which expects a map. The key of a map-entry is a comma-separated list of event-names (or a single event-name). 
           The value of a map-entry is a list of <literal>org.activiti.engine.delegate.event.ActivitiEventListener</literal> instances. 
           The snippet below adds an event-listener to the configuration, that is notified when a job execution was successful or failed:
                 <programlisting>
@@ -769,7 +769,7 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
   ...
 
 &lt;/process&gt;</programlisting>
-      <para>For events related to entities, it's also possible to add listeners to a process-definition that get only notified when enitity-events occur for a certain
+      <para>For events related to entities, it's also possible to add listeners to a process-definition that get only notified when entity-events occur for a certain
       entity type. The snippet below shows how this can be achieved. It can be used along for ALL entity-events (first example) or for specific event types only (second example).</para>   
         <programlisting>
 &lt;process id="testEventListeners"&gt;
@@ -782,7 +782,7 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
 
 &lt;/process&gt;</programlisting>
 
- <para>For events related to entities, it's also possible to add listeners to a process-definition that get notified only enitity-events occur for a certain
+ <para>For events related to entities, it's also possible to add listeners to a process-definition that get notified only entity-events occur for a certain
       entity type. The snippet below shows how this can be done. It can be used along for ALL entity-events (first example) or for specific event types only (second example).</para>   
         <programlisting>
 &lt;process id="testEventListeners"&gt;
@@ -833,7 +833,7 @@ void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... 
   &lt;/extensionElements&gt;
 &lt;/process&gt;</programlisting>
 
-<para>If additional logic is needed to decide wether or not to throw the BPMN-event, it's possible to extend the listener-classes provided by Activiti. By overriding the <literal>isValidEvent(ActivitiEvent event)</literal>
+<para>If additional logic is needed to decide whether or not to throw the BPMN-event, it's possible to extend the listener-classes provided by Activiti. By overriding the <literal>isValidEvent(ActivitiEvent event)</literal>
 in your subclass, BPMN-event throwing can be prevented. The classes involved are <literal>org.activiti.engine.test.api.event.SignalThrowingEventListenerTest</literal>, <literal>org.activiti.engine.impl.bpmn.helper.MessageThrowingEventListener</literal> and <literal>org.activiti.engine.impl.bpmn.helper.ErrorThrowingEventListener</literal>.</para>
        
       </section>
@@ -849,7 +849,7 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
           <listitem>
             <para>
               Expressions used in the <literal>delegateExpression</literal> do not have access to the execution-context, as other expressions (eg. in gateways) have. They can only reference beans defined in the <literal>beans</literal> property of the 
-              process engine configuration or when using spring (and the beans property is abscent) to any spring-bean that implements the listener interface.
+              process engine configuration or when using spring (and the beans property is absent) to any spring-bean that implements the listener interface.
             </para>
           </listitem>
           <listitem>
@@ -859,7 +859,7 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
           </listitem>
           <listitem>
             <para>
-              When an illegal event-type is used in the <literal>events</literal> attribute or illegal <literal>throwEvent</literal> value is used, an exception will be thrown when the process-definition is deployed (effectievly failing the deployment). When an illegal value for <literal>class</literal> or <literal>delegateExecution</literal> is supplied (either unexisting class, unexisting bean referenced or delegate not implementing listener interface), an exception will
+              When an illegal event-type is used in the <literal>events</literal> attribute or illegal <literal>throwEvent</literal> value is used, an exception will be thrown when the process-definition is deployed (effectively failing the deployment). When an illegal value for <literal>class</literal> or <literal>delegateExecution</literal> is supplied (either unexisting class, unexisting bean referenced or delegate not implementing listener interface), an exception will
               be thrown when the process is started (or when the first valid event for that process-definition is dispatched to the listener). Make sure the referenced classes are on the classpath and that the expressions resolve to a valid instance.
             </para>
           </listitem>
@@ -912,6 +912,11 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
               <row>
                 <entry>ENTITY_CREATED</entry>
                 <entry>A new entity is created. The new entity is contained in the event.</entry>
+                <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ENTITY_CREATED</entry>
+                <entry>A new entity has been created and is fully initialized. If any children are created as part of the creation of an entity, this event will be fired AFTER the create/initialisation of the child entities as opposed to the <literal>ENTITY_CREATE</literal> event.</entry>
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
               <row>
@@ -972,7 +977,7 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
               <row>
                 <entry>ACTIVITY_MESSAGE_RECEIVED</entry>
                 <entry>An activity received a message. Dispatched before the activity receives the message. When received, a <literal>ACTIVITY_SIGNAL</literal> or <literal>ACTIVITY_STARTED</literal> will
-                be dispatched for this activity, depending on the type (boudnary-event or event-subprocess start-event)</entry>
+                be dispatched for this activity, depending on the type (boundary-event or event-subprocess start-event)</entry>
                 <entry><literal>org.activiti...ActivitiMessageEvent</literal></entry>
               </row>
               <row>
@@ -995,17 +1000,17 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
               </row>
               <row>
                 <entry>VARIABLE_CREATED</entry>
-                <entry>A variable has been created. The event contais the variable name, value and related execution and task (if any).</entry>
+                <entry>A variable has been created. The event contains the variable name, value and related execution and task (if any).</entry>
                 <entry><literal>org.activiti...ActivitiVariableEvent</literal></entry>
               </row>
               <row>
                 <entry>VARIABLE_UPDATED</entry>
-                <entry>An existing variable has been updated. The event contais the variable name, updated value and related execution and task (if any).</entry>
+                <entry>An existing variable has been updated. The event contains the variable name, updated value and related execution and task (if any).</entry>
                 <entry><literal>org.activiti...ActivitiVariableEvent</literal></entry>
               </row>
               <row>
                 <entry>VARIABLE_DELETED</entry>
-                <entry>An existing variable has been deleted. The event contais the variable name, last known value and related execution and task (if any).</entry>
+                <entry>An existing variable has been deleted. The event contains the variable name, last known value and related execution and task (if any).</entry>
                 <entry><literal>org.activiti...ActivitiVariableEvent</literal></entry>
               </row>
               <row>
@@ -1044,7 +1049,7 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
           
           <itemizedlist>
             <listitem>
-              <para><emphasis role="bold"><literal>ENTITY_CREATED, ENTITY_DELETED</literal></emphasis>: Attachment, Comment, Deployment, Execution, Group, IdentityLink, Job, Model, ProcessDefinition, ProcessInstance, Task, User.</para>
+              <para><emphasis role="bold"><literal>ENTITY_CREATED, ENTITY_INITIALIZED, ENTITY_DELETED</literal></emphasis>: Attachment, Comment, Deployment, Execution, Group, IdentityLink, Job, Model, ProcessDefinition, ProcessInstance, Task, User.</para>
             </listitem>
             <listitem>
               <para><emphasis role="bold"><literal>ENTITY_UPDATED</literal></emphasis>: Attachment, Deployment, Execution, Group, IdentityLink, Job, Model, ProcessDefinition, ProcessInstance, Task, User.</para>

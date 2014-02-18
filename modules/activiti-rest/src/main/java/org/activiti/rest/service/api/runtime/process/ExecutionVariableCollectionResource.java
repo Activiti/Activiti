@@ -72,17 +72,23 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
   
   @Put
   public Object createOrUpdateExecutionVariable(Representation representation) {
+  	if(!authenticate()) { return null; }
+  	
     return createExecutionVariable(representation, true);
   }
   
   
   @Post
   public Object createExecutionVariable(Representation representation) {
+  	if(!authenticate()) { return null; }
+  	
    return createExecutionVariable(representation, false);
   }
   
   @Delete
   public void deleteAllLocalVariables() {
+  	if(!authenticate()) { return; }
+  	
     Execution execution = getExecutionFromRequest();
     Collection<String> currentVariables = ActivitiUtil.getRuntimeService().getVariablesLocal(execution.getId()).keySet();
     ActivitiUtil.getRuntimeService().removeVariablesLocal(execution.getId(), currentVariables);

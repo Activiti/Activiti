@@ -291,6 +291,7 @@
                                 <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
                                 <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485 -->
                             </excludes>
+                            <runOrder>alphabetical</runOrder>
                         </configuration>
                     </plugin>
                 </plugins>

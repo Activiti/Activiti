@@ -285,7 +285,7 @@ public class MyBusinessProcessTest {
     </para>
     
     <para>
-        Building on top of that (available for Spring 3.0+) is the <emphasis>@EnableActiviti</emphasis> anntation. In the simplest form
+        Building on top of that (available for Spring 3.0+) is the <emphasis>@EnableActiviti</emphasis> annotation. In the simplest form
         it looks like this:
         <programlisting>
   @Configuration

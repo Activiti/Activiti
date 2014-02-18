@@ -44,7 +44,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 		// Add candidate user and group
 		repositoryService.addCandidateStarterUser(processDefinition.getId(), "kermit");
 		repositoryService.addCandidateStarterGroup(processDefinition.getId(), "sales");
-		assertEquals(2, listener.getEventsReceived().size());
+		assertEquals(4, listener.getEventsReceived().size());
 
 		ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 		assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
@@ -52,12 +52,19 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 		assertEquals(processDefinition.getId(), event.getProcessDefinitionId());
 		assertNull(event.getProcessInstanceId());
 		assertNull(event.getExecutionId());
+		
 		event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+		assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+		
+		event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
 		assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 		assertTrue(event.getEntity() instanceof IdentityLink);
 		assertEquals(processDefinition.getId(), event.getProcessDefinitionId());
 		assertNull(event.getProcessInstanceId());
 		assertNull(event.getExecutionId());
+		
+		event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
+		assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
 		listener.clearEventsReceived();
 
 		// Delete identity links
@@ -87,7 +94,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
 		// Add identity link
 		runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "test");
-		assertEquals(1, listener.getEventsReceived().size());
+		assertEquals(2, listener.getEventsReceived().size());
 
 		ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 		assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
@@ -98,6 +105,9 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 		IdentityLink link = (IdentityLink) event.getEntity();
 		assertEquals("kermit", link.getUserId());
 		assertEquals("test", link.getType());
+		
+		event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+		assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
 		
 		listener.clearEventsReceived();
 
@@ -129,7 +139,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 		taskService.addCandidateGroup(task.getId(), "sales");
 		
 		// Three events are received, since the user link on the task also creates an involvment in the process
-		assertEquals(3, listener.getEventsReceived().size());
+		assertEquals(6, listener.getEventsReceived().size());
 
 		ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 		assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
@@ -142,7 +152,12 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 		assertEquals(task.getProcessDefinitionId(), event.getProcessDefinitionId());
 		assertEquals(task.getProcessInstanceId(), event.getProcessInstanceId());
 		
-		event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
+		event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+		assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+		assertEquals("kermit", link.getUserId());
+		assertEquals("candidate", link.getType());
+		
+		event = (ActivitiEntityEvent) listener.getEventsReceived().get(4);
 		assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 		assertTrue(event.getEntity() instanceof IdentityLink);
 		link = (IdentityLink) event.getEntity();
@@ -152,6 +167,10 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 		assertEquals(task.getExecutionId(), event.getExecutionId());
 		assertEquals(task.getProcessDefinitionId(), event.getProcessDefinitionId());
 		assertEquals(task.getProcessInstanceId(), event.getProcessInstanceId());
+		event = (ActivitiEntityEvent) listener.getEventsReceived().get(5);
+		assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+		assertEquals("sales", link.getGroupId());
+		assertEquals("candidate", link.getType());
 		
 		listener.clearEventsReceived();
 

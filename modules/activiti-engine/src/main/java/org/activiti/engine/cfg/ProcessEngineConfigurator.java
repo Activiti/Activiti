@@ -22,11 +22,36 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  * @author Joram Barrez
  */
 public interface ProcessEngineConfigurator {
+	
+	/**
+	 * Called <b>before</b> any initialisation has been done.
+	 * This can for example be useful to change configuration settings
+	 * before anything that uses those properties is created.
+	 * 
+	 * Allows to tweak the process engine by passing the {@link ProcessEngineConfigurationImpl}
+   * which allows tweaking it programmatically.
+	 * 
+	 * An example is the jdbc url. When a {@link ProcessEngineConfigurator} instance
+	 * wants to change it, it needs to do it in this method, or otherwise
+	 * the datasource would already have been created with the 'old' value
+	 * for the jdbc url.
+	 */
+	void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration);
   
   /**
-   * Called when the engine boots up, but before it is usable.
+   * Called when the engine boots up, before it is usable, but after
+   * the initialisation of internal objects is done.
+   *  
    * Allows to tweak the process engine by passing the {@link ProcessEngineConfigurationImpl}
    * which allows tweaking it programmatically.
+   * 
+   * An example is the ldap user/group manager, which is an addition to the engine.
+   * No default properties need to be overridden for this (otherwise the {@link #beforeInit(ProcessEngineConfigurationImpl)} 
+   * method should be used) so the logic contained in this method is executed
+   * after initialisation of the default objects.
+   * 
+   * Probably a better name would be 'afterInit' (cfr {@link #beforeInit(ProcessEngineConfigurationImpl)}),
+   * but not possible due to backwards compatibility.
    */
   void configure(ProcessEngineConfigurationImpl processEngineConfiguration);
   
