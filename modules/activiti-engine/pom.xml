@@ -186,6 +186,11 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <DynamicImport-Package>*</DynamicImport-Package>
+          </instructions>
+        </configuration>
         <executions>
           <execution>
             <phase>generate-sources</phase>
