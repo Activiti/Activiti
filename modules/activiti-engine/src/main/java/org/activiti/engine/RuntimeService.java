@@ -13,6 +13,7 @@
 package org.activiti.engine;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,12 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.ExecutionQuery;
-import org.activiti.engine.runtime.NativeExecutionQuery;
-import org.activiti.engine.runtime.NativeProcessInstanceQuery;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.runtime.*;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
@@ -36,7 +32,7 @@ import org.activiti.engine.task.IdentityLinkType;
  * @author Joram Barrez
  * @author Daniel Meyer
  */
-public interface RuntimeService {
+public interface RuntimeService extends ClockReader {
 
   /**
    * Starts a new process instance in the latest version of the process

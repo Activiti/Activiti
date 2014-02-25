@@ -228,7 +228,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     "org/activiti/engine/test/bpmn/callactivity/CallActivity.testTimerOnCallActivity.bpmn20.xml",
     "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml"})
   public void testTimerOnCallActivity() {
-    Date startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    Date startTime = processEngineConfiguration.getClock().getCurrentTime();
     
     // After process start, the task in the subprocess should be active
     runtimeService.startProcessInstanceByKey("timerOnCallActivity");
@@ -237,7 +237,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", taskInSubProcess.getName());
     
     // When the timer on the subprocess is fired, the complete subprocess is destroyed
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
     waitForJobExecutorToProcessAllJobs(10000, 5000L);
     
     Task escalatedTask = taskQuery.singleResult();

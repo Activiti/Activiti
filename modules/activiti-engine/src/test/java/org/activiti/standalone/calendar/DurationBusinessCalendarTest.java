@@ -14,8 +14,9 @@
 package org.activiti.standalone.calendar;
 
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.test.PvmTestCase;
+import org.activiti.engine.impl.util.DefaultClockImpl;
+import org.activiti.engine.runtime.Clock;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,11 +27,12 @@ import java.util.Date;
 public class DurationBusinessCalendarTest extends PvmTestCase {
 
   public void testSimpleDuration() throws Exception {
-    DurationBusinessCalendar businessCalendar = new DurationBusinessCalendar();
+    Clock testingClock = new DefaultClockImpl();
+    DurationBusinessCalendar businessCalendar = new DurationBusinessCalendar(testingClock);
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MM dd - HH:mm");
     Date now = simpleDateFormat.parse("2010 06 11 - 17:23");
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(now);
+    testingClock.setCurrentTime(now);
 
     Date duedate = businessCalendar.resolveDuedate("P2DT5H70M");
 

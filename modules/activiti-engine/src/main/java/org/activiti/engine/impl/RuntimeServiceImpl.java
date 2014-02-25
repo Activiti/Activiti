@@ -12,11 +12,8 @@
  */
 package org.activiti.engine.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Time;
+import java.util.*;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
@@ -56,7 +53,7 @@ import org.activiti.engine.task.IdentityLink;
  * @author Tom Baeyens
  * @author Daniel Meyer
  */
-public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
+public class RuntimeServiceImpl extends TimeServiceImpl implements RuntimeService {
 
   public ProcessInstance startProcessInstanceByKey(String processDefinitionKey) {
     return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, null));
@@ -312,5 +309,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 	@Override
   public void dispatchEvent(ActivitiEvent event) {
 		commandExecutor.execute(new DispatchEventCommand(event));
+  }
+
+  @Override
+  public Date getCurrentTime() {
+    return clockReader.getCurrentTime();
   }
 }

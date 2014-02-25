@@ -107,7 +107,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   /** creates and initializes a new persistent task. */
   public static TaskEntity createAndInsert(ActivityExecution execution) {
-    TaskEntity task = create();
+    TaskEntity task = create(execution.getEngineServices().getRuntimeService().getCurrentTime());
     task.insert((ExecutionEntity) execution);
     return task;
   }
@@ -161,10 +161,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   /**  Creates a new task.  Embedded state and create time will be initialized.
    * But this task still will have to be persisted. See {@link #insert(ExecutionEntity))}. */
-  public static TaskEntity create() {
+  public static TaskEntity create(Date createTime) {
     TaskEntity task = new TaskEntity();
     task.isIdentityLinksInitialized = true;
-    task.createTime = Context.getCommandContext().getProcessEngineConfiguration().getClock().getCurrentTime();
+    task.createTime = createTime;
     return task;
   }
 

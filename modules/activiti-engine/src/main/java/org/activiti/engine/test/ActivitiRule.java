@@ -14,6 +14,8 @@
 package org.activiti.engine.test;
 
 import org.activiti.engine.*;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.test.mock.ActivitiMockSupport;
@@ -79,6 +81,7 @@ public class ActivitiRule implements TestRule {
 	protected String configurationResource = "activiti.cfg.xml";
 	protected String deploymentId = null;
 
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
 	protected ProcessEngine processEngine;
 	protected RepositoryService repositoryService;
 	protected RuntimeService runtimeService;
@@ -90,7 +93,7 @@ public class ActivitiRule implements TestRule {
 
 	protected ActivitiMockSupport mockSupport;
 
-	public ActivitiRule() {
+  public ActivitiRule() {
 	}
 
 	public ActivitiRule(String configurationResource) {
@@ -225,6 +228,7 @@ public class ActivitiRule implements TestRule {
 	}
 
 	protected void initializeServices() {
+    processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
 		repositoryService = processEngine.getRepositoryService();
 		runtimeService = processEngine.getRuntimeService();
 		taskService = processEngine.getTaskService();
@@ -256,7 +260,7 @@ public class ActivitiRule implements TestRule {
 		}
 
 		// Reset internal clock
-		Context.getProcessEngineConfiguration().getClock().reset();
+		processEngineConfiguration.getClock().reset();
 
 		// Rest mocks
 		if (mockSupport != null) {
@@ -265,7 +269,7 @@ public class ActivitiRule implements TestRule {
 	}
 
 	public void setCurrentTime(Date currentTime) {
-		Context.getProcessEngineConfiguration().getClock().setCurrentTime(currentTime);
+		processEngineConfiguration.getClock().setCurrentTime(currentTime);
 	}
 
 	public String getConfigurationResource() {

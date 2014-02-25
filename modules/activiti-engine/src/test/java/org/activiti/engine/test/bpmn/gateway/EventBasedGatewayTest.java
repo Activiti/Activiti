@@ -67,7 +67,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     assertEquals(1, managementService.createJobQuery().count());
     
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime() + 10000));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
     try {
       // wait for timer to fire
       waitForJobExecutorToProcessAllJobs(10000, 100);
@@ -84,7 +84,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       
       taskService.complete(task.getId());
     }finally{
-      Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date());
+      processEngineConfiguration.getClock().setCurrentTime(new Date());
     }
   }
   
@@ -107,7 +107,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       .singleResult();
     assertNotNull(execution);
     
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime() + 10000));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
     try {
      
       EventSubscriptionEntity messageEventSubscription = messageEventSubscriptionQuery.singleResult();
@@ -125,7 +125,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       
       taskService.complete(task.getId());
     }finally{
-      Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date());
+      processEngineConfiguration.getClock().setCurrentTime(new Date());
     }
   }
 

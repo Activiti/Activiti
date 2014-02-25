@@ -111,11 +111,11 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   public void testHistoricTaskInstanceQuery() throws Exception {
     Calendar start = Calendar.getInstance();
     start.set(Calendar.MILLISECOND, 0);
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(start.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(start.getTime());
     
     // First instance is finished
     ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest", "myBusinessKey");
-    Context.getProcessEngineConfiguration().getClock().reset();
+    processEngineConfiguration.getClock().reset();
     
     // Set priority to non-default value
     Task task = taskService.createTaskQuery().processInstanceId(finishedInstance.getId()).singleResult();

@@ -67,7 +67,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   public void testJobCommandsWithTimer() {
     // clock gets automatically reset in LogTestCase.runTest
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(SOME_TIME));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME));
 
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
@@ -87,7 +87,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
     List<String> expectedJobIds = new ArrayList<String>();
 
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
 
     acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
     jobIdsList = acquiredJobs.getJobIdBatches();

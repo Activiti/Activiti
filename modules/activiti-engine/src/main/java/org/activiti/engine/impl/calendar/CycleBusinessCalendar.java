@@ -14,21 +14,25 @@ package org.activiti.engine.impl.calendar;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.runtime.ClockReader;
 
 import java.util.Date;
 
-public class CycleBusinessCalendar implements BusinessCalendar {
+public class CycleBusinessCalendar extends BusinessCalendarImpl {
 
   public static String NAME = "cycle";
 
+  public CycleBusinessCalendar(ClockReader clockReader) {
+    super(clockReader);
+  }
 
   public Date resolveDuedate(String duedateDescription) {
     try {
       if (duedateDescription.startsWith("R")) {
-        return new DurationHelper(duedateDescription).getDateAfter();
+        return new DurationHelper(duedateDescription, clockReader).getDateAfter();
       } else {
         CronExpression ce = new CronExpression(duedateDescription);
-        return ce.getTimeAfter(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+        return ce.getTimeAfter(clockReader.getCurrentTime());
       }
 
     } catch (Exception e) {

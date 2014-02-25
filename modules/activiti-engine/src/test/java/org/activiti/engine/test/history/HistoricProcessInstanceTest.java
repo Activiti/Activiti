@@ -45,7 +45,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     calendar.set(Calendar.MILLISECOND, 0);
     Date noon = calendar.getTime();
     
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(noon);
+    processEngineConfiguration.getClock().setCurrentTime(noon);
     final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "myBusinessKey");
 
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().unfinished().count());
@@ -67,7 +67,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     // in this test scenario we assume that 25 seconds after the process start, the 
     // user completes the task (yes! he must be almost as fast as me)
     Date twentyFiveSecsAfterNoon = new Date(noon.getTime() + 25*1000);
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(twentyFiveSecsAfterNoon);
+    processEngineConfiguration.getClock().setCurrentTime(twentyFiveSecsAfterNoon);
     taskService.complete(tasks.get(0).getId());
 
     historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -112,7 +112,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   public void testHistoricProcessInstanceQuery() {
     Calendar startTime = Calendar.getInstance();
     
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(startTime.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(startTime.getTime());
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "businessKey123");
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "someType");
     Calendar hourAgo = Calendar.getInstance();

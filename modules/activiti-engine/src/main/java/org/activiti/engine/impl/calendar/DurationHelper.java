@@ -16,6 +16,7 @@ package org.activiti.engine.impl.calendar;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.runtime.ClockReader;
 import org.joda.time.DateTime;
 
 import javax.xml.datatype.DatatypeFactory;
@@ -39,7 +40,10 @@ public class DurationHelper {
 
   DatatypeFactory datatypeFactory;
 
-  public DurationHelper(String expressionS) throws Exception {
+  protected ClockReader clockReader;
+
+  public DurationHelper(String expressionS, ClockReader clockReader) throws Exception {
+    this.clockReader = clockReader;
     List<String> expression = Arrays.asList(expressionS.split("/"));
     datatypeFactory = DatatypeFactory.newInstance();
 
@@ -65,14 +69,14 @@ public class DurationHelper {
       }
     }
     if (start == null && end == null) {
-      start = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+      start = clockReader.getCurrentTime();
     }
 
   }
 
   public Date getDateAfter() {
     if (isRepeat) {
-      return getDateAfterRepeat(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+      return getDateAfterRepeat(clockReader.getCurrentTime());
     }
     //TODO: is this correct?
     if (end != null) {

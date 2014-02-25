@@ -313,7 +313,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     // In the javaDelegate, the current time is manipulated
     Date updatedDate = sdf.parse("01/01/2001 01:23:46 000");
     
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(startedDate);
+    processEngineConfiguration.getClock().setCurrentTime(startedDate);
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricVariableUpdateProcess", variables);
     
@@ -447,7 +447,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
   public void testHistoricFormProperties() throws Exception {
     Date startedDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss SSS").parse("01/01/2001 01:23:46 000");
     
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(startedDate);
+    processEngineConfiguration.getClock().setCurrentTime(startedDate);
     
     Map<String, String> formProperties = new HashMap<String, String>();
     formProperties.put("formProp1", "Activiti rocks");

@@ -70,11 +70,11 @@ public class AcquireJobsRunnable implements Runnable {
           isJobAdded = false;
           
           // check if the next timer should fire before the normal sleep time is over
-          Date duedate = new Date(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime() + millisToWait);
+          Date duedate = new Date(jobExecutor.getCurrentTime().getTime() + millisToWait);
           List<TimerEntity> nextTimers = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(duedate, new Page(0, 1)));
           
           if (!nextTimers.isEmpty()) {
-          long millisTillNextTimer = nextTimers.get(0).getDuedate().getTime() - Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime();
+          long millisTillNextTimer = nextTimers.get(0).getDuedate().getTime() - jobExecutor.getCurrentTime().getTime();
             if (millisTillNextTimer < millisToWait) {
               millisToWait = millisTillNextTimer;
             }

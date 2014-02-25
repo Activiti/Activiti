@@ -16,6 +16,8 @@ package org.activiti.standalone.calendar;
 
 import org.activiti.engine.impl.calendar.DurationHelper;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.util.DefaultClockImpl;
+import org.activiti.engine.runtime.Clock;
 import org.junit.After;
 import org.junit.Test;
 
@@ -26,48 +28,45 @@ import static groovy.util.GroovyTestCase.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class DurationHelperTest {
-  
-  @After
-  public void resetClock() {
-    Context.getProcessEngineConfiguration().getClock().reset();
-  }
 
   @Test
   public void shouldNotExceedNumber() throws Exception {
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(0));
-    DurationHelper dh = new DurationHelper("R2/PT10S");
+    Clock testingClock = new DefaultClockImpl();
+    testingClock.setCurrentTime(new Date(0));
+    DurationHelper dh = new DurationHelper("R2/PT10S", testingClock);
 
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(15000));
+    testingClock.setCurrentTime(new Date(15000));
     assertEquals(20000, dh.getDateAfter().getTime());
 
-
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(30000));
+    testingClock.setCurrentTime(new Date(30000));
     assertNull(dh.getDateAfter());
   }
 
   @Test
   public void shouldNotExceedNumberPeriods() throws Exception {
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(parse("19700101-00:00:00"));
-    DurationHelper dh = new DurationHelper("R2/1970-01-01T00:00:00/1970-01-01T00:00:10");
+    Clock testingClock = new DefaultClockImpl();
+    testingClock.setCurrentTime(parse("19700101-00:00:00"));
+    DurationHelper dh = new DurationHelper("R2/1970-01-01T00:00:00/1970-01-01T00:00:10", testingClock);
 
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(parse("19700101-00:00:15"));
+    testingClock.setCurrentTime(parse("19700101-00:00:15"));
     assertEquals(parse("19700101-00:00:20"), dh.getDateAfter());
 
 
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(parse("19700101-00:00:30"));
+    testingClock.setCurrentTime(parse("19700101-00:00:30"));
     assertNull(dh.getDateAfter());
   }
 
   @Test
   public void shouldNotExceedNumberNegative() throws Exception {
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(parse("19700101-00:00:00"));
-    DurationHelper dh = new DurationHelper("R2/PT10S/1970-01-01T00:00:50");
+    Clock testingClock = new DefaultClockImpl();
+    testingClock.setCurrentTime(parse("19700101-00:00:00"));
+    DurationHelper dh = new DurationHelper("R2/PT10S/1970-01-01T00:00:50", testingClock);
 
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(parse("19700101-00:00:20"));
+    testingClock.setCurrentTime(parse("19700101-00:00:20"));
     assertEquals(parse("19700101-00:00:30"), dh.getDateAfter());
 
 
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(parse("19700101-00:00:35"));
+    testingClock.setCurrentTime(parse("19700101-00:00:35"));
 
     assertEquals(parse("19700101-00:00:40"), dh.getDateAfter());
   }

@@ -218,13 +218,13 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
   public void testDeleteJobThatWasAlreadyAcquired() {
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date());
+    processEngineConfiguration.getClock().setCurrentTime(new Date());
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
     Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     
     // We need to move time at least one hour to make the timer executable
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime() + 7200000L));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 7200000L));
 
     // Acquire job by running the acquire command manually
     ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;

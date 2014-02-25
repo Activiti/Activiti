@@ -145,7 +145,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   public void testDeploymentWithDelayedProcessDefinitionActivation() {
     
     Date startTime = new Date();
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(startTime);
+    processEngineConfiguration.getClock().setCurrentTime(startTime);
     Date inThreeDays = new Date(startTime.getTime() + (3 * 24 * 60 * 60 * 1000));
     
     // Deploy process, but activate after three days
@@ -170,7 +170,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     
     // Move time four days forward, the timer will fire and the process definitions will be active
     Date inFourDays = new Date(startTime.getTime() + (4 * 24 * 60 * 60 * 1000));
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(inFourDays);
+    processEngineConfiguration.getClock().setCurrentTime(inFourDays);
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
     
     assertEquals(1, repositoryService.createDeploymentQuery().count());

@@ -1080,7 +1080,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
     // 6 tasks for kermit
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
     for (int i = 0; i < 6; i++) {
       Task task = taskService.newTask();
       task.setName("testTask");
@@ -1091,7 +1091,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       taskService.addCandidateUser(task.getId(), "kermit");
     }
 
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(sdf.parse("02/02/2002 02:02:02.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("02/02/2002 02:02:02.000"));
     // 1 task for gonzo
     Task task = taskService.newTask();
     task.setName("gonzoTask");
@@ -1102,7 +1102,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     taskService.setVariable(task.getId(), "testVar", "someVariable");
     ids.add(task.getId());
 
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(sdf.parse("03/03/2003 03:03:03.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("03/03/2003 03:03:03.000"));
     // 2 tasks for management group
     for (int i = 0; i < 2; i++) {
       task = taskService.newTask();
@@ -1113,7 +1113,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       ids.add(task.getId());
     }
 
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(sdf.parse("04/04/2004 04:04:04.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("04/04/2004 04:04:04.000"));
     // 2 tasks for accountancy group
     for (int i = 0; i < 2; i++) {
       task = taskService.newTask();
@@ -1124,7 +1124,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       ids.add(task.getId());
     }
 
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(sdf.parse("05/05/2005 05:05:05.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("05/05/2005 05:05:05.000"));
     // 1 task assigned to management and accountancy group
     task = taskService.newTask();
     task.setName("managementAndAccountancyTask");

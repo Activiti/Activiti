@@ -82,7 +82,8 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     startTime.set(Calendar.MILLISECOND, 0);
     
     Date t1 = startTime.getTime();
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(t1);
+    processEngineConfiguration.getClock().setCurrentTime(t1);
+
     processInstanceIdOne = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     testStartTime = t1;
     timerOneFireTime = new Date(t1.getTime() + ONE_HOUR);
@@ -90,14 +91,14 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     // Create proc inst that has timer that will fire on t2 + 1 hour
     startTime.add(Calendar.HOUR_OF_DAY, 1);
     Date t2 = startTime.getTime();  // t2 = t1 + 1 hour
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(t2);
+    processEngineConfiguration.getClock().setCurrentTime(t2);
     processInstanceIdTwo = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     timerTwoFireTime = new Date(t2.getTime() + ONE_HOUR);
     
     // Create proc inst that has timer that will fire on t3 + 1 hour
     startTime.add(Calendar.HOUR_OF_DAY, 1);
     Date t3 = startTime.getTime(); // t3 = t2 + 1 hour
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(t3);
+    processEngineConfiguration.getClock().setCurrentTime(t3);
     processInstanceIdThree = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     timerThreeFireTime = new Date(t3.getTime() + ONE_HOUR);
     
@@ -165,7 +166,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryByExecutable() {
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // all jobs should be executable at t3 + 1hour.1second
+    processEngineConfiguration.getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // all jobs should be executable at t3 + 1hour.1second
     JobQuery query = managementService.createJobQuery().executable();
     verifyQueryResults(query, 4);
     
@@ -174,7 +175,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 3);
     
     // Setting the clock before the start of the process instance, makes none of the jobs executable
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(testStartTime);
+    processEngineConfiguration.getClock().setCurrentTime(testStartTime);
     verifyQueryResults(query, 1); // 1, since a message is always executable when retries > 0
   }
   
@@ -312,7 +313,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     
     // sorting on multiple fields
     setRetries(processInstanceIdTwo, 2);
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // make sure all timers can fire
+    processEngineConfiguration.getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // make sure all timers can fire
     
     JobQuery query = managementService.createJobQuery()
       .timers()

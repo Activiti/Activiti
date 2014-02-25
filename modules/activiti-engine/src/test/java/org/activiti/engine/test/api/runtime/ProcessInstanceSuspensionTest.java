@@ -571,7 +571,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
   public void testJobNotExecutedAfterProcessInstanceSuspend() {
     
     Date now = new Date();
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(now);
+    processEngineConfiguration.getClock().setCurrentTime(now);
     
     // Suspending the process instance should also stop the execution of jobs for that process instance
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
@@ -581,7 +581,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createJobQuery().count());
     
     // The jobs should not be executed now
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
+    processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
     waitForJobExecutorToProcessAllJobs(1000L, 100L);
     assertEquals(1, managementService.createJobQuery().count());
     

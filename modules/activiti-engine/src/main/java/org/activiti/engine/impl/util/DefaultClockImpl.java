@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.util;
 
-import org.activiti.engine.impl.context.Context;
-
 import java.util.Date;
 
 
@@ -22,7 +20,7 @@ import java.util.Date;
  */
 public class DefaultClockImpl implements org.activiti.engine.runtime.Clock {
   
-  private volatile static Date CURRENT_TIME = null;
+  private volatile Date CURRENT_TIME = null;
   
   @Override
   public void setCurrentTime(Date currentTime) {

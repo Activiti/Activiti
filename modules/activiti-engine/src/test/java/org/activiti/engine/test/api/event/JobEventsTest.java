@@ -67,7 +67,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		// Force timer to fire
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		Context.getProcessEngineConfiguration().getClock().setCurrentTime(tomorrow.getTime());
+		processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
 		waitForJobExecutorToProcessAllJobs(2000, 100);
 		
 		// Check delete-event has been dispatched
@@ -106,7 +106,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		// Force timer to fire
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		Context.getProcessEngineConfiguration().getClock().setCurrentTime(tomorrow.getTime());
+		processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
 		waitForJobExecutorToProcessAllJobs(2000, 100);
 		
 		// Check delete-event has been dispatched

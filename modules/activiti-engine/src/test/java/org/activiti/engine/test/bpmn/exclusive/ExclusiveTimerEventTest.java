@@ -35,7 +35,7 @@ public class ExclusiveTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(3, jobQuery.count());
 
     // After setting the clock to time '50minutes and 5 seconds', the timers should fire
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 100L);
 
     assertEquals(0, jobQuery.count());

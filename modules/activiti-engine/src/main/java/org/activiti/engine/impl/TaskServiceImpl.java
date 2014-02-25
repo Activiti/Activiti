@@ -56,6 +56,7 @@ import org.activiti.engine.impl.cmd.SetTaskDueDateCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.runtime.ClockReader;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
@@ -70,14 +71,14 @@ import org.activiti.engine.task.TaskQuery;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class TaskServiceImpl extends ServiceImpl implements TaskService {
+public class TaskServiceImpl extends TimeServiceImpl implements TaskService {
 
   public Task newTask() {
     return newTask(null);
   }
   
   public Task newTask(String taskId) {
-    TaskEntity task = TaskEntity.create();
+    TaskEntity task = TaskEntity.create(getCurrentTime());
     task.setId(taskId);
     return task;
   }

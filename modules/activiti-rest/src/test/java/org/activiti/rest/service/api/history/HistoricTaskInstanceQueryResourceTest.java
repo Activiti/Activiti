@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -59,11 +58,11 @@ public class HistoricTaskInstanceQueryResourceTest extends BaseRestTestCase {
     processVariables.put("booleanVar", false);
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess",  "myBusinessKey", processVariables);
-    ClockUtil.setCurrentTime(new GregorianCalendar(2013, 0, 1).getTime());
+    processEngineConfiguration.getClock().setCurrentTime(new GregorianCalendar(2013, 0, 1).getTime());
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     Task finishedTaskProcess1 = task;
     taskService.complete(task.getId());
-    ClockUtil.setCurrentTime(null);
+    processEngineConfiguration.getClock().setCurrentTime(null);
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.setVariableLocal(task.getId(), "local", "test");
     taskService.setOwner(task.getId(), "test");
