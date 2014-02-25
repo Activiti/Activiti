@@ -18,6 +18,9 @@
     <activiti.artifact>
       org.activiti.json.converter
     </activiti.artifact>
+    <activiti.osgi.export.additional>
+      org.activiti.editor*
+    </activiti.osgi.export.additional>
   </properties>
 
   <build>
