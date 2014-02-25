@@ -18,6 +18,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ManualTask;
+import org.activiti.bpmn.model.Task;
 
 /**
  * @author Tijs Rademakers
@@ -29,7 +30,7 @@ public class TaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   public static Class<? extends BaseElement> getBpmnElementType() {
-    return ManualTask.class;
+    return Task.class;
   }
   
   @Override
