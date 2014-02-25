@@ -53,6 +53,9 @@ public class HistoricTaskInstanceBaseResource extends SecuredResource {
     allowedSortProperties.put("owner", HistoricTaskInstanceQueryProperty.TASK_OWNER);
     allowedSortProperties.put("priority", HistoricTaskInstanceQueryProperty.TASK_PRIORITY);
     allowedSortProperties.put("tenantId", HistoricTaskInstanceQueryProperty.TENANT_ID_);
+    
+    // Duplicate usage of HistoricTaskInstanceQueryProperty.START, to keep naming consistent and keep backwards-compatibility
+    allowedSortProperties.put("startTime", HistoricTaskInstanceQueryProperty.START);
   }
 
   protected DataResponse getQueryResponse(HistoricTaskInstanceQueryRequest queryRequest, Form urlQuery) {
