@@ -12,16 +12,16 @@
  */
 package org.activiti.engine.test.api.event;
 
-import java.util.Calendar;
-
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+
+import java.util.Calendar;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to jobs.
@@ -67,7 +67,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		// Force timer to fire
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		ClockUtil.setCurrentTime(tomorrow.getTime());
+		Context.getProcessEngineConfiguration().getClock().setCurrentTime(tomorrow.getTime());
 		waitForJobExecutorToProcessAllJobs(2000, 100);
 		
 		// Check delete-event has been dispatched
@@ -106,7 +106,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		// Force timer to fire
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		ClockUtil.setCurrentTime(tomorrow.getTime());
+		Context.getProcessEngineConfiguration().getClock().setCurrentTime(tomorrow.getTime());
 		waitForJobExecutorToProcessAllJobs(2000, 100);
 		
 		// Check delete-event has been dispatched

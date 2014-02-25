@@ -13,24 +13,19 @@
 
 package org.activiti.engine.test.history;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
@@ -116,11 +111,11 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   public void testHistoricTaskInstanceQuery() throws Exception {
     Calendar start = Calendar.getInstance();
     start.set(Calendar.MILLISECOND, 0);
-    ClockUtil.setCurrentTime(start.getTime());
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(start.getTime());
     
     // First instance is finished
     ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest", "myBusinessKey");
-    ClockUtil.reset();
+    Context.getProcessEngineConfiguration().getClock().reset();
     
     // Set priority to non-default value
     Task task = taskService.createTaskQuery().processInstanceId(finishedInstance.getId()).singleResult();

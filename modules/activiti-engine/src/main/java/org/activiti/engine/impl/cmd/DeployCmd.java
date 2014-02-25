@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.repository.Deployment;
 
 /**
@@ -44,7 +44,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
   public Deployment execute(CommandContext commandContext) {
     DeploymentEntity deployment = deploymentBuilder.getDeployment();
 
-    deployment.setDeploymentTime(ClockUtil.getCurrentTime());
+    deployment.setDeploymentTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
 
     if ( deploymentBuilder.isDuplicateFilterEnabled() ) {
       DeploymentEntity existingDeployment = Context

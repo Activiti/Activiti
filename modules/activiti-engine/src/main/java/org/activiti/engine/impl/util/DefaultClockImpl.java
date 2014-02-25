@@ -12,25 +12,30 @@
  */
 package org.activiti.engine.impl.util;
 
+import org.activiti.engine.impl.context.Context;
+
 import java.util.Date;
 
 
 /**
  * @author Joram Barrez
  */
-public class ClockUtil {
+public class DefaultClockImpl implements org.activiti.engine.runtime.Clock {
   
   private volatile static Date CURRENT_TIME = null;
   
-  public static void setCurrentTime(Date currentTime) {
-    ClockUtil.CURRENT_TIME = currentTime;
+  @Override
+  public void setCurrentTime(Date currentTime) {
+    this.CURRENT_TIME = currentTime;
   }
   
-  public static void reset() {
-    ClockUtil.CURRENT_TIME = null;
+  @Override
+  public void reset() {
+    this.CURRENT_TIME = null;
   } 
   
-  public static Date getCurrentTime() {
+  @Override
+  public Date getCurrentTime() {
     if (CURRENT_TIME != null) {
       return CURRENT_TIME;
     }

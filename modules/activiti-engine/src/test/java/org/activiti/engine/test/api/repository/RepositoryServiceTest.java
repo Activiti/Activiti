@@ -13,27 +13,23 @@
 
 package org.activiti.engine.test.api.repository;
 
+import org.activiti.bpmn.model.*;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.test.Deployment;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.List;
-
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.EndEvent;
-import org.activiti.bpmn.model.ParallelGateway;
-import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.UserTask;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.repository.Model;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.test.Deployment;
 
 /**
  * @author Frederik Heremans
@@ -149,7 +145,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   public void testDeploymentWithDelayedProcessDefinitionActivation() {
     
     Date startTime = new Date();
-    ClockUtil.setCurrentTime(startTime);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(startTime);
     Date inThreeDays = new Date(startTime.getTime() + (3 * 24 * 60 * 60 * 1000));
     
     // Deploy process, but activate after three days
@@ -174,7 +170,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     
     // Move time four days forward, the timer will fire and the process definitions will be active
     Date inFourDays = new Date(startTime.getTime() + (4 * 24 * 60 * 60 * 1000));
-    ClockUtil.setCurrentTime(inFourDays);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(inFourDays);
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
     
     assertEquals(1, repositoryService.createDeploymentQuery().count());

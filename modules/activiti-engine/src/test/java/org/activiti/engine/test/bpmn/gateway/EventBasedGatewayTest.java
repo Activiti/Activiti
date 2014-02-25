@@ -13,15 +13,15 @@
 
 package org.activiti.engine.test.bpmn.gateway;
 
-import java.util.Date;
-
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import java.util.Date;
 
 
 /**
@@ -67,7 +67,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     assertEquals(1, managementService.createJobQuery().count());
     
-    ClockUtil.setCurrentTime(new Date(ClockUtil.getCurrentTime().getTime() +10000));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime() + 10000));
     try {
       // wait for timer to fire
       waitForJobExecutorToProcessAllJobs(10000, 100);
@@ -84,7 +84,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       
       taskService.complete(task.getId());
     }finally{
-      ClockUtil.setCurrentTime(new Date());
+      Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date());
     }
   }
   
@@ -107,7 +107,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       .singleResult();
     assertNotNull(execution);
     
-    ClockUtil.setCurrentTime(new Date(ClockUtil.getCurrentTime().getTime() +10000));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime() + 10000));
     try {
      
       EventSubscriptionEntity messageEventSubscription = messageEventSubscriptionQuery.singleResult();
@@ -125,7 +125,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
       
       taskService.complete(task.getId());
     }finally{
-      ClockUtil.setCurrentTime(new Date());
+      Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date());
     }
   }
 

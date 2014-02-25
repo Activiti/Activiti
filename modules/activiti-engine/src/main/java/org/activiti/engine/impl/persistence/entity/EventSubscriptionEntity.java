@@ -19,7 +19,6 @@ import java.util.HashMap;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.event.EventHandler;
@@ -27,7 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.DefaultClockImpl;
 
 /**
  * @author Daniel Meyer
@@ -54,7 +53,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   /////////////////////////////////////////////
   
   public EventSubscriptionEntity() { 
-    this.created = ClockUtil.getCurrentTime();
+    this.created = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
   }
 
   public EventSubscriptionEntity(ExecutionEntity executionEntity) {

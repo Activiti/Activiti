@@ -13,21 +13,17 @@
 
 package org.activiti.engine.test.history;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import java.util.*;
 
 
 /**
@@ -49,7 +45,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     calendar.set(Calendar.MILLISECOND, 0);
     Date noon = calendar.getTime();
     
-    ClockUtil.setCurrentTime(noon);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(noon);
     final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "myBusinessKey");
 
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().unfinished().count());
@@ -71,7 +67,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     // in this test scenario we assume that 25 seconds after the process start, the 
     // user completes the task (yes! he must be almost as fast as me)
     Date twentyFiveSecsAfterNoon = new Date(noon.getTime() + 25*1000);
-    ClockUtil.setCurrentTime(twentyFiveSecsAfterNoon);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(twentyFiveSecsAfterNoon);
     taskService.complete(tasks.get(0).getId());
 
     historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -116,7 +112,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   public void testHistoricProcessInstanceQuery() {
     Calendar startTime = Calendar.getInstance();
     
-    ClockUtil.setCurrentTime(startTime.getTime());
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(startTime.getTime());
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "businessKey123");
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "someType");
     Calendar hourAgo = Calendar.getInstance();

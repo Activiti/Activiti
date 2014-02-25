@@ -13,23 +13,23 @@
 
 package org.activiti.engine.test.api.mgmt;
 
-import java.util.Date;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+
+import java.util.Date;
 
 
 /**
@@ -218,13 +218,13 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
   public void testDeleteJobThatWasAlreadyAcquired() {
-    ClockUtil.setCurrentTime(new Date());
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date());
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
     Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     
     // We need to move time at least one hour to make the timer executable
-    ClockUtil.setCurrentTime(new Date(ClockUtil.getCurrentTime().getTime() + 7200000L));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime() + 7200000L));
 
     // Acquire job by running the acquire command manually
     ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;

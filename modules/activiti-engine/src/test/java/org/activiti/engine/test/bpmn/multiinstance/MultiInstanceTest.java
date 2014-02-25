@@ -13,20 +13,12 @@
 
 package org.activiti.engine.test.bpmn.multiinstance;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -34,6 +26,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
+
+import java.util.*;
 
 
 /**
@@ -952,12 +946,12 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   @Deployment
   public void testAct901() {
     
-    Date startTime = ClockUtil.getCurrentTime();
+    Date startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("multiInstanceSubProcess");
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
     
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer is set to one minute
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer is set to one minute
     List<Job> timers = managementService.createJobQuery().list();
     assertEquals(5, timers.size());
     
@@ -1045,7 +1039,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   @Deployment
   public void testMultiInstanceParalelReceiveTaskWithTimer() {
     Date startTime = new Date();
-    ClockUtil.setCurrentTime(startTime);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(startTime);
     
     runtimeService.startProcessInstanceByKey("multiInstanceReceiveWithTimer");
     List<Execution> executions = runtimeService.createExecutionQuery().activityId("theReceiveTask").list();
@@ -1053,7 +1047,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     
     // Signal only one execution. Then the timer will fire
     runtimeService.signal(executions.get(1).getId());
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + 60000L));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(startTime.getTime() + 60000L));
     waitForJobExecutorToProcessAllJobs(10000L, 1000L);
     
     // The process should now be in the task after the timer

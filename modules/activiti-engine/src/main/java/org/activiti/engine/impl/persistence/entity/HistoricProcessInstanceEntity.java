@@ -22,7 +22,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.DefaultClockImpl;
 
 /**
  * @author Tom Baeyens
@@ -49,7 +49,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     processInstanceId = processInstance.getId();
     businessKey = processInstance.getBusinessKey();
     processDefinitionId = processInstance.getProcessDefinitionId();
-    startTime = ClockUtil.getCurrentTime();
+    startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     startUserId = Authentication.getAuthenticatedUserId();
     startActivityId = processInstance.getActivityId();
     superProcessInstanceId = processInstance.getSuperExecution() != null ? processInstance.getSuperExecution().getProcessInstanceId() : null;

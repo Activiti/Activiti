@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.test.bpmn.exclusive;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -35,7 +35,7 @@ public class ExclusiveTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(3, jobQuery.count());
 
     // After setting the clock to time '50minutes and 5 seconds', the timers should fire
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 100L);
 
     assertEquals(0, jobQuery.count());

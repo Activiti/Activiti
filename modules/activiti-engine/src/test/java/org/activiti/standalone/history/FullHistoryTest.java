@@ -13,29 +13,11 @@
 
 package org.activiti.standalone.history;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.history.HistoricFormProperty;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.history.HistoricVariableInstance;
-import org.activiti.engine.history.HistoricVariableInstanceQuery;
-import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.history.*;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -45,6 +27,11 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.api.runtime.DummySerializable;
 import org.activiti.engine.test.history.SerializableVariable;
 import org.activiti.standalone.jpa.FieldAccessJPAEntity;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
@@ -326,7 +313,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     // In the javaDelegate, the current time is manipulated
     Date updatedDate = sdf.parse("01/01/2001 01:23:46 000");
     
-    ClockUtil.setCurrentTime(startedDate);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(startedDate);
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricVariableUpdateProcess", variables);
     
@@ -460,7 +447,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
   public void testHistoricFormProperties() throws Exception {
     Date startedDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss SSS").parse("01/01/2001 01:23:46 000");
     
-    ClockUtil.setCurrentTime(startedDate);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(startedDate);
     
     Map<String, String> formProperties = new HashMap<String, String>();
     formProperties.put("formProp1", "Activiti rocks");

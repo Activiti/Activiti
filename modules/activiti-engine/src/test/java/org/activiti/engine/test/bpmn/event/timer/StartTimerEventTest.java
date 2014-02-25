@@ -12,22 +12,22 @@
  */
 package org.activiti.engine.test.bpmn.event.timer;
 
-import java.io.ByteArrayInputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.test.Deployment;
+
+import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author Joram Barrez
@@ -45,7 +45,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobQuery.count());
 
     // After setting the clock to time '50minutes and 5 seconds', the second timer should fire
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample")
@@ -65,7 +65,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     JobQuery jobQuery = managementService.createJobQuery();
     assertEquals(1, jobQuery.count());
 
-    ClockUtil.setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample")
@@ -80,7 +80,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
   // FIXME: This test likes to run in an endless loop when invoking the waitForJobExecutorOnCondition method
   @Deployment
   public void testCycleDateStartTimerEvent() throws Exception {
-    ClockUtil.setCurrentTime(new Date());
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date());
 
     // After process start, there should be timer created
     JobQuery jobQuery = managementService.createJobQuery();    
@@ -112,12 +112,12 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
   
   private void moveByMinutes(int minutes) throws Exception {
-    ClockUtil.setCurrentTime(new Date(ClockUtil.getCurrentTime().getTime() + ((minutes * 60 * 1000) + 5000)));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000) + 5000)));
   }
 
   @Deployment
   public void testCycleWithLimitStartTimerEvent() throws Exception {
-    ClockUtil.setCurrentTime(new Date());
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date());
 
     // After process start, there should be timer created
     JobQuery jobQuery = managementService.createJobQuery();
@@ -149,7 +149,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     JobQuery jobQuery = managementService.createJobQuery();
     assertEquals(1, jobQuery.count());
 
-    ClockUtil.setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample")
@@ -161,7 +161,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testVersionUpgradeShouldCancelJobs() throws Exception {
-    ClockUtil.setCurrentTime(new Date());
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date());
 
     // After process start, there should be timer created
     JobQuery jobQuery = managementService.createJobQuery();

@@ -14,18 +14,13 @@
 
 package org.activiti.engine.impl.calendar;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.context.Context;
+import org.joda.time.DateTime;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
-
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.util.ClockUtil;
-import org.joda.time.DateTime;
+import java.util.*;
 
 /**
  * helper class for parsing ISO8601 duration format (also recurring) and computing next timer date
@@ -70,14 +65,14 @@ public class DurationHelper {
       }
     }
     if (start == null && end == null) {
-      start = ClockUtil.getCurrentTime();
+      start = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     }
 
   }
 
   public Date getDateAfter() {
     if (isRepeat) {
-      return getDateAfterRepeat(ClockUtil.getCurrentTime());
+      return getDateAfterRepeat(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
     }
     //TODO: is this correct?
     if (end != null) {

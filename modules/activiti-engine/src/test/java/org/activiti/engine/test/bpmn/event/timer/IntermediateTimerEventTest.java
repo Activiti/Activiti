@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.test.bpmn.event.timer;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -39,7 +39,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobQuery.count());
 
     // After setting the clock to time '50minutes and 5 seconds', the second timer should fire
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     assertEquals(0, jobQuery.count());

@@ -13,19 +13,19 @@
 
 package org.activiti.engine.test.bpmn.event.timer;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Joram Barrez
@@ -69,7 +69,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(3, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
     assertEquals(0L, jobQuery.count());
 
@@ -81,7 +81,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   @Deployment
   public void testTimerOnNestingOfSubprocesses() {
     
-    Date testStartTime = ClockUtil.getCurrentTime();
+    Date testStartTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     
     runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
@@ -90,7 +90,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertEquals("Inner subprocess task 2", tasks.get(1).getName());
     
     // Timer will fire in 2 hours
-    ClockUtil.setCurrentTime(new Date(testStartTime.getTime() + ((2 * 60 * 60 *1000) + 5000)));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(testStartTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
     Job timer = managementService.createJobQuery().timers().singleResult();
     managementService.executeJob(timer.getId());
     
@@ -114,7 +114,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
     assertEquals(0L, jobQuery.count());
     

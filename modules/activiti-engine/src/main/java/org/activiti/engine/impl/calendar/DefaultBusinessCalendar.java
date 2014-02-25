@@ -12,14 +12,10 @@
  */
 package org.activiti.engine.impl.calendar;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.context.Context;
+
+import java.util.*;
 
 
 /**
@@ -47,7 +43,7 @@ public class DefaultBusinessCalendar implements BusinessCalendar {
   }
   
   public Date resolveDuedate(String duedate) {
-    Date resolvedDuedate = ClockUtil.getCurrentTime();
+    Date resolvedDuedate = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     
     String[] tokens = duedate.split(" and ");
     for (String token : tokens) {

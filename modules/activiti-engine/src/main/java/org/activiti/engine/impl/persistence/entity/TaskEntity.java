@@ -39,7 +39,7 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -164,7 +164,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public static TaskEntity create() {
     TaskEntity task = new TaskEntity();
     task.isIdentityLinksInitialized = true;
-    task.createTime = ClockUtil.getCurrentTime();
+    task.createTime = Context.getCommandContext().getProcessEngineConfiguration().getClock().getCurrentTime();
     return task;
   }
 

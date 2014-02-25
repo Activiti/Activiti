@@ -13,16 +13,10 @@
 
 package org.activiti.engine.test.api.mgmt;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -31,11 +25,17 @@ import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -82,7 +82,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     startTime.set(Calendar.MILLISECOND, 0);
     
     Date t1 = startTime.getTime();
-    ClockUtil.setCurrentTime(t1);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(t1);
     processInstanceIdOne = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     testStartTime = t1;
     timerOneFireTime = new Date(t1.getTime() + ONE_HOUR);
@@ -90,14 +90,14 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     // Create proc inst that has timer that will fire on t2 + 1 hour
     startTime.add(Calendar.HOUR_OF_DAY, 1);
     Date t2 = startTime.getTime();  // t2 = t1 + 1 hour
-    ClockUtil.setCurrentTime(t2);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(t2);
     processInstanceIdTwo = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     timerTwoFireTime = new Date(t2.getTime() + ONE_HOUR);
     
     // Create proc inst that has timer that will fire on t3 + 1 hour
     startTime.add(Calendar.HOUR_OF_DAY, 1);
     Date t3 = startTime.getTime(); // t3 = t2 + 1 hour
-    ClockUtil.setCurrentTime(t3);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(t3);
     processInstanceIdThree = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     timerThreeFireTime = new Date(t3.getTime() + ONE_HOUR);
     
@@ -165,7 +165,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryByExecutable() {
-    ClockUtil.setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // all jobs should be executable at t3 + 1hour.1second
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // all jobs should be executable at t3 + 1hour.1second
     JobQuery query = managementService.createJobQuery().executable();
     verifyQueryResults(query, 4);
     
@@ -174,7 +174,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 3);
     
     // Setting the clock before the start of the process instance, makes none of the jobs executable
-    ClockUtil.setCurrentTime(testStartTime);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(testStartTime);
     verifyQueryResults(query, 1); // 1, since a message is always executable when retries > 0
   }
   
@@ -312,7 +312,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     
     // sorting on multiple fields
     setRetries(processInstanceIdTwo, 2);
-    ClockUtil.setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // make sure all timers can fire
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // make sure all timers can fire
     
     JobQuery query = managementService.createJobQuery()
       .timers()

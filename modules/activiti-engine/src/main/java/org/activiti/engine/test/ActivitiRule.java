@@ -13,21 +13,9 @@
 
 package org.activiti.engine.test;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.FormService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.ManagementService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.test.TestHelper;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.test.mock.ActivitiMockSupport;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.TestRule;
@@ -35,6 +23,10 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Convenience for ProcessEngine and services initialization in the form of a
@@ -264,7 +256,7 @@ public class ActivitiRule implements TestRule {
 		}
 
 		// Reset internal clock
-		ClockUtil.reset();
+		Context.getProcessEngineConfiguration().getClock().reset();
 
 		// Rest mocks
 		if (mockSupport != null) {
@@ -273,7 +265,7 @@ public class ActivitiRule implements TestRule {
 	}
 
 	public void setCurrentTime(Date currentTime) {
-		ClockUtil.setCurrentTime(currentTime);
+		Context.getProcessEngineConfiguration().getClock().setCurrentTime(currentTime);
 	}
 
 	public String getConfigurationResource() {

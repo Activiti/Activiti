@@ -22,7 +22,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.DefaultClockImpl;
 
 
 /**
@@ -63,7 +63,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     this.description = task.getDescription();
     this.owner = task.getOwner();
     this.assignee = task.getAssignee();
-    this.startTime = ClockUtil.getCurrentTime();
+    this.startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     this.taskDefinitionKey = task.getTaskDefinitionKey();
     
     this.setPriority(task.getPriority());

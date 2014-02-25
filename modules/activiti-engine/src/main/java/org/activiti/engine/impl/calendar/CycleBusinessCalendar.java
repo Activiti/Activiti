@@ -13,10 +13,8 @@
 package org.activiti.engine.impl.calendar;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.context.Context;
 
-import javax.xml.datatype.Duration;
-import java.text.ParseException;
 import java.util.Date;
 
 public class CycleBusinessCalendar implements BusinessCalendar {
@@ -30,7 +28,7 @@ public class CycleBusinessCalendar implements BusinessCalendar {
         return new DurationHelper(duedateDescription).getDateAfter();
       } else {
         CronExpression ce = new CronExpression(duedateDescription);
-        return ce.getTimeAfter(ClockUtil.getCurrentTime());
+        return ce.getTimeAfter(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
       }
 
     } catch (Exception e) {

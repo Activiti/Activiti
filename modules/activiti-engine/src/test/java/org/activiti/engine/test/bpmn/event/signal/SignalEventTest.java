@@ -13,20 +13,20 @@
 
 package org.activiti.engine.test.bpmn.event.signal;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -100,14 +100,14 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createJobQuery().count()); 
     
     try {
-      ClockUtil.setCurrentTime( new Date(System.currentTimeMillis() + 1000));
+      Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(System.currentTimeMillis() + 1000));
       waitForJobExecutorToProcessAllJobs(10000, 100l);
       
       assertEquals(0, createEventSubscriptionQuery().count());    
       assertEquals(0, runtimeService.createProcessInstanceQuery().count());
       assertEquals(0, managementService.createJobQuery().count());   
     }finally {
-     ClockUtil.setCurrentTime(new Date()); 
+     Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date());
     }
    
   }

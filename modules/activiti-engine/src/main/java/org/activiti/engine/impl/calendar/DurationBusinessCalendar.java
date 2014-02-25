@@ -12,15 +12,9 @@
  */
 package org.activiti.engine.impl.calendar;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.util.ClockUtil;
 
 
 /**
