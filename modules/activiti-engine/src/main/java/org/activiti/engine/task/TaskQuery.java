@@ -96,6 +96,9 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
 
   /** Only select tasks for which users in the given group are candidates. */
   TaskQuery taskCandidateGroup(String candidateGroup);
+
+  /** Select tasks for which the given user and group is a candidate. */
+  TaskQuery taskCandidateUserAndGroup(String candidateUser, String candidateGroup);
   
   /** 
    * Only select tasks for which the 'candidateGroup' is one of the given groups.

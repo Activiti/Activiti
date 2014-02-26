@@ -244,8 +244,18 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     this.candidateGroup = candidateGroup;
     return this;
   }
-  
-  public TaskQuery taskCandidateGroupIn(List<String> candidateGroups) {
+
+    @Override
+    public TaskQuery taskCandidateUserAndGroup(String candidateUser, String candidateGroup) {
+        if (candidateGroups != null) {
+          throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
+        }
+        this.candidateUser = candidateUser;
+        this.candidateGroup = candidateGroup;
+        return this;
+    }
+
+    public TaskQuery taskCandidateGroupIn(List<String> candidateGroups) {
     if(candidateGroups == null) {
       throw new ActivitiIllegalArgumentException("Candidate group list is null");
     }
