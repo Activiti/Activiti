@@ -16,7 +16,6 @@ package org.activiti.engine.test;
 import org.activiti.engine.*;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.test.mock.ActivitiMockSupport;
 import org.junit.internal.AssumptionViolatedException;
@@ -196,9 +195,9 @@ public class ActivitiRule implements TestRule {
 	protected void starting(Description description) {
 		if (processEngine == null) {
 			initializeProcessEngine();
-			initializeServices();
-		}
-		
+            initializeServices();
+        }
+
 		if (mockSupport == null) {
 			initializeMockSupport();
 		}
@@ -341,7 +340,11 @@ public class ActivitiRule implements TestRule {
 		this.managementService = managementService;
 	}
 
-	public ActivitiMockSupport getMockSupport() {
+    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
+    }
+
+  public ActivitiMockSupport getMockSupport() {
 		return mockSupport;
 	}
 

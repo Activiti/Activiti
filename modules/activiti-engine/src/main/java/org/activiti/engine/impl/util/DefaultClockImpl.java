@@ -20,8 +20,8 @@ import java.util.Date;
  */
 public class DefaultClockImpl implements org.activiti.engine.runtime.Clock {
   
-  private volatile Date CURRENT_TIME = null;
-  
+  private static volatile Date CURRENT_TIME = null;
+
   @Override
   public void setCurrentTime(Date currentTime) {
     this.CURRENT_TIME = currentTime;
