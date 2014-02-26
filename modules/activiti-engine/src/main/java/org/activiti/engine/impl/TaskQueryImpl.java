@@ -246,7 +246,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
     @Override
-    public TaskQuery taskCandidateUserOrGroup(String candidateUser, String candidateGroup) {
+    public TaskQuery taskCandidateUserAndGroup(String candidateUser, String candidateGroup) {
         if (candidateGroups != null) {
           throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
         }

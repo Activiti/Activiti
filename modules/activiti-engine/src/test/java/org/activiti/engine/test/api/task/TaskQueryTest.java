@@ -316,19 +316,19 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryByCandidateUserOrGroup() {
-    TaskQuery query = taskService.createTaskQuery().taskCandidateUserOrGroup("kermit", "management");
+    TaskQuery query = taskService.createTaskQuery().taskCandidateUserAndGroup("kermit", "management");
     assertEquals(9, query.count());
     assertEquals(9, query.list().size());
   }
 
   public void testQueryByCandidateUserOrGroupGroupIsNull() {
-    TaskQuery query = taskService.createTaskQuery().taskCandidateUserOrGroup("kermit", null);
+    TaskQuery query = taskService.createTaskQuery().taskCandidateUserAndGroup("kermit", null);
     assertEquals(11, query.count());
     assertEquals(11, query.list().size());
   }
 
   public void testQueryByCandidateUserOrGroupUserIsNull() {
-    TaskQuery query = taskService.createTaskQuery().taskCandidateUserOrGroup(null, "management");
+    TaskQuery query = taskService.createTaskQuery().taskCandidateUserAndGroup(null, "management");
     assertEquals(3, query.count());
     assertEquals(3, query.list().size());
   }
