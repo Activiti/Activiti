@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.cfg;
 
 import org.activiti.engine.*;
+import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -261,6 +262,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initFormEngines();
     initFormTypes();
     initScriptingEngines();
+    initClock();
     initBusinessCalendarManager();
     initCommandContextFactory();
     initTransactionContextFactory();
@@ -268,7 +270,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initServices();
     initIdGenerator();
     initDeployers();
-    initClock();
     initJobExecutor();
     initDataSource();
     initTransactionFactory();
@@ -379,6 +380,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initService(Object service) {
     if (service instanceof ServiceImpl) {
       ((ServiceImpl)service).setCommandExecutor(commandExecutor);
+    }
+    if (service instanceof ClockServiceImpl) {
+      ((ClockServiceImpl) service).setClockReader(clock);
     }
   }
   
@@ -882,6 +886,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       jobExecutor = new DefaultJobExecutor();
     }
 
+    jobExecutor.setClockReader(this.clock);
+
     jobHandlers = new HashMap<String, JobHandler>();
     TimerExecuteNestedActivityJobHandler timerExecuteNestedActivityJobHandler = new TimerExecuteNestedActivityJobHandler();
     jobHandlers.put(timerExecuteNestedActivityJobHandler.getType(), timerExecuteNestedActivityJobHandler);
@@ -1055,9 +1061,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initBusinessCalendarManager() {
     if (businessCalendarManager==null) {
       MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
-      mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar());
-      mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar());
-      mapBusinessCalendarManager.addBusinessCalendar(CycleBusinessCalendar.NAME, new CycleBusinessCalendar());
+      mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar(this.clock));
+      mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar(this.clock));
+      mapBusinessCalendarManager.addBusinessCalendar(CycleBusinessCalendar.NAME, new CycleBusinessCalendar(this.clock));
 
       businessCalendarManager = mapBusinessCalendarManager;
     }

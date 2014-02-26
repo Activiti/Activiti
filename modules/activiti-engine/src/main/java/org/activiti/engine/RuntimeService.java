@@ -12,11 +12,6 @@
  */
 package org.activiti.engine;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
@@ -26,13 +21,17 @@ import org.activiti.engine.runtime.*;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Daniel Meyer
  */
-public interface RuntimeService extends ClockReader {
+public interface RuntimeService {
 
   /**
    * Starts a new process instance in the latest version of the process

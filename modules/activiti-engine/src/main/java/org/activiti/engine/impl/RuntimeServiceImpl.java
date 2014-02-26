@@ -12,48 +12,23 @@
  */
 package org.activiti.engine.impl;
 
-import java.sql.Time;
-import java.util.*;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.form.FormData;
-import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.AddEventListenerCommand;
-import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.DispatchEventCommand;
-import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
-import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
-import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
-import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.GetStartFormCmd;
-import org.activiti.engine.impl.cmd.HasExecutionVariableCmd;
-import org.activiti.engine.impl.cmd.MessageEventReceivedCmd;
-import org.activiti.engine.impl.cmd.RemoveEventListenerCommand;
-import org.activiti.engine.impl.cmd.RemoveExecutionVariablesCmd;
-import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
-import org.activiti.engine.impl.cmd.SetProcessInstanceBusinessKeyCmd;
-import org.activiti.engine.impl.cmd.SignalCmd;
-import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
-import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
-import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
-import org.activiti.engine.runtime.ExecutionQuery;
-import org.activiti.engine.runtime.NativeExecutionQuery;
-import org.activiti.engine.runtime.NativeProcessInstanceQuery;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.impl.cmd.*;
+import org.activiti.engine.runtime.*;
 import org.activiti.engine.task.IdentityLink;
+
+import java.util.*;
 
 /**
  * @author Tom Baeyens
  * @author Daniel Meyer
  */
-public class RuntimeServiceImpl extends TimeServiceImpl implements RuntimeService {
+public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public ProcessInstance startProcessInstanceByKey(String processDefinitionKey) {
     return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, null));
@@ -311,8 +286,4 @@ public class RuntimeServiceImpl extends TimeServiceImpl implements RuntimeServic
 		commandExecutor.execute(new DispatchEventCommand(event));
   }
 
-  @Override
-  public Date getCurrentTime() {
-    return clockReader.getCurrentTime();
-  }
 }
