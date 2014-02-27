@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Falko Menge
  * @author Daniel Meyer
+ * @author Saeid Mirzaei
  */
 public class ErrorPropagation {
 
@@ -56,28 +57,21 @@ public class ErrorPropagation {
   }
   
   public static void propagateError(String errorCode, ActivityExecution execution) throws Exception {
-    // find local error handler
-    String eventHandlerId = findLocalErrorEventHandler(execution, errorCode);  
 
-    // TODO: merge two approaches (super process / regular process approach)
-    if(eventHandlerId != null) {
-      executeCatch(eventHandlerId, execution, errorCode);
-    }else {
-      ActivityExecution superExecution = getSuperExecution(execution);
-      if (superExecution != null) {
-        executeCatchInSuperProcess(errorCode, superExecution);
-      } else {
-        LOG.info("{} throws error event with errorCode '{}', but no catching boundary event was defined. Execution will simply be ended (none end event semantics).",
-                execution.getActivity().getId(), errorCode);
-        
-        if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      		Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-      				ActivitiEventBuilder.createErrorEvent(ActivitiEventType.UNCAUGHT_BPMN_ERROR, null, errorCode, execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId()));
-      	}
-        execution.end();
-      }
-    }
+	  while (execution != null) {
+		    String eventHandlerId = findLocalErrorEventHandler(execution, errorCode); 
+		    if (eventHandlerId != null) {
+		    	 executeCatch(eventHandlerId, execution, errorCode);
+		    	 break;
+		    }
+		    execution = getSuperExecution(execution);
+	  };
+	  if (execution == null) {
+		  throw new BpmnError(errorCode, "No catching boundary event found for error with errorCode '" 
+	                + errorCode + "', neither in same process nor in parent process");		  
+	  }
   }
+
 
   private static String findLocalErrorEventHandler(ActivityExecution execution, String errorCode) {
     PvmScope scope = execution.getActivity();
@@ -104,20 +98,6 @@ public class ErrorPropagation {
     return null;
   }
 
-  private static void executeCatchInSuperProcess(String errorCode, ActivityExecution superExecution) {
-    String errorHandlerId = findLocalErrorEventHandler(superExecution, errorCode);
-    if (errorHandlerId != null) {
-      executeCatch(errorHandlerId, superExecution, errorCode);
-    } else { // no matching catch found, going one level up in process hierarchy
-      ActivityExecution superSuperExecution = getSuperExecution(superExecution);
-      if (superSuperExecution != null) {
-        executeCatchInSuperProcess(errorCode, superSuperExecution);
-      } else {
-        throw new BpmnError(errorCode, "No catching boundary event found for error with errorCode '" 
-                + errorCode + "', neither in same process nor in parent process");
-      }
-    }
-  }
   
   private static ActivityExecution getSuperExecution(ActivityExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
