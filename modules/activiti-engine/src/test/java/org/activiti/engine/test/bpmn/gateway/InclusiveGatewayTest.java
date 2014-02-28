@@ -12,12 +12,16 @@
  */
 package org.activiti.engine.test.bpmn.gateway;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -30,6 +34,7 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  * @author Tom Van Buskirk
  * @author Tijs Rademakers
+ * @author Saeid Mirzaei
  */
 public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
@@ -433,4 +438,37 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 		processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNull(processInstance);
 	}	
+
+//  /* This test case is related to ACT-1877 */
+//  
+//  @Deployment(resources={"org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testWithSignalBoundaryEvent.bpmn20.xml"})	
+//  public void testJoinAfterBoudarySignalEvent() {
+//		
+//	
+//		ProcessInstance processInstanceId = runtimeService.startProcessInstanceByKey("InclusiveGatewayAfterSignalBoundaryEvent");
+//		
+//		/// Gets the execution waiting for a message notification*/
+//		String subcriptedExecutionId = runtimeService.createExecutionQuery().processInstanceId(processInstanceId.getId()).messageEventSubscriptionName("MyMessage").singleResult().getId();
+//	
+//		/*Notify message received: this makes one execution to go on*/
+//		runtimeService.messageEventReceived("MyMessage", subcriptedExecutionId);
+//	
+//		/*The other execution goes on*/
+//		Task userTask = taskService.createTaskQuery().processInstanceId(processInstanceId.getId()).singleResult();
+//		assertEquals("There's still an active execution waiting in the first task",
+//				"usertask1",userTask.getTaskDefinitionKey());
+//		
+//		taskService.complete( userTask.getId());
+//		
+//		/*The two executions become one because of Inclusive Gateway*/
+//		/*The process ends*/
+//		userTask = taskService.createTaskQuery().processInstanceId(processInstanceId.getId()).singleResult();
+//		assertEquals("Only when both executions reach the inclusive gateway, flow arrives to the last user task",
+//				"usertask2",userTask.getTaskDefinitionKey());
+//		taskService.complete(userTask.getId());
+//		
+//		long nExecutions = runtimeService.createExecutionQuery().processInstanceId(processInstanceId.getId()).count();
+//		assertEquals(0, nExecutions);
+//  
+//  }
 }

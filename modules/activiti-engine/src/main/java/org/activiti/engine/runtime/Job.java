@@ -66,5 +66,10 @@ public interface Job {
    * use {@link ManagementService#getJobExceptionStacktrace(String)}
    */
   String getExceptionMessage();
+  
+  /**
+   * Get the tenant identifier for this job.
+   */
+  String getTenantId();
 
 }

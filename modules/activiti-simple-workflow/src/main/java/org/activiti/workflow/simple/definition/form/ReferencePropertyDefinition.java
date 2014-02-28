@@ -54,5 +54,7 @@ public class ReferencePropertyDefinition extends FormPropertyDefinition {
 		setMandatory(referenceDefinition.isMandatory());
 		setWritable(referenceDefinition.isWritable());
 		setType(referenceDefinition.getType());
+		
+		setParameters(otherDefinition.cloneParameters());
 	}
 }

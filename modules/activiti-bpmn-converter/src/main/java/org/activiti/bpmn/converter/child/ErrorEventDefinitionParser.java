@@ -41,6 +41,8 @@ public class ErrorEventDefinitionParser extends BaseChildElementParser {
       model.addProblem("errorRef is required for an error event", xtr);
     }
     
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_ERRORDEFINITION, eventDefinition, xtr, model);
+    
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 }

@@ -57,12 +57,21 @@ public class DefaultWorkflowDefinitionConversionListener implements WorkflowDefi
     process.setId(generateProcessId(workflowDefinition));
     process.setName(workflowDefinition.getName());
     process.setDocumentation(workflowDefinition.getDescription());
+    
+    if (workflowDefinition.getCategory() != null) {
+    	conversion.getBpmnModel().setTargetNamespace(workflowDefinition.getCategory());
+    }
 
     conversion.setProcess(process);
 
     // Add start-event
     StartEvent startEvent = new StartEvent();
     startEvent.setId(START_EVENT_ID);
+    
+    if(workflowDefinition.getStartFormDefinition() != null && workflowDefinition.getStartFormDefinition().getFormKey() != null) {
+    	startEvent.setFormKey(workflowDefinition.getStartFormDefinition().getFormKey());
+    }
+    
     process.addFlowElement(startEvent);
     conversion.setLastActivityId(startEvent.getId());
   }
@@ -73,7 +82,16 @@ public class DefaultWorkflowDefinitionConversionListener implements WorkflowDefi
    *         (eg. amongst differnt tenants)
    */
   protected String generateProcessId(WorkflowDefinition workflowDefinition) {
-    return workflowDefinition.getName().replace(" ", "_");
+  	String processId = null;
+  	if(workflowDefinition.getId() != null) {
+  		processId = workflowDefinition.getId();
+  	} else {
+  		// Revert to using the name of the process
+  		if(workflowDefinition.getName() != null) {
+  			processId = workflowDefinition.getName().replace(" ", "_");
+  		}
+  	}
+  	return processId;
   }
 
   public void afterStepsConversion(WorkflowDefinitionConversion conversion) {

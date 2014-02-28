@@ -143,6 +143,100 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
     }
   }
   
+  @Deployment
+  public void testCandidate() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("kermit").list();
+      assertEquals(3, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("gonzo").list();
+      assertEquals(0, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("fozzie").list();
+      assertEquals(1, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
+      assertEquals(1, tasks.size());
+      List<String> groups = new ArrayList<String>();
+      groups.add("management");
+      groups.add("accountancy");
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
+      assertEquals(1, tasks.size());
+      
+      Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+      taskService.complete(task.getId());
+      
+      assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("kermit").list();
+      assertEquals(3, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("gonzo").list();
+      assertEquals(0, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser("fozzie").list();
+      assertEquals(1, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
+      assertEquals(1, tasks.size());
+      
+      tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
+      assertEquals(1, tasks.size());
+    }
+  }
+  
+  public void testQueryWithPagingAndVariables() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery()
+          .includeProcessVariables()
+          .includeTaskLocalVariables()
+          .orderByTaskPriority()
+          .desc()
+          .listPage(0, 1);
+      assertEquals(1, tasks.size());
+      HistoricTaskInstance task = tasks.get(0);
+      Map<String, Object> variableMap = task.getTaskLocalVariables();
+      assertEquals(2, variableMap.size());
+      assertEquals("someVariable", variableMap.get("testVar"));
+      assertEquals(123, variableMap.get("testVar2"));
+      
+      tasks = historyService.createHistoricTaskInstanceQuery()
+          .includeProcessVariables()
+          .includeTaskLocalVariables()
+          .orderByTaskPriority()
+          .asc()
+          .listPage(1, 2);
+      assertEquals(2, tasks.size());
+      task = tasks.get(1);
+      variableMap = task.getTaskLocalVariables();
+      assertEquals(2, variableMap.size());
+      assertEquals("someVariable", variableMap.get("testVar"));
+      assertEquals(123, variableMap.get("testVar2"));
+      
+      tasks = historyService.createHistoricTaskInstanceQuery()
+          .includeProcessVariables()
+          .includeTaskLocalVariables()
+          .orderByTaskPriority()
+          .asc()
+          .listPage(2, 4);
+      assertEquals(1, tasks.size());
+      task = tasks.get(0);
+      variableMap = task.getTaskLocalVariables();
+      assertEquals(2, variableMap.size());
+      assertEquals("someVariable", variableMap.get("testVar"));
+      assertEquals(123, variableMap.get("testVar2"));
+      
+      tasks = historyService.createHistoricTaskInstanceQuery()
+          .includeProcessVariables()
+          .includeTaskLocalVariables()
+          .orderByTaskPriority()
+          .asc()
+          .listPage(4, 2);
+      assertEquals(0, tasks.size());
+    }
+  }
+  
   @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
   public void testWithoutDueDateQuery() throws Exception {
     if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {

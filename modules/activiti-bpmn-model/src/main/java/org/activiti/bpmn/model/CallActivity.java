@@ -42,4 +42,29 @@ public class CallActivity extends Activity {
   public void setOutParameters(List<IOParameter> outParameters) {
     this.outParameters = outParameters;
   }
+  
+  public CallActivity clone() {
+    CallActivity clone = new CallActivity();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(CallActivity otherElement) {
+    super.setValues(otherElement);
+    setCalledElement(otherElement.getCalledElement());
+    
+    inParameters = new ArrayList<IOParameter>();
+    if (otherElement.getInParameters() != null && otherElement.getInParameters().size() > 0) {
+      for (IOParameter parameter : otherElement.getInParameters()) {
+        inParameters.add(parameter.clone());
+      }
+    }
+    
+    outParameters = new ArrayList<IOParameter>();
+    if (otherElement.getOutParameters() != null && otherElement.getOutParameters().size() > 0) {
+      for (IOParameter parameter : otherElement.getOutParameters()) {
+        outParameters.add(parameter.clone());
+      }
+    }
+  }
 }

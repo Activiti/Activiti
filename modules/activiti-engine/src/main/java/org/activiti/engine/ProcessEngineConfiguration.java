@@ -21,6 +21,7 @@ import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
 
 
 /** Configuration information from which a process engine can be build.
@@ -89,6 +90,9 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   /** Upon building of the process engine, a check is performed and 
    * an update of the schema is performed if it is necessary. */
   public static final String DB_SCHEMA_UPDATE_TRUE = "true";
+  
+  /** The tenant id indicating 'no tenant' */
+  public static final String NO_TENANT_ID = "";
 
   protected String processEngineName = ProcessEngines.NAME_DEFAULT;
   protected int idBlockSize = 100;
@@ -102,6 +106,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean useSSL = false;
   protected boolean useTLS = false;
   protected String mailServerDefaultFrom = "activiti@localhost";
+  protected String mailSessionJndi;
 
   protected String databaseType;
   protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_FALSE;
@@ -128,6 +133,8 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected Object jpaEntityManagerFactory;
   protected boolean jpaHandleTransaction;
   protected boolean jpaCloseEntityManager;
+  
+  protected JobExecutor jobExecutor;
   
   /**
    * Allows configuring a database table prefix which is used for all runtime operations of the process engine.
@@ -258,7 +265,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     this.mailServerPassword = mailServerPassword;
     return this;
   }
+
+  public String getMailSesionJndi() {
+    return mailSessionJndi;
+  }
   
+  public ProcessEngineConfiguration setMailSessionJndi(String mailSessionJndi) {
+    this.mailSessionJndi = mailSessionJndi;
+    return this;
+  }
+
   public int getMailServerPort() {
     return mailServerPort;
   }
@@ -598,6 +614,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   public ProcessEngineConfiguration setXmlEncoding(String xmlEncoding) {
     this.xmlEncoding = xmlEncoding;
+    return this;
+  }
+  
+  public JobExecutor getJobExecutor() {
+    return jobExecutor;
+  }
+  
+  public ProcessEngineConfiguration setJobExecutor(JobExecutor jobExecutor) {
+    this.jobExecutor = jobExecutor;
     return this;
   }
 }

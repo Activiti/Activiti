@@ -88,6 +88,12 @@ public interface Task {
 	
 	/** Change due date of the task. */
 	void setDueDate(Date dueDate);
+	
+	/** The category of the task. This is an optional field and allows to 'tag' tasks as belonging to a certain category. */
+	String getCategory();
+	
+	/** Change the category of the task. This is an optional field and allows to 'tag' tasks as belonging to a certain category. */
+	void setCategory(String category);
 
 	/** delegates this task to the given user and sets the {@link #getDelegationState() delegationState} to {@link DelegationState#PENDING}.
 	 * If no owner is set on the task, the owner is set to the current assignee of the task. */
@@ -101,6 +107,9 @@ public interface Task {
   
   /** Indicated whether this task is suspended or not. */
   boolean isSuspended();
+  
+  /** The tenant identifier of this task */
+  String getTenantId();
   
   /** Returns the local task variables if requested in the task query */
   Map<String, Object> getTaskLocalVariables();

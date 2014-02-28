@@ -25,29 +25,15 @@ import org.apache.camel.Exchange;
  * Exchange body. The variable must be named "camelBody" to be copied into the Camel Exchange body on the producer
  * side of the transfer (i.e. when handing control from Activiti to Camel).
  * 
- * @author Ryan Johnston (@rjfsu), Tijs Rademakers
+ * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Saeid Mirzaei
  */
 public class CamelBehaviorCamelBodyImpl extends CamelBehavior {
 	
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
-	protected void modifyActivitiComponent(ActivitiComponent component) {
-		//Set the copy method for new endpoints created using this component.
-		component.setCopyVariablesToProperties(false);
-		component.setCopyVariablesToBodyAsMap(false);
-		component.setCopyCamelBodyToBody(true);
-	}
-	
-  @Override
-  protected void copyVariables(Map<String, Object> variables, Exchange exchange, ActivitiEndpoint endpoint) {
-    if (endpoint.isCopyVariablesToBodyAsMap()) {
-      copyVariablesToBodyAsMap(variables, exchange);
-    } else if (endpoint.isCopyVariablesToProperties()) {
-      copyVariablesToProperties(variables, exchange);
-    } else {
-      copyVariablesToBody(variables, exchange);
-    }
+  protected void setPropertTargetVariable(ActivitiEndpoint endpoint) {
+    toTargetType = TargetType.BODY;
   }
 }
 

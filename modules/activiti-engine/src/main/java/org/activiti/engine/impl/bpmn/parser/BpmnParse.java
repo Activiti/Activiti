@@ -428,14 +428,12 @@ public class BpmnParse implements BpmnXMLConstants {
 
   public void validateExclusiveGateway(ActivityImpl activity, ExclusiveGateway exclusiveGateway) {
     if (activity.getOutgoingTransitions().size() == 0) {
-      // TODO: double check if this is valid (I think in Activiti yes, since we
-      // need start events we will need an end event as well)
       bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has no outgoing sequence flows.", exclusiveGateway);
     } else if (activity.getOutgoingTransitions().size() == 1) {
       PvmTransition flow = activity.getOutgoingTransitions().get(0);
       Condition condition = (Condition) flow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
       if (condition != null) {
-        bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has only one outgoing sequence flow ('" + flow.getId()
+        bpmnModel.addWarning("Exclusive Gateway '" + activity.getId() + "' has only one outgoing sequence flow ('" + flow.getId()
                 + "'). This is not allowed to have a condition.", exclusiveGateway);
       }
     } else {
@@ -452,7 +450,7 @@ public class BpmnParse implements BpmnXMLConstants {
           flowsWithoutCondition.add(flow);
         }
         if (hasConditon && isDefaultFlow) {
-          bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId()
+          bpmnModel.addWarning("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId()
                   + "' which is the default flow but has a condition too.", exclusiveGateway);
         }
       }
@@ -461,7 +459,7 @@ public class BpmnParse implements BpmnXMLConstants {
         // are valid at all) or if we have more than one flow without condition
         // this is an error
         for (PvmTransition flow : flowsWithoutCondition) {
-          bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId()
+          bpmnModel.addWarning("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId()
                   + "' without condition which is not the default flow.", exclusiveGateway);
         }
       } else if (flowsWithoutCondition.size() == 1) {
@@ -489,14 +487,20 @@ public class BpmnParse implements BpmnXMLConstants {
       // Verify if all referenced elements exist
       for (String bpmnReference : bpmnModel.getLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
-          LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        	// ACT-1625: don't warn when	artifacts are referenced from DI
+        	if(bpmnModel.getArtifact(bpmnReference) == null) {
+        		LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        	}
         } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof FlowNode)) {
           LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a flow node");
         }
       }
       for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
-          LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+          // ACT-1625: don't warn when	artifacts are referenced from DI
+        	if(bpmnModel.getArtifact(bpmnReference) == null) {
+        		LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        	}	
         } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)) {
           if (bpmnModel.getFlowLocationMap().get(bpmnReference).size() > 0) {
             LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");

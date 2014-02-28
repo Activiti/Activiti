@@ -62,5 +62,7 @@ public class TextPropertyDefinition extends FormPropertyDefinition {
 		setMandatory(textDefinition.isMandatory());
 		setWritable(textDefinition.isWritable());
 		setMultiline(textDefinition.isMultiline());
+		
+		setParameters(otherDefinition.cloneParameters());
 	}
 }

@@ -44,6 +44,8 @@ public class SignalEventDefinitionParser extends BaseChildElementParser {
       model.addProblem("signalEventDefinition does not have required property 'signalRef'", xtr);
     }
     
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_SIGNALDEFINITION, eventDefinition, xtr, model);
+    
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 }

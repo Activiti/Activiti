@@ -45,6 +45,7 @@ public class ItemDefinitionParser implements BpmnXMLConstants {
         
         item.setStructureRef(structureRef);
         item.setItemKind(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_KIND));
+        BpmnXMLUtil.parseChildElements(ELEMENT_ITEM_DEFINITION, item, xtr, model);
         model.addItemDefinition(itemDefinitionId, item);
       }
     }

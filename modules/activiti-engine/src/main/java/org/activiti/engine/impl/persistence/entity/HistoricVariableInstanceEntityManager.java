@@ -36,6 +36,7 @@ public class HistoricVariableInstanceEntityManager extends AbstractManager {
       List<HistoricVariableInstanceEntity> historicProcessVariables = (List) getDbSqlSession()
         .createHistoricVariableInstanceQuery()
         .processInstanceId(historicProcessInstanceId)
+        .excludeVariableInitialization()
         .list();
       for (HistoricVariableInstanceEntity historicProcessVariable : historicProcessVariables) {
         historicProcessVariable.delete();

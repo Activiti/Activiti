@@ -12,10 +12,13 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.workflow.simple.converter.step.FeedbackStepDefinitionConverter;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -100,4 +103,35 @@ public class FeedbackStepDefinition extends AbstractNamedStepDefinition {
     this.formDefinitionForFeedbackProviders = formDefinitionForFeedbackProviders;
   }
   
+  @Override
+  public StepDefinition clone() {
+    FeedbackStepDefinition clone = new FeedbackStepDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  @Override
+  public void setValues(StepDefinition otherDefinition) {
+    if(!(otherDefinition instanceof FeedbackStepDefinition)) {
+      throw new SimpleWorkflowException("An instance of FeedbackStepDefinition is required to set values");
+    }
+    
+    FeedbackStepDefinition stepDefinition = (FeedbackStepDefinition) otherDefinition;
+    setDescription(stepDefinition.getDescription());
+    setDescriptionForFeedbackProviders(stepDefinition.getDescriptionForFeedbackProviders());
+    setFeedbackInitiator(stepDefinition.getFeedbackInitiator());
+    if (stepDefinition.getFeedbackProviders() != null && stepDefinition.getFeedbackProviders().size() > 0) {
+      setFeedbackProviders(new ArrayList<String>(stepDefinition.getFeedbackProviders()));
+    }
+    if (stepDefinition.getFormDefinitionForFeedbackProviders() != null) {
+      setFormDefinitionForFeedbackProviders(stepDefinition.getFormDefinitionForFeedbackProviders().clone());
+    } else {
+      setFormDefinitionForFeedbackProviders(null);
+    }
+    setId(stepDefinition.getId());
+    setName(stepDefinition.getName());
+    setStartsWithPrevious(stepDefinition.isStartsWithPrevious());
+    
+    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
+  }
 }

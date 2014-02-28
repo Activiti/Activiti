@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author Tijs Rademakers
  */
-public class Activity extends FlowNode {
+public abstract class Activity extends FlowNode {
 
   protected boolean asynchronous;
   protected boolean notExclusive;
@@ -83,5 +83,40 @@ public class Activity extends FlowNode {
   }
   public void setDataOutputAssociations(List<DataAssociation> dataOutputAssociations) {
     this.dataOutputAssociations = dataOutputAssociations;
+  }
+  
+  public void setValues(Activity otherActivity) {
+    super.setValues(otherActivity);
+    setAsynchronous(otherActivity.isAsynchronous());
+    setNotExclusive(otherActivity.isNotExclusive());
+    setDefaultFlow(otherActivity.getDefaultFlow());
+    setForCompensation(otherActivity.isForCompensation());
+    if (otherActivity.getLoopCharacteristics() != null) {
+      setLoopCharacteristics(otherActivity.getLoopCharacteristics().clone());
+    }
+    if (otherActivity.getIoSpecification() != null) {
+      setIoSpecification(otherActivity.getIoSpecification().clone());
+    }
+    
+    dataInputAssociations = new ArrayList<DataAssociation>();
+    if (otherActivity.getDataInputAssociations() != null && otherActivity.getDataInputAssociations().size() > 0) {
+      for (DataAssociation association : otherActivity.getDataInputAssociations()) {
+        dataInputAssociations.add(association.clone());
+      }
+    }
+    
+    dataOutputAssociations = new ArrayList<DataAssociation>();
+    if (otherActivity.getDataOutputAssociations() != null && otherActivity.getDataOutputAssociations().size() > 0) {
+      for (DataAssociation association : otherActivity.getDataOutputAssociations()) {
+        dataOutputAssociations.add(association.clone());
+      }
+    }
+    
+    boundaryEvents = new ArrayList<BoundaryEvent>();
+    if (otherActivity.getBoundaryEvents() != null && otherActivity.getBoundaryEvents().size() > 0) {
+      for (BoundaryEvent event : otherActivity.getBoundaryEvents()) {
+        boundaryEvents.add(event.clone());
+      }
+    }
   }
 }

@@ -281,7 +281,7 @@ public class ProcessDiagramGenerator {
 
       public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
         GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-        if (!graphicInfo.isExpanded()) {
+        if (graphicInfo.getExpanded() != null && graphicInfo.getExpanded() == false) {
           processDiagramCanvas.drawCollapsedSubProcess(flowNode.getName(), (int) graphicInfo.getX(), 
                   (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), false);
         } else {
@@ -296,7 +296,7 @@ public class ProcessDiagramGenerator {
 
       public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
         GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-        if (!graphicInfo.isExpanded()) {
+        if (graphicInfo.getExpanded() != null && graphicInfo.getExpanded() == false) {
           processDiagramCanvas.drawCollapsedSubProcess(flowNode.getName(), (int) graphicInfo.getX(), 
                   (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), true);
         } else {
@@ -438,7 +438,7 @@ public class ProcessDiagramGenerator {
       // Gather info on the collapsed marker
       GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId()); 
       if (flowNode instanceof SubProcess) {
-        collapsed = !graphicInfo.isExpanded();
+        collapsed = graphicInfo.getExpanded() != null && graphicInfo.getExpanded() == false;
       } else if (flowNode instanceof CallActivity) {
         collapsed = true;
       }

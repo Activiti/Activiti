@@ -12,6 +12,9 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.HashMap;
+
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 
@@ -42,4 +45,26 @@ public class ScriptStepDefinition extends AbstractNamedStepDefinition {
     this.scriptLanguage = scriptLanguage;
   }
   
+  @Override
+  public StepDefinition clone() {
+    ScriptStepDefinition clone = new ScriptStepDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  @Override
+  public void setValues(StepDefinition otherDefinition) {
+    if(!(otherDefinition instanceof ScriptStepDefinition)) {
+      throw new SimpleWorkflowException("An instance of ScriptStepDefinition is required to set values");
+    }
+    
+    ScriptStepDefinition stepDefinition = (ScriptStepDefinition) otherDefinition;
+    setId(stepDefinition.getId());
+    setName(stepDefinition.getName());
+    setScript(stepDefinition.getScript());
+    setScriptLanguage(stepDefinition.getScriptLanguage());
+    setStartsWithPrevious(stepDefinition.isStartsWithPrevious());
+    
+    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
+  }
 }

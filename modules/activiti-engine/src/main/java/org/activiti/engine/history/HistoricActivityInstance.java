@@ -20,8 +20,9 @@ import java.util.Date;
  * Represents one execution of an activity and it's stored permanent for statistics, audit and other business intelligence purposes.
  * 
  * @author Christian Stettler
+ * @author Joram Barrez
  */
-public interface HistoricActivityInstance {
+public interface HistoricActivityInstance extends HistoricData {
 
   /** The unique identifier of this historic activity instance. */
   String getId();
@@ -61,4 +62,7 @@ public interface HistoricActivityInstance {
 
   /** Difference between {@link #getEndTime()} and {@link #getStartTime()}.  */
   Long getDurationInMillis();
+  
+  /** Returns the tenant identifier for the historic activity */
+  String getTenantId();
 }

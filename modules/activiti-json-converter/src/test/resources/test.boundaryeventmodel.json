@@ -1,0 +1,430 @@
+{
+    "resourceId": "canvas",
+    "properties": {
+        "name": "CancelActivity",
+        "documentation": "",
+        "process_id": "CancelActivity",
+        "process_author": "",
+        "process_executable": "Yes",
+        "process_version": "",
+        "process_namespace": "http://www.activiti.org/processdef",
+        "executionlisteners": ""
+    },
+    "stencil": {
+        "id": "BPMNDiagram"
+    },
+    "childShapes": [{
+        "resourceId": "sid-A8989E47-F12C-45F6-9083-0579A76581B0",
+        "properties": {
+            "overrideid": "sid-A8989E47-F12C-45F6-9083-0579A76581B0",
+            "name": "",
+            "documentation": "",
+            "formproperties": "{\"totalCount\":0,\"items\":[]}",
+            "initiator": "",
+            "formkeydefinition": "",
+            "executionlisteners": ""
+        },
+        "stencil": {
+            "id": "StartNoneEvent"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-CFEB46A7-643C-40C9-B7E4-899C01DF81F8"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 154,
+                "y": 196
+            },
+            "upperLeft": {
+                "x": 124,
+                "y": 166
+            }
+        },
+        "dockers": []
+    }, {
+        "resourceId": "sid-F0CFBBC4-5B4A-4FC6-B48D-3A1FD9928F1E",
+        "properties": {
+            "overrideid": "sid-F0CFBBC4-5B4A-4FC6-B48D-3A1FD9928F1E",
+            "name": "Error",
+            "documentation": "",
+            "formkeydefinition": "",
+            "duedatedefinition": "",
+            "prioritydefinition": "",
+            "usertaskassignment": "",
+            "formproperties": "{\"totalCount\":0,\"items\":[]}",
+            "tasklisteners": "{\"totalCount\":0,\"items\":[]}",
+            "asynchronousdefinition": "No",
+            "exclusivedefinition": "Yes",
+            "looptype": "None",
+            "multiinstance_sequential": "Yes",
+            "multiinstance_cardinality": "",
+            "multiinstance_collection": "",
+            "multiinstance_variable": "",
+            "multiinstance_condition": "",
+            "isforcompensation": "false"
+        },
+        "stencil": {
+            "id": "UserTask"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-B65C6FC1-315E-4E68-AFC1-6AF2BE15C211"
+        }, {
+            "resourceId": "errorEvent"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 299,
+                "y": 221
+            },
+            "upperLeft": {
+                "x": 199,
+                "y": 141
+            }
+        },
+        "dockers": []
+    }, {
+        "resourceId": "sid-CFEB46A7-643C-40C9-B7E4-899C01DF81F8",
+        "properties": {
+            "overrideid": "sid-CFEB46A7-643C-40C9-B7E4-899C01DF81F8",
+            "name": "",
+            "documentation": "",
+            "conditionsequenceflow": "",
+            "defaultflow": "None",
+            "conditionalflow": "None"
+        },
+        "stencil": {
+            "id": "SequenceFlow"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-F0CFBBC4-5B4A-4FC6-B48D-3A1FD9928F1E"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 198.15625,
+                "y": 181
+            },
+            "upperLeft": {
+                "x": 154.609375,
+                "y": 181
+            }
+        },
+        "dockers": [{
+            "x": 15,
+            "y": 15
+        }, {
+            "x": 50,
+            "y": 40
+        }],
+        "target": {
+            "resourceId": "sid-F0CFBBC4-5B4A-4FC6-B48D-3A1FD9928F1E"
+        }
+    }, {
+        "resourceId": "sid-66B45DB4-082B-4330-B81E-66BAC97C4A9E",
+        "properties": {
+            "overrideid": "sid-66B45DB4-082B-4330-B81E-66BAC97C4A9E",
+            "name": "Signal",
+            "documentation": "",
+            "formkeydefinition": "",
+            "duedatedefinition": "",
+            "prioritydefinition": "",
+            "usertaskassignment": "",
+            "formproperties": "{\"totalCount\":0,\"items\":[]}",
+            "tasklisteners": "{\"totalCount\":0,\"items\":[]}",
+            "asynchronousdefinition": "No",
+            "exclusivedefinition": "Yes",
+            "looptype": "None",
+            "multiinstance_sequential": "Yes",
+            "multiinstance_cardinality": "",
+            "multiinstance_collection": "",
+            "multiinstance_variable": "",
+            "multiinstance_condition": "",
+            "isforcompensation": "false"
+        },
+        "stencil": {
+            "id": "UserTask"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-092C8E0A-3AFB-45AF-80E7-9A4D1A26A2C3"
+        }, {
+            "resourceId": "signalEvent"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 444,
+                "y": 221
+            },
+            "upperLeft": {
+                "x": 344,
+                "y": 141
+            }
+        },
+        "dockers": []
+    }, {
+        "resourceId": "sid-B65C6FC1-315E-4E68-AFC1-6AF2BE15C211",
+        "properties": {
+            "overrideid": "sid-B65C6FC1-315E-4E68-AFC1-6AF2BE15C211",
+            "name": "",
+            "documentation": "",
+            "conditionsequenceflow": "",
+            "defaultflow": "None",
+            "conditionalflow": "None"
+        },
+        "stencil": {
+            "id": "SequenceFlow"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-66B45DB4-082B-4330-B81E-66BAC97C4A9E"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 343.15625,
+                "y": 181
+            },
+            "upperLeft": {
+                "x": 299.84375,
+                "y": 181
+            }
+        },
+        "dockers": [{
+            "x": 50,
+            "y": 40
+        }, {
+            "x": 50,
+            "y": 40
+        }],
+        "target": {
+            "resourceId": "sid-66B45DB4-082B-4330-B81E-66BAC97C4A9E"
+        }
+    }, {
+        "resourceId": "sid-6FAA94BB-370E-4F90-9C94-6AB0EAF8DF58",
+        "properties": {
+            "overrideid": "sid-6FAA94BB-370E-4F90-9C94-6AB0EAF8DF58",
+            "name": "Timer",
+            "documentation": "",
+            "formkeydefinition": "",
+            "duedatedefinition": "",
+            "prioritydefinition": "",
+            "usertaskassignment": "",
+            "formproperties": "{\"totalCount\":0,\"items\":[]}",
+            "tasklisteners": "{\"totalCount\":0,\"items\":[]}",
+            "asynchronousdefinition": "No",
+            "exclusivedefinition": "Yes",
+            "looptype": "None",
+            "multiinstance_sequential": "Yes",
+            "multiinstance_cardinality": "",
+            "multiinstance_collection": "",
+            "multiinstance_variable": "",
+            "multiinstance_condition": "",
+            "isforcompensation": "false"
+        },
+        "stencil": {
+            "id": "UserTask"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-BA041571-52AB-4DDA-B242-58BB5A105A6E"
+        }, {
+            "resourceId": "timerEvent"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 589,
+                "y": 221
+            },
+            "upperLeft": {
+                "x": 489,
+                "y": 141
+            }
+        },
+        "dockers": []
+    }, {
+        "resourceId": "sid-092C8E0A-3AFB-45AF-80E7-9A4D1A26A2C3",
+        "properties": {
+            "overrideid": "sid-092C8E0A-3AFB-45AF-80E7-9A4D1A26A2C3",
+            "name": "",
+            "documentation": "",
+            "conditionsequenceflow": "",
+            "defaultflow": "None",
+            "conditionalflow": "None"
+        },
+        "stencil": {
+            "id": "SequenceFlow"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-6FAA94BB-370E-4F90-9C94-6AB0EAF8DF58"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 488.15625,
+                "y": 181
+            },
+            "upperLeft": {
+                "x": 444.84375,
+                "y": 181
+            }
+        },
+        "dockers": [{
+            "x": 50,
+            "y": 40
+        }, {
+            "x": 50,
+            "y": 40
+        }],
+        "target": {
+            "resourceId": "sid-6FAA94BB-370E-4F90-9C94-6AB0EAF8DF58"
+        }
+    }, {
+        "resourceId": "sid-8CEA4E49-4FB1-4003-98CE-6B6536B68E37",
+        "properties": {
+            "overrideid": "sid-8CEA4E49-4FB1-4003-98CE-6B6536B68E37",
+            "name": "",
+            "documentation": "",
+            "executionlisteners": ""
+        },
+        "stencil": {
+            "id": "EndNoneEvent"
+        },
+        "childShapes": [],
+        "outgoing": [],
+        "bounds": {
+            "lowerRight": {
+                "x": 662,
+                "y": 195
+            },
+            "upperLeft": {
+                "x": 634,
+                "y": 167
+            }
+        },
+        "dockers": []
+    }, {
+        "resourceId": "sid-BA041571-52AB-4DDA-B242-58BB5A105A6E",
+        "properties": {
+            "overrideid": "sid-BA041571-52AB-4DDA-B242-58BB5A105A6E",
+            "name": "",
+            "documentation": "",
+            "conditionsequenceflow": "",
+            "defaultflow": "None",
+            "conditionalflow": "None"
+        },
+        "stencil": {
+            "id": "SequenceFlow"
+        },
+        "childShapes": [],
+        "outgoing": [{
+            "resourceId": "sid-8CEA4E49-4FB1-4003-98CE-6B6536B68E37"
+        }],
+        "bounds": {
+            "lowerRight": {
+                "x": 633.375,
+                "y": 181
+            },
+            "upperLeft": {
+                "x": 589.390625,
+                "y": 181
+            }
+        },
+        "dockers": [{
+            "x": 50,
+            "y": 40
+        }, {
+            "x": 14,
+            "y": 14
+        }],
+        "target": {
+            "resourceId": "sid-8CEA4E49-4FB1-4003-98CE-6B6536B68E37"
+        }
+    }, {
+        "resourceId": "errorEvent",
+        "properties": {
+            "cancelactivity": "No",
+            "overrideid": "errorEvent",
+            "name": "",
+            "documentation": "",
+            "errorref": "errorRef"
+        },
+        "stencil": {
+            "id": "BoundaryErrorEvent"
+        },
+        "childShapes": [],
+        "outgoing": [],
+        "bounds": {
+            "lowerRight": {
+                "x": 314.8012179144882,
+                "y": 227.35323980563692
+            },
+            "upperLeft": {
+                "x": 284.8012179144882,
+                "y": 197.35323980563692
+            }
+        },
+        "dockers": [{
+            "x": 91.15795302422589,
+            "y": 65.40165815020094
+        }]
+    }, {
+        "resourceId": "timerEvent",
+        "properties": {
+            "overrideid": "timerEvent",
+            "name": "",
+            "documentation": "",
+            "cancelactivity": "no",
+            "timerdurationdefinition": "PT5M",
+            "timerdatedefinition": "",
+            "timercycledefinition": ""
+        },
+        "stencil": {
+            "id": "BoundaryTimerEvent"
+        },
+        "childShapes": [],
+        "outgoing": [],
+        "bounds": {
+            "lowerRight": {
+                "x": 604.5976124197048,
+                "y": 230.5415236336683
+            },
+            "upperLeft": {
+                "x": 574.5976124197048,
+                "y": 200.5415236336683
+            }
+        },
+        "dockers": [{
+            "x": 87.2628288572098,
+            "y": 65.43825334982392
+        }]
+    }, {
+        "resourceId": "signalEvent",
+        "properties": {
+            "overrideid": "signalEvent",
+            "name": "",
+            "documentation": "",
+            "cancelactivity": "No",
+            "signalref": "signalRef"
+        },
+        "stencil": {
+            "id": "BoundarySignalEvent"
+        },
+        "childShapes": [],
+        "outgoing": [],
+        "bounds": {
+            "lowerRight": {
+                "x": 459.597612419705,
+                "y": 230.5415236336683
+            },
+            "upperLeft": {
+                "x": 429.597612419705,
+                "y": 200.5415236336683
+            }
+        },
+        "dockers": [{
+            "x": 87.26282885720991,
+            "y": 65.4382533498239
+        }]
+    }]
+}

@@ -38,5 +38,7 @@ public class NumberPropertyDefinition extends FormPropertyDefinition {
 		setName(otherDefinition.getName());
 		setMandatory(otherDefinition.isMandatory());
 		setWritable(otherDefinition.isWritable());
+		
+		setParameters(otherDefinition.cloneParameters());
 	}
 }

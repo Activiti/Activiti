@@ -12,12 +12,19 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
 /**
  * Superclass for all {@link StepDefinition} classes that have a name or description.
  * 
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
-public abstract class AbstractNamedStepDefinition implements StepDefinition {
+public abstract class AbstractNamedStepDefinition implements StepDefinition, NamedStepDefinition {
 
   private static final long serialVersionUID = 1L;
   
@@ -25,6 +32,7 @@ public abstract class AbstractNamedStepDefinition implements StepDefinition {
 	protected String name;
   protected String description;
   protected boolean startsWithPrevious;
+  protected Map<String, Object> parameters = new HashMap<String, Object>();
 
   public String getId() {
     return id;
@@ -57,4 +65,19 @@ public abstract class AbstractNamedStepDefinition implements StepDefinition {
   public void setStartsWithPrevious(boolean startsWithPrevious) {
     this.startsWithPrevious = startsWithPrevious;
   }
+  
+  @Override
+  @JsonSerialize(include=Inclusion.NON_EMPTY)
+  public Map<String, Object> getParameters() {
+  	return parameters;
+  }
+  
+  @Override
+  public void setParameters(Map<String, Object> parameters) {
+  	this.parameters = parameters;
+  }
+  
+  public abstract StepDefinition clone();
+  
+  public abstract void setValues(StepDefinition otherDefinition);
 }

@@ -19,6 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.EngineServices;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.context.Context;
@@ -102,6 +107,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected ExecutionEntity subProcessInstance;
   
   protected StartingExecution startingExecution;
+  
+  /** The tenant identifier (if any) */
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   
   // state/type of execution ////////////////////////////////////////////////// 
   
@@ -264,7 +272,17 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected ExecutionEntity newExecution() {
     ExecutionEntity newExecution = new ExecutionEntity();
     newExecution.executions = new ArrayList<ExecutionEntity>();
+    
+    // Inherit tenant id (if any)
+    if (getTenantId() != null) {
+    	newExecution.setTenantId(getTenantId());
+    }
 
+    if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, newExecution));
+    }
+    
     Context
       .getCommandContext()
       .getDbSqlSession()
@@ -285,6 +303,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     // initialize the lists of referenced objects (prevents db queries)
     variableInstances = new HashMap<String, VariableInstanceEntity>();
+    variableInstanceList  = new ArrayList<VariableInstanceEntity>();
     eventSubscriptions = new ArrayList<EventSubscriptionEntity>();
     jobs = new ArrayList<JobEntity>();
     tasks = new ArrayList<TaskEntity>();
@@ -347,7 +366,20 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     ensureActivityInitialized();
     SignallableActivityBehavior activityBehavior = (SignallableActivityBehavior) activity.getActivityBehavior();
     try {
+    	String signalledActivityId = activity.getId();
       activityBehavior.signal(this, signalName, signalData);
+      
+      // If needed, dispatch an event indicating an activity was signalled
+      boolean isUserTask = (activityBehavior instanceof UserTaskActivityBehavior)
+      		|| ((activityBehavior instanceof MultiInstanceActivityBehavior) 
+      				&& ((MultiInstanceActivityBehavior) activityBehavior).getInnerActivityBehavior() instanceof UserTaskActivityBehavior);
+      
+      if(!isUserTask && Context.getProcessEngineConfiguration() != null 
+      		&& Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createSignalEvent(
+      		ActivitiEventType.ACTIVITY_SIGNALED, signalledActivityId, signalName, signalData, this.id, this.processInstanceId, this.processDefinitionId));
+      }
+      
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
@@ -449,10 +481,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         // End the pruned executions if necessary.
         // Some recyclable executions are inactivated (joined executions)
         // Others are already ended (end activities)
-        if (!prunedExecution.isEnded()) {
-          log.debug("pruning execution {}", prunedExecution);
-          prunedExecution.remove();
-        }
+        
+        log.debug("pruning execution {}", prunedExecution);
+        prunedExecution.remove();
       }
 
       log.debug("activating the concurrent root {} as the single path of execution going forward", concurrentRoot);
@@ -541,6 +572,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
     // At the moment, only AtomicOperationTransitionCreateScope can be performed asynchronously,
     // so there is no need to pass it to the handler
+    
+    // Inherit tenant id (if applicable)
+    if (getTenantId() != null) {
+    	message.setTenantId(getTenantId());
+    }
 
     Context
       .getCommandContext()
@@ -1014,13 +1050,61 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected boolean isActivityIdUsedForDetails() {
     return true;
   }
+  
+  @Override
+  protected VariableInstanceEntity createVariableInstance(String variableName, Object value,
+      ExecutionEntity sourceActivityExecution) {
+    VariableInstanceEntity result = super.createVariableInstance(variableName, value, sourceActivityExecution);
+    
+    // Dispatch event, if needed
+    if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+  		Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+  				ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_CREATED, variableName, value, result.getTaskId(), 
+  						result.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
+    }
+    return result;
+  }
+  
+  @Override
+  protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value,
+      ExecutionEntity sourceActivityExecution) {
+    super.updateVariableInstance(variableInstance, value, sourceActivityExecution);
+    
+    // Dispatch event, if needed
+    if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value, variableInstance.getTaskId(), 
+    					variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
+    }
+  }
+  
+  @Override
+  protected void deleteVariableInstanceForExplicitUserCall(VariableInstanceEntity variableInstance,
+      ExecutionEntity sourceActivityExecution) {
+  	boolean dispatchEvent = Context.getProcessEngineConfiguration().getEventDispatcher()
+  			.isEnabled();
+  	
+  	Object oldValue = null;
+  	if(dispatchEvent) {
+  		oldValue = variableInstance.getValue();
+  	}
+    super.deleteVariableInstanceForExplicitUserCall(variableInstance, sourceActivityExecution);
+    
+    if(dispatchEvent) {
+      if(dispatchEvent) {
+      	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+      			ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, variableInstance.getName(), oldValue, variableInstance.getTaskId(), 
+      					variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
+      }
+    }
+  }
 
   // persistent state /////////////////////////////////////////////////////////
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("processDefinitionId", this.processDefinitionId);
-    persistentState.put("businessKey", businessKey);
+    persistentState.put("businessKey", this.businessKey);
     persistentState.put("activityId", this.activityId);
     persistentState.put("isActive", this.isActive);
     persistentState.put("isConcurrent", this.isConcurrent);
@@ -1376,7 +1460,15 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return activityName;
   }
   
-  public Map<String, Object> getProcessVariables() {
+  public String getTenantId() {
+		return tenantId;
+	}
+  
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
       for (VariableInstanceEntity variableInstance: queryVariables) {
@@ -1397,5 +1489,20 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   public void setQueryVariables(List<VariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
+  }
+  
+  public String updateProcessBusinessKey(String bzKey) {
+    if (isProcessInstanceType() && bzKey != null) {
+      setBusinessKey(bzKey);
+      Context.getCommandContext().getHistoryManager().updateProcessBusinessKeyInHistory(this);
+      
+      if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, this));
+      }
+      
+      return bzKey;
+    }
+    return null;
   }
 }

@@ -51,6 +51,11 @@ public interface DeploymentBuilder {
   DeploymentBuilder category(String category);
   
   /**
+   * Gives the deployment the given tenant id.
+   */
+  DeploymentBuilder tenantId(String tenantId);
+  
+  /**
    * If set, this deployment will be compared to any previous deployment.
    * This means that every (non-generated) resource will be compared with the
    * provided resources of this deployment.

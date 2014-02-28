@@ -39,4 +39,17 @@ public class TimerEventDefinition extends EventDefinition {
   public void setTimeCycle(String timeCycle) {
     this.timeCycle = timeCycle;
   }
+  
+  public TimerEventDefinition clone() {
+    TimerEventDefinition clone = new TimerEventDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(TimerEventDefinition otherDefinition) {
+    super.setValues(otherDefinition);
+    setTimeDate(otherDefinition.getTimeDate());
+    setTimeDuration(otherDefinition.getTimeDuration());
+    setTimeCycle(otherDefinition.getTimeCycle());
+  }
 }

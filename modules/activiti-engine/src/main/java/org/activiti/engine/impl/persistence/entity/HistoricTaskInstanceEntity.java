@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -26,6 +27,7 @@ import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity implements HistoricTaskInstance, PersistentObject {
 
@@ -42,6 +44,8 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   protected int priority;
   protected Date dueDate;
   protected Date claimTime;
+  protected String category;
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricTaskInstanceEntity() {
@@ -64,6 +68,11 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     
     this.setPriority(task.getPriority());
     this.setDueDate(task.getDueDate());
+    
+    // Inherit tenant id (if applicable)
+    if (task.getTenantId() != null) {
+    	tenantId = task.getTenantId();
+    }
   }
 
   // persistence //////////////////////////////////////////////////////////////
@@ -80,6 +89,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     persistentState.put("taskDefinitionKey", taskDefinitionKey);
     persistentState.put("formKey", formKey);
     persistentState.put("priority", priority);
+    persistentState.put("category", category);
     if(parentTaskId != null) {
       persistentState.put("parentTaskId", parentTaskId);
     }
@@ -141,7 +151,13 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   public void setDueDate(Date dueDate) {
     this.dueDate = dueDate;
   }
-  public String getOwner() {
+  public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public String getOwner() {
     return owner;
   }
   public void setOwner(String owner) {
@@ -159,7 +175,16 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   public void setClaimTime(Date claimTime) {
     this.claimTime = claimTime;
   }
-  public Long getWorkTimeInMillis() {
+  public String getTenantId() {
+		return tenantId;
+	}
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+	public Date getTime() {
+		return getStartTime();
+	}
+	public Long getWorkTimeInMillis() {
     if (endTime == null || claimTime == null) {
       return null;
     }

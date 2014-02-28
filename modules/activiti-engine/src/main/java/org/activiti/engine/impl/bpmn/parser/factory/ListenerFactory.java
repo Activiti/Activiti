@@ -13,8 +13,10 @@
 package org.activiti.engine.impl.bpmn.parser.factory;
 
 import org.activiti.bpmn.model.ActivitiListener;
+import org.activiti.bpmn.model.EventListener;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -47,5 +49,11 @@ public interface ListenerFactory {
   public abstract ExecutionListener createExpressionExecutionListener(ActivitiListener activitiListener);
 
   public abstract ExecutionListener createDelegateExpressionExecutionListener(ActivitiListener activitiListener);
+  
+  public abstract ActivitiEventListener createClassDelegateEventListener(EventListener eventListener);
+  
+  public abstract ActivitiEventListener createDelegateExpressionEventListener(EventListener eventListener);
+  
+  public abstract ActivitiEventListener createEventThrowingEventListener(EventListener eventListener);
 
 }

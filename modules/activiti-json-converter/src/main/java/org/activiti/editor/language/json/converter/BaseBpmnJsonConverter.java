@@ -185,14 +185,28 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       String multiInstanceCardinality = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CARDINALITY, elementNode);
       String multiInstanceCollection = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_COLLECTION, elementNode);
       String multiInstanceCondition = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CONDITION, elementNode);
+      String multiInstanceLoopType = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_LOOP_TYPE, elementNode);
       
       if (StringUtils.isNotEmpty(multiInstanceCardinality) || StringUtils.isNotEmpty(multiInstanceCollection) ||
-          StringUtils.isNotEmpty(multiInstanceCondition)) {
+          StringUtils.isNotEmpty(multiInstanceCondition) || StringUtils.isNotEmpty(multiInstanceLoopType)) {
         
         String multiInstanceVariable = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_VARIABLE, elementNode);
         
         MultiInstanceLoopCharacteristics multiInstanceObject = new MultiInstanceLoopCharacteristics();
         multiInstanceObject.setSequential(getPropertyValueAsBoolean(PROPERTY_MULTIINSTANCE_SEQUENTIAL, elementNode));
+        
+        // There is another property used for multi-instance sequential control, that is used for rendering the correct
+        // BPMN loop symbol on the task. In case this is set, also take that into account.
+        
+        if(multiInstanceLoopType != null) {
+        	if(PROPERTY_MULTIINSTANCE_LOOP_TYPE_SEQUENTIAL.equals(multiInstanceLoopType)) {
+        		multiInstanceObject.setSequential(true);
+        	} else if(PROPERTY_MULTIINSTANCE_LOOP_TYPE_PARALLEL.equals(multiInstanceLoopType)) {
+        		multiInstanceObject.setSequential(false);
+        	}
+        }
+        
+        
         multiInstanceObject.setLoopCardinality(multiInstanceCardinality);
         multiInstanceObject.setInputDataItem(multiInstanceCollection);
         multiInstanceObject.setElementVariable(multiInstanceVariable);
@@ -241,6 +255,23 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       } else {
         propertyItemNode.putNull(PROPERTY_FORM_VARIABLE);
       }
+      
+      propertyItemNode.put(PROPERTY_FORM_REQUIRED, property.isRequired() ? PROPERTY_VALUE_YES : PROPERTY_VALUE_NO);
+      propertyItemNode.put(PROPERTY_FORM_READABLE, property.isReadable() ? PROPERTY_VALUE_YES : PROPERTY_VALUE_NO);
+      propertyItemNode.put(PROPERTY_FORM_WRITEABLE, property.isWriteable() ? PROPERTY_VALUE_YES : PROPERTY_VALUE_NO);
+      
+      ObjectNode formValueNode = objectMapper.createObjectNode();
+      ArrayNode formValueItemNode = objectMapper.createArrayNode();
+      
+      for (FormValue formValue : property.getFormValues()) {
+        ObjectNode propertyFormValueNode = objectMapper.createObjectNode();
+        propertyFormValueNode.put(PROPERTY_FORM_FORM_VALUE_ID, formValue.getId());
+        propertyFormValueNode.put(PROPERTY_FORM_FORM_VALUE_NAME, formValue.getName());
+        formValueItemNode.add(propertyFormValueNode);
+      }
+      formValueNode.put("totalCount", formValueItemNode.size());
+      formValueNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, formValueItemNode);
+      propertyItemNode.put(PROPERTY_FORM_FORM_VALUES, formValueNode.toString());
       
       itemsNode.add(propertyItemNode);
     }

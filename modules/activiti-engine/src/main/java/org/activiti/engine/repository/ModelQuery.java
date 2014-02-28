@@ -69,6 +69,22 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   
   /** Only select models that are not yet deployed */
   ModelQuery notDeployed();
+  
+	/**
+	 * Only select models that have the given tenant id.
+	 */
+  ModelQuery modelTenantId(String tenantId);
+
+	/**
+	 * Only select models with a tenant id like the given one.
+	 */
+  ModelQuery modelTenantIdLike(String tenantIdLike);
+	
+	/**
+	 * Only select models that do not have a tenant id.
+	 */
+  ModelQuery modelWithoutTenantId();
+
 
   // ordering ////////////////////////////////////////////////////////////
   
@@ -92,5 +108,8 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   
   /** Order by the last update time of the models (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ModelQuery orderByLastUpdateTime();
+  
+	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  ModelQuery orderByTenantId();
   
 }

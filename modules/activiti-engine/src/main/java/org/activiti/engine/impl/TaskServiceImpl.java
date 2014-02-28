@@ -157,8 +157,11 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public void claim(String taskId, String userId) {
-    ClaimTaskCmd cmd = new ClaimTaskCmd(taskId, userId);
-    commandExecutor.execute(cmd);
+    commandExecutor.execute(new ClaimTaskCmd(taskId, userId));
+  }
+  
+  public void unclaim(String taskId) {
+    commandExecutor.execute(new ClaimTaskCmd(taskId, null));
   }
 
   public void complete(String taskId) {
@@ -167,6 +170,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   
   public void complete(String taskId, Map<String, Object> variables) {
     commandExecutor.execute(new CompleteTaskCmd(taskId, variables));
+  }
+  
+  public void complete(String taskId, Map<String, Object> variables,boolean localScope) {
+  	commandExecutor.execute(new CompleteTaskCmd(taskId, variables, localScope));
   }
 
   public void delegateTask(String taskId, String userId) {

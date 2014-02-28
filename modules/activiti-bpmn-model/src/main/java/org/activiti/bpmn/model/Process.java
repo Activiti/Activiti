@@ -14,9 +14,7 @@ package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Tijs Rademakers
@@ -30,10 +28,10 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
   protected List<Lane> lanes = new ArrayList<Lane>();
   protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
-  protected Map<String, FlowElement> flowElementMap = new HashMap<String, FlowElement>(); // The flow elements are twice stored. The map is used for performance when retrieving by id 
   protected List<Artifact> artifactList = new ArrayList<Artifact>();
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
+  protected List<EventListener> eventListeners = new ArrayList<EventListener>();
 
   public String getDocumentation() {
     return documentation;
@@ -84,15 +82,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   }
   
   public FlowElement getFlowElement(String flowElementId) {
-    FlowElement flowElement = flowElementMap.get(flowElementId);
-    
-    // It could be the id has changed after insertion into the map,
-    // So if it is not found, we loop through the list
-    if (flowElement == null) {
-     flowElement = findFlowElementInList(flowElementId);
-    }
-    
-    return flowElement;
+    return findFlowElementInList(flowElementId);
   }
   
   protected FlowElement findFlowElementInList(String flowElementId) {
@@ -110,19 +100,12 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   
   public void addFlowElement(FlowElement element) {
     flowElementList.add(element);
-    flowElementMap.put(element.getId(), element);
   }
   
   public void removeFlowElement(String elementId) {
-    FlowElement element = flowElementMap.get(elementId);
-    
-    if (element == null) {
-      element = findFlowElementInList(elementId);
-    }
-    
+    FlowElement element = findFlowElementInList(elementId);
     if (element != null) {
       flowElementList.remove(element);
-      flowElementMap.remove(elementId);
     }
   }
   
@@ -168,15 +151,81 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     this.candidateStarterGroups = candidateStarterGroups;
   }
   
-  @SuppressWarnings("unchecked")
-  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsOfType(Class<FlowElementType> type) {
-    List<FlowElementType> flowElements = new ArrayList<FlowElementType>();
-    for (FlowElement flowElement : this.getFlowElements()) {
-      if (type.isInstance(flowElement)) {
-        flowElements.add((FlowElementType) flowElement);
-      }
-    }
-    return flowElements;
+  public List<EventListener> getEventListeners() {
+	  return eventListeners;
   }
   
+  public void setEventListeners(List<EventListener> eventListeners) {
+	  this.eventListeners = eventListeners;
+  }
+  
+  
+  @SuppressWarnings("unchecked")
+  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsOfType(Class<FlowElementType> type) {
+    List<FlowElementType> foundFlowElements = new ArrayList<FlowElementType>();
+    for (FlowElement flowElement : this.getFlowElements()) {
+      if (type.isInstance(flowElement)) {
+        foundFlowElements.add((FlowElementType) flowElement);
+      }
+      if (flowElement instanceof SubProcess) {
+        foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
+      }
+    }
+    return foundFlowElements;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsInSubProcessOfType(SubProcess subProcess, Class<FlowElementType> type) {
+    List<FlowElementType> foundFlowElements = new ArrayList<FlowElementType>();
+    for (FlowElement flowElement : subProcess.getFlowElements()) {
+      if (type.isInstance(flowElement)) {
+        foundFlowElements.add((FlowElementType) flowElement);
+      }
+      if (flowElement instanceof SubProcess) {
+        foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
+      }
+    }
+    return foundFlowElements;
+  }
+  
+  public Process clone() {
+    Process clone = new Process();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(Process otherElement) {
+    super.setValues(otherElement);
+    
+    setName(otherElement.getName());
+    setExecutable(otherElement.isExecutable());
+    setDocumentation(otherElement.getDocumentation());
+    if (otherElement.getIoSpecification() != null) {
+      setIoSpecification(otherElement.getIoSpecification().clone());
+    }
+    
+    executionListeners = new ArrayList<ActivitiListener>();
+    if (otherElement.getExecutionListeners() != null && otherElement.getExecutionListeners().size() > 0) {
+      for (ActivitiListener listener : otherElement.getExecutionListeners()) {
+        executionListeners.add(listener.clone());
+      }
+    }
+    
+    candidateStarterUsers = new ArrayList<String>();
+    if (otherElement.getCandidateStarterUsers() != null && otherElement.getCandidateStarterUsers().size() > 0) {
+      candidateStarterUsers.addAll(otherElement.getCandidateStarterUsers());
+    }
+    
+    candidateStarterGroups = new ArrayList<String>();
+    if (otherElement.getCandidateStarterGroups() != null && otherElement.getCandidateStarterGroups().size() > 0) {
+      candidateStarterGroups.addAll(otherElement.getCandidateStarterGroups());
+    }
+    
+    eventListeners = new ArrayList<EventListener>();
+    if(otherElement.getEventListeners() != null && !otherElement.getEventListeners().isEmpty()) {
+    	for(EventListener listener : otherElement.getEventListeners()) {
+    		eventListeners.add(listener.clone());
+    	}
+    }
+  }
 }

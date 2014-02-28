@@ -48,7 +48,7 @@
     <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService"/>
     <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
     
-    <bean id="springJobExecutor" class="org.activiti.spring.components.jobexecutor.SpringJobExecutor">
+    <bean id="springJobExecutor" class="org.activiti.spring.SpringJobExecutor">
     	<property name="taskExecutor">
     		<bean class="org.springframework.core.task.SyncTaskExecutor" />
     	</property>

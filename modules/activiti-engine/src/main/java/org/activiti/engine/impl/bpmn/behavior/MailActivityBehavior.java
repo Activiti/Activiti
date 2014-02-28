@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import javax.naming.NamingException;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -28,6 +30,7 @@ import org.apache.commons.mail.SimpleEmail;
 /**
  * @author Joram Barrez
  * @author Frederik Heremans
+ * @author Tim Stephenson
  */
 public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
 
@@ -39,7 +42,9 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
   protected Expression bcc;
   protected Expression subject;
   protected Expression text;
+	protected Expression textVar;
   protected Expression html;
+  protected Expression htmlVar;
   protected Expression charset;
 
   public void execute(ActivityExecution execution) {
@@ -48,8 +53,10 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     String ccStr = getStringFromField(cc, execution);
     String bccStr = getStringFromField(bcc, execution);
     String subjectStr = getStringFromField(subject, execution);
-    String textStr = getStringFromField(text, execution);
-    String htmlStr = getStringFromField(html, execution);
+		String textStr = textVar == null ? getStringFromField(text, execution)
+				: getStringFromField(getExpression(execution, textVar), execution);
+		String htmlStr = htmlVar == null ? getStringFromField(html, execution)
+				: getStringFromField(getExpression(execution, htmlVar), execution);
     String charSetStr = getStringFromField(charset, execution);
 
     Email email = createEmail(textStr, htmlStr);
@@ -69,6 +76,8 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     }
     leave(execution);
   }
+
+  
 
   protected Email createEmail(String text, String html) {
     if (html != null) {
@@ -167,22 +176,31 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
   protected void setMailServerProperties(Email email) {
     ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
 
-    String host = processEngineConfiguration.getMailServerHost();
-    if (host == null) {
-      throw new ActivitiException("Could not send email: no SMTP host is configured");
-    }
-    email.setHostName(host);
+    String mailSessionJndi = processEngineConfiguration.getMailSesionJndi();
+    if (mailSessionJndi != null) {
+      try {
+        email.setMailSessionFromJNDI(mailSessionJndi);
+      } catch (NamingException e) {
+        throw new ActivitiException("Could not send email: Incorrect JNDI configuration", e);
+      }
+    } else {
+      String host = processEngineConfiguration.getMailServerHost();
+      if (host == null) {
+        throw new ActivitiException("Could not send email: no SMTP host is configured");
+      }
+      email.setHostName(host);
 
-    int port = processEngineConfiguration.getMailServerPort();
-    email.setSmtpPort(port);
+      int port = processEngineConfiguration.getMailServerPort();
+      email.setSmtpPort(port);
 
-    email.setSSL(processEngineConfiguration.getMailServerUseSSL());
-    email.setTLS(processEngineConfiguration.getMailServerUseTLS());
+      email.setSSL(processEngineConfiguration.getMailServerUseSSL());
+      email.setTLS(processEngineConfiguration.getMailServerUseTLS());
 
-    String user = processEngineConfiguration.getMailServerUsername();
-    String password = processEngineConfiguration.getMailServerPassword();
-    if (user != null && password != null) {
-      email.setAuthentication(user, password);
+      String user = processEngineConfiguration.getMailServerUsername();
+      String password = processEngineConfiguration.getMailServerPassword();
+      if (user != null && password != null) {
+        email.setAuthentication(user, password);
+      }
     }
   }
   
@@ -211,6 +229,12 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
       }
     }
     return null;
+  }
+
+  protected Expression getExpression(ActivityExecution execution, Expression var) {
+    String variable = (String) execution.getVariable(var.getExpressionText());
+    return Context.getProcessEngineConfiguration().getExpressionManager()
+        .createExpression(variable);
   }
 
 }

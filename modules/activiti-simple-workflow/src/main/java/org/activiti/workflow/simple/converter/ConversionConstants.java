@@ -20,7 +20,10 @@ public interface ConversionConstants {
   String USER_TASK_ID_PREFIX = "userTask";
   String GATEWAY_ID_PREFIX = "gateway";
   String EVENT_ID_PREFIX = "event";
+  String END_EVENT_ID_PREFIX = "endEvent";
   String BOUNDARY_ID_PREFIX = "boundaryEvent";
   String SCRIPT_TASK_ID_PREFIX = "scriptTask";
+  String SERVICE_TASK_ID_PREFIX = "serviceTask";
+  String INTERMEDIATE_EVENT_ID_PREVIX = "intermediateEvent";
 
 }

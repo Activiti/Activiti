@@ -19,10 +19,11 @@ import java.util.Map;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.spi.InitialContextFactory;
 
+import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
+import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurator;
 
 
 /**
@@ -37,7 +38,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurator;
  * 
  * @author Joram Barrez
  */
-public class LDAPConfigurator implements ProcessEngineConfigurator {
+public class LDAPConfigurator extends AbstractProcessEngineConfigurator {
   
   /* Server connection params */
   
@@ -53,6 +54,8 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
   
   // Query configuration
   protected String baseDn;
+  protected String userBaseDn;
+  protected String groupBaseDn;
   protected int searchTimeLimit = 0; // Default '0' == wait forever
 
   protected String queryUserByUserId;
@@ -80,6 +83,10 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
   // Group caching
   protected int groupCacheSize = -1;
   protected long groupCacheExpirationTime = 3600000L; // default: one hour
+  
+  public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  	// Nothing to do
+  }
   
   public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
     LDAPUserManagerFactory ldapUserManagerFactory = getLdapUserManagerFactory();
@@ -213,11 +220,36 @@ public class LDAPConfigurator implements ProcessEngineConfigurator {
   
   /**
    * The base 'distinguished name' (DN) from which the searches for users and groups are started.
+   * 
+   * Use {@link #setUserBaseDn(String)} or {@link #setGroupBaseDn(String)} when needing to
+   * differentiate between user and group base DN.
    */
   public void setBaseDn(String baseDn) {
     this.baseDn = baseDn;
   }
   
+  public String getUserBaseDn() {
+	return userBaseDn;
+  }
+
+  /**
+   * The base 'distinguished name' (DN) from which the searches for users are started.
+   */
+  public void setUserBaseDn(String userBaseDn) {
+    this.userBaseDn = userBaseDn;
+  }
+	
+  public String getGroupBaseDn() {
+	return groupBaseDn;
+  }
+	
+  /**
+   * The base 'distinguished name' (DN) from which the searches for groups are started.
+   */
+  public void setGroupBaseDn(String groupBaseDn) {
+	this.groupBaseDn = groupBaseDn;
+  }
+	
   public int getSearchTimeLimit() {
     return searchTimeLimit;
   }

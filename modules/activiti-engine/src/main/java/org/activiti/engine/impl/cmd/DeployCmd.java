@@ -16,6 +16,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -64,6 +66,11 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
       .getDeploymentEntityManager()
       .insertDeployment(deployment);
     
+    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+	    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
+    }
+    
     // Actually deploy
     Context
       .getProcessEngineConfiguration()
@@ -72,6 +79,11 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     
     if (deploymentBuilder.getProcessDefinitionsActivationDate() != null) {
       scheduleProcessDefinitionActivation(commandContext, deployment);
+    }
+    
+    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+	    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, deployment));
     }
     
     return deployment;
@@ -109,12 +121,12 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
       
       // If activation date is set, we first suspend all the process definition
       SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = 
-              new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null);
+              new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null, deployment.getTenantId());
       suspendProcessDefinitionCmd.execute(commandContext);
       
       // And we schedule an activation at the provided date
-      ActivateProcessDefinitionCmd activateProcessDefinitionCmd =
-              new ActivateProcessDefinitionCmd(processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate());
+      ActivateProcessDefinitionCmd activateProcessDefinitionCmd =new ActivateProcessDefinitionCmd(
+      		processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate(), deployment.getTenantId());
       activateProcessDefinitionCmd.execute(commandContext);
     }
   }

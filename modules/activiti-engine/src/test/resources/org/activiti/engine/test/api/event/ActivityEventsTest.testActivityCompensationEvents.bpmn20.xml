@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+
+  <signal id="shipOrderSignal" name="alert" />
+
+  <process id="compensationProcess">
+
+    <startEvent id="theStart" />
+
+    <sequenceFlow id="flow1" sourceRef="theStart"
+      targetRef="usertask" />
+
+    <userTask id="usertask" />
+
+    <boundaryEvent id="compensateUserTask" attachedToRef="usertask">
+      <compensateEventDefinition />
+    </boundaryEvent>
+
+    <manualTask id="compensate" isForCompensation="true" />
+
+    <sequenceFlow sourceRef="usertask" targetRef="throwCompensation" />
+    <intermediateThrowEvent id="throwCompensation">
+      <compensateEventDefinition />
+    </intermediateThrowEvent>
+    <sequenceFlow sourceRef="throwCompensation" targetRef="secondUserTask" />
+    
+    <userTask id="secondUserTask" />
+    <sequenceFlow sourceRef="secondUserTask" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+    <association associationDirection="One" sourceRef="compensateUserTask"
+      targetRef="compensate" id="as1" />
+  </process>
+
+</definitions>

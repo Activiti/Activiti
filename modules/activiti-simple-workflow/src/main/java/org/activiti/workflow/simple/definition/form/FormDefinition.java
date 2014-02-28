@@ -16,10 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * A {@link HumanStepDefinition} can have a form associated with it 
+ * A {@link HumanStepDefinition} (or other) can have a form associated with it 
  * that a user must complete to continue the workflow.
  * Such a form contains {@link FormPropertyDefinition}s and {@link FormPropertyGroup}s  
  * or potentially a form key, when the properties are not used.
@@ -27,21 +29,31 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public class FormDefinition {
+public class FormDefinition implements FormPropertyDefinitionContainer {
 
-	protected String formKey;
+  protected String description;
+  protected String formKey;
   protected List<FormPropertyDefinition> formProperties = new ArrayList<FormPropertyDefinition>();
   protected List<FormPropertyGroup> formGroups = new ArrayList<FormPropertyGroup>();
 
-  /**
+  public String getDescription() {
+	return description;
+  }
+
+  public void setDescription(String description) {
+	this.description = description;
+  }
+
+/**
    * @return All {@link FormPropertyDefinition}s that are not part of any {@link FormPropertyGroup}.
    */
   @JsonSerialize(contentAs=FormPropertyDefinition.class)
-  public List<FormPropertyDefinition> getFormProperties() {
+  @JsonProperty(value="formProperties")
+  public List<FormPropertyDefinition> getFormPropertyDefinitions() {
     return formProperties;
   }
 
-  public void setFormProperties(List<FormPropertyDefinition> formProperties) {
+  public void getFormPropertyDefinitions(List<FormPropertyDefinition> formProperties) {
     this.formProperties = formProperties;
   }
 
@@ -49,8 +61,13 @@ public class FormDefinition {
    * Adds a form property to the form, not part of any group.
    * @param formProperty the property to add.
    */
-  public void addFormProperty(FormPropertyDefinition formProperty) {
-    formProperties.add(formProperty);
+  public void addFormProperty(FormPropertyDefinition definition) {
+    formProperties.add(definition);
+  }
+  
+  @Override
+  public boolean removeFormProperty(FormPropertyDefinition definition) {
+    return formProperties.remove(definition);
   }
   
   @JsonSerialize(contentAs=FormPropertyGroup.class)
@@ -76,5 +93,36 @@ public class FormDefinition {
   
   public String getFormKey() {
 	  return formKey;
+  }
+  
+  public FormDefinition clone() {
+    FormDefinition clone = new FormDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(FormDefinition otherDefinition) {
+    if(!(otherDefinition instanceof FormDefinition)) {
+      throw new SimpleWorkflowException("An instance of FormDefinition is required to set values");
+    }
+    
+    FormDefinition formDefinition = (FormDefinition) otherDefinition;
+    setFormKey(formDefinition.getFormKey());
+    setDescription(formDefinition.getDescription());
+    
+    List<FormPropertyGroup> groupList = new ArrayList<FormPropertyGroup>();
+    if (formDefinition.getFormGroups() != null && formDefinition.getFormGroups().size() > 0) {
+      for (FormPropertyGroup propertyGroup : formDefinition.getFormGroups()) {
+        groupList.add(propertyGroup.clone());
+      }
+    }
+    setFormGroups(groupList);
+    
+    formProperties = new ArrayList<FormPropertyDefinition>();
+    if (formDefinition.getFormGroups() != null && formDefinition.getFormGroups().size() > 0) {
+      for (FormPropertyDefinition propertyDefinition : formDefinition.getFormPropertyDefinitions()) {
+        formProperties.add(propertyDefinition.clone());
+      }
+    }
   }
 }

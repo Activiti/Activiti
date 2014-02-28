@@ -134,6 +134,13 @@ public interface TaskService {
   void claim(String taskId, String userId);
   
   /**
+   * A shortcut to {@link #claim} with null user in order to unclaim the task
+   * @param taskId task to unclaim, cannot be null.
+   * @throws ActivitiObjectNotFoundException when the task doesn't exist. 
+   */
+  void unclaim(String taskId);
+  
+  /**
    * Called when the task is successfully executed.
    * @param taskId the id of the task to complete, cannot be null.
    * @throws ActivitiObjectNotFoundException when no task exists with the given id.
@@ -182,6 +189,17 @@ public interface TaskService {
    * @throws ActivitiObjectNotFoundException when no task exists with the given id.
    */
   void complete(String taskId, Map<String, Object> variables);
+  
+  /**
+   * Called when the task is successfully executed, 
+   * and the required task paramaters are given by the end-user.
+   * @param taskId the id of the task to complete, cannot be null.
+   * @param variables task parameters. May be null or empty.
+   * @param localScope If true, the provided variables will be stored task-local, 
+   * 									 instead of process instance wide (which is the default for {@link #complete(String, Map)}).
+   * @throws ActivitiObjectNotFoundException when no task exists with the given id.
+   */
+  void complete(String taskId, Map<String, Object> variables, boolean localScope);
 
   /**
    * Changes the assignee of the given task to the given userId.

@@ -52,6 +52,7 @@ public class SignalParser implements BpmnXMLConstants {
       }
       
       BpmnXMLUtil.addXMLLocation(signal, xtr);
+      BpmnXMLUtil.parseChildElements(ELEMENT_SIGNAL, signal, xtr, model);
       model.addSignal(signal);
     }
   }

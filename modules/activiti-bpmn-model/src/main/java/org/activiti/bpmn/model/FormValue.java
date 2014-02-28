@@ -12,6 +12,7 @@
  */
 package org.activiti.bpmn.model;
 
+
 /**
  * @author Tijs Rademakers
  */
@@ -25,5 +26,16 @@ public class FormValue extends BaseElement {
 
   public void setName(String name) {
     this.name = name;
+  }
+  
+  public FormValue clone() {
+    FormValue clone = new FormValue();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(FormValue otherValue) {
+    super.setValues(otherValue);
+    setName(otherValue.getName());
   }
 }

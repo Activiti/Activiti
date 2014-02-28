@@ -99,6 +99,10 @@ public interface StencilConstants {
   final String PROPERTY_MULTIINSTANCE_COLLECTION = "multiinstance_collection";
   final String PROPERTY_MULTIINSTANCE_VARIABLE = "multiinstance_variable";
   final String PROPERTY_MULTIINSTANCE_CONDITION = "multiinstance_condition";
+  final String PROPERTY_MULTIINSTANCE_LOOP_TYPE = "looptype";
+  final String PROPERTY_MULTIINSTANCE_LOOP_TYPE_STANDARD = "Standard";
+  final String PROPERTY_MULTIINSTANCE_LOOP_TYPE_SEQUENTIAL = "Sequential";
+  final String PROPERTY_MULTIINSTANCE_LOOP_TYPE_PARALLEL = "Parallel";
 	
 	final String PROPERTY_TASK_LISTENERS = "tasklisteners";
 	final String PROPERTY_TASK_LISTENER_EVENT = "task_listener_event_type";
@@ -121,8 +125,21 @@ public interface StencilConstants {
         final String PROPERTY_EXECUTION_LISTENER_FIELD_VALUE = "execution_listener_field_value";
         final String PROPERTY_EXECUTION_LISTENER_FIELD_EXPRESSION = "execution_listener_field_expression";
 	
+  final String PROPERTY_EVENT_LISTENERS = "eventlisteners";
+  final String PROPERTY_EVENT_LISTENER_EVENTS = "event_listener_events";
+  final String PROPERTY_EVENT_LISTENER_CLASS = "event_listener_class";
+  final String PROPERTY_EVENT_LISTENER_DELEGATEEXPRESSION = "event_listener_delegate_expression";
+  final String PROPERTY_EVENT_LISTENER_ENTITY_TYPE = "event_listener_entity_type";
+  final String PROPERTY_EVENT_LISTENER_THROW_EVENT = "event_listener_throw_event";
+  final String PROPERTY_EVENT_LISTENER_THROW_REFERENCE = "event_listener_throw_event_ref";
+  final String PROPERTY_EVENT_LISTENER_THROW_SIGNAL = "signal";
+  final String PROPERTY_EVENT_LISTENER_THROW_GLOBAL_SIGNAL = "globalSignal";
+  final String PROPERTY_EVENT_LISTENER_THROW_MESSAGE = "message";
+  final String PROPERTY_EVENT_LISTENER_THROW_ERROR = "error";
+  
 	final String PROPERTY_FORMKEY = "formkeydefinition";
 	final String PROPERTY_DUEDATE = "duedatedefinition";
+	final String PROPERTY_CATEGORY = "categoryDefinition";
 	final String PROPERTY_PRIORITY = "prioritydefinition";
 	
 	final String PROPERTY_USERTASK_ASSIGNMENT = "usertaskassignment";

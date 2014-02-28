@@ -42,6 +42,9 @@ public class SetExecutionVariablesCmd extends NeedsActiveExecutionCmd<Object> {
       execution.setVariables(variables);
     }
     
+    // ACT-1887: Force an update of the execution's revision to prevent simultaneous inserts of the same
+    // variable. If not, duplicate variables may occur since optimistic locking doesn't work on inserts
+    execution.forceUpdate();
     return null;
   }
   

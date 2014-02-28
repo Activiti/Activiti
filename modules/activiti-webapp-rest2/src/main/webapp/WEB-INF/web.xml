@@ -8,7 +8,7 @@
   <display-name>Activiti REST</display-name>
    
   <listener>
-    <listener-class>org.activiti.rest.servlet.ActivitiServletContextListener</listener-class>
+    <listener-class>org.activiti.rest.common.servlet.ActivitiServletContextListener</listener-class>
   </listener> 
   
   <!-- Restlet adapter -->  
@@ -18,7 +18,7 @@
     <init-param>
       <!-- Application class name -->
       <param-name>org.restlet.application</param-name>
-      <param-value>org.activiti.rest.application.ActivitiRestServicesApplication</param-value>
+      <param-value>org.activiti.rest.service.application.ActivitiRestServicesApplication</param-value>
     </init-param>
   </servlet>
   

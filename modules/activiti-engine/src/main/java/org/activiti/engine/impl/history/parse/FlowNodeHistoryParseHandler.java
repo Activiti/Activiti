@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.EndEvent;
@@ -53,6 +54,7 @@ public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
   static {
     supportedElementClasses.add(EndEvent.class);
     supportedElementClasses.add(ThrowEvent.class);
+    supportedElementClasses.add(BoundaryEvent.class);
     supportedElementClasses.add(IntermediateCatchEvent.class);
 
     supportedElementClasses.add(ExclusiveGateway.class);
@@ -79,8 +81,14 @@ public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
 
   public void parse(BpmnParse bpmnParse, BaseElement element) {
     ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(element.getId());
-    activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
-    activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
+    if(element instanceof BoundaryEvent) {
+    	// A boundary-event never receives an activity start-event
+    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITY_INSTANCE_START_LISTENER, 0);
+    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER, 1);
+    } else {
+    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
+    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
+    }
   }
 
 }

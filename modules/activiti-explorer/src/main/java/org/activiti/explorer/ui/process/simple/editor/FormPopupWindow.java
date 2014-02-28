@@ -142,7 +142,7 @@ public class FormPopupWindow extends Window {
     if (form == null) {
       propertyTable.addPropertyRow();
     } else {
-      for (FormPropertyDefinition property : form.getFormProperties()) {
+      for (FormPropertyDefinition property : form.getFormPropertyDefinitions()) {
         propertyTable.addPropertyRow(property.getName(), getPropertyTypeDisplay(property), property.isMandatory());
       }
     }

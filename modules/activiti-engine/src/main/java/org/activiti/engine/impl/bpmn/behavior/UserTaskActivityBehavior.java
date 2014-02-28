@@ -12,19 +12,22 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * activity implementation for the user task.
@@ -60,7 +63,11 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         if (dueDate instanceof Date) {
           task.setDueDate((Date) dueDate);
         } else if (dueDate instanceof String) {
-          task.setDueDate(new DueDateBusinessCalendar().resolveDuedate((String) dueDate)); 
+          BusinessCalendar businessCalendar = Context
+            .getProcessEngineConfiguration()
+            .getBusinessCalendarManager()
+            .getBusinessCalendar(DueDateBusinessCalendar.NAME);
+          task.setDueDate(businessCalendar.resolveDuedate((String) dueDate));
         } else {
           throw new ActivitiIllegalArgumentException("Due date expression does not resolve to a Date or Date string: " + 
               taskDefinition.getDueDateExpression().getExpressionText());
@@ -86,6 +93,18 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       }
     }
     
+    if (taskDefinition.getCategoryExpression() != null) {
+    	final Object category = taskDefinition.getCategoryExpression().getValue(execution);
+    	if (category != null) {
+    		if (category instanceof String) {
+    			task.setCategory((String) category);
+    		} else {
+    			 throw new ActivitiIllegalArgumentException("Category expression does not resolve to a string: " + 
+               taskDefinition.getCategoryExpression().getExpressionText());
+    		}
+    	}
+    }
+    
     handleAssignments(task, execution);
    
     // All properties set, now firing 'create' event
@@ -93,13 +112,15 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    if (((ExecutionEntity) execution).getTasks().size() != 0)
+      throw new ActivitiException("UserTask should not be signalled before complete");
     leave(execution);
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void handleAssignments(TaskEntity task, ActivityExecution execution) {
     if (taskDefinition.getAssigneeExpression() != null) {
-      task.setAssignee((String) taskDefinition.getAssigneeExpression().getValue(execution));
+      task.setAssignee((String) taskDefinition.getAssigneeExpression().getValue(execution), true, false);
     }
     
     if (taskDefinition.getOwnerExpression() != null) {

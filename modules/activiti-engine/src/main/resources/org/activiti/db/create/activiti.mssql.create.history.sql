@@ -11,6 +11,7 @@ create table ACT_HI_PROCINST (
     END_ACT_ID_ nvarchar(255),
     SUPER_PROCESS_INSTANCE_ID_ nvarchar(64),
     DELETE_REASON_ nvarchar(4000),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_),
     unique (PROC_INST_ID_)
 );
@@ -29,6 +30,7 @@ create table ACT_HI_ACTINST (
     START_TIME_ datetime not null,
     END_TIME_ datetime,
     DURATION_ numeric(19,0),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -51,6 +53,8 @@ create table ACT_HI_TASKINST (
     PRIORITY_ int,
     DUE_DATE_ datetime,
     FORM_KEY_ nvarchar(255),
+    CATEGORY_ nvarchar(255),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -67,6 +71,8 @@ create table ACT_HI_VARINST (
     LONG_ numeric(19,0),
     TEXT_ nvarchar(4000),
     TEXT2_ nvarchar(4000),
+    CREATE_TIME_ datetime,
+    LAST_UPDATED_TIME_ datetime,
     primary key (ID_)
 );
 
@@ -137,7 +143,6 @@ create index ACT_IDX_HI_DETAIL_NAME on ACT_HI_DETAIL(NAME_);
 create index ACT_IDX_HI_DETAIL_TASK_ID on ACT_HI_DETAIL(TASK_ID_);
 create index ACT_IDX_HI_PROCVAR_PROC_INST on ACT_HI_VARINST(PROC_INST_ID_);
 create index ACT_IDX_HI_PROCVAR_NAME_TYPE on ACT_HI_VARINST(NAME_, VAR_TYPE_);
-create unique index ACT_UNIQ_HI_BUS_KEY on ACT_HI_PROCINST (PROC_DEF_ID_, BUSINESS_KEY_) where BUSINESS_KEY_ is not null;
 create index ACT_IDX_HI_ACT_INST_PROCINST on ACT_HI_ACTINST(PROC_INST_ID_, ACT_ID_);
 create index ACT_IDX_HI_ACT_INST_EXEC on ACT_HI_ACTINST(EXECUTION_ID_, ACT_ID_);
 create index ACT_IDX_HI_IDENT_LNK_USER on ACT_HI_IDENTITYLINK(USER_ID_);

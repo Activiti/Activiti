@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
@@ -23,7 +24,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * 
  * @author Frederik Heremans
  */
-public class FormPropertyGroup {
+public class FormPropertyGroup implements FormPropertyDefinitionContainer {
 	
 	protected String title;
 	protected String id;
@@ -31,9 +32,7 @@ public class FormPropertyGroup {
 	
 	protected List<FormPropertyDefinition> formPropertyDefinitions = new ArrayList<FormPropertyDefinition>();
 	
-	public FormPropertyGroup() {
-		
-  }
+	public FormPropertyGroup() {}
 	
 	public FormPropertyGroup(String id, String type, String title) {
 		this.id = id;
@@ -42,9 +41,19 @@ public class FormPropertyGroup {
   }
 	
 	@JsonSerialize(contentAs=FormPropertyDefinition.class)
+  @JsonProperty(value="formProperties")
 	public List<FormPropertyDefinition> getFormPropertyDefinitions() {
 	  return formPropertyDefinitions;
   }
+	
+	@Override
+	public void addFormProperty(FormPropertyDefinition definition) {
+		formPropertyDefinitions.add(definition);
+	}
+	@Override
+	public boolean removeFormProperty(FormPropertyDefinition definition) {
+		return formPropertyDefinitions.remove(definition);
+	}
 	
 	public void setFormPropertyDefinitions(List<FormPropertyDefinition> formPropertyDefinitions) {
 	  this.formPropertyDefinitions = formPropertyDefinitions;
@@ -76,5 +85,30 @@ public class FormPropertyGroup {
   }
 	public void setId(String id) {
 	  this.id = id;
+  }
+	
+	public FormPropertyGroup clone() {
+	  FormPropertyGroup clone = new FormPropertyGroup();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(FormPropertyGroup otherGroup) {
+    if(!(otherGroup instanceof FormPropertyGroup)) {
+      throw new SimpleWorkflowException("An instance of FormPropertyGroup is required to set values");
+    }
+    
+    FormPropertyGroup formGroup = (FormPropertyGroup) otherGroup;
+    setId(formGroup.getId());
+    setTitle(formGroup.getTitle());
+    setType(formGroup.getType());
+    
+    List<FormPropertyDefinition> definitionList = new ArrayList<FormPropertyDefinition>();
+    if (formGroup.getFormPropertyDefinitions() != null && formGroup.getFormPropertyDefinitions().size() > 0) {
+      for (FormPropertyDefinition propertyDefinition : formGroup.getFormPropertyDefinitions()) {
+        definitionList.add(propertyDefinition.clone());
+      }
+    }
+    setFormPropertyDefinitions(definitionList);
   }
 }

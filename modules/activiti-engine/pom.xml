@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.14-SNAPSHOT</version>
+    <version>5.15-SNAPSHOT</version>
   </parent>
 
   <dependencies>
@@ -140,15 +140,6 @@
     
   </dependencies>
   
-  <repositories>
-    <!-- This repo declaration is here for as this will be part of the distro -->
-    <repository>
-      <id>activiti</id>
-      <name>Activiti</name>
-      <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-    </repository>
-  </repositories>
-
   <properties>
     <activiti.artifact>
       org.activiti.engine
@@ -161,13 +152,14 @@
       org.junit*;resolution:=optional,
       com.sun*;resolution:=optional,
       javax.persistence*;resolution:=optional,
-      org.apache.commons.mail;resolution:=optional,
-      org.apache.tools.ant*;resolution:=optional,
+      org.apache.commons.mail*;resolution:=optional,
       org.apache.xerces*;resolution:=optional,
-      org.activiti.osgi*;resolution:=optional,
+      org.activiti.camel;resolution:=optional,
+      org.activiti.camel.impl;resolution:=optional,
       org.springframework*;resolution:=optional,
       org.drools*;resolution:=optional,
       com.fasterxml*;resolution:=optional,
+      javax.transaction;resolution:=optional,
     </activiti.osgi.import.additional>
   </properties>
 
@@ -180,6 +172,7 @@
             <exclude>**/*TestCase.java</exclude>
             <exclude>**/RepeatingServiceTaskTest.java</exclude>
           </excludes>
+          <runOrder>alphabetical</runOrder>
         </configuration>
       </plugin>
       <plugin>
@@ -451,6 +444,7 @@
                 <exclude>**/ProcessDiagramRetrievalTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -515,6 +509,7 @@
 							<exclude>**/ProcessDiagramRetrievalTest.java</exclude>
 							<exclude>org/activiti/standalone/**</exclude>
 						</excludes>
+						<runOrder>alphabetical</runOrder>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -523,7 +518,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-jdk14</artifactId>
-				<version>1.7.2</version>
+				<version>1.7.6</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
@@ -565,6 +560,7 @@
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -654,6 +650,7 @@
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -693,12 +690,13 @@
                 <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
                 <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
                 <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485  -->
-                
                 <exclude>**/Historic*InstanceTest.java</exclude>
                 <exclude>**/HistoryServiceTest.java</exclude>
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
+                <exclude>**/ProcessInstanceLogQueryTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -721,6 +719,7 @@
                 <include>**/JdbcMetaDataTest.java</include>
               </includes>
               <excludes />
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
           <plugin>

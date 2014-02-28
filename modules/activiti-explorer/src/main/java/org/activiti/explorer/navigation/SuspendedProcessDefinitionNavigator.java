@@ -31,9 +31,9 @@ public class SuspendedProcessDefinitionNavigator extends ManagementNavigator {
     String processDefinitionId = uriFragment.getUriPart(1);
     
     if(processDefinitionId != null) {
-      ExplorerApp.get().getViewManager().showActiveProcessDefinitionsPage(processDefinitionId);
+      ExplorerApp.get().getViewManager().showSuspendedProcessDefinitionsPage(processDefinitionId);
     } else {
-      ExplorerApp.get().getViewManager().showActiveProcessDefinitionsPage();
+      ExplorerApp.get().getViewManager().showSuspendedProcessDefinitionsPage();
     }
   }
 
