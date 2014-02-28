@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ExecuteJobsRunnable implements Runnable
 {
-    private static Logger log = LoggerFactory.getLogger(AcquireJobsRunnable.class);
+    private static Logger log = LoggerFactory.getLogger(ExecuteJobsRunnable.class);
 
     private final List<String> jobIds;
     private final JobExecutor jobExecutor;
