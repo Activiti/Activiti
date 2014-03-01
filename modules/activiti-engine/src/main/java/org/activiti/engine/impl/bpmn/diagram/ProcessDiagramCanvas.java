@@ -1040,41 +1040,41 @@ public class ProcessDiagramCanvas {
   public List<GraphicInfo> connectionPerfectionizer(SHAPE_TYPE sourceShapeType, SHAPE_TYPE targetShapeType, GraphicInfo sourceGraphicInfo, GraphicInfo targetGraphicInfo, List<GraphicInfo> graphicInfoList) {
     Shape shapeFirst = createShape(sourceShapeType, sourceGraphicInfo);
     Shape shapeLast = createShape(targetShapeType, targetGraphicInfo);
-    
+
     GraphicInfo graphicInfoFirst = graphicInfoList.get(0);
     GraphicInfo graphicInfoLast = graphicInfoList.get(graphicInfoList.size()-1);
     if (shapeFirst != null) {
-	  	graphicInfoFirst.setX(shapeFirst.getBounds2D().getCenterX());
-	  	graphicInfoFirst.setY(shapeFirst.getBounds2D().getCenterY());
+      graphicInfoFirst.setX(shapeFirst.getBounds2D().getCenterX());
+      graphicInfoFirst.setY(shapeFirst.getBounds2D().getCenterY());
     }
     if (shapeLast != null) {
-	  	graphicInfoLast.setX(shapeLast.getBounds2D().getCenterX());
-	  	graphicInfoLast.setY(shapeLast.getBounds2D().getCenterY());
+      graphicInfoLast.setX(shapeLast.getBounds2D().getCenterX());
+      graphicInfoLast.setY(shapeLast.getBounds2D().getCenterY());
     }
-    
+
     Point p = null;
     
     if (shapeFirst != null) {
-	  	Line2D.Double lineFirst = new Line2D.Double(graphicInfoFirst.getX(), graphicInfoFirst.getY(), graphicInfoList.get(1).getX(), graphicInfoList.get(1).getY());
-	  	p = getIntersection(shapeFirst, lineFirst);
-	  	if (p != null) {
-	  		graphicInfoFirst.setX(p.getX());
-	    	graphicInfoFirst.setY(p.getY());
-	  	}
+      Line2D.Double lineFirst = new Line2D.Double(graphicInfoFirst.getX(), graphicInfoFirst.getY(), graphicInfoList.get(1).getX(), graphicInfoList.get(1).getY());
+      p = getIntersection(shapeFirst, lineFirst);
+      if (p != null) {
+        graphicInfoFirst.setX(p.getX());
+        graphicInfoFirst.setY(p.getY());
+      }
     }
-  	
+
     if (shapeLast != null) {
-	  	Line2D.Double lineLast = new Line2D.Double(graphicInfoLast.getX(), graphicInfoLast.getY(), graphicInfoList.get(graphicInfoList.size()-2).getX(), graphicInfoList.get(graphicInfoList.size()-2).getY());
-	  	p = getIntersection(shapeLast, lineLast);
-	  	if (p != null) {
-	  		graphicInfoLast.setX(p.getX());
-	    	graphicInfoLast.setY(p.getY());
-	  	}
+      Line2D.Double lineLast = new Line2D.Double(graphicInfoLast.getX(), graphicInfoLast.getY(), graphicInfoList.get(graphicInfoList.size()-2).getX(), graphicInfoList.get(graphicInfoList.size()-2).getY());
+      p = getIntersection(shapeLast, lineLast);
+      if (p != null) {
+        graphicInfoLast.setX(p.getX());
+        graphicInfoLast.setY(p.getY());
+      }
     }
-    
-  	return graphicInfoList;
+
+    return graphicInfoList;
   }
-  
+
   /**
    * This method creates shape by type and coordinates.
    * @param shapeType
@@ -1082,111 +1082,113 @@ public class ProcessDiagramCanvas {
    * @return Shape
    */
   private static Shape createShape(SHAPE_TYPE shapeType, GraphicInfo graphicInfo) {
-  	if (SHAPE_TYPE.Rectangle.equals(shapeType)) {
-    	// source is rectangle
-    	return new Rectangle2D.Double(graphicInfo.getX(), graphicInfo.getY(), graphicInfo.getWidth(), graphicInfo.getHeight());    	
+    if (SHAPE_TYPE.Rectangle.equals(shapeType)) {
+      // source is rectangle
+      return new Rectangle2D.Double(graphicInfo.getX(), graphicInfo.getY(), graphicInfo.getWidth(), graphicInfo.getHeight());       
     } else if (SHAPE_TYPE.Rhombus.equals(shapeType)) {
-    	// source is rhombus
-    	Path2D.Double rhombus = new Path2D.Double();
-    	rhombus.moveTo(graphicInfo.getX(), graphicInfo.getY() + graphicInfo.getHeight() / 2);
-    	rhombus.lineTo(graphicInfo.getX() + graphicInfo.getWidth() / 2, graphicInfo.getY() + graphicInfo.getHeight());
-    	rhombus.lineTo(graphicInfo.getX() + graphicInfo.getWidth(), graphicInfo.getY() + graphicInfo.getHeight() / 2);
-    	rhombus.lineTo(graphicInfo.getX() + graphicInfo.getWidth() / 2, graphicInfo.getY());
-    	rhombus.lineTo(graphicInfo.getX(), graphicInfo.getY() + graphicInfo.getHeight() / 2);
-    	rhombus.closePath();
-    	return rhombus;
+      // source is rhombus
+      Path2D.Double rhombus = new Path2D.Double();
+      rhombus.moveTo(graphicInfo.getX(), graphicInfo.getY() + graphicInfo.getHeight() / 2);
+      rhombus.lineTo(graphicInfo.getX() + graphicInfo.getWidth() / 2, graphicInfo.getY() + graphicInfo.getHeight());
+      rhombus.lineTo(graphicInfo.getX() + graphicInfo.getWidth(), graphicInfo.getY() + graphicInfo.getHeight() / 2);
+      rhombus.lineTo(graphicInfo.getX() + graphicInfo.getWidth() / 2, graphicInfo.getY());
+      rhombus.lineTo(graphicInfo.getX(), graphicInfo.getY() + graphicInfo.getHeight() / 2);
+      rhombus.closePath();
+      return rhombus;
     } else if (SHAPE_TYPE.Ellipse.equals(shapeType)) {
-    	// source is ellipse
-    	return new Ellipse2D.Double(graphicInfo.getX(), graphicInfo.getY(), graphicInfo.getWidth(), graphicInfo.getHeight());
+      // source is ellipse
+      return new Ellipse2D.Double(graphicInfo.getX(), graphicInfo.getY(), graphicInfo.getWidth(), graphicInfo.getHeight());
     } else {
-    	// unknown source element, just do not correct coordinates
+      // unknown source element, just do not correct coordinates
     }
-  	return null;
+    return null;
   }
-  
-	/**
-	 * This method returns intersection point of shape border and line. 
-	 * @param shape
-	 * @param line
-	 * @return Point
-	 */
-	private static Point getIntersection(Shape shape, Line2D.Double line) {
-			if (shape instanceof Ellipse2D) {
-				return getEllipseIntersection(shape, line);
-			} else if (shape instanceof Rectangle2D || shape instanceof Path2D) {
-				return getShapeIntersection(shape, line);
-			} else {
-				// something strange
-				return null;
-			}
-	}
-	
-	/**
-	 * This method calculates ellipse intersection with line
-	 * @param shape
-	 * 					Bounds of this shape used to calculate parameters of inscribed into this bounds ellipse.
-	 * @param line
-	 * @return Intersection point
-	 */
-	private static Point getEllipseIntersection(Shape shape, Line2D.Double line) {
-		double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
-		double x = shape.getBounds2D().getWidth()/2 * Math.cos(angle) + shape.getBounds2D().getCenterX();
-		double y = shape.getBounds2D().getHeight()/2 * Math.sin(angle) + shape.getBounds2D().getCenterY();
-		Point p = new Point();
-		p.setLocation(x, y);
-		return p;
-	}
-	
-	/**
-	 * This method calculates shape intersection with line.
-	 * @param shape
-	 * @param line
-	 * @return Intersection point
-	 */
-	private static Point getShapeIntersection(Shape shape, Line2D.Double line) {
-		PathIterator it = shape.getPathIterator(null);
-		double[] coords = new double[6];
-		double[] pos = new double[2];
-		Line2D.Double l = new Line2D.Double();
-		while (!it.isDone()) {
-			int type = it.currentSegment(coords);
-			switch (type) {
-			case PathIterator.SEG_MOVETO:
-				pos[0] = coords[0];
-				pos[1] = coords[1];
-				break;
-			case PathIterator.SEG_LINETO:
-				l = new Line2D.Double(pos[0], pos[1], coords[0], coords[1]);
-				if (line.intersectsLine(l)) {
-					return getLinesIntersection(line, l);
-				}
-				pos[0] = coords[0];
-				pos[1] = coords[1];
-				break;
-			case PathIterator.SEG_CLOSE:
-				break;
-			default:
-				// whatever
-			}
-			it.next();
-		}
-		return null;
-	}
-	
-	/**
-	 * This method calculates intersections of two lines.
-	 * @param a Line 1
-	 * @param b Line 2
-	 * @return Intersection point
-	 */
-	private static Point getLinesIntersection(Line2D a, Line2D b) {
-		double d  = (a.getX1()-a.getX2())*(b.getY2()-b.getY1()) - (a.getY1()-a.getY2())*(b.getX2()-b.getX1());
-		double da = (a.getX1()-b.getX1())*(b.getY2()-b.getY1()) - (a.getY1()-b.getY1())*(b.getX2()-b.getX1());
-		// double db = (a.getX1()-a.getX2())*(a.getY1()-b.getY1()) - (a.getY1()-a.getY2())*(a.getX1()-b.getX1());
-		double ta = da/d;
+
+  /**
+   * This method returns intersection point of shape border and line.
+   * 
+   * @param shape
+   * @param line
+   * @return Point
+   */
+  private static Point getIntersection(Shape shape, Line2D.Double line) {
+    if (shape instanceof Ellipse2D) {
+      return getEllipseIntersection(shape, line);
+    } else if (shape instanceof Rectangle2D || shape instanceof Path2D) {
+      return getShapeIntersection(shape, line);
+    } else {
+      // something strange
+      return null;
+    }
+  }
+
+    /**
+     * This method calculates ellipse intersection with line
+     * @param shape
+     *                  Bounds of this shape used to calculate parameters of inscribed into this bounds ellipse.
+     * @param line
+     * @return Intersection point
+     */
+  private static Point getEllipseIntersection(Shape shape, Line2D.Double line) {
+    double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
+    double x = shape.getBounds2D().getWidth()/2 * Math.cos(angle) + shape.getBounds2D().getCenterX();
+    double y = shape.getBounds2D().getHeight()/2 * Math.sin(angle) + shape.getBounds2D().getCenterY();
+    Point p = new Point();
+    p.setLocation(x, y);
+    return p;
+  }
+
+  /**
+   * This method calculates shape intersection with line.
+   * 
+   * @param shape
+   * @param line
+   * @return Intersection point
+   */
+  private static Point getShapeIntersection(Shape shape, Line2D.Double line) {
+    PathIterator it = shape.getPathIterator(null);
+    double[] coords = new double[6];
+    double[] pos = new double[2];
+    Line2D.Double l = new Line2D.Double();
+    while (!it.isDone()) {
+      int type = it.currentSegment(coords);
+      switch (type) {
+      case PathIterator.SEG_MOVETO:
+        pos[0] = coords[0];
+        pos[1] = coords[1];
+        break;
+      case PathIterator.SEG_LINETO:
+        l = new Line2D.Double(pos[0], pos[1], coords[0], coords[1]);
+        if (line.intersectsLine(l)) {
+          return getLinesIntersection(line, l);
+        }
+        pos[0] = coords[0];
+        pos[1] = coords[1];
+        break;
+      case PathIterator.SEG_CLOSE:
+        break;
+      default:
+        // whatever
+      }
+      it.next();
+    }
+    return null;
+  }
+
+    /**
+     * This method calculates intersections of two lines.
+     * @param a Line 1
+     * @param b Line 2
+     * @return Intersection point
+     */
+    private static Point getLinesIntersection(Line2D a, Line2D b) {
+    double d  = (a.getX1()-a.getX2())*(b.getY2()-b.getY1()) - (a.getY1()-a.getY2())*(b.getX2()-b.getX1());
+    double da = (a.getX1()-b.getX1())*(b.getY2()-b.getY1()) - (a.getY1()-b.getY1())*(b.getX2()-b.getX1());
+    // double db = (a.getX1()-a.getX2())*(a.getY1()-b.getY1()) - (a.getY1()-a.getY2())*(a.getX1()-b.getX1());
+    double ta = da/d;
     // double tb = db/d;
-		Point p = new Point();
-		p.setLocation(a.getX1()+ta*(a.getX2()-a.getX1()), a.getY1()+ta*(a.getY2()-a.getY1()));
-		return p;
-	}
+    Point p = new Point();
+    p.setLocation(a.getX1()+ta*(a.getX2()-a.getX1()), a.getY1()+ta*(a.getY2()-a.getY1()));
+    return p;
+  }
 }

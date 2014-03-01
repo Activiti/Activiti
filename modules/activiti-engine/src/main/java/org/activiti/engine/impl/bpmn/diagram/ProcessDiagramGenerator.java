@@ -340,10 +340,10 @@ public class ProcessDiagramGenerator {
         BaseElement sourceElement = bpmnModel.getFlowElement(sourceRef);
         BaseElement targetElement = bpmnModel.getFlowElement(targetRef);
         if (sourceElement == null) {
-        	sourceElement = bpmnModel.getArtifact(sourceRef);
+            sourceElement = bpmnModel.getArtifact(sourceRef);
         }
         if (targetElement == null) {
-        	targetElement = bpmnModel.getArtifact(targetRef);
+            targetElement = bpmnModel.getArtifact(targetRef);
         }
         List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(artifact.getId());
         graphicInfoList = connectionPerfectionizer(processDiagramCanvas, bpmnModel, sourceElement, targetElement, graphicInfoList);
@@ -556,7 +556,7 @@ public class ProcessDiagramGenerator {
       }
     }
   }
-
+  
   /**
    * This method makes coordinates of connection flow better.
    * @param processDiagramCanvas
@@ -583,18 +583,18 @@ public class ProcessDiagramGenerator {
    * @return ProcessDiagramCanvas.SHAPE_TYPE
    */
   protected static ProcessDiagramCanvas.SHAPE_TYPE getShapeType(BaseElement baseElement) {
-  	if (baseElement instanceof Task || baseElement instanceof Activity || baseElement instanceof TextAnnotation) {
-  		return ProcessDiagramCanvas.SHAPE_TYPE.Rectangle;
+    if (baseElement instanceof Task || baseElement instanceof Activity || baseElement instanceof TextAnnotation) {
+        return ProcessDiagramCanvas.SHAPE_TYPE.Rectangle;
     } else if (baseElement instanceof Gateway) {
-    	return ProcessDiagramCanvas.SHAPE_TYPE.Rhombus;
+        return ProcessDiagramCanvas.SHAPE_TYPE.Rhombus;
     } else if (baseElement instanceof Event) {
-    	return ProcessDiagramCanvas.SHAPE_TYPE.Ellipse;
+        return ProcessDiagramCanvas.SHAPE_TYPE.Ellipse;
     } else {
-    	// unknown source element, just do not correct coordinates
+        // unknown source element, just do not correct coordinates
     }
-  	return null;
+    return null;
   }
-
+  
   protected static GraphicInfo getLineCenter(List<GraphicInfo> graphicInfoList) {
     GraphicInfo gi = new GraphicInfo();
     
