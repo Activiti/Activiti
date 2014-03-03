@@ -18,6 +18,9 @@
     <activiti.artifact>
       org.activiti.simple.workflow
     </activiti.artifact>
+    <activiti.osgi.export.additional>
+      org.activiti.workflow*
+    </activiti.osgi.export.additional>
   </properties>
 
   <build>

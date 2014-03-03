@@ -306,7 +306,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 	    <section id="bpmnSignalEventDefinitionScope">
 	       <title>Signal event scope</title>
 	       <para>
-	           By default, signals are <emphasis>broadcasted process engine wide</emphasis>. This means that you
+	           By default, signals are <emphasis>broadcast process engine wide</emphasis>. This means that you
 	           can throw a signal event in a process instance, and other process instances with different process definitions
 	           can react on the occurrence of this event.
 	       </para>
@@ -3342,7 +3342,7 @@ public class ToUppercase implements JavaDelegate {
           </itemizedlist>
         </para>
         <para>
-          If available, the value is injected through a public setter method on your delegated class, following the Java Bean naming conventions (e.g. field <literal>fistName</literal> has setter <literal>setFirstName(...)</literal>).
+          If available, the value is injected through a public setter method on your delegated class, following the Java Bean naming conventions (e.g. field <literal>firstName</literal> has setter <literal>setFirstName(...)</literal>).
           If no setter is available for that field, the value of private member will be set on the delegate. SecurityManagers in some environments don't allow modifying private fields,
           so it's safer to expose a public setter-method for the fields you want to have injected. <emphasis role="bold">Regardless of the type of value declared in the process-definition, the type of the setter/private field on the injection target should always be 
           <literal>org.activiti.engine.delegate.Expression</literal>.</emphasis>
@@ -3960,6 +3960,12 @@ public class StartProcessInstanceTestDelegateWithInjection {
                 <entry>if applicable for your server</entry>
                 <entry>Some mail servers require ssl communication. By default set to false.</entry>
               </row> 
+              <row>
+                <entry>mailServerUseTLS</entry>
+                <entry>if applicable for your server</entry>
+                <entry>Some mail servers (for instance gmail) require TLS communication. By default set to false.</entry>
+              </row> 
+            </tbody>
             </tbody>
             </tgroup>
           </table>
@@ -4039,6 +4045,16 @@ public class StartProcessInstanceTestDelegateWithInjection {
                    Can be used in combination with <emphasis>html</emphasis>, for e-mail clients
                    that don't support rich content. The client will then fall back to this text-only alternative.
                  </entry>
+               </row>
+                <row>
+                 <entry>htmlVar</entry>
+                 <entry>no</entry>
+                 <entry>The name of a process variable that holds the HTML that is the content of the e-mail. The key difference between this and html is that this content will have expressions replaced before being sent by the mail task.</entry>
+               </row>
+                <row>
+                 <entry>textVar</entry>
+                 <entry>no</entry>
+                 <entry>The name of a process variable that holds the plain text content of the e-mail. The key difference between this and html is that this content will have expressions replaced before being sent by the mail task.</entry>
                </row>
              </tbody>
 	         </tgroup>
