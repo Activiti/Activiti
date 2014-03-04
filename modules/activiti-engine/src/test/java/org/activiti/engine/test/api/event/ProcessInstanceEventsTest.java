@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.test.api.event;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -108,10 +108,19 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			listener.clearEventsReceived();
 	}
-	
-	
-	@Override
-	protected void initializeServices() {
+
+  @Deployment(resources = {"org/activiti/engine/test/api/event/SignalThrowingEventListenerTest.globalSignalExternalProcess.bpmn20.xml"})
+  public void testSignalCatchProcessInstanceStart() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("globalSignalProcessExternal");
+
+    assertNotNull(processInstance);
+    // Check create-event
+    assertEquals(1, listener.getEventsReceived().size());
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+  }
+
+  @Override
+  protected void initializeServices() {
 	  super.initializeServices();
 	  
 	  listener = new TestActivitiEntityEventListener(ProcessInstance.class);
