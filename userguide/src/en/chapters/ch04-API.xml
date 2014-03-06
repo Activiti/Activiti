@@ -110,7 +110,7 @@ FormService formService = processEngine.getFormService();</programlisting>
                 Manipulating to which user a task is assigned or which users are in some way involved with the task.
             </para></listitem>
             <listitem><para>
-                Claiming and completing a task. Claiming means that someone decided to be the assigee for the task, meaning
+                Claiming and completing a task. Claiming means that someone decided to be the assignee for the task, meaning
                 that this user will complete the task. Completing means 'doing the work of the tasks'. Typically this is 
                 filling in a form of sorts.
             </para></listitem>

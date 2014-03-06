@@ -12,11 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
@@ -24,9 +19,15 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * activity implementation for the user task.
@@ -111,6 +112,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    if (((ExecutionEntity) execution).getTasks().size() != 0)
+      throw new ActivitiException("UserTask should not be signalled before complete");
     leave(execution);
   }
 

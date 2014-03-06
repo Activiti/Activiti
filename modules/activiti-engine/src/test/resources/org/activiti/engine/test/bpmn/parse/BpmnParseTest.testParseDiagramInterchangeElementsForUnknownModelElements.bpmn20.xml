@@ -13,7 +13,11 @@
     </endEvent>
     <sequenceFlow id="sequenceFlow_14" sourceRef="startEvent_1" targetRef="Task_5"/>
     <sequenceFlow id="sequenceFlow_15" sourceRef="Task_5" targetRef="endEvent_10"/>
-    <association id="association_16" sourceRef="Task_5" targetRef="textAnnotation_17"/>
+    <association id="association_16" sourceRef="Task_5" targetRef="textAnnotation_17">
+      <extensionElements>
+        <omgdc:Bounds height="30.0" width="30.0" x="135.0" y="90.0"/>
+      </extensionElements>
+    </association>
     <textAnnotation id="textAnnotation_17">
       <text>Some Text</text>
     </textAnnotation>

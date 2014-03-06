@@ -175,12 +175,12 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
 	   <para>
 	       Multitenancy in general is a concept where the software is capable of serving multiple different
 	       organizations. Key is that the data is partitioned and no organization can see the data of other ones.
-	       In this context, such an organization (or a departement, or a team or ...) is called a <emphasis>tenant</emphasis>.
+	       In this context, such an organization (or a department, or a team or ...) is called a <emphasis>tenant</emphasis>.
 	   </para>
 	   
 	   <para>
 	       Note that this is fundamentally different from a multi-instance setup, where an Activiti Process Engine instance
-	       is running for each organization separately (and with a different database schema). Altough Activiti is lightweight,
+	       is running for each organization separately (and with a different database schema). Although Activiti is lightweight,
 	       and running a Process Engine instance doesn't take much resources, it does add complexity and more maintenance.
 	       But, for some use cases it might be the right solution.
 	   </para>
@@ -195,7 +195,7 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
 	   
 	   <para>
 	       When deploying process definition to the Activiti Process Engine it is possible to pass a <emphasis>tenant identifier</emphasis>.
-	       This is a string (eg. a UUID, departement id, etc.), limited to 256 characters which is uniquely identifies the tenant:
+	       This is a string (eg. a UUID, department id, etc.), limited to 256 characters which is uniquely identifies the tenant:
 	       <programlisting>
  repositoryService.createDeployment()
             .addClassPathResource(...)
@@ -428,7 +428,7 @@ INFO  org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl  - class org.a
 	   
 	   <para>
 	       Note that this ServiceLoader approach might not work in certain environments. It can be 
-	       explicitely disabled using the <emphasis>enableConfiguratorServiceLoader</emphasis> property
+	       explicitly disabled using the <emphasis>enableConfiguratorServiceLoader</emphasis> property
 	       of the ProcessEngineConfiguration (true by default).
 	   </para>
 	
@@ -459,7 +459,7 @@ INFO  org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl  - class org.a
 	   </para>
 	   
 	   <para>    
-	       If the platform on which Activti runs does support it, do enable this feature. 
+	       If the platform on which Activiti runs does support it, do enable this feature. 
 	   </para>
 	
 	</section>

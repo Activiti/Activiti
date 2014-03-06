@@ -559,6 +559,7 @@ public class RestResponseFactory {
     result.setPriority(taskInstance.getPriority());
     result.setProcessDefinitionId(taskInstance.getProcessDefinitionId());
     result.setTenantId(taskInstance.getTenantId());
+    result.setCategory(taskInstance.getCategory());
     if (taskInstance.getProcessDefinitionId() != null) {
       result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, taskInstance.getProcessDefinitionId()));
     }
