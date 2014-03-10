@@ -14,6 +14,7 @@ package org.activiti.test.ldap;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.test.Deployment;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,6 +26,17 @@ public class LdapIntegrationTest extends LDAPTestCase {
     assertTrue(identityService.checkPassword("kermit", "pass"));
     assertTrue(identityService.checkPassword("bunsen", "pass"));
     assertFalse(identityService.checkPassword("kermit", "blah"));
+  }
+  
+  public void testAuthenticationThroughLdapEmptyPassword() {
+  	try {
+  		identityService.checkPassword("kermit", null);
+  		fail();
+  	} catch (ActivitiException e) {}
+  	try {
+  		identityService.checkPassword("kermit", "");
+  		fail();
+  	} catch (ActivitiException e) {}
   }
   
   @Deployment
