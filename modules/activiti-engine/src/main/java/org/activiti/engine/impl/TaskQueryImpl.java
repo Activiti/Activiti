@@ -81,7 +81,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean excludeSubtasks = false;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
-  protected String todoUser;
+  protected String userIdForCandidateAndAssignee;
   protected boolean bothCandidateAndAssigneed = false;
 
   public TaskQueryImpl() {
@@ -248,7 +248,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   @Override
-  public TaskQuery taskCandidateOrAssigneed(String todoUser) {
+  public TaskQuery taskCandidateOrAssigneed(String userIdForCandidateAndAssignee) {
     if (candidateGroup != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
     }
@@ -259,7 +259,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
     bothCandidateAndAssigneed = true;
-    this.todoUser = todoUser;
+    this.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
     return this;
   }
 
@@ -701,7 +701,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
 	public boolean isWithoutTenantId() {
 		return withoutTenantId;
 	}
-  public String getTodoUser() {
-    return todoUser;
+  public String getUserIdForCandidateAndAssignee() {
+    return userIdForCandidateAndAssignee;
   }
 }
