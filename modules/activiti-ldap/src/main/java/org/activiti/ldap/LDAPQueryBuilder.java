@@ -19,6 +19,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.Rdn;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.slf4j.Logger;
@@ -73,7 +74,7 @@ public class LDAPQueryBuilder {
         
       });
       
-      searchExpression = MessageFormat.format(ldapConfigurator.getQueryGroupsForUser(), userDn);
+      searchExpression = MessageFormat.format(ldapConfigurator.getQueryGroupsForUser(), Rdn.escapeValue(userDn));
       
     } else {
       searchExpression = userId;

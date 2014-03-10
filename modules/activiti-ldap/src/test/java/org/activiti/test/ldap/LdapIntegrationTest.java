@@ -23,6 +23,7 @@ public class LdapIntegrationTest extends LDAPTestCase {
   
   public void testAuthenticationThroughLdap() {
     assertTrue(identityService.checkPassword("kermit", "pass"));
+    assertTrue(identityService.checkPassword("bunsen", "pass"));
     assertFalse(identityService.checkPassword("kermit", "blah"));
   }
   
@@ -34,7 +35,10 @@ public class LdapIntegrationTest extends LDAPTestCase {
 
     // Pepe is a member of the candidate group and should be able to find the task
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser("pepe").count());
-    
+
+    // Dr. Bunsen is also a member of the candidate group and should be able to find the task
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("bunsen").count());
+
     // Kermit is a candidate user and should be able to find the task
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
   }
@@ -74,8 +78,8 @@ public class LdapIntegrationTest extends LDAPTestCase {
     assertEquals("The Frog", user.getLastName());
     
     users = identityService.createUserQuery().userFullNameLike("e").list();
-    assertEquals(4, users.size());
-    assertEquals(4, identityService.createUserQuery().userFullNameLike("e").count());
+    assertEquals(5, users.size());
+    assertEquals(5, identityService.createUserQuery().userFullNameLike("e").count());
     
     users = identityService.createUserQuery().userFullNameLike("The").list();
     assertEquals(3, users.size());
