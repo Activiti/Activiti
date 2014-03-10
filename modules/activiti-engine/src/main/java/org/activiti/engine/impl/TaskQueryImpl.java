@@ -82,7 +82,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
   protected String userIdForCandidateAndAssignee;
-  protected boolean bothCandidateAndAssigneed = false;
+  protected boolean bothCandidateAndAssigned = false;
 
   public TaskQueryImpl() {
   }
@@ -248,7 +248,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   @Override
-  public TaskQuery taskCandidateOrAssigneed(String userIdForCandidateAndAssignee) {
+  public TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee) {
     if (candidateGroup != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
     }
@@ -258,7 +258,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (candidateGroups != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
-    bothCandidateAndAssigneed = true;
+    bothCandidateAndAssigned = true;
     this.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
     return this;
   }
