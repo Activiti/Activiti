@@ -99,8 +99,6 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
    * Handles the completion of one of the parallel instances
    */
   public void leave(ActivityExecution execution) {
-    callActivityEndListeners(execution);
-    
     int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable());
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
@@ -122,6 +120,12 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     executionEntity.getParent().forceUpdate();
     
     List<ActivityExecution> joinedExecutions = executionEntity.findInactiveConcurrentExecutions(execution.getActivity());
+    // ACT-1271: As execution listeners are normally called in take() method, we perform this check to make sure that 
+    // they 'll be called only when take() won't be executed.
+    if (joinedExecutions.size() != nrOfInstances && !completionConditionSatisfied(execution)) {
+      callActivityEndListeners(execution);
+    }
+    //
     if (joinedExecutions.size() == nrOfInstances || completionConditionSatisfied(execution)) {
       
       // Removing all active child executions (ie because completionCondition is true)
