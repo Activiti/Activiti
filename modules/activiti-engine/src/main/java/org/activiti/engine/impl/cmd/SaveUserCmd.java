@@ -51,9 +51,23 @@ public class SaveUserCmd implements Command<Void>, Serializable {
       throw new ActivitiIllegalArgumentException("user is null");
     }
     if (user.getRevision()==0) {
-      commandContext
-        .getUserIdentityManager()
-        .insertUser(user);
+      try { 
+        commandContext
+          .getUserIdentityManager()
+          .insertUser(user);
+      } catch (Exception e) { 
+        // This occurs when the received User instance was not a 
+        // UserEntity at construction time AND the user record 
+        // does already exist. 
+        UserEntity user = (UserEntity) commandContext.getProcessEngineConfiguration().getIdentityService().createUserQuery().userId(this.user.getId()).singleResult();
+        user.setFirstName(this.user.getFirstName());
+        user.setLastName(this.user.getLastName());
+        user.setEmail(this.user.getEmail());
+        user.setPassword(this.user.getPassword());
+        commandContext
+          .getUserIdentityManager()
+          .updateUser(user);
+      }   
     } else {
       commandContext
         .getUserIdentityManager()
