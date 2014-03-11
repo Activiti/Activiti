@@ -22,6 +22,7 @@ import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.runtime.Clock;
 
 
 /** Configuration information from which a process engine can be build.
@@ -133,7 +134,8 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected Object jpaEntityManagerFactory;
   protected boolean jpaHandleTransaction;
   protected boolean jpaCloseEntityManager;
-  
+
+  protected Clock clock;
   protected JobExecutor jobExecutor;
   
   /**
@@ -616,7 +618,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     this.xmlEncoding = xmlEncoding;
     return this;
   }
-  
+
+  public Clock getClock() {
+    return clock;
+  }
+
+  public ProcessEngineConfiguration setClock(Clock clock) {
+    this.clock = clock;
+    return this;
+  }
+
   public JobExecutor getJobExecutor() {
     return jobExecutor;
   }

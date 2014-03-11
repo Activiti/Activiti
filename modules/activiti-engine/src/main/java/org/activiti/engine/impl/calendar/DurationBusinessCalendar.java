@@ -12,27 +12,26 @@
  */
 package org.activiti.engine.impl.calendar;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.ClockReader;
 
 
 /**
  * @author Tom Baeyens
  */
-public class DurationBusinessCalendar implements BusinessCalendar {
+public class DurationBusinessCalendar extends BusinessCalendarImpl {
   
   public static String NAME = "duration";
 
+  public DurationBusinessCalendar(ClockReader clockReader) {
+    super(clockReader);
+  }
+
   public Date resolveDuedate(String duedate) {
     try {
-      DurationHelper dh = new DurationHelper(duedate);
+      DurationHelper dh = new DurationHelper(duedate, clockReader);
       return dh.getDateAfter();
     } catch (Exception e) {
       throw new ActivitiException("couldn't resolve duedate: "+e.getMessage(), e);

@@ -18,9 +18,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 
@@ -251,7 +251,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     return executable;
   }
   public Date getNow() {
-    return ClockUtil.getCurrentTime();
+    return Context.getProcessEngineConfiguration().getClock().getCurrentTime();
   }
   public boolean isWithException() {
     return withException;

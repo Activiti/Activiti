@@ -70,14 +70,14 @@ import org.activiti.engine.task.TaskQuery;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class TaskServiceImpl extends ServiceImpl implements TaskService {
+public class TaskServiceImpl extends ClockServiceImpl implements TaskService {
 
   public Task newTask() {
     return newTask(null);
   }
   
   public Task newTask(String taskId) {
-    TaskEntity task = TaskEntity.create();
+    TaskEntity task = TaskEntity.create(getCurrentTime());
     task.setId(taskId);
     return task;
   }
