@@ -81,6 +81,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean excludeSubtasks = false;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
+  protected String userIdForCandidateAndAssignee;
+  protected boolean bothCandidateAndAssigned = false;
 
   public TaskQueryImpl() {
   }
@@ -244,7 +246,23 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     this.candidateGroup = candidateGroup;
     return this;
   }
-  
+
+  @Override
+  public TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee) {
+    if (candidateGroup != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
+    }
+    if (candidateUser != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
+    }
+    if (candidateGroups != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
+    }
+    bothCandidateAndAssigned = true;
+    this.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
+    return this;
+  }
+
   public TaskQuery taskCandidateGroupIn(List<String> candidateGroups) {
     if(candidateGroups == null) {
       throw new ActivitiIllegalArgumentException("Candidate group list is null");
@@ -683,5 +701,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
 	public boolean isWithoutTenantId() {
 		return withoutTenantId;
 	}
-  
+  public String getUserIdForCandidateAndAssignee() {
+    return userIdForCandidateAndAssignee;
+  }
 }

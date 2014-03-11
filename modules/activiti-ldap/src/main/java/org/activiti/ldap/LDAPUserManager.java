@@ -219,6 +219,12 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
 
   @Override
   public Boolean checkPassword(final String userId, final String password) {
+	  
+	  // Extra password check, see http://forums.activiti.org/comment/22312
+  	if (password == null || password.length() == 0) {
+  		throw new ActivitiException("Null or empty passwords are not allowed!");
+  	}
+	  
     try {
       LDAPTemplate ldapTemplate = new LDAPTemplate(ldapConfigurator);
       return ldapTemplate.execute(new LDAPCallBack<Boolean>() {

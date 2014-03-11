@@ -38,35 +38,40 @@ public class DefaultLoginHandler implements LoginHandler {
 
   public LoggedInUserImpl authenticate(String userName, String password) {
     LoggedInUserImpl loggedInUser = null;
-    if (identityService.checkPassword(userName, password)) {
-      User user = identityService.createUserQuery().userId(userName).singleResult();
-      // Fetch and cache user data
-      loggedInUser = new LoggedInUserImpl(user, password);
-      List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
-      for (Group group : groups) {
-
-        if (Constants.SECURITY_ROLE.equals(group.getType())) {
-          loggedInUser.addSecurityRoleGroup(group);
-          if (Constants.SECURITY_ROLE_USER.equals(group.getId())) {
-            loggedInUser.setUser(true);
-          }
-          if (Constants.SECURITY_ROLE_ADMIN.equals(group.getId())) {
-            loggedInUser.setAdmin(true);
-          }
-        } else if (ExplorerApp.get().getAdminGroups() != null
-                    && ExplorerApp.get().getAdminGroups().contains(group.getId())) {
-          loggedInUser.addSecurityRoleGroup(group);
-          loggedInUser.setAdmin(true);
-        } else if (ExplorerApp.get().getUserGroups() != null
-                && ExplorerApp.get().getUserGroups().contains(group.getId())) {
-          loggedInUser.addSecurityRoleGroup(group);
-          loggedInUser.setUser(true);
-        } else {
-          loggedInUser.addGroup(group);
-        }
-        
-        
-      }
+    
+    try {
+	    if (identityService.checkPassword(userName, password)) {
+	      User user = identityService.createUserQuery().userId(userName).singleResult();
+	      // Fetch and cache user data
+	      loggedInUser = new LoggedInUserImpl(user, password);
+	      List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
+	      for (Group group : groups) {
+	
+	        if (Constants.SECURITY_ROLE.equals(group.getType())) {
+	          loggedInUser.addSecurityRoleGroup(group);
+	          if (Constants.SECURITY_ROLE_USER.equals(group.getId())) {
+	            loggedInUser.setUser(true);
+	          }
+	          if (Constants.SECURITY_ROLE_ADMIN.equals(group.getId())) {
+	            loggedInUser.setAdmin(true);
+	          }
+	        } else if (ExplorerApp.get().getAdminGroups() != null
+	                    && ExplorerApp.get().getAdminGroups().contains(group.getId())) {
+	          loggedInUser.addSecurityRoleGroup(group);
+	          loggedInUser.setAdmin(true);
+	        } else if (ExplorerApp.get().getUserGroups() != null
+	                && ExplorerApp.get().getUserGroups().contains(group.getId())) {
+	          loggedInUser.addSecurityRoleGroup(group);
+	          loggedInUser.setUser(true);
+	        } else {
+	          loggedInUser.addGroup(group);
+	        }
+	        
+	        
+	      }
+	    }
+    } catch (Exception e) {
+    	// Do nothing, returning null should be enough
     }
     
     return loggedInUser;

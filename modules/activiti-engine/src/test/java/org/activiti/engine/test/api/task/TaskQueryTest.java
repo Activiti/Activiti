@@ -337,6 +337,26 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, query.count());
     assertEquals(0, query.list().size());
   }
+
+  public void testQueryByCandidateOrAssigneed() {
+    TaskQuery query = taskService.createTaskQuery().taskCandidateOrAssigned("kermit");
+    assertEquals(11, query.count());
+    List<Task> tasks = query.list();
+    assertEquals(11, tasks.size());
+
+    // claim a task
+    taskService.claim(tasks.get(0).getId(), "kermit");
+    query = taskService.createTaskQuery().taskCandidateOrAssigned("kermit");
+    assertEquals(11, query.count());
+
+    taskService.claim(tasks.get(1).getId(), "fozzie");
+    query = taskService.createTaskQuery().taskCandidateOrAssigned("kermit");
+    assertEquals(10, query.count());
+
+    query = taskService.createTaskQuery().taskCandidateOrAssigned("fozzie");
+    assertEquals(4, query.count());
+    assertEquals(4, query.list().size());
+  }
   
   public void testQueryByNullCandidateGroup() {
     try {
