@@ -12,7 +12,10 @@
  */
 package org.activiti.engine.impl.util;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 
 /**
@@ -20,21 +23,52 @@ import java.util.Date;
  */
 public class ClockUtil {
   
-  private volatile static Date CURRENT_TIME = null;
+  private volatile static Calendar CURRENT_TIME = null;
+  
+  public static void setCurrentCalendar(Calendar currentTime) {
+    ClockUtil.CURRENT_TIME = currentTime;
+  }
   
   public static void setCurrentTime(Date currentTime) {
-    ClockUtil.CURRENT_TIME = currentTime;
+    Calendar time = null;
+    
+    if (currentTime != null) {
+      time = new GregorianCalendar();
+      time.setTime(currentTime);
+    }
+    
+    setCurrentCalendar(time);
   }
   
   public static void reset() {
     ClockUtil.CURRENT_TIME = null;
   } 
-  
-  public static Date getCurrentTime() {
-    if (CURRENT_TIME != null) {
-      return CURRENT_TIME;
-    }
-    return new Date();
+
+  public static Calendar getCurrentCalendar() {
+    return CURRENT_TIME == null ? new GregorianCalendar() : (Calendar)CURRENT_TIME.clone(); 
   }
 
+  public static Calendar getCurrentCalendar(TimeZone timeZone) {
+    return convertToTimeZone(getCurrentCalendar(), timeZone);
+  }
+  
+  public static TimeZone getCurrentTimeZone() {
+    return getCurrentCalendar().getTimeZone();
+  }
+  
+  public static Date getCurrentTime() {
+    return CURRENT_TIME == null ? new Date() : CURRENT_TIME.getTime(); 
+  }
+
+  public static Calendar convertToTimeZone(Calendar time, TimeZone timeZone) {
+    Calendar foreignTime = new GregorianCalendar(timeZone);
+    foreignTime.setTimeInMillis(time.getTimeInMillis());
+
+    return foreignTime;
+  }
+
+  public static Calendar convertToTimeZone(Calendar time) {
+    return convertToTimeZone(time, getCurrentTimeZone());
+  }
+  
 }

@@ -15,8 +15,6 @@ package org.activiti.engine.impl.calendar;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.ClockUtil;
 
-import javax.xml.datatype.Duration;
-import java.text.ParseException;
 import java.util.Date;
 
 public class CycleBusinessCalendar implements BusinessCalendar {
