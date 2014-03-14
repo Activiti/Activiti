@@ -81,6 +81,7 @@ public class BlueprintBasicTest {
     Option[] coreBundles = options(
         mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version("5.15-SNAPSHOT"),
         mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("5.15-SNAPSHOT"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("5.15-SNAPSHOT"),
         mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("5.15-SNAPSHOT"),
         mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version("3.1"),
         mavenBundle().groupId("org.codehaus.jackson").artifactId("jackson-core-asl").version("1.9.9"),

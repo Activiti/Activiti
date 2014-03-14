@@ -27,6 +27,7 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.activiti.validation.validator.Problems;
 
 
 /**
@@ -155,7 +156,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
-      if(!e.getMessage().contains("duplicate signal name")) {
+      if(!e.getMessage().contains(Problems.SIGNAL_DUPLICATE_NAME)) {
         fail("different exception expected");
       }
     }    
@@ -168,7 +169,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
-      if(!e.getMessage().contains("has no name")) {
+      if(!e.getMessage().contains(Problems.SIGNAL_MISSING_NAME)) {
         fail("different exception expected, was " + e.getMessage());
       }
     }    
@@ -181,7 +182,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
-      if(!e.getMessage().contains("signal must have an id")) {
+      if(!e.getMessage().contains(Problems.SIGNAL_MISSING_ID)) {
         fail("different exception expected");
       }
     }    
@@ -194,7 +195,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
-      if(!e.getMessage().contains("signalEventDefinition does not have required property 'signalRef'")) {
+      if(!e.getMessage().contains(Problems.SIGNAL_EVENT_MISSING_SIGNAL_REF)) {
         fail("different exception expected");
       }
     }    

@@ -14,6 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -71,11 +72,16 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
     }
     
+    // Deployment settings
+    Map<String, Object> deploymentSettings = new HashMap<String, Object>();
+    deploymentSettings.put(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED, deploymentBuilder.isBpmn20XsdValidationEnabled());
+    deploymentSettings.put(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED, deploymentBuilder.isProcessValidationEnabled());
+    
     // Actually deploy
     Context
       .getProcessEngineConfiguration()
       .getDeploymentManager()
-      .deploy(deployment);
+      .deploy(deployment, deploymentSettings);
     
     if (deploymentBuilder.getProcessDefinitionsActivationDate() != null) {
       scheduleProcessDefinitionActivation(commandContext, deployment);

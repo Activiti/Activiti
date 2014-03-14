@@ -144,21 +144,6 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     
   }
   
-  public void testInvalidSequenceFlow() {
-    
-    try {
-      repositoryService.createDeployment()
-        .addClasspathResource("org/activiti/engine/test/bpmn/gateway/EventBasedGatewayTest.testEventInvalidSequenceFlow.bpmn20.xml")
-        .deploy();
-      fail("exception expected");
-    } catch (Exception e) {
-      if(!e.getMessage().contains("Invalid incoming sequenceflow")) {
-        fail("different exception expected");
-      }
-    }
-    
-  }
-  
   private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
     return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
   }

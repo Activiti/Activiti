@@ -40,10 +40,6 @@ public class SignalEventDefinitionParser extends BaseChildElementParser {
       eventDefinition.setAsync(Boolean.parseBoolean(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS)));
     }
     
-    if (StringUtils.isEmpty(eventDefinition.getSignalRef())) {
-      model.addProblem("signalEventDefinition does not have required property 'signalRef'", xtr);
-    }
-    
     BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_SIGNALDEFINITION, eventDefinition, xtr, model);
     
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);

@@ -51,10 +51,8 @@ public class ActivitiEventListenerParser extends BaseChildElementParser {
     		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT);
     		listener.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE));
     	} else {
-    		model.addProblem("Unsupported value of 'throwEvent' attribute: " + eventType, xtr);
+    		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_INVALID_THROW_EVENT);
     	}
-    } else {
-      model.addProblem("Element 'class', 'delegateExpression' or 'throwEvent' is mandatory on eventListener", xtr);
     }
     listener.setEvents(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_EVENTS));
     listener.setEntityType(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_ENTITY_TYPE));

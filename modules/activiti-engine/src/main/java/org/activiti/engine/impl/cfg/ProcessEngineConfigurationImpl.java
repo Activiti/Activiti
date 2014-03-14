@@ -205,6 +205,9 @@ import org.activiti.engine.impl.variable.UUIDType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.parse.BpmnParseHandler;
+import org.activiti.validation.ProcessValidator;
+import org.activiti.validation.ProcessValidatorFactory;
+import org.activiti.validation.validator.ValidatorSetFactory;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -314,6 +317,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected ActivityBehaviorFactory activityBehaviorFactory;
   protected ListenerFactory listenerFactory;
   protected BpmnParseFactory bpmnParseFactory;
+  
+  // PROCESS VALIDATION 
+  
+  protected ProcessValidator processValidator;
 
   // OTHER ////////////////////////////////////////////////////////////////////
   
@@ -411,6 +418,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initEventHandlers();
     initFailedJobCommandFactory();
     initEventDispatcher();
+    initProcessValidator();
     configuratorsAfterInit();
   }
 
@@ -1268,7 +1276,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   		}
   	}
   	
-  	
+  }
+  
+  protected void initProcessValidator() {
+  	if (this.processValidator == null) {
+  		this.processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
+  	}
   }
 
   // getters and setters //////////////////////////////////////////////////////
@@ -1886,4 +1899,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setEventListeners(List<ActivitiEventListener> eventListeners) {
 	  this.eventListeners = eventListeners;
   }
+
+	public ProcessValidator getProcessValidator() {
+		return processValidator;
+	}
+
+	public void setProcessValidator(ProcessValidator processValidator) {
+		this.processValidator = processValidator;
+	}
+  
 }

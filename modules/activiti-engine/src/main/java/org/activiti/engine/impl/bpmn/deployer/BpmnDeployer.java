@@ -30,6 +30,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.cmd.DeploymentSettings;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -67,7 +68,7 @@ public class BpmnDeployer implements Deployer {
   protected BpmnParser bpmnParser;
   protected IdGenerator idGenerator;
 
-  public void deploy(DeploymentEntity deployment) {
+  public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
     LOG.debug("Processing deployment {}", deployment.getName());
     
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
@@ -86,6 +87,21 @@ public class BpmnDeployer implements Deployer {
           .sourceInputStream(inputStream)
           .deployment(deployment)
           .name(resourceName);
+        
+        if (deploymentSettings != null) {
+        	
+        	// Schema validation if needed
+        	if (deploymentSettings.containsKey(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED)) {
+        		bpmnParse.setValidateSchema((Boolean) deploymentSettings.get(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED));
+        	}
+        	
+        	// Process validation if needed
+        	if (deploymentSettings.containsKey(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED)) {
+        		bpmnParse.setValidateProcess((Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED));
+        	}
+        	
+        }
+        
         bpmnParse.execute();
         
         for (ProcessDefinitionEntity processDefinition: bpmnParse.getProcessDefinitions()) {

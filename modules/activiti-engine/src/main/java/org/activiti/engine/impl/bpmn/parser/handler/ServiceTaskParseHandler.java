@@ -23,12 +23,16 @@ import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Joram Barrez
  */
 public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParseHandler<ServiceTask> {
+	
+	private static Logger logger = LoggerFactory.getLogger(ServiceTaskParseHandler.class);
   
   public Class< ? extends BaseElement> getHandledType() {
     return ServiceTask.class;
@@ -44,7 +48,6 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
       if (StringUtils.isNotEmpty(serviceTask.getType())) {
         
         if (serviceTask.getType().equalsIgnoreCase("mail")) {
-          validateFieldDeclarationsForEmail(bpmnParse, serviceTask, serviceTask.getFieldExtensions());
           activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(serviceTask));
           
         } else if (serviceTask.getType().equalsIgnoreCase("mule")) {
@@ -54,11 +57,10 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
           activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(serviceTask, bpmnParse.getBpmnModel()));
           
         } else if (serviceTask.getType().equalsIgnoreCase("shell")) {
-          validateFieldDeclarationsForShell(bpmnParse, serviceTask, serviceTask.getFieldExtensions());
           activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createShellActivityBehavior(serviceTask));
           
         } else {
-          bpmnParse.getBpmnModel().addProblem("Invalid usage of type attribute: '" + serviceTask.getType() + "'.", serviceTask);
+        	logger.warn("Invalid service task type: '" + serviceTask.getType() + "' " + " for service task " + serviceTask.getId());
         }
 
       // activiti:class
@@ -78,7 +80,7 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
           StringUtils.isNotEmpty(serviceTask.getOperationRef())) {
         
         if (!bpmnParse.getOperations().containsKey(serviceTask.getOperationRef())) {
-          bpmnParse.getBpmnModel().addProblem(serviceTask.getOperationRef() + " does not exist", serviceTask);
+        	logger.warn(serviceTask.getOperationRef() + " does not exist for service task " + serviceTask.getId());
         } else {
           
           WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(serviceTask);
@@ -102,7 +104,7 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
           activity.setActivityBehavior(webServiceActivityBehavior);
         }
       } else {
-        bpmnParse.getBpmnModel().addProblem("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask.", serviceTask);
+        logger.warn("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask " + serviceTask.getId());
       }
 
     }

@@ -24,12 +24,16 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Joram Barrez
  */
 public class SendTaskParseHandler extends AbstractExternalInvocationBpmnParseHandler<SendTask> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(SendTaskParseHandler.class);
   
   public Class< ? extends BaseElement> getHandledType() {
     return SendTask.class;
@@ -42,25 +46,21 @@ public class SendTaskParseHandler extends AbstractExternalInvocationBpmnParseHan
     activity.setAsync(sendTask.isAsynchronous());
     activity.setExclusive(!sendTask.isNotExclusive());
 
-    // for e-mail
     if (StringUtils.isNotEmpty(sendTask.getType())) {
       if (sendTask.getType().equalsIgnoreCase("mail")) {
-        validateFieldDeclarationsForEmail(bpmnParse, sendTask, sendTask.getFieldExtensions());
         activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(sendTask));
       } else if (sendTask.getType().equalsIgnoreCase("mule")) {
         activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(sendTask, bpmnParse.getBpmnModel()));
       } else if (sendTask.getType().equalsIgnoreCase("camel")) {
         activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(sendTask, bpmnParse.getBpmnModel()));
-      } else {
-        bpmnParse.getBpmnModel().addProblem("Invalid usage of type attribute: '" + sendTask.getType() + "'.", sendTask);
-      }
+      } 
 
       // for web service
     } else if (ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(sendTask.getImplementationType()) && 
         StringUtils.isNotEmpty(sendTask.getOperationRef())) {
       
       if (!bpmnParse.getOperations().containsKey(sendTask.getOperationRef())) {
-        bpmnParse.getBpmnModel().addProblem(sendTask.getOperationRef() + " does not exist", sendTask);
+        logger.warn(sendTask.getOperationRef() + " does not exist for sendTask " + sendTask.getId());
       } else {
         WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(sendTask);
         Operation operation = bpmnParse.getOperations().get(sendTask.getOperationRef());
@@ -84,7 +84,7 @@ public class SendTaskParseHandler extends AbstractExternalInvocationBpmnParseHan
         activity.setActivityBehavior(webServiceActivityBehavior);
       }
     } else {
-      bpmnParse.getBpmnModel().addProblem("One of the attributes 'type' or 'operation' is mandatory on sendTask.", sendTask);
+      logger.warn("One of the attributes 'type' or 'operation' is mandatory on sendTask " + sendTask.getId());
     }
   }
 

@@ -13,6 +13,7 @@
 
 package org.activiti.engine;
 
+import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
@@ -25,10 +26,16 @@ import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
+import org.activiti.validation.ValidationError;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 
 /** Service providing access to the repository of process definitions and deployments.
@@ -414,5 +421,19 @@ public interface RepositoryService {
    * is authorized for a certain process definition
    */
   List<IdentityLink> getIdentityLinksForProcessDefinition(String processDefinitionId);
+  
+  /**
+   * Validates the given process definition against the rules for executing a process definition
+   * on the Activiti engine.
+   * 
+   * To create such a {@link BpmnModel} from a String, following code may be used:
+   * 
+   * XMLInputFactory xif = XMLInputFactory.newInstance();
+   * InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(myProcess.getBytes()), "UTF-8"); // Change to other streams for eg from classpath
+   * XMLStreamReader xtr = xif.createXMLStreamReader(in);
+   * bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+   * 
+   */
+  List<ValidationError> validateProcess(BpmnModel bpmnModel);
 
 }

@@ -68,12 +68,6 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
 		  serviceTask.setResultVariableName(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, "resultVariable"));
 		}
 		
-		if (StringUtils.isNotEmpty(serviceTask.getResultVariableName()) && (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(serviceTask.getImplementationType()) || 
-		    ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(serviceTask.getImplementationType()))) {
-		  
-		  model.addProblem("'resultVariableName' not supported for service tasks using 'class' or 'delegateExpression", xtr);
-		}
-		
 		serviceTask.setType(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TYPE));
 		serviceTask.setExtensionId(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_EXTENSIONID));
 	

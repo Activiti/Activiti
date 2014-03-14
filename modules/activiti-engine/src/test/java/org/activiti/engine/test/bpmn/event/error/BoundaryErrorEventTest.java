@@ -46,17 +46,6 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertEquals("task after catching the error", task.getName());
   }
 
-  public void testThrowErrorWithoutErrorCode() {
-    try {
-      repositoryService.createDeployment()
-        .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithoutErrorCode.bpmn20.xml")
-        .deploy();
-      fail("ActivitiException expected");
-    } catch (ActivitiException re) {
-      assertTextPresent("errorCode is required for an error event", re.getMessage());
-    }
-  }
-
   public void testThrowErrorWithEmptyErrorCode() {
     try {
       repositoryService.createDeployment()
@@ -64,7 +53,6 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("ActivitiException expected");
     } catch (ActivitiException re) {
-      assertTextPresent("errorCode is required for an error event", re.getMessage());
     }
   }
 

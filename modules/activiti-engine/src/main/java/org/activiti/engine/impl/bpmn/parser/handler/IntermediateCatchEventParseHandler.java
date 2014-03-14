@@ -23,6 +23,8 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -30,6 +32,8 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
  */
 public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnParseHandler<IntermediateCatchEvent> {
   
+	private static final Logger logger = LoggerFactory.getLogger(IntermediateCatchEventParseHandler.class);
+	
   public Class< ? extends BaseElement> getHandledType() {
     return IntermediateCatchEvent.class;
   }
@@ -45,7 +49,6 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
    
     if (eventDefinition == null) {
       
-      bpmnModel.addProblem("No event definition for intermediate catch event " + event.getId(), event);
       nestedActivity = createActivityOnCurrentScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH);
       
     } else {
@@ -69,7 +72,7 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
         bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
         
       } else {
-        bpmnModel.addProblem("Unsupported intermediate catch event type.", event);
+        logger.warn("Unsupported intermediate catch event type for event " + event.getId());
       }
     }
   }

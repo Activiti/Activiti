@@ -39,8 +39,6 @@ public abstract class ActivitiListenerParser extends BaseChildElementParser {
     } else if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_DELEGATEEXPRESSION))) {
       listener.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_DELEGATEEXPRESSION));
       listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
-    } else {
-      model.addProblem("Element 'class' or 'expression' is mandatory on executionListener", xtr);
     }
     listener.setEvent(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_EVENT));
     addListenerToParent(listener, parentElement);
