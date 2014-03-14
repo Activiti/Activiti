@@ -58,7 +58,7 @@ public class BaseEntityEventListener implements ActivitiEventListener {
 			// Check if this event
 			if (event.getType() == ActivitiEventType.ENTITY_CREATED) {
 				onCreate(event);
-			}if (event.getType() == ActivitiEventType.ENTITY_CREATED) {
+			} else if (event.getType() == ActivitiEventType.ENTITY_INITIALIZED) {
 				onInitialized(event);
 			} else if (event.getType() == ActivitiEventType.ENTITY_DELETED) {
 				onDelete(event);

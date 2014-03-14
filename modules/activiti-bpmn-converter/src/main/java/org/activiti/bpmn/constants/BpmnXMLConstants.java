@@ -21,6 +21,7 @@ public interface BpmnXMLConstants {
   public static final String XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance";
   public static final String XSI_PREFIX = "xsi";
   public static final String SCHEMA_NAMESPACE = "http://www.w3.org/2001/XMLSchema";
+  public static final String XSD_PREFIX = "xsd";
   public static final String TYPE_LANGUAGE_ATTRIBUTE = "typeLanguage";
   public static final String XPATH_NAMESPACE = "http://www.w3.org/1999/XPath";
   public static final String EXPRESSION_LANGUAGE_ATTRIBUTE = "expressionLanguage";
@@ -259,4 +260,11 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_DI_HEIGHT = "height";
   public static final String ATTRIBUTE_DI_X = "x";
   public static final String ATTRIBUTE_DI_Y = "y";
+  
+  public static final String ELEMENT_DATA_OBJECT = "dataObject";
+  public static final String ATTRIBUTE_DATA_ID = "id";
+  public static final String ATTRIBUTE_DATA_NAME = "name";
+  public static final String ATTRIBUTE_DATA_ITEM_REF = "itemSubjectRef";
+  // only used by valued data objects
+  public static final String ELEMENT_DATA_VALUE = "value";
 }

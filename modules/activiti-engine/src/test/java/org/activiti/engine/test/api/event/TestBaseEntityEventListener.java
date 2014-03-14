@@ -20,6 +20,7 @@ public class TestBaseEntityEventListener extends BaseEntityEventListener {
 	private boolean updateReceived = false;
 	private boolean createReceived = false;
 	private boolean deleteReceived = false;
+	private boolean initializeReceived = false;
 	private boolean customReceived = false;
 
 	public TestBaseEntityEventListener() {
@@ -35,6 +36,7 @@ public class TestBaseEntityEventListener extends BaseEntityEventListener {
 		createReceived = false;
 		deleteReceived = false;
 		customReceived = false;
+		initializeReceived = false;
 	}
 	
 	public boolean isCreateReceived() {
@@ -51,6 +53,10 @@ public class TestBaseEntityEventListener extends BaseEntityEventListener {
 	
 	public boolean isUpdateReceived() {
 	  return updateReceived;
+  }
+	
+	public boolean isInitializeReceived() {
+	  return initializeReceived;
   }
 	
 	@Override
@@ -71,5 +77,10 @@ public class TestBaseEntityEventListener extends BaseEntityEventListener {
 	@Override
 	protected void onEntityEvent(ActivitiEvent event) {
 		customReceived = true;
+	}
+	
+	@Override
+	protected void onInitialized(ActivitiEvent event) {
+		initializeReceived = true;
 	}
 }

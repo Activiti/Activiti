@@ -14,8 +14,10 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.activiti.bpmn.model.ActivitiListener;
@@ -32,6 +34,7 @@ import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.data.Data;
 import org.activiti.engine.impl.bpmn.data.DataRef;
@@ -244,5 +247,14 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
     }
   }
   
-
+  protected Map<String, Object> processDataObjects(BpmnParse bpmnParse, Collection<ValuedDataObject> dataObjects, ScopeImpl scope) {
+    Map<String, Object> variablesMap = new HashMap<String, Object>();
+    // convert data objects to process variables  
+    if (dataObjects != null) {
+      for (ValuedDataObject dataObject : dataObjects) {
+        variablesMap.put(dataObject.getName(), dataObject.getValue());
+      }
+    }
+    return variablesMap;
+  }
 }

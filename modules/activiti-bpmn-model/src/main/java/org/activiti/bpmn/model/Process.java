@@ -28,6 +28,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
   protected List<Lane> lanes = new ArrayList<Lane>();
   protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
+  protected List<ValuedDataObject> dataObjects = new ArrayList<ValuedDataObject>();
   protected List<Artifact> artifactList = new ArrayList<Artifact>();
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
@@ -258,5 +259,44 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     		eventListeners.add(listener.clone());
     	}
     }
+    
+    /*
+     * This is required because data objects in Designer have no DI info
+     * and are added as properties, not flow elements
+     *
+     * Determine the differences between the 2 elements' data object
+     */
+    for (ValuedDataObject thisObject : getDataObjects()) {
+      boolean exists = false;
+      for (ValuedDataObject otherObject : otherElement.getDataObjects()) {
+        if (thisObject.getId().equals(otherObject.getId())) {
+          exists = true;
+        }
+      }
+      if (!exists) {
+        // missing object
+        removeFlowElement(thisObject.getId());
+      }
+    }
+    
+    dataObjects = new ArrayList<ValuedDataObject>();
+    if (otherElement.getDataObjects() != null && otherElement.getDataObjects().size() > 0) {
+      for (ValuedDataObject dataObject : otherElement.getDataObjects()) {
+          ValuedDataObject clone = dataObject.clone();
+          dataObjects.add(clone);
+          // add it to the list of FlowElements
+          // if it is already there, remove it first so order is same as data object list
+          removeFlowElement(clone.getId());
+          addFlowElement(clone);
+      }
+    }
+  }
+
+  public List<ValuedDataObject> getDataObjects() {
+    return dataObjects;
+  }
+
+  public void setDataObjects(List<ValuedDataObject> dataObjects) {
+    this.dataObjects = dataObjects;
   }
 }

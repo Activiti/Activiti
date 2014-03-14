@@ -56,6 +56,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected String diagramResourceName;
   protected boolean isGraphicalNotationDefined;
   protected Map<String, TaskDefinition> taskDefinitions;
+  protected Map<String, Object> variables;
   protected boolean hasStartFormKey;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
   protected boolean isIdentityLinksInitialized = false;
@@ -95,6 +96,12 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     
     // Reset the process instance in order to have the db-generated process instance id available
     processInstance.setProcessInstance(processInstance);
+    
+    // initialize the template-defined data objects as variables first
+    Map<String, Object> dataObjectVars = getVariables();
+    if (dataObjectVars != null) {
+      processInstance.setVariables(dataObjectVars);
+    }
     
     String authenticatedUserId = Authentication.getAuthenticatedUserId();
     String initiatorVariableName = (String) getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
@@ -251,6 +258,14 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setTaskDefinitions(Map<String, TaskDefinition> taskDefinitions) {
     this.taskDefinitions = taskDefinitions;
+  }
+
+  public Map<String, Object> getVariables() {
+    return variables;
+  }
+
+  public void setVariables(Map<String, Object> variables) {
+    this.variables = variables;
   }
 
   public String getCategory() {
