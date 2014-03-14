@@ -32,6 +32,7 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   private static final long serialVersionUID = 1L;
   protected List<TransitionImpl> outgoingTransitions = new ArrayList<TransitionImpl>();
   protected Map<String, TransitionImpl> namedOutgoingTransitions = new HashMap<String, TransitionImpl>();
+  protected Map<String, Object> variables;
   protected List<TransitionImpl> incomingTransitions = new ArrayList<TransitionImpl>();
   protected ActivityBehavior activityBehavior;
   protected ScopeImpl parent;
@@ -120,6 +121,14 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   @SuppressWarnings("unchecked")
   public List<PvmTransition> getIncomingTransitions() {
     return (List) incomingTransitions;
+  }
+
+  public Map<String, Object> getVariables() {
+    return variables;
+  }
+
+  public void setVariables(Map<String, Object> variables) {
+    this.variables = variables;
   }
 
   public boolean isScope() {
