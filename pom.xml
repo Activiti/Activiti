@@ -539,6 +539,7 @@
 
   <modules>
     <module>modules/activiti-bpmn-model</module>
+    <module>modules/activiti-process-validation</module>
     <module>modules/activiti-bpmn-converter</module>
     <module>modules/activiti-engine</module>
   </modules>
