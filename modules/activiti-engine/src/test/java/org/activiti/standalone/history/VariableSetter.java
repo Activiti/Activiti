@@ -18,7 +18,7 @@ import java.util.Date;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.test.history.SerializableVariable;
 
 
@@ -32,7 +32,7 @@ public class VariableSetter implements JavaDelegate {
     SimpleDateFormat sdf =  new SimpleDateFormat("dd/MM/yyyy hh:mm:ss SSS");
     // We set the time to check of the updated time is picked up in the history
     Date updatedDate = sdf.parse("01/01/2001 01:23:46 000");
-    ClockUtil.setCurrentTime(updatedDate);
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(updatedDate);
     
     
     execution.setVariable("aVariable", "updated value");

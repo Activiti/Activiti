@@ -16,7 +16,6 @@ package org.activiti.rest.service.api.runtime;
 import java.util.Calendar;
 import java.util.List;
 
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.BaseRestTestCase;
@@ -74,7 +73,7 @@ public class TaskEventResourceTest extends BaseRestTestCase {
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(now.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(now.getTime());
       
       Task task = taskService.newTask();
       taskService.saveTask(task);

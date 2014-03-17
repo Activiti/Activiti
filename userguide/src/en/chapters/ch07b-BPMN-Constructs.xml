@@ -3922,50 +3922,50 @@ public class StartProcessInstanceTestDelegateWithInjection {
 		      <table>
 		        <title>Mail server configuration</title>
             <tgroup cols='3'>
-            <thead>
-              <row>
-                <entry>Property</entry>
-                <entry>Required?</entry>
-                <entry>Description</entry>
-              </row>
-            </thead>
-            <tbody>
-		          <row>
-		            <entry>mailServerHost</entry>
-		            <entry>no</entry>
-		            <entry>The hostname of your mail server (e.g. mail.mycorp.com). Default is <literal>localhost</literal></entry>
-		          </row>
-		          <row>
-                <entry>mailServerPort</entry>
-                <entry>yes, if not on the default port</entry>
-                <entry>The port for SMTP traffic on the mail server. The default is <emphasis>25</emphasis></entry>
-              </row>
-              <row>
-                <entry>mailServerDefaultFrom</entry>
-                <entry>no</entry>
-                <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>activiti@activiti.org</emphasis></entry>
-              </row>
-              <row>
-                <entry>mailServerUsername</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
-              </row>
-              <row>
-                <entry>mailServerPassword</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
-              </row>
-              <row>
-                <entry>mailServerUseSSL</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers require ssl communication. By default set to false.</entry>
-              </row> 
-              <row>
-                <entry>mailServerUseTLS</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers (for instance gmail) require TLS communication. By default set to false.</entry>
-              </row> 
-            </tbody>
+              <thead>
+                <row>
+                  <entry>Property</entry>
+                  <entry>Required?</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+  		          <row>
+  		            <entry>mailServerHost</entry>
+  		            <entry>no</entry>
+  		            <entry>The hostname of your mail server (e.g. mail.mycorp.com). Default is <literal>localhost</literal></entry>
+  		          </row>
+  		          <row>
+                  <entry>mailServerPort</entry>
+                  <entry>yes, if not on the default port</entry>
+                  <entry>The port for SMTP traffic on the mail server. The default is <emphasis>25</emphasis></entry>
+                </row>
+                <row>
+                  <entry>mailServerDefaultFrom</entry>
+                  <entry>no</entry>
+                  <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>activiti@activiti.org</emphasis></entry>
+                </row>
+                <row>
+                  <entry>mailServerUsername</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
+                </row>
+                <row>
+                  <entry>mailServerPassword</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
+                </row>
+                <row>
+                  <entry>mailServerUseSSL</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers require ssl communication. By default set to false.</entry>
+                </row> 
+                <row>
+                  <entry>mailServerUseTLS</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers (for instance gmail) require TLS communication. By default set to false.</entry>
+                </row> 
+              </tbody>
             </tgroup>
           </table>
 		    </para>		  

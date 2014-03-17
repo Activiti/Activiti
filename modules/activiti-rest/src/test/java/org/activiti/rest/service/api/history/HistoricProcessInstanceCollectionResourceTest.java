@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -49,14 +48,14 @@ public class HistoricProcessInstanceCollectionResourceTest extends BaseRestTestC
   @Deployment
   public void testQueryProcessInstances() throws Exception {
   	Calendar startTime = Calendar.getInstance();
-  	ClockUtil.setCurrentTime(startTime.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(startTime.getTime());
   	
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
     
     startTime.add(Calendar.DAY_OF_YEAR, 1);
-    ClockUtil.setCurrentTime(startTime.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(startTime.getTime());
     ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
     String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCES);
@@ -77,7 +76,7 @@ public class HistoricProcessInstanceCollectionResourceTest extends BaseRestTestC
     // Set tenant on deployment
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
     startTime.add(Calendar.DAY_OF_YEAR, 1);
-    ClockUtil.setCurrentTime(startTime.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(startTime.getTime());
     ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", "myTenant");
     
     // Without tenant ID, after setting tenant

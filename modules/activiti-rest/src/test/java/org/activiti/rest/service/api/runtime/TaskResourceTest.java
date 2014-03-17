@@ -20,7 +20,6 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
@@ -50,7 +49,7 @@ public class TaskResourceTest extends BaseRestTestCase {
   @Deployment
   public void testGetProcessTask() throws Exception {
     Calendar now = Calendar.getInstance();
-    ClockUtil.setCurrentTime(now.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(now.getTime());
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -102,7 +101,7 @@ public class TaskResourceTest extends BaseRestTestCase {
     try {
       
       Calendar now = Calendar.getInstance();
-      ClockUtil.setCurrentTime(now.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(now.getTime());
       
       Task parentTask = taskService.newTask();
       taskService.saveTask(parentTask);

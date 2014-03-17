@@ -1,31 +1,7 @@
 package org.activiti.rest.service;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Callable;
-
 import junit.framework.AssertionFailedError;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.FormService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.ManagementService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -37,7 +13,6 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.test.TestHelper;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 import org.apache.commons.lang3.StringUtils;
@@ -60,6 +35,12 @@ import org.restlet.resource.ClientResource;
 import org.restlet.util.Series;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.concurrent.Callable;
 
 public class BaseRestTestCase extends PvmTestCase {
 
@@ -140,7 +121,7 @@ public class BaseRestTestCase extends PvmTestCase {
       dropUsers();
       assertAndEnsureCleanDb();
       stopRestServer();
-      ClockUtil.reset();
+      processEngineConfiguration.getClock().reset();
     }
   }
   
