@@ -159,17 +159,24 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
       user.setId(result.getAttributes().get(ldapConfigurator.getUserIdAttribute()).get().toString());
     }
     if (ldapConfigurator.getUserFirstNameAttribute() != null) {
-      user.setFirstName(result.getAttributes().get(ldapConfigurator.getUserFirstNameAttribute()).get().toString());
+    	try{
+    		user.setFirstName(result.getAttributes().get(ldapConfigurator.getUserFirstNameAttribute()).get().toString());
+    	}catch(NullPointerException e){
+    		user.setFirstName("");
+    	}
     }
     if (ldapConfigurator.getUserLastNameAttribute() != null) {
-      user.setLastName(result.getAttributes().get(ldapConfigurator.getUserLastNameAttribute()).get().toString());
+    	try{
+    		user.setLastName(result.getAttributes().get(ldapConfigurator.getUserLastNameAttribute()).get().toString());
+    	}catch(NullPointerException e){
+    		user.setLastName("");
+    	}
     }
     if (ldapConfigurator.getUserEmailAttribute() != null) {
       user.setEmail(result.getAttributes().get(ldapConfigurator.getUserEmailAttribute()).get().toString());
     }
   }
-
-
+  
   @Override
   public long findUserCountByQueryCriteria(UserQueryImpl query) {
     return findUserByQueryCriteria(query, null).size(); // Is there a generic way to do counts in ldap?
