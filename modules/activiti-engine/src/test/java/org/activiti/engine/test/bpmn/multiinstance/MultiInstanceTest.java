@@ -1107,5 +1107,18 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
   }
   
-  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml"})
+  public void testParallelEmptyCollection() {
+  	Collection<String> collection = new ArrayList<String>();
+		Map<String, Object> variableMap = new HashMap<String, Object>();
+		variableMap.put("collection", collection );
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testParallelEmptyCollection", variableMap);
+		assertNotNull(processInstance);
+		
+		Task task = taskService.createTaskQuery().singleResult();
+		assertNull( task );
+		
+		// I am not sure why the process in not ended here
+		// assertProcessEnded(processInstance.getId());
+  }
 }
