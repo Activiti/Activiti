@@ -3966,7 +3966,6 @@ public class StartProcessInstanceTestDelegateWithInjection {
                 <entry>Some mail servers (for instance gmail) require TLS communication. By default set to false.</entry>
               </row> 
             </tbody>
-            </tbody>
             </tgroup>
           </table>
 		    </para>		  
