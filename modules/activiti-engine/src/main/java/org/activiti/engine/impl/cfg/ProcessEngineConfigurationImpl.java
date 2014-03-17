@@ -59,7 +59,6 @@ import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
-import org.activiti.engine.impl.ClockServiceImpl;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseHandlers;
@@ -209,7 +208,6 @@ import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
-import org.activiti.validation.validator.ValidatorSetFactory;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -522,9 +520,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initService(Object service) {
     if (service instanceof ServiceImpl) {
       ((ServiceImpl)service).setCommandExecutor(commandExecutor);
-    }
-    if (service instanceof ClockServiceImpl) {
-      ((ClockServiceImpl) service).setClockReader(clock);
     }
   }
   
