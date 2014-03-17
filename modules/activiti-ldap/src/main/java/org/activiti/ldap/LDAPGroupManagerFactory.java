@@ -16,6 +16,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
+import org.activiti.engine.runtime.ClockReader;
 import org.activiti.ldap.LDAPGroupCache.LDAPGroupCacheListener;
 
 /**
@@ -31,11 +32,11 @@ public class LDAPGroupManagerFactory implements SessionFactory {
   protected LDAPGroupCache ldapGroupCache;
   protected LDAPGroupCacheListener ldapCacheListener;
   
-	public LDAPGroupManagerFactory(LDAPConfigurator ldapConfigurator) {
+	public LDAPGroupManagerFactory(LDAPConfigurator ldapConfigurator, ClockReader clockReader) {
     this.ldapConfigurator = ldapConfigurator;
     
     if (ldapConfigurator.getGroupCacheSize() > 0) {
-      ldapGroupCache = new LDAPGroupCache(ldapConfigurator.getGroupCacheSize(), ldapConfigurator.getGroupCacheExpirationTime());
+      ldapGroupCache = new LDAPGroupCache(ldapConfigurator.getGroupCacheSize(), ldapConfigurator.getGroupCacheExpirationTime(), clockReader);
       if (ldapCacheListener != null) {
         ldapGroupCache.setLdapCacheListener(ldapCacheListener);
       }

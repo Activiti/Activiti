@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -61,10 +60,10 @@ public class HistoricTaskInstanceCollectionResourceTest extends BaseRestTestCase
     Calendar created = Calendar.getInstance();
     created.set(Calendar.YEAR, 2001);
     created.set(Calendar.MILLISECOND, 0);
-    ClockUtil.setCurrentTime(created.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(created.getTime());
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
-    ClockUtil.reset();
+    processEngineConfiguration.getClock().reset();
     Task task1 = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task1.getId());
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();

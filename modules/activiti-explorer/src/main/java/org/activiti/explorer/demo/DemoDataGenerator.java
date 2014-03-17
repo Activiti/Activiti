@@ -29,7 +29,6 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
@@ -231,7 +230,7 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
           Random random = new Random();
           
           Date now = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
-          ClockUtil.setCurrentTime(now);
+          ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getClock().setCurrentTime(now);
           
           for (int i=0; i<50; i++) {
             
@@ -254,13 +253,13 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
             
             if (random.nextInt(100) < 20) {
               now = new Date(now.getTime() - ((24 * 60 * 60 * 1000) - (60 * 60 * 1000)));
-              ClockUtil.setCurrentTime(now);
+              ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getClock().setCurrentTime(now);
             }
           }
           
           List<Job> jobs = processEngine.getManagementService().createJobQuery().list();
           for (int i=0; i<jobs.size()/2; i++) {
-            ClockUtil.setCurrentTime(jobs.get(i).getDuedate());
+            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getClock().setCurrentTime(jobs.get(i).getDuedate());
             processEngine.getManagementService().executeJob(jobs.get(i).getId());
           }
           
@@ -272,16 +271,16 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
                 String assignee = random.nextBoolean() ? "kermit" : "fozzie";
                 processEngine.getTaskService().claim(task.getId(), assignee);
               }
-              
-              ClockUtil.setCurrentTime(new Date(task.getCreateTime().getTime() + random.nextInt(60 * 60 * 1000)));
+
+              ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getClock().setCurrentTime(new Date(task.getCreateTime().getTime() + random.nextInt(60 * 60 * 1000)));
               
               processEngine.getTaskService().complete(task.getId());
             }
             
             tasks = processEngine.getTaskService().createTaskQuery().list();
           }
-          
-          ClockUtil.reset();
+
+          ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getClock().reset();
           
           ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getJobExecutor().start();
           LOGGER.info("Demo report data generated");

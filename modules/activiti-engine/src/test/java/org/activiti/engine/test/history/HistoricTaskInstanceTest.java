@@ -27,7 +27,6 @@ import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -116,11 +115,11 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
   public void testHistoricTaskInstanceQuery() throws Exception {
     Calendar start = Calendar.getInstance();
     start.set(Calendar.MILLISECOND, 0);
-    ClockUtil.setCurrentTime(start.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(start.getTime());
     
     // First instance is finished
     ProcessInstance finishedInstance = runtimeService.startProcessInstanceByKey("HistoricTaskQueryTest", "myBusinessKey");
-    ClockUtil.reset();
+    processEngineConfiguration.getClock().reset();
     
     // Set priority to non-default value
     Task task = taskService.createTaskQuery().processInstanceId(finishedInstance.getId()).singleResult();
