@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.history;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -726,5 +727,15 @@ public void updateProcessBusinessKeyInHistory(ExecutionEntity processInstance) {
         }
       }
     }
+  }
+
+  @Override
+  public void updateProcessDefinitionVersion(String processInstanceId, String newProcessDefinitionId) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("processInstanceId", processInstanceId);
+    params.put("processDefinitionId", newProcessDefinitionId);
+    getHistoricProcessInstanceManager().updateProcessDefinitionVersion(processInstanceId, newProcessDefinitionId);
+    getHistoricTaskInstanceManager().updateProcessDefinitionVersion(processInstanceId, newProcessDefinitionId);
+    getHistoricActivityInstanceManager().updateProcessDefinitionVersion(processInstanceId, newProcessDefinitionId);
   }
 }

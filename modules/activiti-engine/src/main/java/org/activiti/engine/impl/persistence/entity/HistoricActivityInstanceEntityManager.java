@@ -64,4 +64,11 @@ public class HistoricActivityInstanceEntityManager extends AbstractManager {
   public long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectHistoricActivityInstanceCountByNativeQuery", parameterMap);
   }
+
+  public void updateProcessDefinitionVersion(String processInstanceId, String newProcessDefinitionId) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("processInstanceId", processInstanceId);
+    params.put("processDefinitionId", newProcessDefinitionId);
+    getDbSqlSession().update("updateProcessDefinitionVersionForHistoricActivity", params);
+  }
 }

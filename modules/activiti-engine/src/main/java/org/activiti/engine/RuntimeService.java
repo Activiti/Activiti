@@ -880,4 +880,19 @@ public interface RuntimeService {
    */
   void dispatchEvent(ActivitiEvent event);
 
+  /**
+   * Update the process definition id use new process definition id.
+   * <br/>
+   * Notice: The process can't continue if current activity removed from new process definition,
+   * so check it before update and this feature is dangerous.
+   *
+   * @param processInstanceId
+   *          id of process instance to delete, cannot be null.
+   * @param version
+   *          new version
+   * @throws ActivitiException
+   *          when the given version not found
+   */
+  void updateProcessDefinitionVersion(String processInstanceId, Integer version) throws ActivitiException;
+
 }
