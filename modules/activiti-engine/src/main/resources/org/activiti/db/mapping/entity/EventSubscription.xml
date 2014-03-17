@@ -88,9 +88,15 @@
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR EVT
     inner join ${prefix}ACT_RU_EXECUTION EXC on EVT.EXECUTION_ID_ = EXC.ID_
-    where (EVENT_TYPE_ = 'signal')
-    	and (EVENT_NAME_ = #{parameter})
+    where EVENT_TYPE_ = 'signal'
+    	and EVENT_NAME_ = #{parameter.eventName}
     	and EXC.SUSPENSION_STATE_ = 1
+    <if test="parameter.tenantId != null">
+        and EXC.TENANT_ID_ = #{parameter.tenantId}
+    </if>  
+    <if test="parameter.tenantId == null">
+        and (EXC.TENANT_ID_ = '' or EXC.TENANT_ID_ is null)
+    </if>   
   </select>
   
    <select id="selectSignalEventSubscriptionsByProcessInstanceAndEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">

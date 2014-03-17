@@ -33,8 +33,8 @@ public class SequenceflowValidator extends ProcessLevelValidator {
 			
 		  // Implicit check: sequence flow cannot cross (sub) process boundaries, hence we check the parent and not the process
 			// (could be subprocess for example)
-			FlowElement source = bpmnModel.getFlowElement(sourceRef);
-			FlowElement target = bpmnModel.getFlowElement(targetRef);
+			FlowElement source = process.getFlowElementRecursive(sourceRef);
+			FlowElement target = process.getFlowElementRecursive(targetRef);
 			
 			
 			// Src and target validation

@@ -19,6 +19,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
 /**
@@ -48,8 +49,14 @@ public class SignalThrowingEventListener extends BaseDelegateEventListener {
 				subscriptionEntities = commandContext.getEventSubscriptionEntityManager()
 				    .findSignalEventSubscriptionsByProcessInstanceAndEventName(event.getProcessInstanceId(), signalName);
 			} else {
+				String tenantId = null;
+				if (event.getProcessDefinitionId() != null) {
+					ProcessDefinitionEntity processDefinitionEntity = commandContext.getProcessEngineConfiguration()
+							.getDeploymentManager().findDeployedProcessDefinitionById(event.getProcessDefinitionId());
+					tenantId = processDefinitionEntity.getTenantId();
+				}
 				subscriptionEntities = commandContext.getEventSubscriptionEntityManager()
-				    .findSignalEventSubscriptionsByEventName(signalName);
+				    .findSignalEventSubscriptionsByEventName(signalName, tenantId);
 			}
 
 			for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {

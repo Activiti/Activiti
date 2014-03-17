@@ -259,27 +259,40 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
 
   public void signalEventReceived(String signalName) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, null));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, null, null));
   }
-
+  
+  public void signalEventReceivedWithTenantId(String signalName, String tenantId) {
+  	commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, null, tenantId));
+  }
+  
   public void signalEventReceivedAsync(String signalName) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, true));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, true, null));
+  }
+  
+  public void signalEventReceivedAsyncWithTenantId(String signalName, String tenantId) {
+  	commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, true, tenantId));
   }
   
   public void signalEventReceived(String signalName, Map<String, Object> processVariables) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, processVariables));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, processVariables, null));
+  }
+  
+  public void signalEventReceivedWithTenantId(String signalName,
+      Map<String, Object> processVariables, String tenantId) {
+  	commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, processVariables, tenantId));
   }
 
   public void signalEventReceived(String signalName, String executionId) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, null));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, null, null));
   }
 
   public void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, processVariables));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, processVariables, null));
   }
 
   public void signalEventReceivedAsync(String signalName, String executionId) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, true));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, true, null));
   }
   
   public void messageEventReceived(String messageName, String executionId) {
