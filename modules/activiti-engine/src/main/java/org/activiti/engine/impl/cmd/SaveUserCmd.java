@@ -30,7 +30,20 @@ public class SaveUserCmd implements Command<Void>, Serializable {
   protected UserEntity user;
   
   public SaveUserCmd(User user) {
-    this.user = (UserEntity) user;
+    if (user == null) { 
+      throw new ActivitiIllegalArgumentException("user is null");
+    } else if (user instanceof UserEntity) { 
+      this.user = (UserEntity) user; 
+    } else { 
+      this.user = new UserEntity();
+      this.user.setId(user.getId());
+      // revision does not exist in interface so this will always result in 
+      // insert, see execute below.  
+      this.user.setFirstName(user.getFirstName());
+      this.user.setLastName(user.getLastName());
+      this.user.setEmail(user.getEmail());
+      this.user.setPassword(user.getPassword());
+    }
   }
   
   public Void execute(CommandContext commandContext) {
@@ -38,9 +51,23 @@ public class SaveUserCmd implements Command<Void>, Serializable {
       throw new ActivitiIllegalArgumentException("user is null");
     }
     if (user.getRevision()==0) {
-      commandContext
-        .getUserIdentityManager()
-        .insertUser(user);
+      try { 
+        commandContext
+          .getUserIdentityManager()
+          .insertUser(user);
+      } catch (Exception e) { 
+        // This occurs when the received User instance was not a 
+        // UserEntity at construction time AND the user record 
+        // does already exist. 
+        UserEntity user = (UserEntity) commandContext.getProcessEngineConfiguration().getIdentityService().createUserQuery().userId(this.user.getId()).singleResult();
+        user.setFirstName(this.user.getFirstName());
+        user.setLastName(this.user.getLastName());
+        user.setEmail(this.user.getEmail());
+        user.setPassword(this.user.getPassword());
+        commandContext
+          .getUserIdentityManager()
+          .updateUser(user);
+      }   
     } else {
       commandContext
         .getUserIdentityManager()
