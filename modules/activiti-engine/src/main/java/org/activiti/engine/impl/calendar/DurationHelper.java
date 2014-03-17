@@ -14,18 +14,13 @@
 
 package org.activiti.engine.impl.calendar;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.runtime.ClockReader;
+import org.joda.time.DateTime;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
-
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.util.ClockUtil;
-import org.joda.time.DateTime;
+import java.util.*;
 
 /**
  * helper class for parsing ISO8601 duration format (also recurring) and computing next timer date
@@ -44,7 +39,10 @@ public class DurationHelper {
 
   DatatypeFactory datatypeFactory;
 
-  public DurationHelper(String expressionS) throws Exception {
+  protected ClockReader clockReader;
+
+  public DurationHelper(String expressionS, ClockReader clockReader) throws Exception {
+    this.clockReader = clockReader;
     List<String> expression = Arrays.asList(expressionS.split("/"));
     datatypeFactory = DatatypeFactory.newInstance();
 
@@ -70,14 +68,14 @@ public class DurationHelper {
       }
     }
     if (start == null && end == null) {
-      start = ClockUtil.getCurrentTime();
+      start = clockReader.getCurrentTime();
     }
 
   }
 
   public Date getDateAfter() {
     if (isRepeat) {
-      return getDateAfterRepeat(ClockUtil.getCurrentTime());
+      return getDateAfterRepeat(clockReader.getCurrentTime());
     }
     //TODO: is this correct?
     if (end != null) {
@@ -98,7 +96,7 @@ public class DurationHelper {
       }
       return cur.before(date) ? null : cur;
     }
-    Date cur = add(end, period.negate());;
+    Date cur = add(end, period.negate());
     Date next = end;
 
     for (int i=0;i<times && cur.after(date);i++) {

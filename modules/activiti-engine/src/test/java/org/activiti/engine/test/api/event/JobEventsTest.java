@@ -18,7 +18,6 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -67,7 +66,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		// Force timer to fire
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		ClockUtil.setCurrentTime(tomorrow.getTime());
+		processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
 		waitForJobExecutorToProcessAllJobs(2000, 100);
 		
 		// Check delete-event has been dispatched
@@ -106,7 +105,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		// Force timer to fire
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		ClockUtil.setCurrentTime(tomorrow.getTime());
+		processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
 		waitForJobExecutorToProcessAllJobs(2000, 100);
 		
 		// Check delete-event has been dispatched

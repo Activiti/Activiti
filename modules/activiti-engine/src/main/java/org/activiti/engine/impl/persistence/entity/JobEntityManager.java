@@ -29,7 +29,6 @@ import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.jobexecutor.MessageAddedNotification;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 
 
@@ -58,7 +57,7 @@ public class JobEntityManager extends AbstractManager {
     
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
     int waitTimeInMillis = jobExecutor.getWaitTimeInMillis();
-    if (duedate.getTime() < (ClockUtil.getCurrentTime().getTime()+waitTimeInMillis)) {
+    if (duedate.getTime() < (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()+waitTimeInMillis)) {
       hintJobExecutor(timer);
     }
   }
@@ -71,7 +70,7 @@ public class JobEntityManager extends AbstractManager {
             && jobExecutorContext != null 
             && jobExecutorContext.isExecutingExclusiveJob()) {
       // lock job & add to the queue of the current processor
-      Date currentTime = ClockUtil.getCurrentTime();
+      Date currentTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
       job.setLockExpirationTime(new Date(currentTime.getTime() + jobExecutor.getLockTimeInMillis()));
       job.setLockOwner(jobExecutor.getLockOwner());
       transactionListener = new ExclusiveJobAddedNotification(job.getId());      
@@ -101,7 +100,7 @@ public class JobEntityManager extends AbstractManager {
   
   @SuppressWarnings("unchecked")
   public List<JobEntity> findNextJobsToExecute(Page page) {
-    Date now = ClockUtil.getCurrentTime();
+    Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
   }
   
@@ -114,7 +113,7 @@ public class JobEntityManager extends AbstractManager {
   public List<JobEntity> findExclusiveJobsToExecute(String processInstanceId) {
     Map<String,Object> params = new HashMap<String, Object>();
     params.put("pid", processInstanceId);
-    params.put("now",ClockUtil.getCurrentTime());
+    params.put("now", Context.getProcessEngineConfiguration().getClock().getCurrentTime());
     return getDbSqlSession().selectList("selectExclusiveJobsToExecute", params);
   }
 

@@ -3,7 +3,6 @@ package org.activiti.rest.service.api.repository;
 import java.net.URLDecoder;
 import java.util.Calendar;
 
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
@@ -166,7 +165,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      
      // Force suspension by altering time
      cal.add(Calendar.HOUR, 1);
-     ClockUtil.setCurrentTime(cal.getTime());
+     processEngineConfiguration.getClock().setCurrentTime(cal.getTime());
      waitForJobExecutorToProcessAllJobs(5000, 100);
      
      // Check if process-definition is suspended
@@ -265,7 +264,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
     
     // Force activation by altering time
     cal.add(Calendar.HOUR, 1);
-    ClockUtil.setCurrentTime(cal.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(cal.getTime());
     waitForJobExecutorToProcessAllJobs(5000, 100);
     
     // Check if process-definition is activated

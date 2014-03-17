@@ -39,7 +39,6 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -107,7 +106,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   /** creates and initializes a new persistent task. */
   public static TaskEntity createAndInsert(ActivityExecution execution) {
-    TaskEntity task = create();
+    TaskEntity task = create(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
     task.insert((ExecutionEntity) execution);
     return task;
   }
@@ -161,10 +160,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   /**  Creates a new task.  Embedded state and create time will be initialized.
    * But this task still will have to be persisted. See {@link #insert(ExecutionEntity))}. */
-  public static TaskEntity create() {
+  public static TaskEntity create(Date createTime) {
     TaskEntity task = new TaskEntity();
     task.isIdentityLinksInitialized = true;
-    task.createTime = ClockUtil.getCurrentTime();
+    task.createTime = createTime;
     return task;
   }
 
