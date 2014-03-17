@@ -410,6 +410,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             formProperty.setName(getValueAsString(PROPERTY_FORM_NAME, formNode));
             formProperty.setType(getValueAsString(PROPERTY_FORM_TYPE, formNode));
             formProperty.setExpression(getValueAsString(PROPERTY_FORM_EXPRESSION, formNode));
+            formProperty.setDefaultExpression(getValueAsString(PROPERTY_FORM_DEFAULT_EXPRESSION, formNode));
             formProperty.setVariable(getValueAsString(PROPERTY_FORM_VARIABLE, formNode));
             readWriteReqNode = getValueAsString(PROPERTY_FORM_REQUIRED, formNode);
             if (PROPERTY_VALUE_YES.equalsIgnoreCase(readWriteReqNode))

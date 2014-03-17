@@ -228,6 +228,16 @@
         "width" : 200,
         "optional" : false
       }, {
+        "id" : "formproperty_default_expression",
+        "name" : "Default Expression",
+        "name_de" : "DefTyp",
+        "type" : "String",
+        "description" : "This defines the expression used for the resource assignment.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
+        "value" : "",
+        "width" : 200,
+        "optional" : false
+      }, {
         "id" : "formproperty_variable",
         "name" : "Variable",
         "name_de" : "Typ",

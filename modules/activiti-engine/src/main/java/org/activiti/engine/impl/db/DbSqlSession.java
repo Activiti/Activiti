@@ -976,6 +976,7 @@ public class DbSqlSession implements Session {
             sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
             Statement jdbcStatement = connection.createStatement();
             try {
+              sqlStatement = appendTablePrefix(sqlStatement);
               // no logging needed as the connection will log it
               log.debug("SQL: {}", sqlStatement);
               jdbcStatement.execute(sqlStatement);
@@ -1034,7 +1035,14 @@ public class DbSqlSession implements Session {
 			  			  .replace("DATETIME(3)", "DATETIME");
   }
 
-  protected String addSqlStatementPiece(String sqlStatement, String line) {
+  private String appendTablePrefix(String sqlStatement) {
+    if(dbSqlSessionFactory.getDatabaseTablePrefix().endsWith(".")) {
+    	return sqlStatement;
+    }
+    return sqlStatement.replace("ACT_", dbSqlSessionFactory.getDatabaseTablePrefix()+"ACT_");
+  }
+
+protected String addSqlStatementPiece(String sqlStatement, String line) {
     if (sqlStatement==null) {
       return line;
     }
