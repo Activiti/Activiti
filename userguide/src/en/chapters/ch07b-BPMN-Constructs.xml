@@ -809,6 +809,74 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         
         
         
+        <!-- //////////////////////////////////////// signal start events -->
+        
+        <section id="bpmnSignalStartEvent">
+
+            <title>Signal Start Event</title>
+            <section id="bpmnSignalStartEventDescription">
+
+            <title>Description</title>
+    
+            <para>
+                A <link linkend="bpmnSignalEventDefinition">signal</link> start event can be used to start a process instance using a named signal. 
+                The signal can be 'fired' from within a process instance using the intermediary signal throw event or through the API
+                (<emphasis>runtimService.signalEventReceivedXXX</emphasis> methods). In both cases, all process definitions that have
+                a signal start event with the same name will be started.
+            </para>
+            
+            <para>
+                Note that in both cases, it is also possible to chose between a synchronous and asynchronous starting of the process instances.
+            </para>
+            
+            <para>
+                The <code>signalName</code> that must be passed in the API is the name given in the <code>name</code> attribute of the <code>signal</code> element referenced by the <code>signalRef</code>
+                attribute of the <code>signalEventDefinition</code>.
+            </para> 
+    
+          </section>
+
+            <section id="signalStartEventGraphicalNotation">
+
+              <title>Graphical notation</title>
+
+              <para>
+                A signal start event is visualized as a circle with a signal event symbol. The symbol is unfilled, to visualize the catching (receiving) behavior. 
+                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.start.signal.event.png"/></imageobject></mediaobject>
+              </para>
+
+            </section>
+
+            <section id="signalStartEventXml">
+
+        <title>XML representation</title>
+
+        <para>
+          The XML representation of a message start event is the normal
+          start event declaration with a messageEventDefinition child-element:
+          
+          <programlisting>
+    &lt;signal id=&quot;theSignal&quot; name=&quot;The Signal&quot; /&gt;
+
+    &lt;process id=&quot;processWithSignalStart1&quot;&gt;
+        &lt;startEvent id=&quot;theStart&quot;&gt;
+          &lt;signalEventDefinition id=&quot;theSignalEventDefinition&quot; signalRef=&quot;theSignal&quot;  /&gt;
+        &lt;/startEvent&gt;
+        &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;theTask&quot; /&gt;
+        &lt;userTask id=&quot;theTask&quot; name=&quot;Task in process A&quot; /&gt;
+        &lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;theTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+        &lt;endEvent id=&quot;theEnd&quot; /&gt;
+    &lt;/process&gt;</programlisting>
+        
+        </para>
+         
+
+      </section>
+
+        </section>
+        
+        
+        
          <!-- //////////////////////////////////////// error start events -->
         
         <section id="bpmnErrorStartEvent">
