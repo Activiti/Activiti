@@ -66,8 +66,13 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
   }
 
   @Override
-  public void updateGroup(GroupEntity updatedGroup) {
+  public void updateGroup(Group updatedGroup) {
     throw new ActivitiException("LDAP group manager doesn't support updating a group");
+  }
+  
+  @Override
+  public boolean isNewGroup(Group group) {
+  	throw new ActivitiException("LDAP group manager doesn't support inserting or updating a group");
   }
 
   @Override

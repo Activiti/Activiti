@@ -21,7 +21,6 @@ import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.UserEntity;
 
 
 /**
@@ -40,13 +39,13 @@ public class GetUserPictureCmd implements Command<Picture>, Serializable {
     if(userId == null) {
       throw new ActivitiIllegalArgumentException("userId is null");
     }
-    UserEntity user = (UserEntity) commandContext
+    User user = commandContext
       .getUserIdentityManager()
       .findUserById(userId);
     if(user == null) {
       throw new ActivitiObjectNotFoundException("user "+userId+" doesn't exist", User.class);
     }
-    return user.getPicture();
+    return commandContext.getUserIdentityManager().getUserPicture(userId);
   }
 
 }
