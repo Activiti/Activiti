@@ -38,6 +38,7 @@ public class EventSubscriptionQueryImpl
   protected String executionId;
   protected String processInstanceId;
   protected String activityId;
+  protected String tenantId;
 
   public EventSubscriptionQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -95,7 +96,16 @@ public class EventSubscriptionQueryImpl
     return this;
   }
   
-  public EventSubscriptionQueryImpl orderByCreated() {
+  public String getTenantId() {
+		return tenantId;
+	}
+
+	public EventSubscriptionQueryImpl tenantId(String tenantId) {
+		this.tenantId = tenantId;
+		return this;
+	}
+
+	public EventSubscriptionQueryImpl orderByCreated() {
     return orderBy(EventSubscriptionQueryProperty.CREATED);
   }
   

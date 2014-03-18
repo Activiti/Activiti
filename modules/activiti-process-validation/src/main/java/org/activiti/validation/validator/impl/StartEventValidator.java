@@ -7,6 +7,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.validation.ValidationError;
@@ -32,7 +33,8 @@ public class StartEventValidator extends ProcessLevelValidator {
 				
 				if (!(eventDefinition instanceof MessageEventDefinition)) {
 					nonMessageStartEvents.add(startEvent);
-					if (!(eventDefinition instanceof TimerEventDefinition)) {
+					if (!(eventDefinition instanceof TimerEventDefinition)
+							&& !(eventDefinition instanceof SignalEventDefinition)) {
 						addError(errors, Problems.START_EVENT_INVALID_EVENT_DEFINITION, process, startEvent, "Unsupported event definition on start event");
 					}
 				} 

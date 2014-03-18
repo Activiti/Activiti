@@ -22,6 +22,7 @@ import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
@@ -93,6 +94,10 @@ public abstract class AbstractManager implements Session {
 
   protected IdentityLinkEntityManager getIdentityLinkManager() {
     return getSession(IdentityLinkEntityManager.class);
+  }
+  
+  protected EventSubscriptionEntityManager getEventSubscriptionManager() {
+  	return (getSession(EventSubscriptionEntityManager.class));
   }
 
   protected VariableInstanceEntityManager getVariableInstanceManager() {

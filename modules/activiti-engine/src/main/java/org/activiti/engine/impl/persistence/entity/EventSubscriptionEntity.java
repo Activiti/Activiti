@@ -44,6 +44,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   protected String activityId;
   protected String configuration;
   protected Date created;
+  protected String processDefinitionId;
   protected String tenantId;
   
   // runtime state /////////////////////////////
@@ -250,7 +251,15 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     this.created = created;
   }
   
-  public String getTenantId() {
+  public String getProcessDefinitionId() {
+		return processDefinitionId;
+	}
+
+	public void setProcessDefinitionId(String processDefinitionId) {
+		this.processDefinitionId = processDefinitionId;
+	}
+
+	public String getTenantId() {
 		return tenantId;
 	}
 
