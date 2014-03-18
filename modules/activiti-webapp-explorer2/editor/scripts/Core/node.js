@@ -566,6 +566,7 @@ ORYX.Core.Node = {
 		
         var svgNode = svgDocument.getElementsByTagName("g")[0]; //outer most g node
         // set all required attributes
+        
         var attributeTitle = svgDocument.ownerDocument.createAttributeNS(null, "title");
         attributeTitle.nodeValue = this.getStencil().title();
         svgNode.setAttributeNode(attributeTitle);
