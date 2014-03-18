@@ -660,6 +660,7 @@
       <id>deploy</id>
       <modules>
         <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-process-validation</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
         <module>modules/activiti-bpmn-layout</module>
@@ -679,7 +680,6 @@
         <module>modules/activiti-cdi</module>
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-ldap</module>
-        <module>modules/activiti-process-validation</module>
       </modules>
       <build>
         <plugins>
@@ -825,6 +825,7 @@
       <id>buildWebappDependencies</id>
       <modules>
         <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-process-validation</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
@@ -863,6 +864,7 @@
       <id>buildRestappDependencies</id>
       <modules>
         <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-process-validation</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
