@@ -434,8 +434,7 @@ ORYX.Editor = {
 			
 			var content =  "<div id='editor_header'>" +
                 "<div id='header_logo_image'>" +                
-                    "<img src='../explorer/src/img/signavio/smoky/logo2.png' border=\"0\" usemap=\"#kisbpmmap\"/>" + 
-                    "<map id=\"kisbpmmap\" name=\"kisbpmmap\"><area shape=\"rect\" alt=\"kisbpm.com\" title=\"kisbpm.com\" coords=\"15,2,322,44\" href=\"http://kisbpm.com\" target=\"_blank\" /></map>" +
+                    "<img src='../explorer/src/img/signavio/smoky/logo2.png' border=\"0\"/>" +
                 "</div>" +
                 "<span class='openid " + (publicText == user ? "not" : "") + "'>" + 
                   (unescape(user)) + 
