@@ -287,6 +287,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     sb.append("HistoricVariableInstanceEntity[");
     sb.append("id=").append(id);
     sb.append(", name=").append(name);
+    sb.append(", revision=").append(revision);
     sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
     if (longValue != null) {
       sb.append(", longValue=").append(longValue);
