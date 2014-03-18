@@ -168,15 +168,19 @@ public class BaseProcessInstanceResource extends SecuredResource {
         
       case GREATER_THAN:
         processInstanceQuery.variableValueGreaterThan(variable.getName(), actualValue);
+        break;
         
       case GREATER_THAN_OR_EQUALS:
         processInstanceQuery.variableValueGreaterThanOrEqual(variable.getName(), actualValue);
+        break;
         
       case LESS_THAN:
         processInstanceQuery.variableValueLessThan(variable.getName(), actualValue);
+        break;
         
       case LESS_THAN_OR_EQUALS:
         processInstanceQuery.variableValueLessThanOrEqual(variable.getName(), actualValue);
+        break;
         
       default:
         throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
