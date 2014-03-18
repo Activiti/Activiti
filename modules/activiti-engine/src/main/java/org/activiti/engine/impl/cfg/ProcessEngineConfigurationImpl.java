@@ -1430,6 +1430,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public List<ProcessEngineConfigurator> getConfigurators() {
     return configurators;
   }
+
+  public ProcessEngineConfigurationImpl addConfigurator(ProcessEngineConfigurator configurator) {
+    if(this.configurators == null) {
+      this.configurators = new ArrayList<ProcessEngineConfigurator>();
+    }
+    this.configurators.add(configurator);
+    return this;
+  }
   
   public ProcessEngineConfigurationImpl setConfigurators(List<ProcessEngineConfigurator> configurators) {
     this.configurators = configurators;
