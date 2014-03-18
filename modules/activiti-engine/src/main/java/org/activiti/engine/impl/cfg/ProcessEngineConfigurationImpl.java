@@ -717,6 +717,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
       dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
       dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
+      dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
       dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
       addSessionFactory(dbSqlSessionFactory);
       
