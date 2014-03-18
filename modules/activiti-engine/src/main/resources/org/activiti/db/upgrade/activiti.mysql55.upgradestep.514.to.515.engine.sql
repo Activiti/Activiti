@@ -33,6 +33,9 @@ alter table ACT_RU_JOB
 alter table ACT_RE_MODEL
     add TENANT_ID_ varchar(255) default '';  
     
+alter table ACT_RU_EVENT_SUBSCR
+   add TENANT_ID_ varchar(255) default '';      
+    
 alter table ACT_RE_PROCDEF
     drop index ACT_UNIQ_PROCDEF;
     

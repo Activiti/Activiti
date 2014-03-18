@@ -44,6 +44,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   protected String activityId;
   protected String configuration;
   protected Date created;
+  protected String tenantId;
   
   // runtime state /////////////////////////////
   protected ExecutionEntity execution;
@@ -248,8 +249,16 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   public void setCreated(Date created) {
     this.created = created;
   }
+  
+  public String getTenantId() {
+		return tenantId;
+	}
 
-  @Override
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	@Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;

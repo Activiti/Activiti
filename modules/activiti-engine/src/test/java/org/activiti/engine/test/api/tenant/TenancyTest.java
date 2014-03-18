@@ -737,4 +737,75 @@ public class TenancyTest extends PluggableActivitiTestCase {
 		}
 	}
 	
+	public void testStartProcessInstanceByMessageTenancy() {
+		
+		// Deploy process both with and without tenant
+		repositoryService.createDeployment()
+			.addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMessageTenancy.bpmn20.xml")
+			.deploy();
+		repositoryService.createDeployment()
+			.addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMessageTenancy.bpmn20.xml")
+			.tenantId(TEST_TENANT_ID)
+			.deploy();
+		
+		// Verify query
+		assertEquals(2, repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("My message").count());
+		assertEquals(1, repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("My message").processDefinitionWithoutTenantId().count());
+		assertEquals(1, repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("My message").processDefinitionTenantId(TEST_TENANT_ID).count());
+		
+		// Start a process instance by message without tenant
+		runtimeService.startProcessInstanceByMessage("My message");
+		runtimeService.startProcessInstanceByMessage("My message");
+		
+		assertEquals(2, taskService.createTaskQuery().taskName("My task").count());
+		assertEquals(2, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+		assertEquals(0, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+		
+		// Start a process instance by message with tenant
+		runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+		runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+		runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+		assertEquals(5, taskService.createTaskQuery().taskName("My task").count());
+		assertEquals(2, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+		assertEquals(3, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+		
+		// Cleanup
+		for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+			repositoryService.deleteDeployment(deployment.getId(), true);
+		}
+	}
+	
+	public void testStartProcessInstanceByMessageTenancyReversed() { // same as above, but now reversed
+		
+		// Deploy process both with and without tenant
+		repositoryService.createDeployment()
+			.addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMessageTenancy.bpmn20.xml")
+			.deploy();
+		repositoryService.createDeployment()
+			.addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMessageTenancy.bpmn20.xml")
+			.tenantId(TEST_TENANT_ID)
+			.deploy();
+		
+		// Start a process instance by message with tenant
+		runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+		runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+		runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+		assertEquals(3, taskService.createTaskQuery().taskName("My task").count());
+		assertEquals(0, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+		assertEquals(3, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+		
+		// Start a process instance by message without tenant
+		runtimeService.startProcessInstanceByMessage("My message");
+		runtimeService.startProcessInstanceByMessage("My message");
+		
+		assertEquals(5, taskService.createTaskQuery().taskName("My task").count());
+		assertEquals(2, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+		assertEquals(3, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+		
+		// Cleanup
+		for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+			repositoryService.deleteDeployment(deployment.getId(), true);
+		}
+	}
+	
 }

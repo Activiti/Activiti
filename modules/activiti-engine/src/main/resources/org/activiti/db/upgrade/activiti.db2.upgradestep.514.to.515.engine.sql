@@ -42,6 +42,11 @@ alter table ACT_RE_MODEL
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_MODEL');  
 
+alter table ACT_RU_EVENT_SUBSCR
+   add TENANT_ID_ varchar(255) default '';  
+   
+Call Sysproc.admin_cmd ('REORG TABLE ACT_RU_EVENT_SUBSCR');     
+
 alter table ACT_RE_PROCDEF
     drop unique ACT_UNIQ_PROCDEF;
     

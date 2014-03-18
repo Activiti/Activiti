@@ -296,7 +296,8 @@ public class BpmnDeployer implements Deployer {
           // look for subscriptions for the same name in db:
           List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext
             .getEventSubscriptionEntityManager()
-            .findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE, messageEventDefinition.getEventName());
+            .findEventSubscriptionsByNameAndTenantId(MessageEventHandler.EVENT_HANDLER_TYPE, 
+            		messageEventDefinition.getEventName(), processDefinition.getTenantId());
           // also look for subscriptions created in the session:
           List<MessageEventSubscriptionEntity> cachedSubscriptions = commandContext
             .getDbSqlSession()
@@ -321,6 +322,10 @@ public class BpmnDeployer implements Deployer {
           newSubscription.setEventName(messageEventDefinition.getEventName());
           newSubscription.setActivityId(messageEventDefinition.getActivityId());
           newSubscription.setConfiguration(processDefinition.getId());
+
+          if (processDefinition.getTenantId() != null) {
+          	newSubscription.setTenantId(processDefinition.getTenantId());
+          }
           
           newSubscription.insert();
         }

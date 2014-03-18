@@ -240,6 +240,11 @@ public interface RuntimeService {
    * @since 5.9
    */
   ProcessInstance startProcessInstanceByMessage(String messageName);
+  
+  /**
+   * Similar to {@link RuntimeService#startProcessInstanceByMessage(String)}, but with tenant context.
+   */
+  ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String tenantId);
 
   /**
    * <p>
@@ -262,6 +267,11 @@ public interface RuntimeService {
    * @since 5.10
    */
   ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey);
+  
+  /**
+   * Similar to {@link RuntimeService#startProcessInstanceByMessage(String, String)}, but with tenant context.
+   */
+  ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String businessKey, String tenantId);
 
   /**
    * <p>
@@ -288,6 +298,11 @@ public interface RuntimeService {
    * @since 5.9
    */
   ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables);
+  
+  /**
+   * Similar to {@link RuntimeService#startProcessInstanceByMessage(String, Map<String, Object>)}, but with tenant context.
+   */
+  ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, Map<String, Object> processVariables, String tenantId);
 
   /**
    * <p>
@@ -315,6 +330,11 @@ public interface RuntimeService {
    * @since 5.9
    */
   ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map<String, Object> processVariables);
+  
+  /**
+   * Similar to {@link RuntimeService#startProcessInstanceByMessage(String, String, Map<String, Object>)}, but with tenant context.
+   */
+  ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String businessKey, Map<String, Object> processVariables, String tenantId);
 
   /**
    * Delete an existing runtime process instance.

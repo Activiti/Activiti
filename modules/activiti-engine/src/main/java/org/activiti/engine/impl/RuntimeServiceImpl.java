@@ -243,19 +243,37 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
   
   public ProcessInstance startProcessInstanceByMessage(String messageName) {
-    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName,null, null));
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName,null, null, null));
+  }
+
+  public ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String tenantId) {
+  	return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName,null, null, tenantId));
   }
   
   public ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey) {
-    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, null));
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, null, null));
+  }
+  
+  public ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String businessKey, String tenantId) {
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, null, tenantId));
   }
   
   public ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables) {
-    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, null, processVariables));
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, null, processVariables, null));
+  }
+  
+  public ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, Map<String, Object> processVariables, String tenantId) {
+  	return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, null, processVariables, tenantId));
   }
   
   public ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map<String, Object> processVariables) {
-    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, processVariables));
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, processVariables, null));
+  }
+  
+  @Override
+  public ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String businessKey, 
+  		Map<String, Object> processVariables, String tenantId) {
+  	return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, processVariables, tenantId));
   }
 
   public void signalEventReceived(String signalName) {
