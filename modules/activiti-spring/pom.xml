@@ -17,6 +17,9 @@
         <activiti.artifact>
             org.activiti.spring
         </activiti.artifact>
+        <activiti.osgi.import.additional>
+          org.springframework.test.context*;resolution:=optional,
+        </activiti.osgi.import.additional>
     </properties>
 
     <build>
