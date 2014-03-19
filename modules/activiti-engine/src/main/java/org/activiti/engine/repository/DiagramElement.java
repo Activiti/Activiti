@@ -20,7 +20,7 @@ import java.io.Serializable;
  *
  * @author Falko Menge
  */
-abstract public class DiagramElement implements Serializable {
+abstract public class DiagramElement {
 
   private static final long serialVersionUID = 1L;
   

@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 /**
  * @author Tom Baeyens
  */
-public interface Condition extends Serializable {
+public interface Condition {
 
   boolean evaluate(DelegateExecution execution);
 }

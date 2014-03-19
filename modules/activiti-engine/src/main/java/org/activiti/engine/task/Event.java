@@ -25,7 +25,7 @@ import org.activiti.engine.TaskService;
  * @see {@link TaskService#getTaskEvents(String)
  * @author Tom Baeyens
  */
-public interface Event extends Serializable {
+public interface Event {
   
   /** A user identity link was added with following message parts:
    * [0] userId

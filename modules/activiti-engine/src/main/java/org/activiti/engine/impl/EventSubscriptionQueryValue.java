@@ -19,7 +19,7 @@ import java.io.Serializable;
 /**
  * @author Daniel Meyer
  */
-public class EventSubscriptionQueryValue implements Serializable {
+public class EventSubscriptionQueryValue {
   
   private static final long serialVersionUID = 1L;
   

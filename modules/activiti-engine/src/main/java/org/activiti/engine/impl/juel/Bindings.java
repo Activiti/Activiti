@@ -40,7 +40,7 @@ public class Bindings implements TypeConverter {
 	/**
 	 * Wrap a {@link Method} for serialization.
 	 */
-	private static class MethodWrapper implements Serializable {
+	private static class MethodWrapper {
 		private static final long serialVersionUID = 1L;
 
 		private transient Method method;

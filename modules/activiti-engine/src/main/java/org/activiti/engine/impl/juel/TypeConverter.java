@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 import org.activiti.engine.impl.javax.el.ELException;
 
-public interface TypeConverter extends Serializable {
+public interface TypeConverter {
 	/**
 	 * Default conversions as from JSR245.
 	 */

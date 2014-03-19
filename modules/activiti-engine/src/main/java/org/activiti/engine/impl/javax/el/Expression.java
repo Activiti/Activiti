@@ -28,7 +28,7 @@ import java.util.Hashtable;
  * {@link FunctionMapper}. This allows a container to pre-create expressions and not have to reparse
  * them each time they are evaluated.
  */
-public abstract class Expression implements Serializable {
+public abstract class Expression {
 	private static final long serialVersionUID = 1L;
 
 	/**

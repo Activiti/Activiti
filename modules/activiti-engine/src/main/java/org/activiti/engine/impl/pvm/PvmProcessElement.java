@@ -19,7 +19,7 @@ import java.io.Serializable;
 /**
  * @author Tom Baeyens
  */
-public interface PvmProcessElement extends Serializable {
+public interface PvmProcessElement {
 
   String getId();
   

@@ -21,7 +21,7 @@ import org.activiti.engine.IdentityService;
  * Represents a user, used in {@link IdentityService}.
  * @author Tom Baeyens
  */
-public interface User extends Serializable {
+public interface User {
 
   String getId();
   void setId(String id);

@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.delegate;
 
-import java.io.Serializable;
 
 
 
@@ -22,7 +21,7 @@ import java.io.Serializable;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface ExecutionListener extends Serializable {
+public interface ExecutionListener {
 
   String EVENTNAME_START = "start";
   String EVENTNAME_END = "end";

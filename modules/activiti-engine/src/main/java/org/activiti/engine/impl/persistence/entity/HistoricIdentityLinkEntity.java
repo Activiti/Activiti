@@ -24,7 +24,7 @@ import org.activiti.engine.impl.db.PersistentObject;
 /**
  * @author Frederik Heremans
  */
-public class HistoricIdentityLinkEntity implements Serializable, HistoricIdentityLink, PersistentObject {
+public class HistoricIdentityLinkEntity implements HistoricIdentityLink, PersistentObject {
   
   private static final long serialVersionUID = 1L;
   

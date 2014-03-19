@@ -29,7 +29,7 @@ import org.activiti.engine.repository.Deployment;
 /**
  * @author Tom Baeyens
  */
-public class DeploymentEntity implements Serializable, Deployment, PersistentObject {
+public class DeploymentEntity implements Deployment, PersistentObject {
 
   private static final long serialVersionUID = 1L;
   
