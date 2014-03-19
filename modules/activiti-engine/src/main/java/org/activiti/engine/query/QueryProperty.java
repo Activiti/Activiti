@@ -21,7 +21,7 @@ import java.io.Serializable;
  * 
  * @author Frederik Heremans
  */
-public interface QueryProperty {
+public interface QueryProperty extends Serializable {
 
   String getName();
 }

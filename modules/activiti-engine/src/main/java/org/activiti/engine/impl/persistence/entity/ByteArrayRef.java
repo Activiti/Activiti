@@ -17,7 +17,7 @@ import org.activiti.engine.impl.context.Context;
  * 
  * @author Marcus Klimstra (CGI)
  */
-public final class ByteArrayRef {
+public final class ByteArrayRef implements Serializable {
   
   private static final long serialVersionUID = 1L;
   

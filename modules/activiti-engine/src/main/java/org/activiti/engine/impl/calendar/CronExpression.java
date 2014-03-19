@@ -23,7 +23,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.SortedSet;
@@ -197,7 +196,7 @@ import java.util.TreeSet;
  * @author Contributions from Mads Henderson
  * @author Refactoring from CronTrigger to CronExpression by Aaron Craven
  */
-public class CronExpression implements Cloneable {
+public class CronExpression implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 12423409423L;
 

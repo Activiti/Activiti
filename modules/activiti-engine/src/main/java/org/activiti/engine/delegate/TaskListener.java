@@ -13,6 +13,8 @@
 
 package org.activiti.engine.delegate;
 
+import java.io.Serializable;
+
 
 
 
@@ -20,7 +22,7 @@ package org.activiti.engine.delegate;
 /**
  * @author Tom Baeyens
  */
-public interface TaskListener {
+public interface TaskListener extends Serializable {
 
   String EVENTNAME_CREATE = "create";
   String EVENTNAME_ASSIGNMENT = "assignment";

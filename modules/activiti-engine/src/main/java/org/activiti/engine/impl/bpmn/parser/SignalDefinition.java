@@ -20,7 +20,7 @@ import java.io.Serializable;
  * 
  * @author Daniel Meyer
  */
-public class SignalDefinition {
+public class SignalDefinition implements Serializable {
 
   private static final long serialVersionUID = 1L;
     

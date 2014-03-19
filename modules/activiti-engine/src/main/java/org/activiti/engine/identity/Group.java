@@ -22,7 +22,7 @@ import org.activiti.engine.IdentityService;
  * 
  * @author Tom Baeyens
  */
-public interface Group {
+public interface Group extends Serializable {
 
   String getId();
   void setId(String id);
