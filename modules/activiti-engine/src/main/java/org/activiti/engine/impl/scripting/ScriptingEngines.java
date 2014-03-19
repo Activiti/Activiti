@@ -117,7 +117,7 @@ public class ScriptingEngines {
   			}
   		}
   	} else {
-  		scriptEngine = cachedEngines.get(language);
+  		scriptEngine = scriptEngineManager.getEngineByName(language);
   	}
   	
   	if (scriptEngine == null) {
