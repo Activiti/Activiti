@@ -18,7 +18,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.UserEntity;
 
 
 /**
@@ -27,17 +26,17 @@ import org.activiti.engine.impl.persistence.entity.UserEntity;
 public class SaveUserCmd implements Command<Void>, Serializable {
   
   private static final long serialVersionUID = 1L;
-  protected UserEntity user;
+  protected User user;
   
   public SaveUserCmd(User user) {
-    this.user = (UserEntity) user;
+    this.user = user;
   }
   
   public Void execute(CommandContext commandContext) {
     if(user == null) {
       throw new ActivitiIllegalArgumentException("user is null");
     }
-    if (user.getRevision()==0) {
+    if (commandContext.getUserIdentityManager().isNewUser(user)) {
       commandContext
         .getUserIdentityManager()
         .insertUser(user);

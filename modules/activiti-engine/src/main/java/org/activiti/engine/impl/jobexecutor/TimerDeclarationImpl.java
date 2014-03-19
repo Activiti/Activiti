@@ -147,8 +147,15 @@ public class TimerDeclarationImpl implements Serializable {
     
     if (type == TimerDeclarationType.CYCLE) {
       
-      // See ACT-1427: A boundary timer with a cancelActivity='true', doesn't need to repeat itself
-      if (!isInterruptingTimer) {
+    	// See ACT-1427: A boundary timer with a cancelActivity='true', doesn't need to repeat itself
+    	boolean repeat = !isInterruptingTimer;
+    	
+    	// ACT-1951: intermediate catching timer events shouldn't repeat accoring to spec
+    	if(TimerCatchIntermediateEventJobHandler.TYPE.equals(jobHandlerType)) {
+    		repeat = false;
+    	}
+    	
+      if (repeat) {
         String prepared = prepareRepeat(dueDateString);
         timer.setRepeat(prepared);
       }

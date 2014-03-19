@@ -167,6 +167,8 @@ create table ACT_RU_EVENT_SUBSCR (
     ACTIVITY_ID_ nvarchar(64),
     CONFIGURATION_ nvarchar(255),
     CREATED_ datetime not null,
+    PROC_DEF_ID_ nvarchar(64),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 

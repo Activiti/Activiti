@@ -717,6 +717,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
       dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
       dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
+      dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
       dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
       addSessionFactory(dbSqlSessionFactory);
       
@@ -1429,6 +1430,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public List<ProcessEngineConfigurator> getConfigurators() {
     return configurators;
+  }
+
+  public ProcessEngineConfigurationImpl addConfigurator(ProcessEngineConfigurator configurator) {
+    if(this.configurators == null) {
+      this.configurators = new ArrayList<ProcessEngineConfigurator>();
+    }
+    this.configurators.add(configurator);
+    return this;
   }
   
   public ProcessEngineConfigurationImpl setConfigurators(List<ProcessEngineConfigurator> configurators) {

@@ -197,26 +197,6 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Exclude sub processes from the query result;
    */
   HistoricProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses);
-
-  // below is deprecated and should be removed in 5.12
-
-  /** Only select historic process instances that were started as of the provided
-   * date. (Date will be adjusted to reflect midnight)
-   * @deprecated will be removed in 5.12, use {@link #startedAfter(Date)} and {@link #startedBefore(Date)} instead */
-  HistoricProcessInstanceQuery startDateBy(Date date);
-
-  /** Only select historic process instances that were started on the provided date.
-   * @deprecated will be removed in 5.12, use {@link #startedAfter(Date)} and {@link #startedBefore(Date)} instead */
-  HistoricProcessInstanceQuery startDateOn(Date date);
-
-  /** Only select historic process instances that were finished as of the
-   * provided date. (Date will be adjusted to reflect one second before midnight)
-   * @deprecated will be removed in 5.12, use {@link #startedAfter(Date)} and {@link #startedBefore(Date)} instead */
-  HistoricProcessInstanceQuery finishDateBy(Date date);
-
-  /** Only select historic process instances that were finished on provided date.
-   * @deprecated will be removed in 5.12, use {@link #startedAfter(Date)} and {@link #startedBefore(Date)} instead */
-  HistoricProcessInstanceQuery finishDateOn(Date date);
   
   /**
    * Include process variables in the process query result

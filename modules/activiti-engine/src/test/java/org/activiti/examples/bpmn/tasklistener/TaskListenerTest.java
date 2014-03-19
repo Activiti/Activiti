@@ -64,6 +64,54 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
   }
   
+  /**
+   * Validate fix for ACT-1627: Not throwing assignment event on every update
+   */
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
+  public void testTaskAssignmentListenerNotCalledWhenAssigneeNotUpdated() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("TaskCreateListener is listening!", task.getDescription());
+    
+    // Set assignee and check if event is received
+    taskService.setAssignee(task.getId(), "kermit");
+    task = taskService.createTaskQuery().singleResult();
+    
+    assertEquals("TaskAssignmentListener is listening: kermit", task.getDescription());
+    
+    // Reset description and assign to same person. This should NOT trigger an assignment
+    task.setDescription("Clear");
+    taskService.saveTask(task);
+    taskService.setAssignee(task.getId(), "kermit");
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Clear", task.getDescription());
+    
+    // Set assignee through task-update
+    task.setAssignee("kermit");
+    taskService.saveTask(task);
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Clear", task.getDescription());
+    
+    // Update another property should not trigger assignment
+    task.setName("test");
+    taskService.saveTask(task);
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Clear", task.getDescription());
+    
+    // Update to different
+    task.setAssignee("john");
+    taskService.saveTask(task);
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("TaskAssignmentListener is listening: john", task.getDescription());
+    
+
+    //Manually cleanup the process instance.
+    runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
+  }
+  
   @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testTaskCompleteListener() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");

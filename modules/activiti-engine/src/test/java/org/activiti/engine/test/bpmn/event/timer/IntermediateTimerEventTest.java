@@ -89,5 +89,18 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
   	
   	assertProcessEnded(processInstance.getId());
   }
+  
+  @Deployment
+  public void testLoopWithCycle() {
+  	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testLoop");
+  	
+  	// After looping 3 times, the process should end. Cycle should NOT repeat itself
+  	for (int i=0; i<3; i++) {
+  		Job timer = managementService.createJobQuery().singleResult();
+  		managementService.executeJob(timer.getId());
+  	}
+  	
+  	assertProcessEnded(processInstance.getId());
+  }
 
 }

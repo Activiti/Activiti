@@ -404,4 +404,42 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
       
     }
   }
+  
+
+  /**
+   * Test to validate fix for ACT-1939: HistoryService loads invalid task local variables for completed task
+   */
+  @Deployment
+  public void testVariableUpdateOrderHistoricTaskInstance() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historicTask");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    
+    // Update task and process-variable 10 times, using explicit removeVariables to have multiple revisions recorded
+    for(int i=0; i<10; i++) {
+    	taskService.removeVariableLocal(task.getId(), "taskVar");
+    	taskService.setVariableLocal(task.getId(), "taskVar", i);
+    	runtimeService.removeVariable(task.getExecutionId(), "procVar");
+    	runtimeService.setVariable(task.getExecutionId(), "procVar", i);
+    }
+    
+    taskService.complete(task.getId());
+    
+    // Check if all variables have the value for the latest revision
+    HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery()
+    		.taskId(task.getId())
+    		.includeProcessVariables()
+    		.singleResult();
+    
+    Object varValue = taskInstance.getProcessVariables().get("procVar");
+    assertEquals(9, varValue);
+    
+    taskInstance = historyService.createHistoricTaskInstanceQuery()
+    		.taskId(task.getId())
+    		.includeTaskLocalVariables()
+    		.singleResult();
+    
+    varValue = taskInstance.getTaskLocalVariables().get("taskVar");
+    assertEquals(9, varValue);
+  }
 }

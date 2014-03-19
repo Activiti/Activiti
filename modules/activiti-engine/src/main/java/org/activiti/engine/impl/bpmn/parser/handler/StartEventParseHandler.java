@@ -96,7 +96,9 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
     startEventActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(startEvent));
     if (startEvent.getEventDefinitions().size() > 0) {
       EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
-      if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof MessageEventDefinition) {
+      if (eventDefinition instanceof TimerEventDefinition 
+      		|| eventDefinition instanceof MessageEventDefinition
+      		|| eventDefinition instanceof SignalEventDefinition) {
         bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
       } else {
         logger.warn("Unsupported event definition on start event", eventDefinition);

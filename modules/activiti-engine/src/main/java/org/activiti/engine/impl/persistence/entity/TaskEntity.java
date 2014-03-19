@@ -43,6 +43,7 @@ import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tom Baeyens
@@ -61,6 +62,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   protected String owner;
   protected String assignee;
+  protected String initialAssignee;
   protected DelegationState delegationState;
   
   protected String parentTaskId;
@@ -528,7 +530,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   	
   	if (assignee==null && this.assignee==null) {
   		
-  		// ACT-1923: even if assignee is unmodified and null, this should be stored in history
+  		// ACT-1923: even if assignee is unmodified and null, this should be stored in history.
   		if (commandContext!=null) {
         commandContext
           .getHistoryManager()
@@ -550,7 +552,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         getProcessInstance().involveUser(assignee, IdentityLinkType.PARTICIPANT);
       }
       
-      fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
+      if(!StringUtils.equals(initialAssignee, assignee)) {
+      	fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
+      	initialAssignee = assignee;
+      }
       
       if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       	if(dispatchAssignmentEvent) {
@@ -569,6 +574,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   /* plain setter for persistence */
   public void setAssigneeWithoutCascade(String assignee) {
     this.assignee = assignee;
+    
+    // Assign the assignee that was persisted before
+    this.initialAssignee = assignee;
   }
   
   public void setOwner(String owner) {

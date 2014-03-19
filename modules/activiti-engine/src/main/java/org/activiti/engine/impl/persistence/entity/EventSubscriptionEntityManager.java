@@ -46,6 +46,10 @@ public class EventSubscriptionEntityManager extends AbstractManager {
       createdSignalSubscriptions.remove(persistentObject);
     }
   }
+  
+  public void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId) {
+  	getDbSqlSession().delete("deleteEventSubscriptionsForProcessDefinition", processDefinitionId);
+  }
     
   public EventSubscriptionEntity findEventSubscriptionbyId(String id) {
     return (EventSubscriptionEntity) getDbSqlSession().selectOne("selectEventSubscription", id);
@@ -159,19 +163,21 @@ public class EventSubscriptionEntityManager extends AbstractManager {
     return getDbSqlSession().selectList(query, params);            
   }
 
-  public List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration(String type, String configuration) {
+  public List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration(String type, String configuration, String tenantId) {
     final String query = "selectEventSubscriptionsByConfiguration";    
     Map<String,String> params = new HashMap<String, String>();
     params.put("eventType", type);
     params.put("configuration", configuration);
+    params.put("tenantId", tenantId);
     return getDbSqlSession().selectList(query, params);            
   }
 
-  public List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName) {
+  public List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName, String tenantId) {
     final String query = "selectEventSubscriptionsByName";    
     Map<String,String> params = new HashMap<String, String>();
     params.put("eventType", type);
-    params.put("eventName", eventName);    
+    params.put("eventName", eventName);  
+    params.put("tenantId", tenantId);
     return getDbSqlSession().selectList(query, params);            
   }
   
@@ -184,9 +190,19 @@ public class EventSubscriptionEntityManager extends AbstractManager {
     return getDbSqlSession().selectList(query, params);            
   }
 
-  public MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(String messageName) {
-    MessageEventSubscriptionEntity entity = (MessageEventSubscriptionEntity) getDbSqlSession().selectOne("selectMessageStartEventSubscriptionByName", messageName);
+  public MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(String messageName, String tenantId) {
+  	Map<String, String> params = new HashMap<String, String>();
+  	params.put("eventName", messageName);
+  	params.put("tenantId", tenantId);
+    MessageEventSubscriptionEntity entity = (MessageEventSubscriptionEntity) getDbSqlSession().selectOne("selectMessageStartEventSubscriptionByName", params);
     return entity;
+  }
+  
+  public void updateEventSubscriptionTenantId(String oldTenantId, String newTenantId) {
+  	Map<String, String> params = new HashMap<String, String>();
+  	params.put("oldTenantId", oldTenantId);
+  	params.put("newTenantId", newTenantId);
+  	getDbSqlSession().update("updateTenantIdOfEventSubscriptions", params);
   }
    
 }

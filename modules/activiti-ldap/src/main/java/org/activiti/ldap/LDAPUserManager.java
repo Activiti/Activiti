@@ -25,6 +25,7 @@ import javax.naming.directory.SearchResult;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
@@ -68,8 +69,13 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
 
 
   @Override
-  public void updateUser(UserEntity updatedUser) {
+  public void updateUser(User updatedUser) {
     throw new ActivitiException("LDAP user manager doesn't support updating a user");
+  }
+  
+  @Override
+  public boolean isNewUser(User user) {
+  	throw new ActivitiException("LDAP user manager doesn't support adding or updating a user");
   }
 
 
@@ -222,6 +228,16 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
   @Override
   public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
     throw new ActivitiException("LDAP user manager doesn't support querying");
+  }
+  
+  @Override
+  public void setUserPicture(String userId, Picture picture) {
+  	throw new ActivitiException("LDAP user manager doesn't support user pictures");
+  }
+  
+  @Override
+  public Picture getUserPicture(String userId) {
+  	throw new ActivitiException("LDAP user manager doesn't support user pictures");
   }
 
   @Override

@@ -160,6 +160,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
    */
   protected String databaseSchema = null;
   
+  /**
+   * Set to true in case the defined databaseTablePrefix is a schema-name, instead of an actual table name
+   * prefix. This is relevant for checking if Activiti-tables exist, the databaseTablePrefix will not be used here
+   * - since the schema is taken into account already, adding a prefix for the table-check will result in wrong table-names.
+   * 
+   *  @since 5.15
+   */
+  protected boolean tablePrefixIsSchema = false;
+  
   protected boolean isCreateDiagramOnDeploy = true;
   
   protected String xmlEncoding = "UTF-8";
@@ -599,6 +608,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public ProcessEngineConfiguration setDatabaseTablePrefix(String databaseTablePrefix) {
     this.databaseTablePrefix = databaseTablePrefix;
     return this;
+  }
+  
+  public ProcessEngineConfiguration setTablePrefixIsSchema(boolean tablePrefixIsSchema) {
+	  this.tablePrefixIsSchema = tablePrefixIsSchema;
+	  return this;
+  }
+  
+  public boolean isTablePrefixIsSchema() {
+	  return tablePrefixIsSchema;
   }
   
   public String getDatabaseSchema() {

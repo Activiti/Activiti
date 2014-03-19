@@ -52,7 +52,7 @@ public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<
     
       EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
       eventSubscriptionDeclaration.setActivityId(activity.getId());
-      eventSubscriptionDeclaration.setStartEvent(false);
+      eventSubscriptionDeclaration.setStartEvent(true);
       addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, bpmnParse.getCurrentScope());
       
     } else if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent){
