@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BooleanDataObject;
 import org.activiti.bpmn.model.BpmnModel;
@@ -63,9 +64,11 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
       // TODO should throw exception here for unsupported data type
     }
     
-    if (null != dataObject) {
+    if (dataObject != null) {
       dataObject.setId(xtr.getAttributeValue(null, ATTRIBUTE_DATA_ID)); 
       dataObject.setName(xtr.getAttributeValue(null, ATTRIBUTE_DATA_NAME)); 
+      
+      BpmnXMLUtil.addXMLLocation(dataObject, xtr);
 
       itemSubjectRef.setStructureRef(structureRef);
       dataObject.setItemSubjectRef(itemSubjectRef); 

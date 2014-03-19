@@ -218,7 +218,7 @@
            	CONFIGURATION_,
            	CREATED_,
            	PROC_DEF_ID_,
-           	TENANT_ID_,
+           	TENANT_ID_
     )
     values (#{id, jdbcType=VARCHAR},
             1,

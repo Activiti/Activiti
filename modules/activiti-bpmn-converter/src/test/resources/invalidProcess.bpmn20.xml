@@ -37,8 +37,15 @@
 
 		<association associationDirection="One" sourceRef=""
 			targetRef="" id="as1" />
-
+			
 		<documentation>This is a process for testing purposes</documentation>
+		
+		
+		 <dataObject id="dataObject1" itemSubjectRef="xsd:string">
+        <extensionElements>
+        <activiti:value>Testing</activiti:value>
+        </extensionElements>
+        </dataObject>
 
 		<startEvent id="theStart1" name="start1" />
 		<startEvent id="theStart2" name="start2" />
@@ -262,6 +269,24 @@
 		<boundaryEvent id="compensationEvent1" name="compensationEvent1" attachedToRef="invalid" >       
           <compensateEventDefinition activityRef="invalid"/>
         </boundaryEvent>
+        
+        <!-- Nested subprocess with a data object with no name -->
+        <subProcess id="someSubprocess1" name="someSubprocess1">
+        
+            <subProcess id="someSubprocess2" name="someSubprocess2">
+            
+                <subProcess id="someSubprocess3" name="someSubprocess3">
+        
+			         <dataObject id="dataObject2" itemSubjectRef="xsd:string">
+			        <extensionElements>
+			        <activiti:value>Testing2</activiti:value>
+			        </extensionElements>
+			        </dataObject>
+			    </subProcess>
+			    
+            </subProcess>    
+			        
+        </subProcess>
         
 		<!-- Invalid sequence flow: src/target not correct -->
 		<sequenceFlow id="invalidSeqFlow1" name="seqFlow"
