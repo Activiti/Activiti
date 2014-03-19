@@ -31,4 +31,6 @@ Call Sysproc.admin_cmd ('REORG TABLE ACT_HI_ACTINST');
 alter table ACT_HI_TASKINST
     add TENANT_ID_ varchar(255) default '';  
     
-Call Sysproc.admin_cmd ('REORG TABLE ACT_HI_TASKINST');        
+Call Sysproc.admin_cmd ('REORG TABLE ACT_HI_TASKINST');      
+
+alter table ACT_HI_ACTINST alter column varchar(255);
