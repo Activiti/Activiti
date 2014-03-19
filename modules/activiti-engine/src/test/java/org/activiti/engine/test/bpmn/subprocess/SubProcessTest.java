@@ -15,9 +15,10 @@ package org.activiti.engine.test.bpmn.subprocess;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -71,7 +72,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // Setting the clock forward 2 hours 1 second (timer fires in 2 hours) and fire up the job executor 
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000) + 1000));
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
     // The subprocess should be left, and the escalated task should be active
@@ -152,7 +153,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // Setting the clock forward 1 hour 1 second (timer fires in 1 hour) and fire up the job executor 
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ( 60 * 60 * 1000 ) + 1000));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000) + 1000));
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
     // The inner subprocess should be destoyed, and the escalated task should be active
@@ -315,7 +316,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess B", taskB.getName());
     
     // Firing the timer should destroy all three subprocesses and activate the task after the timer
-//    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
+//    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
 //    waitForJobExecutorToProcessAllJobs(5000L, 50L);
     Job job = managementService.createJobQuery().singleResult();
     managementService.executeJob(job.getId());
@@ -354,4 +355,74 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertProcessEnded(pi.getId());
   }
 
+  /**
+   * @see http://jira.codehaus.org/browse/ACT-1847
+   */
+  @Deployment
+  public void testDataObjectScope() {
+
+    // After staring the process, the task in the subprocess should be active
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("dataObjectScope");
+
+    // get main process task
+    Task currentTask = taskService.createTaskQuery()
+            .processInstanceId(pi.getId())
+            .singleResult();
+
+    assertEquals("Complete Task A", currentTask.getName());
+
+    // verify main process scoped variables
+    Map<String, Object> variables = runtimeService.getVariables(pi.getId());
+    assertEquals(1, variables.size());
+    Entry<String, Object> currentVariable = variables.entrySet().iterator().next();
+    assertEquals("StringTest123", currentVariable.getKey());
+    assertEquals("Testing123", currentVariable.getValue());
+
+
+    // After completing the task in the main process,
+    // the subprocess scope initiates
+    taskService.complete(currentTask.getId());
+
+    // get subprocess task
+    currentTask = taskService.createTaskQuery()
+            .processInstanceId(pi.getId())
+            .singleResult();
+
+    assertEquals("Complete SubTask", currentTask.getName());
+
+    // verify current scoped variables - includes subprocess variables
+    variables = runtimeService.getVariables(pi.getId());
+    assertEquals(2, variables.size());
+
+    for (Entry<String, Object> nextVariable : variables.entrySet()) {
+
+      if (nextVariable.getKey().equals("StringTest123")) {
+        assertEquals("Testing123", nextVariable.getValue());
+      } else {
+        assertEquals("StringTest456", nextVariable.getKey());
+        assertEquals("Testing456", nextVariable.getValue());
+      }
+    }
+
+    // After completing the task in the subprocess,
+    // the subprocess scope is destroyed and the main process continues
+    taskService.complete(currentTask.getId());
+
+    // verify main process scoped variables - subprocess variables are gone
+    variables = runtimeService.getVariables(pi.getId());
+    assertEquals(1, variables.size());
+    currentVariable = variables.entrySet().iterator().next();
+    assertEquals("StringTest123", currentVariable.getKey());
+    assertEquals("Testing123", currentVariable.getValue());
+
+    // After completing the final task in the  main process,
+    // the process scope is destroyed and the process ends
+    currentTask = taskService.createTaskQuery()
+            .processInstanceId(pi.getId())
+            .singleResult();
+    assertEquals("Complete Task B", currentTask.getName());
+
+    taskService.complete(currentTask.getId());
+    assertNull(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult());
+  }
 }

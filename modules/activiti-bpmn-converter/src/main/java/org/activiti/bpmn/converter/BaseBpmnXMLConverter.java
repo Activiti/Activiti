@@ -29,6 +29,7 @@ import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.DataObject;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
@@ -48,6 +49,7 @@ import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.bpmn.model.ValuedDataObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,7 +130,15 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         }
       }
       
-      if (activeSubProcessList.size() > 0) {
+      if(currentFlowElement instanceof DataObject) {
+        if (activeSubProcessList.size() > 0) {
+          activeSubProcessList.get(activeSubProcessList.size() - 1).getDataObjects().add((ValuedDataObject)parsedElement);
+        } else {
+          this.activeProcess.getDataObjects().add((ValuedDataObject)parsedElement);
+        }
+      }
+
+      if(activeSubProcessList.size() > 0) {
         activeSubProcessList.get(activeSubProcessList.size() - 1).addFlowElement(currentFlowElement);
       } else {
         this.activeProcess.addFlowElement(currentFlowElement);

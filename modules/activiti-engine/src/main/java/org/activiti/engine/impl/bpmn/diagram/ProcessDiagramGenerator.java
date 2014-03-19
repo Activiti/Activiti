@@ -31,6 +31,7 @@ import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
+import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.ExclusiveGateway;
@@ -331,7 +332,21 @@ public class ProcessDiagramGenerator {
     artifactDrawInstructions.put(Association.class, new ArtifactDrawInstruction() {
 
       public void draw(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, Artifact artifact) {
+        Association association = (Association) artifact;
+        String sourceRef = association.getSourceRef();
+        String targetRef = association.getTargetRef();
+        
+        // source and target can be instance of FlowElement or Artifact
+        BaseElement sourceElement = bpmnModel.getFlowElement(sourceRef);
+        BaseElement targetElement = bpmnModel.getFlowElement(targetRef);
+        if (sourceElement == null) {
+            sourceElement = bpmnModel.getArtifact(sourceRef);
+        }
+        if (targetElement == null) {
+            targetElement = bpmnModel.getArtifact(targetRef);
+        }
         List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(artifact.getId());
+        graphicInfoList = connectionPerfectionizer(processDiagramCanvas, bpmnModel, sourceElement, targetElement, graphicInfoList);
         int xPoints[]= new int[graphicInfoList.size()];
         int yPoints[]= new int[graphicInfoList.size()];
         for (int i=1; i<graphicInfoList.size(); i++) {
@@ -346,7 +361,6 @@ public class ProcessDiagramGenerator {
             yPoints[i] = (int) graphicInfo.getY();
         }
 
-        Association association = (Association) artifact;
         AssociationDirection associationDirection = association.getAssociationDirection();
         boolean highLighted = false;
         processDiagramCanvas.drawAssociation(xPoints, yPoints, associationDirection, highLighted);
@@ -500,7 +514,12 @@ public class ProcessDiagramGenerator {
       boolean isDefault = sequenceFlow.getConditionExpression() == null && (flowNode instanceof Gateway);
       boolean drawConditionalIndicator = sequenceFlow.getConditionExpression() != null && !(flowNode instanceof Gateway);
       
+      String sourceRef = sequenceFlow.getSourceRef();
+      String targetRef = sequenceFlow.getTargetRef();
+      FlowElement sourceElement = bpmnModel.getFlowElement(sourceRef);
+      FlowElement targetElement = bpmnModel.getFlowElement(targetRef);
       List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(sequenceFlow.getId());
+      graphicInfoList = connectionPerfectionizer(processDiagramCanvas, bpmnModel, sourceElement, targetElement, graphicInfoList);
       int xPoints[]= new int[graphicInfoList.size()];
       int yPoints[]= new int[graphicInfoList.size()];
       
@@ -536,6 +555,44 @@ public class ProcessDiagramGenerator {
         }
       }
     }
+  }
+  
+  /**
+   * This method makes coordinates of connection flow better.
+   * @param processDiagramCanvas
+   * @param bpmnModel
+   * @param sourceElement
+   * @param targetElement
+   * @param graphicInfoList
+   * @return
+   */
+  protected static List<GraphicInfo> connectionPerfectionizer(ProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, BaseElement sourceElement, BaseElement targetElement, List<GraphicInfo> graphicInfoList) {
+    GraphicInfo sourceGraphicInfo = bpmnModel.getGraphicInfo(sourceElement.getId());
+    GraphicInfo targetGraphicInfo = bpmnModel.getGraphicInfo(targetElement.getId());
+    
+    ProcessDiagramCanvas.SHAPE_TYPE sourceShapeType = getShapeType(sourceElement);
+    ProcessDiagramCanvas.SHAPE_TYPE targetShapeType = getShapeType(targetElement);
+    
+    return processDiagramCanvas.connectionPerfectionizer(sourceShapeType, targetShapeType, sourceGraphicInfo, targetGraphicInfo, graphicInfoList);
+  }
+
+  /**
+   * This method returns shape type of base element.<br>
+   * Each element can be presented as rectangle, rhombus, or ellipse.
+   * @param baseElement
+   * @return ProcessDiagramCanvas.SHAPE_TYPE
+   */
+  protected static ProcessDiagramCanvas.SHAPE_TYPE getShapeType(BaseElement baseElement) {
+    if (baseElement instanceof Task || baseElement instanceof Activity || baseElement instanceof TextAnnotation) {
+        return ProcessDiagramCanvas.SHAPE_TYPE.Rectangle;
+    } else if (baseElement instanceof Gateway) {
+        return ProcessDiagramCanvas.SHAPE_TYPE.Rhombus;
+    } else if (baseElement instanceof Event) {
+        return ProcessDiagramCanvas.SHAPE_TYPE.Ellipse;
+    } else {
+        // unknown source element, just do not correct coordinates
+    }
+    return null;
   }
   
   protected static GraphicInfo getLineCenter(List<GraphicInfo> graphicInfoList) {

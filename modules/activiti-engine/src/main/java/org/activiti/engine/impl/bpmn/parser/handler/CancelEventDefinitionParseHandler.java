@@ -14,7 +14,6 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -29,27 +28,10 @@ public class CancelEventDefinitionParseHandler extends AbstractBpmnParseHandler<
   }
 
   protected void executeParse(BpmnParse bpmnParse, CancelEventDefinition cancelEventDefinition) {
-
-    BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-
     if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
-      
       ActivityImpl activity = bpmnParse.getCurrentActivity();
       activity.setProperty("type", "cancelBoundaryCatch");
-      ActivityImpl parent = (ActivityImpl) activity.getParent();
-      
-      if (!parent.getProperty("type").equals("transaction")) {
-        bpmnModel.addProblem("boundary event with cancelEventDefinition only supported on transaction subprocesses.", cancelEventDefinition);
-      }
-
-      for (ActivityImpl child : parent.getActivities()) {
-        if (child.getProperty("type").equals("cancelBoundaryCatch") && child != activity) {
-          bpmnModel.addProblem("multiple boundary events with cancelEventDefinition not supported on same transaction subprocess.", cancelEventDefinition);
-        }
-      }
-
       activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCancelBoundaryEventActivityBehavior(cancelEventDefinition));
-
     }
 
   }

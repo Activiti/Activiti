@@ -15,7 +15,6 @@ package org.activiti.test.ldap;
 import java.util.Date;
 
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.test.Deployment;
 import org.activiti.ldap.LDAPGroupCache;
 import org.activiti.ldap.LDAPGroupCache.LDAPGroupCacheListener;
@@ -81,14 +80,14 @@ public class LdapGroupCacheTest extends LDAPTestCase {
 
     // Test the expiration time of the cache
     Date now = new Date();
-    ClockUtil.setCurrentTime(now);
+    processEngineConfiguration.getClock().setCurrentTime(now);
     
     assertEquals(0, taskService.createTaskQuery().taskCandidateUser("fozzie").count());
     assertEquals("fozzie", cacheListener.getLastCacheMiss());
     assertEquals("pepe", cacheListener.getLastCacheEviction()); 
     
     // Moving the clock forward two 45 minues should trigger cache eviction (configured to 30 mins)
-    ClockUtil.setCurrentTime(new Date(now.getTime() + (45 * 60 * 1000)));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + (45 * 60 * 1000)));
     assertEquals(0, taskService.createTaskQuery().taskCandidateUser("fozzie").count());
     assertEquals("fozzie", cacheListener.getLastCacheExpiration());
     assertEquals("fozzie", cacheListener.getLastCacheEviction());

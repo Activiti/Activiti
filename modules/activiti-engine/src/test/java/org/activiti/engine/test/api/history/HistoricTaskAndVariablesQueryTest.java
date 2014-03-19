@@ -22,7 +22,6 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -101,13 +100,13 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
       assertEquals(true, task.getProcessVariables().get("processVar"));
       assertEquals(123, task.getProcessVariables().get("anotherProcessVar"));
       
-      tasks = historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().taskInvolvedUser("kermit").list();
+      tasks = historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().taskInvolvedUser("kermit").orderByHistoricTaskInstanceStartTime().asc().list();
       assertEquals(3, tasks.size());
       assertEquals(1, tasks.get(0).getTaskLocalVariables().size());
       assertEquals("test", tasks.get(0).getTaskLocalVariables().get("test"));
       assertEquals(0, tasks.get(0).getProcessVariables().size());
       
-      tasks = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskInvolvedUser("kermit").list();
+      tasks = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskInvolvedUser("kermit").orderByHistoricTaskInstanceStartTime().asc().list();
       assertEquals(3, tasks.size());
       assertEquals(0, tasks.get(0).getProcessVariables().size());
       assertEquals(0, tasks.get(0).getTaskLocalVariables().size());
@@ -272,7 +271,7 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
     // 2 tasks for kermit
-    ClockUtil.setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
     for (int i = 0; i < 2; i++) {
       Task task = taskService.newTask();
       task.setName("testTask");
@@ -284,7 +283,7 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
       taskService.addCandidateUser(task.getId(), "kermit");
     }
 
-    ClockUtil.setCurrentTime(sdf.parse("02/02/2002 02:02:02.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("02/02/2002 02:02:02.000"));
     // 1 task for gonzo
     Task task = taskService.newTask();
     task.setName("gonzoTask");

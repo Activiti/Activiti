@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.ClockReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,10 +69,12 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
     resolvers.put(2, new AdvancedSchedulerResolverV2());
   }
 
-  public AdvancedCycleBusinessCalendar() {
+  public AdvancedCycleBusinessCalendar(ClockReader clockReader) {
+    super(clockReader);
   }
 
-  public AdvancedCycleBusinessCalendar(Integer defaultScheduleVersion) {
+  public AdvancedCycleBusinessCalendar(ClockReader clockReader, Integer defaultScheduleVersion) {
+    this(clockReader);
     this.defaultScheduleVersion = defaultScheduleVersion;
   }
 
@@ -101,8 +103,8 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
     try {
       logger.info("Base Due Date: " + duedateDescription);
 
-      Date date = resolvers.get(version == null ? getDefaultScheduleVersion() : Integer.valueOf(version)).resolve(duedateDescription,
-              timeZone == null ? ClockUtil.getCurrentTimeZone() : TimeZone.getTimeZone(timeZone));
+      Date date = resolvers.get(version == null ? getDefaultScheduleVersion() : Integer.valueOf(version)).resolve(duedateDescription, clockReader,
+              timeZone == null ? clockReader.getCurrentTimeZone() : TimeZone.getTimeZone(timeZone));
 
       logger.info("Calculated Date: " + (date == null ? "Will Not Run Again" : date));
 

@@ -40,9 +40,6 @@ public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<
     if (bpmnParse.getBpmnModel().containsSignalId(signalDefinition.getSignalRef())) {
       signal = bpmnParse.getBpmnModel().getSignal(signalDefinition.getSignalRef());
       String signalName = signal.getName();
-      if (StringUtils.isEmpty(signalName)) {
-        bpmnParse.getBpmnModel().addProblem("signalName is required for a signal event", signalDefinition);
-      }
       signalDefinition.setSignalRef(signalName);
     }
     
@@ -55,7 +52,7 @@ public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<
     
       EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
       eventSubscriptionDeclaration.setActivityId(activity.getId());
-      eventSubscriptionDeclaration.setStartEvent(false);
+      eventSubscriptionDeclaration.setStartEvent(true);
       addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, bpmnParse.getCurrentScope());
       
     } else if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent){

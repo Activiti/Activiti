@@ -38,6 +38,8 @@ public class HistoricProcessInstanceQueryProperty implements QueryProperty {
   public static final HistoricProcessInstanceQueryProperty DURATION = new HistoricProcessInstanceQueryProperty("RES.DURATION_");
   public static final HistoricProcessInstanceQueryProperty TENANT_ID = new HistoricProcessInstanceQueryProperty("RES.TENANT_ID_");
   
+  public static final HistoricProcessInstanceQueryProperty INCLUDED_VARIABLE_TIME = new HistoricProcessInstanceQueryProperty("VAR.LAST_UPDATED_TIME_");
+  
   private String name;
 
   public HistoricProcessInstanceQueryProperty(String name) {

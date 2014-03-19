@@ -21,12 +21,13 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.activiti.validation.validator.Problems;
 
 
 /**
@@ -100,14 +101,14 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createJobQuery().count()); 
     
     try {
-      ClockUtil.setCurrentTime( new Date(System.currentTimeMillis() + 1000));
+      processEngineConfiguration.getClock().setCurrentTime(new Date(System.currentTimeMillis() + 1000));
       waitForJobExecutorToProcessAllJobs(10000, 100l);
       
       assertEquals(0, createEventSubscriptionQuery().count());    
       assertEquals(0, runtimeService.createProcessInstanceQuery().count());
       assertEquals(0, managementService.createJobQuery().count());   
     }finally {
-     ClockUtil.setCurrentTime(new Date()); 
+     processEngineConfiguration.getClock().setCurrentTime(new Date());
     }
    
   }
@@ -155,7 +156,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
-      if(!e.getMessage().contains("duplicate signal name")) {
+      if(!e.getMessage().contains(Problems.SIGNAL_DUPLICATE_NAME)) {
         fail("different exception expected");
       }
     }    
@@ -168,7 +169,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
-      if(!e.getMessage().contains("has no name")) {
+      if(!e.getMessage().contains(Problems.SIGNAL_MISSING_NAME)) {
         fail("different exception expected, was " + e.getMessage());
       }
     }    
@@ -181,7 +182,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
-      if(!e.getMessage().contains("signal must have an id")) {
+      if(!e.getMessage().contains(Problems.SIGNAL_MISSING_ID)) {
         fail("different exception expected");
       }
     }    
@@ -194,7 +195,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("exception expected");
     } catch (Exception e) {
-      if(!e.getMessage().contains("signalEventDefinition does not have required property 'signalRef'")) {
+      if(!e.getMessage().contains(Problems.SIGNAL_EVENT_MISSING_SIGNAL_REF)) {
         fail("different exception expected");
       }
     }    
@@ -372,6 +373,180 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     }
     
   }
+  
+  public void testSignalStartEventFromProcess() {
+  	
+  	// Deploy test processes
+  	repositoryService.createDeployment()
+  		.addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+  		.deploy();
+  	
+  	// Starting the process that fires the signal should start three process instances that are listening on that signal
+  	runtimeService.startProcessInstanceByKey("processWithSignalThrow");
+  	
+  	// Verify
+  	assertEquals(3, runtimeService.createProcessInstanceQuery().count());
+  	assertEquals(3, taskService.createTaskQuery().count());
+  	
+  	List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+  	List<String> names = Arrays.asList("A", "B", "C");
+  	for (int i=0; i<tasks.size(); i++) {
+  		assertEquals("Task in process " + names.get(i), tasks.get(i).getName());
+  	}
+  	
+  	// Start a process with a signal boundary event
+  	runtimeService.startProcessInstanceByKey("processWithSignalCatch");
+  	assertEquals(4, runtimeService.createProcessInstanceQuery().count());
+  	assertEquals(4, taskService.createTaskQuery().count());
+  	assertEquals(1, taskService.createTaskQuery().taskName("Task in process D").count());
+  	
+  	// Firing the signal should now trigger the one with the boundary event too
+  	runtimeService.startProcessInstanceByKey("processWithSignalThrow");
+  	assertEquals(7, runtimeService.createProcessInstanceQuery().count());
+  	assertEquals(7, taskService.createTaskQuery().count());
+  	assertEquals(1, taskService.createTaskQuery().taskName("Task after signal").count());
+  	
+  	// Cleanup
+  	for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+  		repositoryService.deleteDeployment(deployment.getId(), true);
+  	}
+  	
+  }
+  
+ public void testSignalStartEventFromProcesAsync() {
+  	
+  	// Deploy test processes
+  	repositoryService.createDeployment()
+  		.addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEventAsync.bpmn20.xml")
+  		.deploy();
+  	
+  	// Starting the process that fires the signal should start 1 process instance that are listening on that signal, the others are done async
+  	runtimeService.startProcessInstanceByKey("processWithSignalThrow");
+  	
+  	// Verify
+  	assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  	assertEquals(0, taskService.createTaskQuery().count());
+  	
+  	assertEquals(3, managementService.createJobQuery().count());
+  	for (Job job : managementService.createJobQuery().list()) {
+  		managementService.executeJob(job.getId());
+  	}
+  	assertEquals(3, runtimeService.createProcessInstanceQuery().count());
+  	assertEquals(3, taskService.createTaskQuery().count());
+  	
+  	List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+  	List<String> names = Arrays.asList("A", "B", "C");
+  	for (int i=0; i<tasks.size(); i++) {
+  		assertEquals("Task in process " + names.get(i), tasks.get(i).getName());
+  	}
+  	
+  	// Start a process with a signal boundary event
+  	runtimeService.startProcessInstanceByKey("processWithSignalCatch");
+  	assertEquals(4, runtimeService.createProcessInstanceQuery().count());
+  	assertEquals(4, taskService.createTaskQuery().count());
+  	assertEquals(1, taskService.createTaskQuery().taskName("Task in process D").count());
+  	
+  	// Firing again
+  	runtimeService.startProcessInstanceByKey("processWithSignalThrow");
+  	
+  	assertEquals(4, managementService.createJobQuery().count());
+  	for (Job job : managementService.createJobQuery().list()) {
+  		managementService.executeJob(job.getId());
+  	}
+  	assertEquals(7, runtimeService.createProcessInstanceQuery().count());
+  	assertEquals(7, taskService.createTaskQuery().count());
+  	assertEquals(1, taskService.createTaskQuery().taskName("Task after signal").count());
+  	
+  	// Cleanup
+  	for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+  		repositoryService.deleteDeployment(deployment.getId(), true);
+  	}
+  	
+  }
+ 
+ public void testSignalStartEventFromAPI() {
+ 	
+ 	// Deploy test processes
+ 	repositoryService.createDeployment()
+ 		.addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+ 		.deploy();
+ 	
+ 	runtimeService.signalEventReceived("The Signal");
+ 	
+ 	// Verify
+ 	assertEquals(3, runtimeService.createProcessInstanceQuery().count());
+ 	assertEquals(3, taskService.createTaskQuery().count());
+ 	
+ 	List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+ 	List<String> names = Arrays.asList("A", "B", "C");
+ 	for (int i=0; i<tasks.size(); i++) {
+ 		assertEquals("Task in process " + names.get(i), tasks.get(i).getName());
+ 	}
+ 	
+ 	// Start a process with a signal boundary event
+ 	runtimeService.startProcessInstanceByKey("processWithSignalCatch");
+ 	assertEquals(4, runtimeService.createProcessInstanceQuery().count());
+ 	assertEquals(4, taskService.createTaskQuery().count());
+ 	assertEquals(1, taskService.createTaskQuery().taskName("Task in process D").count());
+ 	
+ 	// Firing the signal should now trigger the one with the boundary event too
+ 	runtimeService.signalEventReceived("The Signal");
+ 	assertEquals(7, runtimeService.createProcessInstanceQuery().count());
+ 	assertEquals(7, taskService.createTaskQuery().count());
+ 	assertEquals(1, taskService.createTaskQuery().taskName("Task after signal").count());
+ 	
+ 	// Cleanup
+ 	for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+ 		repositoryService.deleteDeployment(deployment.getId(), true);
+ 	}
+ 	
+ }
+ 
+ public void testSignalStartEventFromAPIAsync() {
+ 	
+ 	// Deploy test processes
+ 	repositoryService.createDeployment()
+ 		.addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEventAsync.bpmn20.xml")
+ 		.deploy();
+ 	
+ 	runtimeService.signalEventReceivedAsync("The Signal");
+ 	
+ 	assertEquals(3, managementService.createJobQuery().count());
+ 	for (Job job : managementService.createJobQuery().list()) {
+ 		managementService.executeJob(job.getId());
+ 	}
+ 	assertEquals(3, runtimeService.createProcessInstanceQuery().count());
+ 	assertEquals(3, taskService.createTaskQuery().count());
+ 	
+ 	List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+ 	List<String> names = Arrays.asList("A", "B", "C");
+ 	for (int i=0; i<tasks.size(); i++) {
+ 		assertEquals("Task in process " + names.get(i), tasks.get(i).getName());
+ 	}
+ 	
+ 	// Start a process with a signal boundary event
+ 	runtimeService.startProcessInstanceByKey("processWithSignalCatch");
+ 	assertEquals(4, runtimeService.createProcessInstanceQuery().count());
+ 	assertEquals(4, taskService.createTaskQuery().count());
+ 	assertEquals(1, taskService.createTaskQuery().taskName("Task in process D").count());
+ 	
+ 	// Firing again
+ 	runtimeService.signalEventReceivedAsync("The Signal");
+ 	
+ 	assertEquals(4, managementService.createJobQuery().count());
+ 	for (Job job : managementService.createJobQuery().list()) {
+ 		managementService.executeJob(job.getId());
+ 	}
+ 	assertEquals(7, runtimeService.createProcessInstanceQuery().count());
+ 	assertEquals(7, taskService.createTaskQuery().count());
+ 	assertEquals(1, taskService.createTaskQuery().taskName("Task after signal").count());
+ 	
+ 	// Cleanup
+ 	for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+ 		repositoryService.deleteDeployment(deployment.getId(), true);
+ 	}
+ 	
+ }
   
   @Deployment 
   public void testEarlyFinishedProcess() {	 	

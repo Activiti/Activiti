@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.ClockReader;
 
 /**
  * Resolves a due date taking into account the specified time zone.
@@ -15,14 +15,14 @@ import org.activiti.engine.impl.util.ClockUtil;
 public class AdvancedSchedulerResolverV2 implements AdvancedSchedulerResolver {
 
   @Override
-  public Date resolve(String duedateDescription, TimeZone timeZone) {
+  public Date resolve(String duedateDescription, ClockReader clockReader, TimeZone timeZone) {
     Calendar nextRun = null;
 
     try {
       if (duedateDescription.startsWith("R")) {
-        nextRun = new DurationHelper(duedateDescription).getCalendarAfter(ClockUtil.getCurrentCalendar(timeZone));
+        nextRun = new DurationHelper(duedateDescription, clockReader).getCalendarAfter(clockReader.getCurrentCalendar(timeZone));
       } else {
-        nextRun = new CronExpression(duedateDescription, timeZone).getTimeAfter(ClockUtil.getCurrentCalendar(timeZone));
+        nextRun = new CronExpression(duedateDescription, clockReader, timeZone).getTimeAfter(clockReader.getCurrentCalendar(timeZone));
       }
 
     } catch (Exception e) {

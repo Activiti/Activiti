@@ -20,11 +20,15 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
  */
 public class CompensateEventDefinitionParseHandler extends AbstractBpmnParseHandler<CompensateEventDefinition> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CompensateEventDefinitionParseHandler.class);
 
   public Class< ? extends BaseElement> getHandledType() {
     return CompensateEventDefinition.class;
@@ -35,8 +39,8 @@ public class CompensateEventDefinitionParseHandler extends AbstractBpmnParseHand
     ScopeImpl scope = bpmnParse.getCurrentScope();
     if(StringUtils.isNotEmpty(eventDefinition.getActivityRef())) {
       if(scope.findActivity(eventDefinition.getActivityRef()) == null) {
-        bpmnParse.getBpmnModel().addProblem("Invalid attribute value for 'activityRef': no activity with id '" + eventDefinition.getActivityRef() +
-            "' in current scope " + scope.getId(), eventDefinition);
+        logger.warn("Invalid attribute value for 'activityRef': no activity with id '" + eventDefinition.getActivityRef() +
+            "' in current scope " + scope.getId());
       }
     }
     
@@ -57,13 +61,6 @@ public class CompensateEventDefinitionParseHandler extends AbstractBpmnParseHand
       
       activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
       activity.setProperty("type", "compensationBoundaryCatch");
-      
-      ScopeImpl parent = activity.getParent();
-      for (ActivityImpl child : parent.getActivities()) {
-        if (child.getProperty("type").equals("compensationBoundaryCatch") && child != activity ) {
-          bpmnParse.getBpmnModel().addProblem("multiple boundary events with compensateEventDefinition not supported on same activity.", eventDefinition);        
-        }
-      }
       
     } else {
       

@@ -44,6 +44,7 @@ import org.activiti.engine.impl.cmd.SaveModelCmd;
 import org.activiti.engine.impl.cmd.SetDeploymentCategoryCmd;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionCategoryCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.ValidateBpmnModelCmd;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
@@ -59,6 +60,7 @@ import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
+import org.activiti.validation.ValidationError;
 
 
 /**
@@ -260,6 +262,10 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public List<IdentityLink> getIdentityLinksForProcessDefinition(String processDefinitionId) {
     return commandExecutor.execute(new GetIdentityLinksForProcessDefinitionCmd(processDefinitionId));
+  }
+  
+  public List<ValidationError> validateProcess(BpmnModel bpmnModel) {
+  	return commandExecutor.execute(new ValidateBpmnModelCmd(bpmnModel));
   }
 
 }

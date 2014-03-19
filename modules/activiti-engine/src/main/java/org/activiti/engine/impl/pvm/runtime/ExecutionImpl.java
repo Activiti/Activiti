@@ -873,4 +873,8 @@ public class ExecutionImpl implements
   public String updateProcessBusinessKey(String bzKey) {
     return getProcessInstance().updateProcessBusinessKey(bzKey);
   }
+  
+  public String getTenantId() {
+    return null; // Not implemented
+  }
 }

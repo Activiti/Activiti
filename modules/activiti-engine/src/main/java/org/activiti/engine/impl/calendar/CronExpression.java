@@ -31,7 +31,7 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.ClockReader;
 
 /**
  * Provides a parser and evaluator for unix-like cron expressions. Cron
@@ -259,6 +259,8 @@ public class CronExpression implements Serializable, Cloneable {
 
   public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
 
+  private ClockReader clockReader;
+  
   /**
    * Constructs a new <CODE>CronExpression</CODE> based on the specified
    * parameter.
@@ -266,6 +268,8 @@ public class CronExpression implements Serializable, Cloneable {
    * @param cronExpression
    *          String representation of the cron expression the new object should
    *          represent
+   * @param clockReader
+   *          The reader which will provide the current time
    * @param timeZone
    *          The time zone that will be used for calculations
    * 
@@ -273,8 +277,8 @@ public class CronExpression implements Serializable, Cloneable {
    *           if the string expression cannot be parsed into a valid
    *           <CODE>CronExpression</CODE>
    */
-  public CronExpression(String cronExpression, TimeZone timeZone) throws ParseException {
-    this(cronExpression);
+  public CronExpression(String cronExpression, ClockReader clockReader, TimeZone timeZone) throws ParseException {
+    this(cronExpression, clockReader);
     this.timeZone = timeZone;
   }
 
@@ -289,11 +293,12 @@ public class CronExpression implements Serializable, Cloneable {
    *           if the string expression cannot be parsed into a valid
    *           <CODE>CronExpression</CODE>
    */
-  public CronExpression(String cronExpression) throws ParseException {
+  public CronExpression(String cronExpression, ClockReader clockReader) throws ParseException {
     if (cronExpression == null) {
       throw new IllegalArgumentException("cronExpression cannot be null");
     }
 
+    this.clockReader = clockReader;
     this.cronExpression = cronExpression.toUpperCase(Locale.US);
 
     buildExpression(this.cronExpression);
@@ -305,7 +310,7 @@ public class CronExpression implements Serializable, Cloneable {
    */
   public TimeZone getTimeZone() {
     if (timeZone == null) {
-      timeZone = ClockUtil.getCurrentTimeZone();
+      timeZone = clockReader.getCurrentTimeZone();
     }
 
     return timeZone;
@@ -956,7 +961,7 @@ public class CronExpression implements Serializable, Cloneable {
   public Calendar getTimeAfter(Calendar afterTime) {
 
     // Computation is based on Gregorian year only.
-    Calendar cl = ClockUtil.getCurrentCalendar(getTimeZone()); //new java.util.GregorianCalendar(getTimeZone());
+    Calendar cl = clockReader.getCurrentCalendar(getTimeZone()); //new java.util.GregorianCalendar(getTimeZone());
 
     // move ahead one second, since we're computing the time *after* the
     // given time
@@ -1057,7 +1062,7 @@ public class CronExpression implements Serializable, Cloneable {
             day -= lastdayOffset;
 
             //java.util.Calendar tcal = java.util.Calendar.getInstance(getTimeZone());
-            java.util.Calendar tcal = ClockUtil.getCurrentCalendar(getTimeZone());
+            java.util.Calendar tcal = clockReader.getCurrentCalendar(getTimeZone());
             tcal.set(Calendar.SECOND, 0);
             tcal.set(Calendar.MINUTE, 0);
             tcal.set(Calendar.HOUR_OF_DAY, 0);
@@ -1094,7 +1099,7 @@ public class CronExpression implements Serializable, Cloneable {
           day = ((Integer) daysOfMonth.first()).intValue();
 
           //java.util.Calendar tcal = java.util.Calendar.getInstance(getTimeZone());
-          java.util.Calendar tcal = ClockUtil.getCurrentCalendar(getTimeZone());
+          java.util.Calendar tcal = clockReader.getCurrentCalendar(getTimeZone());
           tcal.set(Calendar.SECOND, 0);
           tcal.set(Calendar.MINUTE, 0);
           tcal.set(Calendar.HOUR_OF_DAY, 0);

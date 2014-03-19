@@ -44,14 +44,13 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
       throw new ActivitiIllegalArgumentException("deploymentId is null");
     }
     
-    // Impl note: tenant id is allowed to be null, no check needed
-    
     // Update all entities
     
     DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findDeploymentById(deploymentId);
     if (deployment == null) {
     	throw new ActivitiObjectNotFoundException("Could not find deployment with id " + deploymentId, Deployment.class);
     }
+    String oldTenantId = deployment.getTenantId();
     deployment.setTenantId(newTenantId);
     
     
@@ -60,6 +59,7 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
     commandContext.getExecutionEntityManager().updateExecutionTenantIdForDeployment(deploymentId, newTenantId);
     commandContext.getTaskEntityManager().updateTaskTenantIdForDeployment(deploymentId, newTenantId);
     commandContext.getJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext.getEventSubscriptionEntityManager().updateEventSubscriptionTenantId(oldTenantId, newTenantId);
     
     // Doing process definitions in memory, cause we need to clear the process definition cache
     List<ProcessDefinition> processDefinitions = commandContext.getDbSqlSession()

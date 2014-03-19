@@ -40,6 +40,7 @@ import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
@@ -179,10 +180,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
       return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
       
     } catch (ClassNotFoundException e) {
-      
-      bpmnModel.addProblem("Could not find org.activiti.mule.MuleSendActivitiBehavior: " + e.getMessage(), task);
-      return null;
-      
+    	throw new ActivitiException("Could not find org.activiti.mule.MuleSendActivitiBehavior: ", e);
     }
   }
   
@@ -221,9 +219,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
       return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
      
     } catch (ClassNotFoundException e) {
-     
-      bpmnModel.addProblem("Could not find org.activiti.camel.CamelBehavior: " + e.getMessage(), task);
-      return null;
+    	throw new ActivitiException("Could not find org.activiti.camel.CamelBehavior: ", e);
     }
   }
   

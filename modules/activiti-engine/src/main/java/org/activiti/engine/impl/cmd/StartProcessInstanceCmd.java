@@ -90,7 +90,9 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 
     // Start the process instance
     ExecutionEntity processInstance = processDefinition.createProcessInstance(businessKey);
-    if (variables!=null) {
+
+    // now set the variables passed into the start command
+    if (variables != null) {
       processInstance.setVariables(variables);
     }
     processInstance.start();

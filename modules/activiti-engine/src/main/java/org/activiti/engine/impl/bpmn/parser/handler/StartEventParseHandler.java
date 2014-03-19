@@ -19,6 +19,7 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.form.DefaultStartFormHandler;
@@ -27,12 +28,16 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Joram Barrez
  */
 public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<StartEvent> {
+	
+	private static Logger logger = LoggerFactory.getLogger(StartEventParseHandler.class);
   
   public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
   public static final String PROPERTYNAME_INITIAL = "initial";
@@ -60,13 +65,13 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
     if (processDefinition.getInitial() == null) {
       processDefinition.setInitial(startEventActivity);
     } else {
-      // validate that there is s single none start event / timer start event:
-      if (startEventActivity.getProperty("type").equals("messageStartEvent") == false) {
+      // validate that there is a single none start event / timer start event:
+      if (!startEventActivity.getProperty("type").equals("messageStartEvent")) {
         String currentInitialType = (String) processDefinition.getInitial().getProperty("type");
         if (currentInitialType.equals("messageStartEvent")) {
           processDefinition.setInitial(startEventActivity);
         } else {
-          bpmnParse.getBpmnModel().addProblem("multiple none start events or timer start events not supported on process definition.", startEvent);
+          throw new ActivitiException("multiple none start events or timer start events not supported on process definition");
         }
       }
     }
@@ -91,10 +96,12 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
     startEventActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(startEvent));
     if (startEvent.getEventDefinitions().size() > 0) {
       EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
-      if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof MessageEventDefinition) {
+      if (eventDefinition instanceof TimerEventDefinition 
+      		|| eventDefinition instanceof MessageEventDefinition
+      		|| eventDefinition instanceof SignalEventDefinition) {
         bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
       } else {
-        bpmnParse.getBpmnModel().addProblem("Unsupported event definition on start event", eventDefinition);
+        logger.warn("Unsupported event definition on start event", eventDefinition);
       }
     }
   }
@@ -120,20 +127,20 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
                 || eventDefinition instanceof SignalEventDefinition) {
           bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
         } else {
-          bpmnParse.getBpmnModel().addProblem("start event of event subprocess must be of type 'error', 'message' or 'signal' ", startEvent);
+          logger.warn("start event of event subprocess must be of type 'error', 'message' or 'signal' for start event " + startEvent.getId());
         }
       }
       
     } else { // "regular" subprocess
       
       if(startEvent.getEventDefinitions().size() > 0) {
-        bpmnParse.getBpmnModel().addProblem("event definitions only allowed on start event if subprocess is an event subprocess", startEvent);
+        logger.warn("event definitions only allowed on start event if subprocess is an event subprocess " + bpmnParse.getCurrentSubProcess().getId());
       }
       if (scope.getProperty(PROPERTYNAME_INITIAL) == null) {
         scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
         startEventActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(startEvent));
       } else {
-        bpmnParse.getBpmnModel().addProblem("multiple start events not supported for subprocess", bpmnParse.getCurrentSubProcess());
+        logger.warn("multiple start events not supported for subprocess", bpmnParse.getCurrentSubProcess().getId());
       }
     }
 

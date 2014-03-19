@@ -4,8 +4,7 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="org.activiti.enginge.impl.webservice"
   xmlns:tns="org.activiti.enginge.impl.webservice"
-  xmlns:counter="http://webservice.activiti.org/"
-        >
+  xmlns:counter="http://webservice.activiti.org/">
 
   <import importType="http://schemas.xmlsoap.org/wsdl/"
           location="http://localhost:63081/counter?wsdl"
@@ -32,8 +31,8 @@
   <itemDefinition id="incRequestItem" structureRef="counter:inc" /><!-- QName of input element --> <!-- NEEDED FOR THE ARGUMENTS -->
   <itemDefinition id="incResponseItem" structureRef="counter:incResponse" /><!-- QName of output element -->
 
-  <message id="incRequestMessage" itemRef="tns:incRequestItem" />
-  <message id="incResponseMessage" itemRef="tns:incResponseItem" />
+  <message id="incRequestMessage" itemRef="tns:incRequestItem" name="incRequestMessage" />
+  <message id="incResponseMessage" itemRef="tns:incResponseItem" name="incResponseMessage" />
 
 
   <!-- Interface: implementationRef = QName of WSDL Port Type -->

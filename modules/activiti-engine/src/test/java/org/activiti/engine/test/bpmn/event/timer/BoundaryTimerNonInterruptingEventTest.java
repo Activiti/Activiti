@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
@@ -48,7 +47,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     assertEquals(2, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
     
     // we still have one timer more to fire
@@ -68,7 +67,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     assertEquals("First Task", taskService.createTaskQuery().singleResult().getName());
 
     // After setting the clock to time '2 hour and 5 seconds', the second timer should fire
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
     
     // no more timers to fire
@@ -109,7 +108,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     assertEquals(1, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
     
     // timer has fired
@@ -250,7 +249,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     runtimeService.signal(executions.get(0).getId());
 
 //    // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-//    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+//    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
 //    waitForJobExecutorToProcessAllJobs(5000L, 25L);
 //    assertEquals(0L, jobQuery.count());
 
@@ -314,7 +313,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
   //we cannot use waitForExecutor... method since there will always be one job left
   private void moveByHours(int hours) throws Exception {
-    ClockUtil.setCurrentTime(new Date(ClockUtil.getCurrentTime().getTime() + ((hours * 60 * 1000 * 60) + 5000)));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((hours * 60 * 1000 * 60) + 5000)));
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
     jobExecutor.start();
     Thread.sleep(1000);

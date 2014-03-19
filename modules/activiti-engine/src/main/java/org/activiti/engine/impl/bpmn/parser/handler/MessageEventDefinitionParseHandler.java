@@ -37,9 +37,6 @@ public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler
     
     if (bpmnParse.getBpmnModel().containsMessageId(messageDefinition.getMessageRef())) {
       String messageName = bpmnParse.getBpmnModel().getMessage(messageDefinition.getMessageRef()).getName();
-      if (StringUtils.isEmpty(messageName)) {
-        bpmnParse.getBpmnModel().addProblem("messageName is required for a message event", messageDefinition);
-      }
       messageDefinition.setMessageRef(messageName);
     }
     

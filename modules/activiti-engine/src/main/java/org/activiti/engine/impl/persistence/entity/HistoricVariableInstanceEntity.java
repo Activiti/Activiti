@@ -21,7 +21,6 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
@@ -71,7 +70,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     
     historicVariableInstance.copyValue(variableInstance);
     
-    Date time = ClockUtil.getCurrentTime();
+    Date time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     historicVariableInstance.setCreateTime(time);
     historicVariableInstance.setLastUpdatedTime(time);
     
@@ -93,7 +92,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
       setByteArrayValue(variableInstance.getByteArrayValue().getBytes());
     }
     
-    this.lastUpdatedTime = ClockUtil.getCurrentTime();
+    this.lastUpdatedTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
   }
 
   public void delete() {
@@ -288,6 +287,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     sb.append("HistoricVariableInstanceEntity[");
     sb.append("id=").append(id);
     sb.append(", name=").append(name);
+    sb.append(", revision=").append(revision);
     sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
     if (longValue != null) {
       sb.append(", longValue=").append(longValue);

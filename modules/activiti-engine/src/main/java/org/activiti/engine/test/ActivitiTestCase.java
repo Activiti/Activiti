@@ -17,16 +17,10 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.activiti.engine.FormService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.ManagementService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
+
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.test.TestHelper;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.test.mock.ActivitiMockSupport;
 
 
@@ -62,6 +56,7 @@ public abstract class ActivitiTestCase extends TestCase {
   protected String configurationResource = "activiti.cfg.xml";
   protected String deploymentId = null;
 
+  protected ProcessEngineConfiguration processEngineConfiguration;
   protected ProcessEngine processEngine;
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
@@ -118,6 +113,7 @@ public abstract class ActivitiTestCase extends TestCase {
   }
 
   protected void initializeServices() {
+    processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
@@ -137,7 +133,7 @@ public abstract class ActivitiTestCase extends TestCase {
   protected void tearDown() throws Exception {
 
     // Reset any timers
-    ClockUtil.reset();
+    processEngineConfiguration.getClock().reset();
     
     // Reset any mocks
     if (mockSupport != null) {
@@ -152,7 +148,7 @@ public abstract class ActivitiTestCase extends TestCase {
   }
   
   public void setCurrentTime(Date currentTime) {
-    ClockUtil.setCurrentTime(currentTime);
+    processEngineConfiguration.getClock().setCurrentTime(currentTime);
   }
   
   public String getConfigurationResource() {

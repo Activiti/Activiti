@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLinkType;
@@ -58,7 +57,7 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
       inBetweenTaskCreation.add(Calendar.HOUR, 1);
       
       
-      ClockUtil.setCurrentTime(adhocTaskCreate.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(adhocTaskCreate.getTime());
       Task adhocTask = taskService.newTask();
       adhocTask.setAssignee("gonzo");
       adhocTask.setOwner("owner");
@@ -69,8 +68,8 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
       adhocTask.setPriority(100);
       taskService.saveTask(adhocTask);
       taskService.addUserIdentityLink(adhocTask.getId(), "misspiggy", IdentityLinkType.PARTICIPANT);
-      
-      ClockUtil.setCurrentTime(processTaskCreate.getTime());
+
+      processEngineConfiguration.getClock().setCurrentTime(processTaskCreate.getTime());
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "myBusinessKey");
       Task processTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
       processTask.setParentTaskId(adhocTask.getId());
@@ -564,8 +563,8 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
     try {
       Calendar adhocTaskCreate = Calendar.getInstance();
       adhocTaskCreate.set(Calendar.MILLISECOND, 0);
-       
-      ClockUtil.setCurrentTime(adhocTaskCreate.getTime());
+
+      processEngineConfiguration.getClock().setCurrentTime(adhocTaskCreate.getTime());
       List<String> taskIdList = new ArrayList<String>();
       for (int i = 0; i < 10; i++) {
         Task adhocTask = taskService.newTask();

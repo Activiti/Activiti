@@ -21,7 +21,7 @@ import org.activiti.engine.impl.db.PersistentObject;
 /**
  * @author Tom Baeyens
  */
-public class ResourceEntity implements Serializable, PersistentObject {
+public class ResourceEntity implements PersistentObject, Serializable {
 
   private static final long serialVersionUID = 1L;
 

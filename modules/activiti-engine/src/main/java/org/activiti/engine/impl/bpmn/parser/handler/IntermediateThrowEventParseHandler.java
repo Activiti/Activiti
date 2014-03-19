@@ -14,29 +14,27 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.CompensateEventDefinition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Joram Barrez
  */
 public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnParseHandler<ThrowEvent> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(IntermediateThrowEventParseHandler.class);
   
   public Class< ? extends BaseElement> getHandledType() {
     return ThrowEvent.class;
   }
   
   protected void executeParse(BpmnParse bpmnParse, ThrowEvent intermediateEvent) {
-
-    BpmnModel bpmnModel = bpmnParse.getBpmnModel();
 
     ActivityImpl nestedActivityImpl = createActivityOnCurrentScope(bpmnParse, intermediateEvent, BpmnXMLConstants.ELEMENT_EVENT_THROW);
     
@@ -52,23 +50,26 @@ public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnPars
     } else if (eventDefinition == null) {
       nestedActivityImpl.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowNoneEventActivityBehavior(intermediateEvent)); 
     } else { 
-      bpmnModel.addProblem("Unsupported intermediate throw event type " + eventDefinition, intermediateEvent);
+      logger.warn("Unsupported intermediate throw event type for throw event " + intermediateEvent.getId());
     }
   }
   
-  protected CompensateEventDefinition createCompensateEventDefinition(BpmnParse bpmnParse, org.activiti.bpmn.model.CompensateEventDefinition eventDefinition, ScopeImpl scopeElement) {
-    if(StringUtils.isNotEmpty(eventDefinition.getActivityRef())) {
-      if(scopeElement.findActivity(eventDefinition.getActivityRef()) == null) {
-        bpmnParse.getBpmnModel().addProblem("Invalid attribute value for 'activityRef': no activity with id '" + eventDefinition.getActivityRef() +
-            "' in current scope " + scopeElement.getId(), eventDefinition);
-      }
-    }
-    
-    CompensateEventDefinition compensateEventDefinition =  new CompensateEventDefinition();
-    compensateEventDefinition.setActivityRef(eventDefinition.getActivityRef());
-    compensateEventDefinition.setWaitForCompletion(eventDefinition.isWaitForCompletion());
-    
-    return compensateEventDefinition;
-  }
+  //
+  // Seems not to be used anymore?
+  //
+//  protected CompensateEventDefinition createCompensateEventDefinition(BpmnParse bpmnParse, org.activiti.bpmn.model.CompensateEventDefinition eventDefinition, ScopeImpl scopeElement) {
+//    if(StringUtils.isNotEmpty(eventDefinition.getActivityRef())) {
+//      if(scopeElement.findActivity(eventDefinition.getActivityRef()) == null) {
+//        bpmnParse.getBpmnModel().addProblem("Invalid attribute value for 'activityRef': no activity with id '" + eventDefinition.getActivityRef() +
+//            "' in current scope " + scopeElement.getId(), eventDefinition);
+//      }
+//    }
+//    
+//    CompensateEventDefinition compensateEventDefinition =  new CompensateEventDefinition();
+//    compensateEventDefinition.setActivityRef(eventDefinition.getActivityRef());
+//    compensateEventDefinition.setWaitForCompletion(eventDefinition.isWaitForCompletion());
+//    
+//    return compensateEventDefinition;
+//  }
 
 }

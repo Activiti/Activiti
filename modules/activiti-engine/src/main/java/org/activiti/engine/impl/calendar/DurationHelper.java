@@ -23,7 +23,8 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.TimeZoneUtil;
+import org.activiti.engine.runtime.ClockReader;
 
 /**
  * helper class for parsing ISO8601 duration format (also recurring) and
@@ -63,7 +64,10 @@ public class DurationHelper {
     return times;
   }
 
-  public DurationHelper(String expressionS) throws Exception {
+  protected ClockReader clockReader;
+
+  public DurationHelper(String expressionS, ClockReader clockReader) throws Exception {
+    this.clockReader = clockReader;
     List<String> expression = Arrays.asList(expressionS.split("/"));
     datatypeFactory = DatatypeFactory.newInstance();
 
@@ -89,13 +93,13 @@ public class DurationHelper {
       }
     }
     if (start == null && end == null) {
-      start = ClockUtil.getCurrentCalendar();
+      start = clockReader.getCurrentCalendar();
     }
 
   }
 
   public Calendar getCalendarAfter() {
-    return getCalendarAfter(ClockUtil.getCurrentCalendar());
+    return getCalendarAfter(clockReader.getCurrentCalendar());
   }
   
   public Calendar getCalendarAfter(Calendar time) {
@@ -117,35 +121,26 @@ public class DurationHelper {
 
   private Calendar getDateAfterRepeat(Calendar date) {
     if (start != null) {
-      Calendar cur = ClockUtil.convertToTimeZone(start, date.getTimeZone());
+      Calendar cur = TimeZoneUtil.convertToTimeZone(start, date.getTimeZone());
 
       for (int i = 0; i < times && !cur.after(date); i++) {
         cur = add(cur, period);
       }
 
-      return cur.before(date) ? null : ClockUtil.convertToTimeZone(cur, ClockUtil.getCurrentTimeZone());
+      return cur.before(date) ? null : TimeZoneUtil.convertToTimeZone(cur, clockReader.getCurrentTimeZone());
     }
 
-    Calendar cur = add(ClockUtil.convertToTimeZone(end, date.getTimeZone()), period.negate());
+    Calendar cur = add(TimeZoneUtil.convertToTimeZone(end, date.getTimeZone()), period.negate());
 
-    Calendar next = ClockUtil.convertToTimeZone(end, date.getTimeZone());
+    Calendar next = TimeZoneUtil.convertToTimeZone(end, date.getTimeZone());
 
     for (int i = 0; i < times && cur.after(date); i++) {
       next = cur;
       cur = add(cur, period.negate());
     }
 
-    return next.before(date) ? null : ClockUtil.convertToTimeZone(next, ClockUtil.getCurrentTimeZone());
+    return next.before(date) ? null : TimeZoneUtil.convertToTimeZone(next, clockReader.getCurrentTimeZone());
   }
-
-  /*
-  private Calendar convertToTimeZone(Calendar time, TimeZone timeZone) {
-    Calendar foreignTime = new GregorianCalendar(timeZone);
-    foreignTime.setTimeInMillis(time.getTimeInMillis());
-
-    return foreignTime;
-  }
-  */
 
   private Calendar add(Calendar date, Duration duration) {
     Calendar calendar = (Calendar) date.clone();
@@ -163,7 +158,7 @@ public class DurationHelper {
   }
 
   private Calendar parseDate(String date) throws Exception {
-    return ClockUtil.convertToTimeZone(javax.xml.bind.DatatypeConverter.parseDateTime(date), ClockUtil.getCurrentTimeZone());
+    return TimeZoneUtil.convertToTimeZone(javax.xml.bind.DatatypeConverter.parseDateTime(date), clockReader.getCurrentTimeZone());
   }
 
   private Duration parsePeriod(String period) throws Exception {

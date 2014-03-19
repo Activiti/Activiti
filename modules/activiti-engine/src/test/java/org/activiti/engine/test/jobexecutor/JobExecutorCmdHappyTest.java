@@ -25,7 +25,6 @@ import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Tom Baeyens
@@ -67,7 +66,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   public void testJobCommandsWithTimer() {
     // clock gets automatically reset in LogTestCase.runTest
-    ClockUtil.setCurrentTime(new Date(SOME_TIME));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME));
 
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
@@ -87,7 +86,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
     List<String> expectedJobIds = new ArrayList<String>();
 
-    ClockUtil.setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
 
     acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
     jobIdsList = acquiredJobs.getJobIdBatches();

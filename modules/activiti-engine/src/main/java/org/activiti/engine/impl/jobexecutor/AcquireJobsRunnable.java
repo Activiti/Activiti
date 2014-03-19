@@ -18,9 +18,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,11 +70,11 @@ public class AcquireJobsRunnable implements Runnable {
           isJobAdded = false;
           
           // check if the next timer should fire before the normal sleep time is over
-          Date duedate = new Date(ClockUtil.getCurrentTime().getTime() + millisToWait);
+          Date duedate = new Date(jobExecutor.getCurrentTime().getTime() + millisToWait);
           List<TimerEntity> nextTimers = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(duedate, new Page(0, 1)));
           
           if (!nextTimers.isEmpty()) {
-          long millisTillNextTimer = nextTimers.get(0).getDuedate().getTime() - ClockUtil.getCurrentTime().getTime();
+          long millisTillNextTimer = nextTimers.get(0).getDuedate().getTime() - jobExecutor.getCurrentTime().getTime();
             if (millisTillNextTimer < millisToWait) {
               millisToWait = millisTillNextTimer;
             }

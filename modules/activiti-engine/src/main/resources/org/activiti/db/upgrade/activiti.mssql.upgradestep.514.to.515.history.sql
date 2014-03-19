@@ -18,3 +18,6 @@ alter table ACT_HI_ACTINST
 alter table ACT_HI_TASKINST
     add TENANT_ID_ nvarchar(255) default '';       
     
+alter table ACT_HI_ACTINST
+    alter column ASSIGNEE_ nvarchar(255);
+    

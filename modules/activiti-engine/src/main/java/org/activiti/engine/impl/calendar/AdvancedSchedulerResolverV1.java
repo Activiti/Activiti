@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
+import org.activiti.engine.runtime.ClockReader;
 
 /**
  * Resolves a due date using the original Activiti due date resolver. This does
@@ -11,11 +12,11 @@ import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
  * 
  * @author mseiden
  */
-public class AdvancedSchedulerResolverV1 extends CycleBusinessCalendar implements AdvancedSchedulerResolver {
+public class AdvancedSchedulerResolverV1 implements AdvancedSchedulerResolver {
 
   @Override
-  public Date resolve(String duedateDescription, TimeZone timeZone) {
-    return resolveDuedate(duedateDescription);
+  public Date resolve(String duedateDescription, ClockReader clockReader, TimeZone timeZone) {
+    return new CycleBusinessCalendar(clockReader).resolveDuedate(duedateDescription);
   }
 
 }

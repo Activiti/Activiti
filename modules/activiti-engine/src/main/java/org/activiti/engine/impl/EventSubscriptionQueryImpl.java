@@ -16,7 +16,6 @@ package org.activiti.engine.impl;
 import java.io.Serializable;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -26,9 +25,7 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 /**
  * @author Daniel Meyer
  */
-public class EventSubscriptionQueryImpl 
-                extends AbstractQuery<EventSubscriptionQueryImpl, EventSubscriptionEntity> 
-                implements Serializable {
+public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQueryImpl, EventSubscriptionEntity> implements Serializable {
 
   private static final long serialVersionUID = 1L;
   
@@ -38,6 +35,7 @@ public class EventSubscriptionQueryImpl
   protected String executionId;
   protected String processInstanceId;
   protected String activityId;
+  protected String tenantId;
 
   public EventSubscriptionQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -95,7 +93,16 @@ public class EventSubscriptionQueryImpl
     return this;
   }
   
-  public EventSubscriptionQueryImpl orderByCreated() {
+  public String getTenantId() {
+		return tenantId;
+	}
+
+	public EventSubscriptionQueryImpl tenantId(String tenantId) {
+		this.tenantId = tenantId;
+		return this;
+	}
+
+	public EventSubscriptionQueryImpl orderByCreated() {
     return orderBy(EventSubscriptionQueryProperty.CREATED);
   }
   

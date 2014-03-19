@@ -72,9 +72,9 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
         .createDeployment()
         .addClasspathResource("org/activiti/engine/test/bpmn/event/message/testSameMessageNameInSameProcessFails.bpmn20.xml")
         .deploy();
-      fail("exception expected");
+      fail("exception expected: Cannot have more than one message event subscription with name 'newInvoiceMessage' for scope");
     }catch (ActivitiException e) {
-      assertTrue(e.getMessage().contains("Cannot have more than one message event subscription with name 'newInvoiceMessage' for scope"));
+      e.printStackTrace();
     }        
   }
   

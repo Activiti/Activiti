@@ -17,6 +17,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -48,7 +49,7 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> exten
     MultiInstanceActivityBehavior miActivityBehavior = null;
     ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(modelActivity.getId());
     if (activity == null) {
-      bpmnParse.getBpmnModel().addProblem("Activity " + modelActivity.getId() + " needed for multi instance cannot bv found", modelActivity);
+      throw new ActivitiException("Activity " + modelActivity.getId() + " needed for multi instance cannot bv found");
     }
             
     if (loopCharacteristics.isSequential()) {
@@ -94,18 +95,6 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> exten
     // activiti:elementIndexVariable
     if (StringUtils.isNotEmpty(loopCharacteristics.getElementIndexVariable())) {
       miActivityBehavior.setCollectionElementIndexVariable(loopCharacteristics.getElementIndexVariable());
-    }
-
-    // Validation
-    if (miActivityBehavior.getLoopCardinalityExpression() == null && miActivityBehavior.getCollectionExpression() == null
-            && miActivityBehavior.getCollectionVariable() == null) {
-      bpmnModel.addProblem("Either loopCardinality or loopDataInputRef/activiti:collection must been set.", loopCharacteristics);
-    }
-
-    // Validation
-    if (miActivityBehavior.getCollectionExpression() == null && miActivityBehavior.getCollectionVariable() == null
-            && miActivityBehavior.getCollectionElementVariable() != null) {
-      bpmnModel.addProblem("LoopDataInputRef/activiti:collection must be set when using inputDataItem or activiti:elementVariable.", loopCharacteristics);
     }
 
   }

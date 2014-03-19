@@ -585,6 +585,16 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   	return this;
   }
   
+  @Override
+  protected void checkQueryOk() {
+    super.checkQueryOk();
+    // In case historic query variables are included, an additional order-by clause should be added
+    // to ensure the last value of a variable is used
+    if(includeProcessVariables || includeTaskLocalVariables) {
+    	this.orderBy(HistoricTaskInstanceQueryProperty.INCLUDED_VARIABLE_TIME).asc();
+    }
+  }
+  
   public String getMssqlOrDB2OrderBy() {
     String specialOrderBy = super.getOrderBy();
     if (specialOrderBy != null && specialOrderBy.length() > 0) {

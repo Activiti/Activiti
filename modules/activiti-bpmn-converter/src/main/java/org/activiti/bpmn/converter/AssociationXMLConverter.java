@@ -46,13 +46,6 @@ public class AssociationXMLConverter extends BaseBpmnXMLConverter {
     association.setTargetRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF));
     association.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
     
-    if(StringUtils.isEmpty(association.getSourceRef())) {
-      model.addProblem("association element missing attribute 'sourceRef'", xtr);
-    }
-    if(StringUtils.isEmpty(association.getTargetRef())) {
-      model.addProblem("association element missing attribute 'targetRef'", xtr);
-    }
-
     parseChildElements(getXMLElementName(), association,xtr);
 
     return association;

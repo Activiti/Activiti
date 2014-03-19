@@ -37,7 +37,7 @@ public class RulesDeployer implements Deployer {
   
   private static Logger log = LoggerFactory.getLogger(RulesDeployer.class);
 
-  public void deploy(DeploymentEntity deployment) {
+  public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
     KnowledgeBuilder knowledgeBuilder = null;
 
     DeploymentManager deploymentManager = Context

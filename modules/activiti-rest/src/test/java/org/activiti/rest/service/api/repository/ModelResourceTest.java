@@ -15,7 +15,6 @@ package org.activiti.rest.service.api.repository;
 
 import java.util.Calendar;
 
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
@@ -40,7 +39,7 @@ public class ModelResourceTest extends BaseRestTestCase {
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(now.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(now.getTime());
       
       model = repositoryService.newModel();
       model.setCategory("Model category");
@@ -102,7 +101,7 @@ public class ModelResourceTest extends BaseRestTestCase {
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(now.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(now.getTime());
       
       model = repositoryService.newModel();
       model.setCategory("Model category");
@@ -151,7 +150,7 @@ public class ModelResourceTest extends BaseRestTestCase {
     try {
       Calendar createTime = Calendar.getInstance();
       createTime.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(createTime.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(createTime.getTime());
       
       model = repositoryService.newModel();
       model.setCategory("Model category");
@@ -165,7 +164,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       Calendar updateTime = Calendar.getInstance();
       updateTime.set(Calendar.MILLISECOND, 0);
       updateTime.add(Calendar.HOUR, 1);
-      ClockUtil.setCurrentTime(updateTime.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(updateTime.getTime());
       
       // Create update request
       ObjectNode requestNode = objectMapper.createObjectNode();
@@ -216,8 +215,8 @@ public class ModelResourceTest extends BaseRestTestCase {
     try {
       Calendar createTime = Calendar.getInstance();
       createTime.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(createTime.getTime());
-      
+      processEngineConfiguration.getClock().setCurrentTime(createTime.getTime());
+
       model = repositoryService.newModel();
       model.setCategory("Model category");
       model.setKey("Model key");
@@ -230,7 +229,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       
       Calendar updateTime = Calendar.getInstance();
       updateTime.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(updateTime.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(updateTime.getTime());
       
       // Create update request
       ObjectNode requestNode = objectMapper.createObjectNode();
@@ -289,7 +288,7 @@ public class ModelResourceTest extends BaseRestTestCase {
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(now.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(now.getTime());
       
       model = repositoryService.newModel();
       model.setCategory("Model category");

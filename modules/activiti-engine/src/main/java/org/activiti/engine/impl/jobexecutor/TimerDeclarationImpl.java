@@ -25,7 +25,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Tom Baeyens
@@ -148,8 +147,15 @@ public class TimerDeclarationImpl implements Serializable {
     
     if (type == TimerDeclarationType.CYCLE) {
       
-      // See ACT-1427: A boundary timer with a cancelActivity='true', doesn't need to repeat itself
-      if (!isInterruptingTimer) {
+    	// See ACT-1427: A boundary timer with a cancelActivity='true', doesn't need to repeat itself
+    	boolean repeat = !isInterruptingTimer;
+    	
+    	// ACT-1951: intermediate catching timer events shouldn't repeat accoring to spec
+    	if(TimerCatchIntermediateEventJobHandler.TYPE.equals(jobHandlerType)) {
+    		repeat = false;
+    	}
+    	
+      if (repeat) {
         String prepared = prepareRepeat(dueDateString);
         timer.setRepeat(prepared);
       }
@@ -160,7 +166,7 @@ public class TimerDeclarationImpl implements Serializable {
   private String prepareRepeat(String dueDate) {
     if (dueDate.startsWith("R") && dueDate.split("/").length==2) {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-      return dueDate.replace("/","/"+sdf.format(ClockUtil.getCurrentTime())+"/");
+      return dueDate.replace("/","/"+sdf.format(Context.getProcessEngineConfiguration().getClock().getCurrentTime())+"/");
     }
     return dueDate;
   }

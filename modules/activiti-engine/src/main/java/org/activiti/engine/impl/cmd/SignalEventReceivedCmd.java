@@ -37,8 +37,9 @@ public class SignalEventReceivedCmd implements Command<Void> {
   protected final String executionId;
   protected final Serializable payload;
   protected final boolean async;
+  protected String tenantId;
 
-  public SignalEventReceivedCmd(String eventName, String executionId, Map<String, Object> processVariables) {
+  public SignalEventReceivedCmd(String eventName, String executionId, Map<String, Object> processVariables, String tenantId) {
     this.eventName = eventName;
     this.executionId = executionId;
     if (processVariables != null) {
@@ -53,13 +54,15 @@ public class SignalEventReceivedCmd implements Command<Void> {
     	this.payload = null;
     }
     this.async = false;
+    this.tenantId = tenantId;
   }
 
-  public SignalEventReceivedCmd(String eventName, String executionId, boolean async) {
+  public SignalEventReceivedCmd(String eventName, String executionId, boolean async, String tenantId) {
   	this.eventName = eventName;
   	this.executionId = executionId;
   	this.async = async;
   	this.payload = null;
+  	this.tenantId = tenantId;
   }
 
   public Void execute(CommandContext commandContext) {
@@ -68,7 +71,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
     
     if(executionId == null) {
        signalEvents = commandContext.getEventSubscriptionEntityManager()
-        .findSignalEventSubscriptionsByEventName(eventName);              
+        .findSignalEventSubscriptionsByEventName(eventName, tenantId);              
     } else {
       
       ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);

@@ -184,6 +184,7 @@ import org.activiti.engine.impl.scripting.ResolverFactory;
 import org.activiti.engine.impl.scripting.ScriptBindingsFactory;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.scripting.VariableScopeResolverFactory;
+import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.BooleanType;
@@ -205,6 +206,8 @@ import org.activiti.engine.impl.variable.UUIDType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.parse.BpmnParseHandler;
+import org.activiti.validation.ProcessValidator;
+import org.activiti.validation.ProcessValidatorFactory;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -314,6 +317,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected ActivityBehaviorFactory activityBehaviorFactory;
   protected ListenerFactory listenerFactory;
   protected BpmnParseFactory bpmnParseFactory;
+  
+  // PROCESS VALIDATION 
+  
+  protected ProcessValidator processValidator;
 
   // OTHER ////////////////////////////////////////////////////////////////////
   
@@ -394,6 +401,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initFormEngines();
     initFormTypes();
     initScriptingEngines();
+    initClock();
     initBusinessCalendarManager();
     initCommandContextFactory();
     initTransactionContextFactory();
@@ -411,6 +419,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initEventHandlers();
     initFailedJobCommandFactory();
     initEventDispatcher();
+    initProcessValidator();
     configuratorsAfterInit();
   }
 
@@ -708,6 +717,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
       dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
       dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
+      dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
       dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
       addSessionFactory(dbSqlSessionFactory);
       
@@ -1001,12 +1011,20 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return parseHandlers;
   }
 
+  private void initClock() {
+    if (clock == null) {
+      clock = new DefaultClockImpl();
+    }
+  }
+
   // job executor /////////////////////////////////////////////////////////////
   
   protected void initJobExecutor() {
     if (jobExecutor==null) {
       jobExecutor = new DefaultJobExecutor();
     }
+
+    jobExecutor.setClockReader(this.clock);
 
     jobHandlers = new HashMap<String, JobHandler>();
     TimerExecuteNestedActivityJobHandler timerExecuteNestedActivityJobHandler = new TimerExecuteNestedActivityJobHandler();
@@ -1181,9 +1199,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initBusinessCalendarManager() {
     if (businessCalendarManager==null) {
       MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
-      mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar());
-      mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar());
-      mapBusinessCalendarManager.addBusinessCalendar(CycleBusinessCalendar.NAME, new CycleBusinessCalendar());
+      mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar(this.clock));
+      mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar(this.clock));
+      mapBusinessCalendarManager.addBusinessCalendar(CycleBusinessCalendar.NAME, new CycleBusinessCalendar(this.clock));
 
       businessCalendarManager = mapBusinessCalendarManager;
     }
@@ -1268,7 +1286,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   		}
   	}
   	
-  	
+  }
+  
+  protected void initProcessValidator() {
+  	if (this.processValidator == null) {
+  		this.processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
+  	}
   }
 
   // getters and setters //////////////////////////////////////////////////////
@@ -1407,6 +1430,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public List<ProcessEngineConfigurator> getConfigurators() {
     return configurators;
+  }
+
+  public ProcessEngineConfigurationImpl addConfigurator(ProcessEngineConfigurator configurator) {
+    if(this.configurators == null) {
+      this.configurators = new ArrayList<ProcessEngineConfigurator>();
+    }
+    this.configurators.add(configurator);
+    return this;
   }
   
   public ProcessEngineConfigurationImpl setConfigurators(List<ProcessEngineConfigurator> configurators) {
@@ -1886,4 +1917,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void setEventListeners(List<ActivitiEventListener> eventListeners) {
 	  this.eventListeners = eventListeners;
   }
+
+	public ProcessValidator getProcessValidator() {
+		return processValidator;
+	}
+
+	public void setProcessValidator(ProcessValidator processValidator) {
+		this.processValidator = processValidator;
+	}
+  
 }
