@@ -12,9 +12,12 @@
  */
 package org.activiti.engine.impl.scripting;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
@@ -26,13 +29,18 @@ import org.activiti.engine.delegate.VariableScope;
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
 public class ScriptingEngines {
 
   public static final String DEFAULT_SCRIPTING_LANGUAGE = "juel";
+  public static final String GROOVY_SCRIPTING_LANGUAGE = "groovy";
 
   private final ScriptEngineManager scriptEngineManager;
   protected ScriptBindingsFactory scriptBindingsFactory;
+  
+  protected boolean cacheScriptingEngines = true;
+  protected Map<String, ScriptEngine> cachedEngines;
 
   public ScriptingEngines(ScriptBindingsFactory scriptBindingsFactory) {
     this(new ScriptEngineManager());
@@ -41,6 +49,7 @@ public class ScriptingEngines {
 
   public ScriptingEngines(ScriptEngineManager scriptEngineManager) {
     this.scriptEngineManager = scriptEngineManager;
+    cachedEngines = new HashMap<String, ScriptEngine>();
   }
 
   public ScriptingEngines addScriptEngineFactory(ScriptEngineFactory scriptEngineFactory) {
@@ -63,14 +72,17 @@ public class ScriptingEngines {
   public Object evaluate(String script, String language, VariableScope variableScope, boolean storeScriptVariables) {
     return evaluate(script, language, createBindings(variableScope, storeScriptVariables));
   }
+
+  public void setCacheScriptingEngines(boolean cacheScriptingEngines) {
+	  this.cacheScriptingEngines = cacheScriptingEngines;
+  }
+  
+  public boolean isCacheScriptingEngines() {
+	  return cacheScriptingEngines;
+  }
   
   protected Object evaluate(String script, String language, Bindings bindings) {
-    ScriptEngine scriptEngine = scriptEngineManager.getEngineByName(language);
-
-    if (scriptEngine == null) {
-      throw new ActivitiException("Can't find scripting engine for '" + language + "'");
-    }
-
+    ScriptEngine scriptEngine = getEngineByName(language);
     try {
       return scriptEngine.eval(script, bindings);
     } catch (ScriptException e) {
@@ -78,6 +90,42 @@ public class ScriptingEngines {
     }
   }
 
+  protected ScriptEngine getEngineByName(String language) {
+  	ScriptEngine scriptEngine = null;
+  	
+  	if(cacheScriptingEngines) {
+  		scriptEngine = cachedEngines.get(language);
+  		if(scriptEngine == null) {
+  			scriptEngine = scriptEngineManager.getEngineByName(language);
+  			
+  			if(scriptEngine != null) {
+  				// ACT-1858: Special handling for groovy engine regarding GC
+  				if(GROOVY_SCRIPTING_LANGUAGE.equals(language)) {
+  					try {
+  						scriptEngine.getContext().setAttribute("#jsr223.groovy.engine.keep.globals", "weak", ScriptContext.ENGINE_SCOPE);
+  					} catch(Exception ignore) {
+  						// ignore this, in case engine doesn't support the passed attribute
+  					}
+  				}
+  				
+  				// Check if script-engine allows caching, using "THREADING" parameter as defined in spec
+  				Object threadingParameter = scriptEngine.getFactory().getParameter("THREADING");
+  				if(threadingParameter != null) {
+  					// Add engine to cache as any non-null result from the threading-parameter indicates at least MT-access
+  					cachedEngines.put(language, scriptEngine);
+  				}
+  			}
+  		}
+  	} else {
+  		scriptEngine = scriptEngineManager.getEngineByName(language);
+  	}
+  	
+  	if (scriptEngine == null) {
+      throw new ActivitiException("Can't find scripting engine for '" + language + "'");
+    }
+  	return scriptEngine;
+  }
+  
   /** override to build a spring aware ScriptingEngines */
   protected Bindings createBindings(VariableScope variableScope) {
     return scriptBindingsFactory.createBindings(variableScope); 

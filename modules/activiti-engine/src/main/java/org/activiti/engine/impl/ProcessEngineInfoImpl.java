@@ -20,7 +20,7 @@ import org.activiti.engine.ProcessEngineInfo;
 /**
  * @author Tom Baeyens
  */
-public class ProcessEngineInfoImpl implements ProcessEngineInfo {
+public class ProcessEngineInfoImpl implements Serializable, ProcessEngineInfo {
 
   private static final long serialVersionUID = 1L;
   

@@ -25,7 +25,7 @@ import java.util.Map.Entry;
  *
  * @author Falko Menge
  */
-public class DiagramLayout {
+public class DiagramLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
   

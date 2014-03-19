@@ -13,11 +13,13 @@
 
 package org.activiti.engine.impl.bpmn.parser;
 
+import java.io.Serializable;
+
 
 /**
  * @author Daniel Meyer
  */
-public class CompensateEventDefinition {
+public class CompensateEventDefinition implements Serializable {
 
   protected String activityRef;
   protected boolean waitForCompletion;

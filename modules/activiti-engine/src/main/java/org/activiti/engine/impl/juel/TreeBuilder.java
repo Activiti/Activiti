@@ -26,7 +26,7 @@ import org.activiti.engine.impl.javax.el.ELException;
  *
  * @author Christoph Beck
  */
-public interface TreeBuilder {
+public interface TreeBuilder extends Serializable {
 	/**
 	 * Parse the given expression and create an abstract syntax tree for it.
 	 * @param expression expression string

@@ -23,7 +23,7 @@ import org.activiti.engine.FormService;
  * 
  * @author Tom Baeyens
  */
-public interface FormProperty {
+public interface FormProperty extends Serializable {
   
   /** The key used to submit the property in {@link FormService#submitStartFormData(String, java.util.Map)} 
    * or {@link FormService#submitTaskFormData(String, java.util.Map)} */

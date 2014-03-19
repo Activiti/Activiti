@@ -28,7 +28,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  * @author Falko Menge
  * @author Joram Barrez
  */
-public class EventSubscriptionDeclaration {
+public class EventSubscriptionDeclaration implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

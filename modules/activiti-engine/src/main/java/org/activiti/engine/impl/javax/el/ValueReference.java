@@ -22,7 +22,7 @@ import java.io.Serializable;
  * 
  * @since 2.2
  */
-public class ValueReference {
+public class ValueReference implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Object base;

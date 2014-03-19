@@ -36,7 +36,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
-public abstract class VariableScopeImpl implements VariableScope {
+public abstract class VariableScopeImpl implements Serializable, VariableScope {
   
   private static final long serialVersionUID = 1L;
   
