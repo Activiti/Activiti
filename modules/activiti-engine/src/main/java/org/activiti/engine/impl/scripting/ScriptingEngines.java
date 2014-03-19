@@ -116,6 +116,8 @@ public class ScriptingEngines {
   				}
   			}
   		}
+  	} else {
+  		scriptEngine = cachedEngines.get(language);
   	}
   	
   	if (scriptEngine == null) {
