@@ -102,7 +102,7 @@
     left outer join ${prefix}ACT_RU_EXECUTION EXC on EVT.EXECUTION_ID_ = EXC.ID_
     where EVENT_TYPE_ = 'signal'
     	and EVENT_NAME_ = #{parameter.eventName}
-    	and (EXC.ID_ is null OR (EXC.ID_ is not null AND EXC.SUSPENSION_STATE_ = 1) )
+    	and (EVT.EXECUTION_ID_ is null OR (EVT.EXECUTION_ID_ is not null AND EXC.SUSPENSION_STATE_ = 1) )
     <if test="parameter.tenantId != null">
         and EVT.TENANT_ID_ = #{parameter.tenantId}
     </if>  
