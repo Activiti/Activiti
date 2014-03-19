@@ -51,7 +51,7 @@ public class ProcessValidationTest {
 	@Test
 	public void verifyValidation() {
 		List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-		Assert.assertEquals(62, allErrors.size());
+		Assert.assertEquals(64, allErrors.size());
 		
 		String setName = ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS; // shortening it a bit
 		
@@ -210,6 +210,11 @@ public class ProcessValidationTest {
 		// Data association
 		problems = findErrors(allErrors, setName, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, 1);
 		assertCommonProblemFieldForActivity(problems.get(0));
+		
+		// Data object
+		problems = findErrors(allErrors, setName, Problems.DATA_OBJECT_MISSING_NAME, 2);
+		assertCommonErrorFields(problems.get(0));
+		assertCommonErrorFields(problems.get(1));
 		
 		// End event
 		problems = findErrors(allErrors, setName, Problems.END_EVENT_CANCEL_ONLY_INSIDE_TRANSACTION, 1);

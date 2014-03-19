@@ -92,6 +92,8 @@ public interface Problems {
 	
 	String DATA_ASSOCIATION_MISSING_TARGETREF = "activiti-data-association-missing-targetref";
 	
+	String DATA_OBJECT_MISSING_NAME = "activiti-data-object-missing-name";
+	
 	String END_EVENT_CANCEL_ONLY_INSIDE_TRANSACTION = "activiti-end-event-cancel-only-inside-transaction";
 	
 	String DI_INVALID_REFERENCE = "activiti-di-invalid-reference";

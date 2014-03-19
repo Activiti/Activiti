@@ -3,6 +3,7 @@ package org.activiti.validation.validator;
 import org.activiti.validation.validator.impl.ActivitiEventListenerValidator;
 import org.activiti.validation.validator.impl.AssociationValidator;
 import org.activiti.validation.validator.impl.BoundaryEventValidator;
+import org.activiti.validation.validator.impl.DataObjectValidator;
 import org.activiti.validation.validator.impl.DiagramInterchangeInfoValidator;
 import org.activiti.validation.validator.impl.EndEventValidator;
 import org.activiti.validation.validator.impl.ErrorValidator;
@@ -38,6 +39,7 @@ public class ValidatorSetFactory {
 		validatorSet.addValidator(new SignalValidator());
 		validatorSet.addValidator(new OperationValidator());
 		validatorSet.addValidator(new ErrorValidator());
+		validatorSet.addValidator(new DataObjectValidator());
 		
 		validatorSet.addValidator(new ProcessDefinitionValidator());
 		validatorSet.addValidator(new FlowElementValidator());
