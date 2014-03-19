@@ -25,6 +25,8 @@ import javax.xml.datatype.Duration;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.util.TimeZoneUtil;
 import org.activiti.engine.runtime.ClockReader;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * helper class for parsing ISO8601 duration format (also recurring) and
@@ -158,7 +160,7 @@ public class DurationHelper {
   }
 
   private Calendar parseDate(String date) throws Exception {
-    return TimeZoneUtil.convertToTimeZone(javax.xml.bind.DatatypeConverter.parseDateTime(date), clockReader.getCurrentTimeZone());
+    return ISODateTimeFormat.dateTimeParser().withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone())).parseDateTime(date).toCalendar(null);
   }
 
   private Duration parsePeriod(String period) throws Exception {
