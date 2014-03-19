@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Joram Barrez
  */
-public class BpmnActivityBehavior implements Serializable {
+public class BpmnActivityBehavior {
   
   private static final long serialVersionUID = 1L;
   

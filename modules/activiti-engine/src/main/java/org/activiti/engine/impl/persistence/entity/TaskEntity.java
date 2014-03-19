@@ -170,6 +170,11 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
 
   public void complete() {
+  	
+  	if (getDelegationState() != null && getDelegationState().equals(DelegationState.PENDING)) {
+  		throw new ActivitiException("A delegated task cannot be completed, but should be resolved instead.");
+  	}
+  	
     fireEvent(TaskListener.EVENTNAME_COMPLETE);
 
     if (Authentication.getAuthenticatedUserId() != null && processInstanceId != null) {

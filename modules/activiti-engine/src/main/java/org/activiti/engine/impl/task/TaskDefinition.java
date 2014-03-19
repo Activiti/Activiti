@@ -29,7 +29,7 @@ import org.activiti.engine.impl.form.TaskFormHandler;
  * 
  * @author Joram Barrez
  */
-public class TaskDefinition implements Serializable {
+public class TaskDefinition {
 
   private static final long serialVersionUID = 1L;
 

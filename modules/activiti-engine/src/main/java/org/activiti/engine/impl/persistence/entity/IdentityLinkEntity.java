@@ -27,7 +27,7 @@ import org.activiti.engine.task.IdentityLink;
 /**
  * @author Joram Barrez
  */
-public class IdentityLinkEntity implements Serializable, IdentityLink, PersistentObject {
+public class IdentityLinkEntity implements IdentityLink, PersistentObject {
   
   private static final long serialVersionUID = 1L;
   

@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * @author Tom Baeyens
  */
-public class Picture implements Serializable {
+public class Picture {
 
   private static final long serialVersionUID = 2384375526314443322L;
   

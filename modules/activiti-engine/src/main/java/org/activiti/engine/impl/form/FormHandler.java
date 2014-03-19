@@ -26,7 +26,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 /**
  * @author Tom Baeyens
  */
-public interface FormHandler extends Serializable {
+public interface FormHandler {
 
   ThreadLocal<FormHandler> current = new ThreadLocal<FormHandler>();
 

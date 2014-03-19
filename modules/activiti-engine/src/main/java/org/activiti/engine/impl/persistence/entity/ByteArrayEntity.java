@@ -24,7 +24,7 @@ import org.apache.commons.lang3.ObjectUtils;
  * @author Tom Baeyens
  * @author Marcus Klimstra (CGI)
  */
-public class ByteArrayEntity implements Serializable, PersistentObject, HasRevision {
+public class ByteArrayEntity implements PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
 

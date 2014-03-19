@@ -29,7 +29,7 @@ import org.activiti.engine.impl.persistence.entity.TimerEntity;
 /**
  * @author Tom Baeyens
  */
-public class TimerDeclarationImpl implements Serializable {
+public class TimerDeclarationImpl {
 
   private static final long serialVersionUID = 1L;
 

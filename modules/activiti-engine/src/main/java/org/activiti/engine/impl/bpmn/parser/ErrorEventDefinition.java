@@ -19,7 +19,7 @@ import java.util.Comparator;
 /**
  * @author Daniel Meyer
  */
-public class ErrorEventDefinition implements Serializable {
+public class ErrorEventDefinition {
   
   public static Comparator<ErrorEventDefinition> comparator = new Comparator<ErrorEventDefinition>() {
     public int compare(ErrorEventDefinition o1, ErrorEventDefinition o2) {

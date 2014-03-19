@@ -24,7 +24,7 @@ import java.util.List;
  * 
  * @author Frederik Heremans
  */
-public class LaneSet implements Serializable {
+public class LaneSet {
 
   private static final long serialVersionUID = 1L;
   

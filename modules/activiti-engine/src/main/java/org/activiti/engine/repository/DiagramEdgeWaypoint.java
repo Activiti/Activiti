@@ -21,7 +21,7 @@ import java.io.Serializable;
  *
  * @author Falko Menge
  */
-public class DiagramEdgeWaypoint implements Serializable {
+public class DiagramEdgeWaypoint {
 
   private static final long serialVersionUID = 1L;
   
