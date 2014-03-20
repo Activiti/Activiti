@@ -12,7 +12,7 @@ import org.activiti.engine.runtime.ClockReader;
  * 
  * @author mseiden
  */
-public class AdvancedSchedulerResolverV1 implements AdvancedSchedulerResolver {
+public class AdvancedSchedulerResolverWithoutTimeZone implements AdvancedSchedulerResolver {
 
   @Override
   public Date resolve(String duedateDescription, ClockReader clockReader, TimeZone timeZone) {
