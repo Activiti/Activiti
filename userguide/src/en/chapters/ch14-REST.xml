@@ -9876,8 +9876,8 @@ Only the attachment name is required to create a new attachment.
             <programlisting>
 {
    "next.dbid":"101",
-   "schema.history":"create(5.15-SNAPSHOT)",
-   "schema.version":"5.15-SNAPSHOT"
+   "schema.history":"create(5.15)",
+   "schema.version":"5.15"
 }</programlisting>
           <table>
               <title>Get engine properties - Response codes</title>
@@ -9911,7 +9911,7 @@ Only the attachment name is required to create a new attachment.
             <programlisting>
 {
    "name":"default",
-   "version":"5.15-SNAPSHOT",
+   "version":"5.15",
    "resourceUrl":"file://activiti/activiti.cfg.xml",
    "exception":null
 }</programlisting>
@@ -11586,7 +11586,7 @@ Only the attachment name is required to create a new attachment.
   <section>
 
     <title>Legacy REST - General Usage</title>
-    <para><emphasis role="bold">The following section contains documentation of the Legacy REST-api, which has been deprecated since the 5.15-SNAPSHOT release. The REST-urls will not be removed in the future but will not be maintained. Any future additions and improvements will be done to the new REST API.</emphasis></para>
+    <para><emphasis role="bold">The following section contains documentation of the Legacy REST-api, which has been deprecated since the 5.15 release. The REST-urls will not be removed in the future but will not be maintained. Any future additions and improvements will be done to the new REST API.</emphasis></para>
     <para>
       Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat.
       By default the Activiti Engine will connect to a standalone H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder.

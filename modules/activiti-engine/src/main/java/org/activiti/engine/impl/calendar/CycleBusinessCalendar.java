@@ -30,12 +30,12 @@ public class CycleBusinessCalendar extends BusinessCalendarImpl {
       if (duedateDescription.startsWith("R")) {
         return new DurationHelper(duedateDescription, clockReader).getDateAfter();
       } else {
-        CronExpression ce = new CronExpression(duedateDescription);
+        CronExpression ce = new CronExpression(duedateDescription, clockReader);
         return ce.getTimeAfter(clockReader.getCurrentTime());
       }
 
     } catch (Exception e) {
-      throw new ActivitiException("Failed to parse cron expression: "+duedateDescription, e);
+      throw new ActivitiException("Failed to parse cron expression: " + duedateDescription, e);
     }
 
   }
