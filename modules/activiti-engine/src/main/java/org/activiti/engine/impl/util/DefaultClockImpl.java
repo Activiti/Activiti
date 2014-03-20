@@ -12,32 +12,59 @@
  */
 package org.activiti.engine.impl.util;
 
+import java.util.Calendar;
 import java.util.Date;
-
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * @author Joram Barrez
  */
 public class DefaultClockImpl implements org.activiti.engine.runtime.Clock {
   
-  private static volatile Date CURRENT_TIME = null;
+  private static volatile Calendar CURRENT_TIME = null;
 
   @Override
   public void setCurrentTime(Date currentTime) {
-    this.CURRENT_TIME = currentTime;
+    Calendar time = null;
+    
+    if (currentTime != null) {
+      time = new GregorianCalendar();
+      time.setTime(currentTime);
+    }
+    
+    setCurrentCalendar(time);
   }
   
   @Override
+  public void setCurrentCalendar(Calendar currentTime) {
+    CURRENT_TIME = currentTime;
+  }
+
+  @Override
   public void reset() {
-    this.CURRENT_TIME = null;
+    CURRENT_TIME = null;
   } 
   
   @Override
   public Date getCurrentTime() {
-    if (CURRENT_TIME != null) {
-      return CURRENT_TIME;
-    }
-    return new Date();
+    return CURRENT_TIME == null ? new Date() : CURRENT_TIME.getTime(); 
+  }
+
+  @Override
+  public Calendar getCurrentCalendar() {
+    return CURRENT_TIME == null ? new GregorianCalendar() : (Calendar)CURRENT_TIME.clone(); 
+  }
+
+  @Override
+  public Calendar getCurrentCalendar(TimeZone timeZone) {
+    return TimeZoneUtil.convertToTimeZone(getCurrentCalendar(), timeZone);
+  }
+
+  @Override
+  public TimeZone getCurrentTimeZone() {
+    return getCurrentCalendar().getTimeZone();
   }
 
 }
+
