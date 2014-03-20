@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -27,6 +28,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 
 /**
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class EventSubscriptionEntityManager extends AbstractManager {
   
@@ -73,7 +75,7 @@ public class EventSubscriptionEntityManager extends AbstractManager {
     Set<SignalEventSubscriptionEntity> selectList = null;
     Map<String,String> params = new HashMap<String, String>();
     params.put("eventName", eventName);
-    if (tenantId != null) {
+    if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
     	params.put("tenantId", tenantId);
       selectList = new HashSet<SignalEventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
     } else {
@@ -168,7 +170,9 @@ public class EventSubscriptionEntityManager extends AbstractManager {
     Map<String,String> params = new HashMap<String, String>();
     params.put("eventType", type);
     params.put("configuration", configuration);
-    params.put("tenantId", tenantId);
+    if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
+    	params.put("tenantId", tenantId);
+    }
     return getDbSqlSession().selectList(query, params);            
   }
 
@@ -177,7 +181,9 @@ public class EventSubscriptionEntityManager extends AbstractManager {
     Map<String,String> params = new HashMap<String, String>();
     params.put("eventType", type);
     params.put("eventName", eventName);  
-    params.put("tenantId", tenantId);
+    if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
+    	params.put("tenantId", tenantId);
+    }
     return getDbSqlSession().selectList(query, params);            
   }
   
@@ -193,7 +199,9 @@ public class EventSubscriptionEntityManager extends AbstractManager {
   public MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(String messageName, String tenantId) {
   	Map<String, String> params = new HashMap<String, String>();
   	params.put("eventName", messageName);
-  	params.put("tenantId", tenantId);
+  	 if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
+     	params.put("tenantId", tenantId);
+     }
     MessageEventSubscriptionEntity entity = (MessageEventSubscriptionEntity) getDbSqlSession().selectOne("selectMessageStartEventSubscriptionByName", params);
     return entity;
   }

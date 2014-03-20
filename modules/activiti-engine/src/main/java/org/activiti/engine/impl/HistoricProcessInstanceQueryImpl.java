@@ -211,6 +211,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     String specialOrderBy = super.getOrderBy();
     if (specialOrderBy != null && specialOrderBy.length() > 0) {
       specialOrderBy = specialOrderBy.replace("RES.", "TEMPRES_");
+      specialOrderBy = specialOrderBy.replace("VAR.", "TEMPVAR_");
     }
     return specialOrderBy;
   }

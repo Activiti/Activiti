@@ -19,4 +19,4 @@ alter table ACT_HI_TASKINST
     add TENANT_ID_ varchar(255) default ''; 
     
 alter table ACT_HI_ACTINST
-    alter column ASSIGNEE_ varchar(255);
+    alter column ASSIGNEE_ TYPE varchar(255);
