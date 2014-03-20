@@ -35,4 +35,4 @@ alter table ACT_RE_PROCDEF
     unique (KEY_,VERSION_, TENANT_ID_);  
     
     
-update ACT_GE_PROPERTY set VALUE_ = '5.15-SNAPSHOT' where NAME_ = 'schema.version';
+update ACT_GE_PROPERTY set VALUE_ = '5.15' where NAME_ = 'schema.version';

@@ -59,4 +59,4 @@ alter table ACT_RE_PROCDEF
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_PROCDEF');
 
-update ACT_GE_PROPERTY set VALUE_ = '5.15-SNAPSHOT' where NAME_ = 'schema.version';
+update ACT_GE_PROPERTY set VALUE_ = '5.15' where NAME_ = 'schema.version';
