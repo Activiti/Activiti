@@ -89,6 +89,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     MessageEntity message = new MessageEntity();
     message.setJobHandlerType(ProcessEventJobHandler.TYPE);
     message.setJobHandlerConfiguration(id);
+    message.setTenantId(getTenantId());
 
     // TODO: support payload
 //    if(payload != null) {
