@@ -19,4 +19,4 @@ alter table ACT_HI_TASKINST
     add TENANT_ID_ NVARCHAR2(255) default '';    
     
 alter table ACT_HI_ACTINST
-    alter column ASSIGNEE_ NVARCHAR2(255);
+    modify ASSIGNEE_ NVARCHAR2(255);
