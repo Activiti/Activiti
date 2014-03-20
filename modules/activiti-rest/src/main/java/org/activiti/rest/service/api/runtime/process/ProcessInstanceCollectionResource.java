@@ -157,9 +157,8 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       	}
       } else {
       	if(request.isCustomTenantSet()) {
-      		// TODO: uncomment when implemented
-//      		instance = ActivitiUtil.getRuntimeService().startProcessInstanceByMessageAndTenantId(
-//      				request.getMessage(), request.getBusinessKey(), startVariables, request.getTenantId());
+      		instance = ActivitiUtil.getRuntimeService().startProcessInstanceByMessageAndTenantId(
+      				request.getMessage(), request.getBusinessKey(), startVariables, request.getTenantId());
       	} else {
       		instance = ActivitiUtil.getRuntimeService().startProcessInstanceByMessage(
       				request.getMessage(), request.getBusinessKey(), startVariables);
