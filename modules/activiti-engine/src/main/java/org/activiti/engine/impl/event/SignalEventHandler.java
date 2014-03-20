@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.event;
 
+import java.util.Map;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.context.Context;
@@ -62,6 +64,14 @@ public class SignalEventHandler extends AbstractEventHandler {
   		if (processInstance == null) {
   			throw new ActivitiException("Could not handle signal: no process instance started");
   		}
+  		
+  		if (payload != null) {
+  			if (payload instanceof Map) {
+  				Map<String, Object> variables = (Map<String, Object>) payload;
+  				processInstance.setVariables(variables);
+  			}
+  		}
+  		
   		processInstance.start();
   	} else {
   		throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
