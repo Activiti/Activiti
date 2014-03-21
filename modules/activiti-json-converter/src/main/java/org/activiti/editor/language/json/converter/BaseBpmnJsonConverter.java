@@ -361,7 +361,21 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       } else if (eventDefinition instanceof MessageEventDefinition) {
         MessageEventDefinition messageDefinition = (MessageEventDefinition) eventDefinition;
         if (StringUtils.isNotEmpty(messageDefinition.getMessageRef())) {
-          propertiesNode.put(PROPERTY_MESSAGEREF, messageDefinition.getMessageRef());
+          String messageRef = messageDefinition.getMessageRef();
+          // remove the namespace from the message id if set
+          if (messageRef.startsWith(model.getTargetNamespace())) {
+            messageRef = messageRef.replace(model.getTargetNamespace(), "");
+            messageRef = messageRef.replaceFirst(":", "");
+          } else {
+            for (String prefix : model.getNamespaces().keySet()) {
+              String namespace = model.getNamespace(prefix);
+              if (messageRef.startsWith(namespace)) {
+                messageRef = messageRef.replace(model.getTargetNamespace(), "");
+                messageRef = prefix + messageRef;
+              }
+            }
+          }
+          propertiesNode.put(PROPERTY_MESSAGEREF, messageRef);
         }
         
       } else if (eventDefinition instanceof SignalEventDefinition) {
