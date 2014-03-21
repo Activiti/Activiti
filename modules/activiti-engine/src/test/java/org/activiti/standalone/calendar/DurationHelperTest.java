@@ -14,10 +14,9 @@
 
 package org.activiti.standalone.calendar;
 
-import org.activiti.engine.impl.calendar.DurationHelper;
-import org.activiti.engine.impl.util.DefaultClockImpl;
-import org.activiti.engine.runtime.Clock;
-import org.junit.Test;
+import static groovy.util.GroovyTestCase.assertEquals;
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,8 +24,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import static groovy.util.GroovyTestCase.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.activiti.engine.impl.calendar.DurationHelper;
+import org.activiti.engine.impl.util.DefaultClockImpl;
+import org.activiti.engine.runtime.Clock;
+import org.apache.commons.lang3.time.DateUtils;
+import org.junit.Test;
 
 public class DurationHelperTest {
 
@@ -198,7 +200,10 @@ public class DurationHelperTest {
   }
 
   private Calendar parseCalendarWithOffset(String str, TimeZone timeZone) throws Exception {
-    return parseCalendar(str, timeZone, "yyyyMMdd-HH:mm:ss X");
+  	
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(DateUtils.parseDate(str, new String[]{ "yyyyMMdd-HH:mm:ssZZ" }));
+    return cal;
   }
   
   private Calendar parseCalendar(String str, TimeZone timeZone) throws Exception {
