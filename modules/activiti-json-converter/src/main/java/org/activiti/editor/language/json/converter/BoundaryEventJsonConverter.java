@@ -21,6 +21,7 @@ import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
@@ -42,6 +43,7 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_TIMER, BoundaryEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_ERROR, BoundaryEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_SIGNAL, BoundaryEventJsonConverter.class);
+    convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_MESSAGE, BoundaryEventJsonConverter.class);
   }
   
   public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -61,6 +63,8 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
       return STENCIL_EVENT_BOUNDARY_ERROR;
     } else if (eventDefinition instanceof SignalEventDefinition) {
       return STENCIL_EVENT_BOUNDARY_SIGNAL;
+    } else if (eventDefinition instanceof MessageEventDefinition) {
+      return STENCIL_EVENT_BOUNDARY_MESSAGE;
     } else {
       return STENCIL_EVENT_BOUNDARY_TIMER;
     }
@@ -95,6 +99,9 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     } else if (STENCIL_EVENT_BOUNDARY_SIGNAL.equals(stencilId)) {
       boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
       convertJsonToSignalDefinition(elementNode, boundaryEvent);
+    } else if (STENCIL_EVENT_BOUNDARY_MESSAGE.equals(stencilId)) {
+      boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
+      convertJsonToMessageDefinition(elementNode, boundaryEvent);
     }
     boundaryEvent.setAttachedToRefId(lookForAttachedRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES)));
     return boundaryEvent;
