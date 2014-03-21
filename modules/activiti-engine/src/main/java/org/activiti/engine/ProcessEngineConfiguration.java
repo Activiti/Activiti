@@ -165,7 +165,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
    * prefix. This is relevant for checking if Activiti-tables exist, the databaseTablePrefix will not be used here
    * - since the schema is taken into account already, adding a prefix for the table-check will result in wrong table-names.
    * 
-   *  @since 5.15
+   *  @since 5.16-SNAPSHOT
    */
   protected boolean tablePrefixIsSchema = false;
   
