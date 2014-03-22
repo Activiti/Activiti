@@ -19,7 +19,6 @@ import java.util.HashMap;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.event.EventHandler;
@@ -27,7 +26,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Daniel Meyer
@@ -46,6 +44,8 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   protected String activityId;
   protected String configuration;
   protected Date created;
+  protected String processDefinitionId;
+  protected String tenantId;
   
   // runtime state /////////////////////////////
   protected ExecutionEntity execution;
@@ -54,7 +54,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   /////////////////////////////////////////////
   
   public EventSubscriptionEntity() { 
-    this.created = ClockUtil.getCurrentTime();
+    this.created = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
   }
 
   public EventSubscriptionEntity(ExecutionEntity executionEntity) {
@@ -89,6 +89,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     MessageEntity message = new MessageEntity();
     message.setJobHandlerType(ProcessEventJobHandler.TYPE);
     message.setJobHandlerConfiguration(id);
+    message.setTenantId(getTenantId());
 
     // TODO: support payload
 //    if(payload != null) {
@@ -250,8 +251,24 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
   public void setCreated(Date created) {
     this.created = created;
   }
+  
+  public String getProcessDefinitionId() {
+		return processDefinitionId;
+	}
 
-  @Override
+	public void setProcessDefinitionId(String processDefinitionId) {
+		this.processDefinitionId = processDefinitionId;
+	}
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	@Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;

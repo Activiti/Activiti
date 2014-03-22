@@ -32,17 +32,20 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance> {
 
   protected final String messageName;
   protected final String businessKey;
   protected final Map<String, Object> processVariables;
+  protected final String tenantId;
 
-  public StartProcessInstanceByMessageCmd(String messageName, String businessKey, Map<String, Object> processVariables) {
+  public StartProcessInstanceByMessageCmd(String messageName, String businessKey, Map<String, Object> processVariables, String tenantId) {
     this.messageName = messageName;
     this.businessKey = businessKey;
-    this.processVariables = processVariables;    
+    this.processVariables = processVariables;
+    this.tenantId = tenantId;
   }
 
   public ProcessInstance execute(CommandContext commandContext) {
@@ -52,7 +55,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
     }
     
     MessageEventSubscriptionEntity messageEventSubscription = commandContext.getEventSubscriptionEntityManager()
-      .findMessageStartEventSubscriptionByName(messageName);
+      .findMessageStartEventSubscriptionByName(messageName, tenantId);
     
     if(messageEventSubscription == null) {
       throw new ActivitiObjectNotFoundException("Cannot start process instance by message: no subscription to message with name '"+messageName+"' found.", MessageEventSubscriptionEntity.class);

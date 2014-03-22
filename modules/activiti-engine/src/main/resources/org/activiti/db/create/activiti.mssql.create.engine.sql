@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.15-SNAPSHOT', 1);
+values ('schema.version', '5.16-SNAPSHOT', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.15-SNAPSHOT)', 1);
+values ('schema.history', 'create(5.16-SNAPSHOT)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -167,6 +167,8 @@ create table ACT_RU_EVENT_SUBSCR (
     ACTIVITY_ID_ nvarchar(64),
     CONFIGURATION_ nvarchar(255),
     CREATED_ datetime not null,
+    PROC_DEF_ID_ nvarchar(64),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 

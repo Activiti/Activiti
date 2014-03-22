@@ -358,6 +358,12 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
           propertiesNode.put(PROPERTY_ERRORREF, errorDefinition.getErrorCode());
         }
         
+      } else if (eventDefinition instanceof MessageEventDefinition) {
+        MessageEventDefinition messageDefinition = (MessageEventDefinition) eventDefinition;
+        if (StringUtils.isNotEmpty(messageDefinition.getMessageRef())) {
+          propertiesNode.put(PROPERTY_MESSAGEREF, messageDefinition.getMessageRef());
+        }
+        
       } else if (eventDefinition instanceof SignalEventDefinition) {
         SignalEventDefinition signalDefinition = (SignalEventDefinition) eventDefinition;
         if (StringUtils.isNotEmpty(signalDefinition.getSignalRef())) {

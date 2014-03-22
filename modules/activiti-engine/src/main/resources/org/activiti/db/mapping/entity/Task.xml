@@ -268,7 +268,7 @@
   </sql>
   
   <sql id="commonSelectTaskByQueryCriteriaSql">
-    <if test="candidateUser != null || candidateGroups != null">
+    <if test="candidateUser != null || candidateGroups != null || bothCandidateAndAssigned">
       inner join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = RES.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="var">
@@ -498,6 +498,13 @@
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>
+      <choose>
+        <when test="bothCandidateAndAssigned">
+          <if test="userIdForCandidateAndAssignee != null">
+            and (RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee} or (RES.ASSIGNEE_ is null and I.USER_ID_ = #{userIdForCandidateAndAssignee} or I.GROUP_ID_ IN (select g.GROUP_ID_ from ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{userIdForCandidateAndAssignee} ) ) )
+          </if>
+        </when>
+      </choose>
     </where>
   </sql>
   

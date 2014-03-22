@@ -809,6 +809,74 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         
         
         
+        <!-- //////////////////////////////////////// signal start events -->
+        
+        <section id="bpmnSignalStartEvent">
+
+            <title>Signal Start Event</title>
+            <section id="bpmnSignalStartEventDescription">
+
+            <title>Description</title>
+    
+            <para>
+                A <link linkend="bpmnSignalEventDefinition">signal</link> start event can be used to start a process instance using a named signal. 
+                The signal can be 'fired' from within a process instance using the intermediary signal throw event or through the API
+                (<emphasis>runtimService.signalEventReceivedXXX</emphasis> methods). In both cases, all process definitions that have
+                a signal start event with the same name will be started.
+            </para>
+            
+            <para>
+                Note that in both cases, it is also possible to chose between a synchronous and asynchronous starting of the process instances.
+            </para>
+            
+            <para>
+                The <code>signalName</code> that must be passed in the API is the name given in the <code>name</code> attribute of the <code>signal</code> element referenced by the <code>signalRef</code>
+                attribute of the <code>signalEventDefinition</code>.
+            </para> 
+    
+          </section>
+
+            <section id="signalStartEventGraphicalNotation">
+
+              <title>Graphical notation</title>
+
+              <para>
+                A signal start event is visualized as a circle with a signal event symbol. The symbol is unfilled, to visualize the catching (receiving) behavior. 
+                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.start.signal.event.png"/></imageobject></mediaobject>
+              </para>
+
+            </section>
+
+            <section id="signalStartEventXml">
+
+        <title>XML representation</title>
+
+        <para>
+          The XML representation of a message start event is the normal
+          start event declaration with a messageEventDefinition child-element:
+          
+          <programlisting>
+    &lt;signal id=&quot;theSignal&quot; name=&quot;The Signal&quot; /&gt;
+
+    &lt;process id=&quot;processWithSignalStart1&quot;&gt;
+        &lt;startEvent id=&quot;theStart&quot;&gt;
+          &lt;signalEventDefinition id=&quot;theSignalEventDefinition&quot; signalRef=&quot;theSignal&quot;  /&gt;
+        &lt;/startEvent&gt;
+        &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;theTask&quot; /&gt;
+        &lt;userTask id=&quot;theTask&quot; name=&quot;Task in process A&quot; /&gt;
+        &lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;theTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+        &lt;endEvent id=&quot;theEnd&quot; /&gt;
+    &lt;/process&gt;</programlisting>
+        
+        </para>
+         
+
+      </section>
+
+        </section>
+        
+        
+        
          <!-- //////////////////////////////////////// error start events -->
         
         <section id="bpmnErrorStartEvent">
@@ -3922,51 +3990,50 @@ public class StartProcessInstanceTestDelegateWithInjection {
 		      <table>
 		        <title>Mail server configuration</title>
             <tgroup cols='3'>
-            <thead>
-              <row>
-                <entry>Property</entry>
-                <entry>Required?</entry>
-                <entry>Description</entry>
-              </row>
-            </thead>
-            <tbody>
-		          <row>
-		            <entry>mailServerHost</entry>
-		            <entry>no</entry>
-		            <entry>The hostname of your mail server (e.g. mail.mycorp.com). Default is <literal>localhost</literal></entry>
-		          </row>
-		          <row>
-                <entry>mailServerPort</entry>
-                <entry>yes, if not on the default port</entry>
-                <entry>The port for SMTP traffic on the mail server. The default is <emphasis>25</emphasis></entry>
-              </row>
-              <row>
-                <entry>mailServerDefaultFrom</entry>
-                <entry>no</entry>
-                <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>activiti@activiti.org</emphasis></entry>
-              </row>
-              <row>
-                <entry>mailServerUsername</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
-              </row>
-              <row>
-                <entry>mailServerPassword</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
-              </row>
-              <row>
-                <entry>mailServerUseSSL</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers require ssl communication. By default set to false.</entry>
-              </row> 
-              <row>
-                <entry>mailServerUseTLS</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers (for instance gmail) require TLS communication. By default set to false.</entry>
-              </row> 
-            </tbody>
-            </tbody>
+              <thead>
+                <row>
+                  <entry>Property</entry>
+                  <entry>Required?</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+  		          <row>
+  		            <entry>mailServerHost</entry>
+  		            <entry>no</entry>
+  		            <entry>The hostname of your mail server (e.g. mail.mycorp.com). Default is <literal>localhost</literal></entry>
+  		          </row>
+  		          <row>
+                  <entry>mailServerPort</entry>
+                  <entry>yes, if not on the default port</entry>
+                  <entry>The port for SMTP traffic on the mail server. The default is <emphasis>25</emphasis></entry>
+                </row>
+                <row>
+                  <entry>mailServerDefaultFrom</entry>
+                  <entry>no</entry>
+                  <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>activiti@activiti.org</emphasis></entry>
+                </row>
+                <row>
+                  <entry>mailServerUsername</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
+                </row>
+                <row>
+                  <entry>mailServerPassword</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
+                </row>
+                <row>
+                  <entry>mailServerUseSSL</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers require ssl communication. By default set to false.</entry>
+                </row> 
+                <row>
+                  <entry>mailServerUseTLS</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers (for instance gmail) require TLS communication. By default set to false.</entry>
+                </row> 
+              </tbody>
             </tgroup>
           </table>
 		    </para>		  
@@ -6092,4 +6159,48 @@ Exactly the same way, the list of groups that is configured as a potential start
    </programlisting>
 </para>
 </section>	
+
+<section id="dataobjects">
+      <title>Data objects</title>
+      <link linkend="experimental">
+      <emphasis role="bold">[EXPERIMENTAL]</emphasis>
+    </link>
+    <para>
+      BPMN provides the possibility to define data objects as part of a process or sub process element. According to the BPMN specification it's possible to include complex XML structures
+      that might be imported from XSD definitions. As a first start to support data objects in Activiti the folowing XSD types are supported:
+    </para>
+    <itemizedlist>
+      <programlisting>
+        &lt;dataObject id="dObj1" name="StringTest" itemSubjectRef="xsd:string"/&gt;
+      </programlisting>
+      <programlisting>
+        &lt;dataObject id="dObj2" name="BooleanTest" itemSubjectRef="xsd:boolean"/&gt;
+      </programlisting>
+      <programlisting>
+        &lt;dataObject id="dObj3" name="DateTest" itemSubjectRef="xsd:datetime"/&gt;
+      </programlisting>
+      <programlisting>
+        &lt;dataObject id="dObj4" name="DoubleTest" itemSubjectRef="xsd:double"/&gt;
+      </programlisting>
+      <programlisting>
+        &lt;dataObject id="dObj5" name="IntegerTest" itemSubjectRef="xsd:int"/&gt;
+      </programlisting>
+      <programlisting>
+        &lt;dataObject id="dObj6" name="LongTest" itemSubjectRef="xsd:long"/&gt;
+      </programlisting>
+    </itemizedlist>
+    <para>
+      The data object definitions will be automatically converted to process variables using the 'name' attribute value as the name for the new variable.
+      In addition to the definition of the data object Activiti also provides an extension element to assign a default value to the variable. The following BPMN snippet provides an example:
+    </para>
+    <programlisting>
+        &lt;process id="dataObjectScope" name="Data Object Scope" isExecutable="true"&gt;
+          &lt;dataObject id="dObj123" name="StringTest123" itemSubjectRef="xsd:string"&gt;
+            &lt;extensionElements&gt;
+              &lt;activiti:value&gt;Testing123&lt;/activiti:value&gt;
+            &lt;/extensionElements&gt;
+          &lt;/dataObject&gt;
+      </programlisting>
+</section>
+
 </chapter>

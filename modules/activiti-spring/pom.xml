@@ -9,7 +9,7 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-root</artifactId>
         <relativePath>../..</relativePath>
-        <version>5.15-SNAPSHOT</version>
+        <version>5.16-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -17,6 +17,9 @@
         <activiti.artifact>
             org.activiti.spring
         </activiti.artifact>
+        <activiti.osgi.import.additional>
+          org.springframework.test.context*;resolution:=optional,
+        </activiti.osgi.import.additional>
     </properties>
 
     <build>

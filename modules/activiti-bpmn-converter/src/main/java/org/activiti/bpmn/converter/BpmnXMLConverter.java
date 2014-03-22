@@ -67,14 +67,20 @@ import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BooleanDataObject;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.DateDataObject;
+import org.activiti.bpmn.model.DoubleDataObject;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.IntegerDataObject;
+import org.activiti.bpmn.model.LongDataObject;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.StringDataObject;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TextAnnotation;
 import org.apache.commons.lang3.StringUtils;
@@ -126,6 +132,14 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     
     // connectors
     addConverter(SequenceFlowXMLConverter.getXMLType(), SequenceFlowXMLConverter.getBpmnElementType(), SequenceFlowXMLConverter.class);
+    
+    // data objects
+    addConverter(ValuedDataObjectXMLConverter.getXMLType(), StringDataObject.class, ValuedDataObjectXMLConverter.class);
+    addConverter(ValuedDataObjectXMLConverter.getXMLType(), BooleanDataObject.class, ValuedDataObjectXMLConverter.class);
+    addConverter(ValuedDataObjectXMLConverter.getXMLType(), IntegerDataObject.class, ValuedDataObjectXMLConverter.class);
+    addConverter(ValuedDataObjectXMLConverter.getXMLType(), LongDataObject.class, ValuedDataObjectXMLConverter.class);
+    addConverter(ValuedDataObjectXMLConverter.getXMLType(), DoubleDataObject.class, ValuedDataObjectXMLConverter.class);
+    addConverter(ValuedDataObjectXMLConverter.getXMLType(), DateDataObject.class, ValuedDataObjectXMLConverter.class);
     
     // catch, throw and boundary event
     addConverter(CatchEventXMLConverter.getXMLType(), CatchEventXMLConverter.getBpmnElementType(), CatchEventXMLConverter.class);

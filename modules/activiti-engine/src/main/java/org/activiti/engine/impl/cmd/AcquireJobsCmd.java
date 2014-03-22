@@ -18,12 +18,12 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.util.ClockUtil;
 
 
 /**
@@ -79,7 +79,7 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
   protected void lockJob(JobEntity job, String lockOwner, int lockTimeInMillis) {    
     job.setLockOwner(lockOwner);
     GregorianCalendar gregorianCalendar = new GregorianCalendar();
-    gregorianCalendar.setTime(ClockUtil.getCurrentTime());
+    gregorianCalendar.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
     gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
     job.setLockExpirationTime(gregorianCalendar.getTime());    
   }

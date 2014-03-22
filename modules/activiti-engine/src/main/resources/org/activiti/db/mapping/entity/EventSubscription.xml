@@ -18,6 +18,10 @@
     delete from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
+  <delete id="deleteEventSubscriptionsForProcessDefinition" parameterType="string">
+    delete from ${prefix}ACT_RU_EVENT_SUBSCR where PROC_DEF_ID_ = #{processDefinitionId}
+  </delete>
+  
   <!-- RESULTMAP -->
 
   <resultMap id="eventSubscriptionResultMap" type="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
@@ -29,7 +33,9 @@
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
     <result property="configuration" column="CONFIGURATION_" jdbcType="VARCHAR" />
-    <result property="created" column="CREATED_" jdbcType="TIMESTAMP" />           
+    <result property="created" column="CREATED_" jdbcType="TIMESTAMP" />   
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />     
     <discriminator javaType="string" column="EVENT_TYPE_">
       <case value="message" resultMap="messageResultMap"/> 
       <case value="signal" resultMap="signalResultMap"/> 
@@ -80,17 +86,29 @@
       </if>
       <if test="eventName != null">
         and RES.EVENT_NAME_ = #{eventName}
-      </if>       
+      </if>  
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{parameter.tenantId}
+      </if>  
+      <if test="tenantId == null">
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>        
     </where>
   </sql>
   
   <select id="selectSignalEventSubscriptionsByEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR EVT
-    inner join ${prefix}ACT_RU_EXECUTION EXC on EVT.EXECUTION_ID_ = EXC.ID_
-    where (EVENT_TYPE_ = 'signal')
-    	and (EVENT_NAME_ = #{parameter})
-    	and EXC.SUSPENSION_STATE_ = 1
+    left outer join ${prefix}ACT_RU_EXECUTION EXC on EVT.EXECUTION_ID_ = EXC.ID_
+    where EVENT_TYPE_ = 'signal'
+    	and EVENT_NAME_ = #{parameter.eventName}
+    	and (EVT.EXECUTION_ID_ is null OR (EVT.EXECUTION_ID_ is not null AND EXC.SUSPENSION_STATE_ = 1) )
+    <if test="parameter.tenantId != null">
+        and EVT.TENANT_ID_ = #{parameter.tenantId}
+    </if>  
+    <if test="parameter.tenantId == null">
+        and (EVT.TENANT_ID_ = '' or EVT.TENANT_ID_ is null)
+    </if>   
   </select>
   
    <select id="selectSignalEventSubscriptionsByProcessInstanceAndEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
@@ -142,6 +160,12 @@
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{parameter.eventType})
     	and (CONFIGURATION_ = #{parameter.configuration})
+     <if test="parameter.tenantId != null">
+        and TENANT_ID_ = #{parameter.tenantId}
+    </if>  
+    <if test="parameter.tenantId == null">
+        and (TENANT_ID_ = '' or TENANT_ID_ is null)
+    </if>   	
   </select>
   
   <select id="selectEventSubscriptionsByName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
@@ -149,6 +173,12 @@
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{parameter.eventType})
     	and (EVENT_NAME_ = #{parameter.eventName})
+    <if test="parameter.tenantId != null">
+        and TENANT_ID_ = #{parameter.tenantId}
+    </if>  
+    <if test="parameter.tenantId == null">
+        and (TENANT_ID_ = '' or TENANT_ID_ is null)
+    </if>   	
   </select>
   
   <select id="selectEventSubscriptionsByNameAndExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
@@ -159,12 +189,18 @@
     	and (EXECUTION_ID_ = #{parameter.executionId})
   </select>
   
-   <select id="selectMessageStartEventSubscriptionByName" resultMap="eventSubscriptionResultMap" parameterType="string">
+   <select id="selectMessageStartEventSubscriptionByName" resultMap="eventSubscriptionResultMap" parameterType="map">
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = 'message')
-    	and (EVENT_NAME_ = #{parameter})
+    	and (EVENT_NAME_ = #{eventName})
     	and EXECUTION_ID_ is null
+    <if test="tenantId != null">
+        and TENANT_ID_ = #{tenantId}
+    </if>  
+    <if test="tenantId == null">
+        and (TENANT_ID_ = '' or TENANT_ID_ is null)
+    </if>   	
   </select>
   
   
@@ -180,7 +216,9 @@
            	PROC_INST_ID_,
            	ACTIVITY_ID_,
            	CONFIGURATION_,
-           	CREATED_
+           	CREATED_,
+           	PROC_DEF_ID_,
+           	TENANT_ID_
     )
     values (#{id, jdbcType=VARCHAR},
             1,
@@ -190,7 +228,9 @@
             #{processInstanceId, jdbcType=VARCHAR},
             #{activityId, jdbcType=VARCHAR},
             #{configuration, jdbcType=VARCHAR},
-            #{created, jdbcType=TIMESTAMP}                   
+            #{created, jdbcType=TIMESTAMP},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}                  
     )
   </insert>
 
@@ -205,7 +245,9 @@
        PROC_INST_ID_ = #{processInstanceId, jdbcType=INTEGER},
        ACTIVITY_ID_ = #{activityId, jdbcType=INTEGER},
        CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},  
-       CREATED_ = #{created, jdbcType=TIMESTAMP}
+       CREATED_ = #{created, jdbcType=TIMESTAMP},
+       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
+       TENANT_ID_ = #{tenantId, jdbcType-VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
@@ -223,7 +265,9 @@
            	PROC_INST_ID_,
            	ACTIVITY_ID_,
            	CONFIGURATION_,
-           	CREATED_
+           	CREATED_,
+           	PROC_DEF_ID_,
+           	TENANT_ID_
     )
     values (#{id, jdbcType=VARCHAR},
             1,
@@ -233,7 +277,9 @@
             #{processInstanceId, jdbcType=VARCHAR},
             #{activityId, jdbcType=VARCHAR},
             #{configuration, jdbcType=VARCHAR},
-            #{created, jdbcType=TIMESTAMP}          
+            #{created, jdbcType=TIMESTAMP},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}         
     )
   </insert>
 
@@ -248,7 +294,8 @@
        PROC_INST_ID_ = #{processInstanceId, jdbcType=INTEGER},
        ACTIVITY_ID_ = #{activityId, jdbcType=INTEGER},
        CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},  
-       CREATED_ = #{created, jdbcType=TIMESTAMP}
+       CREATED_ = #{created, jdbcType=TIMESTAMP},
+       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
@@ -266,7 +313,9 @@
            	PROC_INST_ID_,
            	ACTIVITY_ID_,
            	CONFIGURATION_,
-           	CREATED_
+           	CREATED_,
+           	PROC_DEF_ID_,
+           	TENANT_ID_
     )
     values (#{id, jdbcType=VARCHAR},
             1,
@@ -276,7 +325,9 @@
             #{processInstanceId, jdbcType=VARCHAR},
             #{activityId, jdbcType=VARCHAR},
             #{configuration, jdbcType=VARCHAR},
-            #{created, jdbcType=TIMESTAMP}        
+            #{created, jdbcType=TIMESTAMP},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}      
     )
   </insert>
   
@@ -291,11 +342,20 @@
        PROC_INST_ID_ = #{processInstanceId, jdbcType=INTEGER},
        ACTIVITY_ID_ = #{activityId, jdbcType=INTEGER},
        CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},  
-       CREATED_ = #{created, jdbcType=TIMESTAMP}
+       CREATED_ = #{created, jdbcType=TIMESTAMP},
+       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
   
+  <!--  tenantId update -->
+   <update id="updateTenantIdOfEventSubscriptions" parameterType="map">
+    update ${prefix}ACT_RU_EVENT_SUBSCR
+    <set>
+      TENANT_ID_ = #{newTenantId, jdbcType=VARCHAR}
+    </set>
+    where TENANT_ID_ = #{oldTenantId, jdbcType=VARCHAR}
+  </update>
 
 </mapper>

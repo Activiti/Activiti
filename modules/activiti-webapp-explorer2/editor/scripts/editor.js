@@ -125,8 +125,6 @@ ORYX = Object.extend(ORYX, {
 			ORYX.Log.__appenders.each(function(appender) {
 				appender.append(message);
 			});
-			
-			alert(message);
 		},
 		
 		addAppender: function(appender) {

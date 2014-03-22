@@ -43,7 +43,7 @@
   
   <!-- MODEL DELETE -->
   
-  <delete id="deleteModel" parameterType="string">
+  <delete id="deleteModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
     delete from ${prefix}ACT_RE_MODEL where ID_ = #{id} and REV_ = #{revision}
   </delete>
 

@@ -6,13 +6,13 @@
 
     <para>
         Companies often already have a user and group store in the form of an LDAP system.
-        Since version 5.15-SNAPSHOT, Activiti offers an out-of-the-box solution for easily configuring 
+        Since version 5.14, Activiti offers an out-of-the-box solution for easily configuring 
         how Activiti should connect with an LDAP system.  
     </para>
     
     <para>
-       Before Activiti 5.15-SNAPSHOT, it was already possible to integrate LDAP with Activiti.
-       However, as of 5.15-SNAPSHOT, the configuration has been simplified a lot. However, the 'old' way
+       Before Activiti 5.14, it was already possible to integrate LDAP with Activiti.
+       However, as of 5.14, the configuration has been simplified a lot. However, the 'old' way
        of configuring LDAP still works. More specifically, the simplified configuration is
        just a wrapper on top of the 'old' infrastructure.
     </para>

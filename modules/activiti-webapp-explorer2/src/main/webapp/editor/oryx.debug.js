@@ -97,8 +97,6 @@ XMLNS = {
 	SCHEMA: ""
 };
 
-//TODO kann kickstart sich vielleicht auch um die erzeugung von paketen/
-// namespaces k�mmern? z.b. requireNamespace("ORYX.Core.SVG");
 var Kickstart = {
  	started: false,
 	callbacks: [],
@@ -2240,6 +2238,7 @@ ORYX = Object.extend(ORYX, {
 			messageParts[0] = (new Date()).getTime() + " "
 				+ prefix + " " + messageParts[0];
 			var message = printf.apply(null, messageParts);
+			
 			
 			ORYX.Log.__appenders.each(function(appender) {
 				appender.append(message);
@@ -11565,8 +11564,7 @@ ORYX.Editor = {
 			
 			var content =  "<div id='editor_header'>" +
                 "<div id='header_logo_image'>" +                
-                    "<img src='../explorer/src/img/signavio/smoky/logo2.png' border=\"0\" usemap=\"#kisbpmmap\"/>" + 
-                    "<map id=\"kisbpmmap\" name=\"kisbpmmap\"><area shape=\"rect\" alt=\"kisbpm.com\" title=\"kisbpm.com\" coords=\"15,2,322,44\" href=\"http://kisbpm.com\" target=\"_blank\" /></map>" +
+                    "<img src='../explorer/src/img/signavio/smoky/logo2.png' border=\"0\"/>" +
                 "</div>" +
                 "<span class='openid " + (publicText == user ? "not" : "") + "'>" + 
                   (unescape(user)) + 
@@ -15497,6 +15495,7 @@ ORYX.Core.Node = {
 		
         var svgNode = svgDocument.getElementsByTagName("g")[0]; //outer most g node
         // set all required attributes
+        
         var attributeTitle = svgDocument.ownerDocument.createAttributeNS(null, "title");
         attributeTitle.nodeValue = this.getStencil().title();
         svgNode.setAttributeNode(attributeTitle);

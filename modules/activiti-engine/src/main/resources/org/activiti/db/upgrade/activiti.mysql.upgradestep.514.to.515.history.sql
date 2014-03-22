@@ -98,5 +98,8 @@ alter table ACT_HI_ACTINST
     add TENANT_ID_ varchar(255) default ''; 
     
 alter table ACT_HI_TASKINST
-    add TENANT_ID_ varchar(255) default '';       
+    add TENANT_ID_ varchar(255) default '';      
+    
+alter table ACT_HI_ACTINST
+    MODIFY ASSIGNEE_ varchar(255);
 

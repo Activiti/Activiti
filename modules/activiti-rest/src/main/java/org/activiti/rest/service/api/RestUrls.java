@@ -75,6 +75,7 @@ public final class RestUrls {
   public static final String SEGMENT_SOURCE = "source";
   public static final String SEGMENT_SOURCE_EXTRA = "source-extra";
   public static final String SEGMENT_DIAGRAM = "diagram";
+  public static final String SEGMENT_SIGNALS = "signals";
   
   /**
    * URL template for the deployment collection: <i>repository/deployments</i>
@@ -509,6 +510,11 @@ public final class RestUrls {
    */
   public static final String[] URL_GROUP_MEMBERSHIP = {SEGMENT_IDENTITY_RESOURCES, SEGMENT_GROUPS, "{0}", SEGMENT_MEMBERS, "{1}"};
   
+  
+  /**
+   * URL template for a signals <i>runtime/signals</i>
+   */
+  public static final String[] URL_SIGNALS = {SEGMENT_RUNTIME_RESOURCES, SEGMENT_SIGNALS};
   /**
    * Creates an url based on the passed fragments and replaces any placeholders with the given arguments. The
    * placeholders are folowing the {@link MessageFormat} convention 

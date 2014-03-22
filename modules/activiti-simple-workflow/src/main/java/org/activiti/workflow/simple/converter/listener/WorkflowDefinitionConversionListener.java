@@ -12,8 +12,6 @@
  */
 package org.activiti.workflow.simple.converter.listener;
 
-import java.io.Serializable;
-
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
@@ -28,7 +26,7 @@ import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
  * 
  * @author Joram Barrez
  */
-public interface WorkflowDefinitionConversionListener extends Serializable {
+public interface WorkflowDefinitionConversionListener {
 
   /**
    * Called when the {@link WorkflowDefinitionConversion} is initialized,

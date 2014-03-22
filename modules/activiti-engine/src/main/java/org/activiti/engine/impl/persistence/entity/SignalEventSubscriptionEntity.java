@@ -21,6 +21,7 @@ import org.activiti.bpmn.model.Signal;
 
 /**
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class SignalEventSubscriptionEntity extends EventSubscriptionEntity {
   

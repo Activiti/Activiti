@@ -157,7 +157,7 @@
     VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.VAR_TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
     VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
     VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, 
-    VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT2_, VAR.LONG_ as VAR_LONG_
+    VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT2_, VAR.LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, VAR.LONG_ as VAR_LONG_
     ${limitBetween}
     <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/> 
     ${orderBy}
@@ -175,7 +175,7 @@
     TEMPVAR_ID_ as VAR_ID_, TEMPVAR_NAME_ as VAR_NAME_, TEMPVAR_TYPE_ as VAR_TYPE_, TEMPVAR_REV_ as VAR_REV_,
     TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
     TEMPVAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, TEMPVAR_DOUBLE_ as VAR_DOUBLE_, 
-    TEMPVAR_TEXT_ as VAR_TEXT_, TEMPVAR_TEXT2_ as VAR_TEXT2_, TEMPVAR_LONG_ as VAR_LONG_
+    TEMPVAR_TEXT_ as VAR_TEXT_, TEMPVAR_TEXT2_ as VAR_TEXT2_, TEMPVAR_LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, TEMPVAR_LONG_ as VAR_LONG_
     ${limitOuterJoinBetween}
     RES.ID_ as TEMPRES_ID_, RES.BUSINESS_KEY_ as TEMPRES_BUSINESS_KEY_,
     RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
@@ -186,7 +186,7 @@
     VAR.ID_ as TEMPVAR_ID_, VAR.NAME_ as TEMPVAR_NAME_, VAR.VAR_TYPE_ as TEMPVAR_TYPE_, VAR.REV_ as TEMPVAR_REV_,
     VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
     VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 
-    VAR.TEXT_ as TEMPVAR_TEXT_, VAR.TEXT2_ as TEMPVAR_TEXT2_, VAR.LONG_ as TEMPVAR_LONG_
+    VAR.TEXT_ as TEMPVAR_TEXT_, VAR.TEXT2_ as TEMPVAR_TEXT2_, VAR.LAST_UPDATED_TIME_ as TEMPVAR_LAST_UPDATED_TIME_, VAR.LONG_ as TEMPVAR_LONG_
     <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/> 
     ${orderBy}
     ${limitAfter}
@@ -244,26 +244,6 @@
         and DEF.KEY_ not like #{procDefKey}
       </foreach>
       </if>
-      
-      <!-- DEPRECATED : TO BE REMOVED IN 5.11 -->
-      <if test="startDateOn">
-        and RES.START_TIME_ &gt;= #{startDateOnBegin}
-        and RES.START_TIME_ &lt;= #{startDateOnEnd}
-      </if>
-      <!-- DEPRECATED : TO BE REMOVED IN 5.11 -->
-      <if test="finishDateOn">
-        and RES.END_TIME_ &gt;= #{finishDateOnBegin}
-        and RES.END_TIME_ &lt;= #{finishDateOnEnd}
-      </if>
-      <!-- DEPRECATED : TO BE REMOVED IN 5.11 -->
-      <if test="finishDateBy">
-        and RES.END_TIME_ &lt;= #{finishDateBy}
-      </if>
-      <!-- DEPRECATED : TO BE REMOVED IN 5.11 -->
-      <if test="startDateBy">
-        and RES.START_TIME_ &gt;= #{startDateBy}
-      </if>
-
       <if test="unfinished">
         and RES.END_TIME_ IS NULL
       </if>

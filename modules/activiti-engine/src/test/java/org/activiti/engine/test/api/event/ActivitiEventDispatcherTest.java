@@ -147,6 +147,7 @@ public class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 		assertTrue(listener.isCreateReceived());
 		assertFalse(listener.isUpdateReceived());
 		assertFalse(listener.isCustomReceived());
+		assertFalse(listener.isInitializeReceived());
 		assertFalse(listener.isDeleteReceived());
 		listener.reset();
 

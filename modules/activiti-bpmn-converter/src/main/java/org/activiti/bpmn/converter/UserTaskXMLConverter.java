@@ -147,10 +147,6 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     }
 
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-      UserTask userTask = (UserTask) parentElement;
-      if (StringUtils.isNotEmpty(userTask.getAssignee())) {
-        model.addProblem("No duplicate assignee and humanPerformer definition allowed", xtr);
-      }
       String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
       if (StringUtils.isNotEmpty(resourceElement) && "resourceAssignmentExpression".equals(resourceElement)) {
         String expression = XMLStreamReaderUtil.moveDown(xtr);

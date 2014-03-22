@@ -34,7 +34,7 @@ public class BpmnModel {
 	protected Map<String, GraphicInfo> locationMap = new LinkedHashMap<String, GraphicInfo>();
 	protected Map<String, GraphicInfo> labelLocationMap = new LinkedHashMap<String, GraphicInfo>();
 	protected Map<String, List<GraphicInfo>> flowLocationMap = new LinkedHashMap<String, List<GraphicInfo>>();
-	protected Map<String, Signal> signalMap = new LinkedHashMap<String, Signal>();
+	protected List<Signal> signals = new ArrayList<Signal>();
 	protected Map<String, Message> messageMap = new LinkedHashMap<String, Message>();
 	protected Map<String, String> errorMap = new LinkedHashMap<String, String>();
 	protected Map<String, ItemDefinition> itemDefinitionMap = new LinkedHashMap<String, ItemDefinition>();
@@ -42,8 +42,6 @@ public class BpmnModel {
 	protected List<Import> imports = new ArrayList<Import>();
 	protected List<Interface> interfaces = new ArrayList<Interface>();
 	protected List<Artifact> globalArtifacts = new ArrayList<Artifact>();
-	protected List<Problem> problems = new ArrayList<Problem>();
-	protected List<Warning> warnings = new ArrayList<Warning>();
 	protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
 	protected String targetNamespace;
 	protected int nextFlowIdCounter = 1;
@@ -252,30 +250,33 @@ public class BpmnModel {
 	}
 	
   public Collection<Signal> getSignals() {
-    return signalMap.values();
+  	return signals;
   }
   
   public void setSignals(Collection<Signal> signalList) {
     if (signalList != null) {
-      signalMap.clear();
-      for (Signal signal : signalList) {
-        addSignal(signal);
-      }
+      signals.clear();
+      signals.addAll(signalList);
     }
   }
   
   public void addSignal(Signal signal) {
-    if (signal != null && StringUtils.isNotEmpty(signal.getId())) {
-      signalMap.put(signal.getId(), signal);
+    if (signal != null) {
+    	signals.add(signal);
     }
   }
   
   public boolean containsSignalId(String signalId) {
-    return signalMap.containsKey(signalId);
+    return getSignal(signalId) != null;
   }
   
   public Signal getSignal(String id) {
-    return signalMap.get(id);
+    for (Signal signal : signals) {
+    	if (id.equals(signal.getId())) {
+    		return signal;
+    	}
+    }
+    return null;
   }
 
   public Collection<Message> getMessages() {
@@ -397,31 +398,4 @@ public class BpmnModel {
     this.targetNamespace = targetNamespace;
   }
   
-  public void addProblem(String errorMessage, XMLStreamReader xtr) {
-    problems.add(new Problem(errorMessage, xtr));
-  }
-  
-  public void addProblem(String errorMessage, BaseElement element) {
-    problems.add(new Problem(errorMessage, element));
-  }
-  
-  public void addProblem(String errorMessage, GraphicInfo graphicInfo) {
-    problems.add(new Problem(errorMessage, graphicInfo));
-  }
-  
-  public List<Problem> getProblems() {
-    return problems;
-  }
-  
-  public void addWarning(String warningMessage, XMLStreamReader xtr) {
-    warnings.add(new Warning(warningMessage, xtr));
-  }
-  
-  public void addWarning(String warningMessage, BaseElement element) {
-    warnings.add(new Warning(warningMessage, element));
-  }
-  
-  public List<Warning> getWarning() {
-    return warnings;
-  }
 }
