@@ -323,23 +323,29 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
         extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
       }
-      if (!isBlacklisted(extensionAttribute, blackLists))
+      if (!isBlacklisted(extensionAttribute, blackLists)) {
         element.addAttribute(extensionAttribute);
+      }
     }
   }
 
+  public static void writeCustomAttributes(Collection<List<ExtensionAttribute>> attributes, XMLStreamWriter xtw, List<ExtensionAttribute>... blackLists) throws XMLStreamException {
+    writeCustomAttributes(attributes, xtw, new LinkedHashMap<String, String>(), blackLists);
+  }
+  
   /**
    * write attributes to xtw (except blacklisted)
    * @param attributes
    * @param xtw
    * @param blackList
    */
-  public static void writeCustomAttributes(Collection<List<ExtensionAttribute>> attributes, XMLStreamWriter xtw, List<ExtensionAttribute>... blackLists) throws XMLStreamException {
-    Map<String, String> localNamespaces = new LinkedHashMap<String, String>();
+  public static void writeCustomAttributes(Collection<List<ExtensionAttribute>> attributes, XMLStreamWriter xtw, Map<String, String> namespaceMap,
+      List<ExtensionAttribute>... blackLists) throws XMLStreamException {
+    
     for (List<ExtensionAttribute> attributeList : attributes) {
       if (attributeList != null && !attributeList.isEmpty()) {
         for (ExtensionAttribute attribute : attributeList) {
-          if ( !isBlacklisted(attribute, blackLists)) {
+          if (!isBlacklisted(attribute, blackLists)) {
             if (attribute.getNamespacePrefix() == null) {
               if (attribute.getNamespace() == null)
                 xtw.writeAttribute(attribute.getName(), attribute.getValue());
@@ -347,8 +353,8 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
                 xtw.writeAttribute(attribute.getNamespace(), attribute.getName(), attribute.getValue());
               }
             } else {
-              if (!localNamespaces.containsKey(attribute.getNamespacePrefix())) {
-                localNamespaces.put(attribute.getNamespacePrefix(), attribute.getNamespace());
+              if (!namespaceMap.containsKey(attribute.getNamespacePrefix())) {
+                namespaceMap.put(attribute.getNamespacePrefix(), attribute.getNamespace());
                 xtw.writeNamespace(attribute.getNamespacePrefix(), attribute.getNamespace());
               }
               xtw.writeAttribute(attribute.getNamespacePrefix(), attribute.getNamespace(),
@@ -360,7 +366,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     }
   }
 
-  protected static boolean isBlacklisted(ExtensionAttribute attribute, List<ExtensionAttribute>... blackLists) {
+  public static boolean isBlacklisted(ExtensionAttribute attribute, List<ExtensionAttribute>... blackLists) {
     if (blackLists != null) {
       for (List<ExtensionAttribute> blackList : blackLists) {
         for (ExtensionAttribute blackAttribute : blackList) {

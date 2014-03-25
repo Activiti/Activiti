@@ -18,10 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamReader;
-
-import org.activiti.bpmn.model.parse.Problem;
-import org.activiti.bpmn.model.parse.Warning;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -30,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class BpmnModel {
   
+  protected Map<String, List<ExtensionAttribute>> definitionsAttributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
 	protected List<Process> processes = new ArrayList<Process>();
 	protected Map<String, GraphicInfo> locationMap = new LinkedHashMap<String, GraphicInfo>();
 	protected Map<String, GraphicInfo> labelLocationMap = new LinkedHashMap<String, GraphicInfo>();
@@ -44,7 +41,40 @@ public class BpmnModel {
 	protected List<Artifact> globalArtifacts = new ArrayList<Artifact>();
 	protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
 	protected String targetNamespace;
+	protected List<String> userTaskFormTypes;
+  protected List<String> startEventFormTypes;
 	protected int nextFlowIdCounter = 1;
+	
+	
+	public Map<String, List<ExtensionAttribute>> getDefinitionsAttributes() {
+    return definitionsAttributes;
+  }
+
+  public String getDefinitionsAttributeValue(String namespace, String name) {
+    List<ExtensionAttribute> attributes = getDefinitionsAttributes().get(name);
+    if (attributes != null && !attributes.isEmpty()) {
+      for (ExtensionAttribute attribute : attributes) {
+        if ( namespace.equals(attribute.getNamespace()))
+          return attribute.getValue();
+      }
+    }
+    return null;
+  }
+
+  public void addDefinitionsAttribute(ExtensionAttribute attribute) {
+    if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
+      List<ExtensionAttribute> attributeList = null;
+      if (this.definitionsAttributes.containsKey(attribute.getName()) == false) {
+        attributeList = new ArrayList<ExtensionAttribute>();
+        this.definitionsAttributes.put(attribute.getName(), attributeList);
+      }
+      this.definitionsAttributes.get(attribute.getName()).add(attribute);
+    }
+  }
+
+  public void setDefinitionsAttributes(Map<String, List<ExtensionAttribute>> attributes) {
+    this.definitionsAttributes = attributes;
+  }
 
 	public Process getMainProcess() {
 	  if (getPools().size() > 0) {
@@ -398,4 +428,19 @@ public class BpmnModel {
     this.targetNamespace = targetNamespace;
   }
   
+  public List<String> getUserTaskFormTypes() {
+    return userTaskFormTypes;
+  }
+  
+  public void setUserTaskFormTypes(List<String> userTaskFormTypes) {
+    this.userTaskFormTypes = userTaskFormTypes;
+  }
+  
+  public List<String> getStartEventFormTypes() {
+    return startEventFormTypes;
+  }
+  
+  public void setStartEventFormTypes(List<String> startEventFormTypes) {
+    this.startEventFormTypes = startEventFormTypes;
+  }
 }

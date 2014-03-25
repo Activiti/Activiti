@@ -14,12 +14,15 @@ package org.activiti.bpmn.converter.export;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ExtensionAttribute;
 import org.apache.commons.lang3.StringUtils;
 
 public class DefinitionsRootExport implements BpmnXMLConstants {
@@ -27,7 +30,14 @@ public class DefinitionsRootExport implements BpmnXMLConstants {
   /** default namespaces for definitions */
   protected static final Set<String> defaultNamespaces = new HashSet<String>(
       Arrays.asList(XSI_PREFIX, XSD_PREFIX, ACTIVITI_EXTENSIONS_PREFIX, BPMNDI_PREFIX, OMGDC_PREFIX, OMGDI_PREFIX));
+  
+  protected static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(
+      new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), 
+      new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE), 
+      new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE)
+  );
 
+  @SuppressWarnings("unchecked")
   public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw, String encoding) throws Exception {
     xtw.writeStartDocument(encoding, "1.0");
 
@@ -52,5 +62,7 @@ public class DefinitionsRootExport implements BpmnXMLConstants {
     } else {
       xtw.writeAttribute(TARGET_NAMESPACE_ATTRIBUTE, PROCESS_NAMESPACE);
     }
+    
+    BpmnXMLUtil.writeCustomAttributes(model.getDefinitionsAttributes().values(), xtw, model.getNamespaces(), defaultAttributes);
   }
 }

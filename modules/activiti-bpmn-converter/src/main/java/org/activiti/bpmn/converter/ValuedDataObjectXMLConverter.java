@@ -9,6 +9,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BooleanDataObject;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DateDataObject;
 import org.activiti.bpmn.model.DoubleDataObject;
 import org.activiti.bpmn.model.ExtensionElement;
@@ -29,11 +30,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
   
   protected boolean didWriteExtensionStartElement = false;
   
-  public static String getXMLType() {
-    return ELEMENT_DATA_OBJECT;
-  }
-  
-  public static Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return ValuedDataObject.class;
   }
   
@@ -43,7 +40,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     ValuedDataObject dataObject = null;
     ItemDefinition itemSubjectRef = new ItemDefinition();
 
@@ -82,7 +79,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
       itemSubjectRef.setStructureRef(structureRef);
       dataObject.setItemSubjectRef(itemSubjectRef); 
 
-      parseChildElements(getXMLElementName(), dataObject, xtr);
+      parseChildElements(getXMLElementName(), dataObject, model, xtr);
       
       List<ExtensionElement> valuesElement = dataObject.getExtensionElements().get("value");
       if (valuesElement != null && valuesElement.size() > 0) {
@@ -104,7 +101,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     ValuedDataObject dataObject = (ValuedDataObject) element;
     if (dataObject.getItemSubjectRef() != null && StringUtils.isNotEmpty(dataObject.getItemSubjectRef().getStructureRef())) {
       writeDefaultAttribute(ATTRIBUTE_DATA_ITEM_REF, dataObject.getItemSubjectRef().getStructureRef(), xtw);
@@ -140,6 +137,6 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
 }
