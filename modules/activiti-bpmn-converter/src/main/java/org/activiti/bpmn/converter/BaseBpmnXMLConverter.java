@@ -65,8 +65,6 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   protected Process activeProcess;
   protected Map<String, BaseChildElementParser> childElementParsers = new HashMap<String, BaseChildElementParser>();
   
-  protected boolean didWriteExtensionStartElement = false;
-  
   protected static final List<ExtensionAttribute> defaultElementAttributes = Arrays.asList(
       new ExtensionAttribute(ATTRIBUTE_ID),
       new ExtensionAttribute(ATTRIBUTE_NAME)
@@ -151,7 +149,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     this.model = model;
     
     xtw.writeStartElement(getXMLElementName());
-    didWriteExtensionStartElement = false;
+    boolean didWriteExtensionStartElement = false;
     writeDefaultAttribute(ATTRIBUTE_ID, baseElement.getId(), xtw);
     if (baseElement instanceof FlowElement) {
       writeDefaultAttribute(ATTRIBUTE_NAME, ((FlowElement) baseElement).getName(), xtw);
@@ -195,8 +193,8 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       }
     }
     
-    writeExtensionChildElements(baseElement, xtw);
-    didWriteExtensionStartElement = writeListeners(baseElement, xtw);
+    didWriteExtensionStartElement = writeExtensionChildElements(baseElement, didWriteExtensionStartElement, xtw);
+    didWriteExtensionStartElement = writeListeners(baseElement, didWriteExtensionStartElement, xtw);
     didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(baseElement, didWriteExtensionStartElement, xtw);
     
     if (didWriteExtensionStartElement) {
@@ -219,7 +217,9 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   
   protected abstract void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception;
   
-  protected abstract void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception;
+  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+    return didWriteExtensionStartElement;
+  }
   
   protected abstract void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception;
   
@@ -308,7 +308,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     return BpmnXMLUtil.convertToDelimitedString(stringList);
   }
   
-  protected void writeFormProperties(FlowElement flowElement, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeFormProperties(FlowElement flowElement, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     
     List<FormProperty> propertyList = null;
     if (flowElement instanceof UserTask) {
@@ -360,9 +360,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         }
       }
     }
+    
+    return didWriteExtensionStartElement;
   }
   
-  protected boolean writeListeners(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeListeners(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     return ActivitiListenerExport.writeListeners(element, didWriteExtensionStartElement, xtw);
   }
   

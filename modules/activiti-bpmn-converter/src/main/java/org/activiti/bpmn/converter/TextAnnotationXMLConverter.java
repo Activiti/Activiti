@@ -60,10 +60,6 @@ public class TextAnnotationXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
-  }
-
-  @Override
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     TextAnnotation textAnnotation = (TextAnnotation) element;
     if (StringUtils.isNotEmpty(textAnnotation.getText())) {

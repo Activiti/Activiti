@@ -70,10 +70,6 @@ public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
-  }
-
-  @Override
   protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     ScriptTask scriptTask = (ScriptTask) element;
     if (StringUtils.isNotEmpty(scriptTask.getScript())) {

@@ -18,7 +18,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BaseElement;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -56,10 +55,6 @@ public class AssociationXMLConverter extends BaseBpmnXMLConverter {
     Association association = (Association) element;
     writeDefaultAttribute(ATTRIBUTE_FLOW_SOURCE_REF, association.getSourceRef(), xtw);
     writeDefaultAttribute(ATTRIBUTE_FLOW_TARGET_REF, association.getTargetRef(), xtw);
-  }
-
-  @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
   }
   
   @Override

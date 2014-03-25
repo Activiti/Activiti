@@ -101,7 +101,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     ServiceTask serviceTask = (ServiceTask) element;
     
     if (serviceTask.getCustomProperties().size() > 0) {
@@ -131,6 +131,8 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
     } else {
       didWriteExtensionStartElement = FieldExtensionExport.writeFieldExtensions(serviceTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
     }
+    
+    return didWriteExtensionStartElement;
   }
   
   @Override

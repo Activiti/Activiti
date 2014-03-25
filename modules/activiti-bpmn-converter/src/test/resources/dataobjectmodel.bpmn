@@ -7,6 +7,7 @@
     <dataObject id="dObj4" name="DoubleTest" itemSubjectRef="xsd:double"/>
     <dataObject id="dObj5" name="IntegerTest" itemSubjectRef="xsd:int"/>
     <dataObject id="dObj6" name="LongTest" itemSubjectRef="xsd:long"/>
+    <dataObject id="dObjWithoutType" name="UnknownTypeTest"/>
     <startEvent id="start1"></startEvent>
     <endEvent id="end1"></endEvent>
     <subProcess id="subprocess1" name="subProcess">
