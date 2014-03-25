@@ -139,7 +139,9 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       ExtensionAttribute extensionAttribute = new ExtensionAttribute();
       extensionAttribute.setName(xtr.getAttributeLocalName(i));
       extensionAttribute.setValue(xtr.getAttributeValue(i));
-      extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
+      if (StringUtils.isNotEmpty(xtr.getAttributeNamespace(i))) {
+        extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
+      }
       if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
         extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
       }
@@ -315,7 +317,9 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       ExtensionAttribute extensionAttribute = new ExtensionAttribute();
       extensionAttribute.setName(xtr.getAttributeLocalName(i));
       extensionAttribute.setValue(xtr.getAttributeValue(i));
-      extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
+      if (StringUtils.isNotEmpty(xtr.getAttributeNamespace(i))) {
+        extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
+      }
       if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
         extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
       }

@@ -12,15 +12,15 @@
  */
 package org.activiti.bpmn.converter.export;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class DefinitionsRootExport implements BpmnXMLConstants {
 
@@ -41,9 +41,9 @@ public class DefinitionsRootExport implements BpmnXMLConstants {
     xtw.writeNamespace(BPMNDI_PREFIX, BPMNDI_NAMESPACE);
     xtw.writeNamespace(OMGDC_PREFIX, OMGDC_NAMESPACE);
     xtw.writeNamespace(OMGDI_PREFIX, OMGDI_NAMESPACE);
-    for ( String prefix : model.getNamespaces().keySet()) {
-      if (!defaultNamespaces.contains(prefix))
-        xtw.writeNamespace( prefix, model.getNamespaces().get(prefix));
+    for (String prefix : model.getNamespaces().keySet()) {
+      if (!defaultNamespaces.contains(prefix) && StringUtils.isNotEmpty(prefix))
+        xtw.writeNamespace(prefix, model.getNamespaces().get(prefix));
     }
     xtw.writeAttribute(TYPE_LANGUAGE_ATTRIBUTE, SCHEMA_NAMESPACE);
     xtw.writeAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE, XPATH_NAMESPACE);
