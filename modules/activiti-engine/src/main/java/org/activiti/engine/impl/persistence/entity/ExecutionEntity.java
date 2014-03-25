@@ -966,7 +966,18 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
 
     // update the related tasks
-    for (TaskEntity task: getTasks()) {
+    
+    List<TaskEntity> allTasks = new ArrayList<TaskEntity>();
+    allTasks.addAll(getTasks());
+    
+    List<TaskEntity> cachedTasks = dbSqlSession.findInCache(TaskEntity.class);
+    for (TaskEntity cachedTask : cachedTasks) {
+    	if (cachedTask.getExecutionId().equals(this.getId())) {
+    		allTasks.add(cachedTask);
+    	}
+    }
+    
+    for (TaskEntity task: allTasks) {
       task.setExecutionId(replacedBy.getId());
       task.setExecution(this.replacedBy);         
       
@@ -1377,12 +1388,18 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   public void setTransition(TransitionImpl transition) {
     this.transition = transition;
+    if (replacedBy != null) {
+    	replacedBy.setTransition(transition);
+    }
   }
   public TransitionImpl getTransitionBeingTaken() {
     return transitionBeingTaken;
   }
   public void setTransitionBeingTaken(TransitionImpl transitionBeingTaken) {
     this.transitionBeingTaken = transitionBeingTaken;
+    if (replacedBy != null) {
+    	replacedBy.setTransitionBeingTaken(transitionBeingTaken);
+    }
   }
   public Integer getExecutionListenerIndex() {
     return executionListenerIndex;
