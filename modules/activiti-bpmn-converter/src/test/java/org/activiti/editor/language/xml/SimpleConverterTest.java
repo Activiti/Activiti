@@ -10,6 +10,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.bpmn.model.UserTask;
 import org.junit.Test;
 
 public class SimpleConverterTest extends AbstractConverterTest {
@@ -35,6 +36,7 @@ public class SimpleConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
     assertEquals("simpleProcess", model.getMainProcess().getId());
     assertEquals("Simple process", model.getMainProcess().getName());
+    assertEquals("simple doc", model.getMainProcess().getDocumentation());
     assertEquals(true, model.getMainProcess().isExecutable());
     
     FlowElement flowElement = model.getMainProcess().getFlowElement("flow1");
@@ -52,6 +54,12 @@ public class SimpleConverterTest extends AbstractConverterTest {
     assertTrue(eventDefinition instanceof TimerEventDefinition);
     TimerEventDefinition timerDefinition = (TimerEventDefinition) eventDefinition;
     assertEquals("PT5M", timerDefinition.getTimeDuration());
+    
+    flowElement = model.getMainProcess().getFlowElement("userTask1");
+    assertNotNull(flowElement);
+    assertTrue(flowElement instanceof UserTask);
+    UserTask task = (UserTask) flowElement;
+    assertEquals("task doc", task.getDocumentation());
     
     flowElement = model.getMainProcess().getFlowElement("flow1Condition");
     assertNotNull(flowElement);
