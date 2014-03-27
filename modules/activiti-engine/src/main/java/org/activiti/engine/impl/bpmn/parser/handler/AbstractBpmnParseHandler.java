@@ -54,6 +54,8 @@ import org.slf4j.LoggerFactory;
  * @author Joram Barrez
  */
 public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements BpmnParseHandler {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AbstractBpmnParseHandler.class);
   
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBpmnParseHandler.class);
   
@@ -155,8 +157,8 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
             && eventDefinition.getEventName().equals(subscription.getEventName()) 
             && eventDefinition.isStartEvent() == subscription.isStartEvent()) {
             
-            bpmnParse.getBpmnModel().addProblem("Cannot have more than one message event subscription with name '" + subscription.getEventName() +
-                "' for scope '"+scope.getId()+"'", parsedEventDefinition);
+            logger.warn("Cannot have more than one message event subscription with name '" + subscription.getEventName() +
+                "' for scope '"+scope.getId()+"'");
           }
         }
       }
@@ -236,7 +238,7 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
       if (sourceActivity.getProperty("type").equals("compensationBoundaryCatch")) {
         Object isForCompensation = targetActivity.getProperty(PROPERTYNAME_IS_FOR_COMPENSATION);          
         if (isForCompensation == null || !(Boolean) isForCompensation) {
-          bpmnModel.addProblem("compensation boundary catch must be connected to element with isForCompensation=true", association);
+          logger.warn("compensation boundary catch must be connected to element with isForCompensation=true");
         } else {            
           ActivityImpl compensatedActivity = sourceActivity.getParentActivity();
           compensatedActivity.setProperty(BpmnParse.PROPERTYNAME_COMPENSATION_HANDLER_ID, targetActivity.getId());            

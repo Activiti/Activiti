@@ -86,6 +86,28 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     return findFlowElementInList(flowElementId);
   }
   
+  /**
+   * Searches the whole process, including subprocesses (unline {@link getFlowElements(String)}
+   */
+  public FlowElement getFlowElementRecursive(String flowElementId) {
+  	 return getFlowElementRecursive(this, flowElementId);
+  }
+  
+  protected FlowElement getFlowElementRecursive(FlowElementsContainer flowElementsContainer, String flowElementId) {
+ 	 for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+      if (flowElement.getId() != null && flowElement.getId().equals(flowElementId)) {
+     	 return flowElement;
+      } else if (flowElement instanceof FlowElementsContainer) {
+     	 FlowElement result =  getFlowElementRecursive((FlowElementsContainer) flowElement, flowElementId);
+     	 if (result != null) {
+     		 return result;
+     	 }
+      }
+    }
+ 	 return null;
+ }
+  
+  
   protected FlowElement findFlowElementInList(String flowElementId) {
     for (FlowElement f : flowElementList) {
       if (f.getId() != null && f.getId().equals(flowElementId)) {
@@ -161,32 +183,63 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   }
   
   
-  @SuppressWarnings("unchecked")
   public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsOfType(Class<FlowElementType> type) {
+    	return findFlowElementsOfType(type, true);
+  }
+
+  @SuppressWarnings("unchecked")
+  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsOfType(Class<FlowElementType> type, boolean goIntoSubprocesses) {
     List<FlowElementType> foundFlowElements = new ArrayList<FlowElementType>();
     for (FlowElement flowElement : this.getFlowElements()) {
       if (type.isInstance(flowElement)) {
         foundFlowElements.add((FlowElementType) flowElement);
       }
       if (flowElement instanceof SubProcess) {
-        foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
+      	if (goIntoSubprocesses) {
+      		foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
+      	}
       }
     }
     return foundFlowElements;
   }
   
-  @SuppressWarnings("unchecked")
   public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsInSubProcessOfType(SubProcess subProcess, Class<FlowElementType> type) {
+  	return findFlowElementsInSubProcessOfType(subProcess, type, true);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsInSubProcessOfType(SubProcess subProcess, Class<FlowElementType> type, boolean goIntoSubprocesses) {
     List<FlowElementType> foundFlowElements = new ArrayList<FlowElementType>();
     for (FlowElement flowElement : subProcess.getFlowElements()) {
       if (type.isInstance(flowElement)) {
         foundFlowElements.add((FlowElementType) flowElement);
       }
       if (flowElement instanceof SubProcess) {
-        foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
+      	if (goIntoSubprocesses) {
+      		foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
+      	}
       }
     }
     return foundFlowElements;
+  }
+  
+  public FlowElementsContainer findParent(FlowElement childElement) {
+  	 return findParent(childElement, this);
+  }
+  
+  public FlowElementsContainer findParent(FlowElement childElement, FlowElementsContainer flowElementsContainer) {
+  	for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+      if (childElement.getId() != null && childElement.getId().equals(flowElement.getId())) {
+        return flowElementsContainer;
+      }
+      if (flowElement instanceof FlowElementsContainer) {
+      	FlowElementsContainer result = findParent(childElement, (FlowElementsContainer) flowElement);
+      	if (result != null) {
+      		return result;
+      	}
+      }
+    }
+  	return null;
   }
   
   public Process clone() {

@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.deploy;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -41,8 +42,12 @@ public class DeploymentManager {
   protected List<Deployer> deployers;
   
   public void deploy(DeploymentEntity deployment) {
+    deploy(deployment, null);
+  }
+  
+  public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
     for (Deployer deployer: deployers) {
-      deployer.deploy(deployment);
+      deployer.deploy(deployment, deploymentSettings);
     }
   }
 
@@ -107,7 +112,7 @@ public class DeploymentManager {
         .getDeploymentEntityManager()
         .findDeploymentById(deploymentId);
       deployment.setNew(false);
-      deploy(deployment);
+      deploy(deployment, null);
       processDefinition = processDefinitionCache.get(processDefinitionId);
       
       if (processDefinition==null) {

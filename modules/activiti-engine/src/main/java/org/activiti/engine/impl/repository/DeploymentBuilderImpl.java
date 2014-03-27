@@ -42,6 +42,8 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
 
   protected transient RepositoryServiceImpl repositoryService;
   protected DeploymentEntity deployment = new DeploymentEntity();
+  protected boolean isBpmn20XsdValidationEnabled = true;
+  protected boolean isProcessValidationEnabled = true;
   protected boolean isDuplicateFilterEnabled = false;
   protected Date processDefinitionsActivationDate;
 
@@ -125,6 +127,16 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     return this;
   }
   
+  public DeploymentBuilder disableBpmnValidation() {
+  	this.isProcessValidationEnabled = false;
+  	return this;
+  }
+  
+  public DeploymentBuilder disableSchemaValidation() {
+  	this.isBpmn20XsdValidationEnabled = false;
+  	return this;
+  }
+  
   public DeploymentBuilder tenantId(String tenantId) {
     deployment.setTenantId(tenantId);
     return this;
@@ -149,7 +161,13 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   public DeploymentEntity getDeployment() {
     return deployment;
   }
-  public boolean isDuplicateFilterEnabled() {
+  public boolean isProcessValidationEnabled() {
+		return isProcessValidationEnabled;
+	}
+	public boolean isBpmn20XsdValidationEnabled() {
+		return isBpmn20XsdValidationEnabled;
+	}
+	public boolean isDuplicateFilterEnabled() {
     return isDuplicateFilterEnabled;
   }
   public Date getProcessDefinitionsActivationDate() {

@@ -115,8 +115,6 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
       taskListener = bpmnParse.getListenerFactory().createExpressionTaskListener(activitiListener);
     } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
       taskListener = bpmnParse.getListenerFactory().createDelegateExpressionTaskListener(activitiListener);
-    } else {
-      bpmnParse.getBpmnModel().addProblem("Element 'class', 'expression' or 'delegateExpression' is mandatory on taskListener for task", activitiListener);
     }
     return taskListener;
   }

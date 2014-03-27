@@ -226,6 +226,13 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
             </listitem>
             <listitem>
                <para>
+                    Firing a signal throw event (in the process itself or through the API) can be done whilst providing a tenant identifier.
+                    The signal will only be executed in the tenant context: ie. if there are multiple signal catch events with the same name,
+                    only the one with the correct tenant identifier will actually be called.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
                     All jobs (timers and async continuations) inherit the tenant identifier from either the process definition (eg. timer start event)
                     or the process instance (when a job is created at runtime, eg. an async continuation). This could potentially be used
                     for giving priority to some tenants in a custom job executor.

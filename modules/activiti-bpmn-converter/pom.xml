@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.15-SNAPSHOT</version>
+    <version>5.15.1-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -92,6 +92,11 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-bpmn-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-process-validation</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

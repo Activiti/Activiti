@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
@@ -200,14 +199,14 @@ public class LegacyDeploymentResourseTest extends BaseRestTestCase {
         // Alter time to ensure different deployTimes
         Calendar yesterday = Calendar.getInstance();
         yesterday.add(Calendar.DAY_OF_MONTH, -1);
-        ClockUtil.setCurrentTime(yesterday.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(yesterday.getTime());
         
         Deployment firstDeployment = repositoryService.createDeployment().name("Deployment 1")
             .category("DEF")
             .addClasspathResource("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml")
             .deploy();
-        
-        ClockUtil.setCurrentTime(Calendar.getInstance().getTime());
+
+        processEngineConfiguration.getClock().setCurrentTime(Calendar.getInstance().getTime());
         Deployment secondDeployment = repositoryService.createDeployment().name("Deployment 2")
                 .category("ABC")
                 .addClasspathResource("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml")

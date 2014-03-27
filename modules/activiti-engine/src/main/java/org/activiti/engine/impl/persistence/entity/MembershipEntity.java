@@ -21,7 +21,7 @@ import org.activiti.engine.impl.db.PersistentObject;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class MembershipEntity implements Serializable, PersistentObject {
+public class MembershipEntity implements PersistentObject, Serializable {
 
   private static final long serialVersionUID = 1L;
 

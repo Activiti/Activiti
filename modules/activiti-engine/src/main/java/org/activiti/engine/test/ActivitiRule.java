@@ -26,8 +26,9 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.TestHelper;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.test.mock.ActivitiMockSupport;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.TestRule;
@@ -87,6 +88,7 @@ public class ActivitiRule implements TestRule {
 	protected String configurationResource = "activiti.cfg.xml";
 	protected String deploymentId = null;
 
+    protected ProcessEngineConfigurationImpl processEngineConfiguration;
 	protected ProcessEngine processEngine;
 	protected RepositoryService repositoryService;
 	protected RuntimeService runtimeService;
@@ -98,7 +100,7 @@ public class ActivitiRule implements TestRule {
 
 	protected ActivitiMockSupport mockSupport;
 
-	public ActivitiRule() {
+  public ActivitiRule() {
 	}
 
 	public ActivitiRule(String configurationResource) {
@@ -201,9 +203,9 @@ public class ActivitiRule implements TestRule {
 	protected void starting(Description description) {
 		if (processEngine == null) {
 			initializeProcessEngine();
-			initializeServices();
-		}
-		
+            initializeServices();
+        }
+
 		if (mockSupport == null) {
 			initializeMockSupport();
 		}
@@ -233,6 +235,7 @@ public class ActivitiRule implements TestRule {
 	}
 
 	protected void initializeServices() {
+        processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
 		repositoryService = processEngine.getRepositoryService();
 		runtimeService = processEngine.getRuntimeService();
 		taskService = processEngine.getTaskService();
@@ -264,7 +267,7 @@ public class ActivitiRule implements TestRule {
 		}
 
 		// Reset internal clock
-		ClockUtil.reset();
+		processEngineConfiguration.getClock().reset();
 
 		// Rest mocks
 		if (mockSupport != null) {
@@ -273,7 +276,7 @@ public class ActivitiRule implements TestRule {
 	}
 
 	public void setCurrentTime(Date currentTime) {
-		ClockUtil.setCurrentTime(currentTime);
+		processEngineConfiguration.getClock().setCurrentTime(currentTime);
 	}
 
 	public String getConfigurationResource() {
@@ -345,7 +348,11 @@ public class ActivitiRule implements TestRule {
 		this.managementService = managementService;
 	}
 
-	public ActivitiMockSupport getMockSupport() {
+    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
+    }
+
+  public ActivitiMockSupport getMockSupport() {
 		return mockSupport;
 	}
 

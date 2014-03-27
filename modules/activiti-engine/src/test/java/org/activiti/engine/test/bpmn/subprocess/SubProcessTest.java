@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -73,7 +72,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // Setting the clock forward 2 hours 1 second (timer fires in 2 hours) and fire up the job executor 
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000) + 1000));
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
     // The subprocess should be left, and the escalated task should be active
@@ -154,7 +153,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // Setting the clock forward 1 hour 1 second (timer fires in 1 hour) and fire up the job executor 
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ( 60 * 60 * 1000 ) + 1000));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000) + 1000));
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
     // The inner subprocess should be destoyed, and the escalated task should be active
@@ -317,7 +316,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess B", taskB.getName());
     
     // Firing the timer should destroy all three subprocesses and activate the task after the timer
-//    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
+//    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
 //    waitForJobExecutorToProcessAllJobs(5000L, 50L);
     Job job = managementService.createJobQuery().singleResult();
     managementService.executeJob(job.getId());

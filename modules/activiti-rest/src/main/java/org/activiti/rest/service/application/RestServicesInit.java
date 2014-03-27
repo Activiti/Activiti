@@ -100,6 +100,7 @@ import org.activiti.rest.service.api.repository.ProcessDefinitionModelResource;
 import org.activiti.rest.service.api.repository.ProcessDefinitionResource;
 import org.activiti.rest.service.api.repository.ProcessDefinitionResourceDataResource;
 import org.activiti.rest.service.api.repository.SimpleWorkflowResource;
+import org.activiti.rest.service.api.runtime.SignalResource;
 import org.activiti.rest.service.api.runtime.process.ExecutionActiveActivitiesCollectionResource;
 import org.activiti.rest.service.api.runtime.process.ExecutionCollectionResource;
 import org.activiti.rest.service.api.runtime.process.ExecutionQueryResource;
@@ -191,6 +192,8 @@ public class RestServicesInit {
     router.attach("/runtime/executions/{executionId}/variables", ExecutionVariableCollectionResource.class);
     router.attach("/runtime/executions/{executionId}/variables/{variableName}", ExecutionVariableResource.class);
     router.attach("/runtime/executions/{executionId}/variables/{variableName}/data", ExecutionVariableDataResource.class);
+    
+    router.attach("/runtime/signals", SignalResource.class);
     
     router.attach("/history/historic-process-instances/{processInstanceId}", HistoricProcessInstanceResource.class);
     router.attach("/history/historic-process-instances/{processInstanceId}/identitylinks", HistoricProcessInstanceIdentityLinkCollectionResource.class);

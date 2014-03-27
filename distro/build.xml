@@ -4,7 +4,7 @@
 
 	<property file="${user.home}/.activiti/build.properties" />
 
-	<property name="activiti.version" value="5.15-SNAPSHOT" />
+	<property name="activiti.version" value="5.15.1-SNAPSHOT" />
 	<property name="target.distro.root" value="target/zip/activiti-${activiti.version}" />
 	<property name="activiti.website" value="../../activiti-website" />
 
@@ -35,7 +35,7 @@
 			<equals arg1="${nodocs}" arg2="true" />
 		</condition>
 		<exec executable="${mvn.executable}" dir=".." failonerror="true">
-			<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m" />
+			<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m -XX:MaxPermSize=256M" />
 			<arg line="-Pdistro${nodocs.profile} clean install -Dmaven.test.skip=true" />
 		</exec>
 	</target>

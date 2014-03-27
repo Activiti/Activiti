@@ -41,6 +41,21 @@ public interface DeploymentBuilder {
   DeploymentBuilder addBpmnModel(String resourceName, BpmnModel bpmnModel);
   
   /**
+   * If called, no XML schema validation against the BPMN 2.0 XSD.
+   * 
+   * Not recommended in general.
+   */
+  DeploymentBuilder disableSchemaValidation();
+  
+  /**
+   * If called, no validation that the process definition is executable on the engine
+   * will be done against the process definition.
+   * 
+   * Not recommended in general.
+   */
+  DeploymentBuilder disableBpmnValidation();
+  
+  /**
    * Gives the deployment the given name.
    */
   DeploymentBuilder name(String name);
