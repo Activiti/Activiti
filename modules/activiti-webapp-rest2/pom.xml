@@ -123,6 +123,9 @@
 				    <goal>exec-war-only</goal>
 				  </goals>
 				  <phase>package</phase>
+				  <configuration>
+                    <path>/activiti-rest</path>
+                  </configuration>
 				</execution>
 			  </executions>
 			</plugin>
