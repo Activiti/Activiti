@@ -21,11 +21,13 @@ public class ProcessValidatorImpl implements ProcessValidator {
 		
 		for (ValidatorSet validatorSet : validatorSets) {
 			for (Validator validator : validatorSet.getValidators()) {
-				validator.validate(bpmnModel, allErrors);
-				if (allErrors.size() > 0) {
-					for (ValidationError error : allErrors) {
+			  List<ValidationError> validatorErrors = new ArrayList<ValidationError>();
+				validator.validate(bpmnModel, validatorErrors);
+				if (validatorErrors.size() > 0) {
+					for (ValidationError error : validatorErrors) {
 						error.setValidatorSetName(validatorSet.getName());
 					}
+					allErrors.addAll(validatorErrors);
 				}
 			}
 		}
