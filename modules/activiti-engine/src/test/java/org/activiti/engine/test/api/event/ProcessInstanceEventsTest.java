@@ -13,11 +13,16 @@
 package org.activiti.engine.test.api.event;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to process instances.
@@ -26,7 +31,7 @@ import org.activiti.engine.test.Deployment;
  */
 public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 
-	private TestActivitiEntityEventListener listener;
+	private TestInitializedEntityEventListener listener;
 	
 	/**
 	 * Test create, update and delete events of process instances.
@@ -34,9 +39,9 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 	@Deployment(resources= {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
 	public void testProcessInstanceEvents() throws Exception {
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-			
+
 			assertNotNull(processInstance);
-			
+
 			// Check create-event
 			assertEquals(1, listener.getEventsReceived().size());
 			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
@@ -48,7 +53,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			assertEquals(processInstance.getId(), event.getExecutionId());
 			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			listener.clearEventsReceived();
-			
+
 			// Check update event when suspended/activated
 			runtimeService.suspendProcessInstanceById(processInstance.getId());
 			runtimeService.activateProcessInstanceById(processInstance.getId());
@@ -108,14 +113,24 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 			listener.clearEventsReceived();
 	}
-	
-	
-	@Override
+
+  /**
+   * Test process with signals start.
+   */
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalWithGlobalScope.bpmn20.xml"})
+  public void testSignalProcessInstanceStart() throws Exception {
+    this.runtimeService.startProcessInstanceByKey("processWithSignalCatch");
+    listener.clearEventsReceived();
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processWithSignalThrow");
+    listener.clearEventsReceived();
+  }
+
+  @Override
 	protected void initializeServices() {
 	  super.initializeServices();
-	  
-	  listener = new TestActivitiEntityEventListener(ProcessInstance.class);
-	  processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+	  this.listener = new TestInitializedEntityEventListener();
+	  processEngineConfiguration.getEventDispatcher().addEventListener(this.listener);
 	}
 	
 	@Override
@@ -127,4 +142,38 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 	  	processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 	  }
 	}
+
+  private class TestInitializedEntityEventListener implements ActivitiEventListener {
+
+    private List<ActivitiEvent> eventsReceived;
+
+    public TestInitializedEntityEventListener() {
+
+      eventsReceived = new ArrayList<ActivitiEvent>();
+    }
+
+    public List<ActivitiEvent> getEventsReceived() {
+      return eventsReceived;
+    }
+
+    public void clearEventsReceived() {
+      eventsReceived.clear();
+    }
+
+    @Override
+    public void onEvent(ActivitiEvent event) {
+      if (event instanceof ActivitiEntityEvent && ProcessInstance.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())) {
+          // check whether entity in the event is initialized before adding to the list.
+          assertNotNull(((ExecutionEntity) ((ActivitiEntityEvent) event).getEntity()).getId());
+          eventsReceived.add(event);
+      }
+    }
+
+    @Override
+    public boolean isFailOnException() {
+      return true;
+    }
+
+
+  }
 }
