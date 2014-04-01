@@ -2,7 +2,7 @@
 <project name="activiti.qa.upgrade" default="upgrade">
 	
   <property file="${user.home}/.activiti/build.properties" />
-  <property name="activiti.version" value="5.15.1" />
+  <property name="activiti.version" value="5.16-SNAPSHOT" />
   <property name="database" value="h2" />
   <property name="activiti.old.version" value="5.0" />
   <property name="downloads.dir" value="${user.home}/.activiti/downloads" />
