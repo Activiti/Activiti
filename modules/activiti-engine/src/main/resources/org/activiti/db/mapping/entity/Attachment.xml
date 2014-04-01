@@ -67,6 +67,7 @@
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="url" column="URL_" jdbcType="VARCHAR" />
     <result property="contentId" column="CONTENT_ID_" jdbcType="VARCHAR" />
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
   </resultMap>
   
   <!-- ATTACHMENT SELECT -->
