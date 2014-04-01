@@ -19,9 +19,6 @@ package org.activiti.engine.impl.variable;
  */
 public class StringType implements VariableType {
 
-  @SuppressWarnings("UnusedDeclaration")
-  private static final long serialVersionUID = 1L;
-
   private final int maxLength;
 
   public StringType(int maxLength) {this.maxLength = maxLength;}

@@ -13,15 +13,11 @@
 package org.activiti.engine.impl.variable;
 
 
-import sun.security.util.Length;
 
 /**
  * @author Martin Grofcik
  */
 public class LongStringType extends SerializableType {
-
-  @SuppressWarnings("UnusedDeclaration")
-  private static final long serialVersionUID = 1L;
 
   private final int minLength;
 
@@ -33,7 +29,7 @@ public class LongStringType extends SerializableType {
 
   public boolean isAbleToStore(Object value) {
     if (value==null) {
-      return true;
+      return false;
     }
     if (String.class.isAssignableFrom(value.getClass())) {
       String stringValue = (String) value;
