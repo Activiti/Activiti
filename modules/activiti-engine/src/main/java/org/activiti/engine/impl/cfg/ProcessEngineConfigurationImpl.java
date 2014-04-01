@@ -187,24 +187,7 @@ import org.activiti.engine.impl.scripting.VariableScopeResolverFactory;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
-import org.activiti.engine.impl.variable.BooleanType;
-import org.activiti.engine.impl.variable.ByteArrayType;
-import org.activiti.engine.impl.variable.CustomObjectType;
-import org.activiti.engine.impl.variable.DateType;
-import org.activiti.engine.impl.variable.DefaultVariableTypes;
-import org.activiti.engine.impl.variable.DoubleType;
-import org.activiti.engine.impl.variable.EntityManagerSession;
-import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
-import org.activiti.engine.impl.variable.IntegerType;
-import org.activiti.engine.impl.variable.JPAEntityVariableType;
-import org.activiti.engine.impl.variable.LongType;
-import org.activiti.engine.impl.variable.NullType;
-import org.activiti.engine.impl.variable.SerializableType;
-import org.activiti.engine.impl.variable.ShortType;
-import org.activiti.engine.impl.variable.StringType;
-import org.activiti.engine.impl.variable.UUIDType;
-import org.activiti.engine.impl.variable.VariableType;
-import org.activiti.engine.impl.variable.VariableTypes;
+import org.activiti.engine.impl.variable.*;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
@@ -1129,7 +1112,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         }
       }
       variableTypes.addType(new NullType());
-      variableTypes.addType(new StringType());
+      variableTypes.addType(new StringType(4000));
+      variableTypes.addType(new LongStringType(4001));
       variableTypes.addType(new BooleanType());
       variableTypes.addType(new ShortType());
       variableTypes.addType(new IntegerType());
