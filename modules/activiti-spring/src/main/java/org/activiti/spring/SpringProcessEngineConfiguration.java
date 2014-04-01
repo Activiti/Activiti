@@ -45,8 +45,9 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 public class SpringProcessEngineConfiguration extends ProcessEngineConfigurationImpl implements ApplicationContextAware {
 
+  private static final int DEPLOYMENT_FIELD_LENGTH = 255;
   protected PlatformTransactionManager transactionManager;
-  protected String deploymentName = "SpringAutoDeployment";
+  protected String deploymentPrefix = "";
   protected Resource[] deploymentResources = new Resource[0];
   protected ApplicationContext applicationContext;
   protected Integer transactionSynchronizationAdapterOrder = null;
@@ -103,11 +104,6 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     if (deploymentResources!=null && deploymentResources.length>0) {
       RepositoryService repositoryService = processEngine.getRepositoryService();
       
-      DeploymentBuilder deploymentBuilder = repositoryService
-        .createDeployment()
-        .enableDuplicateFiltering()
-        .name(deploymentName);
-      
       for (Resource resource : deploymentResources) {
         String resourceName = null;
         
@@ -126,6 +122,10 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
         }
         
         try {
+          DeploymentBuilder deploymentBuilder = repositoryService
+            .createDeployment()
+            .enableDuplicateFiltering()
+            .name(truncateResourceName(deploymentPrefix + shortenResourceName(resourceName), DEPLOYMENT_FIELD_LENGTH));
           if ( resourceName.endsWith(".bar")
                || resourceName.endsWith(".zip")
                || resourceName.endsWith(".jar") ) {
@@ -133,13 +133,34 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
           } else {
             deploymentBuilder.addInputStream(resourceName, resource.getInputStream());
           }
+          deploymentBuilder.deploy();
         } catch (IOException e) {
           throw new ActivitiException("couldn't auto deploy resource '"+resource+"': "+e.getMessage(), e);
         }
       }
       
-      deploymentBuilder.deploy();
     }
+  }
+
+  private String shortenResourceName(String resourceName) {
+    resourceName = removePrefixString(resourceName, "/WEB-INF/classes/");
+    resourceName = removePrefixString(resourceName, "/WEB-INF/lib/");
+    return resourceName;
+  }
+
+  private String removePrefixString(String resourceName, String prefix) {
+    int index = resourceName.indexOf(prefix);
+    if (index > -1) {
+      resourceName = resourceName.substring(index + prefix.length());
+    }
+    return resourceName;
+  }
+
+  private String truncateResourceName(String resourceName, int length) {
+    if (resourceName.length() > length) {
+      resourceName = resourceName.substring(resourceName.length() - length);
+    }
+    return resourceName;
   }
   
   @Override
@@ -161,12 +182,12 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     this.transactionManager = transactionManager;
   }
 
-  public String getDeploymentName() {
-    return deploymentName;
+  public String getDeploymentPrefix() {
+    return deploymentPrefix;
   }
   
-  public void setDeploymentName(String deploymentName) {
-    this.deploymentName = deploymentName;
+  public void setDeploymentPrefix(String deploymentPrefix) {
+    this.deploymentPrefix = deploymentPrefix;
   }
   
   public Resource[] getDeploymentResources() {
