@@ -269,7 +269,9 @@
   
   <sql id="commonSelectTaskByQueryCriteriaSql">
     <if test="candidateUser != null || candidateGroups != null || bothCandidateAndAssigneed">
-      inner join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = RES.ID_
+      <if test="bothCandidateAndAssigneed">left</if>
+      <if test="!bothCandidateAndAssigneed">inner</if>
+      join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = RES.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="var">
       <choose>
