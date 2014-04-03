@@ -248,7 +248,24 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   @Override
+  @Deprecated
   public TaskQuery taskCandidateOrAssigneed(String userIdForCandidateAndAssignee) {
+    if (candidateGroup != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
+    }
+    if (candidateUser != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
+    }
+    if (candidateGroups != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
+    }
+    bothCandidateAndAssigned = true;
+    this.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
+    return this;
+  }
+
+  @Override
+  public TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee) {
     if (candidateGroup != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
     }
