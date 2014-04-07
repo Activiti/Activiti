@@ -298,6 +298,11 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     
     client.post(requestNode);
     assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    
+    JsonNode responseNode = objectMapper.readTree(client.getResponseEntity().getStream());
+    assertEquals("processTask", responseNode.get("activityId").asText());
+    assertEquals(false, responseNode.get("ended").asBoolean());
+    
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
     assertNotNull(processInstance);
     

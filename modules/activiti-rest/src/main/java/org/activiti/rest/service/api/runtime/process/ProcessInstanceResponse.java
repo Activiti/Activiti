@@ -26,6 +26,7 @@ public class ProcessInstanceResponse {
   protected String url;
   protected String businessKey;
   protected boolean suspended;
+  protected boolean ended;
   protected String processDefinitionId;
   protected String processDefinitionUrl;
   protected String activityId;
@@ -64,6 +65,14 @@ public class ProcessInstanceResponse {
     this.suspended = suspended;
   }
   
+  public boolean isEnded() {
+    return ended;
+  }
+
+  public void setEnded(boolean ended) {
+    this.ended = ended;
+  }
+
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
