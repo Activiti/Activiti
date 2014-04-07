@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="businessProcessBeanTest">
+
+    <startEvent id="startEvent" name="StartEvent" />
+
+    <endEvent id="endEvent" name="EndEvent" />
+
+    <sequenceFlow targetRef="endEvent" sourceRef="startEvent" />
+
+  </process>
+
+
+</definitions>
