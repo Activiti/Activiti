@@ -767,8 +767,10 @@ public class ProcessDiagramCanvas {
       g.draw(rect);
     }
 
-    String text = fitTextToWidth(name, width);
-    g.drawString(text, x + 10, y + 15);
+    if (name != null && !name.isEmpty()) {
+      String text = fitTextToWidth(name, width);
+      g.drawString(text, x + 10, y + 15);
+    }
   }
 
   public void drawCollapsedSubProcess(String name, int x, int y, int width, int height, Boolean isTriggeredByEvent) {
@@ -806,7 +808,7 @@ public class ProcessDiagramCanvas {
         drawCollapsedMarker(x - MARKER_WIDTH / 2 - 2, y, width, height);
         if (multiInstanceSequential) {
           drawMultiInstanceMarker(true, x + MARKER_WIDTH / 2 + 2, y, width, height);
-        } else if (multiInstanceParallel) {
+        } else {
           drawMultiInstanceMarker(false, x + MARKER_WIDTH / 2 + 2, y, width, height);
         }
       }
