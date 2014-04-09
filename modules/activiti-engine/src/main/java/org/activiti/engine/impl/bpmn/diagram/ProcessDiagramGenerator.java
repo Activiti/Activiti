@@ -261,16 +261,16 @@ public class ProcessDiagramGenerator {
           if (boundaryEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
             
             processDiagramCanvas.drawCatchingTimerEvent(flowNode.getName(), (int) graphicInfo.getX(), 
-                    (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), boundaryEvent.isCancelActivity());
+                    (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), !boundaryEvent.isCancelActivity());
             
           } else if (boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
             
             processDiagramCanvas.drawCatchingErrorEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(),
-                    (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), boundaryEvent.isCancelActivity());
+                    (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), !boundaryEvent.isCancelActivity());
             
           } else if (boundaryEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
             processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(), (int) graphicInfo.getX(), 
-                    (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), boundaryEvent.isCancelActivity());
+                    (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), !boundaryEvent.isCancelActivity());
           }
         }
         
