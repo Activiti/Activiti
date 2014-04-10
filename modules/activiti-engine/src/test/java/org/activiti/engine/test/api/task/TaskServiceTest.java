@@ -297,6 +297,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals("johndoe", task.getOwner());
     assertEquals("joesmoe", task.getAssignee());
     assertEquals(DelegationState.PENDING, task.getDelegationState());
+    
+    // try to complete (should fail)
+    try {
+    	taskService.complete(task.getId());
+    	fail();
+    } catch (ActivitiException e) {}
 
     taskService.resolveTask(taskId);
     task = taskService.createTaskQuery().taskId(taskId).singleResult();

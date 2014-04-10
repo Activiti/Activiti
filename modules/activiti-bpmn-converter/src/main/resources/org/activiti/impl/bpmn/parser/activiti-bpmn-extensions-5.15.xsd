@@ -345,6 +345,16 @@
     </annotation>
   </attribute>
 
+  <attribute name="priority">
+    <annotation>
+      <documentation>
+        User Task attribute to set the priority of a user task.
+        The provided priority can be used to sort user tasks in the task list.
+        Also supports expressions that evaluate to a String.
+      </documentation>
+    </annotation>
+  </attribute>
+
   <attribute name="candidateStarterUsers">
     <annotation>
       <documentation>

@@ -39,7 +39,7 @@ import org.activiti.workflow.simple.definition.WorkflowDefinition;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public class WorkflowDefinitionConversionFactory implements Serializable {
+public class WorkflowDefinitionConversionFactory {
 
   private static final long serialVersionUID = 229288964476630200L;
   

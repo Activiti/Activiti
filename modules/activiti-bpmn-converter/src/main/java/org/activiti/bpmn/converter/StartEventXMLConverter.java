@@ -12,14 +12,12 @@
  */
 package org.activiti.bpmn.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.alfresco.AlfrescoStartEvent;
 import org.apache.commons.lang3.StringUtils;
@@ -29,13 +27,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class StartEventXMLConverter extends BaseBpmnXMLConverter {
   
-  List<String> formTypes = new ArrayList<String>();
-  
-  public static String getXMLType() {
-    return ELEMENT_EVENT_START;
-  }
-  
-  public static Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return StartEvent.class;
   }
   
@@ -45,11 +37,11 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     String formKey = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY);
     StartEvent startEvent = null;
     if (StringUtils.isNotEmpty(formKey)) {
-      if (formTypes.contains(formKey)) {
+      if (model.getStartEventFormTypes() != null && model.getStartEventFormTypes().contains(formKey)) {
         startEvent = new AlfrescoStartEvent();
       }
     }
@@ -60,33 +52,28 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
     startEvent.setInitiator(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_EVENT_START_INITIATOR));
     startEvent.setFormKey(formKey);
     
-    parseChildElements(getXMLElementName(), startEvent, xtr);
+    parseChildElements(getXMLElementName(), startEvent, model, xtr);
     
     return startEvent;
   }
   
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     StartEvent startEvent = (StartEvent) element;
     writeQualifiedAttribute(ATTRIBUTE_EVENT_START_INITIATOR, startEvent.getInitiator(), xtw);
     writeQualifiedAttribute(ATTRIBUTE_FORM_FORMKEY, startEvent.getFormKey(), xtw);
   }
   
   @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     StartEvent startEvent = (StartEvent) element;
-    writeFormProperties(startEvent, xtw);
+    didWriteExtensionStartElement = writeFormProperties(startEvent, didWriteExtensionStartElement, xtw);
+    return didWriteExtensionStartElement;
   }
   
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     StartEvent startEvent = (StartEvent) element;
-    writeEventDefinitions(startEvent, startEvent.getEventDefinitions(), xtw);
-  }
-  
-  public void addFormType(String formType) {
-    if (StringUtils.isNotEmpty(formType)) {
-      formTypes.add(formType);
-    }
+    writeEventDefinitions(startEvent, startEvent.getEventDefinitions(), model, xtw);
   }
 }

@@ -436,4 +436,20 @@ class JPAConfiguration {
   
   </section>
   
+  <section>
+    <title>JPA with Hibernate 4.2.x</title>
+    
+    <para>
+      When using Hibernate 4.2.x JPA in service task or listener logic in the Activiti Engine an additional dependency to Spring ORM is needed.
+      This is not needed for Hibernate 4.1.x or lower. The following dependency should be added:
+      <programlisting>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-orm&lt;/artifactId&gt;
+  &lt;version&gt;${org.springframework.version}&lt;/version&gt;
+&lt;/dependency&gt;
+      </programlisting>
+    </para>
+  </section>
+    
 </chapter>

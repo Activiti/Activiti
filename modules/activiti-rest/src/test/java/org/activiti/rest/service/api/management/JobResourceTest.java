@@ -3,7 +3,6 @@ package org.activiti.rest.service.api.management;
 import java.util.Calendar;
 
 import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -36,7 +35,7 @@ public class JobResourceTest extends BaseRestTestCase {
     
     Calendar now = Calendar.getInstance();
     now.set(Calendar.MILLISECOND, 0);
-    ClockUtil.setCurrentTime(now.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(now.getTime());
     
     
     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));

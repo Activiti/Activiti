@@ -19,6 +19,7 @@ import org.activiti.engine.impl.event.CompensationEventHandler;
 
 /**
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class CompensateEventSubscriptionEntity extends EventSubscriptionEntity {
   
@@ -34,6 +35,9 @@ public class CompensateEventSubscriptionEntity extends EventSubscriptionEntity {
   
   public static CompensateEventSubscriptionEntity createAndInsert(ExecutionEntity executionEntity) {
     CompensateEventSubscriptionEntity eventSubscription = new CompensateEventSubscriptionEntity(executionEntity);    
+    if (executionEntity.getTenantId() != null) {
+    	eventSubscription.setTenantId(executionEntity.getTenantId());
+    }
     eventSubscription.insert();
     return eventSubscription;
   }

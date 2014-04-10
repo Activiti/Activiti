@@ -10,9 +10,9 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.15-SNAPSHOT</version>
+    <version>5.16-SNAPSHOT</version>
   </parent>
-
+  
   <build>
     <plugins>
       <plugin>
@@ -103,6 +103,37 @@
     </pluginManagement>
   </build>
 
+  <profiles>
+    <profile>
+	  <id>buildExecutableWar</id>
+	    <build>
+		  <plugins>
+            <plugin>
+              <groupId>org.apache.tomcat.maven</groupId>
+			  <artifactId>tomcat7-maven-plugin</artifactId>
+			  <version>2.1</version>
+			  <configuration>
+			    <path>/</path>
+			    <protocol>org.apache.coyote.http11.Http11NioProtocol</protocol>
+			  </configuration>
+			  <executions>
+			    <execution>
+				  <id>tomcat-run</id>
+				  <goals>
+				    <goal>exec-war-only</goal>
+				  </goals>
+				  <phase>package</phase>
+				  <configuration>
+                    <path>/activiti-rest</path>
+                  </configuration>
+				</execution>
+			  </executions>
+			</plugin>
+		  </plugins>
+	  </build>
+    </profile>
+  </profiles>
+  
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>

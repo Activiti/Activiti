@@ -15,7 +15,6 @@ package org.activiti.rest.service.api.repository;
 
 import java.util.Calendar;
 
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
@@ -162,7 +161,7 @@ public class ModelCollectionResourceTest extends BaseRestTestCase {
       
       Calendar createTime = Calendar.getInstance();
       createTime.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(createTime.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(createTime.getTime());
       
       // Create create request
       ObjectNode requestNode = objectMapper.createObjectNode();

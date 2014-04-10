@@ -32,12 +32,16 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Joram Barrez
  */
 public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<TimerEventDefinition> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(TimerEventDefinitionParseHandler.class);
   
   public static final String PROPERTYNAME_START_TIMER = "timerStart";
   
@@ -117,7 +121,7 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
     
     // neither date, cycle or duration configured!
     if (expression == null) {
-      bpmnParse.getBpmnModel().addProblem("Timer needs configuration (either timeDate, timeCycle or timeDuration is needed).", timerEventDefinition);      
+      logger.warn("Timer needs configuration (either timeDate, timeCycle or timeDuration is needed) (" + timerActivity.getId() + ")");      
     }    
 
     // Parse the timer declaration

@@ -12,7 +12,6 @@
  */
 package org.activiti.workflow.simple.definition;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonTypeInfo;
@@ -27,7 +26,7 @@ import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
  * @author Frederik Heremans
  */
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "type")
-public interface StepDefinition extends Serializable {
+public interface StepDefinition {
 	
   String getId();
 

@@ -24,6 +24,8 @@ import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.runtime.Clock;
+import org.activiti.engine.runtime.ClockReader;
 
 
 /**
@@ -83,16 +85,20 @@ public class LDAPConfigurator extends AbstractProcessEngineConfigurator {
   // Group caching
   protected int groupCacheSize = -1;
   protected long groupCacheExpirationTime = 3600000L; // default: one hour
-  
+
+  // Cache clock
+  private Clock clock;
+
   public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
   	// Nothing to do
   }
   
   public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    clock = processEngineConfiguration.getClock();
     LDAPUserManagerFactory ldapUserManagerFactory = getLdapUserManagerFactory();
     processEngineConfiguration.getSessionFactories().put(ldapUserManagerFactory.getSessionType(), ldapUserManagerFactory);
     
-    LDAPGroupManagerFactory ldapGroupManagerFactory = getLdapGroupManagerFactory();
+    LDAPGroupManagerFactory ldapGroupManagerFactory = getLdapGroupManagerFactory(clock);
     processEngineConfiguration.getSessionFactories().put(ldapGroupManagerFactory.getSessionType(), ldapGroupManagerFactory);
     
   }
@@ -107,12 +113,12 @@ public class LDAPConfigurator extends AbstractProcessEngineConfigurator {
     return new LDAPUserManagerFactory(this);
   }
   
-  protected LDAPGroupManagerFactory getLdapGroupManagerFactory() {
+  protected LDAPGroupManagerFactory getLdapGroupManagerFactory(ClockReader clockReader) {
     if (this.ldapGroupManagerFactory != null) {
       this.ldapGroupManagerFactory.setLdapConfigurator(this);
       return this.ldapGroupManagerFactory;
     }
-    return new LDAPGroupManagerFactory(this);
+    return new LDAPGroupManagerFactory(this, clockReader);
   }
   
   protected LDAPMembershipManagerFactory getLdapMembershipManagerFactory() {

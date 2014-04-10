@@ -14,7 +14,7 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>5.15-SNAPSHOT</version>
+  <version>5.16-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>3.2.7.RELEASE</spring.framework.version>
@@ -241,6 +241,11 @@
         <artifactId>activiti-bpmn-layout</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-process-validation</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- EMAIL -->
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -323,7 +328,7 @@
       <dependency>
         <groupId>org.mybatis</groupId>
         <artifactId>mybatis</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.5</version>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
@@ -534,6 +539,7 @@
 
   <modules>
     <module>modules/activiti-bpmn-model</module>
+    <module>modules/activiti-process-validation</module>
     <module>modules/activiti-bpmn-converter</module>
     <module>modules/activiti-engine</module>
   </modules>
@@ -654,6 +660,7 @@
       <id>deploy</id>
       <modules>
         <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-process-validation</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
         <module>modules/activiti-bpmn-layout</module>
@@ -721,6 +728,7 @@
         <module>modules/activiti-spring</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-process-validation</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
@@ -780,6 +788,7 @@
       <modules>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-process-validation</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
@@ -816,6 +825,7 @@
       <id>buildWebappDependencies</id>
       <modules>
         <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-process-validation</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
@@ -854,6 +864,7 @@
       <id>buildRestappDependencies</id>
       <modules>
         <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-process-validation</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>

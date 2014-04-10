@@ -35,39 +35,4 @@
          <text>mein Text</text>
       </textAnnotation>
    </process>
-   <bpmndi:BPMNDiagram id="sid-7d92ec97-fe39-4d36-be4d-35959577edba">
-      <bpmndi:BPMNPlane bpmnElement="sid-ba6f8f7d-39f1-422a-b7a7-537fcc868d04" id="sid-a94d33da-07af-42f8-ba35-ab941473e85f">
-         <bpmndi:BPMNShape bpmnElement="sid-954D0B00-65C3-4240-9789-826C4E3E54D1" id="sid-954D0B00-65C3-4240-9789-826C4E3E54D1_gui">
-            <omgdc:Bounds height="30.0" width="30.0" x="195.0" y="255.0"/>
-         </bpmndi:BPMNShape>
-         <bpmndi:BPMNShape bpmnElement="sid-3CF49A52-CCE7-4BDD-85DD-951D70F1B2E8" id="sid-3CF49A52-CCE7-4BDD-85DD-951D70F1B2E8_gui">
-            <omgdc:Bounds height="80.0" width="100.0" x="345.0" y="230.0"/>
-         </bpmndi:BPMNShape>
-         <bpmndi:BPMNShape bpmnElement="sid-912B1A70-3128-4E7B-8AD4-92BE06750D08" id="sid-912B1A70-3128-4E7B-8AD4-92BE06750D08_gui">
-            <omgdc:Bounds height="28.0" width="28.0" x="615.0" y="256.0"/>
-         </bpmndi:BPMNShape>
-         <bpmndi:BPMNShape bpmnElement="sid-DA189183-BEAE-4023-B915-B274DB392A98" id="sid-DA189183-BEAE-4023-B915-B274DB392A98_gui">
-            <omgdc:Bounds height="60.173" width="62.000999999999976" x="315.0" y="450.0"/>
-         </bpmndi:BPMNShape>
-         <bpmndi:BPMNShape bpmnElement="sid-16692D8D-2E7B-480D-95E0-C8F325C76723" id="sid-16692D8D-2E7B-480D-95E0-C8F325C76723_gui">
-            <omgdc:Bounds height="50.0" width="100.0" x="435.0" y="360.0"/>
-         </bpmndi:BPMNShape>
-         <bpmndi:BPMNEdge bpmnElement="sid-4015803D-5809-43FD-8099-ACC7EEBB9FCD" id="sid-4015803D-5809-43FD-8099-ACC7EEBB9FCD_gui">
-            <omgdi:waypoint x="445.0" y="270.0"/>
-            <omgdi:waypoint x="615.0" y="270.0"/>
-         </bpmndi:BPMNEdge>
-         <bpmndi:BPMNEdge bpmnElement="sid-32C3B841-82DE-469F-919C-93FF00FCA044" id="sid-32C3B841-82DE-469F-919C-93FF00FCA044_gui">
-            <omgdi:waypoint x="385.0" y="381.0"/>
-            <omgdi:waypoint x="435.0" y="384.0"/>
-         </bpmndi:BPMNEdge>
-         <bpmndi:BPMNEdge bpmnElement="sid-68898045-32B2-46A3-9A5D-CC23FB448DF1" id="sid-68898045-32B2-46A3-9A5D-CC23FB448DF1_gui">
-            <omgdi:waypoint x="225.0" y="270.0"/>
-            <omgdi:waypoint x="345.0" y="270.0"/>
-         </bpmndi:BPMNEdge>
-         <bpmndi:BPMNEdge bpmnElement="sid-5F3BDB11-0AE1-41E3-8A49-625EF20F1D1A" id="sid-5F3BDB11-0AE1-41E3-8A49-625EF20F1D1A_gui">
-            <omgdi:waypoint x="351.0" y="450.0"/>
-            <omgdi:waypoint x="386.0" y="310.0"/>
-         </bpmndi:BPMNEdge>
-      </bpmndi:BPMNPlane>
-   </bpmndi:BPMNDiagram>
 </definitions>

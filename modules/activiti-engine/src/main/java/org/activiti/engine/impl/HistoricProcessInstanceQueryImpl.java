@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -212,6 +211,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     String specialOrderBy = super.getOrderBy();
     if (specialOrderBy != null && specialOrderBy.length() > 0) {
       specialOrderBy = specialOrderBy.replace("RES.", "TEMPRES_");
+      specialOrderBy = specialOrderBy.replace("VAR.", "TEMPVAR_");
     }
     return specialOrderBy;
   }
@@ -235,6 +235,15 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
       return commandContext
           .getHistoricProcessInstanceEntityManager()
           .findHistoricProcessInstancesByQueryCriteria(this);
+    }
+  }
+  
+  @Override
+  protected void checkQueryOk() {
+    super.checkQueryOk();
+    
+    if(includeProcessVariables) {
+    	this.orderBy(HistoricProcessInstanceQueryProperty.INCLUDED_VARIABLE_TIME).asc();
     }
   }
   
@@ -285,64 +294,5 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   public String getInvolvedUser() {
     return involvedUser;
-  }
-  
-  // below is deprecated and to be removed in 5.12
-  
-  protected Date startDateBy;
-  protected Date startDateOn;
-  protected Date finishDateBy;
-  protected Date finishDateOn;
-  protected Date startDateOnBegin;
-  protected Date startDateOnEnd;
-  protected Date finishDateOnBegin;
-  protected Date finishDateOnEnd;
-
-  @Deprecated
-  public HistoricProcessInstanceQuery startDateBy(Date date) {
-    this.startDateBy = this.calculateMidnight(date);;
-    return this;
-  }
-
-  @Deprecated
-  public HistoricProcessInstanceQuery startDateOn(Date date) {
-    this.startDateOn = date;
-    this.startDateOnBegin = this.calculateMidnight(date);
-    this.startDateOnEnd = this.calculateBeforeMidnight(date);
-    return this;
-  }
-
-  @Deprecated
-  public HistoricProcessInstanceQuery finishDateBy(Date date) {
-    this.finishDateBy = this.calculateBeforeMidnight(date);
-    return this;
-  }
-
-  @Deprecated
-  public HistoricProcessInstanceQuery finishDateOn(Date date) {
-    this.finishDateOn = date;
-    this.finishDateOnBegin = this.calculateMidnight(date);
-    this.finishDateOnEnd = this.calculateBeforeMidnight(date);
-    return this;
-  }
-  
-  @Deprecated
-  private Date calculateBeforeMidnight(Date date){
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(date);
-    cal.add(Calendar.DAY_OF_MONTH, 1);
-    cal.add(Calendar.SECOND, -1);   
-    return cal.getTime();
-  }
-  
-  @Deprecated
-  private Date calculateMidnight(Date date){
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(date);
-    cal.set(Calendar.MILLISECOND, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MINUTE, 0);
-    cal.set(Calendar.HOUR, 0);    
-    return cal.getTime();
   }
 }

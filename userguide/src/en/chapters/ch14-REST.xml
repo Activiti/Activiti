@@ -9876,8 +9876,8 @@ Only the attachment name is required to create a new attachment.
             <programlisting>
 {
    "next.dbid":"101",
-   "schema.history":"create(5.15-SNAPSHOT)",
-   "schema.version":"5.15-SNAPSHOT"
+   "schema.history":"create(5.15)",
+   "schema.version":"5.15"
 }</programlisting>
           <table>
               <title>Get engine properties - Response codes</title>
@@ -9911,7 +9911,7 @@ Only the attachment name is required to create a new attachment.
             <programlisting>
 {
    "name":"default",
-   "version":"5.15-SNAPSHOT",
+   "version":"5.15",
    "resourceUrl":"file://activiti/activiti.cfg.xml",
    "exception":null
 }</programlisting>
@@ -9928,6 +9928,94 @@ Only the attachment name is required to create a new attachment.
                   <row>
                     <entry>200</entry>
                     <entry>Indicates the engine info is returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+</section>
+<section>
+  <title>Runtime</title>
+  <section>
+      <title>Signal event received</title>
+        <para>
+          <programlisting>POST runtime/signals</programlisting>
+        </para>
+        <para>
+        Notifies the engine that a signal event has been received, not explicitally related to a specific execution. 
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "signalName": "My Signal",
+  "tenantId" : "execute",
+  "async": true,
+  "variables": [
+      {"name": "testVar", "value": "This is a string"},
+      ...
+  ]
+}</programlisting>
+        <table>
+              <title>Signal event received - JSON Body parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Required</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>signalName</entry>
+                    <entry>Name of the signal</entry>
+                    <entry>Yes</entry>
+                  </row>
+                  <row>
+                    <entry>tenantId</entry>
+                    <entry>ID of the tenant that the signal event should be processed in</entry>
+                    <entry>No</entry>
+                  </row>
+                  <row>
+                    <entry>async</entry>
+                    <entry>If <literal>true</literal>, handling of the signal will happen asynchronously. Return code will be <literal>202 - Accepted</literal> to indicate the request is accepted but not yet executed. If <literal>false</literal>, 
+                    handling the signal will be done immedialty and result (<literal>200 - OK</literal>) will only return after this completed successfully. Defaults to <literal>false</literal> if omitted.</entry>
+                    <entry>No</entry>
+                  </row>
+                  <row>
+                    <entry>variables</entry>
+                    <entry>Array of variables (in the general variables format) to use as payload to pass along with the signal. Cannot be used in case <literal>async</literal> is set to <literal>true</literal>, this will result in an error.</entry>
+                    <entry>No</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+          <table>
+              <title>Signal event received - Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicated signal has been processed and no errors occured.</entry>
+                  </row>
+                  <row>
+                    <entry>202</entry>
+                    <entry>Indicated signal processing is queued as a job, ready to be executed.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Signal not processed. The signal name is missing or variables are used toghether with async, which is not allowed. Response body contains additional information about the error.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -11586,7 +11674,7 @@ Only the attachment name is required to create a new attachment.
   <section>
 
     <title>Legacy REST - General Usage</title>
-    <para><emphasis role="bold">The following section contains documentation of the Legacy REST-api, which has been deprecated since the 5.15-SNAPSHOT release. The REST-urls will not be removed in the future but will not be maintained. Any future additions and improvements will be done to the new REST API.</emphasis></para>
+    <para><emphasis role="bold">The following section contains documentation of the Legacy REST-api, which has been deprecated since the 5.15 release. The REST-urls will not be removed in the future but will not be maintained. Any future additions and improvements will be done to the new REST API.</emphasis></para>
     <para>
       Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat.
       By default the Activiti Engine will connect to a standalone H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder.

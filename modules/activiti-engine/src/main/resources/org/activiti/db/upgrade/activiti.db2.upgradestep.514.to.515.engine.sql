@@ -42,6 +42,14 @@ alter table ACT_RE_MODEL
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_MODEL');  
 
+alter table ACT_RU_EVENT_SUBSCR
+   add TENANT_ID_ varchar(255) default '';  
+   
+alter table ACT_RU_EVENT_SUBSCR
+   add PROC_DEF_ID_ varchar(64);      
+   
+Call Sysproc.admin_cmd ('REORG TABLE ACT_RU_EVENT_SUBSCR');     
+
 alter table ACT_RE_PROCDEF
     drop unique ACT_UNIQ_PROCDEF;
     
@@ -51,4 +59,4 @@ alter table ACT_RE_PROCDEF
     
 Call Sysproc.admin_cmd ('REORG TABLE ACT_RE_PROCDEF');
 
-update ACT_GE_PROPERTY set VALUE_ = '5.15-SNAPSHOT' where NAME_ = 'schema.version';
+update ACT_GE_PROPERTY set VALUE_ = '5.15' where NAME_ = 'schema.version';

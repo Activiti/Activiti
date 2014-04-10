@@ -28,7 +28,7 @@ import org.activiti.engine.repository.Model;
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
-public class ModelEntity implements Serializable, Model, HasRevision, PersistentObject {
+public class ModelEntity implements Model, HasRevision, PersistentObject, Serializable {
 
   private static final long serialVersionUID = 1L;
   

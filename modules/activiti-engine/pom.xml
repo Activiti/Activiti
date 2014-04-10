@@ -10,13 +10,17 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.15-SNAPSHOT</version>
+    <version>5.16-SNAPSHOT</version>
   </parent>
 
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-bpmn-converter</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-process-validation</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
