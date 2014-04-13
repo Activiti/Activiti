@@ -233,7 +233,8 @@ public class ActivitiConfiguration {
 				simpleDriverDataSource.setUsername("sa");
 				simpleDriverDataSource.setPassword("");
 				ds = simpleDriverDataSource;
-			} catch (ClassNotFoundException e) {
+			}
+            catch (ClassNotFoundException e) {
 				throw new ActivitiException("No dataSource bean was found. Tried to create default H2 in memory database, "
 						+ "but couldn't find the driver on the classpath");
 			}
