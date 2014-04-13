@@ -41,9 +41,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Auto configuration for using Activiti from a Spring Boot application.
- * <p/>
- * Provides a configured {@link org.activiti.engine.ProcessEngine} if none other is detected.
+ * <p>
+ * Auto configuration for using Activiti from a <A href="http://spring.io/projects/spring-boot">Spring Boot application</a>. 
+ * Provides a configured {@link org.activiti.engine.ProcessEngine} if none other is detected. 
+ * <p>
+ * Discovers any process definitions deployed in the {@literal src/main/resources/process} folder, and 
+ * uses the single {@link javax.sql.DataSource} bean discovered in the Spring application context.. 
+ * 
  *
  * @author Josh Long
  */
