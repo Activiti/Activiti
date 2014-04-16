@@ -26,6 +26,8 @@ import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.SimpleEmail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
@@ -35,6 +37,8 @@ import org.apache.commons.mail.SimpleEmail;
 public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
+  
+  private static final Logger LOG = LoggerFactory.getLogger(MailActivityBehavior.class);
   
   protected Expression to;
   protected Expression from;
@@ -46,38 +50,46 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
   protected Expression html;
   protected Expression htmlVar;
   protected Expression charset;
+  protected Expression ignoreException;
+  protected Expression exceptionVariableName;
 
   public void execute(ActivityExecution execution) {
-    String toStr = getStringFromField(to, execution);
-    String fromStr = getStringFromField(from, execution);
-    String ccStr = getStringFromField(cc, execution);
-    String bccStr = getStringFromField(bcc, execution);
-    String subjectStr = getStringFromField(subject, execution);
-		String textStr = textVar == null ? getStringFromField(text, execution)
-				: getStringFromField(getExpression(execution, textVar), execution);
-		String htmlStr = htmlVar == null ? getStringFromField(html, execution)
-				: getStringFromField(getExpression(execution, htmlVar), execution);
-    String charSetStr = getStringFromField(charset, execution);
-
-    Email email = createEmail(textStr, htmlStr);
-
-    addTo(email, toStr);
-    setFrom(email, fromStr);
-    addCc(email, ccStr);
-    addBcc(email, bccStr);
-    setSubject(email, subjectStr);
-    setMailServerProperties(email);
-    setCharset(email, charSetStr);
-
+    
+    boolean doIgnoreException = Boolean.parseBoolean(getStringFromField(ignoreException, execution));
+    String exceptionVariable = getStringFromField(exceptionVariableName, execution);
+    Email email = null;
     try {
+      String toStr = getStringFromField(to, execution);
+      String fromStr = getStringFromField(from, execution);
+      String ccStr = getStringFromField(cc, execution);
+      String bccStr = getStringFromField(bcc, execution);
+      String subjectStr = getStringFromField(subject, execution);
+  		String textStr = textVar == null ? getStringFromField(text, execution)
+  				: getStringFromField(getExpression(execution, textVar), execution);
+  		String htmlStr = htmlVar == null ? getStringFromField(html, execution)
+  				: getStringFromField(getExpression(execution, htmlVar), execution);
+      String charSetStr = getStringFromField(charset, execution);
+  
+      email = createEmail(textStr, htmlStr);
+  
+      addTo(email, toStr);
+      setFrom(email, fromStr);
+      addCc(email, ccStr);
+      addBcc(email, bccStr);
+      setSubject(email, subjectStr);
+      setMailServerProperties(email);
+      setCharset(email, charSetStr);
+  
       email.send();
+      
+    } catch (ActivitiException e) {
+      handleException(execution, e.getMessage(), e, doIgnoreException, exceptionVariable);
     } catch (EmailException e) {
-      throw new ActivitiException("Could not send e-mail", e);
+      handleException(execution, "Could not send e-mail in execution " + execution.getId(), e, doIgnoreException, exceptionVariable);
     }
+    
     leave(execution);
   }
-
-  
 
   protected Email createEmail(String text, String html) {
     if (html != null) {
@@ -222,7 +234,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
   }
 
   protected String getStringFromField(Expression expression, DelegateExecution execution) {
-    if(expression != null) {
+    if (expression != null) {
       Object value = expression.getValue(execution);
       if(value != null) {
         return value.toString();
@@ -237,4 +249,18 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
         .createExpression(variable);
   }
 
+  protected void handleException(ActivityExecution execution, String msg, Exception e, boolean doIgnoreException, String exceptionVariable) {
+    if (doIgnoreException) {
+      LOG.info("Ignoring email send error: " + msg, e);
+      if (exceptionVariable != null && exceptionVariable.length() > 0) {
+        execution.setVariable(exceptionVariable, msg);
+      }
+    } else {
+      if (e instanceof ActivitiException) {
+        throw (ActivitiException) e;
+      } else {
+        throw new ActivitiException(msg, e);
+      }
+    }
+  }
 }
