@@ -17,7 +17,8 @@
   <!ENTITY ch14 SYSTEM "chapters/ch14-REST.xml">
   <!ENTITY ch15 SYSTEM "chapters/ch15-Cdi.xml">
   <!ENTITY ch16 SYSTEM "chapters/ch16-Ldap.xml">
-  <!ENTITY ch17 SYSTEM "chapters/ch17-Advanced.xml">
+  <!ENTITY ch17 SYSTEM "chapters/ch17-Jndi.xml">
+  <!ENTITY ch18 SYSTEM "chapters/ch18-Advanced.xml">
 ]>
 
 <book>
@@ -44,5 +45,6 @@
 &ch15;
 &ch16;
 &ch17;
+&ch18;
 
 </book>
