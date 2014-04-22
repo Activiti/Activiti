@@ -571,5 +571,34 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 		
 		assertEquals("usertask2", task.getTaskDefinitionKey());
 	}
+	
+	/**
+	 * Test case for http://jira.codehaus.org/browse/ACT-1978
+	 */
+	public void testSignalDeleteOnRedeploy() {
+		
+		// Deploy test processes
+  	repositoryService.createDeployment()
+  		.addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+  		.deploy();
+  	
+  	// Deploy new versions
+  	repositoryService.createDeployment()
+			.addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+			.deploy();
+   	repositoryService.createDeployment()
+   		.addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+   		.deploy();
+  	
+  	// Firing a signal start event should only start ONE process instance
+  	// This used to be two, due to subscriptions not being cleaned up
+  	runtimeService.signalEventReceived("The Signal");
+  	assertEquals(3, runtimeService.createProcessInstanceQuery().count());
+  	
+  	// Cleanup
+  	for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+  		repositoryService.deleteDeployment(deployment.getId(), true);
+  	}
+	}
 
 }
