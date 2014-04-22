@@ -4,7 +4,7 @@
 
 	<property file="${user.home}/.activiti/build.properties" />
 
-	<property name="activiti.version" value="5.15.1-SNAPSHOT" />
+	<property name="activiti.version" value="5.16-SNAPSHOT" />
 	<property name="target.distro.root" value="target/zip/activiti-${activiti.version}" />
 	<property name="activiti.website" value="../../activiti-website" />
 
@@ -63,6 +63,9 @@
 			<fileset dir="../modules/activiti-bpmn-converter/target">
 				<include name="activiti-bpmn-converter-*.jar" />
 			</fileset>
+      <fileset dir="../modules/activiti-process-validation/target">
+        <include name="activiti-process-validation-*.jar" />
+      </fileset>
 			<fileset dir="../modules/activiti-bpmn-layout/target">
 				<include name="activiti-bpmn-layout-*.jar" />
 			</fileset>

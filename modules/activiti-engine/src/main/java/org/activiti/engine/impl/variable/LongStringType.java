@@ -15,37 +15,25 @@ package org.activiti.engine.impl.variable;
 
 
 /**
- * @author Tom Baeyens
+ * @author Martin Grofcik
  */
-public class StringType implements VariableType {
+public class LongStringType extends SerializableType {
 
-  private final int maxLength;
+  private final int minLength;
 
-  public StringType(int maxLength) {this.maxLength = maxLength;}
+  public LongStringType(int minLength) {this.minLength = minLength;}
 
   public String getTypeName() {
-    return "string";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public Object getValue(ValueFields valueFields) {
-    return valueFields.getTextValue();
-  }
-
-  public void setValue(Object value, ValueFields valueFields) {
-    valueFields.setTextValue((String) value);
+    return "longString";
   }
 
   public boolean isAbleToStore(Object value) {
     if (value==null) {
-      return true;
+      return false;
     }
     if (String.class.isAssignableFrom(value.getClass())) {
       String stringValue = (String) value;
-      return stringValue.length() <= maxLength;
+      return stringValue.length() >= minLength;
     }
     return false;
   }

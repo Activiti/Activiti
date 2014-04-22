@@ -57,13 +57,21 @@ public class ExpressionManager {
   
   
   public ExpressionManager() {
-    this(null);
+	    this(null);
+  }
+  
+  public ExpressionManager(boolean initFactory) {
+	    this(null, false);
   }
   
   public ExpressionManager(Map<Object, Object> beans) {
-    // Use the ExpressionFactoryImpl in activiti build in version of juel, with parametrised method expressions enabled
-    expressionFactory = new ExpressionFactoryImpl();
-    this.beans = beans;
+	  this(beans, true);
+  }
+  
+  public ExpressionManager(Map<Object, Object> beans, boolean initFactory) {
+	    // Use the ExpressionFactoryImpl in activiti build in version of juel, with parametrised method expressions enabled
+	    expressionFactory = new ExpressionFactoryImpl();
+	    this.beans = beans;
   }
 
  
