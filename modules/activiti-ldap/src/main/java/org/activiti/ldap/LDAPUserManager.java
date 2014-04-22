@@ -237,7 +237,8 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
   
   @Override
   public Picture getUserPicture(String userId) {
-  	throw new ActivitiException("LDAP user manager doesn't support user pictures");
+  	logger.debug("LDAP user manager doesn't support user pictures. Returning null");
+  	return null;
   }
 
   @Override
