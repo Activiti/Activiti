@@ -3,7 +3,6 @@ package org.activiti.engine.impl.bpmn.diagram;
 import org.activiti.bpmn.model.BpmnModel;
 
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
 
 /**

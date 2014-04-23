@@ -1020,7 +1020,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  private void initProcessDiagramGenerator() {
+  protected void initProcessDiagramGenerator() {
     if (processDiagramGenerator == null) {
       processDiagramGenerator = new DefaultProcessDiagramGenerator();
     }
