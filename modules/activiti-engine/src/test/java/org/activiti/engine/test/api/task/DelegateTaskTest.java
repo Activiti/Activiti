@@ -69,7 +69,7 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
 			assertEquals("approval", task.getCategory());
 			Map<String, Object> taskVariables = new HashMap<String, Object>();
 			taskVariables.put("outcome", "approve");
-			taskService.complete(task.getId(), taskVariables);
+			taskService.complete(task.getId(), taskVariables, true);
 		}
 		
 		// After completion, the task category should be changed in the script listener working on the delegate task
