@@ -65,13 +65,13 @@ import org.slf4j.LoggerFactory;
  * Some of the icons used are licenced under a Creative Commons Attribution 2.5
  * License, see http://www.famfamfam.com/lab/icons/silk/
  * 
- * @see ProcessDiagramGenerator
+ * @see org.activiti.engine.impl.bpmn.diagram.DefaultProcessDiagramGenerator
  * @author Joram Barrez
  */
-public class ProcessDiagramCanvas {
+public class DefaultProcessDiagramCanvas {
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiagramCanvas.class);
-  public enum SHAPE_TYPE {Rectangle, Rhombus, Ellipse};
+  protected static final Logger LOGGER = LoggerFactory.getLogger(DefaultProcessDiagramCanvas.class);
+  public enum SHAPE_TYPE {Rectangle, Rhombus, Ellipse}
 
   // Predefined sized
   protected static final int ARROW_WIDTH = 5;
@@ -159,7 +159,7 @@ public class ProcessDiagramCanvas {
   /**
    * Creates an empty canvas with given width and height.
    */
-  public ProcessDiagramCanvas(int width, int height) {
+  public DefaultProcessDiagramCanvas(int width, int height) {
     this.canvasWidth = width;
     this.canvasHeight = height;
     
@@ -197,7 +197,7 @@ public class ProcessDiagramCanvas {
    *          Hint that will be used when generating the image. Parts that fall
    *          below minX on the horizontal scale will be cropped.
    */
-  public ProcessDiagramCanvas(int width, int height, int minX, int minY) {
+  public DefaultProcessDiagramCanvas(int width, int height, int minX, int minY) {
     this(width, height);
     this.minX = minX;
     this.minY = minY;

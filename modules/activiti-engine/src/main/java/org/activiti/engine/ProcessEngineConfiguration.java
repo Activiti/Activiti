@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 import javax.sql.DataSource;
 
+import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
@@ -137,7 +138,10 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   protected Clock clock;
   protected JobExecutor jobExecutor;
-  
+
+  /** process diagram generator. Default value is DefaulProcessDiagramGenerator */
+  protected ProcessDiagramGenerator processDiagramGenerator;
+
   /**
    * Allows configuring a database table prefix which is used for all runtime operations of the process engine.
    * For example, if you specify a prefix named 'PRE1.', activiti will query for executions in a table named
@@ -643,6 +647,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   public ProcessEngineConfiguration setClock(Clock clock) {
     this.clock = clock;
+    return this;
+  }
+
+  public ProcessDiagramGenerator getProcessDiagramGenerator() {
+    return this.processDiagramGenerator;
+  }
+
+  public ProcessEngineConfiguration setProcessDiagramGenerator(ProcessDiagramGenerator processDiagramGenerator) {
+    this.processDiagramGenerator = processDiagramGenerator;
     return this;
   }
 
