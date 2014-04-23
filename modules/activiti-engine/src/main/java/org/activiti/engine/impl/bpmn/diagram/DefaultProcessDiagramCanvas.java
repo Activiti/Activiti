@@ -568,6 +568,11 @@ public class DefaultProcessDiagramCanvas {
     g.setTransform(originalTransformation);
   }
 
+  public void drawTask(Image icon, String name, int x, int y, int width, int height) {
+    drawTask(name, x, y, width, height);
+    g.drawImage(icon, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
+  }
+
   public void drawTask(String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height, false);
   }
@@ -716,38 +721,31 @@ public class DefaultProcessDiagramCanvas {
   }
 
   public void drawUserTask(String name, int x, int y, int width, int height) {
-    drawTask(name, x, y, width, height);
-    g.drawImage(USERTASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
+    drawTask(USERTASK_IMAGE, name, x, y, width, height);
   }
 
   public void drawScriptTask(String name, int x, int y, int width, int height) {
-    drawTask(name, x, y, width, height);
-    g.drawImage(SCRIPTTASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
+    drawTask(SCRIPTTASK_IMAGE, name, x, y, width, height);
   }
 
   public void drawServiceTask(String name, int x, int y, int width, int height) {
-    drawTask(name, x, y, width, height);
-    g.drawImage(SERVICETASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
+    drawTask(SERVICETASK_IMAGE, name, x, y, width, height);
   }
 
   public void drawReceiveTask(String name, int x, int y, int width, int height) {
-    drawTask(name, x, y, width, height);
-    g.drawImage(RECEIVETASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
+    drawTask(RECEIVETASK_IMAGE, name, x, y, width, height);
   }
 
   public void drawSendTask(String name, int x, int y, int width, int height) {
-    drawTask(name, x, y, width, height);
-    g.drawImage(SENDTASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
+    drawTask(SENDTASK_IMAGE, name, x, y, width, height);
   }
 
   public void drawManualTask(String name, int x, int y, int width, int height) {
-    drawTask(name, x, y, width, height);
-    g.drawImage(MANUALTASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
+    drawTask(MANUALTASK_IMAGE, name, x, y, width, height);
   }
   
   public void drawBusinessRuleTask(String name, int x, int y, int width, int height) {
-    drawTask(name, x, y, width, height);
-    g.drawImage(BUSINESS_RULE_TASK_IMAGE, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
+    drawTask(BUSINESS_RULE_TASK_IMAGE, name, x, y, width, height);
   }
 
   public void drawExpandedSubProcess(String name, int x, int y, int width, int height, Boolean isTriggeredByEvent) {
