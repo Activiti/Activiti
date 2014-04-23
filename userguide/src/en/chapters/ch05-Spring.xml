@@ -222,6 +222,51 @@ userBean.hello();</programlisting>
 &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
   &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
 &lt;/bean&gt;</programlisting>
+
+	<para>
+		By default, the configuration above will group all of the resources matching the filtering into a single deployment to the Activiti engine. The duplicate filtering to prevent re-deployment of unchanged 
+		resources applies to the whole deployment. In some cases, this may not be what you want. For instance, if you deploy a set of process resources this way and only a single 
+		process definition in those resources has changed, the deployment as a whole will be considered new and all of the process definitions in that deployment will be re-deployed, resulting in new 
+		versions of each of the process definitions, even though only one was actually changed.
+	</para>
+	
+	<para>
+		To be able to customize the way deployments are determined, you can specify an additional property in the <literal>SpringProcessEngineConfiguration</literal>, <literal>deploymentMode</literal>. This 
+		property defines the way deployments will be determined from the set of resources that match the filter. There are 3 values that are supported by default for this property:
+	</para>
+	
+	<itemizedlist>
+		<listitem>
+			<code>default</code>: Group all resources into a single deployment and apply duplicate filtering to that deployment. 
+				This is the default value and it will be used if you don&apos;t specify a value.
+		</listitem>
+		<listitem>
+			<code>single-resource</code>: Create a separate deployment for each individual resource and apply duplicate filtering to that deployment. This is the 
+				value you would use to have each process definition be deployed separately and only create a new process definition version if it has changed. 
+		</listitem>
+		<listitem>
+			<code>resource-parent-folder</code>: Create a separate deployment for resources that share the same parent folder and apply duplicate filtering to that 
+				deployment. This value can be used to create separate deployments for most resources, but still be able to group some by placing them in a shared folder.
+		</listitem>
+	</itemizedlist>
+	
+	<para>
+		Here&apos;s an example of how to specify the <code>single-resource</code> configuration for <code>deploymentMode</code>:
+	</para>
+	
+	<programlisting>
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
+  ...
+  <emphasis>&lt;property name=&quot;deploymentResources&quot; value=&quot;classpath*:/activiti/*.bpmn&quot; /&gt;</emphasis>
+  <emphasis role="bold">&lt;property name=&quot;deploymentMode&quot; value=&quot;single-resource&quot; /&gt;</emphasis>
+&lt;/bean&gt;</programlisting>
+	
+	<para>
+		In addition to using the values listed above for <code>deploymentMode</code>, you may require customized behavior towards determining deployments. If so, 
+		you can create a subclass of <code>SpringProcessEngineConfiguration</code> and override the <code>getAutoDeploymentStrategy(String deploymentMode)</code> method. 
+		This method determines which deployment strategy is used for a certain value of the <code>deploymentMode</code> configuration.
+	</para>
+
   </section>
   
   <section id="springUnitTest">
