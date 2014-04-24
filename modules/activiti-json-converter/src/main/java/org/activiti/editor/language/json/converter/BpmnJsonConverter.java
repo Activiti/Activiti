@@ -290,10 +290,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         pool.setId(BpmnJsonConverterUtil.getElementId(shapeNode));
         pool.setName(JsonConverterUtil.getPropertyValueAsString(PROPERTY_NAME, shapeNode));
         pool.setProcessRef(JsonConverterUtil.getPropertyValueAsString(PROPERTY_PROCESS_ID, shapeNode));
-        JsonNode processExecutableNode = JsonConverterUtil.getProperty(PROPERTY_PROCESS_EXECUTABLE, shapeNode);
-        if (processExecutableNode != null && StringUtils.isNotEmpty(processExecutableNode.asText())) {
-          pool.setExecutable(JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_PROCESS_EXECUTABLE, shapeNode));
-        }
+        pool.setExecutable(JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_PROCESS_EXECUTABLE, shapeNode, true));
         bpmnModel.getPools().add(pool);
         
         Process process = new Process();

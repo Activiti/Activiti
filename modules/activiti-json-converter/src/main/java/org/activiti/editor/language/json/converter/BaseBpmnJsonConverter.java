@@ -664,6 +664,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     return JsonConverterUtil.getPropertyValueAsBoolean(name, objectNode);
   }
   
+  protected boolean getPropertyValueAsBoolean(String name, JsonNode objectNode, boolean defaultValue) {
+    return JsonConverterUtil.getPropertyValueAsBoolean(name, objectNode, defaultValue);
+  }
+  
   protected List<String> getPropertyValueAsList(String name, JsonNode objectNode) {
     return JsonConverterUtil.getPropertyValueAsList(name, objectNode);
   }
