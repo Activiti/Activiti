@@ -268,11 +268,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     subProcessInstance.setProcessDefinition((ProcessDefinitionImpl) processDefinition);
     subProcessInstance.setProcessInstance(subProcessInstance);
 
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, subProcessInstance));
-    }
-
     Context.getCommandContext().getHistoryManager()
       .recordSubProcessInstanceStart(this, subProcessInstance);
 

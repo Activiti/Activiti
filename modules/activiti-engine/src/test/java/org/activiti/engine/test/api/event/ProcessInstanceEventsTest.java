@@ -115,6 +115,38 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 	}
 
   /**
+   * Test create, update and delete events of process instances.
+   */
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/nestedSubProcess.bpmn20.xml",
+                           "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"})
+  public void testSubProcessInstanceEvents() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess");
+
+    assertNotNull(processInstance);
+
+    // Check create-event one main process the second one Scope execution, and the third one subprocess
+    assertEquals(3, listener.getEventsReceived().size());
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+
+    ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+    assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+    assertEquals(processInstance.getId(), event.getProcessInstanceId());
+    assertEquals(processInstance.getId(), event.getExecutionId());
+    assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+    assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getParentId());
+
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
+    assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+    assertEquals("simpleSubProcess", ((ExecutionEntity) event.getEntity()).getProcessDefinition().getKey());
+
+    listener.clearEventsReceived();
+  }
+
+  /**
    * Test process with signals start.
    */
   @Deployment(resources = {"org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalWithGlobalScope.bpmn20.xml"})
