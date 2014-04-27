@@ -108,7 +108,7 @@ public class ActivitiRule implements TestRule {
 	}
 
 	public ActivitiRule(ProcessEngine processEngine) {
-		this.processEngine = processEngine;
+		setProcessEngine(processEngine);
 	}
 
 	/**
