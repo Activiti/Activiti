@@ -1,13 +1,11 @@
 package org.activiti.editor.language;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.TimerEventDefinition;
@@ -55,10 +53,4 @@ public class CatchEventConverterTest extends AbstractConverterTest {
     
   }
   
-  private EventDefinition extractEventDefinition(FlowElement messageElement) {
-    assertNotNull(messageElement);
-    assertTrue(messageElement instanceof IntermediateCatchEvent);
-    IntermediateCatchEvent messageEvent = (IntermediateCatchEvent)messageElement;
-    return messageEvent.getEventDefinitions().get(0);
-  }
 }

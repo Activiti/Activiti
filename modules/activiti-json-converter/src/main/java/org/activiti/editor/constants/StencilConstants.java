@@ -51,6 +51,7 @@ public interface StencilConstants {
   final String STENCIL_EVENT_BOUNDARY_TIMER = "BoundaryTimerEvent";
   final String STENCIL_EVENT_BOUNDARY_ERROR = "BoundaryErrorEvent";
   final String STENCIL_EVENT_BOUNDARY_SIGNAL = "BoundarySignalEvent";
+  final String STENCIL_EVENT_BOUNDARY_MESSAGE = "BoundaryMessageEvent";
   
   final String STENCIL_EVENT_CATCH_SIGNAL = "CatchSignalEvent";
   final String STENCIL_EVENT_CATCH_TIMER = "CatchTimerEvent";
