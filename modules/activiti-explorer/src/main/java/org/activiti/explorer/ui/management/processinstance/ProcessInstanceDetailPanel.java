@@ -33,7 +33,9 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -216,10 +218,10 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
         }
       }
       
-      if(didDrawImage == false && processDefinitionEntity.isGraphicalNotationDefined()) {
-      
+      if(!didDrawImage && processDefinitionEntity.isGraphicalNotationDefined()) {
+        ProcessDiagramGenerator diagramGenerator = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getProcessEngineConfiguration().getProcessDiagramGenerator();
         StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
-          .buildStreamResource(processInstance, repositoryService, runtimeService);
+          .buildStreamResource(processInstance, repositoryService, runtimeService, diagramGenerator);
   
         if(diagram != null) {
           Label header = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
