@@ -1429,6 +1429,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  public ProcessEngineConfiguration getProcessEngineConfiguration() {
+    return this;
+  }
+  
   public Map<Class< ? >, SessionFactory> getSessionFactories() {
     return sessionFactories;
   }
