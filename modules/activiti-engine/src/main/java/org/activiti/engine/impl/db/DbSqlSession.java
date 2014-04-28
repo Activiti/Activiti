@@ -36,6 +36,9 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.GroupQueryImpl;
@@ -480,7 +483,8 @@ public class DbSqlSession implements Session {
   // flush ////////////////////////////////////////////////////////////////////
 
   public void flush() {
-    removeUnnecessaryOperations();
+    List<DeleteOperation> removedOperations = removeUnnecessaryOperations();
+
     flushDeserializedObjects();
     List<PersistentObject> updatedObjects = getUpdatedObjects();
     
@@ -500,15 +504,16 @@ public class DbSqlSession implements Session {
 
     flushInserts();
     flushUpdates(updatedObjects);
-    flushDeletes();
+    flushDeletes(removedOperations);
   }
 
   /**
    * Clears all deleted and inserted objects from the cache, 
    * and removes inserts and deletes that cancel each other.
    */
-  protected void removeUnnecessaryOperations() {
-    
+  protected List<DeleteOperation> removeUnnecessaryOperations() {
+    List<DeleteOperation> removedDeleteOperations = new ArrayList<DeleteOperation>();
+
     for (Iterator<DeleteOperation> deleteIt = deleteOperations.iterator(); deleteIt.hasNext();) {
       DeleteOperation deleteOperation = deleteIt.next();
       
@@ -520,6 +525,8 @@ public class DbSqlSession implements Session {
           // remove the insert and the delete, they cancel each other
           insertIt.remove();
           deleteIt.remove();
+          // add removed operations to be able to fire events
+          removedDeleteOperations.add( deleteOperation);
         }
       }
       
@@ -530,7 +537,8 @@ public class DbSqlSession implements Session {
     for (PersistentObject insertedObject: insertedObjects) {
       cacheRemove(insertedObject.getClass(), insertedObject.getId());
     }
-    
+
+    return removedDeleteOperations;
   }
 
   protected void flushDeserializedObjects() {
@@ -629,12 +637,61 @@ public class DbSqlSession implements Session {
     updatedObjects.clear();
   }
 
-  protected void flushDeletes() {
-    for (DeleteOperation delete: deleteOperations) {
-      log.debug("executing: {}", delete);
-      delete.execute();
+  protected void flushDeletes(List<DeleteOperation> removedOperations) {
+    boolean dispatchEvent = Context.getProcessEngineConfiguration().getEventDispatcher()
+      .isEnabled();
+
+    flushRegularDeletes(dispatchEvent);
+
+    if (dispatchEvent) {
+      dispatchEventsForRemovedOperations(removedOperations);
     }
+
     deleteOperations.clear();
+  }
+
+  protected void dispatchEventsForRemovedOperations(List<DeleteOperation> removedOperations) {
+    for (DeleteOperation delete : removedOperations) {
+      // dispatch removed delete events
+      if (delete instanceof CheckedDeleteOperation) {
+        CheckedDeleteOperation checkedDeleteOperation = (CheckedDeleteOperation) delete;
+        PersistentObject persistentObject = checkedDeleteOperation.getPersistentObject();
+        if (persistentObject instanceof VariableInstanceEntity) {
+          VariableInstanceEntity variableInstance = (VariableInstanceEntity) persistentObject;
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+            createVariableDeleteEvent(variableInstance)
+          );
+        }
+      }
+    }
+  }
+
+  protected static ActivitiVariableEvent createVariableDeleteEvent(VariableInstanceEntity variableInstance) {
+    return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, variableInstance.getName(), null, variableInstance.getTaskId(),
+      variableInstance.getExecutionId(), variableInstance.getProcessInstanceId(), null);
+  }
+
+  protected void flushRegularDeletes(boolean dispatchEvent) {
+    for (DeleteOperation delete : deleteOperations) {
+      log.debug("executing: {}", delete);
+
+      delete.execute();
+
+      //  fire event for variable delete operation. (BulkDeleteOperation is not taken into account)
+      if (dispatchEvent) {
+        //  prepare delete event to fire for variable delete operation. (BulkDeleteOperation is not taken into account)
+        if (delete instanceof CheckedDeleteOperation) {
+          CheckedDeleteOperation checkedDeleteOperation = (CheckedDeleteOperation) delete;
+          PersistentObject persistentObject = checkedDeleteOperation.getPersistentObject();
+          if (persistentObject instanceof VariableInstanceEntity) {
+            VariableInstanceEntity variableInstance = (VariableInstanceEntity) persistentObject;
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              createVariableDeleteEvent(variableInstance)
+            );
+          }
+        }
+      }
+    }
   }
 
   public void close() {
