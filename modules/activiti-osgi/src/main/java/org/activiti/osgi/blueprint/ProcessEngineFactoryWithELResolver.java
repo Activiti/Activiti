@@ -50,10 +50,10 @@ public class ProcessEngineFactoryWithELResolver extends ProcessEngineFactory {
         compositeElResolver.add(blueprintContextELResolver);
       }
       compositeElResolver.add(blueprintELResolver);
-      compositeElResolver.add(new BeanELResolver());
       compositeElResolver.add(new ArrayELResolver());
       compositeElResolver.add(new ListELResolver());
       compositeElResolver.add(new MapELResolver());
+      compositeElResolver.add(new BeanELResolver());
       return compositeElResolver;
     }
   }
