@@ -982,7 +982,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         if (defaultBpmnParseHandler.getHandledTypes().size() != 1) {
           StringBuilder supportedTypes = new StringBuilder();
           for (Class<?> type : defaultBpmnParseHandler.getHandledTypes()) {
-            supportedTypes.append(" " + type.getCanonicalName() + " ");
+            supportedTypes.append(" ").append(type.getCanonicalName()).append(" ");
           }
           throw new ActivitiException("The default BPMN parse handlers should only support one type, but " + defaultBpmnParseHandler.getClass() 
                   + " supports " + supportedTypes.toString() + ". This is likely a programmatic error");
