@@ -27,7 +27,6 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
-import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.GraphicInfo;
@@ -37,10 +36,8 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
-import org.activiti.bpmn.model.parse.Problem;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.data.ClassStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemKind;
@@ -52,11 +49,11 @@ import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
 import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.HasDIBounds;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -67,6 +64,8 @@ import org.activiti.engine.impl.util.io.ResourceStreamSource;
 import org.activiti.engine.impl.util.io.StreamSource;
 import org.activiti.engine.impl.util.io.StringStreamSource;
 import org.activiti.engine.impl.util.io.UrlStreamSource;
+import org.activiti.validation.ProcessValidator;
+import org.activiti.validation.ValidationError;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +94,9 @@ public class BpmnParse implements BpmnXMLConstants {
 
   protected String name;
 
+  protected boolean validateSchema = true;
+  protected boolean validateProcess = true;
+  
   protected StreamSource streamSource;
 
   protected BpmnModel bpmnModel;
@@ -165,24 +167,63 @@ public class BpmnParse implements BpmnXMLConstants {
     this.deployment = deployment;
     return this;
   }
-
+  
   public BpmnParse execute() {
     try {
+
+    	ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
       BpmnXMLConverter converter = new BpmnXMLConverter();
       
       boolean enableSafeBpmnXml = false;
       String encoding = null;
-      if (Context.getProcessEngineConfiguration() != null) {
-        enableSafeBpmnXml = Context.getProcessEngineConfiguration().isEnableSafeBpmnXml();
-        encoding = Context.getProcessEngineConfiguration().getXmlEncoding();
+      if (processEngineConfiguration != null) {
+        enableSafeBpmnXml = processEngineConfiguration.isEnableSafeBpmnXml();
+        encoding = processEngineConfiguration.getXmlEncoding();
       }
       
       if (encoding != null) {
-        bpmnModel = converter.convertToBpmnModel(streamSource, true, enableSafeBpmnXml, encoding);
+        bpmnModel = converter.convertToBpmnModel(streamSource, validateSchema, enableSafeBpmnXml, encoding);
       } else {
-        bpmnModel = converter.convertToBpmnModel(streamSource, true, enableSafeBpmnXml);
+        bpmnModel = converter.convertToBpmnModel(streamSource, validateSchema, enableSafeBpmnXml);
       }
       
+      // XSD validation goes first, then process/semantic validation
+      if (validateProcess) {
+      	ProcessValidator processValidator = processEngineConfiguration.getProcessValidator();
+      	if (processValidator == null) {
+      		LOGGER.warn("Process should be validated, but no process validator is configured on the process engine configuration!");
+      	} else {
+      		List<ValidationError> validationErrors = processValidator.validate(bpmnModel);
+      		if(validationErrors != null && validationErrors.size() > 0) {
+      			
+      			StringBuilder warningBuilder = new StringBuilder();
+	      		StringBuilder errorBuilder = new StringBuilder();
+	      		
+	          for (ValidationError error : validationErrors) {
+	          	if (error.isWarning()) {
+	          		warningBuilder.append(error.toString());
+	          		warningBuilder.append("\n");
+	          	} else {
+	          		errorBuilder.append(error.toString());
+	          		errorBuilder.append("\n");
+	          	}
+	          }
+	           
+	          // Throw exception if there is any error
+	          if (errorBuilder.length() > 0) {
+	          	throw new ActivitiException("Errors while parsing:\n" + errorBuilder.toString());
+	          }
+	          
+	          // Write out warnings (if any)
+	          if (warningBuilder.length() > 0) {
+	          	LOGGER.warn("Following warnings encountered during process validation: " + warningBuilder.toString());
+	          }
+	          
+      		}
+      	}
+      }
+      
+      // Validation successfull (or no validation)
       createImports();
       createItemDefinitions();
       createMessages();
@@ -194,15 +235,6 @@ public class BpmnParse implements BpmnXMLConstants {
       } else {
         throw new ActivitiException("Error parsing XML", e);
       }
-    }
-
-    if (bpmnModel.getProblems().size() > 0) {
-      StringBuilder problemBuilder = new StringBuilder();
-      for (Problem error : bpmnModel.getProblems()) {
-        problemBuilder.append(error.toString());
-        problemBuilder.append("\n");
-      }
-      throw new ActivitiException("Errors while parsing:\n" + problemBuilder.toString());
     }
 
     return this;
@@ -268,7 +300,7 @@ public class BpmnParse implements BpmnXMLConstants {
     for (Import theImport : bpmnModel.getImports()) {
       XMLImporter importer = this.getImporter(theImport);
       if (importer == null) {
-        bpmnModel.addProblem("Could not import item of type " + theImport.getImportType(), theImport);
+        throw new ActivitiException("Could not import item of type " + theImport.getImportType());
       } else {
         importer.importFrom(theImport, this);
       }
@@ -287,7 +319,7 @@ public class BpmnParse implements BpmnXMLConstants {
           this.importers.put(theImport.getImportType(), newInstance);
           return newInstance;
         } catch (Exception e) {
-          bpmnModel.addProblem("Could not find importer for type " + theImport.getImportType(), theImport);
+          throw new ActivitiException("Could not find importer for type " + theImport.getImportType());
         }
       }
       return null;
@@ -298,9 +330,7 @@ public class BpmnParse implements BpmnXMLConstants {
     for (Message messageElement : bpmnModel.getMessages()) {
       MessageDefinition messageDefinition = new MessageDefinition(messageElement.getId(), name);
       if (StringUtils.isNotEmpty(messageElement.getItemRef())) {
-        if (!this.itemDefinitions.containsKey(messageElement.getItemRef())) {
-          bpmnModel.addProblem(messageElement.getItemRef() + " does not exist", messageElement);
-        } else {
+        if (this.itemDefinitions.containsKey(messageElement.getItemRef())) {
           ItemDefinition itemDefinition = this.itemDefinitions.get(messageElement.getItemRef());
           messageDefinition.setItemDefinition(itemDefinition);
         }
@@ -337,9 +367,7 @@ public class BpmnParse implements BpmnXMLConstants {
       bpmnInterface.setImplementation(this.interfaceImplementations.get(interfaceObject.getImplementationRef()));
 
       for (org.activiti.bpmn.model.Operation operationObject : interfaceObject.getOperations()) {
-        if (!this.messages.containsKey(operationObject.getInMessageRef())) {
-          bpmnModel.addProblem(operationObject.getInMessageRef() + " does not exist", operationObject);
-        } else {
+        if (this.messages.containsKey(operationObject.getInMessageRef())) {
           MessageDefinition inMessage = this.messages.get(operationObject.getInMessageRef());
           Operation operation = new Operation(operationObject.getId(), operationObject.getName(), bpmnInterface, inMessage);
           operation.setImplementation(this.operationImplementations.get(operationObject.getImplementationRef()));
@@ -416,68 +444,7 @@ public class BpmnParse implements BpmnXMLConstants {
     for (SequenceFlow sequenceFlow : sequenceFlowToParse) {
       bpmnParserHandlers.parseElement(this, sequenceFlow);
     }
-
-    // validations after complete model
-    for (FlowElement flowElement : flowElements) {
-      if (flowElement instanceof ExclusiveGateway) {
-        ActivityImpl gatewayActivity = getCurrentScope().findActivity(flowElement.getId());
-        validateExclusiveGateway(gatewayActivity, (ExclusiveGateway) flowElement);
-      }
-    }
-  }
-
-  public void validateExclusiveGateway(ActivityImpl activity, ExclusiveGateway exclusiveGateway) {
-    if (activity.getOutgoingTransitions().size() == 0) {
-      // TODO: double check if this is valid (I think in Activiti yes, since we
-      // need start events we will need an end event as well)
-      bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has no outgoing sequence flows.", exclusiveGateway);
-    } else if (activity.getOutgoingTransitions().size() == 1) {
-      PvmTransition flow = activity.getOutgoingTransitions().get(0);
-      Condition condition = (Condition) flow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-      if (condition != null) {
-        bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has only one outgoing sequence flow ('" + flow.getId()
-                + "'). This is not allowed to have a condition.", exclusiveGateway);
-      }
-    } else {
-      String defaultSequenceFlow = (String) activity.getProperty("default");
-      boolean hasDefaultFlow = StringUtils.isNotEmpty(defaultSequenceFlow);
-
-      ArrayList<PvmTransition> flowsWithoutCondition = new ArrayList<PvmTransition>();
-      for (PvmTransition flow : activity.getOutgoingTransitions()) {
-        Condition condition = (Condition) flow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-        boolean isDefaultFlow = flow.getId() != null && flow.getId().equals(defaultSequenceFlow);
-        boolean hasConditon = condition != null;
-
-        if (!hasConditon && !isDefaultFlow) {
-          flowsWithoutCondition.add(flow);
-        }
-        if (hasConditon && isDefaultFlow) {
-          bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId()
-                  + "' which is the default flow but has a condition too.", exclusiveGateway);
-        }
-      }
-      if (hasDefaultFlow || flowsWithoutCondition.size() > 1) {
-        // if we either have a default flow (then no flows without conditions
-        // are valid at all) or if we have more than one flow without condition
-        // this is an error
-        for (PvmTransition flow : flowsWithoutCondition) {
-          bpmnModel.addProblem("Exclusive Gateway '" + activity.getId() + "' has outgoing sequence flow '" + flow.getId()
-                  + "' without condition which is not the default flow.", exclusiveGateway);
-        }
-      } else if (flowsWithoutCondition.size() == 1) {
-        // Havinf no default and exactly one flow without condition this is
-        // considered the default one now (to not break backward compatibility)
-        PvmTransition flow = flowsWithoutCondition.get(0);
-        bpmnModel
-                .addWarning(
-                        "Exclusive Gateway '"
-                                + activity.getId()
-                                + "' has outgoing sequence flow '"
-                                + flow.getId()
-                                + "' without condition which is not the default flow. We assume it to be the default flow, but it is bad modeling practice, better set the default flow in your gateway.",
-                        exclusiveGateway);
-      }
-    }
+   
   }
 
   // Diagram interchange
@@ -548,8 +515,6 @@ public class BpmnParse implements BpmnXMLConstants {
       if (lane != null) {
         // The shape represents a lane
         createDIBounds(graphicInfo, lane);
-      } else {
-        bpmnModel.addProblem("Invalid reference in 'bpmnElement' attribute, activity " + key + " not found", graphicInfo);
       }
     }
   }
@@ -580,7 +545,7 @@ public class BpmnParse implements BpmnXMLConstants {
       } else {
         graphicInfo = new GraphicInfo();
       }
-      bpmnModel.addProblem("Invalid reference in 'bpmnElement' attribute, sequenceFlow " + key + " not found", graphicInfo);
+      LOGGER.warn("Invalid reference in 'bpmnElement' attribute, sequenceFlow " + key + " not found");
     }
   }
 
@@ -608,12 +573,28 @@ public class BpmnParse implements BpmnXMLConstants {
   /*
    * ------------------- GETTERS AND SETTERS -------------------
    */
+  
+  public boolean isValidateSchema() {
+		return validateSchema;
+	}
 
-  public List<ProcessDefinitionEntity> getProcessDefinitions() {
-    return processDefinitions;
-  }
+	public void setValidateSchema(boolean validateSchema) {
+		this.validateSchema = validateSchema;
+	}
 
-  public String getTargetNamespace() {
+	public boolean isValidateProcess() {
+		return validateProcess;
+	}
+
+	public void setValidateProcess(boolean validateProcess) {
+		this.validateProcess = validateProcess;
+	}
+	
+	public List<ProcessDefinitionEntity> getProcessDefinitions() {
+		return processDefinitions;
+	}
+
+	public String getTargetNamespace() {
     return targetNamespace;
   }
 

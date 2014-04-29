@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.deploy;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -41,8 +42,12 @@ public class DeploymentManager {
   protected List<Deployer> deployers;
   
   public void deploy(DeploymentEntity deployment) {
+    deploy(deployment, null);
+  }
+  
+  public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
     for (Deployer deployer: deployers) {
-      deployer.deploy(deployment);
+      deployer.deploy(deployment, deploymentSettings);
     }
   }
 
@@ -73,6 +78,18 @@ public class DeploymentManager {
     return processDefinition;
   }
 
+  public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId) {
+    ProcessDefinitionEntity processDefinition = Context
+      .getCommandContext()
+      .getProcessDefinitionEntityManager()
+      .findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+    if (processDefinition==null) {
+      throw new ActivitiObjectNotFoundException("no processes deployed with key '"+processDefinitionKey+"' for tenant identifier '" + tenantId + "'", ProcessDefinition.class);
+    }
+    processDefinition = resolveProcessDefinition(processDefinition);
+    return processDefinition;
+  }
+
   public ProcessDefinitionEntity findDeployedProcessDefinitionByKeyAndVersion(String processDefinitionKey, Integer processDefinitionVersion) {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) Context
       .getCommandContext()
@@ -95,7 +112,7 @@ public class DeploymentManager {
         .getDeploymentEntityManager()
         .findDeploymentById(deploymentId);
       deployment.setNew(false);
-      deploy(deployment);
+      deploy(deployment, null);
       processDefinition = processDefinitionCache.get(processDefinitionId);
       
       if (processDefinition==null) {
@@ -121,7 +138,6 @@ public class DeploymentManager {
     ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
     
     for (ProcessDefinition processDefinition : processDefinitions) {
-      processDefinitionCache.remove(processDefinition.getId());
       
       // Since all process definitions are deleted by a single query, we should dispatch the
       // events in this loop
@@ -138,6 +154,10 @@ public class DeploymentManager {
     if(eventDispatcher.isEnabled()) {
     	eventDispatcher.dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, deployment));
+    }
+    
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      processDefinitionCache.remove(processDefinition.getId());
     }
   }
   

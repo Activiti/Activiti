@@ -29,6 +29,14 @@
       <map>
         <entry key="eventListener" value-ref="eventListener" />
         <entry key="testEventListener" value-ref="testEventListener" />
+        <entry key="testAttachmentEventListener" value-ref="testAttachmentEventListener" />
+        <entry key="testCommentEventListener" value-ref="testCommentEventListener" />
+        <entry key="testExecutionEventListener" value-ref="testExecutionEventListener" />
+        <entry key="testIdentityLinkEventListener" value-ref="testIdentityLinkEventListener" />
+        <entry key="testJobEventListener" value-ref="testJobEventListener" />
+        <entry key="testProcessDefinitionEventListener" value-ref="testProcessDefinitionEventListener" />
+        <entry key="testProcessInstanceEventListener" value-ref="testProcessInstanceEventListener" />
+        <entry key="testTaskEventListener" value-ref="testTaskEventListener" />
       </map>
     </property>
   </bean>
@@ -39,4 +47,12 @@
    <!-- An event-listener instance used from within an expression in BPMN XML-->
   <bean id="testEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
   
+  <bean id="testAttachmentEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testCommentEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testExecutionEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testIdentityLinkEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testJobEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testProcessDefinitionEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testProcessInstanceEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testTaskEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
 </beans>

@@ -13,10 +13,9 @@
 
 package org.activiti.engine.test.bpmn.parse;
 
-import java.util.List;
-
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -24,11 +23,13 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
+
+import java.util.List;
 
 
 /**
@@ -63,13 +64,6 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
       assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
       
       repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
-  }
-  
-  public void testParseCollaborationPlane() {
-    repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/parse/BpmnParseTest.testParseCollaborationPlane.bpmn").deploy();
-    assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
-
-    repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
   }
   
   @Deployment
@@ -167,7 +161,10 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testParseDiagramInterchangeElementsForUnknownModelElements() {
-            
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("TestAnnotation").singleResult();
+    BpmnModel model = repositoryService.getBpmnModel(processDefinition.getId());
+    Process mainProcess = model.getMainProcess();
+    assertEquals(0, mainProcess.getExtensionElements().size());
   }
   
   public void testParseSwitchedSourceAndTargetRefsForAssociations() {

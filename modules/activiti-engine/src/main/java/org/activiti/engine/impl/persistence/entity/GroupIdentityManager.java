@@ -30,7 +30,7 @@ public interface GroupIdentityManager {
 
   void insertGroup(Group group);
 
-  void updateGroup(GroupEntity updatedGroup);
+  void updateGroup(Group updatedGroup);
 
   void deleteGroup(String groupId);
 
@@ -45,5 +45,7 @@ public interface GroupIdentityManager {
   List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findGroupCountByNativeQuery(Map<String, Object> parameterMap);
+  
+  boolean isNewGroup(Group group);
 
 }

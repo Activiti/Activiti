@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
@@ -38,7 +39,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Dave Syer
  * @author Frederik Heremans
  */
-public abstract class JobEntity implements Serializable, Job, PersistentObject, HasRevision {
+public abstract class JobEntity implements Job, PersistentObject, HasRevision, Serializable {
 
   public static final boolean DEFAULT_EXCLUSIVE = true;
   public static final int DEFAULT_RETRIES = 3;
@@ -68,6 +69,8 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   protected final ByteArrayRef exceptionByteArrayRef = new ByteArrayRef();
   
   protected String exceptionMessage;
+  
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
 
   public void execute(CommandContext commandContext) {
     ExecutionEntity execution = null;
@@ -92,11 +95,18 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
         .getExecutionEntityManager()
         .findExecutionById(executionId);
       execution.addJob(this);
+      
+      // Inherit tenant if (if applicable)
+      if (execution != null && execution.getTenantId() != null) {
+      	setTenantId(execution.getTenantId());
+      }
     }
     
     if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, this));
     }
   }
   
@@ -251,10 +261,16 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject, 
   public void setExceptionMessage(String exceptionMessage) {
     this.exceptionMessage = StringUtils.abbreviate(exceptionMessage, MAX_EXCEPTION_MESSAGE_LENGTH);
   }
-  
+  public String getTenantId() {
+		return tenantId;
+	}
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+	
   // common methods  //////////////////////////////////////////////////////////
 
-  @Override
+	@Override
   public String toString() {
     return "JobEntity [id=" + id + "]";
   }

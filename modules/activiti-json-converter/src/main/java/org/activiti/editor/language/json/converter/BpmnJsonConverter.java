@@ -18,17 +18,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.bpmn.model.ActivitiListener;
-
 import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polyline2D;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.EventListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.FlowNode;
@@ -117,6 +117,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     DI_CIRCLES.add(STENCIL_EVENT_BOUNDARY_ERROR);
     DI_CIRCLES.add(STENCIL_EVENT_BOUNDARY_SIGNAL);
     DI_CIRCLES.add(STENCIL_EVENT_BOUNDARY_TIMER);
+    DI_CIRCLES.add(STENCIL_EVENT_BOUNDARY_MESSAGE);
     
     DI_CIRCLES.add(STENCIL_EVENT_CATCH_MESSAGE);
     DI_CIRCLES.add(STENCIL_EVENT_CATCH_SIGNAL);
@@ -175,6 +176,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     }
     
     propertiesNode.put(PROPERTY_PROCESS_NAMESPACE, model.getTargetNamespace());
+    
+    convertListenersToJson(mainProcess.getEventListeners(), propertiesNode);
     
     if (StringUtils.isNotEmpty(mainProcess.getDocumentation())) {
       propertiesNode.put(PROPERTY_DOCUMENTATION, mainProcess.getDocumentation());
@@ -249,7 +252,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     return modelNode;
   }
   
-  @Override
+	@Override
   public void processFlowElements(Collection<? extends FlowElement> flowElements, BpmnModel model, ArrayNode shapesArrayNode, 
       double subProcessX, double subProcessY) {
     
@@ -287,10 +290,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         pool.setId(BpmnJsonConverterUtil.getElementId(shapeNode));
         pool.setName(JsonConverterUtil.getPropertyValueAsString(PROPERTY_NAME, shapeNode));
         pool.setProcessRef(JsonConverterUtil.getPropertyValueAsString(PROPERTY_PROCESS_ID, shapeNode));
-        JsonNode processExecutableNode = JsonConverterUtil.getProperty(PROPERTY_PROCESS_EXECUTABLE, shapeNode);
-        if (processExecutableNode != null && StringUtils.isNotEmpty(processExecutableNode.asText())) {
-          pool.setExecutable(JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_PROCESS_EXECUTABLE, shapeNode));
-        }
+        pool.setExecutable(JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_PROCESS_EXECUTABLE, shapeNode, true));
         bpmnModel.getPools().add(pool);
         
         Process process = new Process();
@@ -345,7 +345,12 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       
       JsonNode processExecutionListenerNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_EXECUTION_LISTENERS);
       if (processExecutionListenerNode != null && StringUtils.isNotEmpty(processExecutionListenerNode.asText())){
-         process.setExecutionListeners(convertJsonToListeners(processExecutionListenerNode));
+      	process.setExecutionListeners(convertJsonToListeners(processExecutionListenerNode));
+      }
+      
+      JsonNode processEventListenerNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_EVENT_LISTENERS);
+      if (processEventListenerNode != null){
+      	process.setEventListeners(convertJsonToEventListeners(processEventListenerNode));
       }
       
       processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
@@ -361,9 +366,10 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       
       if (subShapesMap.size() > 0) {
         List<String> removeSubFlowsList = new ArrayList<String>();
-        for (FlowElement flowElement : process.findFlowElementsOfType(SequenceFlow.class)) {
+        List<SequenceFlow> sequenceFlowList = process.findFlowElementsOfType(SequenceFlow.class);
+        for (FlowElement flowElement : sequenceFlowList) {
           SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
-          if (subShapesMap.containsKey(sequenceFlow.getSourceRef())) {
+          if (process.getFlowElement(flowElement.getId()) != null && subShapesMap.containsKey(sequenceFlow.getSourceRef())) {
             SubProcess subProcess = subShapesMap.get(sequenceFlow.getSourceRef());
             subProcess.addFlowElement(sequenceFlow);
             removeSubFlowsList.add(sequenceFlow.getId());
@@ -431,6 +437,72 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       }
     }
     return executionListeners;
+  }
+  
+  private List<EventListener> convertJsonToEventListeners(JsonNode listenersNode) {
+    List<EventListener> eventListeners = new ArrayList<EventListener>();
+    if (StringUtils.isEmpty(listenersNode.asText())) return eventListeners;
+    try {
+      listenersNode = objectMapper.readTree(listenersNode.asText());
+    } catch (Exception e) {
+      LOGGER.info("Event listeners node can not be read", e);
+    }
+      
+    JsonNode itemsArrayNode = listenersNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+    if (itemsArrayNode != null) {
+      for (JsonNode itemNode : itemsArrayNode) {
+      	EventListener listener = new EventListener();
+        if (isNotEmpty(PROPERTY_EVENT_LISTENER_EVENTS, itemNode)) {
+        	listener.setEvents(itemNode.get(PROPERTY_EVENT_LISTENER_EVENTS).asText());
+        }
+        
+        if (isNotEmpty(PROPERTY_EVENT_LISTENER_ENTITY_TYPE, itemNode)) {
+        	listener.setEntityType(itemNode.get(PROPERTY_EVENT_LISTENER_ENTITY_TYPE).asText());
+        }
+        
+        if (isNotEmpty(PROPERTY_EVENT_LISTENER_CLASS, itemNode)) {
+        	listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+        	listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_CLASS).asText());
+        } else if (isNotEmpty(PROPERTY_EVENT_LISTENER_DELEGATEEXPRESSION, itemNode)) {
+        	listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
+        	listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_DELEGATEEXPRESSION).asText());
+        } else if (isNotEmpty(PROPERTY_EVENT_LISTENER_THROW_EVENT, itemNode)) {
+        	String throwEventType = itemNode.get(PROPERTY_EVENT_LISTENER_THROW_EVENT).asText();
+        	if(PROPERTY_EVENT_LISTENER_THROW_SIGNAL.equals(throwEventType)) {
+        		listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_THROW_REFERENCE).asText());
+        		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT);
+        	}	else if(PROPERTY_EVENT_LISTENER_THROW_GLOBAL_SIGNAL.equals(throwEventType)) {
+        		listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_THROW_REFERENCE).asText());
+        		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT);
+        	}	else if(PROPERTY_EVENT_LISTENER_THROW_MESSAGE.equals(throwEventType)) {
+        		listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_THROW_REFERENCE).asText());
+        		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT);
+        	} else if(PROPERTY_EVENT_LISTENER_THROW_ERROR.equals(throwEventType)) {
+        		listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_THROW_REFERENCE).asText());
+        		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT);
+        	} else {
+        		// Not a valid throw event type, ignore this listener definition
+        		listener = null;
+        	}
+        } else {
+        	// No properties have been provided to have a valid implementation
+        	listener = null;
+        }
+
+        if(listener != null) {
+        	eventListeners.add(listener);
+        }
+      }
+    }
+    return eventListeners;
+  }
+  
+  private boolean isNotEmpty(String propertyName, JsonNode node) {
+  	JsonNode value = node.get(propertyName);
+  	if(value != null) {
+  		return StringUtils.isNotEmpty(value.asText());
+  	}
+  	return false;
   }
   
   private void fillSubShapes(Map<String, SubProcess> subShapesMap, SubProcess subProcess) {
@@ -557,6 +629,40 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         }
       }
     }
+  }
+  
+  public void convertListenersToJson(List<EventListener> eventListeners, ObjectNode propertiesNode) {
+  	ObjectNode listenersNode = objectMapper.createObjectNode();
+    ArrayNode itemsNode = objectMapper.createArrayNode();
+    for (EventListener listener : eventListeners) {
+      ObjectNode propertyItemNode = objectMapper.createObjectNode();
+      
+      propertyItemNode.put(PROPERTY_EVENT_LISTENER_EVENTS, listener.getEvents());
+      propertyItemNode.put(PROPERTY_EVENT_LISTENER_ENTITY_TYPE, listener.getEntityType());
+      
+      if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())) {
+        propertyItemNode.put(PROPERTY_EVENT_LISTENER_CLASS, listener.getImplementation());
+      } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())) {
+      	propertyItemNode.put(PROPERTY_EVENT_LISTENER_DELEGATEEXPRESSION, listener.getImplementation());
+      } else if(ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(listener.getImplementationType())) {
+      	propertyItemNode.put(PROPERTY_EVENT_LISTENER_THROW_EVENT, PROPERTY_EVENT_LISTENER_THROW_SIGNAL);
+      	propertyItemNode.put(PROPERTY_EVENT_LISTENER_THROW_REFERENCE, listener.getImplementation());
+      } else if(ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(listener.getImplementationType())) {
+      	propertyItemNode.put(PROPERTY_EVENT_LISTENER_THROW_EVENT, PROPERTY_EVENT_LISTENER_THROW_GLOBAL_SIGNAL);
+      	propertyItemNode.put(PROPERTY_EVENT_LISTENER_THROW_REFERENCE, listener.getImplementation());
+      } else if(ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(listener.getImplementationType())) {
+      	propertyItemNode.put(PROPERTY_EVENT_LISTENER_THROW_EVENT, PROPERTY_EVENT_LISTENER_THROW_MESSAGE);
+      	propertyItemNode.put(PROPERTY_EVENT_LISTENER_THROW_REFERENCE, listener.getImplementation());
+      } else if(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(listener.getImplementationType())) {
+      	propertyItemNode.put(PROPERTY_EVENT_LISTENER_THROW_EVENT, PROPERTY_EVENT_LISTENER_THROW_ERROR);
+      	propertyItemNode.put(PROPERTY_EVENT_LISTENER_THROW_REFERENCE, listener.getImplementation());
+      }
+      itemsNode.add(propertyItemNode);
+    }
+    
+    listenersNode.put("totalCount", itemsNode.size());
+    listenersNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
+    propertiesNode.put(PROPERTY_EVENT_LISTENERS, listenersNode);
   }
   
   private void readEdgeDI(Map<String, JsonNode> edgeMap, Map<String, List<JsonNode>> sourceAndTargetMap, BpmnModel bpmnModel) {

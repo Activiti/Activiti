@@ -38,6 +38,8 @@ public class TaskResponse {
   protected int priority;
   protected boolean suspended;
   protected String taskDefinitionKey;
+  protected String tenantId;
+  protected String category;
   
   // References to other resources
   protected String parentTaskId;
@@ -65,8 +67,10 @@ public class TaskResponse {
     setTaskDefinitionKey(task.getTaskDefinitionKey());
     setParentTaskId(task.getParentTaskId());
     setExecutionId(task.getExecutionId());
+    setCategory(task.getCategory());
     setProcessInstanceId(task.getProcessInstanceId());
     setProcessDefinitionId(task.getProcessDefinitionId());
+    setTenantId(task.getTenantId());
   }
   
   protected String getDelegationStateString(DelegationState state) {
@@ -177,6 +181,14 @@ public class TaskResponse {
   public String getExecutionUrl() {
     return executionUrl;
   }
+  
+  public void setCategory(String category) {
+	  this.category = category;
+  }
+  
+  public String getCategory() {
+	  return category;
+  }
 
   public void setExecutionUrl(String executionUrl) {
     this.executionUrl = executionUrl;
@@ -224,5 +236,13 @@ public class TaskResponse {
   
   public void addVariable(RestVariable variable) {
     variables.add(variable);
+  }
+  
+  public String getTenantId() {
+	  return tenantId;
+  }
+  
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
   }
 }

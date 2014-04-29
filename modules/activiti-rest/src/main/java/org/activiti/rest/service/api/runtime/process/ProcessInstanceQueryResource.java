@@ -25,6 +25,8 @@ public class ProcessInstanceQueryResource extends BaseProcessInstanceResource {
 
   @Post
   public DataResponse queryProcessInstances(ProcessInstanceQueryRequest queryRequest) {
+  	if(!authenticate()) { return null; }
+  	
     return getQueryResponse(queryRequest, getQuery());
   }
 }

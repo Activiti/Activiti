@@ -53,5 +53,7 @@ public interface ListenerFactory {
   public abstract ActivitiEventListener createClassDelegateEventListener(EventListener eventListener);
   
   public abstract ActivitiEventListener createDelegateExpressionEventListener(EventListener eventListener);
+  
+  public abstract ActivitiEventListener createEventThrowingEventListener(EventListener eventListener);
 
 }

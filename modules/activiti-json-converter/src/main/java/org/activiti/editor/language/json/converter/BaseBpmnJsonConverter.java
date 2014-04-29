@@ -185,14 +185,28 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       String multiInstanceCardinality = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CARDINALITY, elementNode);
       String multiInstanceCollection = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_COLLECTION, elementNode);
       String multiInstanceCondition = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CONDITION, elementNode);
+      String multiInstanceLoopType = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_LOOP_TYPE, elementNode);
       
       if (StringUtils.isNotEmpty(multiInstanceCardinality) || StringUtils.isNotEmpty(multiInstanceCollection) ||
-          StringUtils.isNotEmpty(multiInstanceCondition)) {
+          StringUtils.isNotEmpty(multiInstanceCondition) || StringUtils.isNotEmpty(multiInstanceLoopType)) {
         
         String multiInstanceVariable = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_VARIABLE, elementNode);
         
         MultiInstanceLoopCharacteristics multiInstanceObject = new MultiInstanceLoopCharacteristics();
         multiInstanceObject.setSequential(getPropertyValueAsBoolean(PROPERTY_MULTIINSTANCE_SEQUENTIAL, elementNode));
+        
+        // There is another property used for multi-instance sequential control, that is used for rendering the correct
+        // BPMN loop symbol on the task. In case this is set, also take that into account.
+        
+        if(multiInstanceLoopType != null) {
+        	if(PROPERTY_MULTIINSTANCE_LOOP_TYPE_SEQUENTIAL.equals(multiInstanceLoopType)) {
+        		multiInstanceObject.setSequential(true);
+        	} else if(PROPERTY_MULTIINSTANCE_LOOP_TYPE_PARALLEL.equals(multiInstanceLoopType)) {
+        		multiInstanceObject.setSequential(false);
+        	}
+        }
+        
+        
         multiInstanceObject.setLoopCardinality(multiInstanceCardinality);
         multiInstanceObject.setInputDataItem(multiInstanceCollection);
         multiInstanceObject.setElementVariable(multiInstanceVariable);
@@ -342,6 +356,26 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         ErrorEventDefinition errorDefinition = (ErrorEventDefinition) eventDefinition;
         if (StringUtils.isNotEmpty(errorDefinition.getErrorCode())) {
           propertiesNode.put(PROPERTY_ERRORREF, errorDefinition.getErrorCode());
+        }
+        
+      } else if (eventDefinition instanceof MessageEventDefinition) {
+        MessageEventDefinition messageDefinition = (MessageEventDefinition) eventDefinition;
+        if (StringUtils.isNotEmpty(messageDefinition.getMessageRef())) {
+          String messageRef = messageDefinition.getMessageRef();
+          // remove the namespace from the message id if set
+          if (messageRef.startsWith(model.getTargetNamespace())) {
+            messageRef = messageRef.replace(model.getTargetNamespace(), "");
+            messageRef = messageRef.replaceFirst(":", "");
+          } else {
+            for (String prefix : model.getNamespaces().keySet()) {
+              String namespace = model.getNamespace(prefix);
+              if (messageRef.startsWith(namespace)) {
+                messageRef = messageRef.replace(model.getTargetNamespace(), "");
+                messageRef = prefix + messageRef;
+              }
+            }
+          }
+          propertiesNode.put(PROPERTY_MESSAGEREF, messageRef);
         }
         
       } else if (eventDefinition instanceof SignalEventDefinition) {
@@ -628,6 +662,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
   
   protected boolean getPropertyValueAsBoolean(String name, JsonNode objectNode) {
     return JsonConverterUtil.getPropertyValueAsBoolean(name, objectNode);
+  }
+  
+  protected boolean getPropertyValueAsBoolean(String name, JsonNode objectNode, boolean defaultValue) {
+    return JsonConverterUtil.getPropertyValueAsBoolean(name, objectNode, defaultValue);
   }
   
   protected List<String> getPropertyValueAsList(String name, JsonNode objectNode) {

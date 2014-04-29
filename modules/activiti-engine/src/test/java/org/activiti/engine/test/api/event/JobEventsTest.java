@@ -18,7 +18,6 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -42,9 +41,13 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertNotNull(theJob);
 		
 		// Check if create-event has been dispatched
-		assertEquals(1, listener.getEventsReceived().size());
+		assertEquals(2, listener.getEventsReceived().size());
 		ActivitiEvent event = listener.getEventsReceived().get(0);
 		assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+		checkEventContext(event, theJob, false);
+		
+		event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+		assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
 		checkEventContext(event, theJob, false);
 		
 		listener.clearEventsReceived();
@@ -63,7 +66,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		// Force timer to fire
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		ClockUtil.setCurrentTime(tomorrow.getTime());
+		processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
 		waitForJobExecutorToProcessAllJobs(2000, 100);
 		
 		// Check delete-event has been dispatched
@@ -102,7 +105,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		// Force timer to fire
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		ClockUtil.setCurrentTime(tomorrow.getTime());
+		processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
 		waitForJobExecutorToProcessAllJobs(2000, 100);
 		
 		// Check delete-event has been dispatched

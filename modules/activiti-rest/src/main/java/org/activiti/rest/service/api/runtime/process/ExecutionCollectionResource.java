@@ -72,11 +72,26 @@ public class ExecutionCollectionResource extends ExecutionBaseResource {
     if(getQueryParameter("parentId", urlQuery) != null) {
       queryRequest.setParentId(getQueryParameter("parentId", urlQuery));
     }
+    
+    if(getQueryParameter("tenantId", urlQuery) != null) {
+      queryRequest.setTenantId(getQueryParameter("tenantId", urlQuery));
+    }
+    
+    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
+      queryRequest.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    }
+    
+    if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", urlQuery))) {
+    	queryRequest.setWithoutTenantId(Boolean.TRUE);
+    }
+    
     return getQueryResponse(queryRequest, urlQuery);
   }
   
   @Put
   public void executeExecutionAction(ExecutionActionRequest actionRequest) {
+  	if(!authenticate()) { return; }
+  	
     if(!ExecutionActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(actionRequest.getAction())) {
       throw new ActivitiIllegalArgumentException("Illegal action: '" + actionRequest.getAction() +"'.");
     }

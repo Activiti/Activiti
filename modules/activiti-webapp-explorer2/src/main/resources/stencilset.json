@@ -928,6 +928,127 @@
       } ]
     } ]
   }, {
+    "name" : "eventListener",
+    "properties" : [ {
+      "id" : "eventlisteners",
+      "type" : "multiplecomplex",
+      "title" : "Event listeners",
+      "value" : "",
+      "description" : "Event listeners for events related to the process definition.",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "event_listener_events",
+        "name" : "Events",
+        "type" : "String",
+        "description" : "Listener events.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      }, {
+        "id" : "event_listener_class",
+        "name" : "Class",
+        "type" : "String",
+        "description" : "Listener implementation class.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      }, {
+        "id" : "event_listener_delegate_expression",
+        "name" : "Delegate expression",
+        "type" : "String",
+        "description" : "Listener delegate expression definition.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      },{
+        "id" : "event_listener_entity_type",
+        "name" : "Entity type",
+        "type" : "Choice",
+        "description" : "Listener entity type.",
+        "value" : "",
+        "width" : 100,
+        "optional" : true,
+        "items" : [ {
+          "id" : "attachment",
+          "title" : "Attachment",
+          "value" : "attachment",
+          "refToView" : ""
+        }, {
+          "id" : "comment",
+          "title" : "Comment",
+          "value" : "comment",
+          "refToView" : ""
+        }, {
+          "id" : "execution",
+          "title" : "Execution",
+          "value" : "execution",
+          "refToView" : ""
+        }, {
+          "id" : "identity-link",
+          "title" : "Indentity link",
+          "value" : "identity-link",
+          "refToView" : ""
+        }, {
+          "id" : "job",
+          "title" : "Job",
+          "value" : "job",
+          "refToView" : ""
+        }, {
+          "id" : "process-definition",
+          "title" : "Process definition",
+          "value" : "process-definition",
+          "refToView" : ""
+        }, {
+          "id" : "process-instance",
+          "title" : "Process instance",
+          "value" : "process-instance",
+          "refToView" : ""
+        }, {
+          "id" : "execution",
+          "title" : "Execution",
+          "value" : "execution",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "event_listener_throw_event",
+        "name" : "Throw event",
+        "type" : "Choice",
+        "description" : "Listener event type to throw.",
+        "value" : "",
+        "width" : 100,
+        "optional" : true,
+        "items" : [ {
+          "id" : "signal",
+          "title" : "Signal",
+          "value" : "signal",
+          "refToView" : ""
+        }, {
+          "id" : "globalSignal",
+          "title" : "Glocal signal",
+          "value" : "globalSignal",
+          "refToView" : ""
+        }, {
+          "id" : "message",
+          "title" : "Message",
+          "value" : "message",
+          "refToView" : ""
+        }, {
+          "id" : "error",
+          "title" : "Error",
+          "value" : "error",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "event_listener_throw_event_ref",
+        "name" : "Signal/Message name - Error code",
+        "type" : "String",
+        "description" : "Signal name, Message name or error-code.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      } ]
+    } ]
+  }, {
     "name" : "customformdefinition",
     "properties" : [ {
       "id" : "customformdefinition",
@@ -1054,7 +1175,7 @@
     "groups" : [ "Diagram" ],
     "mayBeRoot" : true,
     "hide" : true,
-    "propertyPackages" : [ "baseattributes", "processbase", "executionlistenersbase" ],
+    "propertyPackages" : [ "baseattributes", "processbase", "executionlistenersbase", "eventListener" ],
     "roles" : [ ]
   }, {
     "type" : "node",
@@ -1288,6 +1409,17 @@
     "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "signalrefdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
+    "type" : "node",
+    "id" : "BoundaryMessageEvent",
+    "title" : "Boundary message event",
+    "description" : "A boundary event with a message trigger",
+    "view" : "intermediateevent/message.catching.svg",
+    "icon" : "catching/message.png",
+    "groups" : [ "Boundary Events" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "messagerefdefinition" ],
+    "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
+  },
+  {
     "type" : "node",
     "id" : "CatchTimerEvent",
     "title" : "Intermediate timer catching event",

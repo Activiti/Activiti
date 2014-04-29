@@ -23,6 +23,7 @@ public class EventListener extends BaseElement {
   protected String events;
   protected String implementationType;
   protected String implementation;
+  protected String entityType;
 
   public String getEvents() {
     return events;
@@ -42,6 +43,12 @@ public class EventListener extends BaseElement {
   public void setImplementation(String implementation) {
     this.implementation = implementation;
   }
+  public void setEntityType(String entityType) {
+	  this.entityType = entityType;
+  }
+  public String getEntityType() {
+	  return entityType;
+  }
   
   public EventListener clone() {
     EventListener clone = new EventListener();
@@ -53,5 +60,6 @@ public class EventListener extends BaseElement {
     setEvents(otherListener.getEvents());
     setImplementation(otherListener.getImplementation());
     setImplementationType(otherListener.getImplementationType());
+    setEntityType(otherListener.getEntityType());
   }
 }

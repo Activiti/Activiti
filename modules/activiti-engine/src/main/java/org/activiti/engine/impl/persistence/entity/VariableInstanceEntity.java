@@ -55,6 +55,13 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   protected VariableInstanceEntity() {
   }
   
+  public static void touch(VariableInstanceEntity variableInstance) {
+	  Context.getCommandContext()
+      .getDbSqlSession()
+      .touch(variableInstance);
+	  
+  }
+  
   public static VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {
     VariableInstanceEntity variableInstance = create(name, type, value);
 

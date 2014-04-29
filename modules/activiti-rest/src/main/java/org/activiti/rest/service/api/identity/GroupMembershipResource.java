@@ -27,6 +27,8 @@ public class GroupMembershipResource extends BaseGroupResource {
 
  @Delete
  public void deleteMembership() {
+	 if(authenticate() == false) return;
+	 
    Group group = getGroupFromRequest();
    
    String userId = getAttribute("userId");

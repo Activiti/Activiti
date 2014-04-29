@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.15-SNAPSHOT</version>
+    <version>5.16-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -18,6 +18,9 @@
     <activiti.artifact>
       org.activiti.json.converter
     </activiti.artifact>
+    <activiti.osgi.export.additional>
+      org.activiti.editor*
+    </activiti.osgi.export.additional>
   </properties>
 
   <build>
@@ -117,7 +120,7 @@
       <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
     <dependency>
-      <groupId>math.geom</groupId>
+      <groupId>math.geom2d</groupId>
       <artifactId>javaGeom</artifactId>
     </dependency>
     <dependency>

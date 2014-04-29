@@ -116,6 +116,22 @@ public class TaskCollectionResource extends TaskBaseResource {
       request.setCandidateGroup(getQueryParameter("candidateGroup", query));
     }
     
+    if(names.contains("processDefinitionKey")) {
+      request.setProcessDefinitionKey(getQueryParameter("processDefinitionKey", query));
+    }
+    
+    if(names.contains("processDefinitionKeyLike")) {
+    	request.setProcessDefinitionKeyLike(getQueryParameter("processDefinitionKeyLike", query));
+    }
+    
+    if(names.contains("processDefinitionName")) {
+    	request.setProcessDefinitionName(getQueryParameter("processDefinitionName", query));
+    }
+    
+    if(names.contains("processDefinitionNameLike")) {
+    	request.setProcessDefinitionNameLike(getQueryParameter("processDefinitionNameLike", query));
+    }
+    
     if(names.contains("processInstanceId")) {
       request.setProcessInstanceId(getQueryParameter("processInstanceId", query));
     }
@@ -174,6 +190,18 @@ public class TaskCollectionResource extends TaskBaseResource {
     
     if(names.contains("includeProcessVariables")) {
       request.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", query));
+    }
+    
+    if(names.contains("tenantId")) {
+      request.setTenantId(getQueryParameter("tenantId", query));
+    }
+    
+    if(names.contains("tenantIdLike")) {
+    	request.setTenantIdLike(getQueryParameter("tenantIdLike", query));
+    }
+    
+    if(names.contains("withoutTenantId") && Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", query))) {
+    	request.setWithoutTenantId(Boolean.TRUE);
     }
     
     return getTasksFromQueryRequest(request);

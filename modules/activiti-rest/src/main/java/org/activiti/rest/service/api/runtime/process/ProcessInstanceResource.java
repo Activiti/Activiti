@@ -87,7 +87,7 @@ public class ProcessInstanceResource extends SecuredResource {
     }
     ActivitiUtil.getRuntimeService().suspendProcessInstanceById(processInstance.getId());
     
-    ProcessInstanceResponse response =  getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
+    ProcessInstanceResponse response = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
             .createProcessInstanceResponse(this, processInstance);
     
     // No need to re-fetch the instance, just alter the suspended state of the result-object

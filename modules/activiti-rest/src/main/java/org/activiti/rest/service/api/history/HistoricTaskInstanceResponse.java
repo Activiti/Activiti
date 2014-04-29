@@ -47,6 +47,8 @@ public class HistoricTaskInstanceResponse {
   protected String parentTaskId;
   protected String url;
   protected List<RestVariable> variables = new ArrayList<RestVariable>();
+  protected String tenantId; 
+  protected String category; 
   
   public String getId() {
     return id;
@@ -188,5 +190,17 @@ public class HistoricTaskInstanceResponse {
   }
   public void addVariable(RestVariable variable) {
     variables.add(variable);
+  }
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  public String getTenantId() {
+	  return tenantId;
+  }
+  public void setCategory(String category) {
+	  this.category = category;
+  }
+  public String getCategory() {
+	  return category;
   }
 }

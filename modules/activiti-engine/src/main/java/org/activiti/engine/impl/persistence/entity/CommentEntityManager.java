@@ -68,6 +68,8 @@ public class CommentEntityManager extends AbstractManager {
     	}
     	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, persistentObject, processInstanceId, processInstanceId, processDefinitionId));
+    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, persistentObject, processInstanceId, processInstanceId, processDefinitionId));
     }
   }
 

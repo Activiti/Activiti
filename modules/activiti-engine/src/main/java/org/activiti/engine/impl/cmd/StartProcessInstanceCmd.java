@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -40,12 +41,19 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
   protected String processDefinitionId;
   protected Map<String, Object> variables;
   protected String businessKey;
+  protected String tenantId;
   
   public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables) {
     this.processDefinitionKey = processDefinitionKey;
     this.processDefinitionId = processDefinitionId;
     this.businessKey = businessKey;
     this.variables = variables;
+  }
+  
+  public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, 
+  		String businessKey, Map<String, Object> variables, String tenantId) {
+  	this(processDefinitionKey, processDefinitionId, businessKey, variables);
+  	this.tenantId = tenantId;
   }
   
   public ProcessInstance execute(CommandContext commandContext) {
@@ -60,11 +68,16 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
       if (processDefinition == null) {
         throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
       }
-    } else if(processDefinitionKey != null){
+    } else if(processDefinitionKey != null && (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId))){
       processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
         throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey +"'", ProcessDefinition.class);
       }
+    } else if (processDefinitionKey != null && tenantId != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
+    	 processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+       if (processDefinition == null) {
+         throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey +"' for tenant identifier " + tenantId, ProcessDefinition.class);
+       }
     } else {
       throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
     }
@@ -77,7 +90,9 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 
     // Start the process instance
     ExecutionEntity processInstance = processDefinition.createProcessInstance(businessKey);
-    if (variables!=null) {
+
+    // now set the variables passed into the start command
+    if (variables != null) {
       processInstance.setVariables(variables);
     }
     processInstance.start();

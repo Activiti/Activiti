@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.15-SNAPSHOT', 1);
+values ('schema.version', '5.16-SNAPSHOT', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.15-SNAPSHOT)', 1);
+values ('schema.history', 'create(5.16-SNAPSHOT)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -28,6 +28,7 @@ create table ACT_RE_DEPLOYMENT (
     ID_ nvarchar(64),
     NAME_ nvarchar(255),
     CATEGORY_ nvarchar(255),
+    TENANT_ID_ nvarchar(255) default '',
     DEPLOY_TIME_ datetime,
     primary key (ID_)
 );
@@ -45,6 +46,7 @@ create table ACT_RE_MODEL (
     DEPLOYMENT_ID_ nvarchar(64),
     EDITOR_SOURCE_VALUE_ID_ nvarchar(64),
     EDITOR_SOURCE_EXTRA_VALUE_ID_ nvarchar(64),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -63,6 +65,7 @@ create table ACT_RU_EXECUTION (
     IS_EVENT_SCOPE_ tinyint,
     SUSPENSION_STATE_ tinyint,
     CACHED_ENT_STATE_ int,
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -83,6 +86,7 @@ create table ACT_RU_JOB (
     REPEAT_ nvarchar(255),
     HANDLER_TYPE_ nvarchar(255),
     HANDLER_CFG_ nvarchar(4000),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -99,6 +103,7 @@ create table ACT_RE_PROCDEF (
     DESCRIPTION_ nvarchar(4000),
     HAS_START_FORM_KEY_ tinyint,
     SUSPENSION_STATE_ tinyint,
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -120,6 +125,7 @@ create table ACT_RU_TASK (
     DUE_DATE_ datetime,
     CATEGORY_ nvarchar(255),
     SUSPENSION_STATE_ int,
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -161,6 +167,8 @@ create table ACT_RU_EVENT_SUBSCR (
     ACTIVITY_ID_ nvarchar(64),
     CONFIGURATION_ nvarchar(255),
     CREATED_ datetime not null,
+    PROC_DEF_ID_ nvarchar(64),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -180,7 +188,6 @@ create index ACT_IDX_VARIABLE_EXEC on ACT_RU_VARIABLE(EXECUTION_ID_);
 create index ACT_IDX_VARIABLE_PROCINST on ACT_RU_VARIABLE(PROC_INST_ID_);
 create index ACT_IDX_IDENT_LNK_TASK on ACT_RU_IDENTITYLINK(TASK_ID_);
 create index ACT_IDX_IDENT_LNK_PROCINST on ACT_RU_IDENTITYLINK(PROC_INST_ID_);
-create index ACT_IDX_IDENT_LNK_PROCDEF on ACT_RU_IDENTITYLINK(PROC_DEF_ID_);
 create index ACT_IDX_TASK_EXEC on ACT_RU_TASK(EXECUTION_ID_);
 create index ACT_IDX_TASK_PROCINST on ACT_RU_TASK(PROC_INST_ID_);
 create index ACT_IDX_EXEC_PROC_INST_ID on ACT_RU_EXECUTION(PROC_INST_ID_);
@@ -195,7 +202,7 @@ alter table ACT_GE_BYTEARRAY
 
 alter table ACT_RE_PROCDEF
     add constraint ACT_UNIQ_PROCDEF
-    unique (KEY_,VERSION_);
+    unique (KEY_,VERSION_, TENANT_ID_);
     
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PARENT 

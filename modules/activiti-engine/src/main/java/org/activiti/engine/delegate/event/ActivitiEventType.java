@@ -32,6 +32,12 @@ public enum ActivitiEventType {
 	ENTITY_CREATED,
 	
 	/**
+	 * New entity has been created and all child-entities that are created as a result of the creation of this
+	 * particular entity are also created and initialized.
+	 */
+	ENTITY_INITIALIZED,
+	
+	/**
 	 * Existing entity us updated.
 	 */
 	ENTITY_UPDATED,
@@ -88,7 +94,7 @@ public enum ActivitiEventType {
 	ENGINE_CLOSED,
 	
 	/**
-	 * An activiyt is starting to execute. This event is dispatch right before an activity is executed.
+	 * An activity is starting to execute. This event is dispatch right before an activity is executed.
 	 */
 	ACTIVITY_STARTED,
 	
@@ -114,6 +120,18 @@ public enum ActivitiEventType {
 	 * for the involved activity, if the message was delivered successfully.
 	 */
 	ACTIVITY_MESSAGE_RECEIVED,
+	
+	/**
+	 * An activity has received an error event. Dispatched before the actual error has been received by
+	 * the activity. This event will be either followed by a {@link #ACTIVITY_SIGNALLED} event or {@link #ACTIVITY_COMPLETE}
+	 * for the involved activity, if the error was delivered successfully.
+	 */
+	ACTIVITY_ERROR_RECEIVED,
+	
+	/**
+	 * When a BPMN Error was thrown, but was not caught within in the process.
+	 */
+	UNCAUGHT_BPMN_ERROR,
 	
 	/**
 	 * A new variable has been created.

@@ -28,6 +28,8 @@ public class GroupMembershipCollectionResource extends BaseGroupResource {
 
  @Post
  public MembershipResponse createMembership(MembershipRequest memberShip) {
+	 if(authenticate() == false) return null;
+	 
    Group group = getGroupFromRequest();
    
    if(memberShip.getUserId() == null) {

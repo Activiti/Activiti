@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.15-SNAPSHOT</version>
+    <version>5.16-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -40,6 +40,7 @@
             <propertyName>mule.workingDirectory</propertyName>
             <buildDirectory>${project.build.directory}</buildDirectory>
           </systemPropertyVariables>
+          <runOrder>alphabetical</runOrder>
         </configuration>
       </plugin>
       <plugin>

@@ -26,10 +26,12 @@ public class ProcessInstanceResponse {
   protected String url;
   protected String businessKey;
   protected boolean suspended;
+  protected boolean ended;
   protected String processDefinitionId;
   protected String processDefinitionUrl;
   protected String activityId;
   protected List<RestVariable> variables = new ArrayList<RestVariable>();
+  protected String tenantId;
   
   public String getId() {
     return id;
@@ -63,6 +65,14 @@ public class ProcessInstanceResponse {
     this.suspended = suspended;
   }
   
+  public boolean isEnded() {
+    return ended;
+  }
+
+  public void setEnded(boolean ended) {
+    this.ended = ended;
+  }
+
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
@@ -97,5 +107,13 @@ public class ProcessInstanceResponse {
   
   public void addVariable(RestVariable variable) {
     variables.add(variable);
+  }
+  
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  
+  public String getTenantId() {
+	  return tenantId;
   }
 }

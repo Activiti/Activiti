@@ -26,6 +26,7 @@ public class ModelResponse extends ModelRequest {
   protected Date createTime;
   protected Date lastUpdateTime;
   protected String deploymentUrl;
+  protected String tenantId;
   
   public String getId() {
     return id;
@@ -65,5 +66,13 @@ public class ModelResponse extends ModelRequest {
   
   public void setDeploymentUrl(String deploymentUrl) {
     this.deploymentUrl = deploymentUrl;
+  }
+  
+  public String getTenantId() {
+	  return tenantId;
+  }
+  
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
   }
 }

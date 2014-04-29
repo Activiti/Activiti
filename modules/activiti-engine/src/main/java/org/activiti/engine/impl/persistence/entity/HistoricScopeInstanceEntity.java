@@ -14,11 +14,11 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.PersistentObject;
+
 import java.io.Serializable;
 import java.util.Date;
-
-import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Christian Stettler
@@ -37,7 +37,7 @@ public abstract class HistoricScopeInstanceEntity implements PersistentObject, S
 
   public void markEnded(String deleteReason) {
     this.deleteReason = deleteReason;
-    this.endTime = ClockUtil.getCurrentTime();
+    this.endTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     this.durationInMillis = endTime.getTime() - startTime.getTime();
   }
   

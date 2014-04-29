@@ -12,9 +12,6 @@
  */
 package org.activiti.bpmn.converter.alfresco;
 
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.StartEventXMLConverter;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.alfresco.AlfrescoStartEvent;
@@ -24,31 +21,12 @@ import org.activiti.bpmn.model.alfresco.AlfrescoStartEvent;
  */
 public class AlfrescoStartEventXMLConverter extends StartEventXMLConverter {
   
-  public static String getXMLType() {
-    return ELEMENT_EVENT_START;
-  }
-  
-  public static Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return AlfrescoStartEvent.class;
   }
   
   @Override
   protected String getXMLElementName() {
     return ELEMENT_EVENT_START;
-  }
-  
-  @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
-    return super.convertXMLToElement(xtr);
-  }
-  
-  @Override
-  protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
-    super.writeAdditionalAttributes(element, xtw);
-  }
-  
-  @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
-    super.writeAdditionalChildElements(element, xtw);
   }
 }

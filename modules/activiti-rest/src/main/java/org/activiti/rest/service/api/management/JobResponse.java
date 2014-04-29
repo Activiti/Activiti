@@ -32,6 +32,7 @@ public class JobResponse {
   protected Integer retries;
   protected String exceptionMessage;
   protected Date dueDate;
+  protected String tenantId;
   
   public String getId() {
     return id;
@@ -119,5 +120,13 @@ public class JobResponse {
   
   public void setDueDate(Date dueDate) {
     this.dueDate = dueDate;
+  }
+  
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  
+  public String getTenantId() {
+	  return tenantId;
   }
 }

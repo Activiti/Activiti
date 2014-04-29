@@ -21,6 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
@@ -69,6 +70,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     attachment.setTaskId(taskId);
     attachment.setProcessInstanceId(processInstanceId);
     attachment.setUrl(url);
+    attachment.setUserId(Authentication.getAuthenticatedUserId());
     
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.insert(attachment);
@@ -94,6 +96,8 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     	
     	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+    	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, attachment, processInstanceId, processInstanceId, processDefinitionId));
     }
     
     return attachment;

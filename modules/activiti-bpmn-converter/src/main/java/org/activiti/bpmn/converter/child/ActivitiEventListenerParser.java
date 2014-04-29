@@ -28,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 public class ActivitiEventListenerParser extends BaseChildElementParser {
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    
     EventListener listener = new EventListener();
     BpmnXMLUtil.addXMLLocation(listener, xtr);
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_CLASS))) {
@@ -37,10 +36,26 @@ public class ActivitiEventListenerParser extends BaseChildElementParser {
     } else if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_DELEGATEEXPRESSION))) {
       listener.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_DELEGATEEXPRESSION));
       listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
-    } else {
-      model.addProblem("Element 'class' or 'delegateExpression' is mandatory on eventListener", xtr);
+    } else if(StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE))) {
+    	String eventType = xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE);
+    	if(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL.equals(eventType)) {
+    		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT);
+    		listener.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME));
+    	} else if(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL.equals(eventType)) {
+    		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT);
+    		listener.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME));
+    	} else if(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_MESSAGE.equals(eventType)) {
+    		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT);
+    		listener.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME));
+    	} else if(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_ERROR.equals(eventType)) {
+    		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT);
+    		listener.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE));
+    	} else {
+    		listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_INVALID_THROW_EVENT);
+    	}
     }
     listener.setEvents(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_EVENTS));
+    listener.setEntityType(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_ENTITY_TYPE));
     
     Process parentProcess = (Process) parentElement;
     parentProcess.getEventListeners().add(listener);

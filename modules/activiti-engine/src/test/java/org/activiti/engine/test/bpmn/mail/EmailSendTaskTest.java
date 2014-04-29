@@ -26,6 +26,7 @@ import javax.activation.DataHandler;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.subethamail.wiser.WiserMessage;
@@ -113,6 +114,30 @@ public class EmailSendTaskTest extends EmailTestCase {
     List<WiserMessage> messages = wiser.getMessages();
     assertEquals(1, messages.size());
     assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
+  }
+  
+  @Deployment
+  public void testInvalidAddress() throws Exception {
+    try {
+      runtimeService.startProcessInstanceByKey("invalidAddress").getId();
+      fail("An Invalid email address should not execute");
+    } catch(ActivitiException e) {
+      // fine
+    } catch(Exception e) {
+      fail("Only an ActivitiException is expected here but not: " + e);
+    }
+  }
+ 
+  @Deployment
+  public void testInvalidAddressWithoutException() throws Exception {
+    String piId = runtimeService.startProcessInstanceByKey("invalidAddressWithoutException").getId();
+    assertNotNull(historyService.createHistoricVariableInstanceQuery().processInstanceId(piId).variableName("emailError").singleResult());
+  }
+  
+  @Deployment
+  public void testInvalidAddressWithoutExceptionVariableName() throws Exception {
+    String piId = runtimeService.startProcessInstanceByKey("invalidAddressWithoutException").getId();
+    assertNull(historyService.createHistoricVariableInstanceQuery().processInstanceId(piId).variableName("emailError").singleResult());
   }
   
   // Helper 

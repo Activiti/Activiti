@@ -54,10 +54,13 @@ public class DeploymentCollectionResource extends SecuredResource {
     allowedSortProperties.put("id", DeploymentQueryProperty.DEPLOYMENT_ID);
     allowedSortProperties.put("name", DeploymentQueryProperty.DEPLOYMENT_NAME);
     allowedSortProperties.put("deployTime", DeploymentQueryProperty.DEPLOY_TIME);
+    allowedSortProperties.put("tenantId", DeploymentQueryProperty.DEPLOYMENT_TENANT_ID);
   }
   
   @Get
   public DataResponse getDeployments() {
+  	if(!authenticate()) { return null; }
+  	
     DeploymentQuery deploymentQuery = ActivitiUtil.getRepositoryService().createDeploymentQuery();
     
     Form query = getQuery();
@@ -76,6 +79,18 @@ public class DeploymentCollectionResource extends SecuredResource {
     if(names.contains("categoryNotEquals")) {
       deploymentQuery.deploymentCategoryNotEquals(getQueryParameter("categoryNotEquals", query));
     }
+    if(names.contains("tenantId")) {
+      deploymentQuery.deploymentTenantId(getQueryParameter("tenantId", query));
+    }
+    if(names.contains("tenantIdLike")) {
+      deploymentQuery.deploymentTenantIdLike(getQueryParameter("tenantIdLike", query));
+    }
+    if(names.contains("withoutTenantId")) {
+    	Boolean withoutTenantId = getQueryParameterAsBoolean("withoutTenantId", query);
+    	if(Boolean.TRUE == withoutTenantId) {
+    		deploymentQuery.deploymentWithoutTenantId();
+    	}
+    }
 
     DataResponse response = new DeploymentsPaginateList(this).paginateList(getQuery(), 
         deploymentQuery, "id", allowedSortProperties);
@@ -84,6 +99,8 @@ public class DeploymentCollectionResource extends SecuredResource {
   
   @Post
   public DeploymentResponse uploadDeployment(Representation entity) {
+  	if(!authenticate()) { return null; }
+  	
     try {
 
       if(entity == null || entity.getMediaType() == null || !MediaType.MULTIPART_FORM_DATA.isCompatible(entity.getMediaType())) {
@@ -93,9 +110,15 @@ public class DeploymentCollectionResource extends SecuredResource {
       RestletFileUpload upload = new RestletFileUpload(new DiskFileItemFactory());
       List<FileItem> items = upload.parseRepresentation(entity);
       
+      String tenantId = null;
+      
       FileItem uploadItem = null;
       for (FileItem fileItem : items) {
-        if(fileItem.getName() != null) {
+      	if(fileItem.isFormField()) {
+      		if("tenantId".equals(fileItem.getFieldName())) {
+      			tenantId = fileItem.getString("UTF-8");
+      		}
+      	} else if(fileItem.getName() != null) {
           uploadItem = fileItem;
         }
       }
@@ -114,6 +137,11 @@ public class DeploymentCollectionResource extends SecuredResource {
         throw new ActivitiIllegalArgumentException("File must be of type .bpmn20.xml, .bpmn, .bar or .zip");
       }
       deploymentBuilder.name(fileName);
+      
+      if(tenantId != null) {
+      	deploymentBuilder.tenantId(tenantId);
+      }
+      
       Deployment deployment = deploymentBuilder.deploy();
       
       setStatus(Status.SUCCESS_CREATED);

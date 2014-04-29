@@ -15,6 +15,7 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -36,6 +37,9 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   protected String activityName;
   protected String activityType;
   protected String assignee;
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
   protected boolean finished;
   protected boolean unfinished;
 
@@ -110,6 +114,28 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     this.unfinished = true;
     return this;
   }
+  
+  public HistoricActivityInstanceQueryImpl activityTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("activity tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public HistoricActivityInstanceQueryImpl activityTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("activity tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public HistoricActivityInstanceQueryImpl activityWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
+  }
+  
 
   // ordering /////////////////////////////////////////////////////////////////
 
@@ -160,6 +186,11 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
 
   public HistoricActivityInstanceQueryImpl orderByActivityType() {
     orderBy(HistoricActivityInstanceQueryProperty.ACTIVITY_TYPE);
+    return this;
+  }
+  
+  public HistoricActivityInstanceQueryImpl orderByTenantId() {
+  	orderBy(HistoricActivityInstanceQueryProperty.TENANT_ID);
     return this;
   }
 

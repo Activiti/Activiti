@@ -13,49 +13,39 @@
 
 package org.activiti.engine.impl.test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Callable;
-
 import junit.framework.AssertionFailedError;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.FormService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.ManagementService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.bpmn.model.*;
+import org.activiti.engine.*;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Assert;
+
+import java.util.*;
+import java.util.concurrent.Callable;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
-  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
-    "ACT_GE_PROPERTY"
-  );
+  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList("ACT_GE_PROPERTY");
 
   protected ProcessEngine processEngine; 
   
-  protected String deploymentId;
+  protected String deploymentIdFromDeploymentAnnotation;
+  protected List<String> deploymentIdsForAutoCleanup = new ArrayList<String>();
   protected Throwable exception;
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
@@ -88,9 +78,10 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       initializeServices();
     }
 
+    String deploymentId = null;
     try {
       
-      deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
+    	deploymentIdFromDeploymentAnnotation = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName()); 
       
       super.runBare();
 
@@ -107,9 +98,18 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       throw e;
       
     } finally {
-      TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
+    	if (deploymentIdFromDeploymentAnnotation != null) {
+    		TestHelper.annotationDeploymentTearDown(processEngine, deploymentIdFromDeploymentAnnotation, getClass(), getName());
+    		deploymentIdFromDeploymentAnnotation = null;
+    	}
+    	
+    	for (String autoDeletedDeploymentId : deploymentIdsForAutoCleanup) {
+    		repositoryService.deleteDeployment(autoDeletedDeploymentId, true);
+    	}
+    	deploymentIdsForAutoCleanup.clear();
+    	
       assertAndEnsureCleanDb();
-      ClockUtil.reset();
+      processEngineConfiguration.getClock().reset();
       
       // Can't do this in the teardown, as the teardown will be called as part of the super.runBare
       closeDownProcessEngine();
@@ -253,6 +253,102 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       .executable()
       .list()
       .isEmpty();
+  }
+  
+  /**
+   * Since the 'one task process' is used everywhere the actual process content
+   * doesn't matter, instead of copying around the BPMN 2.0 xml one could use 
+   * this method which gives a {@link BpmnModel} version of the same process back.
+   */
+  public BpmnModel createOneTaskTestProcess() {
+  	BpmnModel model = new BpmnModel();
+  	org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
+    model.addProcess(process);
+    process.setId("oneTaskProcess");
+    process.setName("The one task process");
+   
+    StartEvent startEvent = new StartEvent();
+    startEvent.setId("start");
+    process.addFlowElement(startEvent);
+    
+    UserTask userTask = new UserTask();
+    userTask.setName("The Task");
+    userTask.setId("theTask");
+    userTask.setAssignee("kermit");
+    process.addFlowElement(userTask);
+    
+    EndEvent endEvent = new EndEvent();
+    endEvent.setId("theEnd");
+    process.addFlowElement(endEvent);;
+    
+    process.addFlowElement(new SequenceFlow("start", "theTask"));
+    process.addFlowElement(new SequenceFlow("theTask", "theEnd"));
+    
+    return model;
+  }
+  
+  public BpmnModel createTwoTasksTestProcess() {
+  	BpmnModel model = new BpmnModel();
+  	org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
+    model.addProcess(process);
+    process.setId("twoTasksProcess");
+    process.setName("The two tasks process");
+   
+    StartEvent startEvent = new StartEvent();
+    startEvent.setId("start");
+    process.addFlowElement(startEvent);
+    
+    UserTask userTask = new UserTask();
+    userTask.setName("The First Task");
+    userTask.setId("task1");
+    userTask.setAssignee("kermit");
+    process.addFlowElement(userTask);
+    
+    UserTask userTask2 = new UserTask();
+    userTask2.setName("The Second Task");
+    userTask2.setId("task2");
+    userTask2.setAssignee("kermit");
+    process.addFlowElement(userTask2);
+    
+    EndEvent endEvent = new EndEvent();
+    endEvent.setId("theEnd");
+    process.addFlowElement(endEvent);;
+    
+    process.addFlowElement(new SequenceFlow("start", "task1"));
+    process.addFlowElement(new SequenceFlow("start", "task2"));
+    process.addFlowElement(new SequenceFlow("task1", "theEnd"));
+    process.addFlowElement(new SequenceFlow("task2", "theEnd"));
+    
+    return model;
+  }
+  
+  /**
+   * Creates and deploys the one task process. See {@link #createOneTaskTestProcess()}.
+   * 
+   * @return The process definition id (NOT the process definition key) of deployed one task process.
+   */
+  public String deployOneTaskTestProcess() {
+  	BpmnModel bpmnModel = createOneTaskTestProcess();
+  	Deployment deployment = repositoryService.createDeployment()
+  			.addBpmnModel("oneTasktest.bpmn20.xml", bpmnModel).deploy();
+  	
+  	deploymentIdsForAutoCleanup.add(deployment.getId()); // For auto-cleanup
+  	
+  	ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+  			.deploymentId(deployment.getId()).singleResult();
+  	return processDefinition.getId(); 
+  }
+  
+  public String deployTwoTasksTestProcess() {
+  	BpmnModel bpmnModel = createTwoTasksTestProcess();
+  	Deployment deployment = repositoryService.createDeployment()
+  			.addBpmnModel("twoTasksTestProcess.bpmn20.xml", bpmnModel).deploy();
+  	
+  	deploymentIdsForAutoCleanup.add(deployment.getId()); // For auto-cleanup
+
+  	ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+  			.deploymentId(deployment.getId()).singleResult();
+  	return processDefinition.getId(); 
   }
 
   private static class InteruptTask extends TimerTask {

@@ -13,9 +13,15 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
@@ -25,10 +31,6 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -48,13 +50,15 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
     if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, user));
+    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, user));
     }
   }
   
-  public void updateUser(UserEntity updatedUser) {
+  public void updateUser(User updatedUser) {
     CommandContext commandContext = Context.getCommandContext();
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    dbSqlSession.update(updatedUser);
+    dbSqlSession.update((PersistentObject) updatedUser);
     
     if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
@@ -62,13 +66,13 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
     }
   }
 
-  public UserEntity findUserById(String userId) {
+  public User findUserById(String userId) {
     return (UserEntity) getDbSqlSession().selectOne("selectUserById", userId);
   }
 
   @SuppressWarnings("unchecked")
   public void deleteUser(String userId) {
-    UserEntity user = findUserById(userId);
+    UserEntity user = (UserEntity) findUserById(userId);
     if (user != null) {
       List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
       for (IdentityInfoEntity identityInfo: identityInfos) {
@@ -141,6 +145,27 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
 
   public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectUserCountByNativeQuery", parameterMap);
+  }
+  
+  @Override
+  public boolean isNewUser(User user) {
+  	return ((UserEntity) user).getRevision() == 0;
+  }
+  
+  @Override
+  public Picture getUserPicture(String userId) {
+  	UserEntity user = (UserEntity) findUserById(userId);
+    return user.getPicture();
+  }
+  
+  @Override
+  public void setUserPicture(String userId, Picture picture) {
+  	UserEntity user = (UserEntity) findUserById(userId);
+  	if(user == null) {
+  		throw new ActivitiObjectNotFoundException("user "+userId+" doesn't exist", User.class);
+  	}
+  		
+    user.setPicture(picture);
   }
   
 }

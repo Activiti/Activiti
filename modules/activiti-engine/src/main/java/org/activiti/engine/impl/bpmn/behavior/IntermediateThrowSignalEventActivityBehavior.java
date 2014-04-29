@@ -51,14 +51,16 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     } else {
       subscriptionEntities = commandContext
               .getEventSubscriptionEntityManager()
-              .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName());
+              .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName(), execution.getTenantId());
     }
     
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
       signalEventSubscriptionEntity.eventReceived(null, signalDefinition.isAsync());
     }
     
-    leave(execution);        
+    if (execution.getActivity() != null) { // dont continue if process has already finished
+      leave(execution);
+    }
   }
  
 }

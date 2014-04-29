@@ -19,8 +19,12 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.restlet.data.Status;
+import org.restlet.representation.Representation;
+import org.restlet.resource.ClientResource;
 
 
 /**
@@ -118,6 +122,65 @@ public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
     variableNode.put("value", "Azerty2");
     variableNode.put("operation", "equals");
     assertResultsPresentInDataResponse(url, requestNode);
-    
   }
+  
+  
+  /**
+   * Test querying process instance based on variables. 
+   * POST query/process-instances
+   */
+  @Deployment
+  public void testQueryProcessInstancesPagingAndSorting() throws Exception {
+  	ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("aOneTaskProcess");
+  	ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("bOneTaskProcess");
+  	ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("cOneTaskProcess");
+  	
+  	// Create request node
+  	ObjectNode requestNode = objectMapper.createObjectNode();
+  	requestNode.put("order", "desc");
+  	requestNode.put("sort", "processDefinitionKey");
+    
+  	String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_QUERY);
+  	ClientResource client = getAuthenticatedClient(url);
+    Representation response = client.post(requestNode);
+    
+    // Check order
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    JsonNode rootNode = objectMapper.readTree(response.getStream());
+    JsonNode dataNode = rootNode.get("data");
+    assertEquals(3, dataNode.size());
+    
+    assertEquals(processInstance3.getId(), dataNode.get(0).get("id").asText());
+    assertEquals(processInstance2.getId(), dataNode.get(1).get("id").asText());
+    assertEquals(processInstance1.getId(), dataNode.get(2).get("id").asText());
+    response.release();
+    
+    // Check paging size
+    requestNode = objectMapper.createObjectNode();
+  	requestNode.put("start", 0);
+  	requestNode.put("size", 1);
+  	
+  	response = client.post(requestNode);
+    
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    rootNode = objectMapper.readTree(response.getStream());
+    dataNode = rootNode.get("data");
+    assertEquals(1, dataNode.size());
+    
+    // Check paging start and size
+    requestNode = objectMapper.createObjectNode();
+  	requestNode.put("start", 1);
+  	requestNode.put("size", 1);
+  	requestNode.put("order", "desc");
+  	requestNode.put("sort", "processDefinitionKey");
+    
+  	response = client.post(requestNode);
+    
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    rootNode = objectMapper.readTree(response.getStream());
+    dataNode = rootNode.get("data");
+    assertEquals(1, dataNode.size());
+    assertEquals(processInstance2.getId(), dataNode.get(0).get("id").asText());
+  }
+  
 }

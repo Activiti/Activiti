@@ -32,6 +32,8 @@ import org.activiti.engine.history.NativeHistoricDetailQuery;
 import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
 import org.activiti.engine.history.NativeHistoricTaskInstanceQuery;
 import org.activiti.engine.history.NativeHistoricVariableInstanceQuery;
+import org.activiti.engine.history.ProcessInstanceHistoryLog;
+import org.activiti.engine.history.ProcessInstanceHistoryLogQuery;
 import org.activiti.engine.task.IdentityLink;
 
 /** 
@@ -115,5 +117,10 @@ public interface HistoryService {
    * opposed to {@link IdentityLink}s which only exist for active instances.
    */
   List<HistoricIdentityLink> getHistoricIdentityLinksForProcessInstance(String processInstanceId);
-
+  
+  /**
+   * Allows to retrieve the {@link ProcessInstanceHistoryLog} for one process instance.
+   */
+  ProcessInstanceHistoryLogQuery createProcessInstanceHistoryLogQuery(String processInstanceId);
+  
 }

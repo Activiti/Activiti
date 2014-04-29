@@ -35,6 +35,7 @@ public class JobQueryProperty implements QueryProperty {
   public static final JobQueryProperty EXECUTION_ID = new JobQueryProperty("RES.EXECUTION_ID_");
   public static final JobQueryProperty DUEDATE = new JobQueryProperty("RES.DUEDATE_");
   public static final JobQueryProperty RETRIES = new JobQueryProperty("RES.RETRIES_");
+  public static final JobQueryProperty TENANT_ID = new JobQueryProperty("RES.TENANT_ID_");
 
   private String name;
 

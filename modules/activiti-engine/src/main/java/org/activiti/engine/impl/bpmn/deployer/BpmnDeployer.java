@@ -13,13 +13,10 @@
 package org.activiti.engine.impl.bpmn.deployer;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -28,11 +25,14 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.cfg.IdGenerator;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.cmd.DeploymentSettings;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.event.MessageEventHandler;
+import org.activiti.engine.impl.event.SignalEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
@@ -44,6 +44,7 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.runtime.Job;
@@ -57,7 +58,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BpmnDeployer implements Deployer {
 
-  private static final Logger LOG = LoggerFactory.getLogger(BpmnDeployer.class);;
+  private static final Logger LOG = LoggerFactory.getLogger(BpmnDeployer.class);
 
   public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { "bpmn20.xml", "bpmn" };
   public static final String[] DIAGRAM_SUFFIXES = new String[]{"png", "jpg", "gif", "svg"};
@@ -66,12 +67,13 @@ public class BpmnDeployer implements Deployer {
   protected BpmnParser bpmnParser;
   protected IdGenerator idGenerator;
 
-  public void deploy(DeploymentEntity deployment) {
+  public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
     LOG.debug("Processing deployment {}", deployment.getName());
     
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
     Map<String, ResourceEntity> resources = deployment.getResources();
 
+    final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
     for (String resourceName : resources.keySet()) {
 
       LOG.info("Processing resource {}", resourceName);
@@ -85,10 +87,29 @@ public class BpmnDeployer implements Deployer {
           .sourceInputStream(inputStream)
           .deployment(deployment)
           .name(resourceName);
+        
+        if (deploymentSettings != null) {
+        	
+        	// Schema validation if needed
+        	if (deploymentSettings.containsKey(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED)) {
+        		bpmnParse.setValidateSchema((Boolean) deploymentSettings.get(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED));
+        	}
+        	
+        	// Process validation if needed
+        	if (deploymentSettings.containsKey(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED)) {
+        		bpmnParse.setValidateProcess((Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED));
+        	}
+        	
+        }
+        
         bpmnParse.execute();
         
         for (ProcessDefinitionEntity processDefinition: bpmnParse.getProcessDefinitions()) {
           processDefinition.setResourceName(resourceName);
+          
+          if (deployment.getTenantId() != null) {
+          	processDefinition.setTenantId(deployment.getTenantId()); // process definition inherits the tenant id
+          }
           
           String diagramResourceName = getDiagramResourceForProcess(resourceName, processDefinition.getKey(), resources);
                    
@@ -96,10 +117,11 @@ public class BpmnDeployer implements Deployer {
           // after the process-definition is actually deployed. Also to prevent resource-generation failure every
           // time the process definition is added to the deployment-cache when diagram-generation has failed the first time.
           if(deployment.isNew()) {
-            if (Context.getProcessEngineConfiguration().isCreateDiagramOnDeploy() &&
+            if (processEngineConfiguration.isCreateDiagramOnDeploy() &&
                   diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
               try {
-                  byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(bpmnParse.getBpmnModel()), null);
+                  byte[] diagramBytes = IoUtil.readInputStream(processEngineConfiguration.
+                    getProcessDiagramGenerator().generatePngDiagram(bpmnParse.getBpmnModel()), null);
                   diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
                   createResource(diagramResourceName, diagramBytes, deployment);
               } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
@@ -131,7 +153,15 @@ public class BpmnDeployer implements Deployer {
       if (deployment.isNew()) {
         int processDefinitionVersion;
 
-        ProcessDefinitionEntity latestProcessDefinition = processDefinitionManager.findLatestProcessDefinitionByKey(processDefinition.getKey());
+        ProcessDefinitionEntity latestProcessDefinition = null;
+        if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+        	latestProcessDefinition = processDefinitionManager
+        			.findLatestProcessDefinitionByKeyAndTenantId(processDefinition.getKey(), processDefinition.getTenantId());
+        } else {
+        	latestProcessDefinition = processDefinitionManager
+        			.findLatestProcessDefinitionByKey(processDefinition.getKey());
+        }
+        		
         if (latestProcessDefinition != null) {
           processDefinitionVersion = latestProcessDefinition.getVersion() + 1;
         } else {
@@ -151,34 +181,51 @@ public class BpmnDeployer implements Deployer {
           processDefinitionId = nextId; 
         }
         processDefinition.setId(processDefinitionId);
+        
+        if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+        			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition));
+        }
 
         removeObsoleteTimers(processDefinition);
         addTimerDeclarations(processDefinition, timers);
         
         removeObsoleteMessageEventSubscriptions(processDefinition, latestProcessDefinition);
         addMessageEventSubscriptions(processDefinition);
+        
+        removeObsoleteSignalEventSubScription(processDefinition, latestProcessDefinition);
+        addSignalEventSubscriptions(processDefinition);
 
         dbSqlSession.insert(processDefinition);
         addAuthorizations(processDefinition);
 
-        scheduleTimers(timers);
-        
         if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-        			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition));
+        			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, processDefinition));
         }
+
+        scheduleTimers(timers);
+
       } else {
         String deploymentId = deployment.getId();
         processDefinition.setDeploymentId(deploymentId);
-        ProcessDefinitionEntity persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
-        processDefinition.setId(persistedProcessDefinition.getId());
-        processDefinition.setVersion(persistedProcessDefinition.getVersion());
-        processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
+        
+        ProcessDefinitionEntity persistedProcessDefinition = null; 
+        if (processDefinition.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+        	persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
+        } else {
+        	persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKeyAndTenantId(deploymentId, processDefinition.getKey(), processDefinition.getTenantId());
+        }
+        
+        if (persistedProcessDefinition != null) {
+        	processDefinition.setId(persistedProcessDefinition.getId());
+        	processDefinition.setVersion(persistedProcessDefinition.getVersion());
+        	processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
+        }
       }
 
       // Add to cache
-      Context
-        .getProcessEngineConfiguration()
+      processEngineConfiguration
         .getDeploymentManager()
         .getProcessDefinitionCache()
         .add(processDefinition.getId(), processDefinition);
@@ -204,6 +251,12 @@ public class BpmnDeployer implements Deployer {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
         TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
         timer.setProcessDefinitionId(processDefinition.getId());
+        
+        // Inherit timer (if appliccable)
+        if (processDefinition.getTenantId() != null) {
+        	timer.setTenantId(processDefinition.getTenantId());
+        }
+        
         timers.add(timer);
       }
     }
@@ -227,7 +280,7 @@ public class BpmnDeployer implements Deployer {
       
       List<EventSubscriptionEntity> subscriptionsToDelete = commandContext
         .getEventSubscriptionEntityManager()
-        .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId());
+        .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
       
       for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
         eventSubscriptionEntity.delete();        
@@ -239,20 +292,21 @@ public class BpmnDeployer implements Deployer {
   @SuppressWarnings("unchecked")
   protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition) {
     CommandContext commandContext = Context.getCommandContext();
-    List<EventSubscriptionDeclaration> messageEventDefinitions = (List<EventSubscriptionDeclaration>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
-    if(messageEventDefinitions != null) {     
-      for (EventSubscriptionDeclaration messageEventDefinition : messageEventDefinitions) {
-        if(messageEventDefinition.isStartEvent()) {
+    List<EventSubscriptionDeclaration> eventDefinitions = (List<EventSubscriptionDeclaration>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
+    if(eventDefinitions != null) {     
+      for (EventSubscriptionDeclaration eventDefinition : eventDefinitions) {
+        if(eventDefinition.getEventType().equals("message") && eventDefinition.isStartEvent()) {
           // look for subscriptions for the same name in db:
           List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext
             .getEventSubscriptionEntityManager()
-            .findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE, messageEventDefinition.getEventName());
+            .findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE, 
+            		eventDefinition.getEventName(), processDefinition.getTenantId());
           // also look for subscriptions created in the session:
           List<MessageEventSubscriptionEntity> cachedSubscriptions = commandContext
             .getDbSqlSession()
             .findInCache(MessageEventSubscriptionEntity.class);
           for (MessageEventSubscriptionEntity cachedSubscription : cachedSubscriptions) {
-            if(messageEventDefinition.getEventName().equals(cachedSubscription.getEventName())
+            if(eventDefinition.getEventName().equals(cachedSubscription.getEventName())
                     && !subscriptionsForSameMessageName.contains(cachedSubscription)) {
               subscriptionsForSameMessageName.add(cachedSubscription);
             }
@@ -264,18 +318,59 @@ public class BpmnDeployer implements Deployer {
                 
           if(!subscriptionsForSameMessageName.isEmpty()) {
             throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
-                    + "': there already is a message event subscription for the message with name '" + messageEventDefinition.getEventName() + "'.");
+                    + "': there already is a message event subscription for the message with name '" + eventDefinition.getEventName() + "'.");
           }
           
           MessageEventSubscriptionEntity newSubscription = new MessageEventSubscriptionEntity();
-          newSubscription.setEventName(messageEventDefinition.getEventName());
-          newSubscription.setActivityId(messageEventDefinition.getActivityId());
+          newSubscription.setEventName(eventDefinition.getEventName());
+          newSubscription.setActivityId(eventDefinition.getActivityId());
           newSubscription.setConfiguration(processDefinition.getId());
+
+          if (processDefinition.getTenantId() != null) {
+          	newSubscription.setTenantId(processDefinition.getTenantId());
+          }
           
           newSubscription.insert();
         }
       }
     }      
+  }
+  
+  protected void removeObsoleteSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
+    // remove all subscriptions for the previous version    
+    if(latestProcessDefinition != null) {
+      CommandContext commandContext = Context.getCommandContext();
+      
+      List<EventSubscriptionEntity> subscriptionsToDelete = commandContext
+        .getEventSubscriptionEntityManager()
+        .findEventSubscriptionsByConfiguration(SignalEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
+      
+      for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
+        eventSubscriptionEntity.delete();        
+      } 
+      
+    }
+  }
+  
+  @SuppressWarnings("unchecked")
+  protected void addSignalEventSubscriptions(ProcessDefinitionEntity processDefinition) {
+     List<EventSubscriptionDeclaration> eventDefinitions = (List<EventSubscriptionDeclaration>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
+     if(eventDefinitions != null) {     
+       for (EventSubscriptionDeclaration eventDefinition : eventDefinitions) {
+         if(eventDefinition.getEventType().equals("signal") && eventDefinition.isStartEvent()) {
+        	 
+        	 SignalEventSubscriptionEntity subscriptionEntity = new SignalEventSubscriptionEntity();
+        	 subscriptionEntity.setEventName(eventDefinition.getEventName());
+        	 subscriptionEntity.setActivityId(eventDefinition.getActivityId());
+        	 subscriptionEntity.setProcessDefinitionId(processDefinition.getId());
+        	 if (processDefinition.getTenantId() != null) {
+        		 subscriptionEntity.setTenantId(processDefinition.getTenantId());
+           }
+        	 subscriptionEntity.insert();
+        	 
+         }	 
+       }
+     }      
   }
   
   enum ExprType {

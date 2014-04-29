@@ -15,7 +15,6 @@ package org.activiti.rest.service.api.repository;
 
 import java.util.Calendar;
 
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
@@ -40,7 +39,7 @@ public class ModelResourceTest extends BaseRestTestCase {
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(now.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(now.getTime());
       
       model = repositoryService.newModel();
       model.setCategory("Model category");
@@ -49,6 +48,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       model.setName("Model name");
       model.setVersion(2);
       model.setDeploymentId(deploymentId);
+      model.setTenantId("myTenant");
       repositoryService.saveModel(model);
       
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
@@ -67,6 +67,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       assertEquals("Model metainfo", responseNode.get("metaInfo").getTextValue());
       assertEquals(deploymentId, responseNode.get("deploymentId").getTextValue());
       assertEquals(model.getId(), responseNode.get("id").getTextValue());
+      assertEquals("myTenant", responseNode.get("tenantId").getTextValue());
       
       assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
       assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
@@ -100,7 +101,7 @@ public class ModelResourceTest extends BaseRestTestCase {
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(now.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(now.getTime());
       
       model = repositoryService.newModel();
       model.setCategory("Model category");
@@ -149,7 +150,7 @@ public class ModelResourceTest extends BaseRestTestCase {
     try {
       Calendar createTime = Calendar.getInstance();
       createTime.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(createTime.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(createTime.getTime());
       
       model = repositoryService.newModel();
       model.setCategory("Model category");
@@ -163,7 +164,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       Calendar updateTime = Calendar.getInstance();
       updateTime.set(Calendar.MILLISECOND, 0);
       updateTime.add(Calendar.HOUR, 1);
-      ClockUtil.setCurrentTime(updateTime.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(updateTime.getTime());
       
       // Create update request
       ObjectNode requestNode = objectMapper.createObjectNode();
@@ -173,6 +174,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       requestNode.put("metaInfo", "Updated metainfo");
       requestNode.put("deploymentId", deploymentId);
       requestNode.put("version", 3);
+      requestNode.put("tenantId", "myTenant");
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_MODEL, model.getId()));
       Representation response = client.put(requestNode);
@@ -189,6 +191,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       assertEquals("Updated metainfo", responseNode.get("metaInfo").getTextValue());
       assertEquals(deploymentId, responseNode.get("deploymentId").getTextValue());
       assertEquals(model.getId(), responseNode.get("id").getTextValue());
+      assertEquals("myTenant", responseNode.get("tenantId").getTextValue());
       
       assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
       assertEquals(updateTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
@@ -212,20 +215,21 @@ public class ModelResourceTest extends BaseRestTestCase {
     try {
       Calendar createTime = Calendar.getInstance();
       createTime.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(createTime.getTime());
-      
+      processEngineConfiguration.getClock().setCurrentTime(createTime.getTime());
+
       model = repositoryService.newModel();
       model.setCategory("Model category");
       model.setKey("Model key");
       model.setMetaInfo("Model metainfo");
       model.setName("Model name");
+      model.setTenantId("myTenant");
       model.setVersion(2);
       repositoryService.saveModel(model);
       
       
       Calendar updateTime = Calendar.getInstance();
       updateTime.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(updateTime.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(updateTime.getTime());
       
       // Create update request
       ObjectNode requestNode = objectMapper.createObjectNode();
@@ -235,6 +239,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       requestNode.put("metaInfo", (String) null);
       requestNode.put("deploymentId", (String) null);
       requestNode.put("version", (String) null);
+      requestNode.put("tenantId", (String) null);
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_MODEL, model.getId()));
       Representation response = client.put(requestNode);
@@ -250,12 +255,22 @@ public class ModelResourceTest extends BaseRestTestCase {
       assertNull(responseNode.get("version").getTextValue());
       assertNull(responseNode.get("metaInfo").getTextValue());
       assertNull(responseNode.get("deploymentId").getTextValue());
+      assertNull(responseNode.get("tenantId").getTextValue());
       assertEquals(model.getId(), responseNode.get("id").getTextValue());
       
       assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
       assertEquals(updateTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
       
       assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
+      
+      model = repositoryService.getModel(model.getId());
+      assertNull(model.getName());
+      assertNull(model.getKey());
+      assertNull(model.getCategory());
+      assertNull(model.getMetaInfo());
+      assertNull(model.getDeploymentId());
+      assertEquals("", model.getTenantId());
+      
     } finally
     {
       try {
@@ -273,7 +288,7 @@ public class ModelResourceTest extends BaseRestTestCase {
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(now.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(now.getTime());
       
       model = repositoryService.newModel();
       model.setCategory("Model category");

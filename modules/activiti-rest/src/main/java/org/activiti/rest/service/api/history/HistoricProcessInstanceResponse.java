@@ -38,6 +38,7 @@ public class HistoricProcessInstanceResponse {
   protected String deleteReason;
   protected String superProcessInstanceId;
   protected List<RestVariable> variables = new ArrayList<RestVariable>();
+  protected String tenantId;
   
   public String getId() {
     return id;
@@ -125,5 +126,11 @@ public class HistoricProcessInstanceResponse {
   }
   public void addVariable(RestVariable variable) {
     variables.add(variable);
+  }
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  public String getTenantId() {
+	  return tenantId;
   }
 }

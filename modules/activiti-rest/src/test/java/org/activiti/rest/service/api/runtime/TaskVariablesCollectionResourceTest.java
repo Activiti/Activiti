@@ -400,7 +400,7 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
         fail("Exception expected");
       } catch (ResourceException expected) {
         assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("Request didn't cantain a list of variables to create.", expected.getStatus().getDescription());
+        assertEquals("Request didn't contain a list of variables to create.", expected.getStatus().getDescription());
       }
       
       // Test passing in object instead of array
@@ -410,7 +410,7 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
         fail("Exception expected");
       } catch (ResourceException expected) {
         assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("Request didn't cantain a list of variables to create.", expected.getStatus().getDescription());
+        assertEquals("Request didn't contain a list of variables to create.", expected.getStatus().getDescription());
       }
     } finally {
       // Clean adhoc-tasks even if test fails

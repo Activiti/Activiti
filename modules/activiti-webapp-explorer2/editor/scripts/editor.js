@@ -121,6 +121,7 @@ ORYX = Object.extend(ORYX, {
 				+ prefix + " " + messageParts[0];
 			var message = printf.apply(null, messageParts);
 			
+			
 			ORYX.Log.__appenders.each(function(appender) {
 				appender.append(message);
 			});

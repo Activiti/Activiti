@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -135,7 +136,7 @@ public class TaskEntityManager extends AbstractManager {
     taskQuery.setMaxResults(20000);
     taskQuery.setFirstResult(0);
     
-    List<Task> instanceList = getDbSqlSession().selectList(query, taskQuery);
+    List<Task> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter(query, taskQuery, taskQuery.getFirstResult(), taskQuery.getMaxResults());
     
     if (instanceList != null && instanceList.size() > 0) {
       if (firstResult > 0) {
@@ -191,4 +192,12 @@ public class TaskEntityManager extends AbstractManager {
         .deleteHistoricTaskInstanceById(taskId);
     }
   }
+  
+  public void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId) {
+  	HashMap<String, Object> params = new HashMap<String, Object>();
+  	params.put("deploymentId", deploymentId);
+  	params.put("tenantId", newTenantId);
+  	getDbSqlSession().update("updateTaskTenantIdForDeployment", params);
+  }
+  
 }

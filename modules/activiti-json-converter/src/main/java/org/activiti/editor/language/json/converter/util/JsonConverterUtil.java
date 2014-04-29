@@ -19,11 +19,19 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
   }
   
   public static boolean getPropertyValueAsBoolean(String name, JsonNode objectNode) {
-    boolean result = false;
+    return getPropertyValueAsBoolean(name, objectNode, false);
+  }
+  
+  public static boolean getPropertyValueAsBoolean(String name, JsonNode objectNode, boolean defaultValue) {
+    boolean result = defaultValue;
     String stringValue = getPropertyValueAsString(name, objectNode);
+    
     if (PROPERTY_VALUE_YES.equalsIgnoreCase(stringValue)) {
       result = true;
+    } else if (PROPERTY_VALUE_NO.equalsIgnoreCase(stringValue)) {
+      result = false;
     }
+    
     return result;
   }
   

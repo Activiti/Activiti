@@ -40,12 +40,18 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 			assertNotNull(deployment);
 			
 			// Check create-event
-			assertEquals(1, listener.getEventsReceived().size());
+			assertEquals(2, listener.getEventsReceived().size());
 			assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 			
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 			assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
+			
+			assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiEntityEvent);
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+			assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+			assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
+			
 			listener.clearEventsReceived();
 			
 			// Check update event when category is updated

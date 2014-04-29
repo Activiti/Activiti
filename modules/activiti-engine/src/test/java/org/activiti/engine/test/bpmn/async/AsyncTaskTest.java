@@ -12,14 +12,15 @@
  */
 package org.activiti.engine.test.bpmn.async;
 
-import java.util.Date;
-
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
+import org.junit.Assert;
+
+import java.util.Date;
 
 /**
  * 
@@ -141,7 +142,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     assertEquals(2, managementService.createJobQuery().count());    
       
     // now the timer triggers:
-    ClockUtil.setCurrentTime(new Date(System.currentTimeMillis()+10000));
+    Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(System.currentTimeMillis() + 10000));
     waitForJobExecutorToProcessAllJobs(10000L, 25L);
     
     // and we are done:
@@ -230,6 +231,15 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     
     assertEquals(0, managementService.createJobQuery().count());
       
+  }
+
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/async/AsyncTaskTest.testBasicAsycCallActivity.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/StartToEndTest.testStartToEnd.bpmn20.xml"})
+  public void testBasicAsycCallActivity() {
+    runtimeService.startProcessInstanceByKey("myProcess");
+    Assert.assertEquals("There should be one job available.", 1, managementService.createJobQuery().count());
+    waitForJobExecutorToProcessAllJobs(10000L, 25L);
+    assertEquals(0, managementService.createJobQuery().count());
   }
   
   @Deployment

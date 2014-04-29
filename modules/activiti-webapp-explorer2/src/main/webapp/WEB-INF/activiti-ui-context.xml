@@ -34,6 +34,7 @@
         <bean class="org.activiti.explorer.ui.form.StringFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.EnumFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.LongFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.DoubleFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.DateFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.UserFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.BooleanFormPropertyRenderer" />

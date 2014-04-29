@@ -65,7 +65,7 @@
       you do your own form rendering.  But the build-in form rendering 
       expects the <literal>activiti:formKey</literal> to be a reference to a resource in the 
       same business archive (= deployment). The resource is identify by it's full path within the deployment. In our case,
-      the form <literal>request.form</literal> was deployed within a Business-acrhive, in folder <literal>org/activiti/examples/taskforms/</literal>.
+      the form <literal>request.form</literal> was deployed within a Business-archive, in folder <literal>org/activiti/examples/taskforms/</literal>.
     </para>
       
     <para>

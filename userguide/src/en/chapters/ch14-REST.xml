@@ -124,7 +124,7 @@
             </row>
             <row>
               <entry><literal>500 - Internal server error</literal></entry>
-              <entry>The operation failed. An unexpected exception occured while executing the operation. The response-body contains details about the error.</entry>
+              <entry>The operation failed. An unexpected exception occurred while executing the operation. The response-body contains details about the error.</entry>
             </row>
           </tbody>
         </tgroup>
@@ -156,7 +156,7 @@
       <section>
         <title>Rest URL query parameters</title>
         <para>
-            Parameters added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?name=Deployment</literal>) can have the folowing types and are
+            Parameters added as query-string in the URL (eg. the name parameter used in <literal>http://host/activiti-rest/service/deployments?name=Deployment</literal>) can have the following types and are
             mentioned in the corresponding REST-API documentation:
             
             <table>
@@ -307,7 +307,7 @@
                   <row>
                     <entry>operator</entry>
                     <entry>Yes</entry>
-                    <entry>Operator to use in query, can have the folowing values: <literal>equals, notEquals, equalsIgnoreCase, notEqualsIgnoreCase, lessThan, greaterThan, lessThanOrEquals, greaterThanOrEquals</literal> and <literal>like</literal>.</entry>
+                    <entry>Operator to use in query, can have the following values: <literal>equals, notEquals, equalsIgnoreCase, notEqualsIgnoreCase, lessThan, greaterThan, lessThanOrEquals, greaterThanOrEquals</literal> and <literal>like</literal>.</entry>
                   </row>
                   <row>
                     <entry>type</entry>
@@ -404,7 +404,7 @@
                   <row>
                     <entry>scope</entry>
                     <entry>No</entry>
-                    <entry>Scope of the variable. If '<literal>local</literal>', the variable is explicitally defined on the resource it's requested from. When '<literal>global</literal>', the variable is defined on the parent (or any parent in the parent-tree) of the resource it's requested from. When writing a variable and the scope is omitted, <literal>global</literal> is assumed.</entry>
+                    <entry>Scope of the variable. If '<literal>local</literal>', the variable is explicitly defined on the resource it's requested from. When '<literal>global</literal>', the variable is defined on the parent (or any parent in the parent-tree) of the resource it's requested from. When writing a variable and the scope is omitted, <literal>global</literal> is assumed.</entry>
                   </row>
                   <row>
                     <entry>type</entry>
@@ -464,7 +464,7 @@
               </tgroup>
             </table>
             It's possible to support additional variable-types with a custom JSON representation (either simple value or complex/nested JSON object). By extending the <literal>initializeVariableConverters()</literal> method on <literal>org.activiti.rest.service.api.RestResponseFactory</literal>,
-            you can add additional <literal>org.activiti.rest.service.api.engine.variable.RestVariableConverter</literal> classes to support converting your POJO's to a format suitable for transerring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
+            you can add additional <literal>org.activiti.rest.service.api.engine.variable.RestVariableConverter</literal> classes to support converting your POJO's to a format suitable for transferring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
         </para>
        </section>
     </section>
@@ -520,10 +520,28 @@
                     <entry>Only return deployments which don't have the given category.</entry>
                   </row>
                   <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return deployments with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return deployments with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns deployments without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                  <row>
                     <entry>sort</entry>
                     <entry>No</entry>
-                    <entry>'id' (default), 'name' or 'deploytime'</entry>
-                    <entry>Property to sort on, to be used toghether with the 'order'.</entry>
+                    <entry>'id' (default), 'name', 'deploytime' or 'tenantId'</entry>
+                    <entry>Property to sort on, to be used together with the 'order'.</entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
@@ -561,7 +579,8 @@
       "name": "activiti-examples.bar",
       "deploymentTime": "2010-10-13T14:54:26.750+02:00",
       "category": "examples",
-      "url": "http://localhost:8081/service/repository/deployments/10"
+      "url": "http://localhost:8081/service/repository/deployments/10",
+      "tenantId": null
     }
   ],
   "total": 1,
@@ -632,7 +651,8 @@
   "name": "activiti-examples.bar",
   "deploymentTime": "2010-10-13T14:54:26.750+02:00",
   "category": "examples",
-  "url": "http://localhost:8081/service/repository/deployments/10"
+  "url": "http://localhost:8081/service/repository/deployments/10",
+  "tenantId" : null
 }</programlisting>
     </para>
     </section>
@@ -647,6 +667,7 @@
         </para>
         <para>The request should body should contain data of type <emphasis>multipart/form-data</emphasis>. There should be only exactly file in the request, any additional files will be ignored. The deployment name is the name
         of the file-field passed in. If multiple resources need to be deployed in a single deployment, compress the resources in a zip and make sure the file-name ends with <literal>.bar</literal> or <literal>.zip</literal>.</para>
+        <para>An additional parameter (form-field) can be passed in the request body with name <literal>tenantId</literal>. The value of this field will be used as the id of the tenant this deployment is done in.</para>
         <para>
           <table>
               <title>Create a new deployment - Response codes</title>
@@ -678,7 +699,8 @@
   "name": "activiti-examples.bar",
   "deploymentTime": "2010-10-13T14:54:26.750+02:00",
   "category": null,
-  "url": "http://localhost:8081/service/repository/deployments/10"
+  "url": "http://localhost:8081/service/repository/deployments/10",
+  "tenantId" : "myTenant"
 }</programlisting>
     </para>
   </section>
@@ -826,7 +848,7 @@
       </itemizedlist>
     </para>
     <para>
-      <emphasis>The dataUrl property in the resulting json for a single resource contains the actual URL to use for retreiving the binary resource.</emphasis>
+      <emphasis>The dataUrl property in the resulting json for a single resource contains the actual URL to use for retrieving the binary resource.</emphasis>
     </para>
   </section>
   <section>
@@ -981,7 +1003,7 @@
     </para>
     <para>
       The response body will contain the binary resource-content for the requested resource. The response content-type will be the same as the type returned in the resources 'mimeType' property. Also, a content-disposition header is set,
-      allowing browsers to dowload the file instead of displaying it.
+      allowing browsers to download the file instead of displaying it.
     </para>
   </section>  
  </section>
@@ -1082,7 +1104,7 @@
                     <entry>latest</entry>
                     <entry>No</entry>
                     <entry>Boolean</entry>
-                    <entry>Only return the latest process definition versions. Can only be used toghether with 'key' and 'keyLike' parameters, using any other parameter will result in a 400-response.</entry>
+                    <entry>Only return the latest process definition versions. Can only be used together with 'key' and 'keyLike' parameters, using any other parameter will result in a 400-response.</entry>
                   </row>
                   <row>
                     <entry>suspended</entry>
@@ -1094,7 +1116,7 @@
                     <entry>sort</entry>
                     <entry>No</entry>
                     <entry>'name' (default), 'id', 'key', 'category', 'deploymentId' and 'version'</entry>
-                    <entry>Property to sort on, to be used toghether with the 'order'.</entry>
+                    <entry>Property to sort on, to be used together with the 'order'.</entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
@@ -1441,7 +1463,7 @@
                   </row>
                   <row>
                     <entry>includeProcessInstances</entry>
-                    <entry>Wether or not to suspend/activate running process-instances for this process-definition. If omitted, the process-instances are left in the state they are.</entry>
+                    <entry>Whether or not to suspend/activate running process-instances for this process-definition. If omitted, the process-instances are left in the state they are.</entry>
                     <entry>No</entry>
                   </row>
                   <row>
@@ -1634,7 +1656,7 @@
        <emphasis role="bold">Request body (user):</emphasis>
             <programlisting>
 {
-  "userId" : "kermit"
+  "user" : "kermit"
 }</programlisting>
     </para>
     <para>
@@ -1918,11 +1940,29 @@
                     <entry>Boolean</entry>
                     <entry>If <literal>true</literal>, only deployed models are returned. If <literal>false</literal>, only undeployed models are returned (deploymentId is null).</entry>
                   </row>
+                   <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return models with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns models without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
                   <row>
                     <entry>sort</entry>
                     <entry>No</entry>
-                    <entry>'id' (default), 'category', 'createTime', 'key', 'lastUpdateTime', 'name' and 'version'</entry>
-                    <entry>Property to sort on, to be used toghether with the 'order'.</entry>
+                    <entry>'id' (default), 'category', 'createTime', 'key', 'lastUpdateTime', 'name', 'version' or 'tenantId'</entry>
+                    <entry>Property to sort on, to be used together with the 'order'.</entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
@@ -1970,7 +2010,8 @@
          "url":"http://localhost:8182/repository/models/10",
          "createTime":"2013-06-12T14:31:08.612+0000",
          "lastUpdateTime":"2013-06-12T14:31:08.612+0000",
-         "deploymentUrl":"http://localhost:8182/repository/deployments/7"
+         "deploymentUrl":"http://localhost:8182/repository/deployments/7",
+         "tenantId":null
       },
       
       ...
@@ -2050,7 +2091,8 @@
    "deploymentId":"2",
    "deploymentUrl":"http://localhost:8182/repository/deployments/2",
    "createTime":"2013-06-12T12:31:19.861+0000",
-   "lastUpdateTime":"2013-06-12T12:31:19.861+0000"
+   "lastUpdateTime":"2013-06-12T12:31:19.861+0000",
+   "tenantId":null
 }</programlisting>
     </para>
     </section>
@@ -2069,7 +2111,8 @@
    "category":"Model category",
    "version":2,
    "metaInfo":"Model metainfo",
-   "deploymentId":"2"
+   "deploymentId":"2",
+   "tenantId":"updatedTenant"
 }</programlisting>
    All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only updating the name of the model, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the model-value will be updated to null. Example: <literal>{"metaInfo" : null}</literal> will clear the metaInfo of the model).
     </para>
@@ -2110,7 +2153,8 @@
    "deploymentId":"2",
    "deploymentUrl":"http://localhost:8182/repository/deployments/2",
    "createTime":"2013-06-12T12:31:19.861+0000",
-   "lastUpdateTime":"2013-06-12T12:31:19.861+0000"
+   "lastUpdateTime":"2013-06-12T12:31:19.861+0000",
+   "tenantId":""updatedTenant"
 }</programlisting>
     </para>
     </section>
@@ -2129,7 +2173,8 @@
    "category":"Model category",
    "version":1,
    "metaInfo":"Model metainfo",
-   "deploymentId":"2"
+   "deploymentId":"2",
+   "tenantId":"tenant""
 }</programlisting>
    All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only setting the name of the model, leaving all other fields null.
     </para>
@@ -2166,7 +2211,8 @@
    "deploymentId":"2",
    "deploymentUrl":"http://localhost:8182/repository/deployments/2",
    "createTime":"2013-06-12T12:31:19.861+0000",
-   "lastUpdateTime":"2013-06-12T12:31:19.861+0000"
+   "lastUpdateTime":"2013-06-12T12:31:19.861+0000",
+   "tenantId":"tenant"
 }</programlisting>
     </para>
     </section>
@@ -2277,7 +2323,7 @@
         </para>
     <para>
        <emphasis role="bold">Success response body:</emphasis>
-       Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
+       Response body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
     </para>
     </section>
     
@@ -2338,7 +2384,7 @@
         </para>
          <para>
        <emphasis role="bold">Success response body:</emphasis>
-       Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
+       Response body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
     </para>
   </section>
     
@@ -2395,7 +2441,7 @@
         </para>
     <para>
        <emphasis role="bold">Success response body:</emphasis>
-       Reponse body contains the model's raw extra editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the extra source.
+       Response body contains the model's raw extra editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the extra source.
     </para>
     </section>
     
@@ -2456,7 +2502,7 @@
         </para>
          <para>
        <emphasis role="bold">Success response body:</emphasis>
-       Reponse body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
+       Response body contains the model's raw editor source. The response's content-type is set to <literal>application/octet-stream</literal>, regardless of the content of the source.
     </para>
   </section>
     
@@ -2525,7 +2571,8 @@
    "businessKey":"myBusinessKey",
    "suspended":false,
    "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
-   "activityId":"processTask"
+   "activityId":"processTask",
+   "tenantId": null
 }</programlisting>
     </para>
 </section>
@@ -2685,6 +2732,7 @@
 {
    "processDefinitionKey":"oneTaskProcess",
    "businessKey":"myBusinessKey",
+   "tenantId": "tenant1",
    "variables": [
       {
         "name":"myVar",
@@ -2701,6 +2749,7 @@
 {
    "message":"newOrderMessage",
    "businessKey":"myBusinessKey",
+   "tenantId": "tenant1",
    "variables": [
       {
         "name":"myVar",
@@ -2712,7 +2761,7 @@
 }</programlisting>
     </para>
     <para>
-    Only one of <literal>processDefinitionId</literal>, <literal>processDefinitionKey</literal> or <literal>message</literal> can be used in the request body. Both <literal>businessKey</literal> and <literal>variables</literal> are optional.
+    Only one of <literal>processDefinitionId</literal>, <literal>processDefinitionKey</literal> or <literal>message</literal> can be used in the request body. Parameters <literal>businessKey</literal>, <literal>variables</literal> and <literal>tenantId</literal> are optional. If <literal>tenantId</literal> is omitted, the default tenant will be used.
     More information about the variable format can be found in <link linkend="restVariables">the REST variables section</link>. Note that the variable-scope that is supplied is ignored, process-variables are always <literal>local</literal>.
     </para>
         <para>
@@ -2747,7 +2796,8 @@
    "businessKey":"myBusinessKey",
    "suspended":false,
    "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
-   "activityId":"processTask"
+   "activityId":"processTask",
+   "tenantId" : null
 }</programlisting>
     </para>
 </section>
@@ -2831,10 +2881,28 @@
                     <entry>Indication to include process variables in the result.</entry>
                   </row>
                   <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return process instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns process instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                  <row>
                     <entry>sort</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Sort field, should be either one of <literal>id</literal> (default), <literal>processDefinitionId</literal> or <literal>processDefinitionKey</literal>.</entry>
+                    <entry>Sort field, should be either one of <literal>id</literal> (default), <literal>processDefinitionId</literal>, <literal>tenantId</literal> or <literal>processDefinitionKey</literal>.</entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
@@ -2877,7 +2945,8 @@
          "businessKey":"myBusinessKey",
          "suspended":false,
          "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
-         "activityId":"processTask"
+         "activityId":"processTask",
+         "tenantId" : null
       },
       
       ...
@@ -2952,7 +3021,8 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
          "businessKey":"myBusinessKey",
          "suspended":false,
          "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
-         "activityId":"processTask"
+         "activityId":"processTask",
+         "tenantId" : null
       },
       
       ...
@@ -3614,7 +3684,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
          <para>
        <emphasis role="bold">Request body:</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       <itemizedlist>
           <listitem>
             <para><literal>name</literal>: Required name of the variable.</para>
@@ -3700,7 +3770,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
         </para>
          <para>
        <emphasis role="bold">Request body:</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       <itemizedlist>
           <listitem>
             <para><literal>name</literal>: Required name of the variable.</para>
@@ -3732,7 +3802,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the variable was udpated and the result is returned.</entry>
+                    <entry>Indicates the variable was updated and the result is returned.</entry>
                   </row>
                   <row>
                     <entry>400</entry>
@@ -3819,7 +3889,8 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
    "processInstanceId":"5",
    "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
    "suspended":false,
-   "activityId":null
+   "activityId":null,
+   "tenantId": null
 }</programlisting>
     </para>
   </section>
@@ -3899,7 +3970,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                   </row>
                   <row>
                     <entry>400</entry>
-                    <entry>Indicates an illegal action was requested, required parameters are missing in the resuest body or illegal variables are passed in. Status description contains additional information about the error.</entry>
+                    <entry>Indicates an illegal action was requested, required parameters are missing in the request body or illegal variables are passed in. Status description contains additional information about the error.</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -3920,7 +3991,8 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
    "processInstanceId":"5",
    "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
    "suspended":false,
-   "activityId":null
+   "activityId":null,
+   "tenantId" : null
 }</programlisting>
     </para>
   </section>
@@ -4047,13 +4119,31 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                     <entry>parentId</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Only return executions wich are a direct child of the given execution.</entry>
+                    <entry>Only return executions which are a direct child of the given execution.</entry>
+                  </row>
+                    <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns executions without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
                   </row>
                   <row>
                     <entry>sort</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Sort field, should be either one of <literal>processInstanceId</literal> (default), <literal>processDefinitionId</literal> or <literal>processDefinitionKey</literal>.</entry>
+                    <entry>Sort field, should be either one of <literal>processInstanceId</literal> (default), <literal>processDefinitionId</literal>, <literal>processDefinitionKey</literal> or <literal>tenantId</literal>.</entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
@@ -4098,7 +4188,8 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
          "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
-         "activityId":null
+         "activityId":null,
+         "tenantId":null
       },
       {
          "id":"7",
@@ -4108,7 +4199,8 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
          "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
-         "activityId":"processTask"
+         "activityId":"processTask",
+         "tenantId":null
       }
    ],
    "total":2,
@@ -4193,7 +4285,8 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
          "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
-         "activityId":null
+         "activityId":null,
+         "tenantId":null
       },
       {
          "id":"7",
@@ -4203,7 +4296,8 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
          "processInstanceId":"5",
          "processInstanceUrl":"http://localhost:8182/runtime/process-instances/5",
          "suspended":false,
-         "activityId":"processTask"
+         "activityId":"processTask",
+         "tenantId":null
       }
    ],
    "total":2,
@@ -4244,7 +4338,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
                     <entry>scope</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Either <literal>local</literal> or <literal>global</literal>. If ommitted, both local and global scoped variables are returned.</entry>
+                    <entry>Either <literal>local</literal> or <literal>global</literal>. If omitted, both local and global scoped variables are returned.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4331,7 +4425,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>scope</entry>
                     <entry>No</entry>
                     <entry>String</entry>
-                    <entry>Either <literal>local</literal> or <literal>global</literal>. If ommitted, local variable is returned (if exists). If not, a global variable is returned (if exists).</entry>
+                    <entry>Either <literal>local</literal> or <literal>global</literal>. If omitted, local variable is returned (if exists). If not, a global variable is returned (if exists).</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -4583,7 +4677,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
          <para>
        <emphasis role="bold">Request body:</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       <itemizedlist>
           <listitem>
             <para><literal>name</literal>: Required name of the variable.</para>
@@ -4678,7 +4772,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
          <para>
        <emphasis role="bold">Request body:</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additional form-fields can be present:
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       <itemizedlist>
           <listitem>
             <para><literal>name</literal>: Required name of the variable.</para>
@@ -4713,7 +4807,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the variable was udpated and the result is returned.</entry>
+                    <entry>Indicates the variable was updated and the result is returned.</entry>
                   </row>
                   <row>
                     <entry>400</entry>
@@ -4806,7 +4900,8 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
   "processInstance" : "http://localhost:8182/runtime/process-instances/5",
   "suspended" : false,
   "taskDefinitionKey" : "theTask",
-  "url" : "http://localhost:8182/runtime/tasks/8"
+  "url" : "http://localhost:8182/runtime/tasks/8",
+  "tenantId" : null
 }</programlisting>
       <itemizedlist>
           <listitem>
@@ -5063,6 +5158,24 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Indication to include process variables in the result.</entry>
                   </row>
                   <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns tasks without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                  <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                   </row>
                 </tbody>
@@ -5113,7 +5226,8 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
       "processInstance" : "http://localhost:8182/runtime/process-instances/5",
       "suspended" : false,
       "taskDefinitionKey" : "theTask",
-      "url" : "http://localhost:8182/runtime/tasks/8"
+      "url" : "http://localhost:8182/runtime/tasks/8",
+      "tenantId" : null
     }
   ],
   "total": 1,
@@ -5204,7 +5318,8 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
       "processInstance" : "http://localhost:8182/runtime/process-instances/5",
       "suspended" : false,
       "taskDefinitionKey" : "theTask",
-      "url" : "http://localhost:8182/runtime/tasks/8"
+      "url" : "http://localhost:8182/runtime/tasks/8",
+      "tenantId" : null
     }
   ],
   "total": 1,
@@ -5332,7 +5447,7 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
                   </row>
                   <row>
                     <entry>409</entry>
-                    <entry>Indicates the action cannot be performed due to a conflict. Either the task was updates simultaneously or the task was claimend by another user, in case of the '<literal>claim</literal>' action.</entry>
+                    <entry>Indicates the action cannot be performed due to a conflict. Either the task was updates simultaneously or the task was claimed by another user, in case of the '<literal>claim</literal>' action.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -5772,7 +5887,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
          <para>
        <emphasis role="bold">Request body:</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       <itemizedlist>
           <listitem>
             <para><literal>name</literal>: Required name of the variable.</para>
@@ -5961,7 +6076,7 @@ The request body should be an array containing one or more JSON-objects represen
         </para>
          <para>
        <emphasis role="bold">Request body:</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       <itemizedlist>
           <listitem>
             <para><literal>name</literal>: Required name of the variable.</para>
@@ -6172,7 +6287,7 @@ The request body should be an array containing one or more JSON-objects represen
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicates the task was found and the requested idenity links are returned.</entry>
+                    <entry>Indicates the task was found and the requested identity links are returned.</entry>
                   </row>
                   <row>
                     <entry>404</entry>
@@ -6956,7 +7071,7 @@ Only the attachment name is required to create a new attachment.
         </para>
         <para>
        <emphasis role="bold">Request body:</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the folowing additionl form-fields can be present:
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       <itemizedlist>
           <listitem>
             <para><literal>name</literal>: Required name of the variable.</para>
@@ -7343,7 +7458,8 @@ Only the attachment name is required to create a new attachment.
       "deleteReason" : null,
       "superProcessInstanceId" : "3",
       "url" : "http://localhost:8182/history/historic-process-instances/5",
-      "variables": null
+      "variables": null,
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -7457,6 +7573,24 @@ Only the attachment name is required to create a new attachment.
                   <entry>An indication if the historic process instance variables should be returned as well.</entry>
                 </row>
                 <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                <row>
                   <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
@@ -7511,7 +7645,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "local",
           "value": "myTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -7596,7 +7731,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "local",
           "value": "myTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -7713,6 +7849,267 @@ Only the attachment name is required to create a new attachment.
       The response body contains the binary value of the variable. When the variable is of type <literal>binary</literal>, the content-type of the response is set to <literal>application/octet-stream</literal>, regardless of the content of the variable or the request accept-type header. In case of <literal>serializable</literal>, <literal>application/x-java-serialized-object</literal> is used as content-type. 
     </para>
   </section>
+   <section>
+      <title>Create a new comment on a historic process instance</title>
+        <para>
+          <programlisting>POST history/historic-process-instances/{processInstanceId}/comments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>Create a new comment on a historic process instance - URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to create the comment for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+         <para>
+       <emphasis role="bold">Request body:</emphasis>
+        <programlisting>
+{ 
+  "message" : "This is a comment."
+}</programlisting>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "id" : "123",
+  "url" : "http://localhost:8081/activiti-rest/history/historic-process-instances/100/comments/123",
+  "message" : "This is a comment.",
+  "author" : "kermit"
+}</programlisting>
+          <table>
+              <title>Create a new comment on a historic process instance - Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>201</entry>
+                    <entry>Indicates the comment was created and the result is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Indicates the comment is missing from the request.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested historic process instance was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+   <section>
+      <title>Get all comments on a historic process instance</title>
+        <para>
+          <programlisting>GET history/historic-process-instances/{processInstanceId}/comments</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>Get all comments on a process instance - URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the process instance to get the comments for.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+[
+  { 
+    "id" : "123",
+    "url" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
+    "message" : "This is a comment",
+    "author" : "kermit"
+  },
+  { 
+    "id" : "456",
+    "url" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/456",
+    "message" : "This is another comment.",
+    "author" : "gonzo"
+  }
+]</programlisting>
+          <table>
+              <title>Get all comments on a process instance - Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the process instance was found and the comments are returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested task was not found.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+   <section>
+      <title>Get a comment on a historic process instance</title>
+        <para>
+          <programlisting>GET history/historic-process-instances/{processInstanceId}/comments/{commentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>Get a comment on a historic process instance - URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the historic process instance to get the comment for.</entry>
+                  </row>
+                  <row>
+                    <entry>commentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the comment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+            <programlisting>
+{ 
+  "id" : "123",
+  "url" : "http://localhost:8081/activiti-rest/history/historic-process-instances/100/comments/123",
+  "message" : "This is a comment.",
+  "author" : "kermit"
+}</programlisting>
+          <table>
+              <title>Get a comment on a historic process instance - Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicates the historic process instance and comment were found and the comment is returned.</entry>
+                  </row>
+                  <row>
+                    <entry>404</entry>
+                    <entry>Indicates the requested historic process instance was not found or the historic process instance doesn't have a comment with the given ID.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+  <section>
+      <title>Delete a comment on a historic process instance</title>
+        <para>
+          <programlisting>DELETE history/historic-process-instances/{processInstanceId}/comments/{commentId}</programlisting>
+        </para>
+        <para>
+            <table>
+              <title>Delete a comment on a historic process instance - URL parameters</title>
+              <tgroup cols='3'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Required</entry>
+                    <entry>Value</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>processInstanceId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the historic process instance to delete the comment for.</entry>
+                  </row>
+                  <row>
+                    <entry>commentId</entry>
+                    <entry>Yes</entry>
+                    <entry>String</entry>
+                    <entry>The id of the comment.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <table>
+            <title>Delete a comment on a historic process instance - Response codes</title>
+            <tgroup cols='2'>
+              <thead>
+                <row>
+                  <entry>Response code</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>204</entry>
+                  <entry>Indicates the historic process instance and comment were found and the comment is deleted. Response body is left empty intentionally.</entry>
+                </row>
+                <row>
+                  <entry>404</entry>
+                  <entry>Indicates the requested task was not found or the historic process instance doesn't have a comment with the given ID.</entry>
+                </row>
+              </tbody>
+           </tgroup>
+        </table>
+  </section>
     <section>
     <title>Get a single historic task instance</title>
     <para>
@@ -7767,7 +8164,8 @@ Only the attachment name is required to create a new attachment.
   "dueDate" : "2013-04-20T12:11:13.134+0000",
   "parentTaskId" : null,
   "url" : "http://localhost:8182/history/historic-task-instances/5",
-  "variables": null
+  "variables": null,
+  "tenantId":null
 }</programlisting>
       </para>
     </section>
@@ -7973,22 +8371,22 @@ Only the attachment name is required to create a new attachment.
                   <entry>withoutDueDate</entry>
                   <entry>No</entry>
                   <entry>Boolean</entry>
-                  <entry>Return only historic task instances that haveno due-date. When <literal>false</literal> is provided as value, this parameter is ignored.</entry>
+                  <entry>Return only historic task instances that have no due-date. When <literal>false</literal> is provided as value, this parameter is ignored.</entry>
                 </row>
                 <row>
-                  <entry>completedOn</entry>
+                  <entry>taskCompletedOn</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have been completed on this date.</entry>
                 </row>
                 <row>
-                  <entry>completedAfter</entry>
+                  <entry>taskCompletedAfter</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have been completed after this date.</entry>
                 </row>
                 <row>
-                  <entry>completedBefore</entry>
+                  <entry>taskCompletedBefore</entry>
                   <entry>No</entry>
                   <entry>Date</entry>
                   <entry>Return only historic task instances that have been completed before this date.</entry>
@@ -8023,6 +8421,24 @@ Only the attachment name is required to create a new attachment.
                   <entry>Boolean</entry>
                   <entry>An indication if the historic task instance global variables should be returned as well.</entry>
                 </row>
+                <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return historic task instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return historic task instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns historic task instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
                 <row>
                   <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                 </row>
@@ -8094,7 +8510,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "global",
           "value": "myProcessTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -8195,7 +8612,8 @@ Only the attachment name is required to create a new attachment.
           "variableScope": "global",
           "value": "myProcessTest"
         }
-      ]
+      ],
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -8385,6 +8803,24 @@ Only the attachment name is required to create a new attachment.
                   <entry>The process definition id of the historic activity instance.</entry>
                 </row>
                 <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return instances with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns instances without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                <row>
                   <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                 </row>
               </tbody>
@@ -8434,7 +8870,8 @@ Only the attachment name is required to create a new attachment.
       "assignee" : "fozzie",
       "startTime" : "2013-04-17T10:17:43.902+0000",
       "endTime" : "2013-04-18T14:06:32.715+0000",
-      "durationInMillis" : 86400056
+      "durationInMillis" : 86400056,
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -8503,7 +8940,8 @@ Only the attachment name is required to create a new attachment.
       "assignee" : "fozzie",
       "startTime" : "2013-04-17T10:17:43.902+0000",
       "endTime" : "2013-04-18T14:06:32.715+0000",
-      "durationInMillis" : 86400056
+      "durationInMillis" : 86400056,
+      "tenantId":null
     }
   ],
   "total": 1,
@@ -9438,8 +9876,8 @@ Only the attachment name is required to create a new attachment.
             <programlisting>
 {
    "next.dbid":"101",
-   "schema.history":"create(5.15-SNAPSHOT)",
-   "schema.version":"5.15-SNAPSHOT"
+   "schema.history":"create(5.15)",
+   "schema.version":"5.15"
 }</programlisting>
           <table>
               <title>Get engine properties - Response codes</title>
@@ -9473,7 +9911,7 @@ Only the attachment name is required to create a new attachment.
             <programlisting>
 {
    "name":"default",
-   "version":"5.15-SNAPSHOT",
+   "version":"5.15",
    "resourceUrl":"file://activiti/activiti.cfg.xml",
    "exception":null
 }</programlisting>
@@ -9490,6 +9928,94 @@ Only the attachment name is required to create a new attachment.
                   <row>
                     <entry>200</entry>
                     <entry>Indicates the engine info is returned.</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+  </section>
+</section>
+<section>
+  <title>Runtime</title>
+  <section>
+      <title>Signal event received</title>
+        <para>
+          <programlisting>POST runtime/signals</programlisting>
+        </para>
+        <para>
+        Notifies the engine that a signal event has been received, not explicitally related to a specific execution. 
+        </para>
+        <para>
+         <emphasis role="bold">Body JSON:</emphasis>
+           <programlisting>
+{ 
+  "signalName": "My Signal",
+  "tenantId" : "execute",
+  "async": true,
+  "variables": [
+      {"name": "testVar", "value": "This is a string"},
+      ...
+  ]
+}</programlisting>
+        <table>
+              <title>Signal event received - JSON Body parameters</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Parameter</entry>
+                    <entry>Description</entry>
+                    <entry>Required</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>signalName</entry>
+                    <entry>Name of the signal</entry>
+                    <entry>Yes</entry>
+                  </row>
+                  <row>
+                    <entry>tenantId</entry>
+                    <entry>ID of the tenant that the signal event should be processed in</entry>
+                    <entry>No</entry>
+                  </row>
+                  <row>
+                    <entry>async</entry>
+                    <entry>If <literal>true</literal>, handling of the signal will happen asynchronously. Return code will be <literal>202 - Accepted</literal> to indicate the request is accepted but not yet executed. If <literal>false</literal>, 
+                    handling the signal will be done immedialty and result (<literal>200 - OK</literal>) will only return after this completed successfully. Defaults to <literal>false</literal> if omitted.</entry>
+                    <entry>No</entry>
+                  </row>
+                  <row>
+                    <entry>variables</entry>
+                    <entry>Array of variables (in the general variables format) to use as payload to pass along with the signal. Cannot be used in case <literal>async</literal> is set to <literal>true</literal>, this will result in an error.</entry>
+                    <entry>No</entry>
+                  </row>
+                </tbody>
+             </tgroup>
+          </table>
+        </para>
+        <para>
+          <emphasis role="bold">Success response body:</emphasis>
+          <table>
+              <title>Signal event received - Response codes</title>
+              <tgroup cols='2'>
+                <thead>
+                  <row>
+                    <entry>Response code</entry>
+                    <entry>Description</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry>200</entry>
+                    <entry>Indicated signal has been processed and no errors occured.</entry>
+                  </row>
+                  <row>
+                    <entry>202</entry>
+                    <entry>Indicated signal processing is queued as a job, ready to be executed.</entry>
+                  </row>
+                  <row>
+                    <entry>400</entry>
+                    <entry>Signal not processed. The signal name is missing or variables are used toghether with async, which is not allowed. Response body contains additional information about the error.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9543,7 +10069,8 @@ Only the attachment name is required to create a new attachment.
    "executionUrl":"http://localhost:8182/runtime/executions/7",
    "retries":3,
    "exceptionMessage":null,
-   "dueDate":"2013-06-04T22:05:05.474+0000"
+   "dueDate":"2013-06-04T22:05:05.474+0000",
+   "tenantId":null
 }</programlisting>
           <table>
               <title>Get a single job - Response codes</title>
@@ -9674,7 +10201,7 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>500</entry>
-                    <entry>Indicates the an exception occured while executing the job. The status-description contains additional detail about the error. The full error-stacktrace can be fetched later on if needed.</entry>
+                    <entry>Indicates the an exception occurred while executing the job. The status-description contains additional detail about the error. The full error-stacktrace can be fetched later on if needed.</entry>
                   </row>
                 </tbody>
              </tgroup>
@@ -9685,7 +10212,7 @@ Only the attachment name is required to create a new attachment.
  <section>
       <title>Get the exception stacktrace for a job</title>
         <para>
-          <programlisting>GET management/jobs/{jobId}/exception-stracktrace</programlisting>
+          <programlisting>GET management/jobs/{jobId}/exception-stacktrace</programlisting>
         </para>
         <para>
         <table>
@@ -9782,17 +10309,17 @@ Only the attachment name is required to create a new attachment.
                   </row>
                   <row>
                     <entry>timersOnly</entry>
-                    <entry>If <literal>true</literal>, only return jobs which are timers. If false, this parameter is ignored. Cannot be used toghether with <literal>'messagesOnly'</literal>.</entry>
+                    <entry>If <literal>true</literal>, only return jobs which are timers. If false, this parameter is ignored. Cannot be used together with <literal>'messagesOnly'</literal>.</entry>
                     <entry>Boolean</entry>
                   </row>
                   <row>
                     <entry>messagesOnly</entry>
-                    <entry>If <literal>true</literal>, only return jobs which are messages. If false, this parameter is ignored. Cannot be used toghether with <literal>'timersOnly'</literal></entry>
+                    <entry>If <literal>true</literal>, only return jobs which are messages. If false, this parameter is ignored. Cannot be used together with <literal>'timersOnly'</literal></entry>
                     <entry>Boolean</entry>
                   </row>
                   <row>
                     <entry>withException</entry>
-                    <entry>If <literal>true</literal>, only return jobs for which an exception occured while executing it. If false, this parameter is ignored.</entry>
+                    <entry>If <literal>true</literal>, only return jobs for which an exception occurred while executing it. If false, this parameter is ignored.</entry>
                     <entry>Boolean</entry>
                   </row>
                   <row>
@@ -9811,8 +10338,26 @@ Only the attachment name is required to create a new attachment.
                     <entry>String</entry>
                   </row>
                   <row>
+                    <entry>tenantId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return jobs with the given tenantId.</entry>
+                  </row>
+                 <row>
+                    <entry>tenantIdLike</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return jobs with a tenantId like the given value.</entry>
+                  </row>
+                  <row>
+                    <entry>withoutTenantId</entry>
+                    <entry>No</entry>
+                    <entry>Boolean</entry>
+                    <entry>If <literal>true</literal>, only returns jobs without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                  <row>
                     <entry>sort</entry>
-                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>dueDate</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal> or <literal>retries</literal>.</entry>
+                    <entry>Field to sort results on, should be one of <literal>id</literal>, <literal>dueDate</literal>, <literal>executionId</literal>, <literal>processInstanceId</literal>, <literal>retries</literal> or <literal>tenantId</literal>.</entry>
                     <entry>String</entry>
                   </row>
                   <row>
@@ -9838,7 +10383,8 @@ Only the attachment name is required to create a new attachment.
          "executionUrl":"http://localhost:8182/runtime/executions/12",
          "retries":0,
          "exceptionMessage":"Can't find scripting engine for 'unexistinglanguage'",
-         "dueDate":"2013-06-07T10:00:24.653+0000"
+         "dueDate":"2013-06-07T10:00:24.653+0000",
+         "tenantId":null
       },
       
       ...
@@ -10233,7 +10779,7 @@ Only the attachment name is required to create a new attachment.
                   <entry>userId</entry>
                   <entry>Yes</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to get the pîcture for.</entry>
+                  <entry>The id of the user to get the picture for.</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10288,7 +10834,7 @@ Only the attachment name is required to create a new attachment.
                   <entry>userId</entry>
                   <entry>Yes</entry>
                   <entry>String</entry>
-                  <entry>The id of the user to get the pîcture for.</entry>
+                  <entry>The id of the user to get the picture for.</entry>
                 </row>
               </tbody>
            </tgroup>
@@ -10296,7 +10842,7 @@ Only the attachment name is required to create a new attachment.
       </para>
         <para>
        <emphasis role="bold">Request body:</emphasis>
-           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the picture. On top of that, the folowing additionl form-fields can be present:
+           The request should be of type <literal>multipart/form-data</literal>. There should be a single file-part included with the binary value of the picture. On top of that, the following additional form-fields can be present:
         <itemizedlist>
             <listitem>
               <para><literal>mimeType</literal>: Optional mime-type for the uploaded picture. If omitted, the default of <literal>image/jpeg</literal> is used as a mime-type for the picture.</para>
@@ -11128,7 +11674,7 @@ Only the attachment name is required to create a new attachment.
   <section>
 
     <title>Legacy REST - General Usage</title>
-    <para><emphasis role="bold">The folowing section contains documentation of the Legacy REST-api, which has been deprecated since the 5.15-SNAPSHOT release. The REST-urls will not be removed in the future but will not be maintained. Any future additions and improvements will be done to the new REST API.</emphasis></para>
+    <para><emphasis role="bold">The following section contains documentation of the Legacy REST-api, which has been deprecated since the 5.15 release. The REST-urls will not be removed in the future but will not be maintained. Any future additions and improvements will be done to the new REST API.</emphasis></para>
     <para>
       Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat.
       By default the Activiti Engine will connect to a standalone H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder.
@@ -12265,7 +12811,7 @@ Only the attachment name is required to create a new attachment.
         {
           "id": "130",
           "name": "google.com",
-          "description": "Good search sitet",
+          "description": "Good search site",
           "type": null,
           "url": "http://www.google.com"
         }</programlisting>
@@ -12790,7 +13336,7 @@ Only the attachment name is required to create a new attachment.
           <listitem>
             <para>
               <emphasis role="bold">Paginated Request:</emphasis>
-              <literal>GET /management/jobs?process-instance={processInstanceId?}&amp;with-retries-left={withRetriesLeft=false}&amp;executable={axecutable=false}&amp;only-timers={onlyTimers=false}&amp;only-messages={onlyMessage=false}&amp;duedate-lt={iso8601Date}&amp;duedate-ltoe={iso8601Date}&amp;duedate-ht={iso8601Date}&amp;duedate-htoe={iso8601Date}&amp;start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
+              <literal>GET /management/jobs?process-instance={processInstanceId?}&amp;with-retries-left={withRetriesLeft=false}&amp;executable={executable=false}&amp;only-timers={onlyTimers=false}&amp;only-messages={onlyMessage=false}&amp;duedate-lt={iso8601Date}&amp;duedate-ltoe={iso8601Date}&amp;duedate-ht={iso8601Date}&amp;duedate-htoe={iso8601Date}&amp;start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
             </para>
           </listitem>
           <listitem>

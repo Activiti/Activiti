@@ -10,7 +10,7 @@
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-root</artifactId>
 		<relativePath>../..</relativePath>
-		<version>5.15-SNAPSHOT</version>
+		<version>5.16-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -73,18 +73,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<repositories>
-		<!-- This repo declaration is here for as this will be part of the distro -->
-		<repository>
-			<id>activiti</id>
-			<name>Activiti</name>
-			<url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-		</repository>
-		<repository>
-			<id>Alfresco thirdparty</id>
-			<url>https://maven.alfresco.com/nexus/content/repositories/thirdparty/</url>
-		</repository>
-	</repositories>
 
 </project>

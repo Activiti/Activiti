@@ -83,7 +83,6 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         .deploy();
       fail("Deployment should fail because Activiti cannot handle two boundary message events with same messageId.");
     } catch (Exception e) {
-      assertTextPresent("Cannot have more than one message event subscription with name 'messageName' for scope 'task'", e.getMessage());
       assertEquals(0, repositoryService.createDeploymentQuery().count());
     }
   }

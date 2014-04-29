@@ -108,6 +108,9 @@ public interface Task {
   /** Indicated whether this task is suspended or not. */
   boolean isSuspended();
   
+  /** The tenant identifier of this task */
+  String getTenantId();
+  
   /** Returns the local task variables if requested in the task query */
   Map<String, Object> getTaskLocalVariables();
   

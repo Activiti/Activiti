@@ -35,6 +35,9 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   protected String nameLike;
   protected String category;
   protected String categoryNotEquals;
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
   protected String processDefinitionKey;
   protected String processDefinitionKeyLike;
 
@@ -88,6 +91,27 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
     this.categoryNotEquals = deploymentCategoryNotEquals;
     return this;
   }
+  
+  public DeploymentQueryImpl deploymentTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("deploymentTenantId is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public DeploymentQueryImpl deploymentTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("deploymentTenantIdLike is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public DeploymentQueryImpl deploymentWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
+  }
 
   public DeploymentQueryImpl processDefinitionKey(String key) {
   	if (key == null) {
@@ -118,6 +142,10 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   
   public DeploymentQuery orderByDeploymentName() {
     return orderBy(DeploymentQueryProperty.DEPLOYMENT_NAME);
+  }
+  
+  public DeploymentQuery orderByTenantId() {
+  	return orderBy(DeploymentQueryProperty.DEPLOYMENT_TENANT_ID);
   }
   
   //results ////////////////////////////////////////////////////////
@@ -159,4 +187,17 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   public String getCategoryNotEquals() {
     return categoryNotEquals;
   }
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+
+	public boolean isWithoutTenantId() {
+		return withoutTenantId;
+	}
+  
 }
