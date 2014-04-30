@@ -115,7 +115,7 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
         
         RestVariable[] restVariables = getConverterService().toObject(representation, RestVariable[].class, this);
         if(restVariables == null || restVariables.length == 0) {
-          throw new ActivitiIllegalArgumentException("Request didn't cantain a list of variables to create.");
+          throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
         }
         
         RestVariableScope sharedScope = null;

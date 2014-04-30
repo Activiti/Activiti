@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
@@ -104,6 +105,12 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertEquals("xsd:long", dataObj.getItemSubjectRef().getStructureRef());
     assertTrue(dataObj.getValue() instanceof Long);
     assertEquals(new Long(-123456), dataObj.getValue());
+    assertEquals(1, dataObj.getExtensionElements().size());
+    List<ExtensionElement> testValues = dataObj.getExtensionElements().get("testvalue");
+    assertNotNull(testValues);
+    assertEquals(1, testValues.size());
+    assertEquals("testvalue", testValues.get(0).getName());
+    assertEquals("test", testValues.get(0).getElementText());
    
     flowElement = model.getMainProcess().getFlowElement("userTask1");
     assertNotNull(flowElement);

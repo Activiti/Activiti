@@ -86,7 +86,11 @@ public class CommandContext {
           if (log.isTraceEnabled()) {
             log.trace("AtomicOperation: {} on {}", currentOperation, this);
           }
-          currentOperation.execute(execution);
+          if (execution.getReplacedBy() == null) {
+          	currentOperation.execute(execution);
+          } else {
+          	currentOperation.execute(execution.getReplacedBy());
+          }
         }
       } finally {
         Context.removeExecutionContext();

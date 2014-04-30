@@ -248,7 +248,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (log.isDebugEnabled()) {
       log.debug("Child execution {} created with parent ", createdExecution, this);
     }
-    
+
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+        ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, createdExecution));
+    }
+
     return createdExecution;
   }
   
@@ -262,7 +267,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // Initialize the new execution
     subProcessInstance.setProcessDefinition((ProcessDefinitionImpl) processDefinition);
     subProcessInstance.setProcessInstance(subProcessInstance);
-    
+
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+        ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, subProcessInstance));
+    }
+
     Context.getCommandContext().getHistoryManager()
       .recordSubProcessInstanceStart(this, subProcessInstance);
 
@@ -278,11 +288,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     	newExecution.setTenantId(getTenantId());
     }
 
-    if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, newExecution));
-    }
-    
     Context
       .getCommandContext()
       .getDbSqlSession()
@@ -966,7 +971,18 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
 
     // update the related tasks
-    for (TaskEntity task: getTasks()) {
+    
+    List<TaskEntity> allTasks = new ArrayList<TaskEntity>();
+    allTasks.addAll(getTasks());
+    
+    List<TaskEntity> cachedTasks = dbSqlSession.findInCache(TaskEntity.class);
+    for (TaskEntity cachedTask : cachedTasks) {
+    	if (cachedTask.getExecutionId().equals(this.getId())) {
+    		allTasks.add(cachedTask);
+    	}
+    }
+    
+    for (TaskEntity task: allTasks) {
       task.setExecutionId(replacedBy.getId());
       task.setExecution(this.replacedBy);         
       
@@ -1377,12 +1393,18 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   public void setTransition(TransitionImpl transition) {
     this.transition = transition;
+    if (replacedBy != null) {
+    	replacedBy.setTransition(transition);
+    }
   }
   public TransitionImpl getTransitionBeingTaken() {
     return transitionBeingTaken;
   }
   public void setTransitionBeingTaken(TransitionImpl transitionBeingTaken) {
     this.transitionBeingTaken = transitionBeingTaken;
+    if (replacedBy != null) {
+    	replacedBy.setTransitionBeingTaken(transitionBeingTaken);
+    }
   }
   public Integer getExecutionListenerIndex() {
     return executionListenerIndex;

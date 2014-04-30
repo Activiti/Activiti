@@ -12,7 +12,9 @@
  */
 package org.activiti.bpmn.converter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -30,18 +32,16 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
   
+  protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();
+  
   public CallActivityXMLConverter() {
   	InParameterParser inParameterParser = new InParameterParser();
-    childElementParsers.put(inParameterParser.getElementName(), inParameterParser);
+  	childParserMap.put(inParameterParser.getElementName(), inParameterParser);
     OutParameterParser outParameterParser = new OutParameterParser();
-    childElementParsers.put(outParameterParser.getElementName(), outParameterParser);
+    childParserMap.put(outParameterParser.getElementName(), outParameterParser);
   }
 
-  public static String getXMLType() {
-    return ELEMENT_CALL_ACTIVITY;
-  }
-  
-  public static Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return CallActivity.class;
   }
   
@@ -51,16 +51,16 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     CallActivity callActivity = new CallActivity();
     BpmnXMLUtil.addXMLLocation(callActivity, xtr);
     callActivity.setCalledElement(xtr.getAttributeValue(null, ATTRIBUTE_CALL_ACTIVITY_CALLEDELEMENT));
-    parseChildElements(getXMLElementName(), callActivity, xtr);
+    parseChildElements(getXMLElementName(), callActivity, childParserMap, model, xtr);
     return callActivity;
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     CallActivity callActivity = (CallActivity) element;
     if (StringUtils.isNotEmpty(callActivity.getCalledElement())) {
       xtw.writeAttribute(ATTRIBUTE_CALL_ACTIVITY_CALLEDELEMENT, callActivity.getCalledElement());
@@ -68,18 +68,19 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     CallActivity callActivity = (CallActivity) element;
-    writeIOParameters(ELEMENT_CALL_ACTIVITY_IN_PARAMETERS, callActivity.getInParameters(), xtw);
-    writeIOParameters(ELEMENT_CALL_ACTIVITY_OUT_PARAMETERS, callActivity.getOutParameters(), xtw);
+    didWriteExtensionStartElement = writeIOParameters(ELEMENT_CALL_ACTIVITY_IN_PARAMETERS, callActivity.getInParameters(), didWriteExtensionStartElement, xtw);
+    didWriteExtensionStartElement = writeIOParameters(ELEMENT_CALL_ACTIVITY_OUT_PARAMETERS, callActivity.getOutParameters(), didWriteExtensionStartElement, xtw);
+    return didWriteExtensionStartElement;
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
   
-  private void writeIOParameters(String elementName, List<IOParameter> parameterList, XMLStreamWriter xtw) throws Exception {
-    if (parameterList.size() == 0) return;
+  private boolean writeIOParameters(String elementName, List<IOParameter> parameterList, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+    if (parameterList.size() == 0) return didWriteExtensionStartElement;
     
     for (IOParameter ioParameter : parameterList) {
       if (didWriteExtensionStartElement == false) { 
@@ -100,6 +101,8 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
       
       xtw.writeEndElement();
     }
+    
+    return didWriteExtensionStartElement;
   }
   
   public class InParameterParser extends BaseChildElementParser {

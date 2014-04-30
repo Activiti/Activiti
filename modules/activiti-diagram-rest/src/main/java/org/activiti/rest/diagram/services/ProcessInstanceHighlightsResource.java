@@ -55,7 +55,6 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 			responseJSON.put("processDefinitionId", processInstance.getProcessDefinitionId());
 			
 			List<String> highLightedActivities = runtimeService.getActiveActivityIds(processInstanceId);
-			System.out.println(highLightedActivities);
 			List<String> highLightedFlows = getHighLightedFlows(processDefinition, processInstanceId);
 			
 			for (String activityId : highLightedActivities) {

@@ -12,9 +12,10 @@
  */
 package org.activiti.bpmn.converter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -34,7 +35,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   
-  List<String> formTypes = new ArrayList<String>();
+  protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();
 
   /** default attributes taken from bpmn spec and from activiti extension */
   protected static final List<ExtensionAttribute> defaultUserTaskAttributes = Arrays.asList(
@@ -48,16 +49,12 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
 
   public UserTaskXMLConverter() {
     HumanPerformerParser humanPerformerParser = new HumanPerformerParser();
-    childElementParsers.put(humanPerformerParser.getElementName(), humanPerformerParser);
+    childParserMap.put(humanPerformerParser.getElementName(), humanPerformerParser);
     PotentialOwnerParser potentialOwnerParser = new PotentialOwnerParser();
-    childElementParsers.put(potentialOwnerParser.getElementName(), potentialOwnerParser);
+    childParserMap.put(potentialOwnerParser.getElementName(), potentialOwnerParser);
   }
   
-  public static String getXMLType() {
-    return ELEMENT_TASK_USER;
-  }
-  
-  public static Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return UserTask.class;
   }
   
@@ -68,11 +65,11 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   
   @Override
   @SuppressWarnings("unchecked")
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     String formKey = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY);
     UserTask userTask = null;
     if (StringUtils.isNotEmpty(formKey)) {
-      if (formTypes.contains(formKey)) {
+      if (model.getUserTaskFormTypes() != null && model.getUserTaskFormTypes().contains(formKey)) {
         userTask = new AlfrescoUserTask();
       }
     }
@@ -100,14 +97,14 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     BpmnXMLUtil.addCustomAttributes(xtr, userTask, defaultElementAttributes, 
         defaultActivityAttributes, defaultUserTaskAttributes);
 
-    parseChildElements(getXMLElementName(), userTask, xtr);
+    parseChildElements(getXMLElementName(), userTask, childParserMap, model, xtr);
     
     return userTask;
   }
   
   @Override
   @SuppressWarnings("unchecked")
-  protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     UserTask userTask = (UserTask) element;
     writeQualifiedAttribute(ATTRIBUTE_TASK_USER_ASSIGNEE, userTask.getAssignee(), xtw);
     writeQualifiedAttribute(ATTRIBUTE_TASK_USER_OWNER, userTask.getOwner(), xtw);
@@ -125,19 +122,14 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     UserTask userTask = (UserTask) element;
-    writeFormProperties(userTask, xtw);
+    didWriteExtensionStartElement = writeFormProperties(userTask, didWriteExtensionStartElement, xtw);
+    return didWriteExtensionStartElement;
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
-  }
-  
-  public void addFormType(String formType) {
-    if (StringUtils.isNotEmpty(formType)) {
-      formTypes.add(formType);
-    }
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
   
   public class HumanPerformerParser extends BaseChildElementParser {

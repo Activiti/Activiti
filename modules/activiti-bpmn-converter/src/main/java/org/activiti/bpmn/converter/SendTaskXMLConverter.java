@@ -28,11 +28,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
   
-  public static String getXMLType() {
-    return ELEMENT_TASK_SEND;
-  }
-  
-  public static Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return SendTask.class;
   }
   
@@ -42,7 +38,7 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
 		SendTask sendTask = new SendTask();
 		BpmnXMLUtil.addXMLLocation(sendTask, xtr);
 		sendTask.setType(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TYPE));
@@ -52,13 +48,13 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
 		  sendTask.setOperationRef(parseOperationRef(xtr.getAttributeValue(null, ATTRIBUTE_TASK_OPERATION_REF), model));
     }
 		
-		parseChildElements(getXMLElementName(), sendTask, xtr);
+		parseChildElements(getXMLElementName(), sendTask, model, xtr);
 		
 		return sendTask;
   }
   
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     
     SendTask sendTask = (SendTask) element;
     
@@ -68,13 +64,14 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     SendTask sendTask = (SendTask) element;
     didWriteExtensionStartElement = FieldExtensionExport.writeFieldExtensions(sendTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
+    return didWriteExtensionStartElement;
   }
   
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
   
   protected String parseOperationRef(String operationRef, BpmnModel model) {

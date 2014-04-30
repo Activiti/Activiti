@@ -30,16 +30,16 @@ import org.apache.commons.lang3.StringUtils;
 public class ActivitiListenerExport implements BpmnXMLConstants {
 
   public static boolean writeListeners(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
-    if(element instanceof HasExecutionListeners) {
+    if (element instanceof HasExecutionListeners) {
       didWriteExtensionStartElement = writeListeners(ELEMENT_EXECUTION_LISTENER, ((HasExecutionListeners) element).getExecutionListeners(), didWriteExtensionStartElement, xtw);
     }
     // In case of a usertaks, also add task-listeners
-    if(element instanceof UserTask) {
+    if (element instanceof UserTask) {
       didWriteExtensionStartElement = writeListeners(ELEMENT_TASK_LISTENER, ((UserTask) element).getTaskListeners(), didWriteExtensionStartElement, xtw);
     }
     
     // In case of a process-element, write the event-listeners
-    if(element instanceof Process) {
+    if (element instanceof Process) {
     	didWriteExtensionStartElement = writeEventListeners(((Process) element).getEventListeners(), didWriteExtensionStartElement, xtw);
     }
     

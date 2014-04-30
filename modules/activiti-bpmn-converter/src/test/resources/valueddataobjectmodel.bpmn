@@ -29,6 +29,7 @@
     <dataObject id="dObj6" name="LongTest" itemSubjectRef="xsd:long">
       <extensionElements>
         <activiti:value>-123456</activiti:value>
+        <activiti:testvalue>test</activiti:testvalue>
       </extensionElements>
 	</dataObject>
     <startEvent id="start1"></startEvent>
