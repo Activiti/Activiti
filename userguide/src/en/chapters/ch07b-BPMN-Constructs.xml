@@ -4058,7 +4058,7 @@ public class StartProcessInstanceTestDelegateWithInjection {
 		      during process execution.
 		      Following properties can be set:
 		      <table>
-	         <title>Mail server configuration</title>
+	         <title>Mail task configuration</title>
 	         <tgroup cols='3'>
 	           <thead>
 	             <row>
@@ -4122,6 +4122,16 @@ public class StartProcessInstanceTestDelegateWithInjection {
                  <entry>textVar</entry>
                  <entry>no</entry>
                  <entry>The name of a process variable that holds the plain text content of the e-mail. The key difference between this and html is that this content will have expressions replaced before being sent by the mail task.</entry>
+               </row>
+               <row>
+                  <entry>ignoreException</entry>
+                  <entry>no</entry>
+                  <entry>Whether an failure when handling the e-mail throws an ActivitiException. By default this is set to false.</entry>
+               </row>
+               <row>
+                  <entry>exceptionVariableName</entry>
+                  <entry>no</entry>
+                  <entry>When email handling does not throw an exception since <emphasis>ignoreException = true</emphasis> a variable with the given name is used to hold a failure message</entry>
                </row>
              </tbody>
 	         </tgroup>
