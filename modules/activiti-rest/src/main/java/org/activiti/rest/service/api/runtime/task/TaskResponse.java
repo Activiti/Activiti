@@ -19,7 +19,10 @@ import java.util.List;
 
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
+import org.activiti.rest.common.util.DateToStringSerializer;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Frederik Heremans
@@ -33,7 +36,9 @@ public class TaskResponse {
   protected String delegationState;
   protected String name;
   protected String description;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   protected Date createTime;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   protected Date dueDate;
   protected int priority;
   protected boolean suspended;

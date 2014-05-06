@@ -19,11 +19,12 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -48,7 +49,7 @@ public class SignalsResourceTest extends BaseRestTestCase {
 			    requestNode.put("signalName", "The Signal");
 			    
 			    client.post(requestNode);
-			    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+			    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
 			    client.release();
 			    
 			    // Check if process is started as a result of the signal without tenant ID set
@@ -58,7 +59,7 @@ public class SignalsResourceTest extends BaseRestTestCase {
 			    // Signal with tenant
 			    requestNode.put("tenantId", "my tenant");
 			    client.post(requestNode);
-			    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+			    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
 			    client.release();
 			    
 			    // Check if process is started as a result of the signal, in the right tenant
@@ -72,7 +73,7 @@ public class SignalsResourceTest extends BaseRestTestCase {
 			    var.put("value", "test");
 			    
 			    client.post(requestNode);
-			    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+			    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
 			    client.release();
 			    
 			    // Check if process is started as a result of the signal, in the right tenant and with var set
@@ -84,7 +85,7 @@ public class SignalsResourceTest extends BaseRestTestCase {
 			    // Signal without tenant AND variables
 			    requestNode.remove("tenantId");
 			    client.post(requestNode);
-			    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+			    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
 			    client.release();
 			    
 			    // Check if process is started as a result of the signal, witout tenant and with var set

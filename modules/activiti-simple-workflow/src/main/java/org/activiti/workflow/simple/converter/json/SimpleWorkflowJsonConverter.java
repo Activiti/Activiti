@@ -33,7 +33,8 @@ import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ReferencePropertyDefinition;
 import org.activiti.workflow.simple.definition.form.TextPropertyDefinition;
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
-import org.codehaus.jackson.map.ObjectMapper;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A converter capable of converting {@link WorkflowDefinition}s from and to a
@@ -126,7 +127,7 @@ public class SimpleWorkflowJsonConverter {
 			synchronized (this) {
 				if (objectMapper == null) {
 					objectMapper = new ObjectMapper();
-
+				
 					// Register all property-definition model classes as sub-types
 					objectMapper.registerSubtypes(ListPropertyDefinition.class, TextPropertyDefinition.class,
 					    ReferencePropertyDefinition.class, DatePropertyDefinition.class, NumberPropertyDefinition.class, BooleanPropertyDefinition.class);

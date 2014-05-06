@@ -28,13 +28,14 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.HttpMultipartRepresentation;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -410,7 +411,6 @@ public class TaskVariablesCollectionResourceTest extends BaseRestTestCase {
         fail("Exception expected");
       } catch (ResourceException expected) {
         assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("Request didn't contain a list of variables to create.", expected.getStatus().getDescription());
       }
     } finally {
       // Clean adhoc-tasks even if test fails

@@ -20,7 +20,7 @@
     <spring.framework.version>3.2.7.RELEASE</spring.framework.version>
     <mule.version>3.3.0</mule.version>
     <cxf.version>2.6.1</cxf.version>
-    <restlet.version>2.1.4</restlet.version>
+    <restlet.version>2.2.0</restlet.version>
     <batik.version>1.7</batik.version>
 
     <!-- OSGi bundles properties -->
@@ -440,14 +440,14 @@
       </dependency>
       <!-- Activiti Modeler -->
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-core-asl</artifactId>
-        <version>1.9.9</version>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>2.2.3</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-mapper-asl</artifactId>
-        <version>1.9.9</version>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.2.3</version>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>

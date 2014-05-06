@@ -3,12 +3,13 @@ package org.activiti.rest.service.api.management;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * Test for all REST-operations related to the Table columns.
@@ -34,7 +35,7 @@ public class TableColumnsResourceTest extends BaseRestTestCase {
     // Check table
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals(tableName, responseNode.get("tableName").getTextValue());
+    assertEquals(tableName, responseNode.get("tableName").textValue());
     
     ArrayNode names = (ArrayNode) responseNode.get("columnNames");
     ArrayNode types = (ArrayNode) responseNode.get("columnTypes");
@@ -45,8 +46,8 @@ public class TableColumnsResourceTest extends BaseRestTestCase {
     assertEquals(metaData.getColumnTypes().size(), types.size());
     
     for(int i=0; i<names.size(); i++) {
-      assertEquals(names.get(i).getTextValue(), metaData.getColumnNames().get(i));
-      assertEquals(types.get(i).getTextValue(), metaData.getColumnTypes().get(i));
+      assertEquals(names.get(i).textValue(), metaData.getColumnNames().get(i));
+      assertEquals(types.get(i).textValue(), metaData.getColumnTypes().get(i));
     }
   }
   

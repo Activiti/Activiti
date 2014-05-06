@@ -21,10 +21,11 @@ import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.form.EnumFormType;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.SecuredResource;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.resource.Get;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers

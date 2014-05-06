@@ -7,14 +7,15 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Test for all REST-operations related to single a Process Definition resource.
@@ -39,19 +40,19 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     
     JsonNode responseNode = objectMapper.readTree(response.getStream());
-    assertEquals(processDefinition.getId(), responseNode.get("id").getTextValue());
-    assertEquals(processDefinition.getKey(), responseNode.get("key").getTextValue());
-    assertEquals(processDefinition.getCategory(), responseNode.get("category").getTextValue());
-    assertEquals(processDefinition.getVersion(), responseNode.get("version").getIntValue());
-    assertEquals(processDefinition.getDescription(), responseNode.get("description").getTextValue());
-    assertEquals(processDefinition.getName(), responseNode.get("name").getTextValue());
-    assertFalse(responseNode.get("graphicalNotationDefined").getBooleanValue());
+    assertEquals(processDefinition.getId(), responseNode.get("id").textValue());
+    assertEquals(processDefinition.getKey(), responseNode.get("key").textValue());
+    assertEquals(processDefinition.getCategory(), responseNode.get("category").textValue());
+    assertEquals(processDefinition.getVersion(), responseNode.get("version").intValue());
+    assertEquals(processDefinition.getDescription(), responseNode.get("description").textValue());
+    assertEquals(processDefinition.getName(), responseNode.get("name").textValue());
+    assertFalse(responseNode.get("graphicalNotationDefined").booleanValue());
     
     // Check URL's
-    assertEquals(client.getRequest().getResourceRef().toString(), URLDecoder.decode(responseNode.get("url").getTextValue(),"UTF-8"));
-    assertEquals(processDefinition.getDeploymentId(), responseNode.get("deploymentId").getTextValue());
-    assertTrue(responseNode.get("deploymentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
-    assertTrue(URLDecoder.decode(responseNode.get("resource").getTextValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
+    assertEquals(client.getRequest().getResourceRef().toString(), URLDecoder.decode(responseNode.get("url").textValue(),"UTF-8"));
+    assertEquals(processDefinition.getDeploymentId(), responseNode.get("deploymentId").textValue());
+    assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
+    assertTrue(URLDecoder.decode(responseNode.get("resource").textValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
             RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getResourceName())));
     assertTrue(responseNode.get("diagramResource").isNull());
   }
@@ -72,21 +73,21 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
      
      JsonNode responseNode = objectMapper.readTree(response.getStream());
-     assertEquals(processDefinition.getId(), responseNode.get("id").getTextValue());
-     assertEquals(processDefinition.getKey(), responseNode.get("key").getTextValue());
-     assertEquals(processDefinition.getCategory(), responseNode.get("category").getTextValue());
-     assertEquals(processDefinition.getVersion(), responseNode.get("version").getIntValue());
-     assertEquals(processDefinition.getDescription(), responseNode.get("description").getTextValue());
-     assertEquals(processDefinition.getName(), responseNode.get("name").getTextValue());
-     assertTrue(responseNode.get("graphicalNotationDefined").getBooleanValue());
+     assertEquals(processDefinition.getId(), responseNode.get("id").textValue());
+     assertEquals(processDefinition.getKey(), responseNode.get("key").textValue());
+     assertEquals(processDefinition.getCategory(), responseNode.get("category").textValue());
+     assertEquals(processDefinition.getVersion(), responseNode.get("version").intValue());
+     assertEquals(processDefinition.getDescription(), responseNode.get("description").textValue());
+     assertEquals(processDefinition.getName(), responseNode.get("name").textValue());
+     assertTrue(responseNode.get("graphicalNotationDefined").booleanValue());
      
      // Check URL's
-     assertEquals(client.getRequest().getResourceRef().toString(), URLDecoder.decode(responseNode.get("url").getTextValue(),"UTF-8"));
-     assertEquals(processDefinition.getDeploymentId(), responseNode.get("deploymentId").getTextValue());
-     assertTrue(responseNode.get("deploymentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
-     assertTrue(URLDecoder.decode(responseNode.get("resource").getTextValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
+     assertEquals(client.getRequest().getResourceRef().toString(), URLDecoder.decode(responseNode.get("url").textValue(),"UTF-8"));
+     assertEquals(processDefinition.getDeploymentId(), responseNode.get("deploymentId").textValue());
+     assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
+     assertTrue(URLDecoder.decode(responseNode.get("resource").textValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
              RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getResourceName())));
-     assertTrue(URLDecoder.decode(responseNode.get("diagramResource").getTextValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
+     assertTrue(URLDecoder.decode(responseNode.get("diagramResource").textValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
              RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName())));
    }
   
@@ -123,7 +124,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
       // Check "OK" status
       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
       JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertTrue(responseNode.get("suspended").getBooleanValue());
+      assertTrue(responseNode.get("suspended").booleanValue());
       
       // Check if process-definitoin is suspended
       processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
@@ -157,7 +158,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      // Check "OK" status
      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
      JsonNode responseNode = objectMapper.readTree(response.getStream());
-     assertTrue(responseNode.get("suspended").getBooleanValue());
+     assertTrue(responseNode.get("suspended").booleanValue());
      
      // Check if process-definition is not yet suspended
      processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
@@ -219,7 +220,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      // Check "OK" status
      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
      JsonNode responseNode = objectMapper.readTree(response.getStream());
-     assertFalse(responseNode.get("suspended").getBooleanValue());
+     assertFalse(responseNode.get("suspended").booleanValue());
      
      // Check if process-definitoin is suspended
      processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
@@ -256,7 +257,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
     // Check "OK" status
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     JsonNode responseNode = objectMapper.readTree(response.getStream());
-    assertFalse(responseNode.get("suspended").getBooleanValue());
+    assertFalse(responseNode.get("suspended").booleanValue());
     
     // Check if process-definition is not yet active
     processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
@@ -346,7 +347,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      assertNotNull(processes);
      assertTrue(processes.isArray());
      assertEquals(1, processes.size());
-     assertEquals("oneTaskProcess", processes.get(0).get("id").getTextValue());
+     assertEquals("oneTaskProcess", processes.get(0).get("id").textValue());
    }
    
    /**
@@ -396,7 +397,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
         assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
         
         JsonNode responseNode = objectMapper.readTree(response.getStream());
-        assertEquals("updatedcategory", responseNode.get("category").getTextValue());
+        assertEquals("updatedcategory", responseNode.get("category").textValue());
         
         // Check actual entry in DB
         assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionCategory("updatedcategory").count());

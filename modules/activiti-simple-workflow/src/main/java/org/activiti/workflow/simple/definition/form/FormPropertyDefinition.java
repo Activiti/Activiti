@@ -15,11 +15,11 @@ package org.activiti.workflow.simple.definition.form;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.annotate.JsonTypeInfo.As;
-import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 
 /**
  * Defines one property in a {@link FormDefinition}.
@@ -103,7 +103,7 @@ public void setParameters(Map<String, Object> parameters) {
   public abstract FormPropertyDefinition clone();
   
   /**
-   * Sets the properties of this {@link ProcessDefinition} instance based in the
+   * Sets the properties of this {@link FormPropertyDefinition} instance based in the
    * properties present in the given definition. 
    */
   public abstract void setValues(FormPropertyDefinition otherDefinition);

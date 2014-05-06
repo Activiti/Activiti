@@ -238,9 +238,9 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
    * it is needed to call the end listeners yourself.
    */
   protected void callActivityEndListeners(ActivityExecution execution) {
-	List<ExecutionListener> listeners = activity.getExecutionListeners(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END);
-	CallActivityEndListenersOperation atomicOperation = new CallActivityEndListenersOperation(listeners);
-	Context.getCommandContext().performOperation(atomicOperation, (InterpretableExecution)execution);
+    List<ExecutionListener> listeners = activity.getExecutionListeners(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END);
+    CallActivityEndListenersOperation atomicOperation = new CallActivityEndListenersOperation(listeners);
+    Context.getCommandContext().performOperation(atomicOperation, (InterpretableExecution)execution);
   }
   
   protected void logLoopDetails(ActivityExecution execution, String custom, int loopCounter, 
@@ -316,14 +316,14 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 	@Override
 	public void execute(InterpretableExecution execution) {
 		for (ExecutionListener executionListener : listeners) {
-	      try {
-	        Context.getProcessEngineConfiguration()
-	          .getDelegateInterceptor()
-	          .handleInvocation(new ExecutionListenerInvocation(executionListener, execution));
-	      } catch (Exception e) {
-	        throw new ActivitiException("Couldn't execute end listener", e);
-	      }
-	    }
+      try {
+        Context.getProcessEngineConfiguration()
+          .getDelegateInterceptor()
+          .handleInvocation(new ExecutionListenerInvocation(executionListener, execution));
+      } catch (Exception e) {
+        throw new ActivitiException("Couldn't execute end listener", e);
+      }
+    }
 	}
 
 	@Override

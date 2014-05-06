@@ -77,10 +77,8 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, S
     if (executionId != null) {
       execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
     }
-
     Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
     JobHandler jobHandler = jobHandlers.get(jobHandlerType);
-
     jobHandler.execute(this, jobHandlerConfiguration, execution, commandContext);
   }
   

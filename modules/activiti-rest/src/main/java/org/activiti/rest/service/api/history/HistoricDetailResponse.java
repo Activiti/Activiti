@@ -15,7 +15,10 @@ package org.activiti.rest.service.api.history;
 
 import java.util.Date;
 
+import org.activiti.rest.common.util.DateToStringSerializer;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Tijs Rademakers
@@ -32,6 +35,7 @@ public class HistoricDetailResponse {
   protected String activityInstanceId;
   protected String taskId;
   protected String taskUrl;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   protected Date time;
   protected String detailType;
   

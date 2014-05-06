@@ -46,18 +46,18 @@ public class ExecuteJobsRunnable implements Runnable
 
         Context.setJobExecutorContext(jobExecutorContext);
         try {
-            while (!currentProcessorJobQueue.isEmpty()) {
+          while (!currentProcessorJobQueue.isEmpty()) {
 
-                try {
-                    commandExecutor.execute(new ExecuteJobsCmd(currentProcessorJobQueue.remove(0)));
-                }
-                catch (Throwable e) {
-                    log.error("exception during job execution: {}", e.getMessage(), e);
-                }
+            try {
+              commandExecutor.execute(new ExecuteJobsCmd(currentProcessorJobQueue.remove(0)));
             }
+            catch (Throwable e) {
+              log.error("exception during job execution: {}", e.getMessage(), e);
+            }
+          }
         }
         finally {
-            Context.removeJobExecutorContext();
+          Context.removeJobExecutorContext();
         }
     }
 }

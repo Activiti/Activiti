@@ -23,13 +23,14 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -229,7 +230,7 @@ public class FormDataResourceTest extends BaseRestTestCase {
     client.release();
     client.post(requestNode);
     
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
     task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     assertNull(task);
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
@@ -263,7 +264,7 @@ public class FormDataResourceTest extends BaseRestTestCase {
     propNode.put("value", "up");
     client.release();
     client.post(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
     task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     assertNull(task);
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();

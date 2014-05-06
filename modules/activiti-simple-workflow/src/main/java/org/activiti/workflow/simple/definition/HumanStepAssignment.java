@@ -3,10 +3,11 @@ package org.activiti.workflow.simple.definition;
 import java.util.List;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonValue;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Reusable assignment details for a task to be performed by a user, 
@@ -108,7 +109,7 @@ public class HumanStepAssignment {
 		}
   }
   
-  @JsonSerialize(include=Inclusion.NON_NULL)
+  @JsonInclude(Include.NON_NULL)
   public String getAssignee() {
 	  return assignee;
   }
@@ -120,7 +121,7 @@ public class HumanStepAssignment {
 	  }
   }
   
-  @JsonSerialize(include=Inclusion.NON_NULL)
+  @JsonInclude(Include.NON_NULL)
   public List<String> getCandidateGroups() {
 	  return candidateGroups;
   }
@@ -136,7 +137,7 @@ public class HumanStepAssignment {
 	  }
   }
   
-  @JsonSerialize(include=Inclusion.NON_NULL)
+  @JsonInclude(Include.NON_NULL)
   public List<String> getCandidateUsers() {
 	  return candidateUsers;
   }

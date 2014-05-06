@@ -4,12 +4,13 @@ import java.util.Map;
 
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Test for all REST-operations related to the Table collection and a single
@@ -37,11 +38,11 @@ public class TableResourceTest extends BaseRestTestCase {
 
     for (int i = 0; i < responseNode.size(); i++) {
       ObjectNode table = (ObjectNode) responseNode.get(i);
-      assertNotNull(table.get("name").getTextValue());
-      assertNotNull(table.get("count").getLongValue());
-      assertTrue(table.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE, table.get("name").getTextValue())));
+      assertNotNull(table.get("name").textValue());
+      assertNotNull(table.get("count").longValue());
+      assertTrue(table.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE, table.get("name").textValue())));
 
-      assertEquals(((Long) tableCounts.get(table.get("name").getTextValue())).longValue(), table.get("count").getLongValue());
+      assertEquals(((Long) tableCounts.get(table.get("name").textValue())).longValue(), table.get("count").longValue());
     }
   }
 
@@ -60,9 +61,9 @@ public class TableResourceTest extends BaseRestTestCase {
     // Check table
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals(tableNameToGet, responseNode.get("name").getTextValue());
-    assertEquals(((Long) tableCounts.get(responseNode.get("name").getTextValue())).longValue(), responseNode.get("count").getLongValue());
-    assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE, tableNameToGet)));
+    assertEquals(tableNameToGet, responseNode.get("name").textValue());
+    assertEquals(((Long) tableCounts.get(responseNode.get("name").textValue())).longValue(), responseNode.get("count").longValue());
+    assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE, tableNameToGet)));
   }
   
   public void testGetUnexistingTable() throws Exception {

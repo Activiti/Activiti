@@ -16,10 +16,11 @@ package org.activiti.rest.service.api.legacy.deployment;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.RequestUtil;
 import org.activiti.rest.common.api.SecuredResource;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.resource.Delete;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers

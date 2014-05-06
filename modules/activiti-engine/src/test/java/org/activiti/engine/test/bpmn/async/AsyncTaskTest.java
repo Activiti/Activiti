@@ -271,5 +271,17 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     
   }
   
+  @Deployment
+  public void testMultiInstanceAsyncTask() {  
+    // start process 
+    runtimeService.startProcessInstanceByKey("asyncTask");
+    // now there should be one job in the database:
+    assertEquals(1, managementService.createJobQuery().count());
+       
+    waitForJobExecutorToProcessAllJobs(5000L, 500L);
+    
+    // the job is done
+    assertEquals(0, managementService.createJobQuery().count()); 
+  }
 
 }

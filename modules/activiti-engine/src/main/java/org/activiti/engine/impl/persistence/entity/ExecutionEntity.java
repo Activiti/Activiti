@@ -555,7 +555,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   public void performOperation(AtomicOperation executionOperation) {
-    if(executionOperation.isAsync(this)) {
+    if (executionOperation.isAsync(this)) {
       scheduleAtomicOperationAsync(executionOperation);
     } else {
       performOperationSync(executionOperation);

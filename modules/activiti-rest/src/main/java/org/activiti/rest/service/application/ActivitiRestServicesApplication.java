@@ -19,7 +19,6 @@ import org.activiti.rest.common.api.DefaultResource;
 import org.activiti.rest.common.application.ActivitiRestApplication;
 import org.activiti.rest.common.filter.JsonpFilter;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.restlet.Restlet;
 import org.restlet.engine.Engine;
 import org.restlet.engine.converter.ConverterHelper;
@@ -56,7 +55,7 @@ public class ActivitiRestServicesApplication extends ActivitiRestApplication {
     for(ConverterHelper helper : registeredConverters) {
       if(helper instanceof JacksonConverter) {
         JacksonConverter jacksonConverter = (JacksonConverter) helper;
-        jacksonConverter.getObjectMapper().configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
+        //jacksonConverter.getObjectMapper().configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
       }
     }
     return authenticator;

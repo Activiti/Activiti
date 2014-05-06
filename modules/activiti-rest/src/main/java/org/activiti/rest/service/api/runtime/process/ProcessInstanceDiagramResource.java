@@ -13,6 +13,8 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
+import java.io.InputStream;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -24,8 +26,6 @@ import org.activiti.rest.common.api.ActivitiUtil;
 import org.restlet.data.MediaType;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
-
-import java.io.InputStream;
 
 /**
  * @author Frederik Heremans

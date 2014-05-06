@@ -27,11 +27,12 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 /**
@@ -118,7 +119,7 @@ public class HistoricProcessInstanceCollectionResourceTest extends BaseRestTestC
     List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
     Iterator<JsonNode> it = dataNode.iterator();
     while(it.hasNext()) {
-      String id = it.next().get("id").getTextValue();
+      String id = it.next().get("id").textValue();
       toBeFound.remove(id);
     }
     assertTrue("Not all process instances have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());

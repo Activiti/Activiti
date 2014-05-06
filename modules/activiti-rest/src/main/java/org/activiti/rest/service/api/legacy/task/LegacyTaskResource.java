@@ -27,13 +27,14 @@ import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.legacy.AttachmentResponse;
 import org.activiti.rest.service.api.legacy.IdentityLinkResponse;
 import org.activiti.rest.service.api.legacy.SubTaskResponse;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Tijs Rademakers
@@ -107,32 +108,32 @@ public class LegacyTaskResource extends SecuredResource {
       JsonNode taskJSON = new ObjectMapper().readTree(taskParams);
       
       String description = null;
-      if(taskJSON.path("description") != null && taskJSON.path("description").getTextValue() != null) {
-        description = taskJSON.path("description").getTextValue();
+      if(taskJSON.path("description") != null && taskJSON.path("description").textValue() != null) {
+        description = taskJSON.path("description").textValue();
         task.setDescription(description);
       }
       
       String assignee = null;
-      if(taskJSON.path("assignee") != null && taskJSON.path("assignee").getTextValue() != null) {
-        assignee = taskJSON.path("assignee").getTextValue();
+      if(taskJSON.path("assignee") != null && taskJSON.path("assignee").textValue() != null) {
+        assignee = taskJSON.path("assignee").textValue();
         task.setAssignee(assignee);
       }
       
       String owner = null;
-      if(taskJSON.path("owner") != null && taskJSON.path("owner").getTextValue() != null) {
-        owner = taskJSON.path("owner").getTextValue();
+      if(taskJSON.path("owner") != null && taskJSON.path("owner").textValue() != null) {
+        owner = taskJSON.path("owner").textValue();
         task.setOwner(owner);
       }
       
       String priority = null;
-      if(taskJSON.path("priority") != null && taskJSON.path("priority").getTextValue() != null) {
-        priority = taskJSON.path("priority").getTextValue();
+      if(taskJSON.path("priority") != null && taskJSON.path("priority").textValue() != null) {
+        priority = taskJSON.path("priority").textValue();
         task.setPriority(RequestUtil.parseToInteger(priority));
       }
       
       String dueDate = null;
-      if(taskJSON.path("dueDate") != null && taskJSON.path("dueDate").getTextValue() != null) {
-        dueDate = taskJSON.path("dueDate").getTextValue();
+      if(taskJSON.path("dueDate") != null && taskJSON.path("dueDate").textValue() != null) {
+        dueDate = taskJSON.path("dueDate").textValue();
         task.setDueDate(RequestUtil.parseToDate(dueDate));
       }
       

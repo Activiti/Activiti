@@ -17,10 +17,11 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.SecuredResource;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.resource.Get;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ProcessInstanceHighlightsResource extends SecuredResource {
 
@@ -32,6 +33,8 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 	
 	List<String> historicActivityInstanceList = new ArrayList<String>();
 	List<String> highLightedFlows = new ArrayList<String>();
+	
+	protected ObjectMapper objectMapper = new ObjectMapper();
 
 	@Get
 	public ObjectNode getHighlighted() {
@@ -41,12 +44,12 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 			throw new ActivitiException("No process instance id provided");
 		}
 
-		ObjectNode responseJSON = new ObjectMapper().createObjectNode();
+		ObjectNode responseJSON = objectMapper.createObjectNode();
 		
 		responseJSON.put("processInstanceId", processInstanceId);
 		
-		ArrayNode activitiesArray = new ObjectMapper().createArrayNode();
-		ArrayNode flowsArray = new ObjectMapper().createArrayNode();
+		ArrayNode activitiesArray = objectMapper.createArrayNode();
+		ArrayNode flowsArray = objectMapper.createArrayNode();
 		
 		try {
 			processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();

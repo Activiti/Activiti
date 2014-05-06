@@ -20,10 +20,11 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 /**
@@ -46,8 +47,8 @@ public class ExecutionActiveActivitiesCollectionResourceTest extends BaseRestTes
     assertEquals(2, responseNode.size());
     
     Set<String> states = new HashSet<String>();
-    states.add(responseNode.get(0).getTextValue());
-    states.add(responseNode.get(1).getTextValue());
+    states.add(responseNode.get(0).textValue());
+    states.add(responseNode.get(1).textValue());
     
     assertTrue(states.contains("waitState"));
     assertTrue(states.contains("anotherWaitState"));

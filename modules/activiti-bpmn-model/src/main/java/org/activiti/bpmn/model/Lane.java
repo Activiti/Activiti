@@ -15,7 +15,7 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * @author Tijs Rademakers

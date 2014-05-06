@@ -19,11 +19,12 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.SecuredResource;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Post;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Tijs Rademakers
@@ -37,15 +38,15 @@ public class StartProcessInstanceResource extends SecuredResource {
       
       String startParams = entity.getText();
       JsonNode startJSON = new ObjectMapper().readTree(startParams);
-      String processDefinitionKey = startJSON.path("processDefinitionKey").getTextValue();
+      String processDefinitionKey = startJSON.path("processDefinitionKey").textValue();
       String processDefinitionId = null;
       if (processDefinitionKey == null) {
-        processDefinitionId = startJSON.path("processDefinitionId").getTextValue();
+        processDefinitionId = startJSON.path("processDefinitionId").textValue();
       }
       JsonNode businessKeyJson = startJSON.path("businessKey");
       String businessKey = null;
       if(businessKeyJson != null) {
-        businessKey = businessKeyJson.getTextValue();
+        businessKey = businessKeyJson.textValue();
       }
       
       Map<String, Object> variables = retrieveVariables(startJSON);

@@ -136,7 +136,7 @@ public class UserPictureResourceTest extends BaseRestTestCase {
               new ByteArrayInputStream("this is the picture raw byte stream".getBytes())); 
       
       Representation response = client.put(request);
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
       assertNotNull(response);
       
       Picture picture = ActivitiUtil.getIdentityService().getUserPicture(newUser.getId());
@@ -172,7 +172,7 @@ public class UserPictureResourceTest extends BaseRestTestCase {
               new ByteArrayInputStream("this is the picture raw byte stream".getBytes()), additionalFields); 
       
       Representation response = client.put(request);
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
       assertNotNull(response);
       
       Picture picture = ActivitiUtil.getIdentityService().getUserPicture(newUser.getId());

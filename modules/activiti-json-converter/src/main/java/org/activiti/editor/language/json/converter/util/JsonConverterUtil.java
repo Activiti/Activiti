@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
-import org.codehaus.jackson.JsonNode;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class JsonConverterUtil implements EditorJsonConstants, StencilConstants {
   

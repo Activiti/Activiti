@@ -13,11 +13,12 @@ import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.HttpMultipartRepresentation;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Test for all REST-operations related to a single Deployment resource.
@@ -45,12 +46,12 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       // Check deployment
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       
-      String deploymentId = responseNode.get("id").getTextValue();
-      String name = responseNode.get("name").getTextValue();
-      String category = responseNode.get("category").getTextValue();
-      String deployTime = responseNode.get("deploymentTime").getTextValue();
-      String url = responseNode.get("url").getTextValue();
-      String tenantId = responseNode.get("tenantId").getTextValue();
+      String deploymentId = responseNode.get("id").textValue();
+      String name = responseNode.get("name").textValue();
+      String category = responseNode.get("category").textValue();
+      String deployTime = responseNode.get("deploymentTime").textValue();
+      String url = responseNode.get("url").textValue();
+      String tenantId = responseNode.get("tenantId").textValue();
       
       assertEquals("", tenantId);
       
@@ -116,12 +117,12 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       // Check deployment
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       
-      String deploymentId = responseNode.get("id").getTextValue();
-      String name = responseNode.get("name").getTextValue();
-      String category = responseNode.get("category").getTextValue();
-      String deployTime = responseNode.get("deploymentTime").getTextValue();
-      String url = responseNode.get("url").getTextValue();
-      String tenantId = responseNode.get("tenantId").getTextValue();
+      String deploymentId = responseNode.get("id").textValue();
+      String name = responseNode.get("name").textValue();
+      String category = responseNode.get("category").textValue();
+      String deployTime = responseNode.get("deploymentTime").textValue();
+      String url = responseNode.get("url").textValue();
+      String tenantId = responseNode.get("tenantId").textValue();
       
       assertTrue(tenantId.equals(""));
       assertNotNull(deploymentId);
@@ -184,9 +185,9 @@ public class DeploymentResourceTest extends BaseRestTestCase {
      // Check deployment
      JsonNode responseNode = objectMapper.readTree(response.getStream());
      
-     String tenantId = responseNode.get("tenantId").getTextValue();
+     String tenantId = responseNode.get("tenantId").textValue();
      assertEquals("myTenant", tenantId);
-     String id = responseNode.get("id").getTextValue();
+     String id = responseNode.get("id").textValue();
      
      Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(id).singleResult();
      assertNotNull(deployment);
@@ -236,12 +237,12 @@ public class DeploymentResourceTest extends BaseRestTestCase {
     
     JsonNode responseNode = objectMapper.readTree(response.getStream());
      
-    String deploymentId = responseNode.get("id").getTextValue();
-    String name = responseNode.get("name").getTextValue();
-    String category = responseNode.get("category").getTextValue();
-    String deployTime = responseNode.get("deploymentTime").getTextValue();
-    String url = responseNode.get("url").getTextValue();
-    String tenantId = responseNode.get("tenantId").getTextValue();
+    String deploymentId = responseNode.get("id").textValue();
+    String name = responseNode.get("name").textValue();
+    String category = responseNode.get("category").textValue();
+    String deployTime = responseNode.get("deploymentTime").textValue();
+    String url = responseNode.get("url").textValue();
+    String tenantId = responseNode.get("tenantId").textValue();
     
     assertEquals("", tenantId);
     assertNotNull(deploymentId);

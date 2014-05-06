@@ -28,8 +28,8 @@ import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.QueryVariable;
-import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.QueryVariable.QueryVariableOperation;
+import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 import org.restlet.data.Form;
 

@@ -27,14 +27,15 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.util.ISO8601DateFormat;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 
 /**
@@ -254,7 +255,7 @@ public class HistoricTaskInstanceQueryResourceTest extends BaseRestTestCase {
       List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedTaskIds));
       Iterator<JsonNode> it = dataNode.iterator();
       while(it.hasNext()) {
-        String id = it.next().get("id").getTextValue();
+        String id = it.next().get("id").textValue();
         toBeFound.remove(id);
       }
       assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());

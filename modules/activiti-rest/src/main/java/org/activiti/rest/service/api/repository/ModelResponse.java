@@ -15,6 +15,10 @@ package org.activiti.rest.service.api.repository;
 
 import java.util.Date;
 
+import org.activiti.rest.common.util.DateToStringSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 
 /**
  * @author Frederik Heremans
@@ -23,7 +27,9 @@ public class ModelResponse extends ModelRequest {
 
   protected String id;
   protected String url;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   protected Date createTime;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   protected Date lastUpdateTime;
   protected String deploymentUrl;
   protected String tenantId;

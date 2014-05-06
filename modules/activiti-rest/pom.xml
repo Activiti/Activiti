@@ -170,6 +170,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.restlet.jse</groupId>
+      <artifactId>org.restlet.ext.jetty</artifactId>
+      <version>${restlet.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet.jse</groupId>
+      <artifactId>org.restlet.ext.httpclient</artifactId>
+      <version>${restlet.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>4.3.1.Final</version>

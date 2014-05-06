@@ -17,7 +17,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.rest.common.util.DateToStringSerializer;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Tijs Rademakers
@@ -29,7 +32,9 @@ public class HistoricProcessInstanceResponse {
   protected String businessKey;
   protected String processDefinitionId;
   protected String processDefinitionUrl;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   protected Date startTime;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   protected Date endTime;
   protected Long durationInMillis;
   protected String startUserId;

@@ -17,8 +17,9 @@ import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.bpmn.model.FlowElement;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers

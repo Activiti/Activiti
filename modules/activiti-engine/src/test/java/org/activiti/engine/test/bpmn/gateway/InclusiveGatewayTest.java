@@ -12,16 +12,12 @@
  */
 package org.activiti.engine.test.bpmn.gateway;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -59,9 +55,6 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
         expectedNames.add(TASK2_NAME);
       }
       expectedNames.add(TASK3_NAME);
-      for (Task task : tasks) {
-        System.out.println("task " + task.getName());
-      }
       assertEquals(4 - i, tasks.size());
       for (Task task : tasks) {
         expectedNames.remove(task.getName());
@@ -437,7 +430,25 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 		
 		processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNull(processInstance);
-	}	
+	}
+  
+  @Deployment
+  public void testAsyncBehavior() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
+    waitForJobExecutorToProcessAllJobs(3000, 500);
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+  }
+  
+  /*@Deployment
+  public void testAsyncBehavior() {
+    for (int i = 0; i < 100; i++) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
+    }
+    assertEquals(200, managementService.createJobQuery().count());
+    waitForJobExecutorToProcessAllJobs(120000, 5000);
+    assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  }*/
 
 //  /* This test case is related to ACT-1877 */
 //  

@@ -20,11 +20,12 @@ import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 /**
@@ -88,14 +89,14 @@ public class TaskEventResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals(event.getId(), responseNode.get("id").getTextValue());
-      assertEquals(event.getAction(), responseNode.get("action").getTextValue());
-      assertEquals(event.getUserId(), responseNode.get("userId").getTextValue());
+      assertEquals(event.getId(), responseNode.get("id").textValue());
+      assertEquals(event.getAction(), responseNode.get("action").textValue());
+      assertEquals(event.getUserId(), responseNode.get("userId").textValue());
       assertTrue(responseNode.get("url").asText().endsWith(
               RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT, task.getId(), event.getId())));
       assertTrue(responseNode.get("taskUrl").asText().endsWith(
               RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
-      assertEquals(now.getTime(), getDateFromISOString(responseNode.get("time").getTextValue()));
+      assertEquals(now.getTime(), getDateFromISOString(responseNode.get("time").textValue()));
       
     } finally {
       // Clean adhoc-tasks even if test fails

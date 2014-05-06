@@ -8,12 +8,13 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Test for all REST-operations related to the Job collection and a single
@@ -44,14 +45,14 @@ public class JobResourceTest extends BaseRestTestCase {
     
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals(timerJob.getId(), responseNode.get("id").getTextValue());
-    assertEquals(timerJob.getExceptionMessage(), responseNode.get("exceptionMessage").getTextValue());
-    assertEquals(timerJob.getExecutionId(), responseNode.get("executionId").getTextValue());
-    assertEquals(timerJob.getProcessDefinitionId(), responseNode.get("processDefinitionId").getTextValue());
-    assertEquals(timerJob.getProcessInstanceId(), responseNode.get("processInstanceId").getTextValue());
-    assertEquals(timerJob.getRetries(), responseNode.get("retries").getIntValue());
-    assertEquals(timerJob.getDuedate(), getDateFromISOString(responseNode.get("dueDate").getTextValue()));
-    assertEquals(responseNode.get("tenantId").getTextValue(), "");
+    assertEquals(timerJob.getId(), responseNode.get("id").textValue());
+    assertEquals(timerJob.getExceptionMessage(), responseNode.get("exceptionMessage").textValue());
+    assertEquals(timerJob.getExecutionId(), responseNode.get("executionId").textValue());
+    assertEquals(timerJob.getProcessDefinitionId(), responseNode.get("processDefinitionId").textValue());
+    assertEquals(timerJob.getProcessInstanceId(), responseNode.get("processInstanceId").textValue());
+    assertEquals(timerJob.getRetries(), responseNode.get("retries").intValue());
+    assertEquals(timerJob.getDuedate(), getDateFromISOString(responseNode.get("dueDate").textValue()));
+    assertEquals(responseNode.get("tenantId").textValue(), "");
     response.release();
     
     // Set tenant on deployment
@@ -61,7 +62,7 @@ public class JobResourceTest extends BaseRestTestCase {
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals("myTenant", responseNode.get("tenantId").getTextValue());
+    assertEquals("myTenant", responseNode.get("tenantId").textValue());
   }
   
   /**

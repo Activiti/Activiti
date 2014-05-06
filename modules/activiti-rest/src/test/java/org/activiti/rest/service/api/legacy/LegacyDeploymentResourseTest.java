@@ -14,13 +14,14 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.HttpMultipartRepresentation;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Test for all <b>Legacy</b> REST-operations related to Deployments:
@@ -55,10 +56,10 @@ public class LegacyDeploymentResourseTest extends BaseRestTestCase {
       // Check deployment
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       
-      String deploymentId = responseNode.get("id").getTextValue();
-      String name = responseNode.get("name").getTextValue();
-      String category = responseNode.get("category").getTextValue();
-      String deployTime = responseNode.get("deploymentTime").getTextValue();
+      String deploymentId = responseNode.get("id").textValue();
+      String name = responseNode.get("name").textValue();
+      String category = responseNode.get("category").textValue();
+      String deployTime = responseNode.get("deploymentTime").textValue();
       
       assertNotNull(deploymentId);
       assertEquals(1L, repositoryService.createDeploymentQuery().deploymentId(deploymentId).count());
@@ -118,10 +119,10 @@ public class LegacyDeploymentResourseTest extends BaseRestTestCase {
       // Check deployment
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       
-      String deploymentId = responseNode.get("id").getTextValue();
-      String name = responseNode.get("name").getTextValue();
-      String category = responseNode.get("category").getTextValue();
-      String deployTime = responseNode.get("deploymentTime").getTextValue();
+      String deploymentId = responseNode.get("id").textValue();
+      String name = responseNode.get("name").textValue();
+      String category = responseNode.get("category").textValue();
+      String deployTime = responseNode.get("deploymentTime").textValue();
       
       assertNotNull(deploymentId);
       assertEquals(1L, repositoryService.createDeploymentQuery().deploymentId(deploymentId).count());
@@ -219,8 +220,8 @@ public class LegacyDeploymentResourseTest extends BaseRestTestCase {
         JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
         assertEquals(2L, dataNode.size());
                
-        assertEquals(firstDeployment.getId(), dataNode.get(0).get("id").getTextValue());
-        assertEquals(secondDeployment.getId(), dataNode.get(1).get("id").getTextValue());
+        assertEquals(firstDeployment.getId(), dataNode.get(0).get("id").textValue());
+        assertEquals(secondDeployment.getId(), dataNode.get(1).get("id").textValue());
         
       } finally {
         // Always cleanup any created deployments, even if the test failed
@@ -327,7 +328,7 @@ public class LegacyDeploymentResourseTest extends BaseRestTestCase {
          
          List<String> resources = new ArrayList<String>();
          for(int i=0; i < resourcesNode.size(); i++) {
-           resources.add(resourcesNode.get(i).getTextValue());
+           resources.add(resourcesNode.get(i).textValue());
          }
          assertTrue(resources.contains("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"));
          assertTrue(resources.contains("test.png"));

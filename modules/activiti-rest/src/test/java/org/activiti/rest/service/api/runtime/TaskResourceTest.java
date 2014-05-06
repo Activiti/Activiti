@@ -26,13 +26,14 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -74,7 +75,7 @@ public class TaskResourceTest extends BaseRestTestCase {
     assertEquals(task.getPriority(), responseNode.get("priority").asInt());
     assertTrue(responseNode.get("parentTaskId").isNull());
     assertTrue(responseNode.get("delegationState").isNull());
-    assertEquals("", responseNode.get("tenantId").getTextValue());
+    assertEquals("", responseNode.get("tenantId").textValue());
     
     assertTrue(responseNode.get("executionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, task.getExecutionId())));
@@ -136,7 +137,7 @@ public class TaskResourceTest extends BaseRestTestCase {
       assertTrue(responseNode.get("executionId").isNull());
       assertTrue(responseNode.get("processInstanceId").isNull());
       assertTrue(responseNode.get("processDefinitionId").isNull());
-      assertEquals("", responseNode.get("tenantId").getTextValue());
+      assertEquals("", responseNode.get("tenantId").textValue());
       
       assertTrue(responseNode.get("parentTaskUrl").asText().endsWith(
               RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, parentTask.getId())));

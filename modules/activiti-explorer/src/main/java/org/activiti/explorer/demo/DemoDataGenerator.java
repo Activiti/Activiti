@@ -35,10 +35,11 @@ import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.Task;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
