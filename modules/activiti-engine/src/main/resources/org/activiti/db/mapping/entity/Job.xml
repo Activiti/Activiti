@@ -315,7 +315,6 @@
     from ${prefix}ACT_RU_JOB RES
     LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
     where (RES.TYPE_ = 'timer')
-      and (RES.DUEDATE_ is not null)
       and (RES.DUEDATE_ &lt; #{parameter, jdbcType=TIMESTAMP})
       and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP})
       and (RES.RETRIES_  &gt; 0)
