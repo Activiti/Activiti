@@ -4064,7 +4064,7 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
   <section id="restExecutionsGet">
       <title>List of executions</title>
         <para>
-          <programlisting>GET repository/executions</programlisting>
+          <programlisting>GET runtime/executions</programlisting>
         </para>
         <para>
             <table>
