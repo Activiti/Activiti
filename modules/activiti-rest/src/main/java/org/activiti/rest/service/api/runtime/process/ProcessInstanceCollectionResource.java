@@ -32,7 +32,16 @@ import org.restlet.resource.Post;
 
 
 /**
+ * Modified the "createProcessInstance" method to conditionally call a 
+ *   "createProcessInstanceResponse" method with a different signature, which
+ *   will conditionally return the process variables that exist when the process
+ *   instance either enters its first wait state or completes. In this case,
+ *   the different method is always called with a flag of true, which means
+ *   that it will always return those variables. If variables are not to be 
+ *   returned, the original method is called, which doesn't return the variables.
+ * 
  * @author Frederik Heremans
+ * @author Ryan Johnston (@rjfsu)
  */
 public class ProcessInstanceCollectionResource extends BaseProcessInstanceResource {
 
@@ -166,7 +175,16 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       }
       
       setStatus(Status.SUCCESS_CREATED);
-      return factory.createProcessInstanceResponse(this, instance);
+      
+      //Added by Ryan Johnston
+      if(request.getReturnVariables())
+    	  return factory.createProcessInstanceResponse(this, instance, true);
+      else
+    	  return factory.createProcessInstanceResponse(this, instance);
+      //End Added by Ryan Johnston
+      
+      //Removed by Ryan Johnston (obsolete given the above).
+      //return factory.createProcessInstanceResponse(this, instance);
     } catch(ActivitiObjectNotFoundException aonfe) {
       throw new ActivitiIllegalArgumentException(aonfe.getMessage(), aonfe);
     }

@@ -14,11 +14,14 @@
 package org.activiti.rest.service.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.StartFormData;
@@ -93,7 +96,15 @@ import org.restlet.data.MediaType;
 /**
  * Default implementation of a {@link RestResponseFactory}.
  * 
+ * Added a new "createProcessInstanceResponse" method (with a different signature) to conditionally
+ *   return the process variables that exist within the process instance when the first wait state 
+ *   is encountered (or when the process instance completes). Also added the population of a
+ *   "completed" flag - within both the original "createProcessInstanceResponse" method and
+ *   the new one with the different signature - to let the caller know whether the process
+ *   instance has completed or not.
+ * 
  * @author Frederik Heremans
+ * @author Ryan Johnston (@rjfsu)
  */
 public class RestResponseFactory {
 
@@ -434,6 +445,18 @@ public class RestResponseFactory {
     result.setSuspended(processInstance.isSuspended());
     result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
     result.setTenantId(processInstance.getTenantId());
+    
+    //Added by Ryan Johnston
+    if(processInstance.isEnded()) {
+		//Process complete. Note the same in the result.
+		result.setCompleted(true);
+    }
+    else {
+    	//Process not complete. Note the same in the result.
+    	result.setCompleted(false);
+    }
+    //End Added by Ryan Johnston
+    
     if (processInstance.getProcessVariables() != null) {
       Map<String, Object> variableMap = processInstance.getProcessVariables();
       for (String name : variableMap.keySet()) {
@@ -441,8 +464,86 @@ public class RestResponseFactory {
             RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false));
       }
     }
+    
     return result;
   }
+  
+  public ProcessInstanceResponse createProcessInstanceResponse(SecuredResource securedResource, ProcessInstance processInstance, boolean returnVariables) {
+	    ProcessInstanceResponse result = new ProcessInstanceResponse();
+	    result.setActivityId(processInstance.getActivityId());
+	    result.setBusinessKey(processInstance.getBusinessKey());
+	    result.setId(processInstance.getId());
+	    result.setProcessDefinitionId(processInstance.getProcessDefinitionId());
+	    result.setProcessDefinitionUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
+	    result.setEnded(processInstance.isEnded());
+	    result.setSuspended(processInstance.isSuspended());
+	    result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
+	    result.setTenantId(processInstance.getTenantId());
+	    
+	    //Added by Ryan Johnston
+	    if(processInstance.isEnded()) {
+			//Process complete. Note the same in the result.
+			result.setCompleted(true);
+	    }
+	    else {
+	    	//Process not complete. Note the same in the result.
+	    	result.setCompleted(false);
+	    }
+	    
+	    if(returnVariables) {
+	    	RuntimeService runtimeService = ActivitiUtil.getRuntimeService();
+	    	HistoryService historyService = ActivitiUtil.getHistoryService();
+	    	if(processInstance.isEnded()) {
+	    		//Process complete. Get variable values from the history service.
+	    		Map<String, Object> variableMap = new HashMap<String, Object>();
+	    		List<HistoricDetail> historicDetailList = historyService.createHistoricDetailQuery().executionId(processInstance.getId()).list();
+	    		for(HistoricDetail historicDetail : historicDetailList) {
+	    			Map<String, Integer> versionMap = new HashMap<String, Integer>();
+	    			if(historicDetail instanceof HistoricVariableUpdate) {
+	    				HistoricVariableUpdate historicVariableUpdate = (HistoricVariableUpdate) historicDetail;
+	    				if(versionMap.get(historicVariableUpdate.getVariableName()) == null) {
+	    					versionMap.put(historicVariableUpdate.getVariableName(), historicVariableUpdate.getRevision());
+	    					variableMap.put(historicVariableUpdate.getVariableName(), historicVariableUpdate.getValue());
+	    				}
+	    				else {
+	    					Integer currentRevision = historicVariableUpdate.getRevision();
+	    					Integer previousRevision = versionMap.get(historicVariableUpdate.getVariableName());
+	    					if(currentRevision > previousRevision) {
+	    						versionMap.put(historicVariableUpdate.getVariableName(), currentRevision);
+	    						variableMap.put(historicVariableUpdate.getVariableName(), historicVariableUpdate.getValue());
+	    					}
+	    				}
+	    			}
+	    		}
+	    	
+	    		for(String name : variableMap.keySet()) {
+	    			result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
+	    				RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false));
+	        	}
+	    	}
+	    	else {
+	    		//Process not complete. Get runtime variables.
+	    		Map<String, Object> variableMap = runtimeService.getVariables(processInstance.getId());
+	    		for(String name : variableMap.keySet()) {
+	    			result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
+	    			RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false));
+	        	}
+	    	}
+	    }
+	    //End Added by Ryan Johnston
+	    
+	    //Removed by Ryan Johnston (replaced by the above)
+	    //if (processInstance.getProcessVariables() != null) {
+	    //  Map<String, Object> variableMap = processInstance.getProcessVariables();
+	    //  for (String name : variableMap.keySet()) {
+	    //    result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
+	    //        RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false));
+	    //  }
+	    //}
+	    //End Removed by Ryan Johnston
+	    
+	    return result;
+	  }
   
   
   public ExecutionResponse createExecutionResponse(SecuredResource securedResource, Execution execution) {
