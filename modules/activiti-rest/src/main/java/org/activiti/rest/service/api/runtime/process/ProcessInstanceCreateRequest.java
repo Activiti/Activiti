@@ -24,7 +24,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 
 /**
+ * Modified to add a "returnVariables" flag, which determines whether the variables
+ *   that exist within the process instance when the first wait state is encountered
+ *   (or when the process instance completes) should be returned or not.
+ * 
  * @author Frederik Heremans
+ * @author Ryan Johnston (@rjfsu)
  */
 public class ProcessInstanceCreateRequest {
 
@@ -34,6 +39,9 @@ public class ProcessInstanceCreateRequest {
   private String businessKey;
   private List<RestVariable> variables;
   private String tenantId;
+  
+  //Added by Ryan Johnston
+  private boolean returnVariables;
   
   public String getProcessDefinitionId() {
     return processDefinitionId;
@@ -85,5 +93,15 @@ public class ProcessInstanceCreateRequest {
   @JsonIgnore
   public boolean isCustomTenantSet() {
   	return tenantId != null && !StringUtils.isEmpty(tenantId);
+  }
+  
+  //Added by Ryan Johnston
+  public boolean getReturnVariables() {
+	  return returnVariables;
+  }
+  
+  //Added by Ryan Johnston
+  public void setReturnVariables(boolean returnVariables) {
+	  this.returnVariables = returnVariables;
   }
 }
