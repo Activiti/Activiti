@@ -265,6 +265,134 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     </para>
   </section>
   
+  <section id="jndiDatasourceConfig">
+    <title>JNDI Datasource Configuration</title>
+
+    <para>
+        By default, the database configuration for Activiti is contained within the db.properties
+        files in the WEB-INF/classes of each web application. This isn't always ideal because it
+        requires users to either modify the db.properties in the Activiti source and recompile
+        the war file, or explode the war and modify the db.properties on every deployment.
+    </para>
+    
+    <para>
+       By using JNDI (Java Naming and Directory Interface) to obtain the database connection,
+       the connection is fully managed by the Servlet Container and the configuration can be
+       managed outside the war deployment. This also allows more control over the connection
+       parameters than what is provided by the db.properties file.
+    </para>
+    
+    <section id="jndi_usage">
+    
+        <title>Usage</title>
+        
+        <para>
+            To switch the Activiti Explorer and Activiti Rest web apps from db.properties
+            configuration to JNDI datasource configuration, open the primary Spring configuration
+            files (activiti-webapp-explorer2/src/main/webapp/WEB-INF/activiti-standalone-context.xml
+            and activiti-webapp-rest2/src/main/resources/activiti-context.xml), and delete the beans
+            named "dbProperties" and "dataSource". Then, add the following bean:
+            <programlisting>
+&lt;bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"&gt;
+    &lt;property name="jndiName" value="java:comp/env/jdbc/activitiDB"/&gt;
+&lt;/bean&gt;
+            </programlisting> 
+        </para>
+        
+        <para>
+            Next, we need to add context.xml files that contain the default H2 configuration.
+            These will be overridden by your JNDI configuration, if it exists.  For Activiti
+            Explorer, replace the file at activiti-webapp-explorer2/src/main/webapp/META-INF/context.xml
+            with the following:
+            <programlisting>
+&lt;Context antiJARLocking="true" path="/activiti-explorer2"&gt;
+    &lt;Resource auth="Container"
+              name="jdbc/activitiDB"
+              type="javax.sql.DataSource"
+              scope="Shareable"
+              description="JDBC DataSource"
+              url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"
+              driverClassName="org.h2.Driver"
+              username="sa"
+              password=""
+              defaultAutoCommit="false"
+              initialSize="5"
+              maxWait="5000"
+              maxActive="120"
+              maxIdle="5"/&gt;
+&lt;/Context&gt;
+            </programlisting>
+            
+            For the Activiti REST webapp, add activiti-webapp-rest2/src/main/webapp/META-INF/context.xml
+            containing the following:
+            <programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Context antiJARLocking="true" path="/activiti-rest2"&gt;
+    &lt;Resource auth="Container"
+              name="jdbc/activitiDB"
+              type="javax.sql.DataSource"
+              scope="Shareable"
+              description="JDBC DataSource"
+              url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=-1"
+              driverClassName="org.h2.Driver"
+              username="sa"
+              password=""
+              defaultAutoCommit="false"
+              initialSize="5"
+              maxWait="5000"
+              maxActive="120"
+              maxIdle="5"/&gt;
+&lt;/Context&gt;
+            </programlisting>
+        </para>
+        
+        <para>
+            As an optional step, you can now delete the unused db.properties files in both the Activiti
+            Explorer and Activiti REST webapp projects.
+        </para>
+    </section>
+    
+    <section id="jndi_configuration">
+
+        <title>Configuration</title>
+
+        <para>
+            Configuration of the JNDI datasource will differ depending on what servlet container
+            application you are using. The instructions below will work for Tomcat, but for other
+            container applications, please refer to the documentation for your container app.
+        </para>
+        
+        <para>
+            If using Tomcat, the JNDI resource is configured within
+            $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (for Activiti Explorer this
+            will usually be $CATALINA_BASE/conf/Catalina/localhost/activiti-explorer.war). The default
+            context is copied from the Activiti war file when the application is first deployed, so if
+            it already exists, you will need to replace it. To change the JNDI resource so that the
+            application connects to MySql instead of H2, for example, change the file to the following:
+            <programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    &lt;Context antiJARLocking="true" path="/activiti-explorer2"&gt;
+        &lt;Resource auth="Container"
+            name="jdbc/activitiDB"
+            type="javax.sql.DataSource"
+            description="JDBC DataSource"
+            url="jdbc:mysql://localhost:3306/activiti"
+            driverClassName="com.mysql.jdbc.Driver"
+            username="sa"
+            password=""
+            defaultAutoCommit="false"
+            initialSize="5"
+            maxWait="5000"
+            maxActive="120"
+            maxIdle="5"/&gt;
+        &lt;/Context&gt;
+           </programlisting>
+       </para>
+
+    </section>
+    
+  </section>
+  
   <section id="supporteddatabases">
     <title>Supported databases</title>
     <para>Listed below are the types (case sensitive!) that Activiti uses to refer to databases.</para>
