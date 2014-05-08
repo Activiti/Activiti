@@ -1,74 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:yourco="http://yourco/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <process id="valuedDataObjectModel" name="Data Object Model" isExecutable="true">
     <dataObject id="dObj1" name="StringTest" itemSubjectRef="xsd:string">
       <extensionElements>
         <activiti:value>Testing123</activiti:value>
+        <yourco:i18ln yourco:resourceBundleKeyForName="rbkfn-1" yourco:resourceBundleKeyForDescription="rbkfd-1" yourco:labeledEntityIdForName="leifn-1" yourco:labeledEntityIdForDescription="leifd-1"/>
+        <yourco:attributes>
+            <yourco:attribute yourco:id="1" yourco:name="Attr1" yourco:value="1"/>
+            <yourco:attribute yourco:id="2" yourco:name="Attr2" yourco:value="2"/>
+        </yourco:attributes>
       </extensionElements>
-    </dataObject>
-    <dataObject id="dObj2" name="BooleanTest" itemSubjectRef="xsd:boolean">
-      <extensionElements>
-        <activiti:value>true</activiti:value>
-      </extensionElements>
-    </dataObject>
-    <dataObject id="dObj3" name="DateTest" itemSubjectRef="xsd:datetime">
-      <extensionElements>
-        <activiti:value>2013-09-16T11:23:00</activiti:value>
-      </extensionElements>
-    </dataObject>
-    <dataObject id="dObj4" name="DoubleTest" itemSubjectRef="xsd:double">
-      <extensionElements>
-        <activiti:value>123456789</activiti:value>
-      </extensionElements>
-    </dataObject>
-    <dataObject id="dObj5" name="IntegerTest" itemSubjectRef="xsd:int">
-      <extensionElements>
-        <activiti:value>123</activiti:value>
-      </extensionElements>
-    </dataObject>
-    <dataObject id="dObj6" name="LongTest" itemSubjectRef="xsd:long">
-      <extensionElements>
-        <activiti:value>-123456</activiti:value>
-        <activiti:testvalue>test</activiti:testvalue>
-      </extensionElements>
-    </dataObject>
-    <dataObject id="NoData" name="NoData" itemSubjectRef="xsd:datetime">
-      <extensionElements>
-        <activiti:value></activiti:value>
-      </extensionElements>
-    </dataObject>
+	</dataObject>
     <startEvent id="start1"></startEvent>
     <endEvent id="end1"></endEvent>
     <subProcess id="subprocess1" name="subProcess">
-      <dataObject id="dObj7" name="StringSubTest" itemSubjectRef="xsd:string">
-      <extensionElements>
-        <activiti:value>Testing456</activiti:value>
-      </extensionElements>
-	  </dataObject>
-      <dataObject id="dObj8" name="BooleanSubTest" itemSubjectRef="xsd:boolean">
-      <extensionElements>
-        <activiti:value>false</activiti:value>
-      </extensionElements>
-	  </dataObject>
-      <dataObject id="dObj9" name="DateSubTest" itemSubjectRef="xsd:datetime">
-      <extensionElements>
-        <activiti:value>2013-11-11</activiti:value>
-      </extensionElements>
-	  </dataObject>
-      <dataObject id="dObj10" name="DoubleSubTest" itemSubjectRef="xsd:double">
-      <extensionElements>
-        <activiti:value>678912345</activiti:value>
-      </extensionElements>
-	  </dataObject>
-      <dataObject id="dObj11" name="IntegerSubTest" itemSubjectRef="xsd:int">
-      <extensionElements>
-        <activiti:value>45</activiti:value>
-      </extensionElements>
-	  </dataObject>
-      <dataObject id="dObj12" name="LongSubTest" itemSubjectRef="xsd:long">
-      <extensionElements>
-        <activiti:value>456123</activiti:value>
-      </extensionElements>
+      <dataObject id="dObj2" name="BooleanTest" itemSubjectRef="xsd:boolean">
+        <extensionElements>
+          <activiti:value>true</activiti:value>
+          <yourco:i18ln yourco:resourceBundleKeyForName="rbkfn-2" yourco:resourceBundleKeyForDescription="rbkfd-2" yourco:labeledEntityIdForName="leifn-2" yourco:labeledEntityIdForDescription="leifd-2"/>
+          <yourco:attributes>
+            <yourco:attribute yourco:id="3" yourco:name="Attr3" yourco:value="3"/>
+            <yourco:attribute yourco:id="4" yourco:name="Attr4" yourco:value="4"/>
+          </yourco:attributes>
+        </extensionElements>
 	  </dataObject>
       <userTask id="userTask2" name="Complete SubTask" activiti:assignee="kermit"></userTask>
       <endEvent id="end2"></endEvent>

@@ -18,6 +18,9 @@ public abstract class ValuedDataObject extends DataObject {
 
   public void setValues(ValuedDataObject otherElement) {
     super.setValues(otherElement);
+    if (otherElement.getValue() != null) {
+      setValue(otherElement.getValue());
+    }
     setValue(otherElement.getValue());
   }
   

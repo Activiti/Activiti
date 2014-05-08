@@ -14,9 +14,9 @@
 package org.activiti.engine.test.bpmn.subprocess;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -373,11 +373,18 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // verify main process scoped variables
     Map<String, Object> variables = runtimeService.getVariables(pi.getId());
-    assertEquals(1, variables.size());
-    Entry<String, Object> currentVariable = variables.entrySet().iterator().next();
-    assertEquals("StringTest123", currentVariable.getKey());
-    assertEquals("Testing123", currentVariable.getValue());
-
+    assertEquals(2, variables.size());
+    Iterator<String> varNameIt = variables.keySet().iterator();
+    while (varNameIt.hasNext()) {
+      String varName = varNameIt.next();
+      if ("StringTest123".equals(varName)) {
+        assertEquals("Testing123", variables.get(varName));
+      } else if ("NoData123".equals(varName)) {
+        assertNull(variables.get(varName));
+      } else {
+        fail("Variable not expected " + varName);
+      }
+    }
 
     // After completing the task in the main process,
     // the subprocess scope initiates
@@ -392,15 +399,21 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // verify current scoped variables - includes subprocess variables
     variables = runtimeService.getVariables(pi.getId());
-    assertEquals(2, variables.size());
+    assertEquals(3, variables.size());
 
-    for (Entry<String, Object> nextVariable : variables.entrySet()) {
-
-      if (nextVariable.getKey().equals("StringTest123")) {
-        assertEquals("Testing123", nextVariable.getValue());
+    varNameIt = variables.keySet().iterator();
+    while (varNameIt.hasNext()) {
+      String varName = varNameIt.next();
+      if ("StringTest123".equals(varName)) {
+        assertEquals("Testing123", variables.get(varName));
+        
+      } else if ("StringTest456".equals(varName)) {
+        assertEquals("Testing456", variables.get(varName));
+        
+      } else if ("NoData123".equals(varName)) {
+        assertNull(variables.get(varName));
       } else {
-        assertEquals("StringTest456", nextVariable.getKey());
-        assertEquals("Testing456", nextVariable.getValue());
+        fail("Variable not expected " + varName);
       }
     }
 
@@ -410,10 +423,18 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // verify main process scoped variables - subprocess variables are gone
     variables = runtimeService.getVariables(pi.getId());
-    assertEquals(1, variables.size());
-    currentVariable = variables.entrySet().iterator().next();
-    assertEquals("StringTest123", currentVariable.getKey());
-    assertEquals("Testing123", currentVariable.getValue());
+    assertEquals(2, variables.size());
+    varNameIt = variables.keySet().iterator();
+    while (varNameIt.hasNext()) {
+      String varName = varNameIt.next();
+      if ("StringTest123".equals(varName)) {
+        assertEquals("Testing123", variables.get(varName));
+      } else if ("NoData123".equals(varName)) {
+        assertNull(variables.get(varName));
+      } else {
+        fail("Variable not expected " + varName);
+      }
+    }
 
     // After completing the final task in the  main process,
     // the process scope is destroyed and the process ends

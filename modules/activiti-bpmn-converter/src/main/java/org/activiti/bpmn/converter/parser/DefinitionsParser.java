@@ -39,7 +39,7 @@ public class DefinitionsParser implements BpmnXMLConstants {
     model.setTargetNamespace(xtr.getAttributeValue(null, TARGET_NAMESPACE_ATTRIBUTE));
     for (int i = 0; i < xtr.getNamespaceCount(); i++) {
       String prefix = xtr.getNamespacePrefix(i);
-      if (prefix != null) {
+      if (StringUtils.isNotEmpty(prefix)) {
         model.addNamespace(prefix, xtr.getNamespaceURI(i));
       }
     }

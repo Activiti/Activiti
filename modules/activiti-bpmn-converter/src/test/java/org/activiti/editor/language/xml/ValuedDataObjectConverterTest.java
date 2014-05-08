@@ -2,6 +2,7 @@ package org.activiti.editor.language.xml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
@@ -51,7 +52,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
 
     // verify the main process data objects
     List<ValuedDataObject> dataObjects = model.getProcess(null).getDataObjects();
-    assertEquals(6, dataObjects.size());
+    assertEquals(7, dataObjects.size());
     
     Map<String, ValuedDataObject> objectMap = new HashMap<String, ValuedDataObject>();
     for (ValuedDataObject valueObj : dataObjects) {
@@ -111,6 +112,12 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertEquals(1, testValues.size());
     assertEquals("testvalue", testValues.get(0).getName());
     assertEquals("test", testValues.get(0).getElementText());
+    
+    dataObj = objectMap.get("NoData");
+    assertEquals("NoData", dataObj.getId());
+    assertEquals("NoData", dataObj.getName());
+    assertEquals("xsd:datetime", dataObj.getItemSubjectRef().getStructureRef());
+    assertNull(dataObj.getValue());
    
     flowElement = model.getMainProcess().getFlowElement("userTask1");
     assertNotNull(flowElement);

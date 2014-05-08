@@ -5,7 +5,12 @@
       <extensionElements>
         <activiti:value>Testing123</activiti:value>
       </extensionElements>
-	</dataObject>
+    </dataObject>
+    <dataObject id="noData123" name="NoData123" itemSubjectRef="xsd:datetime">
+      <extensionElements>
+        <activiti:value></activiti:value>
+      </extensionElements>
+    </dataObject>
     <startEvent id="start1"></startEvent>
     <endEvent id="end1"></endEvent>
     <subProcess id="subprocess1" name="subProcess">
