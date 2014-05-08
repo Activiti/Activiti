@@ -104,7 +104,7 @@ public class DefaultProcessDiagramCanvas {
   protected static Stroke END_EVENT_STROKE = new BasicStroke(3.0f);
   protected static Stroke MULTI_INSTANCE_STROKE = new BasicStroke(1.3f);
   protected static Stroke EVENT_SUBPROCESS_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,  new float[] { 1.0f }, 0.0f);
-  protected static Stroke INTERRUPTING_EVENT_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,  new float[] { 4.0f, 3.0f }, 0.0f);
+  protected static Stroke NON_INTERRUPTING_EVENT_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,  new float[] { 4.0f, 3.0f }, 0.0f);
   protected static Stroke HIGHLIGHT_FLOW_STROKE = new BasicStroke(1.3f);
   protected static Stroke ANNOTATION_STROKE = new BasicStroke(2.0f);
   protected static Stroke ASSOCIATION_STROKE = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,  new float[] { 2.0f, 2.0f }, 0.0f);
@@ -294,8 +294,8 @@ public class DefaultProcessDiagramCanvas {
     g.fill(outerCircle);
 
     g.setPaint(originalPaint);
-    if (isInterrupting) 
-      g.setStroke(INTERRUPTING_EVENT_STROKE);
+    if (isInterrupting == false) 
+      g.setStroke(NON_INTERRUPTING_EVENT_STROKE);
     g.draw(outerCircle);
     g.setStroke(originalStroke);
     g.draw(innerCircle);
@@ -331,11 +331,11 @@ public class DefaultProcessDiagramCanvas {
   }
 
   public void drawThrowingSignalEvent(int x, int y, int width, int height) {
-    drawCatchingEvent(x, y, width, height, false, SIGNAL_THROW_IMAGE);
+    drawCatchingEvent(x, y, width, height, true, SIGNAL_THROW_IMAGE);
   }
   
   public void drawThrowingNoneEvent(int x, int y, int width, int height) {
-    drawCatchingEvent(x, y, width, height, false, null);
+    drawCatchingEvent(x, y, width, height, true, null);
   }
 
   public void drawSequenceflow(int srcX, int srcY, int targetX, int targetY, boolean conditional) {
@@ -765,8 +765,10 @@ public class DefaultProcessDiagramCanvas {
       g.draw(rect);
     }
 
-    String text = fitTextToWidth(name, width);
-    g.drawString(text, x + 10, y + 15);
+    if (name != null && !name.isEmpty()) {
+      String text = fitTextToWidth(name, width);
+      g.drawString(text, x + 10, y + 15);
+    }
   }
 
   public void drawCollapsedSubProcess(String name, int x, int y, int width, int height, Boolean isTriggeredByEvent) {
@@ -804,7 +806,7 @@ public class DefaultProcessDiagramCanvas {
         drawCollapsedMarker(x - MARKER_WIDTH / 2 - 2, y, width, height);
         if (multiInstanceSequential) {
           drawMultiInstanceMarker(true, x + MARKER_WIDTH / 2 + 2, y, width, height);
-        } else if (multiInstanceParallel) {
+        } else {
           drawMultiInstanceMarker(false, x + MARKER_WIDTH / 2 + 2, y, width, height);
         }
       }
@@ -877,7 +879,7 @@ public class DefaultProcessDiagramCanvas {
     drawGateway(x, y, width, height);
     double scale = .6;
     
-    drawCatchingEvent((int)(x + width*(1-scale)/2), (int)(y + height*(1-scale)/2), (int)(width*scale), (int)(height*scale), false, null);
+    drawCatchingEvent((int)(x + width*(1-scale)/2), (int)(y + height*(1-scale)/2), (int)(width*scale), (int)(height*scale), true, null);
     
     double r = width / 6.;
     
