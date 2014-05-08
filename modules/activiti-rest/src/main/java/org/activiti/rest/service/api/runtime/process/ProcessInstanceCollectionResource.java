@@ -114,11 +114,11 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
   @Post
   public ProcessInstanceResponse createProcessInstance(ProcessInstanceCreateRequest request) {
     
-    if(!authenticate()) {
+    if (!authenticate()) {
       return null;
     }
     
-    if(request.getProcessDefinitionId() == null && request.getProcessDefinitionKey() == null && request.getMessage() == null) {
+    if (request.getProcessDefinitionId() == null && request.getProcessDefinitionKey() == null && request.getMessage() == null) {
       throw new ActivitiIllegalArgumentException("Either processDefinitionId, processDefinitionKey or message is required.");
     }
     
@@ -126,11 +126,11 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
             + ((request.getProcessDefinitionKey() != null) ? 1 : 0)
             + ((request.getMessage() != null) ? 1 : 0);
     
-    if(paramsSet > 1) {
+    if (paramsSet > 1) {
       throw new ActivitiIllegalArgumentException("Only one of processDefinitionId, processDefinitionKey or message should be set.");
     }
     
-    if(request.isCustomTenantSet()) {
+    if (request.isCustomTenantSet()) {
     	// Tenant-id can only be used with either key or message
     	if(request.getProcessDefinitionId() != null) {
     		throw new ActivitiIllegalArgumentException("TenantId can only be used with either processDefinitionKey or message.");
@@ -153,10 +153,10 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
     // Actually start the instance based on key or id
     try {
       ProcessInstance instance = null;
-      if(request.getProcessDefinitionId() != null) {
+      if (request.getProcessDefinitionId() != null) {
         instance = ActivitiUtil.getRuntimeService().startProcessInstanceById(
                 request.getProcessDefinitionId(), request.getBusinessKey(), startVariables);
-      } else if(request.getProcessDefinitionKey() != null) {
+      } else if (request.getProcessDefinitionKey() != null) {
       	if(request.isCustomTenantSet()) {
       		instance = ActivitiUtil.getRuntimeService().startProcessInstanceByKeyAndTenantId(
       				request.getProcessDefinitionKey(), request.getBusinessKey(), startVariables, request.getTenantId());
@@ -165,7 +165,7 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       				request.getProcessDefinitionKey(), request.getBusinessKey(), startVariables);
       	}
       } else {
-      	if(request.isCustomTenantSet()) {
+      	if (request.isCustomTenantSet()) {
       		instance = ActivitiUtil.getRuntimeService().startProcessInstanceByMessageAndTenantId(
       				request.getMessage(), request.getBusinessKey(), startVariables, request.getTenantId());
       	} else {
@@ -177,10 +177,11 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       setStatus(Status.SUCCESS_CREATED);
       
       //Added by Ryan Johnston
-      if(request.getReturnVariables())
+      if (request.getReturnVariables()) {
     	  return factory.createProcessInstanceResponse(this, instance, true);
-      else
+      } else {
     	  return factory.createProcessInstanceResponse(this, instance);
+      }
       //End Added by Ryan Johnston
       
       //Removed by Ryan Johnston (obsolete given the above).

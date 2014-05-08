@@ -14,7 +14,6 @@
 package org.activiti.rest.service.api;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -447,11 +446,10 @@ public class RestResponseFactory {
     result.setTenantId(processInstance.getTenantId());
     
     //Added by Ryan Johnston
-    if(processInstance.isEnded()) {
-		//Process complete. Note the same in the result.
-		result.setCompleted(true);
-    }
-    else {
+    if (processInstance.isEnded()) {
+      //Process complete. Note the same in the result.
+      result.setCompleted(true);
+    } else {
     	//Process not complete. Note the same in the result.
     	result.setCompleted(false);
     }
@@ -481,66 +479,39 @@ public class RestResponseFactory {
 	    result.setTenantId(processInstance.getTenantId());
 	    
 	    //Added by Ryan Johnston
-	    if(processInstance.isEnded()) {
-			//Process complete. Note the same in the result.
-			result.setCompleted(true);
-	    }
-	    else {
+	    if (processInstance.isEnded()) {
+	      //Process complete. Note the same in the result.
+	      result.setCompleted(true);
+	    } else {
 	    	//Process not complete. Note the same in the result.
 	    	result.setCompleted(false);
 	    }
 	    
-	    if(returnVariables) {
-	    	RuntimeService runtimeService = ActivitiUtil.getRuntimeService();
-	    	HistoryService historyService = ActivitiUtil.getHistoryService();
-	    	if(processInstance.isEnded()) {
-	    		//Process complete. Get variable values from the history service.
-	    		Map<String, Object> variableMap = new HashMap<String, Object>();
-	    		List<HistoricDetail> historicDetailList = historyService.createHistoricDetailQuery().executionId(processInstance.getId()).list();
-	    		for(HistoricDetail historicDetail : historicDetailList) {
-	    			Map<String, Integer> versionMap = new HashMap<String, Integer>();
-	    			if(historicDetail instanceof HistoricVariableUpdate) {
-	    				HistoricVariableUpdate historicVariableUpdate = (HistoricVariableUpdate) historicDetail;
-	    				if(versionMap.get(historicVariableUpdate.getVariableName()) == null) {
-	    					versionMap.put(historicVariableUpdate.getVariableName(), historicVariableUpdate.getRevision());
-	    					variableMap.put(historicVariableUpdate.getVariableName(), historicVariableUpdate.getValue());
-	    				}
-	    				else {
-	    					Integer currentRevision = historicVariableUpdate.getRevision();
-	    					Integer previousRevision = versionMap.get(historicVariableUpdate.getVariableName());
-	    					if(currentRevision > previousRevision) {
-	    						versionMap.put(historicVariableUpdate.getVariableName(), currentRevision);
-	    						variableMap.put(historicVariableUpdate.getVariableName(), historicVariableUpdate.getValue());
-	    					}
-	    				}
-	    			}
-	    		}
+	    if (returnVariables) {
 	    	
-	    		for(String name : variableMap.keySet()) {
-	    			result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
-	    				RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false));
-	        	}
+	    	if (processInstance.isEnded()) {
+	    		// Process complete. Get variable values from the history service.
+	    	  HistoryService historyService = ActivitiUtil.getHistoryService();
+	    		List<HistoricVariableInstance> historicVariableList = historyService.createHistoricVariableInstanceQuery()
+	    		    .processInstanceId(processInstance.getId())
+	    		    .list();
+	    		
+	    		for (HistoricVariableInstance historicVariable : historicVariableList) {
+	    		  result.addVariable(createRestVariable(securedResource, historicVariable.getVariableName(), historicVariable.getValue(), 
+	    		      RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false));
+	    		}	
 	    	}
 	    	else {
 	    		//Process not complete. Get runtime variables.
+	    	  RuntimeService runtimeService = ActivitiUtil.getRuntimeService();
 	    		Map<String, Object> variableMap = runtimeService.getVariables(processInstance.getId());
-	    		for(String name : variableMap.keySet()) {
+	    		for (String name : variableMap.keySet()) {
 	    			result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
-	    			RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false));
-	        	}
+	    			    RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false));
+	        }
 	    	}
 	    }
 	    //End Added by Ryan Johnston
-	    
-	    //Removed by Ryan Johnston (replaced by the above)
-	    //if (processInstance.getProcessVariables() != null) {
-	    //  Map<String, Object> variableMap = processInstance.getProcessVariables();
-	    //  for (String name : variableMap.keySet()) {
-	    //    result.addVariable(createRestVariable(securedResource, name, variableMap.get(name), 
-	    //        RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false));
-	    //  }
-	    //}
-	    //End Removed by Ryan Johnston
 	    
 	    return result;
 	  }
