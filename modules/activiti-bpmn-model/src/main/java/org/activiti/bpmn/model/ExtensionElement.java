@@ -67,6 +67,7 @@ public class ExtensionElement extends BaseElement {
     setNamespace(otherElement.getNamespacePrefix());
     setNamespace(otherElement.getNamespace());
     setElementText(otherElement.getElementText());
+    setAttributes(otherElement.getAttributes());
     
     childElements = new LinkedHashMap<String, List<ExtensionElement>>();
     if (otherElement.getChildElements() != null && otherElement.getChildElements().size() > 0) {
