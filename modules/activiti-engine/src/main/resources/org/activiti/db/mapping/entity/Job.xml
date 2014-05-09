@@ -326,6 +326,22 @@
     order by DUEDATE_
   </select>
 
+  <select id="selectUnlockedTimersByDuedate_oracle" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
+          resultMap="jobResultMap">
+    select RES.*
+    from ${prefix}ACT_RU_JOB RES
+    LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    where (RES.TYPE_ = 'timer')
+    and (RES.DUEDATE_ &lt; #{parameter, jdbcType=TIMESTAMP})
+    and (NVL(RES.LOCK_OWNER_, 'UNDEF')='UNDEF' OR RES.LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP})
+    and (RES.RETRIES_ &gt; 0)
+    and (NVL(RES.EXECUTION_ID_ , 'UNDEF')='UNDEF' OR
+         exists (select 1 from ${prefix}ACT_RU_EXECUTION PI where PI.ID_ =
+    RES.PROCESS_INSTANCE_ID_ and PI.SUSPENSION_STATE_ = 1)
+    )
+    order by DUEDATE_
+  </select>
+
   <select id="selectTimersByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
     select * 
     from ${prefix}ACT_RU_JOB 
