@@ -86,7 +86,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
         
         RestVariable[] restVariables = getConverterService().toObject(representation, RestVariable[].class, this);
         if(restVariables == null || restVariables.length == 0) {
-          throw new ActivitiIllegalArgumentException("Request didn't cantain a list of variables to create.");
+          throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
         }
         
         RestVariableScope sharedScope = null;
@@ -144,6 +144,8 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
   
   @Delete
   public void deleteAllLocalTaskVariables() {
+  	if(!authenticate()) { return; }
+  	
     Task task = getTaskFromRequest();
     Collection<String> currentVariables = ActivitiUtil.getTaskService().getVariablesLocal(task.getId()).keySet();
     ActivitiUtil.getTaskService().removeVariablesLocal(task.getId(), currentVariables);

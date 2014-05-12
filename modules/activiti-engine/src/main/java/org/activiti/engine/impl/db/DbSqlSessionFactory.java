@@ -61,6 +61,9 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("mysql", "selectDeploymentsByQueryCriteria", "selectDeploymentsByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectDeploymentCountByQueryCriteria", "selectDeploymentCountByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectModelCountByQueryCriteria", "selectModelCountByQueryCriteria_mysql");
+    addDatabaseSpecificStatement("mysql", "updateExecutionTenantIdForDeployment", "updateExecutionTenantIdForDeployment_mysql");
+    addDatabaseSpecificStatement("mysql", "updateTaskTenantIdForDeployment", "updateTaskTenantIdForDeployment_mysql");
+    addDatabaseSpecificStatement("mysql", "updateJobTenantIdForDeployment", "updateJobTenantIdForDeployment_mysql");
     
     //postgres specific
     databaseSpecificLimitBeforeStatements.put("postgres", "");
@@ -148,6 +151,8 @@ public class DbSqlSessionFactory implements SessionFactory {
   
   protected String databaseType;
   protected String databaseTablePrefix = "";
+  private boolean tablePrefixIsSchema;
+  
   /**
    * In some situations you want to set the schema to use for table checks /
    * generation if the database metadata doesn't return that correctly, see
@@ -164,6 +169,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  selectStatements = new ConcurrentHashMap<Class<?>, String>();
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
+
 
   public Class< ? > getSessionType() {
     return DbSqlSession.class;
@@ -333,4 +339,12 @@ public class DbSqlSessionFactory implements SessionFactory {
     this.databaseSchema = databaseSchema;
   }
 
+	public void setTablePrefixIsSchema(boolean tablePrefixIsSchema) {
+		this.tablePrefixIsSchema = tablePrefixIsSchema;
+  }
+	
+	public boolean isTablePrefixIsSchema() {
+	  return tablePrefixIsSchema;
+  }
+	
 }

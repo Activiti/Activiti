@@ -13,8 +13,8 @@
 
 package org.activiti.engine.impl.form;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.FormProperty;

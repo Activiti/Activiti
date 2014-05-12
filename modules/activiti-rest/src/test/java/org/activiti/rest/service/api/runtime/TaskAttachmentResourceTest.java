@@ -26,8 +26,6 @@ import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.HttpMultipartRepresentation;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.engine.header.Header;
 import org.restlet.engine.header.HeaderConstants;
@@ -35,6 +33,9 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 import org.restlet.util.Series;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -122,14 +123,14 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
 
       JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(urlAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("simpleType", responseNode.get("type").getTextValue());
-      assertEquals("Simple attachment", responseNode.get("name").getTextValue());
-      assertEquals("Simple attachment description", responseNode.get("description").getTextValue());
-      assertEquals("http://activiti.org", responseNode.get("externalUrl").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      assertEquals(urlAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("simpleType", responseNode.get("type").textValue());
+      assertEquals("Simple attachment", responseNode.get("name").textValue());
+      assertEquals("Simple attachment description", responseNode.get("description").textValue());
+      assertEquals("http://activiti.org", responseNode.get("externalUrl").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("contentUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
@@ -142,15 +143,15 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
 
       responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(binaryAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("binaryType", responseNode.get("type").getTextValue());
-      assertEquals("Binary attachment", responseNode.get("name").getTextValue());
-      assertEquals("Binary attachment description", responseNode.get("description").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      assertEquals(binaryAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("binaryType", responseNode.get("type").textValue());
+      assertEquals("Binary attachment", responseNode.get("name").textValue());
+      assertEquals("Binary attachment description", responseNode.get("description").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("contentUrl").getTextValue()
+      assertTrue(responseNode.get("contentUrl").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("externalUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
@@ -346,14 +347,14 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       Attachment urlAttachment = attachments.get(0);
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(urlAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("simpleType", responseNode.get("type").getTextValue());
-      assertEquals("Simple attachment", responseNode.get("name").getTextValue());
-      assertEquals("Simple attachment description", responseNode.get("description").getTextValue());
-      assertEquals("http://activiti.org", responseNode.get("externalUrl").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      assertEquals(urlAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("simpleType", responseNode.get("type").textValue());
+      assertEquals("Simple attachment", responseNode.get("name").textValue());
+      assertEquals("Simple attachment description", responseNode.get("description").textValue());
+      assertEquals("http://activiti.org", responseNode.get("externalUrl").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("contentUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
@@ -404,15 +405,15 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       assertEquals("This is binary content", IOUtils.toString(taskService.getAttachmentContent(binaryAttachment.getId())));
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(binaryAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("myType", responseNode.get("type").getTextValue());
-      assertEquals("An attachment", responseNode.get("name").getTextValue());
-      assertEquals("An attachment description", responseNode.get("description").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      assertEquals(binaryAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("myType", responseNode.get("type").textValue());
+      assertEquals("An attachment", responseNode.get("name").textValue());
+      assertEquals("An attachment description", responseNode.get("description").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("contentUrl").getTextValue()
+      assertTrue(responseNode.get("contentUrl").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("externalUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
@@ -533,14 +534,14 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
 
       JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(urlAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("simpleType", responseNode.get("type").getTextValue());
-      assertEquals("Simple attachment", responseNode.get("name").getTextValue());
-      assertEquals("Simple attachment description", responseNode.get("description").getTextValue());
-      assertEquals("http://activiti.org", responseNode.get("externalUrl").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      assertEquals(urlAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("simpleType", responseNode.get("type").textValue());
+      assertEquals("Simple attachment", responseNode.get("name").textValue());
+      assertEquals("Simple attachment description", responseNode.get("description").textValue());
+      assertEquals("http://activiti.org", responseNode.get("externalUrl").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("contentUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
@@ -553,15 +554,15 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
 
       responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(binaryAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("binaryType", responseNode.get("type").getTextValue());
-      assertEquals("Binary attachment", responseNode.get("name").getTextValue());
-      assertEquals("Binary attachment description", responseNode.get("description").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      assertEquals(binaryAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("binaryType", responseNode.get("type").textValue());
+      assertEquals("Binary attachment", responseNode.get("name").textValue());
+      assertEquals("Binary attachment description", responseNode.get("description").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("contentUrl").getTextValue()
+      assertTrue(responseNode.get("contentUrl").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("externalUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());

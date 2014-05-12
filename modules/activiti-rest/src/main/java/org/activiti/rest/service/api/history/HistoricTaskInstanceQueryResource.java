@@ -25,6 +25,7 @@ public class HistoricTaskInstanceQueryResource extends HistoricTaskInstanceBaseR
 
   @Post
   public DataResponse queryProcessInstances(HistoricTaskInstanceQueryRequest queryRequest) {
+  	if(authenticate() == false) return null;
     return getQueryResponse(queryRequest, getQuery());
   }
 }

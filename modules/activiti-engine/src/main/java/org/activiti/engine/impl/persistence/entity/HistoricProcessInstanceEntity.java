@@ -18,14 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Tom Baeyens
  * @author Christian Stettler
+ * @author Joram Barrez
  */
 public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance {
 
@@ -36,6 +37,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   protected String startUserId;
   protected String startActivityId;
   protected String superProcessInstanceId;
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricProcessInstanceEntity() {
@@ -46,10 +48,15 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     processInstanceId = processInstance.getId();
     businessKey = processInstance.getBusinessKey();
     processDefinitionId = processInstance.getProcessDefinitionId();
-    startTime = ClockUtil.getCurrentTime();
+    startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     startUserId = Authentication.getAuthenticatedUserId();
     startActivityId = processInstance.getActivityId();
     superProcessInstanceId = processInstance.getSuperExecution() != null ? processInstance.getSuperExecution().getProcessInstanceId() : null;
+    
+    // Inherit tenant id (if applicable)
+    if (processInstance.getTenantId() != null) {
+    	tenantId = processInstance.getTenantId();
+    }
   }
 
   
@@ -103,7 +110,15 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     this.superProcessInstanceId = superProcessInstanceId;
   }
   
-  public Map<String, Object> getProcessVariables() {
+  public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
       for (HistoricVariableInstanceEntity variableInstance: queryVariables) {

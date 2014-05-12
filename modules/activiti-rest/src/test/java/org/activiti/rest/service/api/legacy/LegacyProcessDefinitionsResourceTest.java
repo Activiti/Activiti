@@ -3,9 +3,10 @@ package org.activiti.rest.service.api.legacy;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
-import org.codehaus.jackson.JsonNode;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Test for all <b>Legacy</b> REST-operations related to Process Definitions:
@@ -29,13 +30,13 @@ public class LegacyProcessDefinitionsResourceTest extends BaseRestTestCase {
     
     // Check process properties
     JsonNode procesNode = responseNode.get("data").get(0);
-    assertEquals(definition.getId(), procesNode.get("id").getTextValue());
-    assertEquals(definition.getKey(), procesNode.get("key").getTextValue());
-    assertEquals(definition.getCategory(), procesNode.get("category").getTextValue());
-    assertEquals(definition.getVersion(), procesNode.get("version").getIntValue());
-    assertEquals(definition.getResourceName(), procesNode.get("resourceName").getTextValue());
-    assertEquals(definition.getDeploymentId(), procesNode.get("deploymentId").getTextValue());
-    assertFalse(procesNode.get("graphicNotationDefined").getBooleanValue());
+    assertEquals(definition.getId(), procesNode.get("id").textValue());
+    assertEquals(definition.getKey(), procesNode.get("key").textValue());
+    assertEquals(definition.getCategory(), procesNode.get("category").textValue());
+    assertEquals(definition.getVersion(), procesNode.get("version").intValue());
+    assertEquals(definition.getResourceName(), procesNode.get("resourceName").textValue());
+    assertEquals(definition.getDeploymentId(), procesNode.get("deploymentId").textValue());
+    assertFalse(procesNode.get("graphicNotationDefined").booleanValue());
     assertTrue(procesNode.get("diagramResourceName").isNull());
     assertTrue(procesNode.get("startFormResourceKey").isNull());
   }

@@ -19,7 +19,6 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.rest.common.api.RestError;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Status;
@@ -27,6 +26,8 @@ import org.restlet.ext.jackson.JacksonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.service.StatusService;
+
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 
 /**
@@ -62,7 +63,7 @@ public class ActivitiStatusService extends StatusService {
   @Override
   public Status getStatus(Throwable throwable, Request request, Response response) {
     Status status = null;
-    if(throwable instanceof JsonMappingException && throwable.getCause() != null) {
+    if (throwable instanceof JsonMappingException && throwable.getCause() != null) {
       // Possible that the Jackson-unmarchalling has a more specific cause. if no specific exception caused
       // the throwable, it will be handled as a normal exception
       status = getSpecificStatus(throwable.getCause(), request, response);

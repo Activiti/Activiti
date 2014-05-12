@@ -21,7 +21,6 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -40,9 +39,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Event;
-import org.activiti.engine.task.IdentityLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,11 +127,15 @@ public void recordProcessInstanceStart(ExecutionEntity processInstance) {
       historicActivityInstance.setActivityId(processInstance.getActivityId());
       historicActivityInstance.setActivityName((String) processInstance.getActivity().getProperty("name"));
       historicActivityInstance.setActivityType((String) processInstance.getActivity().getProperty("type"));
-      Date now = ClockUtil.getCurrentTime();
+      Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
       historicActivityInstance.setStartTime(now);
       
-      getDbSqlSession()
-        .insert(historicActivityInstance);
+      // Inherit tenant id (if applicable)
+      if (processInstance.getTenantId() != null) {
+      	historicActivityInstance.setTenantId(processInstance.getTenantId());
+      }
+      
+      getDbSqlSession().insert(historicActivityInstance);
     }
   }
   
@@ -173,7 +174,7 @@ public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, Execu
       historicActivityInstance.setActivityId(initialActivity.getId());
       historicActivityInstance.setActivityName((String) initialActivity.getProperty("name"));
       historicActivityInstance.setActivityType((String) initialActivity.getProperty("type"));
-      Date now = ClockUtil.getCurrentTime();
+      Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
       historicActivityInstance.setStartTime(now);
       
       getDbSqlSession()
@@ -204,7 +205,12 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
     		historicActivityInstance.setActivityId(executionEntity.getActivityId());
     		historicActivityInstance.setActivityName((String) executionEntity.getActivity().getProperty("name"));
     		historicActivityInstance.setActivityType((String) executionEntity.getActivity().getProperty("type"));
-    		historicActivityInstance.setStartTime(ClockUtil.getCurrentTime());
+    		historicActivityInstance.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    		
+    	  // Inherit tenant id (if applicable)
+        if (executionEntity.getTenantId() != null) {
+        	historicActivityInstance.setTenantId(executionEntity.getTenantId());
+        }
     		
     		getDbSqlSession().insert(historicActivityInstance);
     	}
@@ -367,7 +373,7 @@ public void recordTaskClaim(String taskId) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance != null) {
-        historicTaskInstance.setClaimTime( ClockUtil.getCurrentTime());
+        historicTaskInstance.setClaimTime( Context.getProcessEngineConfiguration().getClock().getCurrentTime());
       }
     }    
   }
@@ -620,7 +626,7 @@ public void createIdentityLinkComment(String taskId, String userId, String group
       CommentEntity comment = new CommentEntity();
       comment.setUserId(authenticatedUserId);
       comment.setType(CommentEntity.TYPE_EVENT);
-      comment.setTime(ClockUtil.getCurrentTime());
+      comment.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
       comment.setTaskId(taskId);
       if (userId!=null || forceNullUserId) {
         if(create) {
@@ -651,7 +657,7 @@ public void createAttachmentComment(String taskId, String processInstanceId, Str
       CommentEntity comment = new CommentEntity();
       comment.setUserId(userId);
       comment.setType(CommentEntity.TYPE_EVENT);
-      comment.setTime(ClockUtil.getCurrentTime());
+      comment.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
       comment.setTaskId(taskId);
       comment.setProcessInstanceId(processInstanceId);
       if(create) {

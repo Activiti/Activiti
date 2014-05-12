@@ -15,14 +15,19 @@ package org.activiti.engine.impl.calendar;
 import java.util.Date;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.runtime.ClockReader;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 
-public class DueDateBusinessCalendar implements BusinessCalendar {
+public class DueDateBusinessCalendar extends BusinessCalendarImpl {
 
   public static final String NAME = "dueDate";
-  
+
+  public DueDateBusinessCalendar(ClockReader clockReader) {
+    super(clockReader);
+  }
+
   public Date resolveDuedate(String duedate) {
     try {
     	

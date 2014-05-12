@@ -1,8 +1,7 @@
 package org.activiti.workflow.simple.definition;
 
-import java.io.Serializable;
 
-public class ConditionDefinition implements Serializable {
+public class ConditionDefinition {
 
   private static final long serialVersionUID = 1L;
   

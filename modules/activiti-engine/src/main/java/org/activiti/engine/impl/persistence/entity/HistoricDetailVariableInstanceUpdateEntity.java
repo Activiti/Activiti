@@ -17,7 +17,6 @@ import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +49,7 @@ public class HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEn
     historicVariableUpdate.processInstanceId = variableInstance.getProcessInstanceId();
     historicVariableUpdate.executionId = variableInstance.getExecutionId();
     historicVariableUpdate.taskId = variableInstance.getTaskId();
-    historicVariableUpdate.time = ClockUtil.getCurrentTime();
+    historicVariableUpdate.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     historicVariableUpdate.revision = variableInstance.getRevision();
     historicVariableUpdate.name = variableInstance.getName();
     historicVariableUpdate.variableType = variableInstance.getType();

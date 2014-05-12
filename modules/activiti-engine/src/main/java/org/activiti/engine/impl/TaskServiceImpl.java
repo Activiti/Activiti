@@ -48,6 +48,7 @@ import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
 import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.GetTypeCommentsCmd;
 import org.activiti.engine.impl.cmd.HasTaskVariableCmd;
+import org.activiti.engine.impl.cmd.NewTaskCmd;
 import org.activiti.engine.impl.cmd.RemoveTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.ResolveTaskCmd;
 import org.activiti.engine.impl.cmd.SaveAttachmentCmd;
@@ -55,7 +56,6 @@ import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskDueDateCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
@@ -77,9 +77,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public Task newTask(String taskId) {
-    TaskEntity task = TaskEntity.create();
-    task.setId(taskId);
-    return task;
+    return commandExecutor.execute(new NewTaskCmd(taskId));
   }
   
   public void saveTask(Task task) {

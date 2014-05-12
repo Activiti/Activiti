@@ -16,12 +16,13 @@ package org.activiti.rest.service.api.identity;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -46,10 +47,10 @@ public class GroupResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("testgroup", responseNode.get("id").getTextValue());
-      assertEquals("Test group", responseNode.get("name").getTextValue());
-      assertEquals("Test type", responseNode.get("type").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertEquals("testgroup", responseNode.get("id").textValue());
+      assertEquals("Test group", responseNode.get("name").textValue());
+      assertEquals("Test type", responseNode.get("type").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_GROUP, testGroup.getId())));      
       
       Group createdGroup  = identityService.createGroupQuery().groupId("testgroup").singleResult();
@@ -143,10 +144,10 @@ public class GroupResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("testgroup", responseNode.get("id").getTextValue());
-      assertEquals("Updated group", responseNode.get("name").getTextValue());
-      assertEquals("Updated type", responseNode.get("type").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertEquals("testgroup", responseNode.get("id").textValue());
+      assertEquals("Updated group", responseNode.get("name").textValue());
+      assertEquals("Updated type", responseNode.get("type").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_GROUP, testGroup.getId())));      
       
       Group createdGroup  = identityService.createGroupQuery().groupId("testgroup").singleResult();
@@ -182,10 +183,10 @@ public class GroupResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("testgroup", responseNode.get("id").getTextValue());
-      assertEquals("Test group", responseNode.get("name").getTextValue());
-      assertEquals("Test type", responseNode.get("type").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertEquals("testgroup", responseNode.get("id").textValue());
+      assertEquals("Test group", responseNode.get("name").textValue());
+      assertEquals("Test type", responseNode.get("type").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_GROUP, testGroup.getId())));      
       
       Group createdGroup  = identityService.createGroupQuery().groupId("testgroup").singleResult();
@@ -223,10 +224,10 @@ public class GroupResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("testgroup", responseNode.get("id").getTextValue());
-      assertNull(responseNode.get("name").getTextValue());
-      assertNull(responseNode.get("type").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertEquals("testgroup", responseNode.get("id").textValue());
+      assertNull(responseNode.get("name").textValue());
+      assertNull(responseNode.get("type").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_GROUP, testGroup.getId())));      
       
       Group createdGroup  = identityService.createGroupQuery().groupId("testgroup").singleResult();

@@ -16,8 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * A form-property with a value that is represented as single item selected

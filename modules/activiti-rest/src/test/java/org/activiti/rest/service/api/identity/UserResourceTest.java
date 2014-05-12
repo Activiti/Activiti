@@ -16,12 +16,13 @@ package org.activiti.rest.service.api.identity;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -49,11 +50,11 @@ public class UserResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("testuser", responseNode.get("id").getTextValue());
-      assertEquals("Fred", responseNode.get("firstName").getTextValue());
-      assertEquals("McDonald", responseNode.get("lastName").getTextValue());
-      assertEquals("no-reply@activiti.org", responseNode.get("email").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())));
+      assertEquals("testuser", responseNode.get("id").textValue());
+      assertEquals("Fred", responseNode.get("firstName").textValue());
+      assertEquals("McDonald", responseNode.get("lastName").textValue());
+      assertEquals("no-reply@activiti.org", responseNode.get("email").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())));
     } finally {
       
       // Delete user after test passes or fails
@@ -153,11 +154,11 @@ public class UserResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("testuser", responseNode.get("id").getTextValue());
-      assertEquals("Tijs", responseNode.get("firstName").getTextValue());
-      assertEquals("Barrez", responseNode.get("lastName").getTextValue());
-      assertEquals("no-reply@alfresco.org", responseNode.get("email").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())));
+      assertEquals("testuser", responseNode.get("id").textValue());
+      assertEquals("Tijs", responseNode.get("firstName").textValue());
+      assertEquals("Barrez", responseNode.get("lastName").textValue());
+      assertEquals("no-reply@alfresco.org", responseNode.get("email").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())));
       
       // Check user is updated in activiti
       newUser = identityService.createUserQuery().userId(newUser.getId()).singleResult();
@@ -198,11 +199,11 @@ public class UserResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("testuser", responseNode.get("id").getTextValue());
-      assertEquals("Fred", responseNode.get("firstName").getTextValue());
-      assertEquals("McDonald", responseNode.get("lastName").getTextValue());
-      assertEquals("no-reply@activiti.org", responseNode.get("email").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())));
+      assertEquals("testuser", responseNode.get("id").textValue());
+      assertEquals("Fred", responseNode.get("firstName").textValue());
+      assertEquals("McDonald", responseNode.get("lastName").textValue());
+      assertEquals("no-reply@activiti.org", responseNode.get("email").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())));
       
       // Check user is updated in activiti
       newUser = identityService.createUserQuery().userId(newUser.getId()).singleResult();
@@ -247,11 +248,11 @@ public class UserResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("testuser", responseNode.get("id").getTextValue());
+      assertEquals("testuser", responseNode.get("id").textValue());
       assertTrue(responseNode.get("firstName").isNull());
       assertTrue(responseNode.get("lastName").isNull());
       assertTrue(responseNode.get("email").isNull());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())));
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())));
       
       // Check user is updated in activiti
       newUser = identityService.createUserQuery().userId(newUser.getId()).singleResult();

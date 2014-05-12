@@ -7,3 +7,20 @@ alter table ACT_HI_TASKINST
     
 alter table ACT_HI_PROCINST drop index ACT_UNIQ_HI_BUS_KEY;   
 
+alter table ACT_HI_VARINST
+    add CREATE_TIME_ datetime; 
+    
+alter table ACT_HI_VARINST
+    add LAST_UPDATED_TIME_ datetime; 
+    
+alter table ACT_HI_PROCINST
+    add TENANT_ID_ varchar(255) default ''; 
+       
+alter table ACT_HI_ACTINST
+    add TENANT_ID_ varchar(255) default ''; 
+    
+alter table ACT_HI_TASKINST
+    add TENANT_ID_ varchar(255) default '';
+    
+alter table ACT_HI_ACTINST
+    modify ASSIGNEE_ varchar(255);

@@ -12,6 +12,7 @@
         <activiti:formProperty id="speaker" variable="SpeakerName"/>
         <activiti:formProperty id="duration" type="long"/>
         <activiti:formProperty id="free" type="boolean" />
+        <activiti:formProperty id="double" type="double" />
       </extensionElements>
     </startEvent>
 
@@ -29,6 +30,7 @@
         <activiti:formProperty id="speaker" variable="SpeakerName" writable="false" />
         <activiti:formProperty id="street" expression="#{address.street}" required="true" />
         <activiti:formProperty id="free" type="boolean"/>
+        <activiti:formProperty id="double" type="double"/>
       </extensionElements>
     </userTask>
 

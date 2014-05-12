@@ -32,6 +32,12 @@ public enum ActivitiEventType {
 	ENTITY_CREATED,
 	
 	/**
+	 * New entity has been created and all child-entities that are created as a result of the creation of this
+	 * particular entity are also created and initialized.
+	 */
+	ENTITY_INITIALIZED,
+	
+	/**
 	 * Existing entity us updated.
 	 */
 	ENTITY_UPDATED,

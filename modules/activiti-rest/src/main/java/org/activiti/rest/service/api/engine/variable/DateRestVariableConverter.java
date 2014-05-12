@@ -17,7 +17,8 @@ import java.text.ParseException;
 import java.util.Date;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.codehaus.jackson.map.util.ISO8601DateFormat;
+
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 
 /**

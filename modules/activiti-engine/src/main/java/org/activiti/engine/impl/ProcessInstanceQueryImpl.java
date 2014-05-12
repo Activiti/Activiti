@@ -49,6 +49,10 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected SuspensionState suspensionState;
   protected boolean includeProcessVariables;
   
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
+  
   // Unused, see dynamic query
   protected String activityId;
   protected List<EventSubscriptionQueryValue> eventSubscriptions;
@@ -98,6 +102,27 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     this.businessKey = businessKey;
     this.processDefinitionKey = processDefinitionKey;
     return this;
+  }
+  
+  public ProcessInstanceQuery processInstanceTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public ProcessInstanceQuery processInstanceTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public ProcessInstanceQuery processInstanceWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
   }
 
   @Override
@@ -160,6 +185,11 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   
   public ProcessInstanceQuery orderByProcessDefinitionKey() {
     this.orderProperty = ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY;
+    return this;
+  }
+  
+  public ProcessInstanceQuery orderByTenantId() {
+    this.orderProperty = ProcessInstanceQueryProperty.TENANT_ID;
     return this;
   }
   
@@ -259,16 +289,23 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public void setSuspensionState(SuspensionState suspensionState) {
     this.suspensionState = suspensionState;
   }  
-
   public List<EventSubscriptionQueryValue> getEventSubscriptions() {
     return eventSubscriptions;
   }
-
   public void setEventSubscriptions(List<EventSubscriptionQueryValue> eventSubscriptions) {
     this.eventSubscriptions = eventSubscriptions;
   }
-  
-  /**
+  public String getTenantId() {
+		return tenantId;
+	}
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+	public boolean isWithoutTenantId() {
+		return withoutTenantId;
+	}
+
+	/**
    * Method needed for ibatis because of re-use of query-xml for executions. ExecutionQuery contains
    * a parentId property.
    */

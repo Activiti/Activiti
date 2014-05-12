@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Collections;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -128,5 +129,31 @@ public class JobCollectionResourceTest extends BaseRestTestCase {
     // Fetch with empty exceptionMessage
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?exceptionMessage=";
     assertResultsPresentInDataResponse(url);
+    
+    // Without tenant id, before tenant update
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?withoutTenantId=true";
+    assertResultsPresentInDataResponse(url, timerJob.getId(), asyncJob.getId());
+    
+    // Set tenant on deployment
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+
+    // Without tenant id, after tenant update
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?withoutTenantId=true";
+    assertResultsPresentInDataResponse(url);
+    
+    // Tenant id
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?tenantId=myTenant";
+    assertResultsPresentInDataResponse(url, timerJob.getId(), asyncJob.getId());
+    
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?tenantId=anotherTenant";
+    assertResultsPresentInDataResponse(url);
+    
+    // Tenant id like
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?tenantIdLike=" + encode("%enant");
+    assertResultsPresentInDataResponse(url, timerJob.getId(), asyncJob.getId());
+    
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?tenantIdLike=anotherTenant";
+    assertResultsPresentInDataResponse(url);
+    
   }
 }

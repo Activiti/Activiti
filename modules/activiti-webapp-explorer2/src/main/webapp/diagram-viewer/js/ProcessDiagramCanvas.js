@@ -120,7 +120,7 @@ var CONNECTION_TYPE = {
 var ProcessDiagramCanvas = function(){
 };
 ProcessDiagramCanvas.prototype = {
-// var ProcessDiagramCanvas = {
+// var DefaultProcessDiagramCanvas = {
 	canvasHolder: "holder",
 	canvasWidth: 0, 
 	canvasHeight: 0,
@@ -1111,7 +1111,7 @@ ProcessDiagramCanvas.prototype = {
 		//var arrowHead = this.g.path("M-" + ARROW_WIDTH/2 + " -" + doubleArrowWidth + "L0 0" + "L" + ARROW_WIDTH/2 + " -" + doubleArrowWidth + "z");
 		
 		var arrowHead = this.g.path("M0 0L-" + ARROW_WIDTH/1.5 + " -" + doubleArrowWidth + "L" + ARROW_WIDTH/1.5 + " -" + doubleArrowWidth + "z");
-		//var c = ProcessDiagramCanvas.g.ellipse(0, 0, 3, 3);
+		//var c = DefaultProcessDiagramCanvas.g.ellipse(0, 0, 3, 3);
 		//c.transform("t"+targetX+","+targetY+"");
 		
 		var angle = Math.atan2(targetY - srcY, targetX - srcX);

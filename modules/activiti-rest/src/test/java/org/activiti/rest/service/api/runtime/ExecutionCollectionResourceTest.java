@@ -15,15 +15,17 @@ package org.activiti.rest.service.api.runtime;
 
 import java.util.Map;
 
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.resource.ClientResource;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Test for all REST-operations related to the execution collection.
@@ -89,6 +91,31 @@ public class ExecutionCollectionResourceTest extends BaseRestTestCase {
     
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?activityId=anotherId";
     assertResultsPresentInDataResponse(url);
+    
+    // Without tenant ID, before tenant is set
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?withoutTenantId=true";
+    assertResultsPresentInDataResponse(url, id, childExecution.getId());
+    
+    // Update the tenant for the deployment
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+    
+    // Without tenant ID, after tenant is set
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?withoutTenantId=true";
+    assertResultsPresentInDataResponse(url);
+    
+    // Tenant id
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?tenantId=myTenant";
+    assertResultsPresentInDataResponse(url, id, childExecution.getId());
+    
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?tenantId=myTenant2";
+    assertResultsPresentInDataResponse(url);
+    
+    // Tenant id like
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?tenantIdLike=" + encode("%enant");
+    assertResultsPresentInDataResponse(url, id, childExecution.getId());
+    
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION) + "?tenantIdLike=" + encode("%whatever");
+    assertResultsPresentInDataResponse(url);
   }
   
   /**
@@ -109,7 +136,7 @@ public class ExecutionCollectionResourceTest extends BaseRestTestCase {
     // Sending signal event causes the execution to end (scope-execution for the catching event)
     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION));
     client.put(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -143,7 +170,7 @@ public class ExecutionCollectionResourceTest extends BaseRestTestCase {
     // Sending signal event causes the execution to end (scope-execution for the catching event)
     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION));
     client.put(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
     
     client.release();
     

@@ -17,8 +17,8 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.SecuredResource;
-import org.restlet.resource.Delete;
 import org.restlet.data.Status;
+import org.restlet.resource.Delete;
 
 /**
  * @author Ernesto Revilla

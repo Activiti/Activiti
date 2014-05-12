@@ -40,7 +40,7 @@ public class GroupEventsTest extends PluggableActivitiTestCase {
 			group.setType("type");
 			identityService.saveGroup(group);
 
-			assertEquals(1, listener.getEventsReceived().size());
+			assertEquals(2, listener.getEventsReceived().size());
 			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 			assertTrue(event.getEntity() instanceof Group);
@@ -49,6 +49,9 @@ public class GroupEventsTest extends PluggableActivitiTestCase {
 			assertNull(event.getProcessDefinitionId());
 			assertNull(event.getExecutionId());
 			assertNull(event.getProcessInstanceId());
+			
+			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+			assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
 			listener.clearEventsReceived();
 
 			// Update Group

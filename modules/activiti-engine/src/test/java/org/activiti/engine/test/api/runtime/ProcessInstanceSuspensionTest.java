@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -364,7 +363,35 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     runtimeService.signalEventReceived(signal);
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
   }
-  
+
+  @Deployment(resources = "org/activiti/engine/test/api/runtime/ProcessInstanceSuspensionTest.testSignalEventReceivedAfterProcessInstanceSuspended.bpmn20.xml")
+  public void testSignalEventReceivedAfterMultipleProcessInstancesSuspended() {
+
+    final String signal = "Some Signal";
+
+    // Test if process instance can be completed using the signal
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signalSuspendedProcessInstance");
+    runtimeService.startProcessInstanceByKey("signalSuspendedProcessInstance");
+    runtimeService.signalEventReceived(signal);
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+
+    // Now test when suspending the process instance: the process instance shouldn't be continued
+    processInstance = runtimeService.startProcessInstanceByKey("signalSuspendedProcessInstance");
+    runtimeService.suspendProcessInstanceById(processInstance.getId());
+    processInstance = runtimeService.startProcessInstanceByKey("signalSuspendedProcessInstance");
+    runtimeService.suspendProcessInstanceById(processInstance.getId());
+    runtimeService.signalEventReceived(signal);
+    assertEquals(2, runtimeService.createProcessInstanceQuery().count());
+
+    runtimeService.signalEventReceived(signal, new HashMap<String, Object>());
+    assertEquals(2, runtimeService.createProcessInstanceQuery().count());
+
+    // Activate and try again
+    runtimeService.activateProcessInstanceById(processInstance.getId());
+    runtimeService.signalEventReceived(signal);
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+  }
+
   @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testTaskOperationsFailAfterProcessInstanceSuspend() {
 
@@ -543,7 +570,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
   public void testJobNotExecutedAfterProcessInstanceSuspend() {
     
     Date now = new Date();
-    ClockUtil.setCurrentTime(now);
+    processEngineConfiguration.getClock().setCurrentTime(now);
     
     // Suspending the process instance should also stop the execution of jobs for that process instance
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
@@ -553,7 +580,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createJobQuery().count());
     
     // The jobs should not be executed now
-    ClockUtil.setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
+    processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
     waitForJobExecutorToProcessAllJobs(1000L, 100L);
     assertEquals(1, managementService.createJobQuery().count());
     

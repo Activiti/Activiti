@@ -23,7 +23,7 @@ import java.util.Map;
  * 
  * @author Tom Baeyens
  */
-public interface HistoricTaskInstance {
+public interface HistoricTaskInstance extends HistoricData {
 
   /** 
    * The unique identifier of this historic task instance. This is the same identifier as the
@@ -87,6 +87,9 @@ public interface HistoricTaskInstance {
   
   /** The parent task of this task, in case this task was a subtask */
   String getParentTaskId();
+  
+  /** Returns the tenant identifier for this historic task */
+  String getTenantId();
 
   /** Returns the local task variables if requested in the task query */
   Map<String, Object> getTaskLocalVariables();

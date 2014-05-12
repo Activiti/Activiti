@@ -19,9 +19,10 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.UserTask;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -107,7 +108,7 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
     if (assignmentNode != null) {
       JsonNode itemsNode = assignmentNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
       if (itemsNode != null) {
-        Iterator<JsonNode> assignmentIterator = itemsNode.getElements();
+        Iterator<JsonNode> assignmentIterator = itemsNode.elements();
         while (assignmentIterator.hasNext()) {
           JsonNode assignmentItemNode = assignmentIterator.next();
           if (assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_TYPE) != null && 

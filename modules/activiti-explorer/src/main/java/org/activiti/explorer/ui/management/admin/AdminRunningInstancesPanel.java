@@ -12,21 +12,18 @@
  */
 package org.activiti.explorer.ui.management.admin;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.Reindeer;
+import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -41,17 +38,8 @@ import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.ProcessDefinitionImageStreamResourceBuilder;
 import org.activiti.explorer.ui.variable.VariableRendererManager;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.terminal.StreamResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.themes.Reindeer;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * @author Tijs Rademakers
@@ -304,10 +292,12 @@ public class AdminRunningInstancesPanel extends DetailPanel {
 	    	imageHeader.addStyleName(ExplorerLayout.STYLE_NO_LINE);
 	    	addDetailComponent(imageHeader);
     	}
-      
+
+      ProcessDiagramGenerator diagramGenerator = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getProcessEngineConfiguration().getProcessDiagramGenerator();
+
       StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
         	.buildStreamResource(processInstance.getId(), processInstance.getProcessDefinitionId(), 
-        			repositoryService, runtimeService);
+        			repositoryService, runtimeService, diagramGenerator);
 
       currentEmbedded = new Embedded(null, diagram);
       currentEmbedded.setType(Embedded.TYPE_IMAGE);

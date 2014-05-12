@@ -222,6 +222,51 @@ userBean.hello();</programlisting>
 &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
   &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
 &lt;/bean&gt;</programlisting>
+
+	<para>
+		By default, the configuration above will group all of the resources matching the filtering into a single deployment to the Activiti engine. The duplicate filtering to prevent re-deployment of unchanged 
+		resources applies to the whole deployment. In some cases, this may not be what you want. For instance, if you deploy a set of process resources this way and only a single 
+		process definition in those resources has changed, the deployment as a whole will be considered new and all of the process definitions in that deployment will be re-deployed, resulting in new 
+		versions of each of the process definitions, even though only one was actually changed.
+	</para>
+	
+	<para>
+		To be able to customize the way deployments are determined, you can specify an additional property in the <literal>SpringProcessEngineConfiguration</literal>, <literal>deploymentMode</literal>. This 
+		property defines the way deployments will be determined from the set of resources that match the filter. There are 3 values that are supported by default for this property:
+	</para>
+	
+	<itemizedlist>
+		<listitem>
+			<code>default</code>: Group all resources into a single deployment and apply duplicate filtering to that deployment. 
+				This is the default value and it will be used if you don&apos;t specify a value.
+		</listitem>
+		<listitem>
+			<code>single-resource</code>: Create a separate deployment for each individual resource and apply duplicate filtering to that deployment. This is the 
+				value you would use to have each process definition be deployed separately and only create a new process definition version if it has changed. 
+		</listitem>
+		<listitem>
+			<code>resource-parent-folder</code>: Create a separate deployment for resources that share the same parent folder and apply duplicate filtering to that 
+				deployment. This value can be used to create separate deployments for most resources, but still be able to group some by placing them in a shared folder.
+		</listitem>
+	</itemizedlist>
+	
+	<para>
+		Here&apos;s an example of how to specify the <code>single-resource</code> configuration for <code>deploymentMode</code>:
+	</para>
+	
+	<programlisting>
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
+  ...
+  <emphasis>&lt;property name=&quot;deploymentResources&quot; value=&quot;classpath*:/activiti/*.bpmn&quot; /&gt;</emphasis>
+  <emphasis role="bold">&lt;property name=&quot;deploymentMode&quot; value=&quot;single-resource&quot; /&gt;</emphasis>
+&lt;/bean&gt;</programlisting>
+	
+	<para>
+		In addition to using the values listed above for <code>deploymentMode</code>, you may require customized behavior towards determining deployments. If so, 
+		you can create a subclass of <code>SpringProcessEngineConfiguration</code> and override the <code>getAutoDeploymentStrategy(String deploymentMode)</code> method. 
+		This method determines which deployment strategy is used for a certain value of the <code>deploymentMode</code> configuration.
+	</para>
+
   </section>
   
   <section id="springUnitTest">
@@ -267,4 +312,189 @@ public class MyBusinessProcessTest {
       </programlisting>
     </para>
   </section>
+  
+  
+  <section id="spring.enable.activiti.annotation">
+  
+    <title>Annotation-based configuration</title>
+    
+    <para>
+        [EXPERIMENTAL] The <emphasis>@EnableActiviti</emphasis> annotation is relatively new and could potentially change in the future.
+    </para>
+    
+    <para>
+        An alternative to XML-based configuration is using the annotation-based way of configuring a Spring environment.
+        This is pretty much similar to doing it the XML-way, except that the <emphasis>@Bean</emphasis> annotation
+        is used and the configuration is written in Java. This has been always possible out-of-the-box with the 
+        Activiti-Spring integration.
+    </para>
+    
+    <para>
+        Building on top of that (available for Spring 3.0+) is the <emphasis>@EnableActiviti</emphasis> annotation. In the simplest form
+        it looks like this:
+        <programlisting>
+  @Configuration
+  @EnableActiviti
+  public static class SimplestConfiguration {
+    
+  }</programlisting>
+        This will create a Spring environment with an Activiti Process Engine configured using 
+          <itemizedlist>
+            <listitem>
+              <para>
+                a default in-memory H2 database, with auto-schema upgrade enabled.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                a simple <emphasis>DataSourceTransactionManager</emphasis>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                a default <emphasis>SpringJobExecutor</emphasis>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                a scanner for bpmn20.xml files residing in the <emphasis>processes/</emphasis> folder.
+              </para>
+            </listitem>
+          </itemizedlist>
+          In such an environment, getting access to the Activiti Engine and services is simply done by injection:
+          <programlisting>
+  @Autowired
+  private ProcessEngine processEngine;
+  
+  @Autowired
+  private RuntimeService runtimeService;
+  
+  @Autowired
+  private TaskService taskService;
+  
+  @Autowired
+  private HistoryService historyService;
+  
+  @Autowired
+  private RepositoryService repositoryService;
+  
+  @Autowired
+  private ManagementService managementService;
+  
+  @Autowired
+  private FormService formService;</programlisting>
+    </para>
+    
+    <para>
+        Of course, these defaults can be customized. For example, if a datasource is configured, that datasource will be
+        used instead of creating the default one. The same applies for the transaction manager, job executor, etc.
+        For example in this piece of configuration:
+        <programlisting>
+  @Configuration
+  @EnableActiviti
+  public static class Config {
+    
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource basicDataSource = new BasicDataSource();
+        basicDataSource.setUsername(&quot;sa&quot;);
+        basicDataSource.setUrl(&quot;jdbc:h2:mem:anotherDatabase&quot;);
+        basicDataSource.setDefaultAutoCommit(false);
+        basicDataSource.setDriverClassName(org.h2.Driver.class.getName());
+        basicDataSource.setPassword(&quot;&quot;);
+        return basicDataSource;
+    }
+    
+  }</programlisting>
+        Another database will be used instead of constructing the default one.        
+    </para>
+    
+    <para>
+        A more elaborate configuration for reference is shown below. Note the use of an <emphasis>AbstractActivitiConfigurer</emphasis>, which exposes
+        access to the Process Engine configuration and can be used to tweak the configuration in detail.
+        <programlisting>
+@Configuration
+@EnableActiviti
+@EnableTransactionManagement(proxyTargetClass = true)
+class JPAConfiguration {
+
+    @Bean
+    public OpenJpaVendorAdapter openJpaVendorAdapter() {
+        OpenJpaVendorAdapter openJpaVendorAdapter = new OpenJpaVendorAdapter();
+        openJpaVendorAdapter.setDatabasePlatform(H2Dictionary.class.getName());
+        return openJpaVendorAdapter;
+    }
+
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource basicDataSource = new BasicDataSource();
+        basicDataSource.setUsername(&quot;sa&quot;);
+        basicDataSource.setUrl(&quot;jdbc:h2:mem:activiti&quot;);
+        basicDataSource.setDefaultAutoCommit(false);
+        basicDataSource.setDriverClassName(org.h2.Driver.class.getName());
+        basicDataSource.setPassword(&quot;&quot;);
+        return basicDataSource;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(
+        OpenJpaVendorAdapter openJpaVendorAdapter, DataSource ds) {
+        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setPersistenceXmlLocation(&quot;classpath:/org/activiti/spring/test/jpa/custom-persistence.xml&quot;);
+        emf.setJpaVendorAdapter(openJpaVendorAdapter);
+        emf.setDataSource(ds);
+        return emf;
+    }
+
+    @Bean
+    public PlatformTransactionManager jpaTransactionManager(
+        EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
+
+    @Bean
+    public AbstractActivitiConfigurer abstractActivitiConfigurer(
+        final EntityManagerFactory emf,
+        final PlatformTransactionManager transactionManager) {
+
+        return new AbstractActivitiConfigurer() {
+
+            @Override
+            public void postProcessSpringProcessEngineConfiguration(SpringProcessEngineConfiguration engine) {
+                engine.setTransactionManager(transactionManager);
+                engine.setJpaEntityManagerFactory(emf);
+                engine.setJpaHandleTransaction(false);
+                engine.setJobExecutorActivate(false);
+                engine.setJpaCloseEntityManager(false);
+                engine.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
+            }
+        };
+    }
+
+    // A random bean
+    @Bean
+    public LoanRequestBean loanRequestBean() {
+        return new LoanRequestBean();
+    }
+}</programlisting>
+    </para>
+  
+  </section>
+  
+  <section>
+    <title>JPA with Hibernate 4.2.x</title>
+    
+    <para>
+      When using Hibernate 4.2.x JPA in service task or listener logic in the Activiti Engine an additional dependency to Spring ORM is needed.
+      This is not needed for Hibernate 4.1.x or lower. The following dependency should be added:
+      <programlisting>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-orm&lt;/artifactId&gt;
+  &lt;version&gt;${org.springframework.version}&lt;/version&gt;
+&lt;/dependency&gt;
+      </programlisting>
+    </para>
+  </section>
+    
 </chapter>

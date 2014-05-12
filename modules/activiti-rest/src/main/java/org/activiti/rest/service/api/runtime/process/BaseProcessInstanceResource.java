@@ -43,6 +43,7 @@ public class BaseProcessInstanceResource extends SecuredResource {
     allowedSortProperties.put("processDefinitionId", ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
     allowedSortProperties.put("processDefinitionKey", ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY);
     allowedSortProperties.put("id", ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID);
+    allowedSortProperties.put("tenantId", ProcessInstanceQueryProperty.TENANT_ID);
   }
 
   protected DataResponse getQueryResponse(ProcessInstanceQueryRequest queryRequest, Form urlQuery) {
@@ -88,8 +89,20 @@ public class BaseProcessInstanceResource extends SecuredResource {
     if (queryRequest.getVariables() != null) {
       addVariables(query, queryRequest.getVariables());
     }
+    
+    if(queryRequest.getTenantId() != null) {
+    	query.processInstanceTenantId(queryRequest.getTenantId());
+    }
+    
+    if(queryRequest.getTenantIdLike() != null) {
+    	query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
+    }
+    
+    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+    	query.processInstanceWithoutTenantId();
+    }
 
-    return new ProcessInstancePaginateList(this).paginateList(urlQuery, query, "id", allowedSortProperties);
+    return new ProcessInstancePaginateList(this).paginateList(urlQuery, queryRequest, query, "id", allowedSortProperties);
   }
 
   protected void addVariables(ProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {
@@ -155,15 +168,19 @@ public class BaseProcessInstanceResource extends SecuredResource {
         
       case GREATER_THAN:
         processInstanceQuery.variableValueGreaterThan(variable.getName(), actualValue);
+        break;
         
       case GREATER_THAN_OR_EQUALS:
         processInstanceQuery.variableValueGreaterThanOrEqual(variable.getName(), actualValue);
+        break;
         
       case LESS_THAN:
         processInstanceQuery.variableValueLessThan(variable.getName(), actualValue);
+        break;
         
       case LESS_THAN_OR_EQUALS:
         processInstanceQuery.variableValueLessThanOrEqual(variable.getName(), actualValue);
+        break;
         
       default:
         throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());

@@ -16,12 +16,20 @@ package org.activiti.rest.service.api.runtime.process;
 import java.util.List;
 
 import org.activiti.rest.service.api.engine.variable.RestVariable;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 
 /**
+ * Modified to add a "returnVariables" flag, which determines whether the variables
+ *   that exist within the process instance when the first wait state is encountered
+ *   (or when the process instance completes) should be returned or not.
+ * 
  * @author Frederik Heremans
+ * @author Ryan Johnston (@rjfsu)
  */
 public class ProcessInstanceCreateRequest {
 
@@ -30,6 +38,10 @@ public class ProcessInstanceCreateRequest {
   private String message;
   private String businessKey;
   private List<RestVariable> variables;
+  private String tenantId;
+  
+  //Added by Ryan Johnston
+  private boolean returnVariables;
   
   public String getProcessDefinitionId() {
     return processDefinitionId;
@@ -61,6 +73,14 @@ public class ProcessInstanceCreateRequest {
     this.message = message;
   }
   
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  
+  public String getTenantId() {
+	  return tenantId;
+  }
+  
   @JsonTypeInfo(use=Id.CLASS, defaultImpl=RestVariable.class)  
   public List<RestVariable> getVariables() {
     return variables;
@@ -68,5 +88,20 @@ public class ProcessInstanceCreateRequest {
   
   public void setVariables(List<RestVariable> variables) {
     this.variables = variables;
+  }
+  
+  @JsonIgnore
+  public boolean isCustomTenantSet() {
+  	return tenantId != null && !StringUtils.isEmpty(tenantId);
+  }
+  
+  //Added by Ryan Johnston
+  public boolean getReturnVariables() {
+	  return returnVariables;
+  }
+  
+  //Added by Ryan Johnston
+  public void setReturnVariables(boolean returnVariables) {
+	  this.returnVariables = returnVariables;
   }
 }

@@ -15,9 +15,9 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.GroupEntity;
 
 
 /**
@@ -26,9 +26,9 @@ import org.activiti.engine.impl.persistence.entity.GroupEntity;
 public class SaveGroupCmd implements Command<Void>, Serializable {
   
   private static final long serialVersionUID = 1L;
-  protected GroupEntity group;
+  protected Group group;
   
-  public SaveGroupCmd(GroupEntity group) {
+  public SaveGroupCmd(Group group) {
     this.group = group;
   }
   
@@ -36,16 +36,16 @@ public class SaveGroupCmd implements Command<Void>, Serializable {
     if(group == null) {
       throw new ActivitiIllegalArgumentException("group is null");
     }
-    if (group.getRevision()==0) {
-      commandContext
-        .getGroupIdentityManager()
-        .insertGroup(group);
-    } else {
-      commandContext
-        .getGroupIdentityManager()
-        .updateGroup(group);
-    }
     
+    if(commandContext.getGroupIdentityManager().isNewGroup(group)) {
+    	commandContext
+    		.getGroupIdentityManager()
+    		.insertGroup(group);
+    } else {
+    	commandContext
+    		.getGroupIdentityManager()
+    		.updateGroup(group);
+    }
     return null;
   }
 

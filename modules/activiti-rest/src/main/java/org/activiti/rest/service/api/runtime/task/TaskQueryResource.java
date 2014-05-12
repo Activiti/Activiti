@@ -24,6 +24,7 @@ public class TaskQueryResource extends TaskBaseResource {
 
   @Post
   public DataResponse getQueryResult(TaskQueryRequest request) {
+  	if(!authenticate()) { return null; }
     return getTasksFromQueryRequest(request);
   }
 }

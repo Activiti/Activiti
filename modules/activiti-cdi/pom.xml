@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.15-SNAPSHOT</version>
+    <version>5.16-SNAPSHOT</version>
   </parent>
 
 
@@ -75,6 +75,7 @@
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-simple</artifactId>
+          <version>1.7.6</version>
           <scope>test</scope>
         </dependency>
       </dependencies>

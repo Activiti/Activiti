@@ -73,6 +73,22 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey, Map<String, Object> variables) {
     return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, businessKey, variables));
   }
+
+  public ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String tenantId) {
+  	return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, null, tenantId));
+  }
+  
+  public ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String businessKey, String tenantId) {
+  	return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, businessKey, null, tenantId));
+  }
+  
+  public ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, Map<String, Object> variables, String tenantId) {
+  	return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, variables, tenantId));
+  }
+  
+	public ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String businessKey, Map<String, Object> variables, String tenantId) {
+		return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, businessKey, variables, tenantId));
+	}
   
   public ProcessInstance startProcessInstanceById(String processDefinitionId) {
     return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, null, null));
@@ -227,43 +243,74 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
   
   public ProcessInstance startProcessInstanceByMessage(String messageName) {
-    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName,null, null));
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName,null, null, null));
+  }
+
+  public ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String tenantId) {
+  	return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName,null, null, tenantId));
   }
   
   public ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey) {
-    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, null));
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, null, null));
+  }
+  
+  public ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String businessKey, String tenantId) {
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, null, tenantId));
   }
   
   public ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables) {
-    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, null, processVariables));
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, null, processVariables, null));
+  }
+  
+  public ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, Map<String, Object> processVariables, String tenantId) {
+  	return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, null, processVariables, tenantId));
   }
   
   public ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map<String, Object> processVariables) {
-    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, processVariables));
+    return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, processVariables, null));
+  }
+  
+  @Override
+  public ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String businessKey, 
+  		Map<String, Object> processVariables, String tenantId) {
+  	return commandExecutor.execute(new StartProcessInstanceByMessageCmd(messageName, businessKey, processVariables, tenantId));
   }
 
   public void signalEventReceived(String signalName) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, null));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, null, null));
   }
-
+  
+  public void signalEventReceivedWithTenantId(String signalName, String tenantId) {
+  	commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, null, tenantId));
+  }
+  
   public void signalEventReceivedAsync(String signalName) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, true));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, true, null));
+  }
+  
+  public void signalEventReceivedAsyncWithTenantId(String signalName, String tenantId) {
+  	commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, true, tenantId));
   }
   
   public void signalEventReceived(String signalName, Map<String, Object> processVariables) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, processVariables));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, processVariables, null));
+  }
+  
+  public void signalEventReceivedWithTenantId(String signalName,
+      Map<String, Object> processVariables, String tenantId) {
+  	commandExecutor.execute(new SignalEventReceivedCmd(signalName, null, processVariables, tenantId));
   }
 
   public void signalEventReceived(String signalName, String executionId) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, null));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, null, null));
   }
 
   public void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, processVariables));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, processVariables, null));
   }
 
   public void signalEventReceivedAsync(String signalName, String executionId) {
-    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, true));
+    commandExecutor.execute(new SignalEventReceivedCmd(signalName, executionId, true, null));
   }
   
   public void messageEventReceived(String messageName, String executionId) {

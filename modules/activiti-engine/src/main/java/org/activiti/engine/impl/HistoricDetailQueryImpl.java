@@ -26,6 +26,7 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, HistoricDetail> implements HistoricDetailQuery {
 
@@ -50,47 +51,47 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
     super(commandExecutor);
   }
 
-  public HistoricDetailQuery id(String id) {
+  public HistoricDetailQueryImpl id(String id) {
     this.id = id;
     return this;
   }
   
-  public HistoricDetailQuery processInstanceId(String processInstanceId) {
+  public HistoricDetailQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
     return this;
   }
   
-  public HistoricDetailQuery executionId(String executionId) {
+  public HistoricDetailQueryImpl executionId(String executionId) {
     this.executionId = executionId;
     return this;
   }
 
-  public HistoricDetailQuery activityId(String activityId) {
+  public HistoricDetailQueryImpl activityId(String activityId) {
     this.activityId = activityId;
     return this;
   }
 
-  public HistoricDetailQuery activityInstanceId(String activityInstanceId) {
+  public HistoricDetailQueryImpl activityInstanceId(String activityInstanceId) {
     this.activityInstanceId = activityInstanceId;
     return this;
   }
 
-  public HistoricDetailQuery taskId(String taskId) {
+  public HistoricDetailQueryImpl taskId(String taskId) {
     this.taskId = taskId;
     return this;
   }
 
-  public HistoricDetailQuery formProperties() {
+  public HistoricDetailQueryImpl formProperties() {
     this.type = "FormProperty";
     return this;
   }
 
-  public HistoricDetailQuery variableUpdates() {
+  public HistoricDetailQueryImpl variableUpdates() {
     this.type = "VariableUpdate";
     return this;
   }
   
-  public HistoricDetailQuery excludeTaskDetails() {
+  public HistoricDetailQueryImpl excludeTaskDetails() {
     this.excludeTaskRelated = true;
     return this;
   }
@@ -133,32 +134,32 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   
   // order by /////////////////////////////////////////////////////////////////
   
-  public HistoricDetailQuery orderByProcessInstanceId() {
+  public HistoricDetailQueryImpl orderByProcessInstanceId() {
     orderBy(HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
     return this;
   }
 
-  public HistoricDetailQuery orderByTime() {
+  public HistoricDetailQueryImpl orderByTime() {
     orderBy(HistoricDetailQueryProperty.TIME);
     return this;
   }
 
-  public HistoricDetailQuery orderByVariableName() {
+  public HistoricDetailQueryImpl orderByVariableName() {
     orderBy(HistoricDetailQueryProperty.VARIABLE_NAME);
     return this;
   }
   
-  public HistoricDetailQuery orderByFormPropertyId() {
+  public HistoricDetailQueryImpl orderByFormPropertyId() {
     orderBy(HistoricDetailQueryProperty.VARIABLE_NAME);
     return this;
   }
 
-  public HistoricDetailQuery orderByVariableRevision() {
+  public HistoricDetailQueryImpl orderByVariableRevision() {
     orderBy(HistoricDetailQueryProperty.VARIABLE_REVISION);
     return this;
   }
 
-  public HistoricDetailQuery orderByVariableType() {
+  public HistoricDetailQueryImpl orderByVariableType() {
     orderBy(HistoricDetailQueryProperty.VARIABLE_TYPE);
     return this;
   }

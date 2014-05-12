@@ -5,14 +5,16 @@
     <userTask id="usertask1"></userTask>
     <userTask id="usertask2"></userTask>
     <sequenceFlow id="flow1" sourceRef="usertask1" targetRef="usertask2"></sequenceFlow>
-    <sequenceFlow id="flow2" sourceRef="usertask2" targetRef="endEvent"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="usertask2" targetRef="usertask3"></sequenceFlow>
     <startEvent id="startevent1" name="Start"></startEvent>
     <sequenceFlow id="flow3" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
+    <userTask id="usertask3"></userTask>
+    <sequenceFlow id="flow4" sourceRef="usertask3" targetRef="endEvent"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_process3">
     <bpmndi:BPMNPlane bpmnElement="process3" id="BPMNPlane_process3">
       <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
-        <omgdc:Bounds height="35.0" width="35.0" x="510.0" y="15.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="590.0" y="15.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
         <omgdc:Bounds height="55.0" width="105.0" x="130.0" y="5.0"></omgdc:Bounds>
@@ -23,17 +25,24 @@
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="15.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask3" id="BPMNShape_usertask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="430.0" y="5.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
         <omgdi:waypoint x="235.0" y="32.0"></omgdi:waypoint>
         <omgdi:waypoint x="280.0" y="32.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
         <omgdi:waypoint x="385.0" y="32.0"></omgdi:waypoint>
-        <omgdi:waypoint x="510.0" y="32.0"></omgdi:waypoint>
+        <omgdi:waypoint x="430.0" y="32.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
         <omgdi:waypoint x="65.0" y="32.0"></omgdi:waypoint>
         <omgdi:waypoint x="130.0" y="32.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="535.0" y="32.0"></omgdi:waypoint>
+        <omgdi:waypoint x="590.0" y="32.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

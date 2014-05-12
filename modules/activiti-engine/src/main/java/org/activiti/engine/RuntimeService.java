@@ -88,7 +88,7 @@ public interface RuntimeService {
    *           when no process definition is deployed with the given key.
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey, Map<String, Object> variables);
-
+  
   /**
    * Starts a new process instance in the latest version of the process
    * definition with the given key.
@@ -117,6 +117,26 @@ public interface RuntimeService {
    *           when no process definition is deployed with the given key.
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey, Map<String, Object> variables);
+  
+  /**
+   * Similar to {@link #startProcessInstanceByKey(String)}, but using a specific tenant identifier.
+   */
+  ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String tenantId);
+
+  /**
+   * Similar to {@link #startProcessInstanceByKey(String, String)}, but using a specific tenant identifier.
+   */
+  ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String businessKey, String tenantId);
+
+  /**
+   * Similar to {@link #startProcessInstanceByKey(String, Map)}, but using a specific tenant identifier.
+   */
+  ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, Map<String, Object> variables, String tenantId);
+  
+  /**
+   * Similar to {@link #startProcessInstanceByKey(String, String, Map)}, but using a specific tenant identifier. 
+   */
+  ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String businessKey, Map<String, Object> variables, String tenantId);
 
   /**
    * Starts a new process instance in the exactly specified version of the
@@ -220,6 +240,11 @@ public interface RuntimeService {
    * @since 5.9
    */
   ProcessInstance startProcessInstanceByMessage(String messageName);
+  
+  /**
+   * Similar to {@link RuntimeService#startProcessInstanceByMessage(String)}, but with tenant context.
+   */
+  ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String tenantId);
 
   /**
    * <p>
@@ -242,6 +267,11 @@ public interface RuntimeService {
    * @since 5.10
    */
   ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey);
+  
+  /**
+   * Similar to {@link RuntimeService#startProcessInstanceByMessage(String, String)}, but with tenant context.
+   */
+  ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String businessKey, String tenantId);
 
   /**
    * <p>
@@ -268,6 +298,11 @@ public interface RuntimeService {
    * @since 5.9
    */
   ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables);
+  
+  /**
+   * Similar to {@link RuntimeService#startProcessInstanceByMessage(String, Map<String, Object>)}, but with tenant context.
+   */
+  ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, Map<String, Object> processVariables, String tenantId);
 
   /**
    * <p>
@@ -295,6 +330,11 @@ public interface RuntimeService {
    * @since 5.9
    */
   ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map<String, Object> processVariables);
+  
+  /**
+   * Similar to {@link RuntimeService#startProcessInstanceByMessage(String, String, Map<String, Object>)}, but with tenant context.
+   */
+  ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String businessKey, Map<String, Object> processVariables, String tenantId);
 
   /**
    * Delete an existing runtime process instance.
@@ -662,6 +702,11 @@ public interface RuntimeService {
    *          the name of the signal event
    */
   void signalEventReceived(String signalName);
+  
+  /**
+   * Similar to {@link #signalEventReceived(String)}, but within the context of one tenant.
+   */
+  void signalEventReceivedWithTenantId(String signalName, String tenantId);
 
   /**
    * Notifies the process engine that a signal event of name 'signalName' has
@@ -673,6 +718,11 @@ public interface RuntimeService {
    *          the name of the signal event
    */
   void signalEventReceivedAsync(String signalName);
+  
+  /**
+   * Similar to {@link #signalEventReceivedAsync(String)}, but within the context of one tenant.
+   */
+  void signalEventReceivedAsyncWithTenantId(String signalName, String tenantId);
 
   /**
    * Notifies the process engine that a signal event of name 'signalName' has
@@ -688,6 +738,11 @@ public interface RuntimeService {
    *          a map of variables added to the execution(s)
    */
   void signalEventReceived(String signalName, Map<String, Object> processVariables);
+  
+  /**
+   * Similar to {@link #signalEventReceived(String, Map<String, Object>)}, but within the context of one tenant.
+   */
+  void signalEventReceivedWithTenantId(String signalName, Map<String, Object> processVariables, String tenantId);
 
   /**
    * Notifies the process engine that a signal event of name 'signalName' has

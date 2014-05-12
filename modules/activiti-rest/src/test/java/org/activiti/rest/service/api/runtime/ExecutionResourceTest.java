@@ -19,13 +19,14 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Test for all REST-operations related to a single execution resource.
@@ -50,11 +51,11 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     // Check resulting parent execution
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals(parentExecution.getId(), responseNode.get("id").getTextValue());
+    assertEquals(parentExecution.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("activityId").isNull());
-    assertFalse(responseNode.get("suspended").getBooleanValue());
+    assertFalse(responseNode.get("suspended").booleanValue());
     assertTrue(responseNode.get("parentUrl").isNull());
-    assertFalse(responseNode.get("suspended").getBooleanValue());
+    assertFalse(responseNode.get("suspended").booleanValue());
     
     assertTrue(responseNode.get("url").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, parentExecution.getId())));
@@ -71,10 +72,10 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     
     responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals(childExecution.getId(), responseNode.get("id").getTextValue());
-    assertEquals("processTask", responseNode.get("activityId").getTextValue());
-    assertFalse(responseNode.get("suspended").getBooleanValue());
-    assertFalse(responseNode.get("suspended").getBooleanValue());
+    assertEquals(childExecution.getId(), responseNode.get("id").textValue());
+    assertEquals("processTask", responseNode.get("activityId").textValue());
+    assertFalse(responseNode.get("suspended").booleanValue());
+    assertFalse(responseNode.get("suspended").booleanValue());
     
     assertTrue(responseNode.get("url").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, childExecution.getId())));
@@ -119,7 +120,7 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     Representation response = client.put(requestNode);
     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     JsonNode responseNode = objectMapper.readTree(response.getStream());
-    assertEquals("anotherWaitState", responseNode.get("activityId").getTextValue());
+    assertEquals("anotherWaitState", responseNode.get("activityId").textValue());
     assertEquals("anotherWaitState", runtimeService.createExecutionQuery().executionId(signalExecution.getId()).singleResult().getActivityId());
     
     client.release();

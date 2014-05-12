@@ -35,6 +35,13 @@ public class ProcessDefinitionEntityManager extends AbstractManager {
   public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
     return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
   }
+  
+  public ProcessDefinitionEntity findLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId) {
+  	Map<String, Object> params = new HashMap<String, Object>(2);
+  	params.put("processDefinitionKey", processDefinitionKey);
+  	params.put("tenantId", tenantId);
+    return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectLatestProcessDefinitionByKeyAndTenantId", params);
+  }
 
   public void deleteProcessDefinitionsByDeploymentId(String deploymentId) {
     getDbSqlSession().delete("deleteProcessDefinitionsByDeploymentId", deploymentId);
@@ -71,6 +78,14 @@ public class ProcessDefinitionEntityManager extends AbstractManager {
     parameters.put("processDefinitionKey", processDefinitionKey);
     return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
   }
+  
+  public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKeyAndTenantId(String deploymentId, String processDefinitionKey, String tenantId) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put("deploymentId", deploymentId);
+    parameters.put("processDefinitionKey", processDefinitionKey);
+    parameters.put("tenantId", tenantId);
+    return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectProcessDefinitionByDeploymentAndKeyAndTenantId", parameters);
+  }
 
   public ProcessDefinition findProcessDefinitionByKeyAndVersion(String processDefinitionKey, Integer processDefinitionVersion) {
     ProcessDefinitionQueryImpl processDefinitionQuery = new ProcessDefinitionQueryImpl()
@@ -96,6 +111,13 @@ public class ProcessDefinitionEntityManager extends AbstractManager {
 
   public long findProcessDefinitionCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectProcessDefinitionCountByNativeQuery", parameterMap);
+  }
+  
+  public void updateProcessDefinitionTenantIdForDeployment(String deploymentId, String newTenantId) {
+  	HashMap<String, Object> params = new HashMap<String, Object>();
+  	params.put("deploymentId", deploymentId);
+  	params.put("tenantId", newTenantId);
+  	getDbSqlSession().update("updateProcessDefinitionTenantIdForDeploymentId", params);
   }
  
 }

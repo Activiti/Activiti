@@ -23,11 +23,12 @@ import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.SecuredResource;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Put;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -58,7 +59,7 @@ public class TaskOperationResource extends SecuredResource {
           String startParams = entity.getText();
           if (StringUtils.isNotEmpty(startParams)) {
             JsonNode startJSON = new ObjectMapper().readTree(startParams);
-            Iterator<String> itName = startJSON.getFieldNames();
+            Iterator<String> itName = startJSON.fieldNames();
             while(itName.hasNext()) {
               String name = itName.next();
               JsonNode valueNode = startJSON.path(name);
@@ -81,7 +82,7 @@ public class TaskOperationResource extends SecuredResource {
       try {
         String startParams = entity.getText();
         JsonNode startJSON = new ObjectMapper().readTree(startParams);
-        userId = startJSON.path("userId").getTextValue();
+        userId = startJSON.path("userId").textValue();
       } catch(Exception e) {
         throw new ActivitiException("Did not assign the operation parameters", e);
       }

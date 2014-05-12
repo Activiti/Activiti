@@ -18,10 +18,11 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.task.Attachment;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.SecuredResource;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Put;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Tijs Rademakers
@@ -42,18 +43,18 @@ public class TaskUrlAddResource extends SecuredResource {
       JsonNode taskJSON = new ObjectMapper().readTree(taskParams);
       
       String name = null;
-      if(taskJSON.path("name") != null && taskJSON.path("name").getTextValue() != null) {
-        name = taskJSON.path("name").getTextValue();
+      if(taskJSON.path("name") != null && taskJSON.path("name").textValue() != null) {
+        name = taskJSON.path("name").textValue();
       }
       
       String description = null;
-      if(taskJSON.path("description") != null && taskJSON.path("description").getTextValue() != null) {
-        description = taskJSON.path("description").getTextValue();
+      if(taskJSON.path("description") != null && taskJSON.path("description").textValue() != null) {
+        description = taskJSON.path("description").textValue();
       }
       
       String url = null;
-      if(taskJSON.path("url") != null && taskJSON.path("url").getTextValue() != null) {
-        url = taskJSON.path("url").getTextValue();
+      if(taskJSON.path("url") != null && taskJSON.path("url").textValue() != null) {
+        url = taskJSON.path("url").textValue();
       }
       
       Attachment attachment = ActivitiUtil.getTaskService().createAttachment(

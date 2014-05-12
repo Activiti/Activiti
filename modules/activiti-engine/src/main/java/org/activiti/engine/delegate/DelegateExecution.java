@@ -14,7 +14,6 @@
 package org.activiti.engine.delegate;
 
 import org.activiti.engine.EngineServices;
-import org.activiti.engine.ProcessEngine;
 
 
 
@@ -69,13 +68,13 @@ public interface DelegateExecution extends VariableScope {
   String getCurrentActivityName();
   
   /**
+   * Returns the tenant id, if any is set before on the process definition or process instance.
+   */
+  String getTenantId();
+  
+  /**
    * All Activiti services can be accessed through this interface.
    */
   EngineServices getEngineServices();
   
-  /**
-   * Update process business key if not null.
-   * Returns null if not updated
-   */
-  String updateProcessBusinessKey(String bzKey);
 }

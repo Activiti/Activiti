@@ -32,7 +32,16 @@ import org.restlet.resource.Post;
 
 
 /**
+ * Modified the "createProcessInstance" method to conditionally call a 
+ *   "createProcessInstanceResponse" method with a different signature, which
+ *   will conditionally return the process variables that exist when the process
+ *   instance either enters its first wait state or completes. In this case,
+ *   the different method is always called with a flag of true, which means
+ *   that it will always return those variables. If variables are not to be 
+ *   returned, the original method is called, which doesn't return the variables.
+ * 
  * @author Frederik Heremans
+ * @author Ryan Johnston (@rjfsu)
  */
 public class ProcessInstanceCollectionResource extends BaseProcessInstanceResource {
 
@@ -86,6 +95,18 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       queryRequest.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", urlQuery));
     }
     
+    if(getQueryParameter("tenantId", urlQuery) != null) {
+      queryRequest.setTenantId(getQueryParameter("tenantId", urlQuery));
+    }
+    
+    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
+      queryRequest.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    }
+    
+    if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", urlQuery))) {
+      queryRequest.setWithoutTenantId(Boolean.TRUE);
+    }
+    
     return getQueryResponse(queryRequest, urlQuery);
   }
   
@@ -93,11 +114,11 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
   @Post
   public ProcessInstanceResponse createProcessInstance(ProcessInstanceCreateRequest request) {
     
-    if(!authenticate()) {
+    if (!authenticate()) {
       return null;
     }
     
-    if(request.getProcessDefinitionId() == null && request.getProcessDefinitionKey() == null && request.getMessage() == null) {
+    if (request.getProcessDefinitionId() == null && request.getProcessDefinitionKey() == null && request.getMessage() == null) {
       throw new ActivitiIllegalArgumentException("Either processDefinitionId, processDefinitionKey or message is required.");
     }
     
@@ -105,8 +126,15 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
             + ((request.getProcessDefinitionKey() != null) ? 1 : 0)
             + ((request.getMessage() != null) ? 1 : 0);
     
-    if(paramsSet > 1) {
+    if (paramsSet > 1) {
       throw new ActivitiIllegalArgumentException("Only one of processDefinitionId, processDefinitionKey or message should be set.");
+    }
+    
+    if (request.isCustomTenantSet()) {
+    	// Tenant-id can only be used with either key or message
+    	if(request.getProcessDefinitionId() != null) {
+    		throw new ActivitiIllegalArgumentException("TenantId can only be used with either processDefinitionKey or message.");
+    	}
     }
     
     RestResponseFactory factory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
@@ -125,19 +153,39 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
     // Actually start the instance based on key or id
     try {
       ProcessInstance instance = null;
-      if(request.getProcessDefinitionId() != null) {
+      if (request.getProcessDefinitionId() != null) {
         instance = ActivitiUtil.getRuntimeService().startProcessInstanceById(
                 request.getProcessDefinitionId(), request.getBusinessKey(), startVariables);
-      } else if(request.getProcessDefinitionKey() != null){
-        instance = ActivitiUtil.getRuntimeService().startProcessInstanceByKey(
-                request.getProcessDefinitionKey(), request.getBusinessKey(), startVariables);
+      } else if (request.getProcessDefinitionKey() != null) {
+      	if(request.isCustomTenantSet()) {
+      		instance = ActivitiUtil.getRuntimeService().startProcessInstanceByKeyAndTenantId(
+      				request.getProcessDefinitionKey(), request.getBusinessKey(), startVariables, request.getTenantId());
+      	} else {
+      		instance = ActivitiUtil.getRuntimeService().startProcessInstanceByKey(
+      				request.getProcessDefinitionKey(), request.getBusinessKey(), startVariables);
+      	}
       } else {
-        instance = ActivitiUtil.getRuntimeService().startProcessInstanceByMessage(
-                request.getMessage(), request.getBusinessKey(), startVariables);
+      	if (request.isCustomTenantSet()) {
+      		instance = ActivitiUtil.getRuntimeService().startProcessInstanceByMessageAndTenantId(
+      				request.getMessage(), request.getBusinessKey(), startVariables, request.getTenantId());
+      	} else {
+      		instance = ActivitiUtil.getRuntimeService().startProcessInstanceByMessage(
+      				request.getMessage(), request.getBusinessKey(), startVariables);
+      	}
       }
       
       setStatus(Status.SUCCESS_CREATED);
-      return factory.createProcessInstanceResponse(this, instance);
+      
+      //Added by Ryan Johnston
+      if (request.getReturnVariables()) {
+    	  return factory.createProcessInstanceResponse(this, instance, true);
+      } else {
+    	  return factory.createProcessInstanceResponse(this, instance);
+      }
+      //End Added by Ryan Johnston
+      
+      //Removed by Ryan Johnston (obsolete given the above).
+      //return factory.createProcessInstanceResponse(this, instance);
     } catch(ActivitiObjectNotFoundException aonfe) {
       throw new ActivitiIllegalArgumentException(aonfe.getMessage(), aonfe);
     }

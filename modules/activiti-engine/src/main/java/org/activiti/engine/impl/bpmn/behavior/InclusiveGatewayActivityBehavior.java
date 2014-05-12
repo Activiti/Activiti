@@ -42,7 +42,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   private static Logger log = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
 
   public void execute(ActivityExecution execution) throws Exception {
-
+    
     execution.inactivate();
     lockConcurrentRoot(execution);
 
@@ -53,18 +53,13 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
         log.debug("inclusive gateway '{}' activates", activity.getId());
       }
 
-      List<ActivityExecution> joinedExecutions = execution
-          .findInactiveConcurrentExecutions(activity);
-      String defaultSequenceFlow = (String) execution.getActivity()
-          .getProperty("default");
+      List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
+      String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
       List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
 
-      for (PvmTransition outgoingTransition : execution.getActivity()
-          .getOutgoingTransitions()) {
-        if (defaultSequenceFlow == null
-            || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
-          Condition condition = (Condition) outgoingTransition
-              .getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+      for (PvmTransition outgoingTransition : execution.getActivity().getOutgoingTransitions()) {
+        if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
+          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
           if (condition == null || condition.evaluate(execution)) {
             transitionsToTake.add(outgoingTransition);
           }
@@ -77,8 +72,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       } else {
 
         if (defaultSequenceFlow != null) {
-          PvmTransition defaultTransition = execution.getActivity()
-              .findOutgoingTransition(defaultSequenceFlow);
+          PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
           if (defaultTransition != null) {
             execution.take(defaultTransition);
           } else {
@@ -118,7 +112,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     PvmActivity activity = execution.getActivity();
     if (execution.isConcurrent()) {
       for (ActivityExecution concurrentExecution : getLeaveExecutions(execution.getParent())) {
-        if (concurrentExecution.isActive() && concurrentExecution.getActivity() != activity) {
+        if (concurrentExecution.isActive() && concurrentExecution.getId().equals(execution.getId()) == false) {
           // TODO: when is transitionBeingTaken cleared? Should we clear it?
           boolean reachable = false;
           PvmTransition pvmTransition = ((ExecutionEntity) concurrentExecution).getTransitionBeingTaken();
@@ -127,7 +121,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
           } else {
             reachable = isReachable(concurrentExecution.getActivity(), activity, new HashSet<PvmActivity>());
           }
-
+          
           if (reachable) {
             if (log.isDebugEnabled()) {
               log.debug("an active concurrent execution found: '{}'", concurrentExecution.getActivity());
@@ -138,8 +132,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       }
     } else if (execution.isActive()) { // is this ever true?
       if (log.isDebugEnabled()) {
-        log.debug("an active concurrent execution found: '{}'",
-            execution.getActivity());
+        log.debug("an active concurrent execution found: '{}'", execution.getActivity());
       }
       return true;
     }

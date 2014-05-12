@@ -14,6 +14,7 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventListener;
@@ -87,6 +88,14 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     bpmnParse.processFlowElements(process.getFlowElements());
     processArtifacts(bpmnParse, process.getArtifacts(), currentProcessDefinition);
     
+    // parse out any data objects from the template in order to set up the necessary process variables
+    Map<String, Object> variables = processDataObjects(bpmnParse, process.getDataObjects(), currentProcessDefinition);
+    if (null != currentProcessDefinition.getVariables()) {
+      currentProcessDefinition.getVariables().putAll(variables);
+    } else {
+      currentProcessDefinition.setVariables(variables);
+    }
+
     bpmnParse.removeCurrentScope();
     
     if (process.getIoSpecification() != null) {
@@ -117,9 +126,8 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
 					currentProcessDefinition.getEventSupport().addEventListener(
 							bpmnParse.getListenerFactory().createEventThrowingEventListener(eventListener), types);
 				} else {
-					bpmnParse.getBpmnModel().addProblem(
-					    "Unsupported implementation type for EventLIstener: " + eventListener.getImplementationType(),
-					    bpmnParse.getCurrentFlowElement());
+					LOGGER.warn("Unsupported implementation type for EventLIstener: " + eventListener.getImplementationType() 
+							+ " for element " + bpmnParse.getCurrentFlowElement().getId());
 				}
 			}
 		}

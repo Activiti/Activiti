@@ -96,6 +96,9 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
 
   /** Only select tasks for which users in the given group are candidates. */
   TaskQuery taskCandidateGroup(String candidateGroup);
+
+  /** Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups) */
+  TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee);
   
   /** 
    * Only select tasks for which the 'candidateGroup' is one of the given groups.
@@ -106,6 +109,21 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    *   When passed group list is empty or <code>null</code>. 
    */
   TaskQuery taskCandidateGroupIn(List<String> candidateGroups);
+  
+	/**
+	 * Only select tasks that have the given tenant id.
+	 */
+  TaskQuery taskTenantId(String tenantId);
+
+	/**
+	 * Only select tasks with a tenant id like the given one.
+	 */
+  TaskQuery taskTenantIdLike(String tenantIdLike);
+	
+	/**
+	 * Only select tasks that do not have a tenant id.
+	 */
+  TaskQuery taskWithoutTenantId();
 
   /** Only select tasks for the given process instance id. */
   TaskQuery processInstanceId(String processInstanceId);
@@ -414,4 +432,7 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   
   /** Order by due date (needs to be followed by {@link #asc()} or {@link #desc()}). */
   TaskQuery orderByDueDate();
+  
+	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  TaskQuery orderByTenantId();
 }

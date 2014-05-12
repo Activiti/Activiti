@@ -51,6 +51,7 @@ public interface StencilConstants {
   final String STENCIL_EVENT_BOUNDARY_TIMER = "BoundaryTimerEvent";
   final String STENCIL_EVENT_BOUNDARY_ERROR = "BoundaryErrorEvent";
   final String STENCIL_EVENT_BOUNDARY_SIGNAL = "BoundarySignalEvent";
+  final String STENCIL_EVENT_BOUNDARY_MESSAGE = "BoundaryMessageEvent";
   
   final String STENCIL_EVENT_CATCH_SIGNAL = "CatchSignalEvent";
   final String STENCIL_EVENT_CATCH_TIMER = "CatchTimerEvent";
@@ -99,6 +100,10 @@ public interface StencilConstants {
   final String PROPERTY_MULTIINSTANCE_COLLECTION = "multiinstance_collection";
   final String PROPERTY_MULTIINSTANCE_VARIABLE = "multiinstance_variable";
   final String PROPERTY_MULTIINSTANCE_CONDITION = "multiinstance_condition";
+  final String PROPERTY_MULTIINSTANCE_LOOP_TYPE = "looptype";
+  final String PROPERTY_MULTIINSTANCE_LOOP_TYPE_STANDARD = "Standard";
+  final String PROPERTY_MULTIINSTANCE_LOOP_TYPE_SEQUENTIAL = "Sequential";
+  final String PROPERTY_MULTIINSTANCE_LOOP_TYPE_PARALLEL = "Parallel";
 	
 	final String PROPERTY_TASK_LISTENERS = "tasklisteners";
 	final String PROPERTY_TASK_LISTENER_EVENT = "task_listener_event_type";

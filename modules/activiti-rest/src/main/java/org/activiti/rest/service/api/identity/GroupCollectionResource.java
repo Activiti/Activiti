@@ -77,6 +77,8 @@ public class GroupCollectionResource extends SecuredResource {
   
   @Post
   public GroupResponse createGroup(GroupRequest request) {
+  	if(authenticate() == false) return null;
+  	
     if(request.getId() == null) {
       throw new ActivitiIllegalArgumentException("Id cannot be null.");
     }

@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -40,7 +41,8 @@ public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource 
 
     if (pde != null && pde.isGraphicalNotationDefined()) {
       BpmnModel bpmnModel = ActivitiUtil.getRepositoryService().getBpmnModel(pde.getId());
-      InputStream resource = ProcessDiagramGenerator.generateDiagram(bpmnModel, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstance.getId()));
+      ProcessDiagramGenerator diagramGenerator = ((ProcessEngineImpl) ActivitiUtil.getProcessEngine()).getProcessEngineConfiguration().getProcessDiagramGenerator();
+      InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstance.getId()));
 
       InputRepresentation output = new InputRepresentation(resource, MediaType.IMAGE_PNG);
       return output;

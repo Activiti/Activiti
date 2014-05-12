@@ -38,6 +38,21 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   
   /** Select process instance with the given business key, unique for the given process definition */
   ProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey, String processDefinitionKey);
+  
+	/**
+	 * Only select process instances that have the given tenant id.
+	 */
+  ProcessInstanceQuery processInstanceTenantId(String tenantId);
+
+	/**
+	 * Only select process instances with a tenant id like the given one.
+	 */
+  ProcessInstanceQuery processInstanceTenantIdLike(String tenantIdLike);
+	
+	/**
+	 * Only select process instances that do not have a tenant id.
+	 */
+  ProcessInstanceQuery processInstanceWithoutTenantId();
 
   /** Select process instances whose process definition name is processDefinitionName*/
   ProcessInstanceQuery processDefinitionName(String processDefinitionName);
@@ -206,5 +221,8 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   
   /** Order by process definition id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ProcessInstanceQuery orderByProcessDefinitionId();
+  
+	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  ProcessInstanceQuery orderByTenantId();
   
 }

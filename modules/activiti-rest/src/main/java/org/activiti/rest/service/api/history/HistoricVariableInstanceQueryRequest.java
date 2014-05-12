@@ -16,8 +16,9 @@ package org.activiti.rest.service.api.history;
 import java.util.List;
 
 import org.activiti.rest.service.api.engine.variable.QueryVariable;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 
 /**

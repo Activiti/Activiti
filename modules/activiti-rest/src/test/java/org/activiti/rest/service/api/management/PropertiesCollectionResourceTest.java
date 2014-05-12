@@ -5,10 +5,11 @@ import java.util.Map;
 
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Test for all REST-operations related to the Job collection and a single
@@ -33,13 +34,13 @@ public class PropertiesCollectionResourceTest extends BaseRestTestCase {
     assertNotNull(responseNode);
     assertEquals(properties.size(), responseNode.size());
     
-    Iterator<Map.Entry<String, JsonNode>> nodes = responseNode.getFields();
+    Iterator<Map.Entry<String, JsonNode>> nodes = responseNode.fields();
     Map.Entry<String, JsonNode> node = null;
     while(nodes.hasNext()) {
       node = nodes.next();
       String propValue = properties.get(node.getKey());
       assertNotNull(propValue);
-      assertEquals(propValue, node.getValue().getTextValue());
+      assertEquals(propValue, node.getValue().textValue());
     }
   }
 }

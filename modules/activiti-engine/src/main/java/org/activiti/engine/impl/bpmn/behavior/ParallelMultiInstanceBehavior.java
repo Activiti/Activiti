@@ -55,7 +55,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       
       // In case of an embedded subprocess, and extra child execution is required
       // Otherwise, all child executions would end up under the same parent,
-      // without any differentation to which embedded subprocess they belong
+      // without any differentiation to which embedded subprocess they belong
       if (isExtraScopeNeeded()) {
         ActivityExecution extraScopedExecution = concurrentExecution.createExecution();
         extraScopedExecution.setActive(true);

@@ -68,7 +68,7 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 		assertEquals(processInstance.getProcessDefinitionId(), ((ProcessDefinition) event.getEntity()).getId());
 			
 		// First event received should be creation of Process-instance
-		assertTrue(testListenerBean.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+		assertTrue(testListenerBean.getEventsReceived().get(1) instanceof ActivitiEntityEvent);
 		event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(1);
 		assertTrue(event.getEntity() instanceof ProcessInstance);
 		assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
@@ -165,7 +165,9 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 		assertEquals(0, theListener.getEventsReceived().size());
 		
 		taskService.createAttachment("test", task.getId(), processInstance.getId(), "test", "test", "url");
-		assertEquals(1, theListener.getEventsReceived().size());
+		assertEquals(2, theListener.getEventsReceived().size());
+		assertEquals(ActivitiEventType.ENTITY_CREATED, theListener.getEventsReceived().get(0).getType());
+		assertEquals(ActivitiEventType.ENTITY_INITIALIZED, theListener.getEventsReceived().get(1).getType());
 		
 	}
 	

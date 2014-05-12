@@ -20,12 +20,13 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -67,23 +68,23 @@ public class TaskIdentityLinkResourceTest extends BaseRestTestCase {
       ObjectNode link = (ObjectNode) responseNode.get(i);
       assertNotNull(link);
       if(!link.get("user").isNull()) {
-        if(link.get("user").getTextValue().equals("john")) {
-          assertEquals("customType", link.get("type").getTextValue());
+        if(link.get("user").textValue().equals("john")) {
+          assertEquals("customType", link.get("type").textValue());
           assertTrue(link.get("group").isNull());
-          assertTrue(link.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "john", "customType")));
+          assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "john", "customType")));
           customLinkFound = true;
         } else {
-          assertEquals("kermit", link.get("user").getTextValue());
-          assertEquals("candidate", link.get("type").getTextValue());
+          assertEquals("kermit", link.get("user").textValue());
+          assertEquals("candidate", link.get("type").textValue());
           assertTrue(link.get("group").isNull());
-          assertTrue(link.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "kermit", "candidate")));
+          assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "kermit", "candidate")));
           userCandidateFound = true;
         }
       } else if(!link.get("group").isNull()) {
-        assertEquals("sales", link.get("group").getTextValue());
-        assertEquals("candidate", link.get("type").getTextValue());
+        assertEquals("sales", link.get("group").textValue());
+        assertEquals("candidate", link.get("type").textValue());
         assertTrue(link.get("user").isNull());
-        assertTrue(link.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS, "sales", "candidate")));
+        assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS, "sales", "candidate")));
         groupCandidateFound = true;
       }
     }
@@ -112,10 +113,10 @@ public class TaskIdentityLinkResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("kermit", responseNode.get("user").getTextValue());
-      assertEquals("myType", responseNode.get("type").getTextValue());
+      assertEquals("kermit", responseNode.get("user").textValue());
+      assertEquals("myType", responseNode.get("type").textValue());
       assertTrue(responseNode.get("group").isNull());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")));
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")));
       
       
       // Add group link
@@ -129,10 +130,10 @@ public class TaskIdentityLinkResourceTest extends BaseRestTestCase {
       
       responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("sales", responseNode.get("group").getTextValue());
-      assertEquals("myType", responseNode.get("type").getTextValue());
+      assertEquals("sales", responseNode.get("group").textValue());
+      assertEquals("myType", responseNode.get("type").textValue());
       assertTrue(responseNode.get("user").isNull());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS, "sales", "myType")));
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS, "sales", "myType")));
       
       // Test with unexisting task
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, "unexistingtask"));
@@ -209,10 +210,10 @@ public class TaskIdentityLinkResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("kermit", responseNode.get("user").getTextValue());
-      assertEquals("myType", responseNode.get("type").getTextValue());
+      assertEquals("kermit", responseNode.get("user").textValue());
+      assertEquals("myType", responseNode.get("type").textValue());
       assertTrue(responseNode.get("group").isNull());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")));
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")));
       
       
       // Test with unexisting task

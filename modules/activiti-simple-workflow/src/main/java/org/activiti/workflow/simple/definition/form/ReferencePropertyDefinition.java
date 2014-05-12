@@ -13,7 +13,8 @@
 package org.activiti.workflow.simple.definition.form;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
-import org.codehaus.jackson.annotate.JsonTypeName;
+
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
  * A form-property with a value that represents a reference to another entity.

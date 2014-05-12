@@ -1410,6 +1410,17 @@
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
     "type" : "node",
+    "id" : "BoundaryMessageEvent",
+    "title" : "Boundary message event",
+    "description" : "A boundary event with a message trigger",
+    "view" : "intermediateevent/message.catching.svg",
+    "icon" : "catching/message.png",
+    "groups" : [ "Boundary Events" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "messagerefdefinition" ],
+    "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
+  },
+  {
+    "type" : "node",
     "id" : "CatchTimerEvent",
     "title" : "Intermediate timer catching event",
     "description" : "An intermediate catching event with a timer trigger",
