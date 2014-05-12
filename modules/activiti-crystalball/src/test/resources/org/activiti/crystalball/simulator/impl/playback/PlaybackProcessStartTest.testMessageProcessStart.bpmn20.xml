@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <message id="startProcessMessage" name="startProcessMessage"/>
+
+    <process id="messageStartEventProcess">
+        <startEvent id="startMessageEvent">
+            <messageEventDefinition messageRef="startProcessMessage"/>
+        </startEvent>
+        <endEvent id="endEvent1"/>
+
+        <sequenceFlow id="sequenceFlow4" sourceRef="startMessageEvent" targetRef="endEvent1"/>
+    </process>
+</definitions>

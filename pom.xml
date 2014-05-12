@@ -806,6 +806,7 @@
         <module>modules/activiti-mule</module>
         <module>modules/activiti-cdi</module>
         <module>modules/activiti-ldap</module>
+        <module>modules/activiti-crystalball</module>
       </modules>
     </profile>
     <profile>
