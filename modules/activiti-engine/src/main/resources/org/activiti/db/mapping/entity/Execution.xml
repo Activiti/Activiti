@@ -7,7 +7,7 @@
   <!-- EXECUTION INSERT -->
 
   <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
-    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_)
+    insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -23,7 +23,8 @@
       #{superExecutionId, jdbcType=VARCHAR},
       #{suspensionState, jdbcType=INTEGER},
       #{cachedEntityState, jdbcType=INTEGER},
-      #{tenantId, jdbcType=VARCHAR}
+      #{tenantId, jdbcType=VARCHAR},
+      #{name, jdbcType=VARCHAR}
     )
   </insert>
 
@@ -42,7 +43,8 @@
       PARENT_ID_ = #{parentId, jdbcType=VARCHAR},
       SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
-      CACHED_ENT_STATE_ = #{cachedEntityState, jdbcType=INTEGER}
+      CACHED_ENT_STATE_ = #{cachedEntityState, jdbcType=INTEGER},
+      NAME_ = #{name, jdbcType=VARCHAR},
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
@@ -104,6 +106,7 @@
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
     <result property="cachedEntityState" column="CACHED_ENT_STATE_" jdbcType="INTEGER"/>
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
   </resultMap>
   
   <resultMap id="executionAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
@@ -122,6 +125,7 @@
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
     <result property="cachedEntityState" column="CACHED_ENT_STATE_" jdbcType="INTEGER"/>
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -328,6 +332,12 @@
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
+      <if test="name != null">
+        and RES.NAME_ = #{name}
+      </if>
+      <if test="nameLike != null">
+        and RES.NALE_ like #{nameLike}
       </if>
       <if test="involvedUser != null">
         and EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{involvedUser})

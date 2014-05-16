@@ -51,4 +51,9 @@ public interface ProcessInstance extends Execution {
    */
   String getTenantId();
   
+  /**
+   * Returns the name of this process instance. 
+   */
+  String getName();
+  
 }

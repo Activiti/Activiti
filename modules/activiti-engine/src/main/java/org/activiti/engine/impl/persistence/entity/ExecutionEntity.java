@@ -110,6 +110,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   /** The tenant identifier (if any) */
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+  protected String name;
   
   // state/type of execution ////////////////////////////////////////////////// 
   
@@ -1457,6 +1458,15 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   public String getCurrentActivityName() {
     return activityName;
+  }
+
+  @Override
+  public String getName() {
+    return this.name;
+  }
+  
+  public void setName(String name) {
+    this.name = name;
   }
   
   public String getTenantId() {

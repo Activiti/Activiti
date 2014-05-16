@@ -66,6 +66,7 @@ create table ACT_RU_EXECUTION (
     SUSPENSION_STATE_ tinyint,
     CACHED_ENT_STATE_ int,
     TENANT_ID_ nvarchar(255) default '',
+    NAME_ nvarchar(255),
     primary key (ID_)
 );
 
@@ -126,6 +127,7 @@ create table ACT_RU_TASK (
     CATEGORY_ nvarchar(255),
     SUSPENSION_STATE_ int,
     TENANT_ID_ nvarchar(255) default '',
+    FORM_KEY_ nvarchar(255),
     primary key (ID_)
 );
 

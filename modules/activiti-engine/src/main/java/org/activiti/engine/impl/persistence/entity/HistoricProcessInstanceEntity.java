@@ -38,6 +38,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   protected String startActivityId;
   protected String superProcessInstanceId;
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+  protected String name;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricProcessInstanceEntity() {
@@ -117,7 +118,15 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
 	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
+	public String getName() {
+      return name;
+    }
+	
+	public void setName(String name) {
+      this.name = name;
+    }
+	
 	public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
