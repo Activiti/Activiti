@@ -118,10 +118,29 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(startTime.getTime());
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "businessKey123");
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "someType");
+    runtimeService.setProcessInstanceName(processInstance.getId(), "The name");
     Calendar hourAgo = Calendar.getInstance();
     hourAgo.add(Calendar.HOUR_OF_DAY, -1);
     Calendar hourFromNow = Calendar.getInstance();
     hourFromNow.add(Calendar.HOUR_OF_DAY, 1);
+    
+    // Name and name like
+    assertEquals("The name", historyService.createHistoricProcessInstanceQuery().processInstanceName("The name").singleResult().getName());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceName("The name").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processInstanceName("Other name").count());
+    
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("% name").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("%nope").count());
+    
+    
+    // Query after update name
+    runtimeService.setProcessInstanceName(processInstance.getId(), "New name");
+    assertEquals("New name", historyService.createHistoricProcessInstanceQuery().processInstanceName("New name").singleResult().getName());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceName("New name").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processInstanceName("The name").count());
+    
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("New %").count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("The %").count());
     
     // Start/end dates
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishedBefore(hourAgo.getTime()).count());

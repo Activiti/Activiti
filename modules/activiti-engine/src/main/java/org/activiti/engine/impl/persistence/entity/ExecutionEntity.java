@@ -1105,6 +1105,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     persistentState.put("isScope", this.isScope);
     persistentState.put("isEventScope", this.isEventScope);
     persistentState.put("parentId", parentId);
+    persistentState.put("name", name);
     persistentState.put("superExecution", this.superExecutionId);
     if (forcedUpdate) {
       persistentState.put("forcedUpdate", Boolean.TRUE);

@@ -54,7 +54,11 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected boolean isActive;
   protected String involvedUser;
-  
+
+  // Not exposed in API, but here for the ProcessInstanceQuery support, since the name lives on the
+  // Execution entity/table
+  protected String name;
+  protected String nameLike;
   
   public ExecutionQueryImpl() {
   }
@@ -325,14 +329,34 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public String getParentId() {
     return parentId;
   }
+
   public String getTenantId() {
-		return tenantId;
-	}
-	public String getTenantIdLike() {
-		return tenantIdLike;
-	}
-	public boolean isWithoutTenantId() {
-		return withoutTenantId;
-	}
+    return tenantId;
+  }
+
+  public String getTenantIdLike() {
+    return tenantIdLike;
+  }
+
+  public boolean isWithoutTenantId() {
+    return withoutTenantId;
+  }
+  
+  public String getName() {
+    return name;
+  }
+  
+  public String getNameLike() {
+    return nameLike;
+  }
+  
+  public void setName(String name) {
+    this.name = name;
+  }
+  
+  public void setNameLike(String nameLike) {
+    this.nameLike = nameLike;
+  }
+	
   
 }

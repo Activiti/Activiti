@@ -211,13 +211,13 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   }
   
   @Override
-  public ProcessInstanceQuery name(String name) {
+  public ProcessInstanceQuery processInstanceName(String name) {
     this.name = name;
     return this;
   }
   
   @Override
-  public ProcessInstanceQuery nameLike(String nameLike) {
+  public ProcessInstanceQuery processInstanceNameLike(String nameLike) {
     this.nameLike = nameLike;
     return this;
   }
@@ -328,6 +328,14 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   
   public String getNameLike() {
     return nameLike;
+  }
+  
+  public void setName(String name) {
+    this.name = name;
+  }
+  
+  public void setNameLike(String nameLike) {
+    this.nameLike = nameLike;
   }
   
   /**

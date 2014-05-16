@@ -39,6 +39,12 @@ public interface HistoryManager extends Session {
 			ExecutionEntity processInstance);
 
 	/**
+     * Record a process-instance name change.
+     */
+    public abstract void recordProcessInstanceNameChange(
+        String processInstanceId, String newName);
+	
+	/**
 	 * Record a sub-process-instance started and alters the calledProcessinstanceId
 	 * on the current active activity's historic counterpart. Only effective when activity history is enabled.
 	 */

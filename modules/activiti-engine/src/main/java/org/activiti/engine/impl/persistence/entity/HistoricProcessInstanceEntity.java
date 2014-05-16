@@ -65,6 +65,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
     persistentState.put("endTime", endTime);
     persistentState.put("businessKey", businessKey);
+    persistentState.put("name", name);
     persistentState.put("durationInMillis", durationInMillis);
     persistentState.put("deleteReason", deleteReason);
     persistentState.put("endStateName", endActivityId);

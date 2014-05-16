@@ -34,7 +34,8 @@
         END_ACT_ID_,
         SUPER_PROCESS_INSTANCE_ID_,
         DELETE_REASON_,
-        TENANT_ID_
+        TENANT_ID_,
+        NAME_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processInstanceId, jdbcType=VARCHAR},
@@ -48,7 +49,8 @@
         #{endActivityId, jdbcType=VARCHAR},
         #{superProcessInstanceId, jdbcType=VARCHAR},
         #{deleteReason, jdbcType=VARCHAR},
-        #{tenantId, jdbcType=VARCHAR}
+        #{tenantId, jdbcType=VARCHAR},
+        #{name, jdbcType=VARCHAR}
       )
   </insert>
 
@@ -62,7 +64,8 @@
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
       END_ACT_ID_ = #{endActivityId, jdbcType=VARCHAR},
-      DELETE_REASON_ = #{deleteReason, jdbcType=VARCHAR}
+      DELETE_REASON_ = #{deleteReason, jdbcType=VARCHAR},
+      NAME_ = #{name, jdbcType=VARCHAR}
     where ID_ = #{id}
   </update>
 
@@ -88,6 +91,7 @@
     <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
     <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
   </resultMap>
   
   <resultMap id="historicProcessInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
@@ -104,6 +108,7 @@
     <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
     <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -272,6 +277,12 @@
       </if>
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
+       <if test="name != null">
+        and RES.NAME_ = #{name}
+      </if>
+      <if test="nameLike != null">
+        and RES.NAME_ like #{nameLike}
       </if>
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
         <if test="queryVariableValue.name != null">

@@ -52,6 +52,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
+  protected String name;
+  protected String nameLike;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -179,6 +181,18 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   	return this;
   }
   
+  @Override
+  public HistoricProcessInstanceQuery processInstanceName(String name) {
+    this.name = name;
+    return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery processInstanceNameLike(String nameLike) {
+    this.nameLike = nameLike;
+    return this;
+  }
+  
   public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
     return orderBy(HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
   }
@@ -294,5 +308,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   public String getInvolvedUser() {
     return involvedUser;
+  }
+  public String getName() {
+    return name;
+  }
+  public String getNameLike() {
+    return nameLike;
   }
 }

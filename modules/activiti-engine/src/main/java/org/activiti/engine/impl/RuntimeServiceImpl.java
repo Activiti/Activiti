@@ -40,6 +40,7 @@ import org.activiti.engine.impl.cmd.RemoveEventListenerCommand;
 import org.activiti.engine.impl.cmd.RemoveExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetProcessInstanceBusinessKeyCmd;
+import org.activiti.engine.impl.cmd.SetProcessInstanceNameCmd;
 import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
@@ -57,7 +58,7 @@ import org.activiti.engine.task.IdentityLink;
  * @author Daniel Meyer
  */
 public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
-
+  
   public ProcessInstance startProcessInstanceByKey(String processDefinitionKey) {
     return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, null));
   }
@@ -343,5 +344,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 	@Override
   public void dispatchEvent(ActivitiEvent event) {
 		commandExecutor.execute(new DispatchEventCommand(event));
+  }
+	
+  @Override
+  public void setProcessInstanceName(String processInstanceId, String name) {
+     commandExecutor.execute(new SetProcessInstanceNameCmd(processInstanceId, name));
   }
 }

@@ -915,15 +915,13 @@ public interface RuntimeService {
    */
   void dispatchEvent(ActivitiEvent event);
   
-//  /**
-//   * Sets the name for the process instance with the given id.
-//   * 
-//   * @throws A
-//   * @param processInstanceName
-//   * @param name
-//   */
-//  void setProcessInstanceName(String processInstanceName, String name) {
+  /**
+   * Sets the name for the process instance with the given id.
+   * @param processInstanceId id of the process instance to update
+   * @param name new name for the process instance
+   * @throws ActivitiObjectNotFoundException 
+   *    when the given process instance does not exist.
+   */
+  void setProcessInstanceName(String processInstanceId, String name);
     
-  //}
-
 }

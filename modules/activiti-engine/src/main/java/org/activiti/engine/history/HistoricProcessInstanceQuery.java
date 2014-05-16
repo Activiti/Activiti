@@ -202,4 +202,14 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Include process variables in the process query result
    */
   HistoricProcessInstanceQuery includeProcessVariables();
+  
+  /**
+   * Only select process instances with the given name.
+   */
+  HistoricProcessInstanceQuery processInstanceName(String name);
+  
+  /**
+   * Only select process instances with a name like the given value.
+   */
+  HistoricProcessInstanceQuery processInstanceNameLike(String nameLike);
 }

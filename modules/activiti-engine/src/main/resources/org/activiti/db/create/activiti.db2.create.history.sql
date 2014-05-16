@@ -12,6 +12,7 @@ create table ACT_HI_PROCINST (
     SUPER_PROCESS_INSTANCE_ID_ varchar(64),
     DELETE_REASON_ varchar(4000),
     TENANT_ID_ varchar(255) default '',
+    NAME_ varchar(255),
     primary key (ID_)
 );
 

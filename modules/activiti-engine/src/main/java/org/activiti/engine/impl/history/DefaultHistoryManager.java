@@ -101,6 +101,18 @@ public void recordProcessInstanceEnd(String processInstanceId, String deleteReas
     }
   }
   
+  @Override
+  public void recordProcessInstanceNameChange(String processInstanceId, String newName) {
+    if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceManager()
+              .findHistoricProcessInstance(processInstanceId);
+      
+      if (historicProcessInstance!=null) {
+        historicProcessInstance.setName(newName);
+      }
+    }
+  }
+  
   /* (non-Javadoc)
  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessInstanceStart(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
  */
