@@ -486,17 +486,27 @@ public void recordTaskPriorityChange(String taskId, int priority) {
     }
   }
   
-  /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskCategoryChange(java.lang.String, java.lang.String)
- */
+ /* (non-Javadoc)
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskCategoryChange(java.lang.String, java.lang.String)
+  */
   @Override
-public void recordTaskCategoryChange(String taskId, String category) {
+  public void recordTaskCategoryChange(String taskId, String category) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setCategory(category);
       }
     }
+  }
+  
+  @Override
+  public void recordTaskFormKeyChange(String taskId, String formKey) {
+    if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      if (historicTaskInstance!=null) {
+        historicTaskInstance.setFormKey(formKey);
+      }
+    }	
   }
 
 

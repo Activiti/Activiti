@@ -145,6 +145,11 @@ public interface HistoryManager extends Session {
 	 * Record task category change, if audit history is enabled.
 	 */
 	public abstract void recordTaskCategoryChange(String taskId, String category);
+	
+	/**
+	 * Record task form key change, if audit history is enabled.
+	 */
+	public abstract void recordTaskFormKeyChange(String taskId, String formKey);
 
 	/**
 	 * Record task parent task id change, if audit history is enabled.

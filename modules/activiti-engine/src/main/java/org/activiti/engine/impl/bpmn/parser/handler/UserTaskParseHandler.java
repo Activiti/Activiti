@@ -102,6 +102,10 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
     if (StringUtils.isNotEmpty(userTask.getPriority())) {
       taskDefinition.setPriorityExpression(expressionManager.createExpression(userTask.getPriority()));
     }
+    
+    if (StringUtils.isNotEmpty(userTask.getFormKey())) {
+    	taskDefinition.setFormKeyExpression(expressionManager.createExpression(userTask.getFormKey()));
+    }
 
     return taskDefinition;
   }

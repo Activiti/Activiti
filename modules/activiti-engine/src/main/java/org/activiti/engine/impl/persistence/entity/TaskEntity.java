@@ -88,6 +88,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   protected TaskDefinition taskDefinition;
   protected String taskDefinitionKey;
+  protected String formKey;
   
   protected boolean isDeleted;
   
@@ -684,9 +685,24 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   public void setTaskDefinitionKeyWithoutCascade(String taskDefinitionKey) {
        this.taskDefinitionKey = taskDefinitionKey;
-  }       
+  }   
+  
+  public String getFormKey() {
+		return formKey;
+	}
 
-  public void fireEvent(String taskEventName) {
+	public void setFormKey(String formKey) {
+		this.formKey = formKey;
+		
+	  CommandContext commandContext = Context.getCommandContext();
+    if (commandContext!=null) {
+      commandContext
+        .getHistoryManager()
+        .recordTaskFormKeyChange(id, formKey);
+    }
+	}
+
+	public void fireEvent(String taskEventName) {
     TaskDefinition taskDefinition = getTaskDefinition();
     if (taskDefinition != null) {
       List<TaskListener> taskEventListeners = getTaskDefinition().getTaskListener(taskEventName);

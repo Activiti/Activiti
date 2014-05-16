@@ -39,6 +39,7 @@ public class HistoricTaskWrapper implements Task {
   protected String category;
   protected String parentTaskId;
   protected String tenantId;
+  protected String formKey;
 
   public HistoricTaskWrapper(HistoricTaskInstance historicTaskInstance) {
     this.id = historicTaskInstance.getId();
@@ -48,8 +49,8 @@ public class HistoricTaskWrapper implements Task {
     setPriority(historicTaskInstance.getPriority());
     setOwner(historicTaskInstance.getOwner());
     setAssignee(historicTaskInstance.getAssignee());
-    
     setTenantId(historicTaskInstance.getTenantId());
+    setFormKey(historicTaskInstance.getFormKey());
   }
 
   public String getId() {
@@ -161,6 +162,17 @@ public class HistoricTaskWrapper implements Task {
 	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
 	}
+	
+	@Override
+  public String getFormKey() {
+		return formKey;
+  }
+
+	@Override
+  public void setFormKey(String formKey) {
+		this.formKey = formKey;
+	}
+	
 
 	public Map<String, Object> getTaskLocalVariables() {
     return null;
@@ -169,4 +181,5 @@ public class HistoricTaskWrapper implements Task {
   public Map<String, Object> getProcessVariables() {
     return null;
   }
+
 }

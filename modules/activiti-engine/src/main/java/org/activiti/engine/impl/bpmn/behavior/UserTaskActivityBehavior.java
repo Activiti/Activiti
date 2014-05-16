@@ -12,6 +12,11 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
@@ -23,11 +28,6 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 /**
  * activity implementation for the user task.
@@ -101,6 +101,18 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     		} else {
     			 throw new ActivitiIllegalArgumentException("Category expression does not resolve to a string: " + 
                taskDefinition.getCategoryExpression().getExpressionText());
+    		}
+    	}
+    }
+    
+    if (taskDefinition.getFormKeyExpression() != null) {
+    	final Object formKey = (String) taskDefinition.getFormKeyExpression().getValue(execution);
+    	if (formKey != null) {
+    		if (formKey instanceof String) {
+    			task.setFormKey((String) formKey);
+    		} else {
+    			 throw new ActivitiIllegalArgumentException("FormKey expression does not resolve to a string: " + 
+               taskDefinition.getFormKeyExpression().getExpressionText());
     		}
     	}
     }

@@ -48,6 +48,7 @@ public class TaskDefinition implements Serializable {
   
   // form fields
   protected TaskFormHandler taskFormHandler;
+  protected Expression formKeyExpression;
   
   // task listeners
   protected Map<String, List<TaskListener>> taskListeners = new HashMap<String, List<TaskListener>>();
@@ -121,8 +122,16 @@ public class TaskDefinition implements Serializable {
   public void setTaskFormHandler(TaskFormHandler taskFormHandler) {
     this.taskFormHandler = taskFormHandler;
   }
+  
+  public Expression getFormKeyExpression() {
+		return formKeyExpression;
+	}
 
-  public String getKey() {
+	public void setFormKeyExpression(Expression formKeyExpression) {
+		this.formKeyExpression = formKeyExpression;
+	}
+
+	public String getKey() {
     return key;
   }
 
