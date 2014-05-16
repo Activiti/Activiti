@@ -914,5 +914,16 @@ public interface RuntimeService {
    *           when the given event is not suitable for dispatching.
    */
   void dispatchEvent(ActivitiEvent event);
+  
+//  /**
+//   * Sets the name for the process instance with the given id.
+//   * 
+//   * @throws A
+//   * @param processInstanceName
+//   * @param name
+//   */
+//  void setProcessInstanceName(String processInstanceName, String name) {
+    
+  //}
 
 }
