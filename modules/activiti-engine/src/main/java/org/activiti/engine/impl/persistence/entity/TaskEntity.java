@@ -41,6 +41,7 @@ import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Tom Baeyens
@@ -59,6 +60,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
   protected String owner;
   protected String assignee;
+  protected String initialAssignee;
   protected DelegationState delegationState;
   
   protected String parentTaskId;
@@ -418,12 +420,25 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
 
   public void setAssignee(String assignee) {
-    if (assignee==null && this.assignee==null) {
+    setAssignee(assignee, false, false);
+  }
+  
+  public void setAssignee(String assignee, boolean dispatchAssignmentEvent, boolean dispatchUpdateEvent) {
+  	CommandContext commandContext = Context.getCommandContext();
+  	
+  	if (assignee==null && this.assignee==null) {
+  		
+  		// ACT-1923: even if assignee is unmodified and null, this should be stored in history.
+  		if (commandContext!=null) {
+        commandContext
+          .getHistoryManager()
+          .recordTaskAssigneeChange(id, assignee);
+  		}
+  		
       return;
     }
     this.assignee = assignee;
 
-    CommandContext commandContext = Context.getCommandContext();
     // if there is no command context, then it means that the user is calling the 
     // setAssignee outside a service method.  E.g. while creating a new task.
     if (commandContext!=null) {
@@ -435,13 +450,20 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         getProcessInstance().involveUser(assignee, IdentityLinkType.PARTICIPANT);
       }
       
-      fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
+       if(!StringUtils.equals(initialAssignee, assignee)) {
+      	fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
+      	initialAssignee = assignee;
+      }
+      
     }
   }
 
   /* plain setter for persistence */
   public void setAssigneeWithoutCascade(String assignee) {
     this.assignee = assignee;
+    
+    // Assign the assignee that was persisted before
+    this.initialAssignee = assignee;
   }
   
   public void setOwner(String owner) {
