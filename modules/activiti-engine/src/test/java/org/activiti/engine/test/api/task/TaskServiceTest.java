@@ -1416,7 +1416,14 @@ public void testCompleteWithParametersTask2() {
   	
   	task = taskService.createTaskQuery().singleResult();
   	assertEquals("form-abc.json", task.getFormKey());
-  	taskService.complete(task.getId());
+  	
+  	task.setFormKey("form-changed.json");
+  	taskService.saveTask(task);
+  	task = taskService.createTaskQuery().singleResult();
+  	assertEquals("form-changed.json", task.getFormKey());
+  	
+  	HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+  	assertEquals("form-changed.json", historicTaskInstance.getFormKey());
   }
   
 }
