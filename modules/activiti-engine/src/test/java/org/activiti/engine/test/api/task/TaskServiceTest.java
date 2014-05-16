@@ -35,6 +35,7 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
@@ -1403,6 +1404,19 @@ public void testCompleteWithParametersTask2() {
       assertEquals("The task cannot be deleted because is part of a running process", ae.getMessage());
     }
     
+  }
+  
+  @Deployment
+  public void testFormKeyExpression() {
+  	runtimeService.startProcessInstanceByKey("testFormExpression", CollectionUtil.singletonMap("var", "abc"));
+
+  	Task task = taskService.createTaskQuery().singleResult();
+  	assertEquals("first-form.json", task.getFormKey());
+  	taskService.complete(task.getId());
+  	
+  	task = taskService.createTaskQuery().singleResult();
+  	assertEquals("form-abc.json", task.getFormKey());
+  	taskService.complete(task.getId());
   }
   
 }
