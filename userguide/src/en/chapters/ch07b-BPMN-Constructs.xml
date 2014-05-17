@@ -4528,7 +4528,7 @@ the following table provides an overview of three available camel behaviours:
                </row>
 			   
                 <row>
-				   <entry>isCopyVariablesFromHeader</entry>
+				   <entry>copyVariablesFromHeader</entry>
 	               <entry>Additionally copy camel headers to Activiti variables of the same names</entry>
                </row>
              </tbody>
