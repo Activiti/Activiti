@@ -65,7 +65,7 @@ public class DeploymentManager {
     processDefinition = resolveProcessDefinition(processDefinition);
     return processDefinition;
   }
-
+  
   public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
     ProcessDefinitionEntity processDefinition = Context
       .getCommandContext()

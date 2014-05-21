@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.Job;
@@ -851,5 +853,37 @@ public class TenancyTest extends PluggableActivitiTestCase {
 			repositoryService.deleteDeployment(deployment.getId(), true);
 		}
 	}
+	
+	// Bug from http://forums.activiti.org/content/callactiviti-tenant-id
+	public void testCallActivityWithTenant() {
+		String tenantId = "apache";
+		  
+		  
+		//deploying both processes. Process 1 will call Process 2 
+		repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testCallActivityWithTenant-process01.bpmn20.xml").tenantId(tenantId).deploy();
+		repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testCallActivityWithTenant-process02.bpmn20.xml").tenantId(tenantId).deploy();
+		  
+		//Starting Process 1. Process 1 will be executed successfully but when the call to process 2 is made internally it will throw the exception
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId("process1",null, CollectionUtil.singletonMap("sendFor", "test"), tenantId);
+		Assert.assertNotNull(processInstance);
+		  
+		Assert.assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKey("process2").processInstanceTenantId(tenantId).count());
+		Assert.assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKey("process2").count());
+		  
+		// following line if executed will give activiti object not found exception as the process1 is linked to a tenant id.
+		try {
+			processInstance = runtimeService.startProcessInstanceByKey("process1");
+			Assert.fail();
+		} catch (Exception e) {
+		  	
+		}
+		
+		// Cleanup
+		for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+			repositoryService.deleteDeployment(deployment.getId(), true);
+		}
+			
+	}
+	
 	
 }
