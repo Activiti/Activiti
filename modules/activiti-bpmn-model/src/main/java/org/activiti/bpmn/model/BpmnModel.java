@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author Tijs Rademakers
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BpmnModel {
   
   protected Map<String, List<ExtensionAttribute>> definitionsAttributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
