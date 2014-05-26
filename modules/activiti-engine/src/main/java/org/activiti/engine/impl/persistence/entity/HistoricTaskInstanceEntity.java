@@ -67,6 +67,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     
     this.setPriority(task.getPriority());
     this.setDueDate(task.getDueDate());
+    this.setCategory(task.getCategory());
     
     // Inherit tenant id (if applicable)
     if (task.getTenantId() != null) {
