@@ -171,8 +171,12 @@ public class DefaultProcessDiagramCanvas {
       this.labelFontName = Context.getProcessEngineConfiguration().getLabelFontName();
     }
     
-    this.processDiagram = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    this.processDiagram = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
     this.g = processDiagram.createGraphics();
+    this.g.setBackground(new Color(255, 255, 255, 0));
+    this.g.clearRect(0, 0, width, height);
+
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setPaint(Color.black);
     
