@@ -147,8 +147,13 @@ public enum ActivitiEventType {
 	 * An existing variable has been deleted.
 	 */
 	VARIABLE_DELETED,
-	
-	/**
+
+    /**
+     * A task has been created. This is thrown when task is fully initialized (before TaskListener.EVENTNAME_CREATE).
+     */
+    TASK_CREATED,
+
+    /**
 	 * A task as been assigned. This is thrown alongside with an {@link #ENTITY_UPDATED} event.
 	 */
 	TASK_ASSIGNED,

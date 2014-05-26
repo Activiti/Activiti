@@ -1147,6 +1147,15 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
               <row>
+                <entry>TASK_CREATED</entry>
+                <entry>A task has been created. This is dispatched after the <literal>ENTITY_CREATE</literal> event. In case the task is part of a process, this event will be
+                  fired before the task listeners are executed.
+                </entry>
+                <entry>
+                  <literal>org.activiti...ActivitiEntityEvent</literal>
+                </entry>
+              </row>
+              <row>
                 <entry>TASK_COMPLETED</entry>
                 <entry>A task has been completed. This is dispatched before the <literal>ENTITY_DELETE</literal> event. In case the task is part of a process, this event will be
                 fired before the process has moved on and will be followed by a <literal>ACTIVITY_COMPLETE</literal> event, targeting the activity that represents the completed task.</entry>
