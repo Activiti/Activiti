@@ -43,6 +43,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
   private static final String TEST_PROCESS_CALL_ACTIVITY = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.withCallActivity.bpmn20.xml";
   private static final String TEST_PROCESS_USER_TASK_V1 = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionWithTask.bpmn20.xml";
   private static final String TEST_PROCESS_USER_TASK_V2 = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionWithTaskV2.bpmn20.xml";
+  private static final String TEST_PROCESS_NESTED_SUB_EXECUTIONS = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionSubExecutionsNested.bpmn20.xml";
 
   public void testSetProcessDefinitionVersionEmptyArguments() {
     try {
@@ -306,6 +307,42 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     catch (Exception ex) {
      ex.printStackTrace(); 
     }
+  }
+
+  @Deployment(resources = {TEST_PROCESS_NESTED_SUB_EXECUTIONS})
+  public void testSetProcessDefinitionVersionSubExecutionsNested() {
+    // start process instance
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoinNested");
+
+    // check that the user tasks have been reached
+    assertEquals(2, taskService.createTaskQuery().count());
+
+    // deploy new version of the process definition
+    org.activiti.engine.repository.Deployment deployment = repositoryService
+            .createDeployment()
+            .addClasspathResource(TEST_PROCESS_NESTED_SUB_EXECUTIONS)
+            .deploy();
+    assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+
+    // migrate process instance to new process definition version
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
+
+    // check that all executions of the instance now use the new process definition version
+    ProcessDefinition newProcessDefinition = repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionVersion(2)
+            .singleResult();
+    List<Execution> executions = runtimeService
+            .createExecutionQuery()
+            .processInstanceId(pi.getId())
+            .list();
+    for (Execution execution : executions) {
+        assertEquals(newProcessDefinition.getId(), ((ExecutionEntity) execution).getProcessDefinitionId());
+    }
+
+    // undeploy "manually" deployed process definition
+    repositoryService.deleteDeployment(deployment.getId(), true);
   }
   
 }
