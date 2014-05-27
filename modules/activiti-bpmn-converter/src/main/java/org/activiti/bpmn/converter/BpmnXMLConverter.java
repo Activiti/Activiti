@@ -273,7 +273,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         try {
           in.close();
         } catch (IOException e) {
-          LOGGER.info("Problem closing BPMN input stream", e);
+          LOGGER.debug("Problem closing BPMN input stream", e);
         }
       }
     }
@@ -290,7 +290,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 				try {
 					xtr.next();
 				} catch(Exception e) {
-					LOGGER.error("Error reading XML document", e);
+					LOGGER.debug("Error reading XML document", e);
 					throw new XMLException("Error reading XML", e);
 				}
 
@@ -417,7 +417,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 			  }
 			  processFlowElements(process.getFlowElements(), process);
 			}
-
+		
+		} catch (XMLException e) {
+		  throw e;
+		  
 		} catch (Exception e) {
 			LOGGER.error("Error processing BPMN document", e);
 			throw new XMLException("Error processing BPMN document", e);
