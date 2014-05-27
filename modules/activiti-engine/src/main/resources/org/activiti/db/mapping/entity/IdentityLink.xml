@@ -79,6 +79,21 @@
       </if>
   </select>
   
+   <select id="selectIdentityLinkByProcessInstanceUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+    select * 
+    from ${prefix}ACT_RU_IDENTITYLINK 
+    where PROC_INST_ID_ = #{parameter.processInstanceId}
+      <if test="parameter.userId != null">
+        and USER_ID_ = #{parameter.userId}
+      </if>
+      <if test="parameter.groupId != null">
+        and GROUP_ID_ = #{parameter.groupId}
+      </if>
+      <if test="parameter.type != null">
+        and TYPE_ = #{parameter.type}
+      </if>
+  </select>
+  
   <select id="selectIdentityLinkByProcessDefinitionUserAndGroup" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
     select * 
     from ${prefix}ACT_RU_IDENTITYLINK 

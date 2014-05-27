@@ -72,6 +72,16 @@ public class IdentityLinkEntityManager extends AbstractManager {
   }
   
   @SuppressWarnings("unchecked")
+  public List<IdentityLinkEntity> findIdentityLinkByProcessInstanceUserGroupAndType(String processInstanceId, String userId, String groupId, String type) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("processInstanceId", processInstanceId);
+    parameters.put("userId", userId);
+    parameters.put("groupId", groupId);
+    parameters.put("type", type);
+    return getDbSqlSession().selectList("selectIdentityLinkByProcessInstanceUserGroupAndType", parameters);
+  }
+  
+  @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinkByProcessDefinitionUserAndGroup(String processDefinitionId, String userId, String groupId) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("processDefinitionId", processDefinitionId);

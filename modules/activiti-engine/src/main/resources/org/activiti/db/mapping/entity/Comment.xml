@@ -60,6 +60,10 @@
     delete from ${prefix}ACT_HI_COMMENT where TASK_ID_ = #{taskId} 
   </delete>
 
+  <delete id="deleteCommentsByProcessInstanceId" parameterType="string">
+    delete from ${prefix}ACT_HI_COMMENT where PROC_INST_ID_ = #{processInstanceId} 
+  </delete>
+  
   <!-- COMMENT RESULTMAP -->
 
   <resultMap id="commentResultMap" type="org.activiti.engine.impl.persistence.entity.CommentEntity">
@@ -156,6 +160,20 @@
     select * 
     from ${prefix}ACT_HI_COMMENT 
     where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+  
+  <select id="selectEventsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+
+  <select id="selectEventsByProcessInstanceId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where PROC_INST_ID_ = #{parameter,jdbcType=BINARY}
     order by TIME_ desc
   </select>
 

@@ -71,9 +71,14 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
         .getHistoricTaskInstanceEntityManager()
         .deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
       
-      commandContext.getHistoricIdentityLinkEntityManager()
+      commandContext
+      	.getHistoricIdentityLinkEntityManager()
         .deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
-
+      
+      commandContext
+        .getCommentEntityManager()
+        .deleteCommentsByProcessInstanceId(historicProcessInstanceId);
+      
       getDbSqlSession().delete(historicProcessInstance);
       
       // Also delete any sub-processes that may be active (ACT-821)
