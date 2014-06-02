@@ -669,6 +669,39 @@ public void createIdentityLinkComment(String taskId, String userId, String group
     }
   }
   
+  @Override
+  public void createProcessInstanceIdentityLinkComment(String processInstanceId, String userId, String groupId, String type, boolean create) {
+    createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, create, false);
+  }
+
+  @Override
+  public void createProcessInstanceIdentityLinkComment(String processInstanceId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
+    if(isHistoryEnabled()) {
+      String authenticatedUserId = Authentication.getAuthenticatedUserId();
+      CommentEntity comment = new CommentEntity();
+      comment.setUserId(authenticatedUserId);
+      comment.setType(CommentEntity.TYPE_EVENT);
+      comment.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+      comment.setProcessInstanceId(processInstanceId);
+      if (userId!=null || forceNullUserId) {
+        if(create) {
+          comment.setAction(Event.ACTION_ADD_USER_LINK);
+        } else {
+          comment.setAction(Event.ACTION_DELETE_USER_LINK);
+        }
+        comment.setMessage(new String[]{userId, type});
+      } else {
+        if(create) {
+          comment.setAction(Event.ACTION_ADD_GROUP_LINK);
+        } else {
+          comment.setAction(Event.ACTION_DELETE_GROUP_LINK);
+        }
+        comment.setMessage(new String[]{groupId, type});
+      }
+      getSession(CommentEntityManager.class).insert(comment);
+    }
+  }
+  
   /* (non-Javadoc)
  * @see org.activiti.engine.impl.history.HistoryManagerInterface#createAttachmentComment(java.lang.String, java.lang.String, java.lang.String, boolean)
  */

@@ -208,6 +208,21 @@ public interface HistoryManager extends Session {
 			boolean forceNullUserId);
 
 	/**
+	 * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 
+	 * if history is enabled. 
+	 */
+	public abstract void createProcessInstanceIdentityLinkComment(String processInstanceId,
+      String userId, String groupId, String type, boolean create);
+
+	/**
+	 * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 
+	 * if history is enabled. 
+	 */
+	public abstract void createProcessInstanceIdentityLinkComment(String processInstanceId,
+      String userId, String groupId, String type, boolean create,
+      boolean forceNullUserId);
+
+	/**
 	 * Creates a new comment to indicate a new attachment has been created or deleted, 
 	 * if history is enabled. 
 	 */

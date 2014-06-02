@@ -99,10 +99,21 @@ public class CommentEntityManager extends AbstractManager {
     checkHistoryEnabled();
     return getDbSqlSession().selectList("selectEventsByTaskId", taskId);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<Event> findEventsByProcessInstanceId(String processInstanceId) {
+    checkHistoryEnabled();
+    return getDbSqlSession().selectList("selectEventsByProcessInstanceId", processInstanceId);
+  }
 
   public void deleteCommentsByTaskId(String taskId) {
     checkHistoryEnabled();
     getDbSqlSession().delete("deleteCommentsByTaskId", taskId);
+  }
+  
+  public void deleteCommentsByProcessInstanceId(String processInstanceId) {
+    checkHistoryEnabled();
+    getDbSqlSession().delete("deleteCommentsByProcessInstanceId", processInstanceId);
   }
 
   @SuppressWarnings("unchecked")
