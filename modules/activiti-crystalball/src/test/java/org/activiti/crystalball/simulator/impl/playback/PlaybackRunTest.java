@@ -2,22 +2,18 @@ package org.activiti.crystalball.simulator.impl.playback;
 
 import org.activiti.crystalball.simulator.*;
 import org.activiti.crystalball.simulator.delegate.event.Function;
+import org.activiti.crystalball.simulator.delegate.event.impl.DeploymentCreateTransformer;
 import org.activiti.crystalball.simulator.delegate.event.impl.InMemoryRecordActivitiEventListener;
 import org.activiti.crystalball.simulator.delegate.event.impl.ProcessInstanceCreateTransformer;
 import org.activiti.crystalball.simulator.delegate.event.impl.UserTaskCompleteTransformer;
-import org.activiti.crystalball.simulator.impl.DefaultSimulationProcessEngineFactory;
-import org.activiti.crystalball.simulator.impl.EventRecorderTestUtils;
-import org.activiti.crystalball.simulator.impl.RecordableProcessEngineFactory;
-import org.activiti.crystalball.simulator.impl.StartProcessEventHandler;
+import org.activiti.crystalball.simulator.impl.*;
 import org.activiti.crystalball.simulator.impl.clock.DefaultClockFactory;
 import org.activiti.crystalball.simulator.impl.clock.ThreadLocalClock;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RepositoryService;
+import org.activiti.engine.*;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Clock;
@@ -35,6 +31,9 @@ import static org.junit.Assert.assertNotNull;
  * @author martin.grofcik
  */
 public class PlaybackRunTest {
+  //deployment created
+  private static final String DEPLOYMENT_CREATED_EVENT_TYPE = "DEPLOYMENT_CREATED_EVENT";
+  private static final String DEPLOYMENT_RESOURCES_KEY = "deploymentResources";
 
   // Process instance start event
   private static final String PROCESS_INSTANCE_START_EVENT_TYPE = "PROCESS_INSTANCE_START";
@@ -59,7 +58,9 @@ public class PlaybackRunTest {
     final SimpleSimulationRun.Builder builder = new SimpleSimulationRun.Builder();
     // init simulation run
     Clock clock = new ThreadLocalClock(new DefaultClockFactory());
-    DefaultSimulationProcessEngineFactory simulationProcessEngineFactory = new DefaultSimulationProcessEngineFactory(THE_SIMPLEST_PROCESS, clock);
+    ProcessEngineConfigurationImpl config = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault();
+    config.setClock(clock);
+    SimulationProcessEngineFactory simulationProcessEngineFactory = new SimulationProcessEngineFactory(config);
     final ProcessEngineImpl simProcessEngine = simulationProcessEngineFactory.getObject();
 
     builder.processEngine(simProcessEngine)
@@ -78,8 +79,16 @@ public class PlaybackRunTest {
 
   private void recordEvents() {
     Clock clock = new DefaultClockImpl();
-    ProcessEngine processEngine = (new RecordableProcessEngineFactory(THE_SIMPLEST_PROCESS, clock, listener))
+    ProcessEngineConfigurationImpl config = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault();
+    config.setClock(clock);
+    ProcessEngine processEngine = (new RecordableProcessEngineFactory(config, listener))
                                   .getObject();
+
+    processEngine.getProcessEngineConfiguration().setClock(clock);
+    processEngine.getRepositoryService().createDeployment().
+      addClasspathResource(THE_SIMPLEST_PROCESS).
+      deploy();
+
     Map<String,Object> variables = new HashMap<String, Object>();
     variables.put(TEST_VARIABLE, TEST_VALUE);
     processEngine.getRuntimeService().startProcessInstanceByKey(SIMPLEST_PROCESS, BUSINESS_KEY, variables);
@@ -108,6 +117,7 @@ public class PlaybackRunTest {
 
   private List<Function<ActivitiEvent, SimulationEvent>> getTransformers() {
     List<Function<ActivitiEvent, SimulationEvent>> transformers = new ArrayList<Function<ActivitiEvent, SimulationEvent>>();
+    transformers.add(new DeploymentCreateTransformer(DEPLOYMENT_CREATED_EVENT_TYPE, DEPLOYMENT_RESOURCES_KEY));
     transformers.add(new ProcessInstanceCreateTransformer(PROCESS_INSTANCE_START_EVENT_TYPE, PROCESS_DEFINITION_ID_KEY, BUSINESS_KEY, VARIABLES_KEY));
     transformers.add(new UserTaskCompleteTransformer(USER_TASK_COMPLETED_EVENT_TYPE));
     return transformers;
@@ -115,7 +125,8 @@ public class PlaybackRunTest {
 
   public static Map<String, SimulationEventHandler> getHandlers() {
     Map<String, SimulationEventHandler> handlers = new HashMap<String, SimulationEventHandler>();
-    handlers.put(PROCESS_INSTANCE_START_EVENT_TYPE, new StartProcessEventHandler(PROCESS_DEFINITION_ID_KEY, BUSINESS_KEY, VARIABLES_KEY));
+    handlers.put(DEPLOYMENT_CREATED_EVENT_TYPE, new DeployResourcesEventHandler(DEPLOYMENT_RESOURCES_KEY));
+    handlers.put(PROCESS_INSTANCE_START_EVENT_TYPE, new StartProcessByIdEventHandler(PROCESS_DEFINITION_ID_KEY, BUSINESS_KEY, VARIABLES_KEY));
     handlers.put(USER_TASK_COMPLETED_EVENT_TYPE, new PlaybackUserTaskCompleteEventHandler());
     return handlers;
   }

@@ -5,8 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
-
-    <property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"/>
+    <property name="processEngineName" value="simulationManager"/>
+    <property name="jdbcUrl" value="jdbc:h2:mem:simulationManager;DB_CLOSE_DELAY=1000"/>
     <property name="jdbcDriver" value="org.h2.Driver"/>
     <property name="jdbcUsername" value="sa"/>
     <property name="jdbcPassword" value=""/>
@@ -15,7 +15,7 @@
     <property name="databaseSchemaUpdate" value="true"/>
 
     <!-- job executor configurations -->
-    <property name="jobExecutorActivate" value="false"/>
+    <property name="jobExecutorActivate" value="true"/>
 
     <!-- Also register the eventlistener as bean, to be able to access it from the tests -->
     <property name="beans">
@@ -28,25 +28,45 @@
   <bean id="simulationRunFactory" class="org.activiti.crystalball.simulator.SimpleSimulationRunFactory">
     <property name="processEngine" ref="defaultProcessEngineFactory"/>
     <property name="eventCalendar" ref="eventCalendar"/>
+    <property name="customEventHandlerMap">
+      <map>
+        <entry key="deployProcessInstance">
+          <bean class="org.activiti.crystalball.simulator.impl.DeployClasspathResourcesEventHandler">
+            <constructor-arg value="resources"/>
+          </bean>
+        </entry>
+        <entry key="startProcessInstance">
+          <bean class="org.activiti.crystalball.simulator.impl.StartProcessByKeyEventHandler">
+            <constructor-arg name="businessKey" value="businessKey"/>
+            <constructor-arg name="processToStartKey" value="processToStart" />
+            <constructor-arg name="variablesKey" value="variables"/>
+          </bean>
+        </entry>
+      </map>
+    </property>
   </bean>
-
 
   <bean id="defaultProcessEngineFactory" class="org.activiti.crystalball.simulator.impl.SimulationProcessEngineFactory">
     <constructor-arg name="processEngineConfiguration">
-      <bean id="simulatedProcessEngineConfiguration"
-            class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+      <bean class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
 
-        <property name="jdbcUrl" value="jdbc:h2:mem:simulated-activiti;DB_CLOSE_DELAY=1000"/>
+        <property name="processEngineName" value="simulation-run-activiti"/>
+        <property name="jdbcUrl" value="jdbc:h2:mem:simulation-activiti;DB_CLOSE_DELAY=1000"/>
         <property name="jdbcDriver" value="org.h2.Driver"/>
         <property name="jdbcUsername" value="sa"/>
         <property name="jdbcPassword" value=""/>
+
+        <property name="clock" ref="clock"/>
+
+        <property name="defaultCommandConfig">
+          <bean class="org.activiti.engine.impl.interceptor.CommandConfig" factory-method="transactionRequiresNew"/>
+        </property>
 
         <!-- Database configurations -->
         <property name="databaseSchemaUpdate" value="true"/>
 
         <!-- job executor configurations -->
         <property name="jobExecutorActivate" value="false"/>
-        <property name="clock" ref="clock"/>
       </bean>
     </constructor-arg>
   </bean>
@@ -59,11 +79,26 @@
     <constructor-arg name="simulationEvents">
       <list>
         <bean class="org.activiti.crystalball.simulator.SimulationEvent.Factory">
+          <constructor-arg name="type" value="deployProcessInstance"/>
+          <constructor-arg name="simulationTime" value="0"/>
+          <constructor-arg name="properties">
+            <map>
+              <entry key="resources">
+                <list>
+                  <value>org/activiti/crystalball/examples/tutorial/step01/FirstSimulationRunTest.oneTaskProcess.bpmn20.xml</value>
+                </list>
+              </entry>
+            </map>
+          </constructor-arg>
+        </bean>
+
+        <bean class="org.activiti.crystalball.simulator.SimulationEvent.Factory">
           <constructor-arg name="type" value="startProcessInstance"/>
           <constructor-arg name="simulationTime" value="1"/>
           <constructor-arg name="properties">
             <map>
-
+              <entry key="businessKey" value="businessKeyValue" />
+              <entry key="processToStart" value="oneTaskProcess"/>
             </map>
           </constructor-arg>
 

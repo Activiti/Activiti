@@ -6,15 +6,17 @@ import org.activiti.crystalball.simulator.delegate.event.Function;
 import org.activiti.crystalball.simulator.delegate.event.impl.InMemoryRecordActivitiEventListener;
 import org.activiti.crystalball.simulator.delegate.event.impl.ProcessInstanceCreateTransformer;
 import org.activiti.crystalball.simulator.delegate.event.impl.UserTaskCompleteTransformer;
-import org.activiti.crystalball.simulator.impl.DefaultSimulationProcessEngineFactory;
+import org.activiti.crystalball.simulator.impl.SimulationProcessEngineFactory;
 import org.activiti.crystalball.simulator.impl.EventRecorderTestUtils;
 import org.activiti.crystalball.simulator.impl.RecordableProcessEngineFactory;
-import org.activiti.crystalball.simulator.impl.StartProcessEventHandler;
+import org.activiti.crystalball.simulator.impl.StartProcessByIdEventHandler;
 import org.activiti.crystalball.simulator.impl.clock.DefaultClockFactory;
 import org.activiti.crystalball.simulator.impl.clock.ThreadLocalClock;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.DefaultClockImpl;
@@ -53,7 +55,14 @@ public abstract class AbstractPlaybackTest extends AbstractActivitiTestCase {
   @Override
   protected void initializeProcessEngine() {
     Clock clock = new DefaultClockImpl();
-    this.processEngine = (new RecordableProcessEngineFactory(clock, listener)).getObject();
+
+    ProcessEngineConfiguration processEngineConfiguration = ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault();
+    processEngineConfiguration.setClock(clock);
+
+    this.processEngine = (new RecordableProcessEngineFactory(
+        (ProcessEngineConfigurationImpl) processEngineConfiguration
+        , listener)).
+      getObject();
   }
 
   @Override
@@ -78,7 +87,9 @@ public abstract class AbstractPlaybackTest extends AbstractActivitiTestCase {
       // init simulation run
 
       Clock clock = new ThreadLocalClock(new DefaultClockFactory());
-      FactoryBean<ProcessEngineImpl> simulationProcessEngineFactory = new DefaultSimulationProcessEngineFactory(clock);
+      FactoryBean<ProcessEngineImpl> simulationProcessEngineFactory = new SimulationProcessEngineFactory(
+        ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault()
+      );
 
       final SimpleSimulationRun.Builder builder = new SimpleSimulationRun.Builder();
       builder.processEngine(simulationProcessEngineFactory.getObject())
@@ -218,7 +229,7 @@ public abstract class AbstractPlaybackTest extends AbstractActivitiTestCase {
 
   protected Map<String, SimulationEventHandler> getHandlers() {
     Map<String, SimulationEventHandler> handlers = new HashMap<String, SimulationEventHandler>();
-    handlers.put(PROCESS_INSTANCE_START_EVENT_TYPE, new StartProcessEventHandler(PROCESS_DEFINITION_ID_KEY, BUSINESS_KEY, VARIABLES_KEY));
+    handlers.put(PROCESS_INSTANCE_START_EVENT_TYPE, new StartProcessByIdEventHandler(PROCESS_DEFINITION_ID_KEY, BUSINESS_KEY, VARIABLES_KEY));
     handlers.put(USER_TASK_COMPLETED_EVENT_TYPE, new PlaybackUserTaskCompleteEventHandler());
     return handlers;
   }

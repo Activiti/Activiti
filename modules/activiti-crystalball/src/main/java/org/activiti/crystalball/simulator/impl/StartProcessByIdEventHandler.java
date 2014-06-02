@@ -1,26 +1,5 @@
 package org.activiti.crystalball.simulator.impl;
 
-/*
- * #%L
- * simulator
- * %%
- * Copyright (C) 2012 - 2013 crystalball
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
-
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.SimulationEventHandler;
 import org.activiti.crystalball.simulator.SimulationRunContext;
@@ -34,16 +13,16 @@ import java.util.Map;
  *
  * @author martin.grofcik
  */
-public class StartProcessEventHandler implements SimulationEventHandler {
+public class StartProcessByIdEventHandler implements SimulationEventHandler {
 
-	private static Logger log = LoggerFactory.getLogger(StartProcessEventHandler.class);
+	private static Logger log = LoggerFactory.getLogger(StartProcessByIdEventHandler.class);
 	
 	/** process to start key */
 	protected String processToStartIdKey;
   protected String businessKey;
   protected String variablesKey;
 
-  public StartProcessEventHandler(String processToStartIdKey, String businessKey, String variablesKey) {
+  public StartProcessByIdEventHandler(String processToStartIdKey, String businessKey, String variablesKey) {
     this.processToStartIdKey = processToStartIdKey;
     this.businessKey = businessKey;
     this.variablesKey = variablesKey;
