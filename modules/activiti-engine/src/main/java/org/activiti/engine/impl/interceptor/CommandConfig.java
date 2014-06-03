@@ -44,15 +44,15 @@ public class CommandConfig {
     return config;
   }
 
-  public CommandConfig transactionRequiresNew() {
-    CommandConfig config = new CommandConfig(this);
+  public static CommandConfig transactionRequiresNew() {
+    CommandConfig config = new CommandConfig();
     config.contextReusePossible = false;
     config.propagation = TransactionPropagation.REQUIRES_NEW;
     return config;
   }
 
-  public CommandConfig transactionNotSupported() {
-    CommandConfig config = new CommandConfig(this);
+  public static CommandConfig transactionNotSupported() {
+    CommandConfig config = new CommandConfig();
     config.contextReusePossible = false;
     config.propagation = TransactionPropagation.NOT_SUPPORTED;
     return config;

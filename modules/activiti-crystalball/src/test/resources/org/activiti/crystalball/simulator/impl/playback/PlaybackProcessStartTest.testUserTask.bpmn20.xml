@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Activiti - CrystalBall
+  %%
+  Copyright (C) 2014 Alfresco
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="oneTaskProcess" name="one task Process">
+    <documentation>This is a process for testing purposes</documentation>
+  
+    <startEvent id="theStart" />
+    <userTask id="userTask" name="userTask" activiti:assignee="user1"/>
+    <endEvent id="theEnd" />
+
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="userTask"/>
+    <sequenceFlow id="flow2" sourceRef="userTask" targetRef="theEnd"/>
+
+  </process>
+
+</definitions>
