@@ -5,4 +5,4 @@ alter table ACT_RU_EXECUTION
 	add NAME_ nvarchar(255);
 	
 	
-update ACT_GE_PROPERTY set VALUE_ = '5.15.2' where NAME_ = 'schema.version';
+update ACT_GE_PROPERTY set VALUE_ = '5.16-SNAPSHOT' where NAME_ = 'schema.version';
