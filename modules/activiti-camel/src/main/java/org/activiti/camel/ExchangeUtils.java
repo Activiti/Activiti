@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.camel.Exchange;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * This class contains one method - prepareVariables - that is used to copy variables from Camel into Activiti.
@@ -49,6 +50,17 @@ public class ExchangeUtils {
     
     if (shouldReadFromProperties) {
       camelVarMap = exchange.getProperties();
+
+      // filter camel property that can't be serializable for camel version after 2.12.x+
+      Map<String, Object> newCamelVarMap = new HashMap<String, Object>();
+      String[] ignoreCamelProperties = new String[]{"CamelMessageHistory"};
+      for (String s : camelVarMap.keySet()) {
+        Object o = camelVarMap.get(s);
+        if (!ArrayUtils.contains(ignoreCamelProperties, s)) {
+          newCamelVarMap.put(s, o);
+        }
+      }
+      camelVarMap = newCamelVarMap;
     } else {
       camelVarMap = new HashMap<String, Object>();
       Object camelBody = null;
