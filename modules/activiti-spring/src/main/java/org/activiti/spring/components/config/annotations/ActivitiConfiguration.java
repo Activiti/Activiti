@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -110,10 +111,15 @@ public class ActivitiConfiguration {
 	public ManagementService managementService(ProcessEngine processEngine) {
 		return processEngine.getManagementService();
 	}
-	
+
 	@Bean
 	public FormService formService(ProcessEngine processEngine) {
 		return processEngine.getFormService();
+	}
+
+	@Bean
+	public IdentityService identityService(ProcessEngine processEngine) {
+	  return processEngine.getIdentityService();
 	}
 
 	/*
