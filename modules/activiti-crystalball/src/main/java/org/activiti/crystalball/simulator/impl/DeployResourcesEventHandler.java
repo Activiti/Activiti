@@ -1,12 +1,6 @@
 package org.activiti.crystalball.simulator.impl;
 
-/*
- * #%L
- * Activiti - CrystalBall
- * %%
- * Copyright (C) 2014 Alfresco
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
+/* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
@@ -17,19 +11,8 @@ package org.activiti.crystalball.simulator.impl;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * #L%
  */
 
-
-import com.sun.corba.se.spi.orbutil.fsm.Input;
-import org.activiti.crystalball.simulator.SimulationEvent;
-import org.activiti.crystalball.simulator.SimulationEventHandler;
-import org.activiti.crystalball.simulator.SimulationRunContext;
-import org.activiti.engine.impl.persistence.entity.ResourceEntity;
-import org.activiti.engine.repository.DeploymentBuilder;
-import org.activiti.engine.test.Deployment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -37,6 +20,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.activiti.crystalball.simulator.SimulationEvent;
+import org.activiti.crystalball.simulator.SimulationEventHandler;
+import org.activiti.crystalball.simulator.SimulationRunContext;
+import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.repository.DeploymentBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Start new process event handler for playback purposes
@@ -62,6 +53,7 @@ public class DeployResourcesEventHandler implements SimulationEventHandler {
 	@Override
 	public void handle(SimulationEvent event) {
 
+    @SuppressWarnings("unchecked")
     Map<String, ResourceEntity> resources = (Map<String, ResourceEntity>) event.getProperty(resourcesKey);
 
     List<InputStream> inputStreams = new ArrayList<InputStream>();

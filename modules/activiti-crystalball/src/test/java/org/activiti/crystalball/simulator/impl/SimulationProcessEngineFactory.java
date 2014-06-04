@@ -1,12 +1,6 @@
 package org.activiti.crystalball.simulator.impl;
 
-/*
- * #%L
- * Activiti - CrystalBall
- * %%
- * Copyright (C) 2014 Alfresco
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
+/* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
@@ -17,18 +11,14 @@ package org.activiti.crystalball.simulator.impl;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * #L%
  */
 
 
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.runtime.Clock;
-import org.springframework.beans.factory.FactoryBean;
-
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.springframework.beans.factory.FactoryBean;
 
 /**
  * @author martin.grofcik

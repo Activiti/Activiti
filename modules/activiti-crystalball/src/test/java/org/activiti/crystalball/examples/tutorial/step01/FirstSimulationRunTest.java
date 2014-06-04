@@ -1,12 +1,4 @@
-package org.activiti.crystalball.examples.tutorial.step01;
-
-/*
- * #%L
- * Activiti - CrystalBall
- * %%
- * Copyright (C) 2014 Alfresco
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
+/* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
@@ -17,23 +9,15 @@ package org.activiti.crystalball.examples.tutorial.step01;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * #L%
  */
-
-
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.impl.test.ResourceActivitiTestCase;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.test.Deployment;
-
-import java.util.concurrent.Callable;
+package org.activiti.crystalball.examples.tutorial.step01;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.impl.test.ResourceActivitiTestCase;
+import org.activiti.engine.test.Deployment;
 
 /**
  * This class provides the first insight into simulation run driven by process definition

@@ -79,7 +79,9 @@
         <property name="clock" ref="clock"/>
 
         <property name="defaultCommandConfig">
-          <bean class="org.activiti.engine.impl.interceptor.CommandConfig" factory-method="transactionRequiresNew"/>
+          <bean class="org.activiti.engine.impl.interceptor.CommandConfig">
+            <constructor-arg name="contextReusePossible" value="false"/>
+          </bean>
         </property>
 
         <!-- Database configurations -->

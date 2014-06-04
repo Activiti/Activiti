@@ -1,12 +1,4 @@
-package org.activiti.crystalball.simulator;
-
-/*
- * #%L
- * Activiti - CrystalBall
- * %%
- * Copyright (C) 2014 Alfresco
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
+/* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
@@ -17,9 +9,8 @@ package org.activiti.crystalball.simulator;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * #L%
  */
-
+package org.activiti.crystalball.simulator;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -43,9 +34,9 @@ public abstract class SimulationRunContext {
 	//
 	protected static ThreadLocal<Stack<ProcessEngineImpl>> processEngineThreadLocal = new ThreadLocal<Stack<ProcessEngineImpl>>();
 
-    //
-    // Simulation objects
-    //
+  //
+  // Simulation objects
+  //
 	protected static ThreadLocal<Stack<EventCalendar>> eventCalendarThreadLocal = new ThreadLocal<Stack<EventCalendar>>();
     
 	public static RuntimeService getRuntimeService() {
@@ -57,7 +48,7 @@ public abstract class SimulationRunContext {
 	}
 
 	public static void setProcessEngine(ProcessEngineImpl processEngine) {
-	    getStack(processEngineThreadLocal).push(processEngine);
+	  getStack(processEngineThreadLocal).push(processEngine);
 	}
 
   public static ProcessEngineImpl getProcessEngine() {
@@ -65,7 +56,7 @@ public abstract class SimulationRunContext {
   }
 
 	public static void removeProcessEngine() {
-	    getStack(processEngineThreadLocal).pop();
+	  getStack(processEngineThreadLocal).pop();
 	}
 
 	public static TaskService getTaskService() {
@@ -85,11 +76,11 @@ public abstract class SimulationRunContext {
 	}
 
 	public static void setEventCalendar(EventCalendar eventCalendar) {
-	    getStack(eventCalendarThreadLocal).push(eventCalendar);
+	  getStack(eventCalendarThreadLocal).push(eventCalendar);
 	}
 
 	public static void removeEventCalendar() {
-	    getStack(eventCalendarThreadLocal).pop();
+	  getStack(eventCalendarThreadLocal).pop();
 	}
 
 	public static HistoryService getHistoryService() {
@@ -100,7 +91,7 @@ public abstract class SimulationRunContext {
 		return stack.peek().getHistoryService();
 	}
 
-	@SuppressWarnings("UnusedDeclaration")
+	
   public static RepositoryService getRepositoryService() {
 		Stack<ProcessEngineImpl> stack = getStack(processEngineThreadLocal);
 		if (stack.isEmpty()) {

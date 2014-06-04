@@ -25,6 +25,7 @@ import org.apache.camel.Exchange;
 public class ExchangeUtils {
 
   public static final String CAMELBODY = "camelBody";
+  protected static final String IGNORE_MESSAGE_PROPERTY = "CamelMessageHistory";
 	
   /**
    * Copies variables from Camel into Activiti.
@@ -49,6 +50,15 @@ public class ExchangeUtils {
     
     if (shouldReadFromProperties) {
       camelVarMap = exchange.getProperties();
+      // filter camel property that can't be serializable for camel version after 2.12.x+
+      Map<String, Object> newCamelVarMap = new HashMap<String, Object>();
+      for (String s : camelVarMap.keySet()) {
+        if (IGNORE_MESSAGE_PROPERTY.equalsIgnoreCase(s) == false) {
+          newCamelVarMap.put(s, camelVarMap.get(s));
+        }
+      }
+      camelVarMap = newCamelVarMap;
+      
     } else {
       camelVarMap = new HashMap<String, Object>();
       Object camelBody = null;
