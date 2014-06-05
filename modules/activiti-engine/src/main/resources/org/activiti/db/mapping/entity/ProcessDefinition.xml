@@ -168,6 +168,7 @@
             </foreach>
          )
          </if>
+         OR NOT exists (select ID_ from ${prefix}ACT_RU_IDENTITYLINK IDN where IDN.PROC_DEF_ID_ = RES.ID_)
         )
       </if>
     </where>
