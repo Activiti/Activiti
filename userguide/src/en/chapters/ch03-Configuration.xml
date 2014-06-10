@@ -1043,7 +1043,7 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
               <row>
-                <entry>ENTITY_CREATED</entry>
+                <entry>ENTITY_INITIALIZED</entry>
                 <entry>A new entity has been created and is fully initialized. If any children are created as part of the creation of an entity, this event will be fired AFTER the create/initialisation of the child entities as opposed to the <literal>ENTITY_CREATE</literal> event.</entry>
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
