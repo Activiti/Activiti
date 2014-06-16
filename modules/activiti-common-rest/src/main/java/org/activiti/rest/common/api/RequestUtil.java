@@ -13,10 +13,10 @@
 
 package org.activiti.rest.common.api;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.restlet.data.Form;
 
 /**
@@ -24,8 +24,8 @@ import org.restlet.data.Form;
  */
 public class RequestUtil {
   
-  private static final SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-  private static final SimpleDateFormat longDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
+  private static final FastDateFormat shortDateFormat = FastDateFormat.getInstance("yyyy-MM-dd");
+  private static final FastDateFormat longDateFormat = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ssz");
 
   public static boolean getBoolean(Form form, String name, boolean defaultValue) {
     boolean value = defaultValue;
