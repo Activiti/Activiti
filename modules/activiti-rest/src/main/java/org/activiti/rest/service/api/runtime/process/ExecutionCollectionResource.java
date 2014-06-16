@@ -27,7 +27,7 @@ import org.restlet.resource.Put;
  */
 public class ExecutionCollectionResource extends ExecutionBaseResource {
 
-  @Get
+  @Get("json")
   public DataResponse getProcessInstances() {
     if(!authenticate()) {
       return null;

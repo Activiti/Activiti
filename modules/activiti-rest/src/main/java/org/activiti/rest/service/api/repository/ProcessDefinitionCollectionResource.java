@@ -42,7 +42,7 @@ public class ProcessDefinitionCollectionResource extends SecuredResource {
     properties.put("deploymentId", ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getProcessDefinitions() {
     if(authenticate() == false) return null;
 

@@ -56,7 +56,7 @@ public class ProcessDefinitionDiagramLayoutResource extends SecuredResource {
 
   // List<Object> sequenceFlowList = new ArrayList<Object>();
 
-  @Get
+  @Get("json")
   public ObjectNode getDiagram() {
     // TODO: do it all with Map and convert at the end to JSON
     processDefinitionId = (String) getRequest().getAttributes().get("processDefinitionId");

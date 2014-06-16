@@ -39,7 +39,7 @@ public class LegacyProcessInstancesResource extends SecuredResource {
     properties.put("startTime", HistoricProcessInstanceQueryProperty.START_TIME);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getProcessInstances() {
     if(authenticate() == false) return null;
     

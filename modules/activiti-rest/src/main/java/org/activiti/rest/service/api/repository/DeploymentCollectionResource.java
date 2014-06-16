@@ -57,7 +57,7 @@ public class DeploymentCollectionResource extends SecuredResource {
     allowedSortProperties.put("tenantId", DeploymentQueryProperty.DEPLOYMENT_TENANT_ID);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getDeployments() {
   	if(!authenticate()) { return null; }
   	

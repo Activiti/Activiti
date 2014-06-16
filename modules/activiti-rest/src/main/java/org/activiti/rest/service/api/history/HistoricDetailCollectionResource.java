@@ -24,7 +24,7 @@ import org.restlet.resource.Get;
  */
 public class HistoricDetailCollectionResource extends HistoricDetailBaseResource {
 
-  @Get
+  @Get("json")
   public DataResponse getHistoricDetailInfo() {
     if (!authenticate()) {
       return null;

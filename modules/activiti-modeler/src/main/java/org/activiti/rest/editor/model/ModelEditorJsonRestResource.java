@@ -34,7 +34,7 @@ public class ModelEditorJsonRestResource extends ServerResource implements Model
   protected static final Logger LOGGER = LoggerFactory.getLogger(ModelEditorJsonRestResource.class);
   private ObjectMapper objectMapper = new ObjectMapper();
   
-  @Get
+  @Get("json")
   public ObjectNode getEditorJson() {
     ObjectNode modelNode = null;
     String modelId = (String) getRequest().getAttributes().get("modelId");

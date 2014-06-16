@@ -30,7 +30,7 @@ public class TableDataResource extends SecuredResource {
   
   protected static final Integer DEFAULT_RESULT_SIZE = 10;
 
-  @Get
+  @Get("json")
   public DataResponse getTableData() {
     if(authenticate() == false) return null;
 

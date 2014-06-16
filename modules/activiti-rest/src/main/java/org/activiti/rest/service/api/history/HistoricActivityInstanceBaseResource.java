@@ -48,7 +48,7 @@ public class HistoricActivityInstanceBaseResource extends SecuredResource {
     allowedSortProperties.put("tenantId", HistoricActivityInstanceQueryProperty.TENANT_ID);
   }
   
-  @Get
+  @Get("json")
   protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest, Form urlQuery) {
     if(!authenticate()) {
       return null;

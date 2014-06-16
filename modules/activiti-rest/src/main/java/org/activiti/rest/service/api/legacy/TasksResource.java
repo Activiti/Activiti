@@ -43,7 +43,7 @@ public class TasksResource extends SecuredResource {
     properties.put("processInstanceId", TaskQueryProperty.PROCESS_INSTANCE_ID);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getTasks() {
     if(authenticate() == false) return null;
     

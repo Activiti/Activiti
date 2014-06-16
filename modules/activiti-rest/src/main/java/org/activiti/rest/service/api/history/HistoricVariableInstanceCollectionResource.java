@@ -24,7 +24,7 @@ import org.restlet.resource.Get;
  */
 public class HistoricVariableInstanceCollectionResource extends HistoricVariableInstanceBaseResource {
 
-  @Get
+  @Get("json")
   public DataResponse getHistoricActivityInstances() {
     if(!authenticate()) {
       return null;

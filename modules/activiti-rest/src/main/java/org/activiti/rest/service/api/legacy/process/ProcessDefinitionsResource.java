@@ -43,7 +43,7 @@ public class ProcessDefinitionsResource extends SecuredResource {
     properties.put("category", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_CATEGORY);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getProcessDefinitions() {
     if(authenticate() == false) return null;
 

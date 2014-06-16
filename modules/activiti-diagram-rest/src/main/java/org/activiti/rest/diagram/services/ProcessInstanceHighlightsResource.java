@@ -36,7 +36,7 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 	
 	protected ObjectMapper objectMapper = new ObjectMapper();
 
-	@Get
+	@Get("json")
 	public ObjectNode getHighlighted() {
 		String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
 
