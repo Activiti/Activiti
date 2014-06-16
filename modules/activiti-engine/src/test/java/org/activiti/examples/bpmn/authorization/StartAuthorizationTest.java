@@ -218,6 +218,19 @@ public class StartAuthorizationTest extends PluggableActivitiTestCase {
 	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("potentialStarter");
 	    assertProcessEnded(processInstance.getId());
 	    assertTrue(processInstance.isEnded());
+	        
+	    //check extensionElements with : <formalExpression>group2, group(group3), user(user3)</formalExpression>
+	    ProcessDefinition potentialStarter = repositoryService.createProcessDefinitionQuery().processDefinitionKey("potentialStarter").startableByUser("user1").latestVersion().singleResult();
+	    assertNotNull(potentialStarter);
+	    
+	    potentialStarter = repositoryService.createProcessDefinitionQuery().processDefinitionKey("potentialStarter").startableByUser("user3").latestVersion().singleResult();
+	    assertNotNull(potentialStarter);
+	    
+	    potentialStarter = repositoryService.createProcessDefinitionQuery().processDefinitionKey("potentialStarter").startableByUser("userInGroup2").latestVersion().singleResult();
+	    assertNotNull(potentialStarter);
+	    
+	    potentialStarter = repositoryService.createProcessDefinitionQuery().processDefinitionKey("potentialStarter").startableByUser("userInGroup3").latestVersion().singleResult();
+	    assertNotNull(potentialStarter);
     } finally {
 
       tearDownUsersAndGroups();
