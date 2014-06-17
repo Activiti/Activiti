@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.swing.SwingConstants;
 
@@ -35,6 +34,13 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
+import org.activiti.layout.flow.FlowCommand;
+import org.activiti.layout.flow.FlowControl;
+import org.activiti.layout.flow.HandleActivity;
+import org.activiti.layout.flow.HandleEventFlow;
+import org.activiti.layout.flow.HandleGatewayVertex;
+import org.activiti.layout.flow.HandleSequenceFlow;
+import org.activiti.layout.flow.HandleSubProcess;
 
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.model.mxCell;
@@ -52,8 +58,6 @@ import com.mxgraph.view.mxGraph;
  */
 public class BpmnAutoLayout {
   
-  private static final String STYLE_EVENT = "styleEvent";
-  private static final String STYLE_GATEWAY = "styleGateway";
   private static final String STYLE_SEQUENCEFLOW = "styleSequenceFlow";
   private static final String STYLE_BOUNDARY_SEQUENCEFLOW = "styleBoundarySequenceFlow";
   
@@ -88,96 +92,70 @@ public class BpmnAutoLayout {
     }
   }
 
-  protected void layout(FlowElementsContainer flowElementsContainer) {
-    graph = new mxGraph();
-    cellParent = graph.getDefaultParent();
-    graph.getModel().beginUpdate();
-    
-    handledFlowElements = new HashMap<String, FlowElement>();
-    generatedVertices = new HashMap<String, Object>();
-    generatedEdges = new HashMap<String, Object>();
-    
-    sequenceFlows = new HashMap<String, SequenceFlow>(); // Sequence flow are gathered and processed afterwards, because we must be sure we alreadt found source and target
-    boundaryEvents = new ArrayList<BoundaryEvent>(); // Boundary events are gathered and processed afterwards, because we must be sure we have its parent
-    
-    
-    // Process all elements
-    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
-      
-      if (flowElement instanceof SequenceFlow) {
-        handleSequenceFlow((SequenceFlow) flowElement);
-      } else if (flowElement instanceof Event) {
-        handleEvent(flowElement);
-      } else if (flowElement instanceof Gateway) {
-        createGatewayVertex(flowElement);
-      } else if (flowElement instanceof Task || flowElement instanceof CallActivity) {
-        handleActivity(flowElement);
-      } else if (flowElement instanceof SubProcess) {
-        handleSubProcess(flowElement);
-      }
-      
-      handledFlowElements.put(flowElement.getId(), flowElement);
-    }
-    
-    // Process gathered elements
-    handleBoundaryEvents();
-    handleSequenceFlow();
-    
-    // All elements are now put in the graph. Let's layout them!
-    CustomLayout layout = new CustomLayout(graph, SwingConstants.WEST);
-    layout.setIntraCellSpacing(100.0);
-    layout.setResizeParent(true);
-    layout.setFineTuning(true);
-    layout.setParentBorder(20);
-    layout.setMoveParent(true);
-    layout.setDisableEdgeStyle(false);
-    layout.setUseBoundingBox(true);
-    layout.execute(graph.getDefaultParent());
-    
-    graph.getModel().endUpdate();
-    
-    generateDiagramInterchangeElements();
-  }
+	public void layout(FlowElementsContainer flowElementsContainer) {
+		graph = new mxGraph();
+		cellParent = graph.getDefaultParent();
+		graph.getModel().beginUpdate();
 
-  // BPMN element handling
-  
-  protected void ensureSequenceFlowIdSet(SequenceFlow sequenceFlow) {
-    // We really must have ids for sequence flow to be able to generate stuff
-    if (sequenceFlow.getId() == null) {
-      sequenceFlow.setId("sequenceFlow-" + UUID.randomUUID().toString());
-    }
-  }
+		handledFlowElements = new HashMap<String, FlowElement>();
+		generatedVertices = new HashMap<String, Object>();
+		generatedEdges = new HashMap<String, Object>();
 
-  protected void handleSequenceFlow(SequenceFlow sequenceFlow) {
-    ensureSequenceFlowIdSet(sequenceFlow);
-    sequenceFlows.put(sequenceFlow.getId(), sequenceFlow);
-  }
-  
-  protected void handleEvent(FlowElement flowElement) {
-    // Boundary events are an exception to the general way of drawing an event
-    if (flowElement instanceof BoundaryEvent) {
-      boundaryEvents.add((BoundaryEvent) flowElement);
-    } else {
-      createEventVertex(flowElement);
-    }
-  }
-  
-  protected void handleActivity(FlowElement flowElement) {
-    Object activityVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, taskWidth, taskHeight);
-    generatedVertices.put(flowElement.getId(), activityVertex);
-  }
-  
-  protected void handleSubProcess(FlowElement flowElement) {
-    BpmnAutoLayout bpmnAutoLayout = new BpmnAutoLayout(bpmnModel);
-    bpmnAutoLayout.layout((SubProcess) flowElement);
-    
-    double subProcessWidth = bpmnAutoLayout.getGraph().getView().getGraphBounds().getWidth();
-    double subProcessHeight = bpmnAutoLayout.getGraph().getView().getGraphBounds().getHeight();
-    Object subProcessVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, 
-            subProcessWidth + 2 * subProcessMargin, subProcessHeight + 2 * subProcessMargin);
-    generatedVertices.put(flowElement.getId(), subProcessVertex);
-  }
-  
+		sequenceFlows = new HashMap<String, SequenceFlow>();
+		boundaryEvents = new ArrayList<BoundaryEvent>(); 
+
+		// Process all elements
+		for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+			handleFlowElement(flowElement);
+		}
+
+		// Process gathered elements
+		handleBoundaryEvents();
+		handleSequenceFlow();
+
+		// All elements are now put in the graph. Let's layout them!
+		customLayout();
+
+		graph.getModel().endUpdate();
+
+		generateDiagramInterchangeElements();
+	}
+	
+	private void handleFlowElement(FlowElement flowElement) {
+		FlowCommand flowCommand = null;
+		if (flowElement instanceof SequenceFlow) {
+			flowCommand = new HandleSequenceFlow(FlowControl.createFlowControlHandleSequenceFlow(flowElement, sequenceFlows));
+		} else if (flowElement instanceof Event) {
+			flowCommand = new HandleEventFlow(FlowControl.createFlowControlHandleEvent(flowElement, boundaryEvents, generatedVertices, flowCommand, eventSize, graph));
+		} else if (flowElement instanceof Gateway) {
+			flowCommand = new HandleGatewayVertex(FlowControl.createFlowControlHandleGatewayVertext(flowElement, gatewaySize, flowCommand, graph, generatedVertices));
+		} else if (flowElement instanceof Task || flowElement instanceof CallActivity) {
+			flowCommand = new HandleActivity(FlowControl.createFlowControlHandleActivity(flowElement, generatedVertices, flowCommand, graph, taskWidth, taskHeight));
+		} else if (flowElement instanceof SubProcess) {
+			BpmnAutoLayout bpmnAutoLayout = new BpmnAutoLayout(bpmnModel);
+			bpmnAutoLayout.layout((SubProcess) flowElement);
+			flowCommand = new HandleSubProcess(FlowControl.createFlowControlHandleSubProcess(flowElement, bpmnAutoLayout, bpmnAutoLayout, graph, generatedVertices, subProcessMargin));
+		}
+		
+		if(flowCommand != null) {
+			flowCommand.execute();
+		}
+		
+		handledFlowElements.put(flowElement.getId(), flowElement);
+	}
+	
+	private void customLayout() {
+		CustomLayout layout = new CustomLayout(graph, SwingConstants.WEST);
+		layout.setIntraCellSpacing(100.0);
+		layout.setResizeParent(true);
+		layout.setFineTuning(true);
+		layout.setParentBorder(20);
+		layout.setMoveParent(true);
+		layout.setDisableEdgeStyle(false);
+		layout.setUseBoundingBox(true);
+		layout.execute(graph.getDefaultParent());
+	}
+	
   protected void handleBoundaryEvents() {
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
       mxGeometry geometry = new mxGeometry(0.8, 1.0, eventSize, eventSize);
@@ -235,34 +213,6 @@ public class BpmnAutoLayout {
       Object sequenceFlowEdge = graph.insertEdge(cellParent, sequenceFlow.getId(), "", sourceVertex, targertVertex, style);
       generatedEdges.put(sequenceFlow.getId(), sequenceFlowEdge);
     }
-  }
-  
-  // Graph cell creation
-  
-  protected void createEventVertex(FlowElement flowElement) {
-    // Add styling for events if needed
-    if (!graph.getStylesheet().getStyles().containsKey(STYLE_EVENT)) {
-      Hashtable<String, Object> eventStyle = new Hashtable<String, Object>();
-      eventStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
-      graph.getStylesheet().putCellStyle(STYLE_EVENT, eventStyle);  
-    }
-    
-    // Add vertex representing event to graph
-    Object eventVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, eventSize, eventSize, STYLE_EVENT);
-    generatedVertices.put(flowElement.getId(), eventVertex);
-  }
-  
-  protected void createGatewayVertex(FlowElement flowElement) {
-    // Add styling for gateways if needed
-    if (graph.getStylesheet().getStyles().containsKey(STYLE_GATEWAY)) {
-      Hashtable<String, Object> style = new Hashtable<String, Object>();
-      style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RHOMBUS);
-      graph.getStylesheet().putCellStyle(STYLE_GATEWAY, style);
-    }
-    
-    // Create gateway node 
-    Object gatewayVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, gatewaySize, gatewaySize, STYLE_GATEWAY);
-    generatedVertices.put(flowElement.getId(), gatewayVertex);
   }
   
   // Diagram interchange generation
