@@ -14,6 +14,7 @@ package org.activiti.crystalball.simulator;
  */
 
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +45,8 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
   }
 
   @Override
-  public void execute() throws Exception {
-    init();
+  public void execute(VariableScope execution) throws Exception {
+    init(execution);
 
     runContinue();
 
@@ -60,8 +61,8 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
   }
 
   @Override
-  public void init() {
-    initSimulationRunContext();
+  public void init(VariableScope execution) {
+    initSimulationRunContext(execution);
     initHandlers();
   }
 
@@ -114,7 +115,7 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
   @Override
   public abstract void close();
 
-  protected abstract void initSimulationRunContext();
+  protected abstract void initSimulationRunContext(VariableScope execution);
 
   protected void initHandlers() {
 		for( SimulationEventHandler handler : eventHandlerMap.values()) {

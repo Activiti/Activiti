@@ -31,9 +31,10 @@ public class SimulationRunTask implements JavaDelegate {
   @Override
   public void execute(DelegateExecution execution) throws Exception {
     SimulationRun simulationRun = (SimulationRun) simulationRunExpression.getValue(execution);
-    simulationRun.execute();
+    simulationRun.execute(execution);
   }
 
+  @SuppressWarnings("UnusedDeclaration")
   public void setSimulationRun(Expression simulationRun) {
     this.simulationRunExpression = simulationRun;
   }

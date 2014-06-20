@@ -40,7 +40,7 @@
 
     <property name="beans">
       <map>
-        <entry key="simulationRunFactory" value-ref="simulationRunFactory"/>
+        <entry key="simulationRunFactory" value-ref="&amp;simulationRunFactory"/>
       </map>
     </property>
   </bean>
@@ -49,8 +49,8 @@
   simulationRunFactory creates new simulationRun instances
   -->
   <bean id="simulationRunFactory" class="org.activiti.crystalball.simulator.SimpleSimulationRunFactory">
-    <property name="processEngine" ref="defaultProcessEngineFactory"/>
-    <property name="eventCalendar" ref="eventCalendar"/>
+    <property name="processEngine" ref="&amp;defaultProcessEngineFactory"/>
+    <property name="eventCalendar" ref="&amp;eventCalendar"/>
     <!-- handlers for events from the event calendar -->
     <property name="customEventHandlerMap">
       <map>

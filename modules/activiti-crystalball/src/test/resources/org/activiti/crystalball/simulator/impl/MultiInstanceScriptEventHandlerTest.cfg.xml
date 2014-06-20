@@ -19,7 +19,7 @@
 
     <property name="beans">
       <map>
-        <entry key="simulationRunFactory" value-ref="simulationRunFactory"/>
+        <entry key="simulationRunFactory" value-ref="&amp;simulationRunFa"/>
       </map>
     </property>
 
@@ -27,7 +27,7 @@
       <bean class="org.activiti.crystalball.simulator.SimulationExpressionManager">
         <constructor-arg name="beans">
           <map>
-            <entry key="simulationRunFactory" value-ref="simulationRunFactory"/>
+            <entry key="simulationRunFactory" value-ref="&amp;simulationRunFa"/>
           </map>
         </constructor-arg>
       </bean>
@@ -38,9 +38,9 @@
   <!--
   simulationRunFactory creates new simulationRun instances
   -->
-  <bean id="simulationRunFactory" class="org.activiti.crystalball.simulator.SimpleSimulationRunFactory">
-    <property name="processEngine" ref="defaultProcessEngineFactory"/>
-    <property name="eventCalendar" ref="eventCalendar"/>
+  <bean id="simulationRunFa" class="org.activiti.crystalball.simulator.SimpleSimulationRunFactory">
+    <property name="processEngine" ref="&amp;defaultProcessEngineFactory"/>
+    <property name="eventCalendar" ref="&amp;eventCalendar"/>
     <!-- handlers for events from the event calendar -->
     <property name="customEventHandlerMap">
       <map>
@@ -101,8 +101,7 @@
     <constructor-arg name="simulationEvents">
       <!--
        there is one script event scheduled for execution:
-       time(0) -> execute script to set execution variables
-       time(1) -> startProcessInstance oneTaskProcess
+       time(0) -> execute script to set execution variable
       -->
       <list>
         <bean class="org.activiti.crystalball.simulator.SimulationEvent.Factory">
@@ -111,7 +110,7 @@
           <constructor-arg name="properties">
             <map>
               <entry key="script" value='
-                execution.setVariable("simulationRunResult", "Hello world!");
+                execution.setVariable("simulationRunResult-" + loopCounter, "Hello world"+ loopCounter + "!");
               '/>
             </map>
           </constructor-arg>

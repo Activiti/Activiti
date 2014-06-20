@@ -28,6 +28,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.Clock;
@@ -82,7 +83,7 @@ public class SimpleSimulationRunTest {
 
     SimulationDebugger simDebugger = createDebugger();
 
-    simDebugger.init();
+    simDebugger.init(new NoExecutionVariableScope());
 
     RuntimeService runtimeService = SimulationRunContext.getRuntimeService();
     TaskService taskService = SimulationRunContext.getTaskService();
@@ -119,7 +120,7 @@ public class SimpleSimulationRunTest {
 
     SimulationDebugger simDebugger = createDebugger();
 
-    simDebugger.init();
+    simDebugger.init(new NoExecutionVariableScope());
 
     RuntimeService runtimeService = SimulationRunContext.getRuntimeService();
     TaskService taskService = SimulationRunContext.getTaskService();
@@ -156,7 +157,7 @@ public class SimpleSimulationRunTest {
 
     recordEvents();
     SimulationDebugger simDebugger = createDebugger();
-    simDebugger.init();
+    simDebugger.init(new NoExecutionVariableScope());
     try {
       simDebugger.runTo(-1);
       fail("RuntimeException expected - unable to execute event from the past");
@@ -171,7 +172,7 @@ public class SimpleSimulationRunTest {
 
     recordEvents();
     SimulationDebugger simDebugger = createDebugger();
-    simDebugger.init();
+    simDebugger.init(new NoExecutionVariableScope());
     try {
       simDebugger.runTo(USER_TASK_COMPLETED_EVENT_TYPE);
       step1Check(SimulationRunContext.getRuntimeService(), SimulationRunContext.getTaskService());
@@ -187,7 +188,7 @@ public class SimpleSimulationRunTest {
 
     recordEvents();
     SimulationDebugger simDebugger = createDebugger();
-    simDebugger.init();
+    simDebugger.init(new NoExecutionVariableScope());
     try {
       simDebugger.runTo("");
       checkStatus(SimulationRunContext.getHistoryService());
@@ -217,7 +218,7 @@ public class SimpleSimulationRunTest {
 
     SimulationDebugger simDebugger = createDebugger();
 
-    simDebugger.init();
+    simDebugger.init(new NoExecutionVariableScope());
     simDebugger.runContinue();
     checkStatus(SimulationRunContext.getHistoryService());
 

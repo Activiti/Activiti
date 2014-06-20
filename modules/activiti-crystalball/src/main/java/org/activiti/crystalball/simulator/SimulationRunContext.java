@@ -16,6 +16,7 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.runtime.Clock;
 
@@ -38,8 +39,13 @@ public abstract class SimulationRunContext {
   // Simulation objects
   //
 	protected static ThreadLocal<Stack<EventCalendar>> eventCalendarThreadLocal = new ThreadLocal<Stack<EventCalendar>>();
-    
-	public static RuntimeService getRuntimeService() {
+
+  //
+  // Variable scope used for getting/setting variables to the simulationManager
+  //
+  protected static ThreadLocal<Stack<VariableScope>> executionThreadLocal = new ThreadLocal<Stack<VariableScope>>();
+
+  public static RuntimeService getRuntimeService() {
 		Stack<ProcessEngineImpl> stack = getStack(processEngineThreadLocal);
 		if (stack.isEmpty()) {
 			return null;
@@ -99,6 +105,18 @@ public abstract class SimulationRunContext {
 		}
 		return stack.peek().getRepositoryService();
 	}
+
+  public static VariableScope getExecution() {
+    Stack<VariableScope> stack = getStack(executionThreadLocal);
+    if (stack.isEmpty()) {
+      return null;
+    }
+    return stack.peek();
+  }
+
+  public static void setExecution(VariableScope execution) {
+    getStack(executionThreadLocal).push(execution);
+  }
 
   public static Clock getClock() {
     return getProcessEngine().getProcessEngineConfiguration().getClock();

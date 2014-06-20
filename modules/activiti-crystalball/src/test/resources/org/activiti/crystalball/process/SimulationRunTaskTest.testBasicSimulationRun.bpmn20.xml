@@ -14,7 +14,7 @@
     <serviceTask id="simulatioRunExecute" name="Execute Simulation Run" activiti:class="org.activiti.crystalball.process.SimulationRunTask">
       <extensionElements>
         <activiti:field name="simulationRun">
-          <activiti:expression>${simulationRunFactory}</activiti:expression>
+          <activiti:expression>${simulationRun}</activiti:expression>
         </activiti:field>
       </extensionElements>
     </serviceTask>
