@@ -164,7 +164,7 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
       ArrayNode arrayNode =  requestNode.arrayNode();
       
       arrayNode.add("sales");
-      arrayNode.add("somethingElse");
+      arrayNode.add("someOtherGroup");
       
       requestNode.put("candidateGroupIn", arrayNode);
       assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
