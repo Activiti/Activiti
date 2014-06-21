@@ -5,21 +5,24 @@
              typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
              targetNamespace="http://www.activiti.org/test">
 
-  <process id="basicSimulationRun" name="The basic simulation run">
+  <process id="resultVariableSimulationRun" name="The basic simulation run with result variable">
     <documentation>This is a process for testing purposes</documentation>
 
     <startEvent id="theStart"/>
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="simulatioRunExecute"/>
 
-    <serviceTask id="simulatioRunExecute" name="Execute Simulation Run" activiti:class="org.activiti.crystalball.process.SimulationRunTask">
+    <serviceTask id="simulatioRunExecute" name="Execute Simulation Run"
+                 activiti:class="org.activiti.crystalball.process.SimulationRunTask">
       <extensionElements>
         <activiti:field name="simulationRun">
-          <activiti:expression>${simulationRun}</activiti:expression>
+          <activiti:expression>${simulationRunFactory.getObject()}</activiti:expression>
         </activiti:field>
       </extensionElements>
     </serviceTask>
-    <sequenceFlow id="flow2" sourceRef="simulatioRunExecute" targetRef="theEnd"/>
+    <sequenceFlow id="flow2" sourceRef="simulatioRunExecute" targetRef="waitForResultCheck"/>
 
+    <receiveTask id="waitForResultCheck" name="Wait for result check"/>
+    <sequenceFlow id="flow3" sourceRef="waitForResultCheck" targetRef="theEnd"/>
 
     <endEvent id="theEnd"/>
 

@@ -197,7 +197,7 @@
          .customEventHandlerMap(EventRecorderTestUtils.getHandlers());
   SimpleSimulationRun simRun = builder.build();
 
-  simRun.execute();
+  simRun.execute(new NoExecutionVariableScope());
 
   // check the status - the same method which was used in record events method
   checkStatus(simulationProcessEngineFactory.getObject());
@@ -230,8 +230,9 @@
   public interface SimulationDebugger {
   /**
   * initialize simulation run
+  * @param execution - variable scope to transfer variables from and to simulation run
   */
-  void init();
+  void init(VariableScope execution);
 
   /**
   * step one simulation event forward
