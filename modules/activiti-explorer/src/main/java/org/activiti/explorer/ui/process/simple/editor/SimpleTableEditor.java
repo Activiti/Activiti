@@ -12,18 +12,17 @@
  */
 package org.activiti.explorer.ui.process.simple.editor;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.terminal.StreamResource;
-import com.vaadin.terminal.StreamResource.StreamSource;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.themes.Reindeer;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.util.List;
+import java.util.UUID;
+
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.repository.Model;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
@@ -33,19 +32,33 @@ import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.simple.editor.table.TaskTable;
+import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
-import org.activiti.workflow.simple.definition.*;
+import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.ListStepDefinition;
+import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
+import org.activiti.workflow.simple.definition.StepDefinition;
+import org.activiti.workflow.simple.definition.StepDefinitionContainer;
+import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.terminal.StreamResource;
+import com.vaadin.terminal.StreamResource.StreamSource;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  * @author Joram Barrez
@@ -234,9 +247,11 @@ public class SimpleTableEditor extends AbstractPage {
         WorkflowDefinitionConversion workflowDefinitionConversion =
                 ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(createWorkflow());
         final ProcessEngineImpl defaultProcessEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
-        final ProcessDiagramGenerator diagramGenerator = defaultProcessEngine.getProcessEngineConfiguration().getProcessDiagramGenerator();
+        final ProcessEngineConfiguration processEngineConfiguration = defaultProcessEngine.getProcessEngineConfiguration();
+        final ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
 
-        return diagramGenerator.generatePngDiagram(workflowDefinitionConversion.getBpmnModel());
+        return diagramGenerator.generateDiagram(workflowDefinitionConversion.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
+            processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader());
       }
     };
     
@@ -264,7 +279,8 @@ public class SimpleTableEditor extends AbstractPage {
 
     final ProcessEngineImpl defaultProcessEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
     RepositoryService repositoryService = defaultProcessEngine.getRepositoryService();
-    ProcessDiagramGenerator diagramGenerator = defaultProcessEngine.getProcessEngineConfiguration().getProcessDiagramGenerator();
+    ProcessEngineConfiguration processEngineConfiguration = defaultProcessEngine.getProcessEngineConfiguration();
+    ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
 	  
 	  Model model = null;
 	  if (modelId == null) { // new process
@@ -282,16 +298,7 @@ public class SimpleTableEditor extends AbstractPage {
             ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
     conversion.convert();
     
-//    // Store BPMN 2.0: not needed at the moment, we store the modeler json
-//    BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
-//    repositoryService.addModelEditorSource(model.getId(), bpmnXMLConverter.convertToXML(conversion.getBpmnModel()));
-    
     try {
-//      BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
-//      ObjectNode json = bpmnJsonConverter.convertToJson(conversion.getBpmnModel());
-//      
-//      repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
-    
     	// Write JSON to byte-array and set as editor-source
     	ByteArrayOutputStream baos = new ByteArrayOutputStream();
     	ExplorerApp.get().getSimpleWorkflowJsonConverter().writeWorkflowDefinition(workflowDefinition, new OutputStreamWriter(baos));
@@ -300,7 +307,8 @@ public class SimpleTableEditor extends AbstractPage {
       // Store process image
       // TODO: we should really allow the service to take an inputstream as input. Now we load it into memory ...
       repositoryService.addModelEditorSourceExtra(model.getId(), IOUtils.toByteArray(
-          diagramGenerator.generatePngDiagram(conversion.getBpmnModel())));
+          diagramGenerator.generateDiagram(conversion.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
+              processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader())));
     } catch (IOException e) {
       logger.warn("Could not generate process image. Image is not stored and will not be shown.", e);
     }

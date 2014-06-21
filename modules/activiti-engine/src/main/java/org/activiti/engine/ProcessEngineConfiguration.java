@@ -17,13 +17,13 @@ import java.io.InputStream;
 
 import javax.sql.DataSource;
 
-import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.runtime.Clock;
+import org.activiti.image.ProcessDiagramGenerator;
 
 
 /** Configuration information from which a process engine can be build.
