@@ -5014,6 +5014,12 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Only return tasks that can be claimed by a user in the given group.</entry>
                   </row>
                   <row>
+                    <entry>candidateGroupIn</entry>
+                    <entry>No</entry>
+                    <entry>List &lt;String&gt; </entry>
+                    <entry>Only return tasks that can be claimed by a user in any of given groups.</entry>
+                  </row>
+                  <row>
                     <entry>involvedUser</entry>
                     <entry>No</entry>
                     <entry>String</entry>
