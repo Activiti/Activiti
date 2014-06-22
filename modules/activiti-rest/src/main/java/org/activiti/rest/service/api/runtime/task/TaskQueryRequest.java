@@ -43,6 +43,7 @@ public class TaskQueryRequest extends PaginateRequest {
   private String delegationState;
   private String candidateUser;
   private String candidateGroup;
+  private List<String> candidateGroupIn;
   private String involvedUser;
   private String processInstanceId;
   private String processInstanceBusinessKey;
@@ -191,6 +192,14 @@ public class TaskQueryRequest extends PaginateRequest {
     this.candidateGroup = candidateGroup;
   }
   
+  public List<String> getCandidateGroupIn() {
+	return candidateGroupIn;
+  }
+	  
+  public void setCandidateGroupIn(List<String> candidateGroupIn) {
+	this.candidateGroupIn = candidateGroupIn;
+  }
+
   public String getInvolvedUser() {
     return involvedUser;
   }

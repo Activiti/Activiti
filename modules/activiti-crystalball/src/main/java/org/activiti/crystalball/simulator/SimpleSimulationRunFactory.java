@@ -28,8 +28,8 @@ public class SimpleSimulationRunFactory implements FactoryBean<SimulationRun> {
 
   protected Map<String, SimulationEventHandler> customEventHandlerMap;
   protected HashMap<String, SimulationEventHandler> eventHandlerMap;
-  protected ProcessEngineImpl processEngine;
-  protected EventCalendar eventCalendar;
+  protected FactoryBean<ProcessEngineImpl> processEngine;
+  protected FactoryBean<EventCalendar> eventCalendar;
   protected JobExecutor jobExecutor;
 
   public SimpleSimulationRunFactory() {
@@ -38,8 +38,8 @@ public class SimpleSimulationRunFactory implements FactoryBean<SimulationRun> {
   @Override
   public SimulationRun getObject() throws Exception {
     return new SimpleSimulationRun.Builder()
-        .eventHandlers(customEventHandlerMap).processEngine(processEngine)
-        .eventCalendar(eventCalendar).jobExecutor(jobExecutor).build();
+        .eventHandlers(customEventHandlerMap).processEngine(processEngine.getObject())
+        .eventCalendar(eventCalendar.getObject()).jobExecutor(jobExecutor).build();
   }
 
   @Override
@@ -60,11 +60,11 @@ public class SimpleSimulationRunFactory implements FactoryBean<SimulationRun> {
     this.eventHandlerMap = eventHandlerMap;
   }
 
-  public void setProcessEngine(ProcessEngineImpl processEngine) {
+  public void setProcessEngine(FactoryBean<ProcessEngineImpl> processEngine) {
     this.processEngine = processEngine;
   }
 
-  public void setEventCalendar(EventCalendar eventCalendar) {
+  public void setEventCalendar(FactoryBean<EventCalendar> eventCalendar) {
     this.eventCalendar = eventCalendar;
   }
 

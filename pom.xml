@@ -246,6 +246,11 @@
         <artifactId>activiti-process-validation</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-image-generator</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- EMAIL -->
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -551,6 +556,7 @@
   <modules>
     <module>modules/activiti-bpmn-model</module>
     <module>modules/activiti-process-validation</module>
+    <module>modules/activiti-image-generator</module>
     <module>modules/activiti-bpmn-converter</module>
     <module>modules/activiti-engine</module>
   </modules>
@@ -672,6 +678,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
         <module>modules/activiti-bpmn-layout</module>
@@ -742,6 +749,7 @@
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
@@ -803,6 +811,7 @@
         <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
@@ -841,6 +850,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
@@ -881,6 +891,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>

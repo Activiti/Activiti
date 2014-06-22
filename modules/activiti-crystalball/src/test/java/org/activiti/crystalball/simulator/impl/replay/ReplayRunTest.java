@@ -34,6 +34,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -82,7 +83,7 @@ public class ReplayRunTest {
 
     final SimulationDebugger simRun = new ReplaySimulationRun(processEngine, getReplayHandlers(processInstance.getId()));
 
-    simRun.init();
+    simRun.init(new NoExecutionVariableScope());
 
     // original process is finished - there should not be any running process instance/task
     assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey(USERTASK_PROCESS).count());

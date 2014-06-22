@@ -11,19 +11,65 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.bpmn.diagram;
-
-import org.activiti.bpmn.model.*;
-import org.activiti.bpmn.model.Process;
+package org.activiti.image.impl;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.Artifact;
+import org.activiti.bpmn.model.Association;
+import org.activiti.bpmn.model.AssociationDirection;
+import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.BusinessRuleTask;
+import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.ErrorEventDefinition;
+import org.activiti.bpmn.model.Event;
+import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.EventGateway;
+import org.activiti.bpmn.model.EventSubProcess;
+import org.activiti.bpmn.model.ExclusiveGateway;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowElementsContainer;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.Gateway;
+import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.model.InclusiveGateway;
+import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.Lane;
+import org.activiti.bpmn.model.ManualTask;
+import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
+import org.activiti.bpmn.model.ParallelGateway;
+import org.activiti.bpmn.model.Pool;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ReceiveTask;
+import org.activiti.bpmn.model.ScriptTask;
+import org.activiti.bpmn.model.SendTask;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.bpmn.model.SignalEventDefinition;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.Task;
+import org.activiti.bpmn.model.TextAnnotation;
+import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.bpmn.model.UserTask;
+import org.activiti.image.ProcessDiagramGenerator;
 
 /**
  * Class to generate an image based the diagram interchange information in a
  * BPMN 2.0 process.
  * 
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
@@ -40,11 +86,14 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
         StartEvent startEvent = (StartEvent) flowNode;
         if (startEvent.getEventDefinitions() != null && startEvent.getEventDefinitions().size() > 0) {
-         if (startEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
-           processDiagramCanvas.drawTimerStartEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
-         } else if (startEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
-           processDiagramCanvas.drawErrorStartEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
-         }
+          EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+          if (eventDefinition instanceof TimerEventDefinition) {
+            processDiagramCanvas.drawTimerStartEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+          } else if (eventDefinition instanceof ErrorEventDefinition) {
+            processDiagramCanvas.drawErrorStartEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+          } else if (eventDefinition instanceof SignalEventDefinition) {
+            processDiagramCanvas.drawSignalStartEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
+          }
         } else {
           processDiagramCanvas.drawNoneStartEvent((int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight());
         }
@@ -59,9 +108,9 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) flowNode;
         if (intermediateCatchEvent.getEventDefinitions() != null && intermediateCatchEvent.getEventDefinitions().size() > 0) {
           if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
-            processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), false);
+            processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), true);
           } else if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
-            processDiagramCanvas.drawCatchingTimerEvent(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), false);
+            processDiagramCanvas.drawCatchingTimerEvent(flowNode.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), (int) graphicInfo.getWidth(), (int) graphicInfo.getHeight(), true);
           }
         }
       }
@@ -324,8 +373,24 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
     });
   }
 
+  public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities, List<String> highLightedFlows,
+      String activityFontName, String labelFontName, ClassLoader customClassLoader) {
+    
+    return generateProcessDiagram(bpmnModel, highLightedActivities, highLightedFlows, 
+        activityFontName, labelFontName, customClassLoader).generateImage(imageType);
+  }
+  
+  public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities, List<String> highLightedFlows) {
+    return generateDiagram(bpmnModel, imageType, highLightedActivities, highLightedFlows, null, null, null);
+  }
+  
   public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities) {
     return generateDiagram(bpmnModel, imageType, highLightedActivities, Collections.<String>emptyList());
+  }
+  
+  public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, String activityFontName, String labelFontName, ClassLoader customClassLoader) {
+    return generateDiagram(bpmnModel, imageType, Collections.<String>emptyList(), Collections.<String>emptyList(), 
+        activityFontName, labelFontName, customClassLoader);
   }
 
   public InputStream generatePngDiagram(BpmnModel bpmnModel) {
@@ -335,12 +400,15 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
   public InputStream generateJpgDiagram(BpmnModel bpmnModel) {
     return generateDiagram(bpmnModel, "jpg", Collections.<String>emptyList(), Collections.<String>emptyList());
   }
+  
+  
 
-
-  protected DefaultProcessDiagramCanvas generateDiagram(BpmnModel bpmnModel, List<String> highLightedActivities, List<String> highLightedFlows) {
-    DefaultProcessDiagramCanvas processDiagramCanvas = initProcessDiagramCanvas(bpmnModel);
+  protected DefaultProcessDiagramCanvas generateProcessDiagram(BpmnModel bpmnModel, List<String> highLightedActivities, List<String> highLightedFlows,
+      String activityFontName, String labelFontName, ClassLoader customClassLoader) {
     
-//    // Draw pool shape, if process is participant in collaboration
+    DefaultProcessDiagramCanvas processDiagramCanvas = initProcessDiagramCanvas(bpmnModel, activityFontName, labelFontName, customClassLoader);
+    
+    // Draw pool shape, if process is participant in collaboration
     for (Pool pool : bpmnModel.getPools()) {
       GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(pool.getId());
       processDiagramCanvas.drawPoolOrLane(pool.getName(), (int) graphicInfo.getX(), (int) graphicInfo.getY(), 
@@ -369,10 +437,6 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
     }
     
     return processDiagramCanvas;
-  }
-
-  public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities, List<String> highLightedFlows) {
-    return generateDiagram(bpmnModel, highLightedActivities, highLightedFlows).generateImage(imageType);
   }
 
   protected void drawActivity(DefaultProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode, List<String> highLightedActivities, List<String> highLightedFlows) {
@@ -608,7 +672,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
   }
 
-  protected static DefaultProcessDiagramCanvas initProcessDiagramCanvas(BpmnModel bpmnModel) {
+  protected static DefaultProcessDiagramCanvas initProcessDiagramCanvas(BpmnModel bpmnModel, 
+      String activityFontName, String labelFontName, ClassLoader customClassLoader) {
     
     // We need to calculate maximum values to know how big the image will be in its entirety
     double minX = Double.MAX_VALUE;
@@ -739,7 +804,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
       minY = 0;
     }
     
-    return new DefaultProcessDiagramCanvas((int) maxX + 10,(int) maxY + 10, (int) minX, (int) minY);
+    return new DefaultProcessDiagramCanvas((int) maxX + 10,(int) maxY + 10, (int) minX, (int) minY, 
+        activityFontName, labelFontName, customClassLoader);
   }
   
   protected static List<Artifact> gatherAllArtifacts(BpmnModel bpmnModel) {

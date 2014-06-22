@@ -160,6 +160,9 @@ public class TaskBaseResource extends SecuredResource {
     if(request.getCandidateGroup() != null) {
       taskQuery.taskCandidateGroup(request.getCandidateGroup());
     }
+    if(request.getCandidateGroupIn() != null) {
+      taskQuery.taskCandidateGroupIn(request.getCandidateGroupIn());
+    }
     if(request.getProcessInstanceId() != null) {
       taskQuery.processInstanceId(request.getProcessInstanceId());
     }

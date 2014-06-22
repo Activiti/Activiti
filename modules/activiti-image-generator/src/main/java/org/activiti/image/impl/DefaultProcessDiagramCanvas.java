@@ -11,15 +11,13 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.bpmn.diagram;
+package org.activiti.image.impl;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.GradientPaint;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -52,10 +50,8 @@ import javax.imageio.ImageIO;
 
 import org.activiti.bpmn.model.AssociationDirection;
 import org.activiti.bpmn.model.GraphicInfo;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.util.IoUtil;
-import org.activiti.engine.impl.util.ReflectUtil;
+import org.activiti.image.exception.ActivitiImageException;
+import org.activiti.image.util.ReflectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,12 +82,16 @@ public class DefaultProcessDiagramCanvas {
   
 
   // Colors
-  protected static Color TASK_BOX_COLOR = new Color(255, 255, 204);
-  protected static Color SUBPROCESS_BOX_COLOR = new Color(250, 251, 252);
-  protected static Color BOUNDARY_EVENT_COLOR = new Color(255, 255, 255);
+  protected static Color TASK_BOX_COLOR = new Color(249, 249, 249);
+  protected static Color SUBPROCESS_BOX_COLOR = new Color(255, 255, 255);
+  protected static Color EVENT_COLOR = new Color(255, 255, 255);
+  protected static Color CONNECTION_COLOR = new Color(88, 88, 88);
   protected static Color CONDITIONAL_INDICATOR_COLOR = new Color(255, 255, 255);
   protected static Color HIGHLIGHT_COLOR = Color.RED;
   protected static Color LABEL_COLOR = new Color(112, 146, 190);
+  protected static Color TASK_BORDER_COLOR = new Color(187, 187, 187);
+  protected static Color EVENT_BORDER_COLOR = new Color(88, 88, 88);
+  protected static Color SUBPROCESS_BORDER_COLOR = new Color(0, 0, 0);
   
   // Fonts
   protected static Font LABEL_FONT = null;
@@ -110,40 +110,25 @@ public class DefaultProcessDiagramCanvas {
   protected static Stroke ASSOCIATION_STROKE = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f,  new float[] { 2.0f, 2.0f }, 0.0f);
 
   // icons
-  protected static int ICON_SIZE = 16;
-  protected static int ICON_PADDING = 3;
-  protected static Image USERTASK_IMAGE;
-  protected static Image SCRIPTTASK_IMAGE;
-  protected static Image SERVICETASK_IMAGE;
-  protected static Image RECEIVETASK_IMAGE;
-  protected static Image SENDTASK_IMAGE;
-  protected static Image MANUALTASK_IMAGE;
-  protected static Image BUSINESS_RULE_TASK_IMAGE;
-  protected static Image TIMER_IMAGE;
-  protected static Image ERROR_THROW_IMAGE;
-  protected static Image ERROR_CATCH_IMAGE;
-  protected static Image SIGNAL_CATCH_IMAGE;
-  protected static Image SIGNAL_THROW_IMAGE;
-
-  // icons are statically loaded for performace
-  static {
-    try {
-      USERTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/user.png"));
-      SCRIPTTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/script.png"));
-      SERVICETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/service.png"));
-      RECEIVETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/receive.png"));
-      SENDTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/send.png"));
-      MANUALTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/manual.png"));
-      BUSINESS_RULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/business_rule.png"));
-      TIMER_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/timer.png"));
-      ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/error_throw.png"));
-      ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/error_catch.png"));
-      SIGNAL_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/signal_catch.png"));
-      SIGNAL_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/engine/impl/bpmn/deployer/signal_throw.png"));
-    } catch (IOException e) {
-      LOGGER.warn("Could not load image for process diagram creation: {}", e.getMessage());
-    }
-  }
+  protected static int ICON_PADDING = 5;
+  protected static BufferedImage USERTASK_IMAGE;
+  protected static BufferedImage SCRIPTTASK_IMAGE;
+  protected static BufferedImage SERVICETASK_IMAGE;
+  protected static BufferedImage RECEIVETASK_IMAGE;
+  protected static BufferedImage SENDTASK_IMAGE;
+  protected static BufferedImage MANUALTASK_IMAGE;
+  protected static BufferedImage BUSINESS_RULE_TASK_IMAGE;
+  protected static BufferedImage SHELL_TASK_IMAGE;
+  protected static BufferedImage MULE_TASK_IMAGE;
+  protected static BufferedImage CAMEL_TASK_IMAGE;
+  
+  protected static BufferedImage TIMER_IMAGE;
+  protected static BufferedImage ERROR_THROW_IMAGE;
+  protected static BufferedImage ERROR_CATCH_IMAGE;
+  protected static BufferedImage MESSAGE_THROW_IMAGE;
+  protected static BufferedImage MESSAGE_CATCH_IMAGE;
+  protected static BufferedImage SIGNAL_CATCH_IMAGE;
+  protected static BufferedImage SIGNAL_THROW_IMAGE;
 
   protected int canvasWidth = -1;
   protected int canvasHeight = -1;
@@ -153,38 +138,33 @@ public class DefaultProcessDiagramCanvas {
   protected Graphics2D g;
   protected FontMetrics fontMetrics;
   protected boolean closed;
+  protected ClassLoader customClassLoader;
   protected String activityFontName = "Arial";
   protected String labelFontName = "Arial";
-
+  
   /**
    * Creates an empty canvas with given width and height.
+   * 
+   * Allows to specify minimal boundaries on the left and upper side of the
+   * canvas. This is useful for diagrams that have white space there.
+   * Everything beneath these minimum values will be cropped. 
+   * It's also possible to pass a specific font name and a class loader for the icon images.
+   * 
    */
-  public DefaultProcessDiagramCanvas(int width, int height) {
+  public DefaultProcessDiagramCanvas(int width, int height, int minX, int minY, String activityFontName, String labelFontName, ClassLoader customClassLoader) {
     this.canvasWidth = width;
     this.canvasHeight = height;
-    
-    if (Context.getProcessEngineConfiguration() != null) {
-      this.activityFontName = Context.getProcessEngineConfiguration().getActivityFontName();
+    this.minX = minX;
+    this.minY = minY;
+    if (activityFontName != null) {
+      this.activityFontName = activityFontName;
     }
-
-    if (Context.getProcessEngineConfiguration() != null) {
-      this.labelFontName = Context.getProcessEngineConfiguration().getLabelFontName();
+    if (labelFontName != null) {
+      this.labelFontName = labelFontName;
     }
+    this.customClassLoader = customClassLoader;
     
-    this.processDiagram = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-    this.g = processDiagram.createGraphics();
-    this.g.setBackground(new Color(255, 255, 255, 0));
-    this.g.clearRect(0, 0, width, height);
-
-    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    g.setPaint(Color.black);
-    
-    Font font = new Font(activityFontName, Font.BOLD, FONT_SIZE);
-    g.setFont(font);
-    this.fontMetrics = g.getFontMetrics();
-
-    LABEL_FONT = new Font(labelFontName, Font.ITALIC, 10);
+    initialize();
   }
 
   /**
@@ -202,9 +182,53 @@ public class DefaultProcessDiagramCanvas {
    *          below minX on the horizontal scale will be cropped.
    */
   public DefaultProcessDiagramCanvas(int width, int height, int minX, int minY) {
-    this(width, height);
+    this.canvasWidth = width;
+    this.canvasHeight = height;
     this.minX = minX;
     this.minY = minY;
+    
+    initialize();
+  }
+  
+  public void initialize() {
+    //this.processDiagram = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
+    this.processDiagram = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_ARGB);
+    
+    this.g = processDiagram.createGraphics();
+    //this.g.setBackground(new Color(255, 255, 255, 0));
+    //this.g.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g.setPaint(Color.black);
+    
+    Font font = new Font(activityFontName, Font.BOLD, FONT_SIZE);
+    g.setFont(font);
+    this.fontMetrics = g.getFontMetrics();
+
+    LABEL_FONT = new Font(labelFontName, Font.ITALIC, 10);
+    
+    try {
+      USERTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/userTask.png", customClassLoader));
+      SCRIPTTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/scriptTask.png", customClassLoader));
+      SERVICETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/serviceTask.png", customClassLoader));
+      RECEIVETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/receiveTask.png", customClassLoader));
+      SENDTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/sendTask.png", customClassLoader));
+      MANUALTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/manualTask.png", customClassLoader));
+      BUSINESS_RULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/businessRuleTask.png", customClassLoader));
+      SHELL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/shellTask.png", customClassLoader));
+      CAMEL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/camelTask.png", customClassLoader));
+      MULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/muleTask.png", customClassLoader));
+      
+      TIMER_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/timer.png", customClassLoader));
+      ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/error-throw.png", customClassLoader));
+      ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/error.png", customClassLoader));
+      MESSAGE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/message-throw.png", customClassLoader));
+      MESSAGE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/message.png", customClassLoader));
+      SIGNAL_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/signal-throw.png", customClassLoader));
+      SIGNAL_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/signal.png", customClassLoader));
+    } catch (IOException e) {
+      LOGGER.warn("Could not load image for process diagram creation: {}", e.getMessage());
+    }
   }
 
   /**
@@ -215,7 +239,7 @@ public class DefaultProcessDiagramCanvas {
    */
   public InputStream generateImage(String imageType) {
     if (closed) {
-      throw new ActivitiException("ProcessDiagramGenerator already closed");
+      throw new ActivitiImageException("ProcessDiagramGenerator already closed");
     }
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -229,9 +253,15 @@ public class DefaultProcessDiagramCanvas {
       }
       ImageIO.write(imageToSerialize, imageType, out);
     } catch (IOException e) {
-      throw new ActivitiException("Error while generating process image", e);
+      throw new ActivitiImageException("Error while generating process image", e);
     } finally {
-      IoUtil.closeSilently(out);
+      try {
+        if (out != null) {
+          out.close();
+        }
+      } catch(IOException ignore) {
+        // Exception is silently ignored
+      }
     }
     return new ByteArrayInputStream(out.toByteArray());
   }
@@ -252,20 +282,36 @@ public class DefaultProcessDiagramCanvas {
   public void drawTimerStartEvent(int x, int y, int width, int height) {
     drawStartEvent(x, y, width, height, TIMER_IMAGE);
   }
+  
+  public void drawSignalStartEvent(int x, int y, int width, int height) {
+    drawStartEvent(x, y, width, height, SIGNAL_CATCH_IMAGE);
+  }
 
-  public void drawStartEvent(int x, int y, int width, int height, Image image) {
-    g.draw(new Ellipse2D.Double(x, y, width, height));
+  public void drawStartEvent(int x, int y, int width, int height, BufferedImage image) {
+    Paint originalPaint = g.getPaint();
+    g.setPaint(EVENT_COLOR);
+    Ellipse2D circle = new Ellipse2D.Double(x, y, width, height);
+    g.fill(circle);
+    g.setPaint(EVENT_BORDER_COLOR);
+    g.draw(circle);
+    g.setPaint(originalPaint);
     if (image != null) {
-      g.drawImage(image, x, y, width, height, null);
+      g.drawImage(image, x + (width / 4), y + (height / 4), image.getWidth(), image.getHeight(), null);
     }
 
   }
 
   public void drawNoneEndEvent(int x, int y, int width, int height) {
+    Paint originalPaint = g.getPaint();
     Stroke originalStroke = g.getStroke();
+    g.setPaint(EVENT_COLOR);
+    Ellipse2D circle = new Ellipse2D.Double(x, y, width, height);
+    g.fill(circle);
+    g.setPaint(EVENT_BORDER_COLOR);
     g.setStroke(END_EVENT_STROKE);
-    g.draw(new Ellipse2D.Double(x, y, width, height));
+    g.draw(circle);
     g.setStroke(originalStroke);
+    g.setPaint(originalPaint);
   }
 
   public void drawErrorEndEvent(String name, int x, int y, int width, int height) {
@@ -275,15 +321,15 @@ public class DefaultProcessDiagramCanvas {
   
   public void drawErrorEndEvent(int x, int y, int width, int height) {
     drawNoneEndEvent(x, y, width, height);
-    g.drawImage(ERROR_THROW_IMAGE, x + 3, y + 3, width - 6, height - 6, null);
+    g.drawImage(ERROR_THROW_IMAGE, x + (width / 4), y + (height / 4), ERROR_THROW_IMAGE.getWidth(), ERROR_THROW_IMAGE.getHeight(), null);
   }
   
   public void drawErrorStartEvent(int x, int y, int width, int height) {
     drawNoneStartEvent(x, y, width, height);
-    g.drawImage(ERROR_CATCH_IMAGE, x + 3, y + 3, width - 6, height - 6, null);
+    g.drawImage(ERROR_CATCH_IMAGE, x + (width / 4), y + (height / 4), ERROR_CATCH_IMAGE.getWidth(), ERROR_CATCH_IMAGE.getHeight(), null);
   }
 
-  public void drawCatchingEvent(int x, int y, int width, int height, boolean isInterrupting, Image image) {
+  public void drawCatchingEvent(int x, int y, int width, int height, boolean isInterrupting, BufferedImage image) {
     // event circles
     Ellipse2D outerCircle = new Ellipse2D.Double(x, y, width, height);
     int innerCircleX = x + 3;
@@ -294,17 +340,18 @@ public class DefaultProcessDiagramCanvas {
 
     Paint originalPaint = g.getPaint();
     Stroke originalStroke = g.getStroke();
-    g.setPaint(BOUNDARY_EVENT_COLOR);
+    g.setPaint(EVENT_COLOR);
     g.fill(outerCircle);
 
-    g.setPaint(originalPaint);
+    g.setPaint(EVENT_BORDER_COLOR);
     if (isInterrupting == false) 
       g.setStroke(NON_INTERRUPTING_EVENT_STROKE);
     g.draw(outerCircle);
     g.setStroke(originalStroke);
+    g.setPaint(originalPaint);
     g.draw(innerCircle);
 
-    g.drawImage(image, innerCircleX, innerCircleY, innerCircleWidth, innerCircleHeight, null);
+    g.drawImage(image, innerCircleX, innerCircleY, image.getWidth(), image.getHeight(), null);
   }
 
   public void drawCatchingTimerEvent(String name, int x, int y, int width, int height, boolean isInterrupting) {
@@ -365,7 +412,7 @@ public class DefaultProcessDiagramCanvas {
 
   public void drawAssociation(int[] xPoints, int[] yPoints, AssociationDirection associationDirection, boolean highLighted) {
     boolean conditional = false, isDefault = false;
-	drawConnection(xPoints, yPoints, conditional, isDefault, "association", associationDirection, highLighted);
+    drawConnection(xPoints, yPoints, conditional, isDefault, "association", associationDirection, highLighted);
   }
 
   public void drawSequenceflow(int[] xPoints, int[] yPoints, boolean conditional, boolean isDefault, boolean highLighted) {
@@ -376,6 +423,7 @@ public class DefaultProcessDiagramCanvas {
     Paint originalPaint = g.getPaint();
     Stroke originalStroke = g.getStroke();
 
+    g.setPaint(CONNECTION_COLOR);
     if (connectionType.equals("association")) {
       g.setStroke(ASSOCIATION_STROKE);
     } else if (highLighted) {
@@ -413,14 +461,14 @@ public class DefaultProcessDiagramCanvas {
         isDefaultConditionAvailable = isDefault && i == 1 && lineLength > 10;
 
         if (lineLength < 2*radius && i>1) {
-                targetX = xPoints[i] - lineLengthX/2;
-                targetY = yPoints[i] - lineLengthY/2;
+          targetX = xPoints[i] - lineLengthX/2;
+          targetY = yPoints[i] - lineLengthY/2;
         }
 
         // pivot point of next line
-                lineLengthY = yPoints[i+1] - yPoints[i];
-                lineLengthX = xPoints[i+1] - xPoints[i];
-                lineLength = Math.sqrt(Math.pow(lineLengthY, 2) + Math.pow(lineLengthX, 2));
+        lineLengthY = yPoints[i+1] - yPoints[i];
+        lineLengthX = xPoints[i+1] - xPoints[i];
+        lineLength = Math.sqrt(Math.pow(lineLengthY, 2) + Math.pow(lineLengthX, 2));
         if (lineLength < radius) {
           lineLength = radius;
         }
@@ -447,42 +495,42 @@ public class DefaultProcessDiagramCanvas {
 
                zx=nextSrcX;
                zy=nextSrcY;
+      }
+
+      if (i==0) {
+        path.moveTo(targetX, targetY);
+      } else {
+        path.lineTo(targetX, targetY);
+      }
+  
+      if (i>0 && i < xPoints.length-1) {
+        // add curve
+        path.curveTo(ax, ay, bx, by, zx, zy);
+      }
+    }
+    g.draw(path);
+  
+    if (isDefaultConditionAvailable){
+      Line2D.Double line = new Line2D.Double(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
+      drawDefaultSequenceFlowIndicator(line);
     }
 
-    if (i==0) {
-      path.moveTo(targetX, targetY);
-    } else {
-      path.lineTo(targetX, targetY);
+    if (conditional) {
+      Line2D.Double line = new Line2D.Double(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
+      drawConditionalSequenceFlowIndicator(line);
     }
-
-    if (i>0 && i < xPoints.length-1) {
-      // add curve
-      path.curveTo(ax, ay, bx, by, zx, zy);
+  
+    if (associationDirection.equals(AssociationDirection.ONE) || associationDirection.equals(AssociationDirection.BOTH)) {
+      Line2D.Double line = new Line2D.Double(xPoints[xPoints.length-2], yPoints[xPoints.length-2], xPoints[xPoints.length-1], yPoints[xPoints.length-1]);
+      drawArrowHead(line);
     }
+    if (associationDirection.equals(AssociationDirection.BOTH)) {
+      Line2D.Double line = new Line2D.Double(xPoints[1], yPoints[1], xPoints[0], yPoints[0]);
+      drawArrowHead(line);
+    }
+    g.setPaint(originalPaint);
+    g.setStroke(originalStroke);
   }
-  g.draw(path);
-
-  if (isDefaultConditionAvailable){
-    Line2D.Double line = new Line2D.Double(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
-    drawDefaultSequenceFlowIndicator(line);
-  }
-
-  if (conditional) {
-    Line2D.Double line = new Line2D.Double(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
-    drawConditionalSequenceFlowIndicator(line);
-  }
-
-  if (associationDirection.equals(AssociationDirection.ONE) || associationDirection.equals(AssociationDirection.BOTH)) {
-    Line2D.Double line = new Line2D.Double(xPoints[xPoints.length-2], yPoints[xPoints.length-2], xPoints[xPoints.length-1], yPoints[xPoints.length-1]);
-    drawArrowHead(line);
-  }
-  if (associationDirection.equals(AssociationDirection.BOTH)) {
-    Line2D.Double line = new Line2D.Double(xPoints[1], yPoints[1], xPoints[0], yPoints[0]);
-    drawArrowHead(line);
-  }
-  g.setPaint(originalPaint);
-  g.setStroke(originalStroke);
-}
 
   public void drawSequenceflowWithoutArrow(int srcX, int srcY, int targetX, int targetY, boolean conditional) {
     drawSequenceflowWithoutArrow(srcX, srcY, targetX, targetY, conditional, false);
@@ -572,9 +620,9 @@ public class DefaultProcessDiagramCanvas {
     g.setTransform(originalTransformation);
   }
 
-  public void drawTask(Image icon, String name, int x, int y, int width, int height) {
+  public void drawTask(BufferedImage icon, String name, int x, int y, int width, int height) {
     drawTask(name, x, y, width, height);
-    g.drawImage(icon, x + ICON_PADDING, y + ICON_PADDING, ICON_SIZE, ICON_SIZE, null);
+    g.drawImage(icon, x + ICON_PADDING, y + ICON_PADDING, icon.getWidth(), icon.getHeight(), null);
   }
 
   public void drawTask(String name, int x, int y, int width, int height) {
@@ -610,7 +658,7 @@ public class DefaultProcessDiagramCanvas {
     Paint originalPaint = g.getPaint();
     
     // Create a new gradient paint for every task box, gradient depends on x and y and is not relative
-    g.setPaint(new GradientPaint(x + 50, y, Color.white, x + 50, y + 50, TASK_BOX_COLOR));
+    g.setPaint(TASK_BOX_COLOR);
 
     int arcR = 20;
     if (thickBorder)
@@ -619,7 +667,7 @@ public class DefaultProcessDiagramCanvas {
     // shape
     RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, arcR, arcR);
     g.fill(rect);
-    g.setPaint(originalPaint);
+    g.setPaint(TASK_BORDER_COLOR);
 
     if (thickBorder) {
       Stroke originalStroke = g.getStroke();
@@ -630,10 +678,11 @@ public class DefaultProcessDiagramCanvas {
       g.draw(rect);
     }
 
+    g.setPaint(originalPaint);
     // text
     if (name != null && name.length() > 0) {
       int boxWidth = width - (2 * TEXT_PADDING);
-      int boxHeight = height - ICON_SIZE - ICON_PADDING - ICON_PADDING - MARKER_WIDTH - 2 - 2;
+      int boxHeight = height - 16 - ICON_PADDING - ICON_PADDING - MARKER_WIDTH - 2 - 2;
       int boxX = x + width/2 - boxWidth/2;
       int boxY = y + height/2 - boxHeight/2 + ICON_PADDING + ICON_PADDING - 2 - 2;
       
@@ -756,7 +805,7 @@ public class DefaultProcessDiagramCanvas {
     RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, 8, 8);
     
     // Use different stroke (dashed)
-    if(isTriggeredByEvent) {
+    if (isTriggeredByEvent) {
       Stroke originalStroke = g.getStroke();
       g.setStroke(EVENT_SUBPROCESS_STROKE);
       g.draw(rect);
@@ -765,8 +814,9 @@ public class DefaultProcessDiagramCanvas {
       Paint originalPaint = g.getPaint();
       g.setPaint(SUBPROCESS_BOX_COLOR);
       g.fill(rect);
-      g.setPaint(originalPaint);
+      g.setPaint(SUBPROCESS_BORDER_COLOR);
       g.draw(rect);
+      g.setPaint(originalPaint);
     }
 
     if (name != null && !name.isEmpty()) {

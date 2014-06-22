@@ -16,18 +16,11 @@
 
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false"/>
-
-    <!-- Also register the eventlistener as bean, to be able to access it from the tests -->
-    <property name="beans">
-      <map>
-        <entry key="simulationRunFactory" value-ref="simulationRunFactory"/>
-      </map>
-    </property>
   </bean>
 
-  <bean id="simulationRunFactory" class="org.activiti.crystalball.simulator.SimpleSimulationRunFactory">
-    <property name="processEngine" ref="defaultProcessEngineFactory"/>
-    <property name="eventCalendar" ref="eventCalendar"/>
+  <bean id="simulationRun" class="org.activiti.crystalball.simulator.SimpleSimulationRunFactory">
+    <property name="processEngine" ref="&amp;defaultProcessEngineFactory"/>
+    <property name="eventCalendar" ref="&amp;eventCalendar"/>
   </bean>
 
 
