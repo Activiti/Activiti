@@ -20,7 +20,8 @@ import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyEntry;
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class AlfrescoTransitionsPropertyDefinition extends FormPropertyDefinition {
 
