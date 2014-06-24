@@ -12,6 +12,7 @@
  */
 package org.activiti.image;
 
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public interface ProcessDiagramGenerator {
    * @param customClassLoader provide a custom classloader for retrieving icon images
    */
   public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities, List<String> highLightedFlows, 
-      String activityFontName, String labelFontName, ClassLoader customClassLoader);
+      String activityFontName, String labelFontName, ClassLoader customClassLoader, double scaleFactor);
   
   /**
    * Generates a diagram of the given process definition, using the
@@ -48,13 +49,27 @@ public interface ProcessDiagramGenerator {
    * @param highLightedFlows flows to highlight
    */
   public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities, List<String> highLightedFlows);
+  
+  public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities, 
+      List<String> highLightedFlows, double scaleFactor);
 
   public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities);
   
+  public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities, double scaleFactor);
+  
   public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, String activityFontName, String labelFontName, ClassLoader customClassLoader);
+  
+  public InputStream generateDiagram(BpmnModel bpmnModel, String imageType, String activityFontName, 
+      String labelFontName, ClassLoader customClassLoader, double scaleFactor);
 
   public InputStream generatePngDiagram(BpmnModel bpmnModel);
+  
+  public InputStream generatePngDiagram(BpmnModel bpmnModel, double scaleFactor);
 
   public InputStream generateJpgDiagram(BpmnModel bpmnModel);
+  
+  public InputStream generateJpgDiagram(BpmnModel bpmnModel, double scaleFactor);
+  
+  public BufferedImage generatePngImage(BpmnModel bpmnModel, double scaleFactor);
 
 }

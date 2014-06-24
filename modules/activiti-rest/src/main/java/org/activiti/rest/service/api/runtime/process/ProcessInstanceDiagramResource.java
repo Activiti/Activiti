@@ -46,7 +46,7 @@ public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource 
       ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
       InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstance.getId()),
           Collections.<String>emptyList(), processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(),
-          processEngineConfiguration.getClassLoader());
+          processEngineConfiguration.getClassLoader(), 1.0);
 
       InputRepresentation output = new InputRepresentation(resource, MediaType.IMAGE_PNG);
       return output;

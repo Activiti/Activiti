@@ -62,7 +62,7 @@ public class ProcessInstanceDiagramResource extends SecuredResource {
       ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
       InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstanceId),
           Collections.<String>emptyList(), processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(),
-          processEngineConfiguration.getClassLoader());
+          processEngineConfiguration.getClassLoader(), 1.0);
 
       InputRepresentation output = new InputRepresentation(resource, MediaType.IMAGE_PNG);
       return output;

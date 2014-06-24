@@ -83,7 +83,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
         InputStream definitionImageStream = diagramGenerator.generateDiagram(bpmnModel, "png",
           runtimeService.getActiveActivityIds(processInstance.getId()), Collections.<String>emptyList(), 
           processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(), 
-          processEngineConfiguration.getClassLoader());
+          processEngineConfiguration.getClassLoader(), 1.0);
               
         if(definitionImageStream != null) {
           StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
@@ -115,7 +115,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
       InputStream definitionImageStream = diagramGenerator.generateDiagram(bpmnModel, "png",
         runtimeService.getActiveActivityIds(processInstanceId), Collections.<String>emptyList(), 
         processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(), 
-        processEngineConfiguration.getClassLoader());
+        processEngineConfiguration.getClassLoader(), 1.0);
       
       StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
       
