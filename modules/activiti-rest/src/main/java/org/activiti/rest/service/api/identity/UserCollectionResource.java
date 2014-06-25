@@ -45,7 +45,7 @@ public class UserCollectionResource extends SecuredResource {
     properties.put("email", UserQueryProperty.EMAIL);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getUsers() {
     if(!authenticate())
       return null;

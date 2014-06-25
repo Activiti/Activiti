@@ -44,7 +44,7 @@ public class LegacyUserGroupsResource extends SecuredResource {
     properties.put("type", GroupQueryProperty.TYPE);
   }
 
-  @Get
+  @Get("json")
   public DataResponse getGroups() {
     if (authenticate() == false)
       return null;

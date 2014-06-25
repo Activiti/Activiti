@@ -35,7 +35,7 @@ import org.restlet.resource.ResourceException;
  */
 public class FormDataResource extends SecuredResource {
 
-  @Get
+  @Get("json")
   public FormDataResponse getFormData() {
     if (authenticate() == false)
       return null;

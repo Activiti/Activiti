@@ -33,7 +33,7 @@ import org.restlet.resource.Get;
  */
 public class LegacyUserSearchResource extends SecuredResource {
   
-  @Get
+  @Get("json")
   public DataResponse searchUsers() {
     if(authenticate() == false) return null;
     

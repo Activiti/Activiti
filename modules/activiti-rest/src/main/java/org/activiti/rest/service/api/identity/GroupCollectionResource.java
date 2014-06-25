@@ -44,7 +44,7 @@ public class GroupCollectionResource extends SecuredResource {
     properties.put("type", GroupQueryProperty.TYPE);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getGroups() {
     if(!authenticate())
       return null;

@@ -24,7 +24,7 @@ import org.restlet.resource.Get;
  */
 public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstanceBaseResource {
 
-  @Get
+  @Get("json")
   public DataResponse getHistoricProcessInstances() {
     if(!authenticate()) {
       return null;

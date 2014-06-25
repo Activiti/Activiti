@@ -44,7 +44,7 @@ public class JobCollectionResource extends SecuredResource {
     properties.put("tenantId", JobQueryProperty.TENANT_ID);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getJobs() {
     if (authenticate() == false)
       return null;

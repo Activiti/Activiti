@@ -50,7 +50,7 @@ public class TaskCollectionResource extends TaskBaseResource {
             .createTaskResponse(this, task);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getTasks() {
     if(!authenticate()) { return null; }
     

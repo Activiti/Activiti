@@ -13,14 +13,17 @@
 package org.activiti.engine.impl.bpmn.deployer;
 
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
@@ -121,7 +124,8 @@ public class BpmnDeployer implements Deployer {
                   diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
               try {
                   byte[] diagramBytes = IoUtil.readInputStream(processEngineConfiguration.
-                    getProcessDiagramGenerator().generatePngDiagram(bpmnParse.getBpmnModel()), null);
+                    getProcessDiagramGenerator().generateDiagram(bpmnParse.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
+                        processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader()), null);
                   diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
                   createResource(diagramResourceName, diagramBytes, deployment);
               } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).

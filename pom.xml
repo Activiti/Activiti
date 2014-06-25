@@ -20,7 +20,7 @@
     <spring.framework.version>3.2.7.RELEASE</spring.framework.version>
     <mule.version>3.3.0</mule.version>
     <cxf.version>2.6.1</cxf.version>
-    <restlet.version>2.2.0</restlet.version>
+    <restlet.version>2.2.1</restlet.version>
     <batik.version>1.7</batik.version>
 
     <!-- OSGi bundles properties -->
@@ -246,6 +246,11 @@
         <artifactId>activiti-process-validation</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-image-generator</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- EMAIL -->
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -446,6 +451,11 @@
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>2.2.3</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>2.2.3</version>
       </dependency>
@@ -546,6 +556,7 @@
   <modules>
     <module>modules/activiti-bpmn-model</module>
     <module>modules/activiti-process-validation</module>
+    <module>modules/activiti-image-generator</module>
     <module>modules/activiti-bpmn-converter</module>
     <module>modules/activiti-engine</module>
   </modules>
@@ -667,6 +678,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
         <module>modules/activiti-bpmn-layout</module>
@@ -737,6 +749,7 @@
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
@@ -798,6 +811,7 @@
         <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
@@ -836,6 +850,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
@@ -876,6 +891,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>

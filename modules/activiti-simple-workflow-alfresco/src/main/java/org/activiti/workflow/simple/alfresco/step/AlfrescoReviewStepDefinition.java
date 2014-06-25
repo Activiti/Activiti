@@ -24,9 +24,10 @@ import org.activiti.workflow.simple.definition.NamedStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
  * A step that assigns a review-task to one or multiple users. The user(s) can approve or reject and based

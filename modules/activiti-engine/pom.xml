@@ -19,8 +19,12 @@
       <artifactId>activiti-bpmn-converter</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-process-validation</artifactId>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-process-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-image-generator</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

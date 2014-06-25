@@ -31,6 +31,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.DefaultClockImpl;
@@ -111,7 +112,7 @@ public abstract class AbstractPlaybackTest extends AbstractActivitiTestCase {
         .eventHandlers(getHandlers());
       simDebugger = builder.build();
 
-      simDebugger.init();
+      simDebugger.init(new NoExecutionVariableScope());
       this.processEngine = SimulationRunContext.getProcessEngine();
       initializeServices();
       deploymentIdFromDeploymentAnnotation = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());

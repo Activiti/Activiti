@@ -45,7 +45,7 @@ import org.restlet.resource.Post;
  */
 public class ProcessInstanceCollectionResource extends BaseProcessInstanceResource {
 
-  @Get
+  @Get("json")
   public DataResponse getProcessInstances() {
     if(!authenticate()) {
       return null;

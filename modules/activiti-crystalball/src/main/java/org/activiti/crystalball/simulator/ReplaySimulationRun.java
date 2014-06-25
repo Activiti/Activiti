@@ -14,6 +14,7 @@ package org.activiti.crystalball.simulator;
  */
 
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.ProcessEngineImpl;
 
 import java.util.Map;
@@ -39,7 +40,7 @@ public class ReplaySimulationRun extends AbstractSimulationRun {
   }
 
   @Override
-  protected void initSimulationRunContext() {
+  protected void initSimulationRunContext(VariableScope execution) {
     SimulationRunContext.setEventCalendar(eventCalendar);
     SimulationRunContext.setProcessEngine(processEngine);
   }

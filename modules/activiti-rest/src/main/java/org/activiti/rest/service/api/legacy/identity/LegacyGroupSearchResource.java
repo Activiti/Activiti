@@ -31,7 +31,7 @@ import org.restlet.resource.Get;
  */
 public class LegacyGroupSearchResource extends SecuredResource {
 
-  @Get
+  @Get("json")
   public DataResponse searchGroups() {
     if (authenticate() == false)
       return null;

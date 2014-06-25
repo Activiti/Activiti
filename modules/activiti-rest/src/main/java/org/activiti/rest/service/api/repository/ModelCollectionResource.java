@@ -47,7 +47,7 @@ public class ModelCollectionResource extends BaseModelResource {
     allowedSortProperties.put("tenantId", ModelQueryProperty.MODEL_TENANT_ID);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getModels() {
   	if(authenticate() == false) return null;
   	
