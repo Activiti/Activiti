@@ -62,11 +62,6 @@ public class AtomicOperationDeleteCascadeFireActivityEnd extends AbstractEventAt
  
       execution.remove();
       
-      if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, execution));
-      }
-
       if (!execution.isDeleteRoot()) {
         InterpretableExecution parent = (InterpretableExecution) execution.getParent();
         if (parent!=null) {

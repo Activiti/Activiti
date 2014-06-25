@@ -12,8 +12,10 @@
  */
 package org.activiti.engine.impl.interceptor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -31,6 +33,7 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
@@ -61,6 +64,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Tom Baeyens
  * @author Agim Emruli
+ * @author Joram Barrez
  */
 public class CommandContext {
 
@@ -74,6 +78,7 @@ public class CommandContext {
   protected LinkedList<AtomicOperation> nextOperations = new LinkedList<AtomicOperation>();
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected FailedJobCommandFactory failedJobCommandFactory;
+  protected List<CommandContextCloseListener> closeListeners;
 
   
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
@@ -109,8 +114,7 @@ public class CommandContext {
   }
 
   public void close() {
-    // the intention of this method is that all resources are closed properly,
-    // even
+    // the intention of this method is that all resources are closed properly, even
     // if exceptions occur in close or flush methods of the sessions or the
     // transaction context.
 
@@ -125,6 +129,16 @@ public class CommandContext {
         } catch (Throwable exception) {
           exception(exception);
         } finally {
+        	
+        	if (exception == null && closeListeners != null) {
+	        	try {
+	        		for (CommandContextCloseListener listener : closeListeners) {
+	        			listener.closing(this);
+	        		}
+	        	} catch (Throwable exception) {
+	        		exception(exception);
+	        	}
+        	}
 
           try {
             if (exception == null) {
@@ -133,6 +147,16 @@ public class CommandContext {
           } catch (Throwable exception) {
             exception(exception);
           }
+          
+        	if (exception == null && closeListeners != null) {
+	        	try {
+	        		for (CommandContextCloseListener listener : closeListeners) {
+	        			listener.closed(this);
+	        		}
+	        	} catch (Throwable exception) {
+	        		exception(exception);
+	        	}
+        	}
 
           if (exception != null) {
             if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
@@ -168,6 +192,17 @@ public class CommandContext {
         throw new ActivitiException("exception while executing command " + command, exception);
       }
     }
+  }
+  
+  public void addCloseListener(CommandContextCloseListener commandContextCloseListener) {
+  	if (closeListeners == null) {
+  		closeListeners = new ArrayList<CommandContextCloseListener>(1);
+  	}
+  	closeListeners.add(commandContextCloseListener);
+  }
+  
+  public List<CommandContextCloseListener> getCloseListeners() {
+  	return closeListeners;
   }
  
   protected void flushSessions() {
@@ -275,6 +310,10 @@ public class CommandContext {
   
   public HistoricIdentityLinkEntityManager getHistoricIdentityLinkEntityManager() {
     return getSession(HistoricIdentityLinkEntityManager.class);
+  }
+  
+  public EventLogEntryEntityManager getEventLogEntryEntityManager() {
+  	return getSession(EventLogEntryEntityManager.class);
   }
   
   public JobEntityManager getJobEntityManager() {

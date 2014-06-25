@@ -392,6 +392,20 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   public void take(PvmTransition transition) {
+  	take(transition, true);
+  }
+  
+  /**
+   * @param fireActivityCompletionEvent This method can be called from other places
+   * (like {@link #takeAll(List, List)}), where the event is already fired.
+   * In that case, false is passed an no second event is fired.
+   */
+  public void take(PvmTransition transition, boolean fireActivityCompletionEvent) {
+ 
+  	if (fireActivityCompletionEvent) {
+	  	fireActivityCompletedEvent();
+  	}
+  	
     if (this.transition!=null) {
       throw new PvmException("already taking a transition");
     }
@@ -447,6 +461,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {
+
+  	fireActivityCompletedEvent();
+  	
     transitions = new ArrayList<PvmTransition>(transitions);
     recyclableExecutions = (recyclableExecutions!=null ? new ArrayList<ActivityExecution>(recyclableExecutions) : new ArrayList<ActivityExecution>());
     
@@ -494,7 +511,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       concurrentRoot.setActive(true);
       concurrentRoot.setActivity(activity);
       concurrentRoot.setConcurrent(false);
-      concurrentRoot.take(transitions.get(0));
+      concurrentRoot.take(transitions.get(0), false);
 
     } else {
       
@@ -533,8 +550,22 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
       // then launch all the concurrent executions
       for (OutgoingExecution outgoingExecution: outgoingExecutions) {
-        outgoingExecution.take();
+        outgoingExecution.take(false);
       }
+    }
+  }
+
+	protected void fireActivityCompletedEvent() {
+	  if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, 
+    					getActivity() != null ? getActivity().getId() : getActivityId(), 
+    					getActivity() != null ? (String) getActivity().getProperties().get("name") : null,
+    					getId(),
+    					getProcessInstanceId(), 
+    					getProcessDefinitionId(), 
+    					getActivity() != null ? (String) getActivity().getProperties().get("type") : null,
+    					getActivity() != null ? getActivity().getActivityBehavior().getClass().getCanonicalName() : null));
     }
   }
   
@@ -877,6 +908,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     
     // remove identity links
     removeIdentityLinks();
+    
+    if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
+    }
 
     // finally delete this execution
     Context.getCommandContext()

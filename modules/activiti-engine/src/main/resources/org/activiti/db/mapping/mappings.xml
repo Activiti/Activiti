@@ -40,5 +40,6 @@
     <mapper resource="org/activiti/db/mapping/entity/User.xml" />
     <mapper resource="org/activiti/db/mapping/entity/VariableInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/EventSubscription.xml" />
+    <mapper resource="org/activiti/db/mapping/entity/EventLogEntry.xml" />
   </mappers>
 </configuration>

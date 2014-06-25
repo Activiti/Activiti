@@ -18,6 +18,7 @@ import java.util.List;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
@@ -44,14 +45,21 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
   @Override
   protected void eventNotificationsCompleted(InterpretableExecution execution) {
   	
-  	if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, execution.getActivity().getId(), execution.getId(), 
-    					execution.getProcessInstanceId(), execution.getProcessDefinitionId()));
-    }
-  	
     ActivityImpl activity = (ActivityImpl) execution.getActivity();
     ActivityImpl parentActivity = activity.getParentActivity();
+    
+  	if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+  		if (execution instanceof ExecutionEntity) {
+	  		ExecutionEntity executionEntity = (ExecutionEntity) execution;
+	    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+	    			ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, execution.getActivity().getId(),
+	    					(String) executionEntity.getActivity().getProperties().get("name"),
+	    					execution.getId(), 
+	    					execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
+	    					(String) executionEntity.getActivity().getProperties().get("type"), 
+	    					executionEntity.getActivity().getActivityBehavior().getClass().getCanonicalName()));
+  		}
+    }
 
     // if the execution is a single path of execution inside the process definition scope
     if ( (parentActivity!=null)

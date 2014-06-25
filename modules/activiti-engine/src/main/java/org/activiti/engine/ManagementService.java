@@ -13,8 +13,10 @@
 package org.activiti.engine;
 
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
@@ -130,5 +132,22 @@ public interface ManagementService {
    * Executes the sql contained in the {@link CustomSqlExecution} parameter.
    */
   <MapperType, ResultType> ResultType executeCustomSql(CustomSqlExecution<MapperType, ResultType> customSqlExecution);
+  
+  /**
+   * [EXPERIMENTAL]
+   * 
+   * Returns a list of event log entries, describing everything the engine has processed.
+   * Note that the event logging must specifically must be enabled in the process engine configuration.
+   * 
+   * Passing null as arguments will effectively fetch ALL event log entries. 
+   * Be careful, as this list might be huge!
+   */
+  List<EventLogEntry> getEventLogEntries(Long startLogNr, Long pageSize);
+  
+  /**
+   * Delete a EventLogEntry.
+   * Typically only used in testing, as deleting log entries defeats the whole purpose of keeping a log.
+   */
+  void deleteEventLogEntry(long logNr);
   
 }

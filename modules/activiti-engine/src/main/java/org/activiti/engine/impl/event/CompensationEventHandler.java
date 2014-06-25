@@ -64,8 +64,14 @@ public class CompensationEventHandler implements EventHandler {
 
       	if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       		commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-      				ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPENSATE, compensationHandler.getId(), compensatingExecution.getId(), 
-      						compensatingExecution.getProcessInstanceId(), compensatingExecution.getProcessDefinitionId()));
+      				ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPENSATE, 
+      						compensationHandler.getId(), 
+      						(String) compensationHandler.getProperty("name"),
+      						compensatingExecution.getId(), 
+      						compensatingExecution.getProcessInstanceId(), 
+      						compensatingExecution.getProcessDefinitionId(),
+      						(String) compensatingExecution.getActivity().getProperties().get("type"), 
+      						compensatingExecution.getActivity().getActivityBehavior().getClass().getCanonicalName()));
       	}
         compensatingExecution.setActivity(compensationHandler);
         

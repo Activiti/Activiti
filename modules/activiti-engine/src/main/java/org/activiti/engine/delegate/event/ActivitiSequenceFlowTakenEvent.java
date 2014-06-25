@@ -14,32 +14,29 @@ package org.activiti.engine.delegate.event;
 
 
 /**
- * An {@link ActivitiEvent} related to an activity within an execution;
+ * An {@link ActivitiEvent} that indicates a certain sequence flow has been taken.
  * 
  * @author Frederik Heremans
- * @author Joram Barrez
  */
-public interface ActivitiActivityEvent extends ActivitiEvent {
-
-	/**
-	 * @return the id of the activity this event is related to. This corresponds to an 
-	 * id defined in the process definition.
-	 */
-	String getActivityId();
+public interface ActivitiSequenceFlowTakenEvent extends ActivitiEvent {
 	
-	/**
-	 * @return the name of the activity this event is related to.
-	 */
-	String getActivityName();
+	String getId();
 	
-	/**
-	 * @return the type of the activity (if set during parsing).
-	 */
-	String getActivityType();
+	String getSourceActivityId();
 	
-	/**
-	 * @return the behaviourclass of the activity (if it could be determined)
-	 */
-	String getBehaviorClass();
-
+	String getSourceActivityName();
+	
+	String getSourceActivityType();
+	
+	String getSourceActivityBehaviorClass();
+	
+	String getTargetActivityId();
+	
+	String getTargetActivityName();
+	
+	String getTargetActivityType();
+	
+	String getTargetActivityBehaviorClass();
+	
+	
 }

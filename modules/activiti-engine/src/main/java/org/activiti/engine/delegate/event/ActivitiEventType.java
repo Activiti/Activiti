@@ -129,6 +129,11 @@ public enum ActivitiEventType {
 	ACTIVITY_ERROR_RECEIVED,
 	
 	/**
+	 * Indicates the engine has taken (ie. followed) a sequenceflow from a source activity to a target activity.
+	 */
+	SEQUENCEFLOW_TAKEN,
+	
+	/**
 	 * When a BPMN Error was thrown, but was not caught within in the process.
 	 */
 	UNCAUGHT_BPMN_ERROR,

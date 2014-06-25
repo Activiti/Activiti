@@ -21,6 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
 import org.activiti.engine.delegate.event.ActivitiMembershipEvent;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.context.Context;
@@ -66,6 +67,26 @@ public class ActivitiEventBuilder {
 
 		// In case an execution-context is active, populate the event fields related to the execution
 		populateEventWithCurrentContext(newEvent);
+		return newEvent;
+	}
+	
+	public static ActivitiSequenceFlowTakenEvent createSequenceFlowTakenEvent(ActivitiEventType type, String sequenceFlowId, 
+			String sourceActivityId, String sourceActivityName, String sourceActivityType, String sourceActivityBehaviorClass,
+			String targetActivityId, String targetActivityName, String targetActivityType, String targetActivityBehaviorClass) {
+		ActivitiSequenceFlowTakenEventImpl newEvent = new ActivitiSequenceFlowTakenEventImpl(type);
+		
+		populateEventWithCurrentContext(newEvent);
+		
+		newEvent.setId(sequenceFlowId);
+		newEvent.setSourceActivityId(sourceActivityId);
+		newEvent.setSourceActivityName(sourceActivityName);
+		newEvent.setSourceActivityType(sourceActivityType);
+		newEvent.setSourceActivityBehaviorClass(sourceActivityBehaviorClass);
+		newEvent.setTargetActivityId(targetActivityId);
+		newEvent.setTargetActivityName(targetActivityName);
+		newEvent.setTargetActivityType(targetActivityType);
+		newEvent.setTargetActivityBehaviorClass(targetActivityBehaviorClass);
+		
 		return newEvent;
 	}
 	
@@ -115,12 +136,16 @@ public class ActivitiEventBuilder {
 		return newEvent;
 	}
 	
-	public static ActivitiActivityEvent createActivityEvent(ActivitiEventType type, String activityId, String executionId, String processInstanceId, String processDefinitionId) {
+	public static ActivitiActivityEvent createActivityEvent(ActivitiEventType type, String activityId, String activityName,
+			String executionId, String processInstanceId, String processDefinitionId, String activityType, String behaviourClass) {
 		ActivitiActivityEventImpl newEvent = new ActivitiActivityEventImpl(type);
 		newEvent.setActivityId(activityId);
+		newEvent.setActivityName(activityName);
 		newEvent.setExecutionId(executionId);
 		newEvent.setProcessDefinitionId(processDefinitionId);
 		newEvent.setProcessInstanceId(processInstanceId);
+		newEvent.setActivityType(activityType);
+		newEvent.setBehaviorClass(behaviourClass);
 		return newEvent;
 	}
 	
