@@ -471,6 +471,47 @@ INFO  org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl  - class org.a
 	
 	</section>
 	
+	<section id="advanced.event.logging">
+	
+	   <title>Event logging (Experimental)</title>
+	   
+	   <para>
+	       As of Activiti version 5.16, an (experimental) event logging mechanism has been introduced. The logging mechanism builds
+	       upon the general-purpose <link linkend="eventDispatcher">event mechanism of the Activiti engine</link> and is disabled by default.
+	       The idea is that the events originating from the engine are catched, and a map containing all the event data (and some more) is created
+	       and provided to an <emphasis>org.activiti.engine.impl.event.logger.EventFlusher</emphasis> which will flush this data to somewhere else.
+	       By default, simple database-backed event handlers/flusher is used, which serializes the said map to JSON using Jackson
+	       and stores it in the database as a <emphasis>EventLogEntryEntity</emphasis> instance.  The table required for this database logging is 
+	       created by default (called <emphasis>ACT_HI_EVT_LOG</emphasis>). This table can be deleted
+           if the event logging is not used.
+	   </para>
+	   
+	   <para>
+	       To enable the database logger:
+	       <programlisting>
+processEngineConfiguration.setEnableDatabaseEventLogging(true);</programlisting>
+	       or at runtime:
+           <programlisting>
+databaseEventLogger = new EventLogger(processEngineConfiguration.getClock());
+runtimeService.addEventListener(databaseEventLogger);</programlisting> 
+           The EventLogger class can be subclassed. In particular, the <emphasis>createEventFlusher()</emphasis> method
+           needs to return an instance of the <emphasis>org.activiti.engine.impl.event.logger.EventFlusher</emphasis> interface
+           if the default database logging is not wanted. The <emphasis>managementService.getEventLogEntries(startLogNr, size);</emphasis> 
+           can be used to retrieve the <emphasis>EventLogEntryEntity</emphasis> instances through Activiti.
+	   </para>
+	   
+	   <para>
+	       It is easy to see how this table data can now be used to feed the JSON into a big data NoSQL store such as MongDb, Elastic Search, etc.
+	       It is also easy to see that the classes used here (org.activiti.engine.impl.event.logger.EventLogger/EventFlusher and many EventHandler classes)
+	       are pluggable and can be tweaked to your own use case (eg not storing the JSON in the database, but firing it straight onto a queueu or big data store).
+	   </para>
+	   
+	   <para>
+	       Note that this event logging mechanism is additional to the 'traditional' history manager of Activiti. Altough all the data is in the database tables,
+	       it is not optimized for querying nor for easy retrieval. The real use case is audit trailing and feeding it into a big data store.  
+	   </para>
+	   
+	</section>
 	
 	
 </chapter>

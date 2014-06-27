@@ -3,7 +3,7 @@
 
 <chapter>
 
-  <title>Simulation with activiti-crystalball</title>
+  <title>Simulation with Activiti-Crystalball (Experimental)</title>
 <section id="crb-introduction">
   <title>Introduction</title>
   <section id="crb-overview">
@@ -206,7 +206,6 @@
   simRun.getProcessEngine().close();
   ProcessEngines.destroy();
 </programlisting>
-              Simple right?
               </para>
             </listitem>
           </itemizedlist>
