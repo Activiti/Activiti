@@ -6,6 +6,7 @@ drop table if exists ACT_HI_DETAIL cascade constraints;
 drop table if exists ACT_HI_COMMENT cascade constraints;
 drop table if exists ACT_HI_ATTACHMENT cascade constraints;
 drop table if exists ACT_HI_IDENTITYLINK cascade constraints;
+drop table if exists ACT_HI_EVT_LOG cascade constraints;
 
 drop index if exists ACT_IDX_HI_PRO_INST_END;
 drop index if exists ACT_IDX_HI_PRO_I_BUSKEY;

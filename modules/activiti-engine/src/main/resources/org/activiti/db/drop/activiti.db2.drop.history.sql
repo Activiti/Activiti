@@ -22,3 +22,4 @@ drop table ACT_HI_DETAIL;
 drop table ACT_HI_COMMENT;
 drop table ACT_HI_ATTACHMENT;
 drop table ACT_HI_IDENTITYLINK;
+drop table ACT_HI_EVT_LOG;

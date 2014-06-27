@@ -37,7 +37,6 @@ public class DatabaseEventLogger implements ActivitiEventListener {
 	protected Clock clock;
 	protected ObjectMapper objectMapper;
 	
-	// Transaction listeners
 	protected DatabaseEventFlusher databaseEventFlusher = null;
 	
 	// Mapping of type -> handler

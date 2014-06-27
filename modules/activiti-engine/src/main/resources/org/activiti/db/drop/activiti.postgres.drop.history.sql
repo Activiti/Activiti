@@ -6,3 +6,4 @@ drop table if exists ACT_HI_DETAIL cascade;
 drop table if exists ACT_HI_COMMENT cascade;
 drop table if exists ACT_HI_ATTACHMENT cascade;
 drop table if exists ACT_HI_IDENTITYLINK cascade;
+drop table if exists ACT_HI_EVT_LOG cascade;

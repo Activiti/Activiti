@@ -7,7 +7,7 @@
   <!-- INSERT -->
 
   <insert id="insertEventLogEntryEntity" parameterType="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
-    insert into ${prefix}ACT_EVT_LOG(TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
+    insert into ${prefix}ACT_HI_EVT_LOG(TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
     values (
       #{type, jdbcType=VARCHAR}, 
       #{processDefinitionId, jdbcType=VARCHAR}, 
@@ -43,11 +43,11 @@
   <!-- SELECTS -->
   
   <select id="selectAllEventLogEntries" resultMap="eventLogEntryResultMap">
-    select * from ${prefix}ACT_EVT_LOG ORDER BY LOG_NR_
+    select * from ${prefix}ACT_HI_EVT_LOG ORDER BY LOG_NR_
   </select>
   
   <select id="selectEventLogEntries" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap">
-    select * from ${prefix}ACT_EVT_LOG 
+    select * from ${prefix}ACT_HI_EVT_LOG 
     WHERE LOG_NR_ &gt; #{parameter.startLogNr}
     AND LOG_NR_ &lt; #{parameter.endLogNr}
     ORDER BY LOG_NR_ 
@@ -56,7 +56,7 @@
   
   <!-- DELETE -->
   <delete id="deleteEventLogEntry" parameterType="long">
-    delete from ${prefix}ACT_EVT_LOG where LOG_NR_ = #{logNr}
+    delete from ${prefix}ACT_HI_EVT_LOG where LOG_NR_ = #{logNr}
   </delete>
 
 </mapper>
