@@ -79,6 +79,7 @@ public class CommandContext {
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected FailedJobCommandFactory failedJobCommandFactory;
   protected List<CommandContextCloseListener> closeListeners;
+  protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
 
   
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
@@ -231,6 +232,20 @@ public class CommandContext {
     	log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);    	
     	LogMDC.clear();
     }
+  }
+  
+  public void addAttribute(String key, Object value) {
+  	if (attributes == null) {
+  		attributes = new HashMap<String, Object>(1);
+  	}
+  	attributes.put(key, value);
+  }
+  
+  public Object getAttribute(String key) {
+  	if (attributes != null) {
+  		return attributes.get(key);
+  	}
+  	return null;
   }
 
   @SuppressWarnings({"unchecked"})

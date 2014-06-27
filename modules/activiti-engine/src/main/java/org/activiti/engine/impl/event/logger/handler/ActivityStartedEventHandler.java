@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.event.database.handler;
+package org.activiti.engine.impl.event.logger.handler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,7 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 /**
  * @author Joram Barrez
  */
-public class ActivityCompletedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
+public class ActivityStartedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 	
 	@Override
 	public EventLogEntryEntity generateEventLogEntry() {

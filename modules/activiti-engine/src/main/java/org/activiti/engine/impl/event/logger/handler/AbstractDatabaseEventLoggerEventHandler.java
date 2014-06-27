@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.event.database.handler;
+package org.activiti.engine.impl.event.logger.handler;
 
 import java.util.Date;
 import java.util.Map;
@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * @author Joram Barrez
  */
-public abstract class AbstractDatabaseEventLoggerEventHandler implements DatabaseEventLoggerEventHandler {
+public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLoggerEventHandler {
 
 	protected ActivitiEvent event;
 	protected Date timeStamp;

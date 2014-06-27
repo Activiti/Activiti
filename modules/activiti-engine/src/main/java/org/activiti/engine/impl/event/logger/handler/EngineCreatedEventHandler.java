@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.event.database.handler;
+package org.activiti.engine.impl.event.logger.handler;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -10,7 +10,7 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 /**
  * @author Joram Barrez
  */
-public class EngineClosedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
+public class EngineCreatedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
 	@Override
 	public EventLogEntryEntity generateEventLogEntry() {

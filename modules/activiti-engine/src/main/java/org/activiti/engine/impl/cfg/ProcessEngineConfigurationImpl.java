@@ -112,7 +112,7 @@ import org.activiti.engine.impl.event.CompensationEventHandler;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.event.SignalEventHandler;
-import org.activiti.engine.impl.event.database.DatabaseEventLogger;
+import org.activiti.engine.impl.event.logger.EventLogger;
 import org.activiti.engine.impl.form.BooleanFormType;
 import org.activiti.engine.impl.form.DateFormType;
 import org.activiti.engine.impl.form.DoubleFormType;
@@ -1316,7 +1316,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   	if (enableDatabaseEventLogging) {
   		// Database event logging uses the default logging mechanism and adds
   		// a specific event listener to the list of event listeners
-  		getEventDispatcher().addEventListener(new DatabaseEventLogger(clock));
+  		getEventDispatcher().addEventListener(new EventLogger(clock));
   	}
   }
 

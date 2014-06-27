@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.event.database;
+package org.activiti.engine.impl.event.logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,14 +10,14 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.event.database.handler.ActivityCompletedEventHandler;
-import org.activiti.engine.impl.event.database.handler.ActivityStartedEventHandler;
-import org.activiti.engine.impl.event.database.handler.DatabaseEventLoggerEventHandler;
-import org.activiti.engine.impl.event.database.handler.ProcessInstanceEndedEventHandler;
-import org.activiti.engine.impl.event.database.handler.ProcessInstanceStartedEventHandler;
-import org.activiti.engine.impl.event.database.handler.SequenceFlowTakenEventHandler;
-import org.activiti.engine.impl.event.database.handler.TaskCompletedEventHandler;
-import org.activiti.engine.impl.event.database.handler.TaskCreatedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.ActivityCompletedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.ActivityStartedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.EventLoggerEventHandler;
+import org.activiti.engine.impl.event.logger.handler.ProcessInstanceEndedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.ProcessInstanceStartedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.SequenceFlowTakenEventHandler;
+import org.activiti.engine.impl.event.logger.handler.TaskCompletedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.TaskCreatedEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -30,23 +30,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * @author Joram Barrez
  */
-public class DatabaseEventLogger implements ActivitiEventListener {
+public class EventLogger implements ActivitiEventListener {
 	
-	private static final Logger logger = LoggerFactory.getLogger(DatabaseEventLogger.class);
+	private static final Logger logger = LoggerFactory.getLogger(EventLogger.class);
+	
+	private static final String EVENT_FLUSHER_KEY = "eventFlusher";
 	
 	protected Clock clock;
 	protected ObjectMapper objectMapper;
 	
-	protected DatabaseEventFlusher databaseEventFlusher = null;
-	
 	// Mapping of type -> handler
-	protected Map<ActivitiEventType, Class<? extends DatabaseEventLoggerEventHandler>> eventHandlers 
-		= new HashMap<ActivitiEventType, Class<? extends DatabaseEventLoggerEventHandler>>();
+	protected Map<ActivitiEventType, Class<? extends EventLoggerEventHandler>> eventHandlers 
+		= new HashMap<ActivitiEventType, Class<? extends EventLoggerEventHandler>>();
 	
 	// Listeners for new events
-	protected List<DatabaseEventLoggerListener> listeners;
+	protected List<EventLoggerListener> listeners;
 	
-	public DatabaseEventLogger(Clock clock) {
+	public EventLogger(Clock clock) {
 		this.clock = clock;
 		this.objectMapper = new ObjectMapper();
 		
@@ -70,14 +70,22 @@ public class DatabaseEventLogger implements ActivitiEventListener {
 	
 	@Override
 	public void onEvent(ActivitiEvent event) {
-		DatabaseEventLoggerEventHandler eventHandler = getEventHandler(event);
+		EventLoggerEventHandler eventHandler = getEventHandler(event);
 		if (eventHandler != null) {
 
 			// Events are flushed when command context is closed
-			if (eventHandler != null && databaseEventFlusher == null) {
-				CommandContext currentCommandContext = Context.getCommandContext();
-				databaseEventFlusher = new DatabaseEventFlusher();
-				currentCommandContext.addCloseListener(databaseEventFlusher);
+			CommandContext currentCommandContext = Context.getCommandContext();
+			EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(EVENT_FLUSHER_KEY);
+			
+			if (eventHandler != null && eventFlusher == null) {
+				
+				eventFlusher = createEventFlusher();
+				if (eventFlusher == null) {
+					eventFlusher = new DatabaseEventFlusher(); // Default
+				}
+				currentCommandContext.addAttribute(EVENT_FLUSHER_KEY, eventFlusher);
+				
+				currentCommandContext.addCloseListener(eventFlusher);
 				currentCommandContext
 				    .addCloseListener(new CommandContextCloseListener() {
 
@@ -87,12 +95,10 @@ public class DatabaseEventLogger implements ActivitiEventListener {
 
 					    @Override
 					    public void closed(CommandContext commandContext) {
-						    databaseEventFlusher = null;
-						    
 						    // For those who are interested: we can now broacast the events were added
 								if (listeners != null) {
-									for (DatabaseEventLoggerListener listener : listeners) {
-										listener.eventsAdded(DatabaseEventLogger.this);
+									for (EventLoggerListener listener : listeners) {
+										listener.eventsAdded(EventLogger.this);
 									}
 								}
 					    }
@@ -100,14 +106,14 @@ public class DatabaseEventLogger implements ActivitiEventListener {
 				    });
 			}
 
-			databaseEventFlusher.addEventHandler(eventHandler);
+			eventFlusher.addEventHandler(eventHandler);
 		}
 	}
 	
 	// Subclasses can override this if defaults are not ok
-	protected DatabaseEventLoggerEventHandler getEventHandler(ActivitiEvent event) {
+	protected EventLoggerEventHandler getEventHandler(ActivitiEvent event) {
 
-		Class<? extends DatabaseEventLoggerEventHandler> eventHandlerClass = null;
+		Class<? extends EventLoggerEventHandler> eventHandlerClass = null;
 		if (event.getType().equals(ActivitiEventType.ENTITY_CREATED)) {
 			Object entity = ((ActivitiEntityEvent) event).getEntity();
 			if (entity instanceof ExecutionEntity) {
@@ -136,10 +142,10 @@ public class DatabaseEventLogger implements ActivitiEventListener {
 		return null;
 	}
 
-	protected DatabaseEventLoggerEventHandler instantiateEventHandler(ActivitiEvent event,
-      Class<? extends DatabaseEventLoggerEventHandler> eventHandlerClass) {
+	protected EventLoggerEventHandler instantiateEventHandler(ActivitiEvent event,
+      Class<? extends EventLoggerEventHandler> eventHandlerClass) {
 		try {
-			DatabaseEventLoggerEventHandler eventHandler = eventHandlerClass.newInstance();
+			EventLoggerEventHandler eventHandler = eventHandlerClass.newInstance();
 			eventHandler.setTimeStamp(clock.getCurrentTime());
 			eventHandler.setEvent(event);
 			eventHandler.setObjectMapper(objectMapper);
@@ -155,15 +161,46 @@ public class DatabaseEventLogger implements ActivitiEventListener {
 		return false;
   }
 	
-	public void addEventHandler(ActivitiEventType eventType, Class<? extends DatabaseEventLoggerEventHandler> eventHandlerClass) {
+	public void addEventHandler(ActivitiEventType eventType, Class<? extends EventLoggerEventHandler> eventHandlerClass) {
 		eventHandlers.put(eventType, eventHandlerClass);
 	}
 	
-	public void addDatabaseEventLoggerListener(DatabaseEventLoggerListener listener) {
+	public void addEventLoggerListener(EventLoggerListener listener) {
 		if (listeners == null) {
-			listeners = new ArrayList<DatabaseEventLoggerListener>(1);
+			listeners = new ArrayList<EventLoggerListener>(1);
 		}
 		listeners.add(listener);
+	}
+	
+	/**
+	 * Subclasses that want something else than the database flusher should override this method
+	 */
+	protected EventFlusher createEventFlusher() {
+		return null;
+	}
+
+	public Clock getClock() {
+		return clock;
+	}
+
+	public void setClock(Clock clock) {
+		this.clock = clock;
+	}
+
+	public ObjectMapper getObjectMapper() {
+		return objectMapper;
+	}
+
+	public void setObjectMapper(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
+
+	public List<EventLoggerListener> getListeners() {
+		return listeners;
+	}
+
+	public void setListeners(List<EventLoggerListener> listeners) {
+		this.listeners = listeners;
 	}
 	
 }

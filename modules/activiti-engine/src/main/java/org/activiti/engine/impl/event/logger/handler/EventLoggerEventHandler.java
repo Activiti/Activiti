@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.event.database.handler;
+package org.activiti.engine.impl.event.logger.handler;
 
 import java.util.Date;
 
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * @author Joram Barrez
  */
-public interface DatabaseEventLoggerEventHandler {
+public interface EventLoggerEventHandler {
 	
 	EventLogEntryEntity generateEventLogEntry();
 	

@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.event.database.handler;
+package org.activiti.engine.impl.event.logger.handler;
 
 /**
  * @author Joram Barrez

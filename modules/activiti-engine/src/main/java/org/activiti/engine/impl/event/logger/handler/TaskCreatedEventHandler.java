@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.event.database.handler;
+package org.activiti.engine.impl.event.logger.handler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,15 +10,15 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Joram Barrez
  */
-public class TaskCompletedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
+public class TaskCreatedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 	
 	@Override
 	public EventLogEntryEntity generateEventLogEntry() {
-
+		
 		TaskEntity task = (TaskEntity) ((ActivitiEntityEvent) event).getEntity();
-		long duration = timeStamp.getTime() - task.getCreateTime().getTime();
 		
 		Map<String, Object> data = new HashMap<String, Object>();
+		putInMapIfNotNull(data, Fields.ID, task.getId());
 		putInMapIfNotNull(data, Fields.ID, task.getId());
 		putInMapIfNotNull(data, Fields.NAME, task.getName());
 		putInMapIfNotNull(data, Fields.DESCRIPTION, task.getDescription());
@@ -26,7 +26,6 @@ public class TaskCompletedEventHandler extends AbstractDatabaseEventLoggerEventH
 		putInMapIfNotNull(data, Fields.OWNER, task.getOwner());
 		putInMapIfNotNull(data, Fields.CATEGORY, task.getCategory());
 		putInMapIfNotNull(data, Fields.CREATE_TIME, task.getCreateTime());
-		putInMapIfNotNull(data, Fields.DURATION, duration);
 		putInMapIfNotNull(data, Fields.DUE_DATE, task.getDueDate());
 		putInMapIfNotNull(data, Fields.FORM_KEY, task.getFormKey());
 		putInMapIfNotNull(data, Fields.PRIORITY, task.getPriority());

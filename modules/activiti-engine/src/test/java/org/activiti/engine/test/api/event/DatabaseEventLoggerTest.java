@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.event.EventLogEntry;
-import org.activiti.engine.impl.event.database.DatabaseEventLogger;
-import org.activiti.engine.impl.event.database.handler.Fields;
+import org.activiti.engine.impl.event.logger.EventLogger;
+import org.activiti.engine.impl.event.logger.handler.Fields;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	
-	protected DatabaseEventLogger databaseEventLogger;
+	protected EventLogger databaseEventLogger;
 	
 	protected ObjectMapper objectMapper = new ObjectMapper();
 
@@ -33,7 +33,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	  super.setUp();
 	  
 	  // Database event logger setup
-	  databaseEventLogger = new DatabaseEventLogger(processEngineConfiguration.getClock());
+	  databaseEventLogger = new EventLogger(processEngineConfiguration.getClock());
 	  runtimeService.addEventListener(databaseEventLogger);
 	}
 	
@@ -45,7 +45,6 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 		
 	  super.tearDown();
 	}
-	
 	
 	
 	@Deployment(resources = {"org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml"})
