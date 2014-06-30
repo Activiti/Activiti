@@ -44,28 +44,31 @@ public class JobEntityManager extends AbstractManager {
   }
  
   public void schedule(TimerEntity timer) {
-    Date duedate = timer.getDuedate();
-    if (duedate==null) {
-      throw new ActivitiIllegalArgumentException("duedate is null");
-    }
-
     timer.insert();
-    
+
+    updateJobExecutor(timer);
+  }
+
+  /**
+   * In the case when timer has changed we have to update JobExecutor as well.
+   *
+   * @param timer - changed timer
+   */
+  public void updateJobExecutor(TimerEntity timer) {
     // Check if this timer fires before the next time the job executor will check for new timers to fire.
     // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)
     // and timers are usually set further in the future
-    
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
     int waitTimeInMillis = jobExecutor.getWaitTimeInMillis();
-    if (duedate.getTime() < (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()+waitTimeInMillis)) {
+    if (timer.getDuedate().getTime() < (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()+waitTimeInMillis)) {
       hintJobExecutor(timer);
     }
   }
-  
-  protected void hintJobExecutor(JobEntity job) {  
+
+  protected static void hintJobExecutor(JobEntity job) {
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
     JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
-    TransactionListener transactionListener = null;
+    TransactionListener transactionListener;
     if(job.isExclusive() 
             && jobExecutorContext != null 
             && jobExecutorContext.isExecutingExclusiveJob()) {
