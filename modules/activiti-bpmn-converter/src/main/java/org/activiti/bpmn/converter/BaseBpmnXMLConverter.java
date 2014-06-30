@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.converter.export.ActivitiListenerExport;
+import org.activiti.bpmn.converter.export.FailedJobRetryCountExport;
 import org.activiti.bpmn.converter.export.MultiInstanceExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
@@ -200,6 +201,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     didWriteExtensionStartElement = writeExtensionChildElements(baseElement, didWriteExtensionStartElement, xtw);
     didWriteExtensionStartElement = writeListeners(baseElement, didWriteExtensionStartElement, xtw);
     didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(baseElement, didWriteExtensionStartElement, xtw);
+    if (baseElement instanceof Activity) {
+    	final Activity activity = (Activity) baseElement;
+        FailedJobRetryCountExport.writeFailedJobRetryCount(activity, xtw);
+        
+     }
     
     if (didWriteExtensionStartElement) {
       xtw.writeEndElement();
@@ -208,6 +214,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     if (baseElement instanceof Activity) {
       final Activity activity = (Activity) baseElement;
       MultiInstanceExport.writeMultiInstance(activity, xtw);
+      
     }
     
     writeAdditionalChildElements(baseElement, model, xtw);
