@@ -153,7 +153,8 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected String databaseType;
   protected String databaseTablePrefix = "";
   private boolean tablePrefixIsSchema;
-  
+
+  protected String databaseCatalog;
   /**
    * In some situations you want to set the schema to use for table checks /
    * generation if the database metadata doesn't return that correctly, see
@@ -331,7 +332,15 @@ public class DbSqlSessionFactory implements SessionFactory {
   public String getDatabaseTablePrefix() {
     return databaseTablePrefix;
   }
-  
+
+  public String getDatabaseCatalog() {
+    return databaseCatalog;
+  }
+
+  public void setDatabaseCatalog(String databaseCatalog) {
+    this.databaseCatalog = databaseCatalog;
+  }
+
   public String getDatabaseSchema() {
     return databaseSchema;
   }
