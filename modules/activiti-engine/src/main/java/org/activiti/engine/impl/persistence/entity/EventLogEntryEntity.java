@@ -35,7 +35,7 @@ public class EventLogEntryEntity implements PersistentObject, EventLogEntry {
 	protected String data;
 	protected String lockOwner;
 	protected String lockTime;
-	protected boolean isProcessed;
+	protected int isProcessed;
 
   public EventLogEntryEntity() {
   }
@@ -142,12 +142,12 @@ public class EventLogEntryEntity implements PersistentObject, EventLogEntry {
 	public void setLockTime(String lockTime) {
 		this.lockTime = lockTime;
 	}
-
-	public boolean isProcessed() {
+	
+	public int getProcessed() {
 		return isProcessed;
 	}
 
-	public void setProcessed(boolean isProcessed) {
+	public void setProcessed(int isProcessed) {
 		this.isProcessed = isProcessed;
 	}
 

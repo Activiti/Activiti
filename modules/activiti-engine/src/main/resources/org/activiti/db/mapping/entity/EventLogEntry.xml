@@ -19,7 +19,7 @@
       #{data, jdbcType=CLOB},
       #{lockOwner, jdbcType=VARCHAR},
       #{lockTime, jdbcType=TIMESTAMP},
-      #{isProcessed, jdbcType=BOOLEAN} 
+      #{isProcessed, jdbcType=INTEGER} 
     )  
   </insert>
   
@@ -37,7 +37,7 @@
     <result property="data" column="DATA_" jdbcType="CLOB"/>
     <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR"/>
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP"/>
-    <result property="isProcessed" column="IS_PROCESSED_" jdbcType="BOOLEAN"/>
+    <result property="isProcessed" column="IS_PROCESSED_" jdbcType="INTEGER"/>
   </resultMap>
   
   <!-- SELECTS -->
