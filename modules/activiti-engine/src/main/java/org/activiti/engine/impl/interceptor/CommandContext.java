@@ -78,7 +78,7 @@ public class CommandContext {
   protected LinkedList<AtomicOperation> nextOperations = new LinkedList<AtomicOperation>();
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected FailedJobCommandFactory failedJobCommandFactory;
-  protected List<CommandContextCloseListener> closeListeners;
+	protected List<CommandContextCloseListener> closeListeners;
   protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
 
   
@@ -122,14 +122,6 @@ public class CommandContext {
     try {
       try {
         try {
-
-          if (exception == null) {
-            flushSessions();
-          }
-
-        } catch (Throwable exception) {
-          exception(exception);
-        } finally {
         	
         	if (exception == null && closeListeners != null) {
 	        	try {
@@ -141,6 +133,14 @@ public class CommandContext {
 	        	}
         	}
 
+          if (exception == null) {
+            flushSessions();
+          }
+
+        } catch (Throwable exception) {
+          exception(exception);
+        } finally {
+        	
           try {
             if (exception == null) {
               transactionContext.commit();

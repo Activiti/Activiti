@@ -27,13 +27,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 public class EventLogEntryEntityManager extends AbstractManager {
   
   public void insert(EventLogEntryEntity eventLogEntryEntity) {
-  	
-  	//
-  	// Going directly through mybatis.
-  	//
-  	// No need for it to be cached, flushed, or whatever ... as the log events
-  	// will be inserted to the database at the end of the transaction.
-  	getDbSqlSession().getSqlSession().insert("insertEventLogEntryEntity", eventLogEntryEntity);
+  	getDbSqlSession().insert(eventLogEntryEntity);
   }
   
   @SuppressWarnings("unchecked")
