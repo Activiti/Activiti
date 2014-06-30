@@ -122,6 +122,14 @@ public class EventLogEntryEntity implements PersistentObject, EventLogEntry {
 	public String getData() {
 		return data;
 	}
+	
+	public byte[] getDataBytes() {
+		return (data != null ? data.getBytes() : null);
+	}
+	
+	public void setDataBytes(byte[] dataBytes) {
+		data = dataBytes != null ? new String(dataBytes) : null;
+	}
 
 	public void setData(String data) {
 		this.data = data;
