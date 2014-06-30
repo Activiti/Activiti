@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Frederik Heremans
+ * @author Saeid Mirzaei
  */
 public class FailedJobListener implements TransactionListener {
   private static final Logger log = LoggerFactory.getLogger(FailedJobListener.class);
@@ -39,21 +40,11 @@ public class FailedJobListener implements TransactionListener {
   }
   
   public void execute(CommandContext commandContext) {
-    try {
-      CommandConfig commandConfig = commandExecutor.getDefaultConfig().transactionRequiresNew();
-      Command<Object> failedJobCommand = commandContext.getFailedJobCommandFactory().getCommand(jobId, exception);
-      commandExecutor.execute(commandConfig, failedJobCommand);
-    } catch (Throwable t) {
-      // When there is an error while handling failed jobs (decrementing retries) this
-      // should be logged because it's a serious issue
-      log.warn("Error while executing command when job is failed for job: '" + jobId + "'.", t);
-      
-      // Re-throw the exception
-      if (t instanceof RuntimeException) {
-        throw (RuntimeException) t;
-      }
-      throw new RuntimeException(t);
-    }
+	  FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
+	  Command<Object> cmd = failedJobCommandFactory.getCommand(jobId, exception);
+
+	  log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
+	  commandExecutor.execute(cmd);
   }
 
 }

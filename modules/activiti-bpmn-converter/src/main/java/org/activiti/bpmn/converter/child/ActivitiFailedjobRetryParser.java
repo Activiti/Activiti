@@ -5,7 +5,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.TimerEventDefinition;
 
 public class ActivitiFailedjobRetryParser extends BaseChildElementParser {
 

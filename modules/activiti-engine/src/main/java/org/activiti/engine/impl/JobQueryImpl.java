@@ -50,6 +50,8 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
+  protected boolean noRetriesLeft;
+  
   
   public JobQueryImpl() {
   }
@@ -159,7 +161,12 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     this.duedateLowerThanOrEqual = date;
     return this;
   }
-  
+
+  public JobQuery noRetriesLeft() {
+	 noRetriesLeft = true;
+	 return this;
+  }
+
   public JobQuery withException() {
     this.withException = true;
     return this;

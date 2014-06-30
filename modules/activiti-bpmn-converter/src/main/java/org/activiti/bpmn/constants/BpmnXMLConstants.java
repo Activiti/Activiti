@@ -269,5 +269,6 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_DATA_VALUE = "value";
   
   public static final String FAILED_JOB_RETRY_TIME_CYCLE = "failedJobRetryTimeCycle";
+  public static final String FAILED_JOB_CONFIGURATION = "FAILED_JOB_CONFIGURATION";
 
 }
