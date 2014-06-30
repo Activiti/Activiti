@@ -54,7 +54,7 @@ public class JobEntityManager extends AbstractManager {
    *
    * @param timer - changed timer
    */
-  public void updateJobExecutor(TimerEntity timer) {
+  public void updateJobExecutor(JobEntity timer) {
     // Check if this timer fires before the next time the job executor will check for new timers to fire.
     // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)
     // and timers are usually set further in the future
