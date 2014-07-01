@@ -1,5 +1,3 @@
-package org.activiti.engine.impl.jobexecutor;
-
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,7 +10,10 @@ package org.activiti.engine.impl.jobexecutor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.engine.impl.jobexecutor;
 
+import java.util.Date;
+import java.util.List;
 
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.SimulationRunContext;
@@ -20,11 +21,8 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
-
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * "thread" has to be driven by simulation time.
@@ -35,7 +33,7 @@ import java.util.logging.Logger;
  */
 public class SimulationAcquireJobsRunnable extends AcquireJobsRunnable {
 	
-	private static Logger log = Logger.getLogger(SimulationAcquireJobsRunnable.class.getName());
+	private static Logger log = LoggerFactory.getLogger(SimulationAcquireJobsRunnable.class.getName());
 
 	public SimulationAcquireJobsRunnable(JobExecutor jobExecutor) {
 	    super(jobExecutor);
@@ -84,17 +82,14 @@ public class SimulationAcquireJobsRunnable extends AcquireJobsRunnable {
 
 		      } catch (ActivitiOptimisticLockingException optimisticLockingException) { 
 		        // See http://jira.codehaus.org/browse/ACT-1390
-		        if (log.isLoggable(Level.FINE)) {
-		          log.fine("Optimistic locking exception during job acquisition. If you have multiple job executors running against the same database, " +
+		        log.trace("Optimistic locking exception during job acquisition. If you have multiple job executors running against the same database, " +
 		          		"this exception means that this thread tried to acquire a job, which already was acquired by another job executor acquisition thread." +
 		          		"This is expected behavior in a clustered environment. " +
 		          		"You can ignore this message if you indeed have multiple job executor acquisition threads running against the same database. " +
 		          		"Exception message: " + optimisticLockingException.getMessage());
-		        }
+		        
 		      } catch (Exception e) {
-		        if (log.isLoggable(Level.SEVERE)) {
-		          log.log(Level.SEVERE, "exception during job acquisition: " + e.getMessage(), e);          
-		        }
+		        log.error("exception during job acquisition: " + e.getMessage(), e);          
 		        millisToWait *= waitIncreaseFactor;
 		        if (millisToWait > maxWait) {
 		          millisToWait = maxWait;
@@ -105,9 +100,7 @@ public class SimulationAcquireJobsRunnable extends AcquireJobsRunnable {
 
 		      if ((millisToWait > 0) && (!isJobAdded)) {
 		        try {
-		          if (log.isLoggable(Level.FINE)) {
-		            log.fine("job acquisition thread sleeping for " + millisToWait + " millis");
-		          }
+		          log.trace("job acquisition thread sleeping for " + millisToWait + " millis");
 		          synchronized (MONITOR) {
 		            if(!isInterrupted) {
 		              isWaiting.set(true);
@@ -122,9 +115,7 @@ public class SimulationAcquireJobsRunnable extends AcquireJobsRunnable {
 		            }
 		          } 
 		          		          
-		          if (log.isLoggable(Level.FINE)) {
-		            log.fine("job acquisition thread woke up");
-		          }
+		          log.trace("job acquisition thread woke up");
 		        } finally {
 //		          isWaiting.set(false);
 		        }
