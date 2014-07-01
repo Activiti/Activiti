@@ -16,8 +16,6 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
@@ -40,6 +38,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Saeid Mirzaei
@@ -47,7 +47,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 public class JobRetryCmd implements Command<Object> {
 
-  private static final Logger log = Logger.getLogger(JobRetryCmd.class.getName());
+  private static final  Logger log = LoggerFactory.getLogger(JobRetryCmd.class.getName());
 
   protected String jobId;
   protected Throwable exception;
