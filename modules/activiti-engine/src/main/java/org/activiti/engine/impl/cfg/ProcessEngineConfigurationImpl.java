@@ -136,8 +136,8 @@ import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.jobexecutor.CallerRunsRejectedJobsHandler;
+import org.activiti.engine.impl.jobexecutor.DefaultFailedJobCommandFactory;
 import org.activiti.engine.impl.jobexecutor.DefaultJobExecutor;
-import org.activiti.engine.impl.jobexecutor.EnhancedFailedJobCommandFactory;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
@@ -431,7 +431,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initFailedJobCommandFactory() {
 	  // TODO: should be configurable
     if (failedJobCommandFactory == null) {
-      failedJobCommandFactory = new EnhancedFailedJobCommandFactory();
+      failedJobCommandFactory = new DefaultFailedJobCommandFactory();
     }
   }
 

@@ -19,7 +19,10 @@ import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.calendar.DurationHelper;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionState;
@@ -37,7 +40,6 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.util.DefaultClockImpl;
 
 /**
  * @author Saeid Mirzaei
@@ -55,65 +57,70 @@ public class JobRetryCmd implements Command<Object> {
     this.exception = exception;
   }
 
-  public Object execute(CommandContext commandContext) {
+  public Object execute(CommandContext commandContext)  {
+	  
+	  
     JobEntity job = Context
 		      .getCommandContext()
 		      .getJobEntityManager()
 		      .findJobById(jobId);
     
+    
+    
     ActivityImpl activity = getCurrentActivity(commandContext, job);
+   
 
-    if (activity == null) {
-      log.log(Level.SEVERE, "Failure while executing " + JobRetryCmd.class.getName() + " for job id '" + jobId + "'. Falling back to standard job retry strategy.");
-      executeStandardStrategy(commandContext);
-    } else {
-      try {
-        executeCustomStrategy(commandContext, job, activity);
-      } catch (Exception e) {
-        log.log(Level.SEVERE, "Failure while executing " + JobRetryCmd.class.getName() + " for job id '" + jobId + "'. Falling back to standard job retry strategy.", e);
-        executeStandardStrategy(commandContext);
-      }
+    
+    if (activity == null || activity.getFailedJobRetryTimeCycleValue() == null) {
+      log.log(Level.SEVERE, "activitiy or FailedJobRetryTimerCycleValue is null in job " + jobId + "'. only decrementing retries.");
+      job.setRetries(job.getRetries() - 1);
+      job.setLockOwner(null);
+      job.setLockExpirationTime(null);    
+      } 
+    else {    	
+       String failedJobRetryTimeCycle = activity.getFailedJobRetryTimeCycleValue();
+       DurationHelper  durationHelper;
+       try {
+	       durationHelper = new DurationHelper(failedJobRetryTimeCycle, Context.getProcessEngineConfiguration().getClock());
+	       job.setLockExpirationTime(durationHelper.getDateAfter());
+	       
+	       if (job.getExceptionMessage() == null) {  // is it the first exception 
+	           log.fine("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+durationHelper.getTimes()+" retries");
+	         // then change default retries to the ones configured
+	          job.setRetries(durationHelper.getTimes());
+	       } else {
+	       	  log.fine("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycle+ "' for job " + job.getId());
+	       }
+	       job.setRetries(job.getRetries() - 1);
+	       
+	   } catch (Exception e) {
+		 throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycle, exception);
+	   }
+       
+    	  
     }
+    if (exception != null) {
+        job.setExceptionMessage(exception.getMessage());
+        job.setExceptionStacktrace(getExceptionStacktrace());
+    }
+    
+    // Dispatch both an update and a retry-decrement event
+    ActivitiEventDispatcher eventDispatcher = commandContext.getEventDispatcher();
+    if(eventDispatcher.isEnabled()) {
+    	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
+    			ActivitiEventType.ENTITY_UPDATED, job));
+    	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
+    			ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
+    }
+    JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
+    MessageAddedNotification messageAddedNotification = new MessageAddedNotification(jobExecutor);
+    TransactionContext transactionContext = commandContext.getTransactionContext();
+    transactionContext.addTransactionListener(TransactionState.COMMITTED, messageAddedNotification);
 
     return null;
   }
 
-  private void executeCustomStrategy(CommandContext commandContext, JobEntity job, ActivityImpl activity) throws Exception {
-    String failedJobRetryTimeCycle = activity.getFailedJobRetryTimeCycleValue();
-
-    if(failedJobRetryTimeCycle == null) {
-      executeStandardStrategy(commandContext);
-
-    } else {
-      DurationHelper durationHelper = new DurationHelper(failedJobRetryTimeCycle, Context.getProcessEngineConfiguration().getClock());
-      job.setLockExpirationTime(durationHelper.getDateAfter());
-
-      // check if this is jobs' first execution (recognize this because no exception is set. Only the first execution can be without exception - because if no exception occurred the job would have been completed)
-     // job.getExceptionByteArrayId() == null &&
-      if (job.getExceptionMessage()==null) {
-          log.fine("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+durationHelper.getTimes()+" retries");
-        // then change default retries to the ones configured
-        job.setRetries(durationHelper.getTimes());
-      }
-      else {
-      	log.fine("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycle+ "' for job " + job.getId());
-      }
-
-      if (exception != null) {
-        job.setExceptionMessage(exception.getMessage());
-        job.setExceptionStacktrace(getExceptionStacktrace());
-      }
-
-      job.setRetries(job.getRetries() - 1);
-
-      JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
-      MessageAddedNotification messageAddedNotification = new MessageAddedNotification(jobExecutor);
-      TransactionContext transactionContext = commandContext.getTransactionContext();
-      transactionContext.addTransactionListener(TransactionState.COMMITTED, messageAddedNotification);
-    }
-  }
-
-  private ActivityImpl getCurrentActivity(CommandContext commandContext, JobEntity job) {
+    private ActivityImpl getCurrentActivity(CommandContext commandContext, JobEntity job) {
     String type = job.getJobHandlerType();
     ActivityImpl activity = null;
 
@@ -153,10 +160,5 @@ public class JobRetryCmd implements Command<Object> {
                   .findExecutionById(executionId);
   }
 
-  private void executeStandardStrategy(CommandContext commandContext) {
-    DecrementJobRetriesCmd decrementCmd = new DecrementJobRetriesCmd(jobId, exception);
-    decrementCmd.execute(commandContext);
-  }
-
-
+  
 }
