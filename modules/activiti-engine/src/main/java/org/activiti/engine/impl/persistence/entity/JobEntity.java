@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -197,6 +198,10 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, S
     return duedate;
   }
   public void setDuedate(Date duedate) {
+    if (duedate == null) {
+      throw new ActivitiIllegalArgumentException("duedate is null");
+    }
+
     this.duedate = duedate;
   }
   public String getExecutionId() {
