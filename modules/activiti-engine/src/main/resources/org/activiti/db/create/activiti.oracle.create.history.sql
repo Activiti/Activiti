@@ -151,15 +151,6 @@ create table ACT_HI_EVT_LOG (
 
 create sequence act_hi_evt_log_seq;
 
-CREATE OR REPLACE TRIGGER act_hi_evt_log_nr 
-    BEFORE INSERT ON ACT_HI_EVT_LOG 
-    FOR EACH ROW
-BEGIN
-  SELECT act_hi_evt_log_seq.NEXTVAL
-  INTO   :new.LOG_NR_
-  FROM   dual;
-END;
-
 
 create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROCINST(END_TIME_);
 create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROCINST(BUSINESS_KEY_);
