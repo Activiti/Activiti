@@ -23,6 +23,5 @@ drop table ACT_HI_COMMENT;
 drop table ACT_HI_ATTACHMENT;
 drop table ACT_HI_IDENTITYLINK;
 
-drop trigger act_hi_evt_log_nr;
 drop sequence act_hi_evt_log_seq;
 drop table ACT_HI_EVT_LOG;
