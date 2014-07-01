@@ -39,60 +39,61 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
 
-	   // check if process instance query with business key with and without includeProcess Variables
-	   // related to http://jira.codehaus.org/browse/ACT-1992
-		
-	  @Deployment(resources = {"org/activiti/rest/service/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
-	  public void testGetProcessInstancesByBusinessKeyAndIncludeVariables() throws Exception {
-		
-		  
-		HashMap<String, Object> variables = new HashMap<String, Object>();
-		variables.put("myVar1", "myVar1");
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey", variables);
-		String processId = processInstance.getId();
+  // check if process instance query with business key with and without includeProcess Variables
+  // related to http://jira.codehaus.org/browse/ACT-1992
+  @Deployment(resources = {"org/activiti/rest/service/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
+  public void testGetProcessInstancesByBusinessKeyAndIncludeVariables() throws Exception {
+  	HashMap<String, Object> variables = new HashMap<String, Object>();
+  	variables.put("myVar1", "myVar1");
+  	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey", variables);
+  	String processId = processInstance.getId();
 
-		// check that the right process is returned with no variables
-	    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?businessKey=myBusinessKey";
-	    ClientResource client = getAuthenticatedClient(url);
-	    Representation response = client.get();
-	    
-	    assertNotNull(response);
-	    assertNotNull(client.getResponse());
-	    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-	    JsonNode rootNode = objectMapper.readTree(response.getStream());
-	    assertTrue(rootNode.size() > 0 );
-	    assertEquals(1, rootNode.get("data").size());
-	    JsonNode dataNode = rootNode.get("data").get(0);
-	    assertEquals(processId, dataNode.get("id").textValue());
-	    JsonNode variableNodes = dataNode.get("variables");
-	    assertEquals(0, variableNodes.size());
-	   
-	    
-		// check that the right process is returned along with the variables when includeProcessvariable is set
-	    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?businessKey=myBusinessKey&includeProcessVariables=true";
-		
-	    client = getAuthenticatedClient(url);
-	    response = client.get();
-	    
-	    assertNotNull(response);
-	    assertNotNull(client.getResponse());
-	    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-	    rootNode = objectMapper.readTree(response.getStream());
-	    assertTrue(rootNode.size() > 0 );
-	    assertEquals(1, rootNode.get("data").size());
-	    dataNode = rootNode.get("data").get(0);
-	    assertEquals(processId, dataNode.get("id").textValue());
-	    variableNodes = dataNode.get("variables");
-	    assertEquals(1, variableNodes.size());
-	    
-	    variableNodes = dataNode.get("variables");
-	    assertEquals(variableNodes.size(), 1);
-	    assertNotNull(variableNodes.get(0).get("name"));
-	    assertNotNull(variableNodes.get(0).get("value"));
-	   
-	    assertEquals("myVar1", variableNodes.get(0).get("name").asText());
-	    assertEquals("myVar1", variableNodes.get(0).get("value").asText());
-	  }
+  	// check that the right process is returned with no variables
+    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?businessKey=myBusinessKey";
+    ClientResource client = getAuthenticatedClient(url);
+    Representation response = client.get();
+    
+    assertNotNull(response);
+    assertNotNull(client.getResponse());
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    JsonNode rootNode = objectMapper.readTree(response.getStream());
+    assertTrue(rootNode.size() > 0 );
+    assertEquals(1, rootNode.get("data").size());
+    JsonNode dataNode = rootNode.get("data").get(0);
+    assertEquals(processId, dataNode.get("id").asText());
+    assertEquals(processInstance.getProcessDefinitionId(), dataNode.get("processDefinitionId").asText());
+    assertTrue(dataNode.get("processDefinitionUrl").asText().contains(encode(processInstance.getProcessDefinitionId())));
+    JsonNode variableNodes = dataNode.get("variables");
+    assertEquals(0, variableNodes.size());
+   
+    
+    // check that the right process is returned along with the variables when includeProcessvariable is set
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?businessKey=myBusinessKey&includeProcessVariables=true";
+	
+    client = getAuthenticatedClient(url);
+    response = client.get();
+    
+    assertNotNull(response);
+    assertNotNull(client.getResponse());
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    rootNode = objectMapper.readTree(response.getStream());
+    assertTrue(rootNode.size() > 0 );
+    assertEquals(1, rootNode.get("data").size());
+    dataNode = rootNode.get("data").get(0);
+    assertEquals(processId, dataNode.get("id").textValue());
+    assertEquals(processInstance.getProcessDefinitionId(), dataNode.get("processDefinitionId").asText());
+    assertTrue(dataNode.get("processDefinitionUrl").asText().contains(encode(processInstance.getProcessDefinitionId())));
+    variableNodes = dataNode.get("variables");
+    assertEquals(1, variableNodes.size());
+    
+    variableNodes = dataNode.get("variables");
+    assertEquals(variableNodes.size(), 1);
+    assertNotNull(variableNodes.get(0).get("name"));
+    assertNotNull(variableNodes.get(0).get("value"));
+   
+    assertEquals("myVar1", variableNodes.get(0).get("name").asText());
+    assertEquals("myVar1", variableNodes.get(0).get("value").asText());
+  }
 	
   /**
    * Test getting a list of process instance, using all possible filters.
