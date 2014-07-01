@@ -33,7 +33,7 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase{
 	    // update job
 	    job = managementService.createJobQuery().singleResult();
 
-	    if (job.getRetries() != retriesLeft) {
+	    if (job.getRetries() > retriesLeft) {
 	      waitForExecutedJobWithRetriesLeft(retriesLeft);
 	    }
 	  }
