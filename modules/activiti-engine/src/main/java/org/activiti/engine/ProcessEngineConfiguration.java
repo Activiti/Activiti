@@ -156,7 +156,12 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
    * @since 5.9
    */
   protected String databaseTablePrefix = "";
-  
+
+  /**
+   * database catalog to use
+   */
+  protected String databaseCatalog = "";
+
   /**
    * In some situations you want to set the schema to use for table checks / generation if the database metadata
    * doesn't return that correctly, see https://jira.codehaus.org/browse/ACT-1220,
@@ -622,7 +627,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public boolean isTablePrefixIsSchema() {
 	  return tablePrefixIsSchema;
   }
-  
+
+  public String getDatabaseCatalog() {
+    return databaseCatalog;
+  }
+
+  public ProcessEngineConfiguration setDatabaseCatalog(String databaseCatalog) {
+    this.databaseCatalog = databaseCatalog;
+    return this;
+  }
+
   public String getDatabaseSchema() {
     return databaseSchema;
   }
