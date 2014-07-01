@@ -38,7 +38,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author Nick Burch
  * @author Dave Syer
  * @author Frederik Heremans
- * @author Saeid Mirzaei
  */
 public abstract class JobEntity implements Job, PersistentObject, HasRevision, Serializable {
 
@@ -67,15 +66,11 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, S
   protected String jobHandlerType = null;
   protected String jobHandlerConfiguration = null;
   
+  protected final ByteArrayRef exceptionByteArrayRef = new ByteArrayRef();
   
   protected String exceptionMessage;
   
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
-  
-  protected ByteArrayEntity exceptionByteArray;
-
-  protected String exceptionByteArrayId;
-
 
   public void execute(CommandContext commandContext) {
     ExecutionEntity execution = null;
@@ -119,9 +114,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, S
       .delete(this);
 
     // Also delete the job's exception byte array
-    if (exceptionByteArrayId != null) {
-        Context.getCommandContext().getByteArrayEntityManager().deleteByteArrayById(exceptionByteArrayId);
-      }
+    exceptionByteArrayRef.delete();
     
     // remove link to execution
     if (executionId != null) {
@@ -145,42 +138,19 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, S
   }
 
   public String getExceptionStacktrace() {
-	  String exception = null;
-	    ByteArrayEntity byteArray = getExceptionByteArray();
-	    if(byteArray != null) {
-	      try {
-	        exception = new String(byteArray.getBytes(), "UTF-8");
-	      } catch (UnsupportedEncodingException e) {
-	        throw new ActivitiException("UTF-8 is not a supported encoding");
-	      }
-	    }
-	    return exception;  }
+    byte[] bytes = exceptionByteArrayRef.getBytes();
+    if (bytes == null) {
+      return null;
+    }
+    try {
+      return new String(bytes, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new ActivitiException("UTF-8 is not a supported encoding");
+    }
+  }
   
   public void setExceptionStacktrace(String exception) {
-	  byte[] exceptionBytes = null;
-	    if(exception == null) {
-	      exceptionBytes = null;
-	    } else {
-
-	      try {
-	        exceptionBytes = exception.getBytes("UTF-8");
-	      } catch (UnsupportedEncodingException e) {
-	        throw new ActivitiException("UTF-8 is not a supported encoding");
-	      }
-	    }
-
-	    ByteArrayEntity byteArray = getExceptionByteArray();
-	    if(byteArray == null) {
-	      byteArray = new ByteArrayEntity("job.exceptionByteArray", exceptionBytes);
-	      Context
-	        .getCommandContext()
-	        .getDbSqlSession()
-	        .insert(byteArray);
-	      exceptionByteArrayId = byteArray.getId();
-	      exceptionByteArray = byteArray;
-	    } else {
-	      byteArray.setBytes(exceptionBytes);
-	    }
+    exceptionByteArrayRef.setValue("stacktrace", getUtf8Bytes(exception));
   }
 
   private byte[] getUtf8Bytes(String str) {
@@ -201,9 +171,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, S
     persistentState.put("retries", retries);
     persistentState.put("duedate", duedate);
     persistentState.put("exceptionMessage", exceptionMessage);
-    if(exceptionByteArrayId != null) {
-        persistentState.put("exceptionByteArrayId", exceptionByteArrayId);
-      }  
+    persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());      
     return persistentState;
   }
   
@@ -292,25 +260,11 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, S
     this.exceptionMessage = StringUtils.abbreviate(exceptionMessage, MAX_EXCEPTION_MESSAGE_LENGTH);
   }
   public String getTenantId() {
-	return tenantId;
-  }
-  public void setTenantId(String tenantId) {
-	this.tenantId = tenantId;
-  }
-  public String getExceptionByteArrayId() {
-	return exceptionByteArrayId;
-  }
-  
-  private ByteArrayEntity getExceptionByteArray() {
-	    if ((exceptionByteArray == null) && (exceptionByteArrayId != null)) {
-	      exceptionByteArray = Context
-	        .getCommandContext()
-	        .getDbSqlSession()
-	        .selectById(ByteArrayEntity.class, exceptionByteArrayId);
-	    }
-	    return exceptionByteArray;
-	  }
-	
+		return tenantId;
+	}
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
 	
   // common methods  //////////////////////////////////////////////////////////
 

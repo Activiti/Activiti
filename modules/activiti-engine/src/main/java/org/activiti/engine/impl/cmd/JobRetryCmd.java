@@ -89,8 +89,8 @@ public class JobRetryCmd implements Command<Object> {
       job.setLockExpirationTime(durationHelper.getDateAfter());
 
       // check if this is jobs' first execution (recognize this because no exception is set. Only the first execution can be without exception - because if no exception occurred the job would have been completed)
-     
-      if (job.getExceptionByteArrayId() == null && job.getExceptionMessage()==null) {
+     // job.getExceptionByteArrayId() == null &&
+      if (job.getExceptionMessage()==null) {
           log.fine("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+durationHelper.getTimes()+" retries");
         // then change default retries to the ones configured
         job.setRetries(durationHelper.getTimes());

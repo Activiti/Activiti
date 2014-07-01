@@ -65,7 +65,7 @@
     <result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="retries" column="RETRIES_" jdbcType="INTEGER" />
-    <result property="exceptionByteArrayId" column="EXCEPTION_STACK_ID_" jdbcType="VARCHAR" />
+    <result property="exceptionByteArrayRef" column="EXCEPTION_STACK_ID_" typeHandler="ByteArrayRefTypeHandler" />
     <result property="exceptionMessage" column="EXCEPTION_MSG_" jdbcType="VARCHAR" />
     <result property="jobHandlerType" column="HANDLER_TYPE_" jdbcType="VARCHAR" />
     <result property="jobHandlerConfiguration" column="HANDLER_CFG_" jdbcType="VARCHAR" />
@@ -244,9 +244,6 @@
       <if test="tenantIdLike != null">
         and RES.TENANT_ID_ like #{tenantIdLike}
       </if>
-      <if test="noRetriesLeft">
-        and RES.RETRIES_ = 0
-      </if>      
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>
@@ -284,7 +281,7 @@
             #{processInstanceId, jdbcType=VARCHAR},
             #{processDefinitionId, jdbcType=VARCHAR},
             #{retries, jdbcType=INTEGER},
-            #{exceptionByteArrayId, jdbcType=VARCHAR},
+            #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
             #{exceptionMessage, jdbcType=VARCHAR},
             #{duedate, jdbcType=TIMESTAMP},
             #{repeat, jdbcType=VARCHAR},
@@ -303,7 +300,7 @@
        LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
        LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
        RETRIES_ = #{retries, jdbcType=INTEGER},
-       EXCEPTION_STACK_ID_ = #{exceptionByteArrayId, jdbcType=VARCHAR},
+       EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
        EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR},
        DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
     </set>
@@ -383,7 +380,7 @@
             #{processInstanceId, jdbcType=VARCHAR},
             #{processDefinitionId, jdbcType=VARCHAR},
             #{retries, jdbcType=INTEGER},
-            #{exceptionByteArrayId, jdbcType=VARCHAR},
+            #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
             #{exceptionMessage, jdbcType=VARCHAR},
             #{jobHandlerType, jdbcType=VARCHAR},
             #{jobHandlerConfiguration, jdbcType=VARCHAR},
@@ -400,7 +397,7 @@
        LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
        LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
        RETRIES_ = #{retries, jdbcType=INTEGER},
-       EXCEPTION_STACK_ID_ = #{exceptionByteArrayId, jdbcType=VARCHAR},
+       EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
        EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
