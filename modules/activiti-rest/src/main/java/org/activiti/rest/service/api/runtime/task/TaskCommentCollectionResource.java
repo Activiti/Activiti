@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
@@ -60,8 +61,10 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
     if(comment.getMessage() == null) {
       throw new ActivitiIllegalArgumentException("Comment text is required.");
     }
-    
-    Comment createdComment = ActivitiUtil.getTaskService().addComment(task.getId(), null, comment.getMessage());
+
+    TaskService taskService = ActivitiUtil.getTaskService();
+    Task taskEntity = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    Comment createdComment = taskService.addComment(taskEntity.getId(), taskEntity.getProcessInstanceId(), comment.getMessage());
     setStatus(Status.SUCCESS_CREATED);
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
