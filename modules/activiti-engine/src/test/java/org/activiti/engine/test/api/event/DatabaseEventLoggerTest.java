@@ -66,7 +66,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			if (i == 0) {
 				
 				assertNotNull(entry.getType());
-				assertEquals(entry.getType(), "PROCESSINSTANCE-START");
+				assertEquals(entry.getType(), "PROCESSINSTANCE_START");
 				assertNotNull(entry.getProcessDefinitionId());
 				assertNotNull(entry.getProcessInstanceId());
 				assertNotNull(entry.getTimeStamp());
@@ -279,7 +279,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 				
 			if (i == 12) {
 				assertNotNull(entry.getType());
-				assertEquals(entry.getType(), "PROCESSINSTANCE-END");
+				assertEquals(entry.getType(), "PROCESSINSTANCE_END");
 				assertNotNull(entry.getProcessDefinitionId());
 				assertNotNull(entry.getProcessInstanceId());
 				assertNotNull(entry.getTimeStamp());
@@ -290,6 +290,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 				assertNotNull(data.get(Fields.ID));
 				assertNotNull(data.get(Fields.PROCESS_DEFINITION_ID));
 				assertNotNull(data.get(Fields.TENANT_ID));
+				assertNotNull(data.get(Fields.DURATION));
 				
 				assertFalse(data.containsKey(Fields.NAME));
 				assertFalse(data.containsKey(Fields.BUSINESS_KEY));

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
 /**
@@ -12,7 +13,7 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 public class SequenceFlowTakenEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 	
 	@Override
-	public EventLogEntryEntity generateEventLogEntry() {
+	public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
 		ActivitiSequenceFlowTakenEvent sequenceFlowTakenEvent = (ActivitiSequenceFlowTakenEvent) event;
 		
 		Map<String, Object> data = new HashMap<String, Object>();

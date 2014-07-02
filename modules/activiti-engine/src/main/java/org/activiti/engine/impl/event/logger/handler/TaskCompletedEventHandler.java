@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
@@ -13,7 +14,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 public class TaskCompletedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 	
 	@Override
-	public EventLogEntryEntity generateEventLogEntry() {
+	public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
 
 		TaskEntity task = (TaskEntity) ((ActivitiEntityEvent) event).getEntity();
 		long duration = timeStamp.getTime() - task.getCreateTime().getTime();
