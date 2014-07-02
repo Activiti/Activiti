@@ -50,15 +50,17 @@ public class JobEntityManager extends AbstractManager {
     }
 
     timer.insert();
+    pokeJobExecutor(timer);
+  }
     
-    // Check if this timer fires before the next time the job executor will check for new timers to fire.
-    // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)
-    // and timers are usually set further in the future
-    
+  // Check if this timer fires before the next time the job executor will check for new timers to fire.
+  // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)
+  // and timers are usually set further in the future
+  public void pokeJobExecutor(JobEntity job) {
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
     int waitTimeInMillis = jobExecutor.getWaitTimeInMillis();
-    if (duedate.getTime() < (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()+waitTimeInMillis)) {
-      hintJobExecutor(timer);
+    if (job.getDuedate().getTime() < (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()+waitTimeInMillis)) {
+      hintJobExecutor(job);
     }
   }
   
@@ -66,7 +68,7 @@ public class JobEntityManager extends AbstractManager {
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
     JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
     TransactionListener transactionListener = null;
-    if(job.isExclusive() 
+    if (job.isExclusive() 
             && jobExecutorContext != null 
             && jobExecutorContext.isExecutingExclusiveJob()) {
       // lock job & add to the queue of the current processor
@@ -79,8 +81,8 @@ public class JobEntityManager extends AbstractManager {
       transactionListener = new MessageAddedNotification(jobExecutor);
     }
     Context.getCommandContext()
-    .getTransactionContext()
-    .addTransactionListener(TransactionState.COMMITTED, transactionListener);
+      .getTransactionContext()
+      .addTransactionListener(TransactionState.COMMITTED, transactionListener);
   }
  
   public void cancelTimers(ExecutionEntity execution) {
