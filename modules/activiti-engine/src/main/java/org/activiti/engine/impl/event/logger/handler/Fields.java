@@ -37,5 +37,6 @@ public interface Fields {
   String TENANT_ID = "tenantId";
   String TIMESTAMP = "timeStamp";
   String USER_ID = "userId";
+  String VALUE = "value";
 
 }
