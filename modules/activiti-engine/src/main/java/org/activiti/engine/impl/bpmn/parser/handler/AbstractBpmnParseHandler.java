@@ -45,6 +45,7 @@ import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +74,9 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
     return types;
   }
   
-  protected abstract Class<? extends BaseElement> getHandledType();
+  protected Class<? extends BaseElement> getHandledType() {
+    return ReflectUtil.getSuperClassGenricType(getClass(), 0);
+  }
   
   @SuppressWarnings("unchecked")
   public void parse(BpmnParse bpmnParse, BaseElement element) {

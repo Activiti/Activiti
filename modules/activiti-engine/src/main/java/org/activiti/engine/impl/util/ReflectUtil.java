@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.Arrays;
 
@@ -277,5 +279,27 @@ public abstract class ReflectUtil {
       }
     }
     return null;
+  }
+
+  public static <T> Class<T> getSuperClassGenricType(final Class clazz) {
+    return getSuperClassGenricType(clazz, 0);
+  }
+
+  public static Class getSuperClassGenricType(final Class clazz, final int index) {
+    Type genType = clazz.getGenericSuperclass();
+    if (!(genType instanceof ParameterizedType)) {
+      return Object.class;
+    }
+
+    Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
+
+    if (index >= params.length || index < 0) {
+      return Object.class;
+    }
+    if (!(params[index] instanceof Class)) {
+      return Object.class;
+    }
+
+    return (Class) params[index];
   }
 }
