@@ -103,6 +103,10 @@ public class BpmnDeployer implements Deployer {
         		bpmnParse.setValidateProcess((Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED));
         	}
         	
+        } else {
+        	// On redeploy, we assume it is validated at the first deploy
+        	bpmnParse.setValidateSchema(false);
+        	bpmnParse.setValidateProcess(false);
         }
         
         bpmnParse.execute();

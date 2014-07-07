@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
 /**
  * From http://forums.activiti.org/content/inability-completely-delete-process-instance-when
  */
-public class DeleteProcessInstanceFailure extends PluggableActivitiTestCase{
+public class DeleteProcessInstanceTest extends PluggableActivitiTestCase{
 	
-	private static Logger log = LoggerFactory.getLogger(DeleteProcessInstanceFailure.class);
+	private static Logger log = LoggerFactory.getLogger(DeleteProcessInstanceTest.class);
 	
 	@Deployment
 	public void testNoEndTimeSet() {
