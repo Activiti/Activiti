@@ -11,7 +11,7 @@
     </startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
-    <serviceTask id="servicetask1" name="Throw BpmnError" activiti:async="true" activiti:class="com.bpthree.activiti.sandbox.utilities.ThrowBpmnError"></serviceTask>
+    <serviceTask id="servicetask1" name="Throw BpmnError" activiti:async="true" activiti:class="org.activiti.engine.test.regression.ThrowBpmnError"></serviceTask>
     <userTask id="usertask1" name="Generic User Task" activiti:assignee="${initiator}">
       <extensionElements>
         <activiti:formProperty id="comments" name="Comments" type="string" variable="comments" required="true"></activiti:formProperty>

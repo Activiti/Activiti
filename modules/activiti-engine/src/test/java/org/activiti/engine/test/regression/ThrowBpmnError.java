@@ -1,3 +1,4 @@
+package org.activiti.engine.test.regression;
 
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
