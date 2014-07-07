@@ -11,6 +11,7 @@ import org.activiti.engine.impl.event.logger.EventLogger;
 import org.activiti.engine.impl.event.logger.handler.Fields;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -51,19 +52,34 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	public void testDatabaseEvents() throws JsonParseException, JsonMappingException, IOException {
 		
 		// Run process to gather data
-		runtimeService.startProcessInstanceByKey("DatabaseEventLoggerProcess");
+		runtimeService.startProcessInstanceByKey("DatabaseEventLoggerProcess", CollectionUtil.singletonMap("testVar", "helloWorld≈t"));
 		
 		// Verify event log entries
 		List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);
-		assertEquals(12, eventLogEntries.size());
+		assertEquals(13, eventLogEntries.size());
 		
 		long lastLogNr = -1;
 		for (int i=0; i< eventLogEntries.size(); i++) {
 			
 			EventLogEntry entry = eventLogEntries.get(i);
 			
-			// process instance start
 			if (i == 0) {
+				
+				assertNotNull(entry.getType());
+				assertEquals(entry.getType(), "VARIABLE_CREATED");
+				assertNotNull(entry.getProcessDefinitionId());
+				assertNotNull(entry.getProcessInstanceId());
+				assertNotNull(entry.getTimeStamp());
+				assertNull(entry.getTaskId());
+				
+				Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>(){});
+				assertNotNull(data.get(Fields.PROCESS_DEFINITION_ID));
+				assertNotNull(data.get(Fields.PROCESS_INSTANCE_ID));
+				assertNotNull(data.get(Fields.VALUE_STRING));
+			}
+			
+			// process instance start
+			if (i == 1) {
 				
 				assertNotNull(entry.getType());
 				assertEquals(entry.getType(), "PROCESSINSTANCE_START");
@@ -84,10 +100,10 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			
 			
 			// Activity started
-			if (i == 1 || i == 4 || i == 7 || i == 10)
+			if (i == 2 || i == 5 || i == 8 || i == 11)
 			
 			// Leaving start
-			if (i == 2) {
+			if (i == 3) {
 				
 				assertNotNull(entry.getType());
 				assertEquals(entry.getType(), ActivitiEventType.ACTIVITY_COMPLETED.name());
@@ -109,7 +125,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			}
 			
 			// Sequence flow taken
-			if (i == 3 || i == 6 || i == 9) {
+			if (i == 4 || i == 7 || i == 10) {
 				assertNotNull(entry.getType());
 				assertEquals(entry.getType(), ActivitiEventType.SEQUENCEFLOW_TAKEN.name());
 				assertNotNull(entry.getProcessDefinitionId());
@@ -131,7 +147,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			}
 			
 			// Leaving parallel gateway
-			if (i == 5) {
+			if (i == 6) {
 				
 				assertNotNull(entry.getType());
 				assertEquals(entry.getType(), ActivitiEventType.ACTIVITY_COMPLETED.name());
@@ -152,7 +168,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			}
 			
 			// Tasks
-			if (i == 8 || i == 11) {
+			if (i == 9 || i == 12) {
 			
 				assertNotNull(entry.getType());
 				assertEquals(entry.getType(), ActivitiEventType.TASK_CREATED.name());
