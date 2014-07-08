@@ -45,6 +45,7 @@ public class SequenceFlowParseHandler extends AbstractBpmnParseHandler<SequenceF
     bpmnParse.getSequenceFlows().put(sequenceFlow.getId(), transition);
     transition.setProperty("name", sequenceFlow.getName());
     transition.setProperty("documentation", sequenceFlow.getDocumentation());
+    System.out.println("flow " + sourceActivity.getId() + " " + sequenceFlow.getTargetRef() + " " + destinationActivity);
     transition.setDestination(destinationActivity);
 
     if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
