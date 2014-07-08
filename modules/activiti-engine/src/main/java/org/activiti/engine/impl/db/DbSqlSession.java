@@ -289,6 +289,87 @@ public class DbSqlSession implements Session {
     }
   }
   
+  
+  /**
+   * A bulk version of the {@link CheckedDeleteOperation}.
+   */
+  public class BulkCheckedDeleteOperation implements DeleteOperation {
+  	
+  	protected Class<? extends PersistentObject> persistentObjectClass;
+    protected List<PersistentObject> persistentObjects = new ArrayList<PersistentObject>();
+    
+    public BulkCheckedDeleteOperation(Class<? extends PersistentObject> persistentObjectClass) {
+    	this.persistentObjectClass = persistentObjectClass;
+    }
+    
+    public void addPersistentObject(PersistentObject persistentObject) {
+    	persistentObjects.add(persistentObject);
+    }
+    
+    @Override
+    public boolean sameIdentity(PersistentObject other) {
+    	for (PersistentObject persistentObject : persistentObjects) {
+    		if (persistentObject.getClass().equals(other.getClass()) && persistentObject.getId().equals(other.getId())) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+
+    @Override
+    public void clearCache() {
+    	for (PersistentObject persistentObject : persistentObjects) {
+    		cacheRemove(persistentObject.getClass(), persistentObject.getId());
+    	}
+    }
+    
+    public void execute() {
+    	
+    	if (persistentObjects.size() == 0) {
+    		return;
+    	}
+    	
+      String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(persistentObjectClass);
+      bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
+      if (bulkDeleteStatement == null) {
+        throw new ActivitiException("no bulk delete statement for " + persistentObjectClass + " in the mapping files");
+      }
+      
+      // It only makes sense to check for optimistic locking exceptions for objects that actually have a revision
+      if (persistentObjects.get(0) instanceof HasRevision) {
+        int nrOfRowsDeleted = sqlSession.delete(bulkDeleteStatement, persistentObjects);
+        if (nrOfRowsDeleted < persistentObjects.size()) {
+          throw new ActivitiOptimisticLockingException("One of the entities " + persistentObjectClass 
+          		+ " was updated by another transaction concurrently while trying to do a bulk delete");
+        }
+      } else {
+        sqlSession.delete(bulkDeleteStatement, persistentObjects);
+      }
+    }
+    
+    public Class<? extends PersistentObject> getPersistentObjectClass() {
+			return persistentObjectClass;
+		}
+
+		public void setPersistentObjectClass(
+		    Class<? extends PersistentObject> persistentObjectClass) {
+			this.persistentObjectClass = persistentObjectClass;
+		}
+
+		public List<PersistentObject> getPersistentObjects() {
+			return persistentObjects;
+		}
+
+		public void setPersistentObjects(List<PersistentObject> persistentObjects) {
+			this.persistentObjects = persistentObjects;
+		}
+
+		@Override
+    public String toString() {
+      return "bulk delete of " + persistentObjects.size() + (persistentObjects.size() > 0 ? " entities of " + persistentObjects.get(0).getClass() : 0 );
+    }
+  }
+  
   // select ///////////////////////////////////////////////////////////////////
 
   @SuppressWarnings({ "rawtypes" })
@@ -484,7 +565,7 @@ public class DbSqlSession implements Session {
 
   public void flush() {
     List<DeleteOperation> removedOperations = removeUnnecessaryOperations();
-
+    
     flushDeserializedObjects();
     List<PersistentObject> updatedObjects = getUpdatedObjects();
     
@@ -539,6 +620,69 @@ public class DbSqlSession implements Session {
     }
 
     return removedDeleteOperations;
+  }
+  
+  /**
+   * Optimizes the given delete operations:
+   * for example, if there are two deletes for two different variables, merges this into
+   * one bulk delete which improves performance
+   */
+  protected List<DeleteOperation> optimizeDeleteOperations(List<DeleteOperation> deleteOperations) {
+  	
+  	// No optimization possible for 0 or 1 operations
+  	if (deleteOperations.size() <= 1) {
+  		return deleteOperations;
+  	}
+  	
+  	List<DeleteOperation> optimizedDeleteOperations = new ArrayList<DbSqlSession.DeleteOperation>();
+  	boolean[] checkedIndices = new boolean[deleteOperations.size()];
+  	for (int i=0; i<deleteOperations.size(); i++) {
+  		
+  		if (checkedIndices[i] == true) {
+  			continue;
+  		}
+  		
+  		DeleteOperation deleteOperation = deleteOperations.get(i);
+  		boolean couldOptimize = false;
+  		if (deleteOperation instanceof CheckedDeleteOperation) {
+  			
+  			PersistentObject persistentObject = ((CheckedDeleteOperation) deleteOperation).getPersistentObject();
+  			if (persistentObject instanceof BulkDeleteable) {
+					String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(persistentObject.getClass());
+					bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
+					if (bulkDeleteStatement != null) {
+						BulkCheckedDeleteOperation bulkCheckedDeleteOperation = null;
+						
+						// Find all objects of the same type
+						for (int j=0; j<deleteOperations.size(); j++) {
+							DeleteOperation otherDeleteOperation = deleteOperations.get(j);
+							if (j != i && checkedIndices[j] == false && otherDeleteOperation instanceof CheckedDeleteOperation) {
+								PersistentObject otherPersistentObject = ((CheckedDeleteOperation) otherDeleteOperation).getPersistentObject();
+								if (otherPersistentObject.getClass().equals(persistentObject.getClass())) {
+	  							if (bulkCheckedDeleteOperation == null) {
+	  								bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(persistentObject.getClass());
+	  								bulkCheckedDeleteOperation.addPersistentObject(persistentObject);
+	  								optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
+	  							}
+	  							couldOptimize = true;
+	  							bulkCheckedDeleteOperation.addPersistentObject(otherPersistentObject);
+	  							checkedIndices[j] = true;
+								}
+							}
+							
+						}
+					}
+  			}
+  			
+  		}
+  		
+  		if (!couldOptimize) {
+  			optimizedDeleteOperations.add(deleteOperation);
+  		}
+  		checkedIndices[i]=true;
+  		
+  	}
+  	return optimizedDeleteOperations;
   }
 
   protected void flushDeserializedObjects() {
@@ -639,8 +783,7 @@ public class DbSqlSession implements Session {
   }
 
   protected void flushDeletes(List<DeleteOperation> removedOperations) {
-    boolean dispatchEvent = Context.getProcessEngineConfiguration().getEventDispatcher()
-      .isEnabled();
+    boolean dispatchEvent = Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled();
 
     flushRegularDeletes(dispatchEvent);
 
@@ -673,7 +816,9 @@ public class DbSqlSession implements Session {
   }
 
   protected void flushRegularDeletes(boolean dispatchEvent) {
-    for (DeleteOperation delete : deleteOperations) {
+  	List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
+    for (DeleteOperation delete : optimizedDeleteOperations) {
+//  	for (DeleteOperation delete : deleteOperations) {
       log.debug("executing: {}", delete);
 
       delete.execute();
@@ -690,6 +835,16 @@ public class DbSqlSession implements Session {
               createVariableDeleteEvent(variableInstance)
             );
           }
+        } else if (delete instanceof BulkCheckedDeleteOperation) {
+        	BulkCheckedDeleteOperation bulkCheckedDeleteOperation = (BulkCheckedDeleteOperation) delete;
+        	if (VariableInstanceEntity.class.isAssignableFrom(bulkCheckedDeleteOperation.getPersistentObjectClass())) {
+        		for (PersistentObject persistentObject : bulkCheckedDeleteOperation.getPersistentObjects()) {
+        			 VariableInstanceEntity variableInstance = (VariableInstanceEntity) persistentObject;
+               Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                 createVariableDeleteEvent(variableInstance)
+               );
+        		}
+        	}
         }
       }
     }

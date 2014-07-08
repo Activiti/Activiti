@@ -74,7 +74,14 @@
   <delete id="deleteHistoricProcessInstance">
     delete from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId}
   </delete>
-
+  
+  <delete id="bulkDeleteHistoricProcessInstance" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_HI_PROCINST where
+     <foreach item="procInst" collection="list" index="index" separator=" or ">
+        ID_ = #{procInst.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  
   <!-- HISTORIC PROCESS INSTANCE RESULT MAP -->
   
   <resultMap id="historicProcessInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">

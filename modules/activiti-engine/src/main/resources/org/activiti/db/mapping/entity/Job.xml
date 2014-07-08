@@ -10,12 +10,33 @@
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
+  <delete id="bulkDeleteJob" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_JOB where
+     <foreach item="job" collection="list" index="index" separator=" or ">
+        ID_ = #{job.id, jdbcType=VARCHAR}
+    </foreach> 
+  </delete>
+  
   <delete id="deleteTimer" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
+  <delete id="bulkDeleteTimer" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_JOB where
+     <foreach item="job" collection="list" index="index" separator=" or ">
+        ID_ = #{job.id, jdbcType=VARCHAR}
+    </foreach> 
+  </delete>
+  
   <delete id="deleteMessage" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+  
+  <delete id="bulkDeleteMessage" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_JOB where
+     <foreach item="job" collection="list" index="index" separator=" or ">
+        ID_ = #{job.id, jdbcType=VARCHAR}
+    </foreach> 
   </delete>
   
   <!-- JOB UPDATE STATEMENTS -->

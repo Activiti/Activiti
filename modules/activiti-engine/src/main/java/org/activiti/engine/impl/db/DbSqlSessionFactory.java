@@ -172,6 +172,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  insertStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String>  updateStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String>  deleteStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String>  bulkDeleteStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String>  selectStatements = new ConcurrentHashMap<Class<?>, String>();
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
@@ -198,6 +199,10 @@ public class DbSqlSessionFactory implements SessionFactory {
   public String getDeleteStatement(Class<?> persistentObjectClass) {
     return getStatement(persistentObjectClass, deleteStatements, "delete");
   }
+  
+  public String getBulkDeleteStatement(Class<?> persistentObjectClass) {
+    return getStatement(persistentObjectClass, bulkDeleteStatements, "bulkDelete");
+  }
 
   public String getSelectStatement(Class<?> persistentObjectClass) {
     return getStatement(persistentObjectClass, selectStatements, "select");
@@ -209,7 +214,7 @@ public class DbSqlSessionFactory implements SessionFactory {
       return statement;
     }
     statement = prefix + persistentObjectClass.getSimpleName();
-    statement = statement.substring(0, statement.length()-6);
+    statement = statement.substring(0, statement.length()-6); // removing 'entity'
     cachedStatements.put(persistentObjectClass, statement);
     return statement;
   }
@@ -302,9 +307,17 @@ public class DbSqlSessionFactory implements SessionFactory {
   public void setDeleteStatements(Map<Class< ? >, String> deleteStatements) {
     this.deleteStatements = deleteStatements;
   }
-
   
-  public Map<Class< ? >, String> getSelectStatements() {
+  
+  public Map<Class<?>, String> getBulkDeleteStatements() {
+		return bulkDeleteStatements;
+	}
+
+	public void setBulkDeleteStatements(Map<Class<?>, String> bulkDeleteStatements) {
+		this.bulkDeleteStatements = bulkDeleteStatements;
+	}
+
+	public Map<Class< ? >, String> getSelectStatements() {
     return selectStatements;
   }
 

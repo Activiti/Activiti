@@ -109,6 +109,13 @@
     delete from ${prefix}ACT_RU_TASK where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
+  <delete id="bulkDeleteTask" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_TASK where 
+    <foreach item="task" collection="list" index="index" separator=" or ">
+        ID_ = #{task.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  
   <!-- TASK RESULTMAP -->
   
   <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntity">
