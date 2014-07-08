@@ -191,6 +191,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
       
       assertNotNull(historicInstance);
       assertEquals(deleteReason, historicInstance.getDeleteReason());
+      assertNotNull(historicInstance.getEndTime());
     }    
   }
   

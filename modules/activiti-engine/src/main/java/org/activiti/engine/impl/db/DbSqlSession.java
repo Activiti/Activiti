@@ -668,8 +668,8 @@ public class DbSqlSession implements Session {
   }
 
   protected static ActivitiVariableEvent createVariableDeleteEvent(VariableInstanceEntity variableInstance) {
-    return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, variableInstance.getName(), null, variableInstance.getTaskId(),
-      variableInstance.getExecutionId(), variableInstance.getProcessInstanceId(), null);
+    return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, variableInstance.getName(), null, variableInstance.getType(),
+    		variableInstance.getTaskId(), variableInstance.getExecutionId(), variableInstance.getProcessInstanceId(), null);
   }
 
   protected void flushRegularDeletes(boolean dispatchEvent) {
@@ -910,7 +910,12 @@ public class DbSqlSession implements Session {
       connection = sqlSession.getConnection();
       DatabaseMetaData databaseMetaData = connection.getMetaData();
       ResultSet tables = null;
-      
+
+      String catalog = this.connectionMetadataDefaultCatalog;
+      if (dbSqlSessionFactory.getDatabaseCatalog() != null) {
+        catalog = dbSqlSessionFactory.getDatabaseCatalog();
+      }
+
       String schema = this.connectionMetadataDefaultSchema;
       if (dbSqlSessionFactory.getDatabaseSchema()!=null) {
         schema = dbSqlSessionFactory.getDatabaseSchema();
@@ -923,7 +928,7 @@ public class DbSqlSession implements Session {
       }
       
       try {
-        tables = databaseMetaData.getTables(this.connectionMetadataDefaultCatalog, schema, tableName, JDBC_METADATA_TABLE_TYPES);
+        tables = databaseMetaData.getTables(catalog, schema, tableName, JDBC_METADATA_TABLE_TYPES);
         return tables.next();
       } finally {
         try {

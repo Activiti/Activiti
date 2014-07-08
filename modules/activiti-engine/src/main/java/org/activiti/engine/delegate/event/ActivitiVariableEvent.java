@@ -12,12 +12,14 @@
  */
 package org.activiti.engine.delegate.event;
 
+import org.activiti.engine.impl.variable.VariableType;
+
 
 /**
  * An {@link ActivitiEvent} related to a single variable.
  * 
  * @author Frederik Heremans
- *
+ * @author Joram Barrez
  */
 public interface ActivitiVariableEvent extends ActivitiEvent {
 
@@ -27,9 +29,14 @@ public interface ActivitiVariableEvent extends ActivitiEvent {
 	String getVariableName();
 	
 	/**
-	 * @return the current value if the variable.
+	 * @return the current value of the variable.
 	 */
 	Object getVariableValue();
+	
+	/**
+	 * @return The {@link VariableType} of the variable.
+	 */
+	VariableType getVariableType();
 	
 	
 	/**

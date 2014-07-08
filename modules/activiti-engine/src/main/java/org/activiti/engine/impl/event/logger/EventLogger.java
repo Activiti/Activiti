@@ -18,6 +18,9 @@ import org.activiti.engine.impl.event.logger.handler.ProcessInstanceStartedEvent
 import org.activiti.engine.impl.event.logger.handler.SequenceFlowTakenEventHandler;
 import org.activiti.engine.impl.event.logger.handler.TaskCompletedEventHandler;
 import org.activiti.engine.impl.event.logger.handler.TaskCreatedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.VariableCreatedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.VariableDeletedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.VariableUpdatedEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -66,6 +69,10 @@ public class EventLogger implements ActivitiEventListener {
 		
 		addEventHandler(ActivitiEventType.ACTIVITY_COMPLETED, ActivityCompletedEventHandler.class);
 		addEventHandler(ActivitiEventType.ACTIVITY_STARTED, ActivityStartedEventHandler.class);
+		
+		addEventHandler(ActivitiEventType.VARIABLE_CREATED, VariableCreatedEventHandler.class);
+		addEventHandler(ActivitiEventType.VARIABLE_DELETED, VariableDeletedEventHandler.class);
+		addEventHandler(ActivitiEventType.VARIABLE_UPDATED, VariableUpdatedEventHandler.class);
 	}
 	
 	@Override
@@ -114,7 +121,7 @@ public class EventLogger implements ActivitiEventListener {
 	protected EventLoggerEventHandler getEventHandler(ActivitiEvent event) {
 
 		Class<? extends EventLoggerEventHandler> eventHandlerClass = null;
-		if (event.getType().equals(ActivitiEventType.ENTITY_CREATED)) {
+		if (event.getType().equals(ActivitiEventType.ENTITY_INITIALIZED)) {
 			Object entity = ((ActivitiEntityEvent) event).getEntity();
 			if (entity instanceof ExecutionEntity) {
 				ExecutionEntity executionEntity = (ExecutionEntity) entity;

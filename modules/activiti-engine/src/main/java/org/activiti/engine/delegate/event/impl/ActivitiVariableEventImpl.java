@@ -14,6 +14,7 @@ package org.activiti.engine.delegate.event.impl;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.impl.variable.VariableType;
 
 /**
  * Implementation of {@link ActivitiVariableEvent}.
@@ -24,6 +25,7 @@ public class ActivitiVariableEventImpl extends ActivitiEventImpl implements Acti
 
 	protected String variableName;
 	protected Object variableValue;
+	protected VariableType variableType;
 	protected String taskId;
 	
 	public ActivitiVariableEventImpl(ActivitiEventType type) {
@@ -47,6 +49,14 @@ public class ActivitiVariableEventImpl extends ActivitiEventImpl implements Acti
 	public void setVariableValue(Object variableValue) {
 	  this.variableValue = variableValue;
   }
+	
+	public VariableType getVariableType() {
+		return variableType;
+	}
+
+	public void setVariableType(VariableType variableType) {
+		this.variableType = variableType;
+	}
 
 	@Override
 	public String getTaskId() {

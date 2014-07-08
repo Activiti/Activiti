@@ -21,6 +21,8 @@ import java.util.Set;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
@@ -114,6 +116,11 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     
     Context.getCommandContext().getHistoryManager()
       .recordProcessInstanceStart(processInstance);
+    
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstance));
+    }
     
     return processInstance;
   }

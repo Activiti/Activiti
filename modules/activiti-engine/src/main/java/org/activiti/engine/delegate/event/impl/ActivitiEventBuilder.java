@@ -27,6 +27,7 @@ import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
+import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.Task;
@@ -183,11 +184,12 @@ public class ActivitiEventBuilder {
 		return newEvent;
 	}
 	
-	public static ActivitiVariableEvent createVariableEvent(ActivitiEventType type, String variableName, Object variableValue, String taskId, 
+	public static ActivitiVariableEvent createVariableEvent(ActivitiEventType type, String variableName, Object variableValue, VariableType variableType, String taskId, 
 			String executionId, String processInstanceId, String processDefinitionId) {
 		ActivitiVariableEventImpl newEvent = new ActivitiVariableEventImpl(type);
 		newEvent.setVariableName(variableName);
 		newEvent.setVariableValue(variableValue);
+		newEvent.setVariableType(variableType);
 		newEvent.setTaskId(taskId);
 		newEvent.setExecutionId(executionId);
 		newEvent.setProcessDefinitionId(processDefinitionId);

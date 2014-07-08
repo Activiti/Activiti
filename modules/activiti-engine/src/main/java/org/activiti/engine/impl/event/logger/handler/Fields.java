@@ -37,5 +37,16 @@ public interface Fields {
   String TENANT_ID = "tenantId";
   String TIMESTAMP = "timeStamp";
   String USER_ID = "userId";
+  String VALUE = "value";
+  String VALUE_BOOLEAN = "booleanValue";
+  String VALUE_DATE = "dateValue";
+  String VALUE_DOUBLE = "doubleValue";
+  String VALUE_INTEGER = "integerValue";
+  String VALUE_JSON = "jsonValue";
+  String VALUE_LONG = "longValue";
+  String VALUE_SHORT = "shortValue";
+  String VALUE_STRING = "stringValue";
+  String VALUE_UUID = "uuidValue";
+  String VARIABLE_TYPE = "variableType";
 
 }

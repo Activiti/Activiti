@@ -133,7 +133,7 @@ create table ACT_HI_IDENTITYLINK (
 );
 
 create table ACT_HI_EVT_LOG (
-    LOG_NR_ bigint auto_increment,
+    LOG_NR_ identity,
     TYPE_ varchar(64),
     PROC_DEF_ID_ varchar(64),
     PROC_INST_ID_ varchar(64),

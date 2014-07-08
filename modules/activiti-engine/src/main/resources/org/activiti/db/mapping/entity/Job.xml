@@ -33,7 +33,7 @@
   
     
   <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
-       Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance0 -->
+       Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->
   <update id="updateJobTenantIdForDeployment_mysql" parameterType="java.util.Map">
     update ${prefix}ACT_RU_JOB set
       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
@@ -398,7 +398,8 @@
        LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
        RETRIES_ = #{retries, jdbcType=INTEGER},
        EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-       EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR}
+       EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR},
+       DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
