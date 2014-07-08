@@ -121,7 +121,7 @@ public class EventLogger implements ActivitiEventListener {
 	protected EventLoggerEventHandler getEventHandler(ActivitiEvent event) {
 
 		Class<? extends EventLoggerEventHandler> eventHandlerClass = null;
-		if (event.getType().equals(ActivitiEventType.ENTITY_CREATED)) {
+		if (event.getType().equals(ActivitiEventType.ENTITY_INITIALIZED)) {
 			Object entity = ((ActivitiEntityEvent) event).getEntity();
 			if (entity instanceof ExecutionEntity) {
 				ExecutionEntity executionEntity = (ExecutionEntity) entity;
