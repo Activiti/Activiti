@@ -153,7 +153,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
    */
   @Deployment
   @Ignore
-  public void testRepetitionJobEntityEvents_failing() throws Exception {
+  public void failingRepetitionJobEntityEvents() throws Exception {
     Clock previousClock = processEngineConfiguration.getClock();
 
     Clock testClock = new DefaultClockImpl();
