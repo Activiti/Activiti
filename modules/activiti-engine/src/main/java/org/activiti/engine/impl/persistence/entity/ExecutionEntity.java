@@ -255,6 +255,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
         ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, createdExecution));
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, createdExecution));
     }
 
     return createdExecution;

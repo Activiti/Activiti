@@ -43,7 +43,7 @@ public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
   protected void eventNotificationsCompleted(InterpretableExecution execution) {
   	if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, execution));
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, execution));
     }
   	
     ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();

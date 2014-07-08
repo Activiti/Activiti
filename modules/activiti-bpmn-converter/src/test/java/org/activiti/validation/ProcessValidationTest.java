@@ -51,7 +51,7 @@ public class ProcessValidationTest {
 	@Test
 	public void verifyValidation() {
 		List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-		Assert.assertEquals(64, allErrors.size());
+		Assert.assertEquals(65, allErrors.size());
 		
 		String setName = ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS; // shortening it a bit
 		
@@ -99,7 +99,7 @@ public class ProcessValidationTest {
 		// Sequence flow
 		problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_SRC, 1);
 		assertCommonProblemFieldForActivity(problems.get(0));
-		problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_TARGET, 1);
+		problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_TARGET, 2);
 		assertCommonProblemFieldForActivity(problems.get(0));
 		
 		// User task
