@@ -549,6 +549,11 @@
   </modules>
 
   <repositories>
+  	<repository>
+  		<id>alfresco-internal</id>
+        <name>Alfresco Internal Repository</name>
+        <url>https://artifacts.alfresco.com/nexus/content/groups/internal</url>
+  	</repository>
     <repository>
       <id>activiti</id>
       <name>Activiti</name>
