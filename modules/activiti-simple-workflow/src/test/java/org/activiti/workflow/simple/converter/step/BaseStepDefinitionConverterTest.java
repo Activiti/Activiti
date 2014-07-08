@@ -26,7 +26,6 @@ public class BaseStepDefinitionConverterTest {
 
     @Test
     public void testCovertFormPropertiesWithListValues() {
-
         TestStepDefinitionConverter converter = new TestStepDefinitionConverter();
 
         // Create a form with two properties, one of which is a ListProperty
@@ -80,7 +79,7 @@ public class BaseStepDefinitionConverterTest {
     private class TestStepDefinitionConverter extends BaseStepDefinitionConverter<HumanStepDefinition, UserTask> {
 
         @Override
-        public Class getHandledClass() {
+        public Class<HumanStepDefinition> getHandledClass() {
             // Does nothing for this unit test
             return null;
         }
@@ -91,7 +90,6 @@ public class BaseStepDefinitionConverterTest {
             // Does nothing for this unit test
             return null;
         }
-
     }
 
 }
