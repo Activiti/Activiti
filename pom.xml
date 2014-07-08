@@ -8,7 +8,7 @@
   <artifactId>activiti-root</artifactId>
 
   <packaging>pom</packaging>
-  <version>5.13-alf-20140107</version>
+  <version>5.13-alf-20140708</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>3.1.2.RELEASE</spring.framework.version>
