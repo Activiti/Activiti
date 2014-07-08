@@ -932,10 +932,11 @@
       <url>https://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
-    <repository>
-      <id>alfresco.release.repo</id>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
-    </repository>
+   <repository>
+  		<id>alfresco-internal</id>
+        <name>Alfresco Internal Repository</name>
+        <url>https://artifacts.alfresco.com/nexus/content/groups/internal</url>
+  	</repository>
   </distributionManagement>
 
   <!-- Various information, not used by the build -->
