@@ -21,6 +21,7 @@ import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+import org.junit.Ignore;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -93,7 +94,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 	}
 
   /**
-   * Test create, update and delete events of jobs entities.
+   * Timer repetition
    */
   @Deployment
   public void testRepetitionJobEntityEvents() throws Exception {
@@ -124,12 +125,64 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     testClock.setCurrentTime(new Date(10000));
     waitForJobExecutorToProcessAllJobs(20000, 100);
 
-    // fire timer for the scond time
+    // fire timer for the second time
     testClock.setCurrentTime(new Date(20000));
     waitForJobExecutorToProcessAllJobs(20000, 100);
 
     // do not fire timer
     testClock.setCurrentTime(new Date(30000));
+    waitForJobExecutorToProcessAllJobs(20000, 100);
+
+    // count timer fired events
+    int timerFiredCount = 0;
+    List<ActivitiEvent> eventsReceived = listener.getEventsReceived();
+    for (ActivitiEvent eventReceived : eventsReceived) {
+      if (ActivitiEventType.TIMER_FIRED.equals(eventReceived.getType())) {
+        timerFiredCount++;
+      }
+    }
+    listener.clearEventsReceived();
+    processEngineConfiguration.setClock(previousClock);
+
+    assertEquals(2, timerFiredCount);
+  }
+
+
+  /**
+   * Timer repetition
+   */
+  @Deployment
+  @Ignore
+  public void testRepetitionJobEntityEvents_failing() throws Exception {
+    Clock previousClock = processEngineConfiguration.getClock();
+
+    Clock testClock = new DefaultClockImpl();
+
+    processEngineConfiguration.setClock(testClock);
+
+    testClock.setCurrentTime(new Date(0));
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testRepetitionJobEvents");
+    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(theJob);
+
+    // Check if create-event has been dispatched
+    assertEquals(2, listener.getEventsReceived().size());
+    ActivitiEvent event = listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+    checkEventContext(event, theJob, false);
+
+    event = listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+    checkEventContext(event, theJob, false);
+
+    listener.clearEventsReceived();
+
+    // fire timer for the first time
+    testClock.setCurrentTime(new Date(10000));
+    waitForJobExecutorToProcessAllJobs(20000, 100);
+
+    // timer should be fired for the second time
+    testClock.setCurrentTime(new Date(20001));
     waitForJobExecutorToProcessAllJobs(20000, 100);
 
     // count timer fired events

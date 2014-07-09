@@ -74,6 +74,29 @@ public class DurationHelperTest {
     assertEquals(parse("19700101-00:00:40"), dh.getDateAfter());
   }
 
+
+  @Test
+  public void shouldNotExceedTimesWithStartTime() throws Exception {
+    Clock testingClock = new DefaultClockImpl();
+
+    DurationHelper dh = new DurationHelper("R2/1970-01-01T00:00:00/PT2S", testingClock);
+
+    testingClock.setCurrentTime(parse("19700101-00:00:00"));
+    assertEquals(parse("19700101-00:00:02"), dh.getDateAfter());
+
+    testingClock.setCurrentTime(parse("19700101-00:00:01"));
+    assertEquals(parse("19700101-00:00:02"), dh.getDateAfter());
+
+    testingClock.setCurrentTime(parse("19700101-00:00:02"));
+    assertEquals(parse("19700101-00:00:04"), dh.getDateAfter());
+
+    testingClock.setCurrentTime(parse("19700101-00:00:03"));
+    assertEquals(parse("19700101-00:00:04"), dh.getDateAfter());
+
+    testingClock.setCurrentTime(parse("19700101-00:00:04"));
+    assertEquals(null, dh.getDateAfter());
+  }
+
   @Test
   public void daylightSavingFall() throws Exception {
     Clock testingClock = new DefaultClockImpl();
