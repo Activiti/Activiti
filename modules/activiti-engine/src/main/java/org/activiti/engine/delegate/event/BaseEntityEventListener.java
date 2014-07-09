@@ -55,18 +55,19 @@ public class BaseEntityEventListener implements ActivitiEventListener {
 	@Override
 	public final void onEvent(ActivitiEvent event) {
 		if(isValidEvent(event)) {
+      ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
 			// Check if this event
 			if (event.getType() == ActivitiEventType.ENTITY_CREATED) {
-				onCreate(event);
+				onCreate(entityEvent);
 			} else if (event.getType() == ActivitiEventType.ENTITY_INITIALIZED) {
-				onInitialized(event);
+				onInitialized(entityEvent);
 			} else if (event.getType() == ActivitiEventType.ENTITY_DELETED) {
-				onDelete(event);
+				onDelete(entityEvent);
 			} else if (event.getType() == ActivitiEventType.ENTITY_UPDATED) {
-				onUpdate(event);
+				onUpdate(entityEvent);
 			} else {
 				// Entity-specific event
-				onEntityEvent(event);
+				onEntityEvent(entityEvent);
 			}
 		}
 	}
@@ -94,28 +95,28 @@ public class BaseEntityEventListener implements ActivitiEventListener {
 	/**
 	 * Called when an entity create event is received.
 	 */
-	protected void onCreate(ActivitiEvent event) {
+	protected void onCreate(ActivitiEntityEvent event) {
 		// Default implementation is a NO-OP
 	}
 	
 	/**
 	 * Called when an entity initialized event is received.
 	 */
-	protected void onInitialized(ActivitiEvent event) {
+	protected void onInitialized(ActivitiEntityEvent event) {
 		// Default implementation is a NO-OP
 	}
 
 	/**
 	 * Called when an entity delete event is received.
 	 */
-	protected void onDelete(ActivitiEvent event) {
+	protected void onDelete(ActivitiEntityEvent event) {
 		// Default implementation is a NO-OP
 	}
 
 	/**
 	 * Called when an entity update event is received.
 	 */
-	protected void onUpdate(ActivitiEvent event) {
+	protected void onUpdate(ActivitiEntityEvent event) {
 		// Default implementation is a NO-OP
 	}
 
@@ -123,7 +124,7 @@ public class BaseEntityEventListener implements ActivitiEventListener {
 	 * Called when an event is received, which is not a create, an update or
 	 * delete.
 	 */
-	protected void onEntityEvent(ActivitiEvent event) {
+	protected void onEntityEvent(ActivitiEntityEvent event) {
 		// Default implementation is a NO-OP
 	}
 }
