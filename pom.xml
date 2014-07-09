@@ -935,7 +935,7 @@
    <repository>
   		<id>alfresco-internal</id>
         <name>Alfresco Internal Repository</name>
-        <url>https://artifacts.alfresco.com/nexus/content/groups/internal</url>
+        <url>https://nexus.alfresco.com/nexus/content/repositories/internal-releases/</url>
   	</repository>
   </distributionManagement>
 
