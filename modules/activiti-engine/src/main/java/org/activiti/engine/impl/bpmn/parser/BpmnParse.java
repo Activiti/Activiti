@@ -457,8 +457,11 @@ public class BpmnParse implements BpmnXMLConstants {
       for (String bpmnReference : bpmnModel.getLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
         	// ACT-1625: don't warn when	artifacts are referenced from DI
-        	if(bpmnModel.getArtifact(bpmnReference) == null) {
-        		LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+        	if (bpmnModel.getArtifact(bpmnReference) == null) {
+        	  // check if it's a Pool or Lane, then DI is ok
+            if (bpmnModel.getPool(bpmnReference) == null && bpmnModel.getLane(bpmnReference) == null) {
+              LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+            }
         	}
         } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof FlowNode)) {
           LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a flow node");
@@ -467,7 +470,7 @@ public class BpmnParse implements BpmnXMLConstants {
       for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
           // ACT-1625: don't warn when	artifacts are referenced from DI
-        	if(bpmnModel.getArtifact(bpmnReference) == null) {
+        	if (bpmnModel.getArtifact(bpmnReference) == null) {
         		LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
         	}	
         } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)) {
