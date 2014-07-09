@@ -415,6 +415,7 @@ public class RestResponseFactory {
     result.setName(attachment.getName());
     result.setDescription(attachment.getDescription());
     result.setType(attachment.getType());
+    result.setUserId(attachment.getUserId());
     
     if(attachment.getUrl() == null && attachment.getTaskId() != null) {
       // Attachment content can be streamed
