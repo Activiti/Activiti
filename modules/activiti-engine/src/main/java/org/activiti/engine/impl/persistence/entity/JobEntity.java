@@ -96,7 +96,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
       execution.addJob(this);
       
       // Inherit tenant if (if applicable)
-      if (execution != null && execution.getTenantId() != null) {
+      if (execution.getTenantId() != null) {
       	setTenantId(execution.getTenantId());
       }
     }
