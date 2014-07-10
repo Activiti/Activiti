@@ -29,6 +29,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventListener;
+import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.FlowNode;
@@ -433,11 +434,52 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
             listener.setImplementation(itemNode.get(PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION).asText());
           }
+          
+          // resolve the listener feild
+          JsonNode listenerFieldsNode = null;
+          JsonNode listenerFieldsArrayNode = null;
+          listenerFieldsNode = itemNode.get(PROPERTY_EXECUTION_LISTENER_FIELDS);
+          if (listenerFieldsNode != null && StringUtils.isNotEmpty(listenerFieldsNode.asText()) && !("undefined".equals(listenerFieldsNode.asText()))){
+            if(listenerFieldsNode.isValueNode()){
+              try{
+                listenerFieldsNode = objectMapper.readTree(listenerFieldsNode.asText());
+              } catch(Exception e){
+                LOGGER.info("Listener fields node can not be read", e);
+              }
+            }
+          }
+          if (listenerFieldsNode != null) {
+            listenerFieldsArrayNode = listenerFieldsNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+            List<FieldExtension> fields = new ArrayList<FieldExtension>();
+            if (listenerFieldsArrayNode != null) {
+              for (JsonNode fieldNode : listenerFieldsArrayNode){
+                JsonNode fieldNameNode = fieldNode.get(PROPERTY_EXECUTION_LISTENER_FIELD_NAME);
+                if (fieldNameNode != null && StringUtils.isNotEmpty(fieldNameNode.asText())){
+                  FieldExtension field = new FieldExtension();
+                  field.setFieldName(fieldNameNode.asText());
+                  field.setStringValue(getValueAsString(PROPERTY_EXECUTION_LISTENER_FIELD_VALUE, fieldNode));
+                  field.setExpression(getValueAsString(PROPERTY_EXECUTION_LISTENER_EXPRESSION, fieldNode));
+                  fields.add(field);
+                }
+              }
+            }
+            listener.setFieldExtensions(fields);
+          }
+          
           executionListeners.add(listener);
         }
       }
     }
     return executionListeners;
+  }
+  
+  private String getValueAsString(String name, JsonNode objectNode) {
+    String propertyValue = null;
+    JsonNode propertyNode = objectNode.get(name);
+    if (propertyNode != null && "null".equalsIgnoreCase(propertyNode.asText()) == false) {
+      propertyValue = propertyNode.asText();
+    }
+    return propertyValue;
   }
   
   private List<EventListener> convertJsonToEventListeners(JsonNode listenersNode) {
