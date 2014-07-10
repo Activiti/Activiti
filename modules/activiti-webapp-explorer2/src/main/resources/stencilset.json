@@ -1500,7 +1500,7 @@
     "layout" : [ {
       "type" : "layout.bpmn2_0.sequenceflow"
     } ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "sequenceflowbase" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "sequenceflowbase", "executionlistenersbase" ],
     "roles" : [ "ConnectingObjectsMorph", "all" ]
   }, {
     "type" : "edge",
