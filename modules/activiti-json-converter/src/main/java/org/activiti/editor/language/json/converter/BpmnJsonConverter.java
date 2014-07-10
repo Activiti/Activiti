@@ -435,7 +435,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             listener.setImplementation(itemNode.get(PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION).asText());
           }
           
-          // 修复流程ExecutionListener中execution_listener_fields无法解析的BUG
+          // resolve the listener feild
           JsonNode listenerFieldsNode = null;
           JsonNode listenerFieldsArrayNode = null;
           listenerFieldsNode = itemNode.get(PROPERTY_EXECUTION_LISTENER_FIELDS);
