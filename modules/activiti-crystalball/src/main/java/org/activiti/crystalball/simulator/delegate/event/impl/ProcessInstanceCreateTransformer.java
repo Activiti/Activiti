@@ -44,7 +44,7 @@ public class ProcessInstanceCreateTransformer extends Activiti2SimulationEventFu
 
   @Override
   public SimulationEvent apply(ActivitiEvent event) {
-    if (ActivitiEventType.ENTITY_CREATED.equals(event.getType()) &&
+    if (ActivitiEventType.ENTITY_INITIALIZED.equals(event.getType()) &&
       (event instanceof ActivitiEntityEvent) &&
       ((ActivitiEntityEvent) event).getEntity() instanceof ProcessInstance &&
       ((ExecutionEntity) ((ActivitiEntityEvent) event).getEntity()).isProcessInstanceType()) {
