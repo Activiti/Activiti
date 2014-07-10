@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.cmd;
 
-
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -47,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 public class JobRetryCmd implements Command<Object> {
 
-  private static final  Logger log = LoggerFactory.getLogger(JobRetryCmd.class.getName());
+  private static final Logger log = LoggerFactory.getLogger(JobRetryCmd.class.getName());
 
   protected String jobId;
   protected Throwable exception;
@@ -58,26 +56,20 @@ public class JobRetryCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext)  {
-	  
-	  
     JobEntity job = Context
 		      .getCommandContext()
 		      .getJobEntityManager()
 		      .findJobById(jobId);
-    
-    
-    
+     
     ActivityImpl activity = getCurrentActivity(commandContext, job);
    
-
-    
     if (activity == null || activity.getFailedJobRetryTimeCycleValue() == null) {
-      log.log(Level.SEVERE, "activitiy or FailedJobRetryTimerCycleValue is null in job " + jobId + "'. only decrementing retries.");
+      log.error("activitiy or FailedJobRetryTimerCycleValue is null in job " + jobId + "'. only decrementing retries.");
       job.setRetries(job.getRetries() - 1);
       job.setLockOwner(null);
-      job.setLockExpirationTime(null);    
-      } 
-    else {    	
+      job.setLockExpirationTime(null);
+      
+    } else {    	
        String failedJobRetryTimeCycle = activity.getFailedJobRetryTimeCycleValue();
        DurationHelper  durationHelper;
        try {
@@ -85,19 +77,17 @@ public class JobRetryCmd implements Command<Object> {
 	       job.setLockExpirationTime(durationHelper.getDateAfter());
 	       
 	       if (job.getExceptionMessage() == null) {  // is it the first exception 
-	           log.fine("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+durationHelper.getTimes()+" retries");
+	           log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+durationHelper.getTimes()+" retries");
 	         // then change default retries to the ones configured
 	          job.setRetries(durationHelper.getTimes());
 	       } else {
-	       	  log.fine("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycle+ "' for job " + job.getId());
+	       	  log.debug("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycle+ "' for job " + job.getId());
 	       }
 	       job.setRetries(job.getRetries() - 1);
 	       
 	   } catch (Exception e) {
-		 throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycle, exception);
-	   }
-       
-    	  
+	     throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycle, exception);
+	   }  
     }
     if (exception != null) {
         job.setExceptionMessage(exception.getMessage());
@@ -106,7 +96,7 @@ public class JobRetryCmd implements Command<Object> {
     
     // Dispatch both an update and a retry-decrement event
     ActivitiEventDispatcher eventDispatcher = commandContext.getEventDispatcher();
-    if(eventDispatcher.isEnabled()) {
+    if (eventDispatcher.isEnabled()) {
     	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
     			ActivitiEventType.ENTITY_UPDATED, job));
     	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
@@ -120,7 +110,7 @@ public class JobRetryCmd implements Command<Object> {
     return null;
   }
 
-    private ActivityImpl getCurrentActivity(CommandContext commandContext, JobEntity job) {
+  private ActivityImpl getCurrentActivity(CommandContext commandContext, JobEntity job) {
     String type = job.getJobHandlerType();
     ActivityImpl activity = null;
 
