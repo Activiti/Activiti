@@ -24,8 +24,8 @@ import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.jobexecutor.MessageAddedNotification;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
@@ -66,7 +66,7 @@ public class DecrementJobRetriesCmd implements Command<Object> {
   
     // Notify job-executor that a new job was added, when this transaction is committed
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
-    MessageAddedNotification messageAddedNotification = new MessageAddedNotification(jobExecutor);
+    JobAddedNotification messageAddedNotification = new JobAddedNotification(jobExecutor);
     TransactionContext transactionContext = commandContext.getTransactionContext();
     transactionContext.addTransactionListener(TransactionState.COMMITTED, messageAddedNotification);
     

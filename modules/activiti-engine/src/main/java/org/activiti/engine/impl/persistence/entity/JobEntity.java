@@ -51,7 +51,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
   protected String id;
   protected int revision;
 
-  protected Date duedate;
+  protected Date duedate = new Date(0);
 
   protected String lockOwner = null;
   protected Date lockExpirationTime = null;
