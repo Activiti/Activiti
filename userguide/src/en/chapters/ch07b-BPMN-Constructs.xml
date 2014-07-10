@@ -28,7 +28,7 @@
 	      <emphasis role="bold">'Activiti BPMN extensions'</emphasis>.
 	      These 'extensions' are new constructs or ways to simplify certain constructs, that
 	      are not in the BPMN 2.0 specification.
-	    </para>
+	    </para>Coming from the forum recommendation., the user guide has to updated to tell users that the org.activiti.engine.delegate.TaskListener should be used when over-riding and creating the MyTaskCreateListener.
 	    
 	    <para>
 	      Although the BPMN 2.0 specification clearly states that it was made for custom extension,
@@ -5063,7 +5063,7 @@ public void testExecutionListenerFieldInjection() {
         <listitem>
           <para>
             <emphasis role="bold">class</emphasis>: the delegation class that must be called. 
-            This class must implement the <literal>org.activiti.engine.impl.pvm.delegate.TaskListener</literal>
+            This class must implement the <literal>org.activiti.engine.delegate.TaskListener</literal>
             interface.
             <programlisting>
 public class MyTaskCreateListener implements TaskListener {
