@@ -39,6 +39,7 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   protected boolean isScope;
   protected boolean isAsync;
   protected boolean isExclusive;
+  protected String failedJobRetryTimeCycleValue;
   
   // Graphical information
   protected int x = -1;
@@ -52,6 +53,12 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
 
   public TransitionImpl createOutgoingTransition() {
     return createOutgoingTransition(null);
+  }
+  public String getFailedJobRetryTimeCycleValue() {
+		return failedJobRetryTimeCycleValue;
+  }
+  public void setFailedJobRetryTimeCycleValue(String failedJobRetryTimeCycleValue) {
+	  this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
   }
 
   public TransitionImpl createOutgoingTransition(String transitionId) {

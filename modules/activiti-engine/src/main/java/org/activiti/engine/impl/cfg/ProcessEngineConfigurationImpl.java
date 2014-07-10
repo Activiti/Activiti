@@ -436,6 +436,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // failedJobCommandFactory ////////////////////////////////////////////////////////
   
   protected void initFailedJobCommandFactory() {
+	  // TODO: should be configurable
     if (failedJobCommandFactory == null) {
       failedJobCommandFactory = new DefaultFailedJobCommandFactory();
     }

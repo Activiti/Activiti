@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.child.ActivitiFailedjobRetryParser;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.DataAssociation;
 import org.activiti.bpmn.model.ImplementationType;
@@ -42,6 +43,7 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
     
       ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, serviceTask, BpmnXMLConstants.ELEMENT_TASK_SERVICE);
       activity.setAsync(serviceTask.isAsynchronous());
+      activity.setFailedJobRetryTimeCycleValue(serviceTask.getFailedJobRetryTimeCycleValue());
       activity.setExclusive(!serviceTask.isNotExclusive());
 
       // Email, Mule and Shell service tasks

@@ -267,4 +267,8 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_DATA_ITEM_REF = "itemSubjectRef";
   // only used by valued data objects
   public static final String ELEMENT_DATA_VALUE = "value";
+  
+  public static final String FAILED_JOB_RETRY_TIME_CYCLE = "failedJobRetryTimeCycle";
+  public static final String FAILED_JOB_CONFIGURATION = "FAILED_JOB_CONFIGURATION";
+
 }

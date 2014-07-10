@@ -10,19 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.jobexecutor;
+package org.activiti.engine.test.cmd;
 
-import org.activiti.engine.impl.cmd.JobRetryCmd;
-
-import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 /**
  * @author Saeid Mirzaei
  */
-public class DefaultFailedJobCommandFactory  implements FailedJobCommandFactory  {
+public class FailingDelegate implements JavaDelegate {
 
-	@Override
-	public Command<Object> getCommand(String jobId, Throwable exception) {
-	    return new JobRetryCmd(jobId, exception);
+  public static final String EXCEPTION_MESSAGE = "Expected exception.";
+    @Override
+	public void execute(DelegateExecution execution) throws Exception {
+	  Boolean fail = (Boolean) execution.getVariable("fail");
+
+	  if (fail == null || fail == true) {
+	      throw new ActivitiException(EXCEPTION_MESSAGE);
+	  }
+
 	}
-
 }
