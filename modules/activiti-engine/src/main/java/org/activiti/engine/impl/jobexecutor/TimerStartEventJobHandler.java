@@ -55,12 +55,12 @@ public class TimerStartEventJobHandler implements JobHandler {
     
     try {
       if(!processDefinition.isSuspended()) {
-        new StartProcessInstanceCmd(configuration, null, null, null, job.getTenantId()).execute(commandContext);
-
         if (commandContext.getEventDispatcher().isEnabled()) {
           commandContext.getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
         }
+
+        new StartProcessInstanceCmd(configuration, null, null, null, job.getTenantId()).execute(commandContext);
       } else {
         log.debug("ignoring timer of suspended process definition {}", processDefinition.getName());
       }

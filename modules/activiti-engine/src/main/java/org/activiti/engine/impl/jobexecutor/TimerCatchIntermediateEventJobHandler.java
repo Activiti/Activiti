@@ -42,15 +42,15 @@ public class TimerCatchIntermediateEventJobHandler implements JobHandler {
     }
 
     try {
-      if(!execution.getActivity().getId().equals(intermediateEventActivity.getId())) {
-        execution.setActivity(intermediateEventActivity);
-      }
-      execution.signal(null, null);
-
       if (commandContext.getEventDispatcher().isEnabled()) {
         commandContext.getEventDispatcher().dispatchEvent(
           ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
       }
+
+      if(!execution.getActivity().getId().equals(intermediateEventActivity.getId())) {
+        execution.setActivity(intermediateEventActivity);
+      }
+      execution.signal(null, null);
     } catch (RuntimeException e) {
       LogMDC.putMDCExecution(execution);
       log.error("exception during timer execution", e);
