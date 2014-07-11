@@ -21,6 +21,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+import org.drools.command.assertion.AssertEquals;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to jobs.
@@ -87,8 +88,50 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertEquals(ActivitiEventType.JOB_EXECUTION_SUCCESS, event.getType());
 		checkEventContext(event, theJob, true);
 	}
-	
-	/**
+
+    /**
+     * Test TIMER_FIRED event for timer start bpmn event.
+     */
+    @Deployment
+    public void testTimerFiredForTimerStart() throws Exception {
+        // there should be one job after process definition deployment
+
+        // Force timer to start the process
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
+        waitForJobExecutorToProcessAllJobs(2000, 100);
+
+        // Check Timer fired event has been dispatched
+        assertEquals(3, listener.getEventsReceived().size());
+        assertEquals(ActivitiEventType.TIMER_FIRED, listener.getEventsReceived().get(0).getType());
+    }
+
+    /**
+     * Test TIMER_FIRED event for intermediate timer bpmn event.
+     */
+    @Deployment
+    public void testTimerFiredForIntermediateTimer() throws Exception {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTimerFiredForIntermediateTimer");
+
+        // Force timer to start the process
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
+        waitForJobExecutorToProcessAllJobs(2000, 100);
+
+        // Check Timer fired event has been dispatched
+        // there is an issue (ENTITY_DELETED for job is generated twice)
+        boolean timerFired = false;
+        for(ActivitiEvent event : listener.getEventsReceived()) {
+          if (ActivitiEventType.TIMER_FIRED.equals(event.getType())) {
+            timerFired = true;
+          }
+        }
+        assertTrue(timerFired);
+    }
+
+    /**
 	 * Test create, update and delete events of jobs entities.
 	 */
 	@Deployment
