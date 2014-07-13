@@ -23,6 +23,7 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.RestResponseFactory;
+import org.activiti.rest.service.api.engine.CommentRequest;
 import org.activiti.rest.service.api.engine.CommentResponse;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
@@ -52,7 +53,7 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
   }
   
   @Post
-  public CommentResponse createComment(CommentResponse comment) {
+  public CommentResponse createComment(CommentRequest comment) {
     if(!authenticate())
       return null;
     
@@ -64,7 +65,11 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
 
     TaskService taskService = ActivitiUtil.getTaskService();
     Task taskEntity = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-    Comment createdComment = taskService.addComment(taskEntity.getId(), taskEntity.getProcessInstanceId(), comment.getMessage());
+    String processInstanceId = null;
+    if (comment.isSaveProcessInstanceId()) {
+      processInstanceId = taskEntity.getProcessInstanceId();
+    }
+    Comment createdComment = taskService.addComment(taskEntity.getId(), processInstanceId, comment.getMessage());
     setStatus(Status.SUCCESS_CREATED);
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
