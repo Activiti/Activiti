@@ -15,12 +15,12 @@ package org.activiti.spring;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.sql.DataSource;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.CommandConfig;
@@ -64,6 +64,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   public ProcessEngine buildProcessEngine() {
     ProcessEngine processEngine = super.buildProcessEngine();
     autoDeployResources(processEngine);
+    ProcessEngines.setInitialized(true);
     return processEngine;
   }
 
