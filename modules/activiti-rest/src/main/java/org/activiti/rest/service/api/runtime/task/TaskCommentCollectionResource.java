@@ -46,7 +46,7 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
     HistoricTaskInstance task = getHistoricTaskFromRequest();
     
     for(Comment comment : ActivitiUtil.getTaskService().getTaskComments(task.getId())) {
-      result.add(responseFactory.createRestComment(this, comment));
+      result.add(responseFactory.createCommentResponse(this, comment));
     }
     
     return result;
@@ -69,10 +69,10 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
     if (comment.isSaveProcessInstanceId()) {
       processInstanceId = taskEntity.getProcessInstanceId();
     }
-    Comment createdComment = taskService.addComment(taskEntity.getId(), processInstanceId, comment.getMessage());
+    Comment createdComment = taskService.addComment(taskEntity.getId(), processInstanceId, comment.getType(), comment.getMessage());
     setStatus(Status.SUCCESS_CREATED);
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-           .createRestComment(this, createdComment);
+           .createCommentResponse(this, createdComment);
   }
 }

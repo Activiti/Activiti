@@ -23,6 +23,7 @@ public class CommentRequest {
   private String url;
   private String author;
   private String message;
+  private String type;
   private boolean saveProcessInstanceId;
   
   public void setId(String id) {
@@ -55,6 +56,14 @@ public class CommentRequest {
   
   public void setMessage(String message) {
     this.message = message;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
   }
 
   public boolean isSaveProcessInstanceId() {

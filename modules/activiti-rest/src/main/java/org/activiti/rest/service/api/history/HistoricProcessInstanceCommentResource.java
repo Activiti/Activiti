@@ -49,7 +49,7 @@ public class HistoricProcessInstanceCommentResource extends SecuredResource {
      }
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestComment(this, comment);
+            .createCommentResponse(this, comment);
   }
   
   @Delete

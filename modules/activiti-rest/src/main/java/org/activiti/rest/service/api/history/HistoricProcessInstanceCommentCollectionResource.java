@@ -41,7 +41,7 @@ public class HistoricProcessInstanceCommentCollectionResource extends SecuredRes
 	    HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest();
 	    
 	    for(Comment comment : ActivitiUtil.getTaskService().getProcessInstanceComments(instance.getId())) {
-	      result.add(responseFactory.createRestComment(this, comment));
+	      result.add(responseFactory.createCommentResponse(this, comment));
 	    }
 	    
 	    return result;
@@ -62,7 +62,7 @@ public class HistoricProcessInstanceCommentCollectionResource extends SecuredRes
 	    setStatus(Status.SUCCESS_CREATED);
 	    
 	    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-	           .createRestComment(this, createdComment);
+	           .createCommentResponse(this, createdComment);
 	  }
 	 
 	 protected HistoricProcessInstance getHistoricProcessInstanceFromRequest() {

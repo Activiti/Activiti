@@ -65,7 +65,7 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseRestTestCase
       assertEquals("kermit", commentNode.get("author").textValue());
       assertEquals("This is a comment...", commentNode.get("message").textValue());
       assertEquals(comment.getId(), commentNode.get("id").textValue());
-      assertTrue(commentNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())));
+      assertTrue(commentNode.get("processInstanceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())));
       
       // Test with unexisting task
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, "unexistingtask"));
@@ -114,7 +114,7 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseRestTestCase
       assertEquals("kermit", responseNode.get("author").textValue());
       assertEquals("This is a comment...", responseNode.get("message").textValue());
       assertEquals(commentsOnProcess.get(0).getId(), responseNode.get("id").textValue());
-      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), commentsOnProcess.get(0).getId())));
+      assertTrue(responseNode.get("processInstanceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), commentsOnProcess.get(0).getId())));
     } finally {
     	if(pi != null) {
 				List<Comment> comments = taskService.getProcessInstanceComments(pi.getId());
@@ -153,7 +153,7 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseRestTestCase
       assertEquals("kermit", responseNode.get("author").textValue());
       assertEquals("This is a comment...", responseNode.get("message").textValue());
       assertEquals(comment.getId(), responseNode.get("id").textValue());
-      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())));
+      assertTrue(responseNode.get("processInstanceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())));
       
       // Test with unexisting process-instance
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, "unexistinginstance", "123"));

@@ -372,22 +372,26 @@ public class RestResponseFactory {
     }
     return result;
   }
-  
-  public CommentResponse createRestComment(SecuredResource securedResource, Comment comment) {
-    return createCommentResponse(securedResource, comment.getTaskId(), comment.getProcessInstanceId(), comment.getUserId(), comment.getFullMessage(), comment.getId());
-  }
-  
-  public CommentResponse createCommentResponse(SecuredResource securedResource, String taskId, String processInstanceId, String author,
-          String message, String commentId) {
+
+  public CommentResponse createCommentResponse(SecuredResource securedResource, Comment comment) {
+    String commentId = comment.getId();
+    String taskId = comment.getTaskId();
+    String processInstanceId = comment.getProcessInstanceId();
+
     CommentResponse result = new CommentResponse();
-    result.setAuthor(author);
-    result.setMessage(message);
     result.setId(commentId);
-    
+    result.setType(comment.getType());
+    result.setAuthor(comment.getUserId());
+    result.setMessage(comment.getFullMessage());
+    result.setTime(comment.getTime());
+    result.setTaskId(taskId);
+    result.setProcessInstanceId(processInstanceId);
+
     if(taskId != null) {
-      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_COMMENT, taskId, commentId));
-    } else if(processInstanceId != null) {
-      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, processInstanceId, commentId));
+      result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_COMMENT, taskId, commentId));
+    }
+    if(processInstanceId != null) {
+      result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, processInstanceId, commentId));
     }
     return result;
   }

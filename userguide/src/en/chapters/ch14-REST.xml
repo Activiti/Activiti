@@ -6593,17 +6593,28 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
        <emphasis role="bold">Request body:</emphasis>
         <programlisting>
 { 
-  "message" : "This is a comment on the task."
+  "message" : "This is a comment on the task.",
+  "type" : "customType",
+  "saveProcessInstanceId" : true
 }</programlisting>
+        </para>
+        <para>
+          Parameter <literal>type</literal> is optional, by default is <literal>comment</literal>. Parameter <literal>saveProcessInstanceId</literal> is optional,
+          if <literal>true</literal> save process instance id of task with comment.
         </para>
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
 { 
   "id" : "123",
-  "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+  "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/123",
+  "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
   "message" : "This is a comment on the task.",
-  "author" : "kermit"
+  "author" : "kermit",
+  "type" : "customType",
+  "time" : "2014-07-13T13:13:52.232+08:00"
+  "taskId" : "101",
+  "processInstatnceId" : "100"
 }</programlisting>
           <table>
               <title>Create a new comment on a task - Response codes</title>
@@ -6666,15 +6677,25 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 [
   { 
     "id" : "123",
-    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+    "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/123",
+    "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
     "message" : "This is a comment on the task.",
     "author" : "kermit"
+    "type" : "comment",
+    "time" : "2014-07-13T13:13:52.232+08:00"
+    "taskId" : "101",
+    "processInstatnceId" : "100"
   },
   { 
     "id" : "456",
-    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/456",
+    "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/456",
+    "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/456",
     "message" : "This is another comment on the task.",
-    "author" : "gonzo"
+    "author" : "gonzo",
+    "type" : "comment",
+    "time" : "2014-07-13T13:13:52.232+08:00"
+    "taskId" : "101",
+    "processInstatnceId" : "100"
   }
 ]</programlisting>
           <table>
@@ -6737,11 +6758,16 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "id" : "123",
-  "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+  "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/123",
+  "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
   "message" : "This is a comment on the task.",
-  "author" : "kermit"
+  "author" : "kermit",
+  "type" : "customType",
+  "time" : "2014-07-13T13:13:52.232+08:00"
+  "taskId" : "101",
+  "processInstatnceId" : "100"
 }</programlisting>
           <table>
               <title>Get a comment on a task - Response codes</title>
@@ -7881,17 +7907,27 @@ Only the attachment name is required to create a new attachment.
        <emphasis role="bold">Request body:</emphasis>
         <programlisting>
 { 
-  "message" : "This is a comment."
+  "message" : "This is a comment.",
+  "type" : "customType",
+  "saveProcessInstanceId" : true
 }</programlisting>
         </para>
+       <para>
+         Parameter <literal>type</literal> is optional, by default is <literal>comment</literal>. Parameter <literal>saveProcessInstanceId</literal> is optional,
+         if <literal>true</literal> save process instance id of task with comment.
+       </para>
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
 { 
   "id" : "123",
-  "url" : "http://localhost:8081/activiti-rest/history/historic-process-instances/100/comments/123",
+  "processInstanceUrl" : "http://localhost:8081/activiti-rest/history/historic-process-instances/100/comments/123",
   "message" : "This is a comment.",
-  "author" : "kermit"
+  "author" : "kermit",
+  "time" : "2014-07-13T13:13:52.232+08:00",
+  "type" : "customType",
+  "taskId" : "101",
+  "processInstatnceId" : "100"
 }</programlisting>
           <table>
               <title>Create a new comment on a historic process instance - Response codes</title>
@@ -7954,15 +7990,21 @@ Only the attachment name is required to create a new attachment.
 [
   { 
     "id" : "123",
-    "url" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
+    "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
     "message" : "This is a comment",
-    "author" : "kermit"
+    "author" : "kermit",
+    "time" : "2014-07-13T13:13:52.232+08:00",
+    "type" : "comment",
+    "processInstatnceId" : "100"
   },
   { 
     "id" : "456",
-    "url" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/456",
+    "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/456",
     "message" : "This is another comment.",
-    "author" : "gonzo"
+    "author" : "gonzo",
+    "time" : "2014-07-13T13:13:52.232+08:00",
+    "type" : "comment",
+    "processInstatnceId" : "100"
   }
 ]</programlisting>
           <table>
@@ -8025,11 +8067,15 @@ Only the attachment name is required to create a new attachment.
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
-{ 
+{
   "id" : "123",
-  "url" : "http://localhost:8081/activiti-rest/history/historic-process-instances/100/comments/123",
+  "processInstanceUrl" : "http://localhost:8081/activiti-rest/history/historic-process-instances/100/comments/123",
   "message" : "This is a comment.",
-  "author" : "kermit"
+  "author" : "kermit",
+  "time" : "2014-07-13T13:13:52.232+08:00",
+  "type" : "comment",
+  "taskId" : "101",
+  "processInstatnceId" : "100"
 }</programlisting>
           <table>
               <title>Get a comment on a historic process instance - Response codes</title>
