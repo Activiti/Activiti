@@ -24,6 +24,8 @@ import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.CommentResponse;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
+import org.apache.commons.lang3.StringUtils;
+import org.restlet.data.Form;
 import org.restlet.data.Status;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
@@ -39,8 +41,17 @@ public class HistoricProcessInstanceCommentCollectionResource extends SecuredRes
 	    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
 	    
 	    HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest();
-	    
-	    for(Comment comment : ActivitiUtil.getTaskService().getProcessInstanceComments(instance.getId())) {
+
+     Form query = getQuery();
+     String type = getQueryParameter("type", query);
+
+     List<Comment> comments;
+     if (StringUtils.isNotBlank(type)) {
+       comments = ActivitiUtil.getTaskService().getProcessInstanceComments(instance.getId(), type);
+     } else {
+       comments = ActivitiUtil.getTaskService().getProcessInstanceComments(instance.getId());
+     }
+     for(Comment comment : comments) {
 	      result.add(responseFactory.createCommentResponse(this, comment));
 	    }
 	    

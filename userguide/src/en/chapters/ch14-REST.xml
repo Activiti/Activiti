@@ -7980,6 +7980,12 @@ Only the attachment name is required to create a new attachment.
                     <entry>String</entry>
                     <entry>The id of the process instance to get the comments for.</entry>
                   </row>
+                  <row>
+                    <entry>type</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>The type of the process instance to get the comments for.</entry>
+                  </row>
                 </tbody>
              </tgroup>
           </table>

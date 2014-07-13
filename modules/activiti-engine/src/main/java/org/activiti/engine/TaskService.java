@@ -434,6 +434,9 @@ public interface TaskService {
   /** The comments related to the given process instance. */
   List<Comment> getProcessInstanceComments(String processInstanceId);
 
+  /** The comments related to the given process instance. */
+  List<Comment> getProcessInstanceComments(String processInstanceId, String type);
+
   /** Add a new attachment to a task and/or a process instance and use an input stream to provide the content */
   Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content);
 

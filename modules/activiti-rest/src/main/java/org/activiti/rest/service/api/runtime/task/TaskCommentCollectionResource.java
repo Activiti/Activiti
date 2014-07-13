@@ -26,6 +26,7 @@ import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.CommentRequest;
 import org.activiti.rest.service.api.engine.CommentResponse;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
+import org.apache.commons.lang3.StringUtils;
 import org.restlet.data.Status;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
@@ -44,8 +45,15 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
     List<CommentResponse> result = new ArrayList<CommentResponse>();
     RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     HistoricTaskInstance task = getHistoricTaskFromRequest();
-    
-    for(Comment comment : ActivitiUtil.getTaskService().getTaskComments(task.getId())) {
+    String type = getAttribute("type");
+
+    List<Comment> taskComments;
+    if (StringUtils.isNotBlank(type)) {
+      taskComments = ActivitiUtil.getTaskService().getTaskComments(task.getId(), type);
+    } else {
+      taskComments = ActivitiUtil.getTaskService().getTaskComments(task.getId());
+    }
+    for(Comment comment : taskComments) {
       result.add(responseFactory.createCommentResponse(this, comment));
     }
     
