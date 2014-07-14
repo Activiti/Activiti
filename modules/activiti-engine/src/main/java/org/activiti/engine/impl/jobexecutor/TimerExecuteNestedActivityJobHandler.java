@@ -45,16 +45,14 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
     }
 
     try {
-      
+      if (commandContext.getEventDispatcher().isEnabled()) {
+        commandContext.getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
+      }
+
       borderEventActivity
         .getActivityBehavior()
         .execute(execution);
-      
-      if(commandContext.getEventDispatcher().isEnabled()) {
-      	commandContext.getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
-      }
-      
     } catch (RuntimeException e) {
       log.error("exception during timer execution", e);
       throw e;

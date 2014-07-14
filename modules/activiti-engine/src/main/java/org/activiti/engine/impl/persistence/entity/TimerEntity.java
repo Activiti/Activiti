@@ -53,6 +53,7 @@ public class TimerEntity extends JobEntity {
     retries = te.retries;
     executionId = te.executionId;
     processInstanceId = te.processInstanceId;
+    processDefinitionId = te.processDefinitionId;
 
     // Inherit tenant
     tenantId = te.tenantId;
