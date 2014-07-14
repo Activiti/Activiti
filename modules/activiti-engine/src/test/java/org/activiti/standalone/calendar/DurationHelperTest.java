@@ -16,7 +16,6 @@ package org.activiti.standalone.calendar;
 
 import static groovy.util.GroovyTestCase.assertEquals;
 import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,7 +41,7 @@ public class DurationHelperTest {
     assertEquals(20000, dh.getDateAfter().getTime());
 
     testingClock.setCurrentTime(new Date(30000));
-    assertNull(dh.getDateAfter());
+    assertEquals(30000, dh.getDateAfter().getTime());
   }
 
   @Test
@@ -56,7 +55,7 @@ public class DurationHelperTest {
 
 
     testingClock.setCurrentTime(parse("19700101-00:00:30"));
-    assertNull(dh.getDateAfter());
+    assertEquals(parse("19700101-00:00:30"), dh.getDateAfter());
   }
 
   @Test

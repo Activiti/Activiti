@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.slf4j.Logger;
@@ -57,7 +56,7 @@ public class AcquireJobsRunnable implements Runnable {
 
       try {
         AcquiredJobs acquiredJobs = commandExecutor.execute(jobExecutor.getAcquireJobsCmd());
-
+        
         for (List<String> jobIds : acquiredJobs.getJobIdBatches()) {
           jobExecutor.executeJobs(jobIds);
         }

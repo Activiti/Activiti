@@ -12,15 +12,19 @@
  */
 package org.activiti.engine.test.api.event;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.DefaultClockImpl;
+import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-
-import java.util.Calendar;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to jobs.
@@ -46,7 +50,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
 		checkEventContext(event, theJob, false);
 		
-		event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+		event = listener.getEventsReceived().get(1);
 		assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
 		checkEventContext(event, theJob, false);
 		
@@ -87,48 +91,101 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertEquals(ActivitiEventType.JOB_EXECUTION_SUCCESS, event.getType());
 		checkEventContext(event, theJob, true);
 	}
+	
+	/**
+   * Timer repetition
+   */
+  @Deployment
+  public void testRepetitionJobEntityEvents() throws Exception {
+    Clock previousClock = processEngineConfiguration.getClock();
 
-    /**
-     * Test TIMER_FIRED event for timer start bpmn event.
-     */
-    @Deployment
-    public void testTimerFiredForTimerStart() throws Exception {
-        // there should be one job after process definition deployment
+    Clock testClock = new DefaultClockImpl();
 
-        // Force timer to start the process
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-        waitForJobExecutorToProcessAllJobs(2000, 100);
+    processEngineConfiguration.setClock(testClock);
 
-        // Check Timer fired event has been dispatched
-        assertEquals(3, listener.getEventsReceived().size());
-        assertEquals(ActivitiEventType.TIMER_FIRED, listener.getEventsReceived().get(0).getType());
+    testClock.setCurrentTime(new Date(0));
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testRepetitionJobEvents");
+    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(theJob);
+
+    // Check if create-event has been dispatched
+    assertEquals(2, listener.getEventsReceived().size());
+    ActivitiEvent event = listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+    checkEventContext(event, theJob, false);
+
+    event = listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+    checkEventContext(event, theJob, false);
+
+    listener.clearEventsReceived();
+
+    // fire timer for the first time
+    testClock.setCurrentTime(new Date(20000));
+    waitForJobExecutorToProcessAllJobs(5000, 200);
+
+    // fire timer for the second time
+    testClock.setCurrentTime(new Date(40000));
+    waitForJobExecutorToProcessAllJobs(5000, 200);
+
+    // all jobs should have been done now
+    assertEquals(0, managementService.createJobQuery().count());
+
+    // count timer fired events
+    int timerFiredCount = 0;
+    List<ActivitiEvent> eventsReceived = listener.getEventsReceived();
+    for (ActivitiEvent eventReceived : eventsReceived) {
+      if (ActivitiEventType.TIMER_FIRED.equals(eventReceived.getType())) {
+        timerFiredCount++;
+      }
     }
+    listener.clearEventsReceived();
+    processEngineConfiguration.setClock(previousClock);
 
-    /**
-     * Test TIMER_FIRED event for intermediate timer bpmn event.
-     */
-    @Deployment
-    public void testTimerFiredForIntermediateTimer() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTimerFiredForIntermediateTimer");
+    assertEquals(2, timerFiredCount);
+  }
 
-        // Force timer to start the process
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-        waitForJobExecutorToProcessAllJobs(2000, 100);
+  /**
+   * Test TIMER_FIRED event for timer start bpmn event.
+   */
+  @Deployment
+  public void testTimerFiredForTimerStart() throws Exception {
+    // there should be one job after process definition deployment
 
-        // Check Timer fired event has been dispatched
-        // there is an issue (ENTITY_DELETED for job is generated twice)
-        boolean timerFired = false;
-        for(ActivitiEvent event : listener.getEventsReceived()) {
-          if (ActivitiEventType.TIMER_FIRED.equals(event.getType())) {
-            timerFired = true;
-          }
-        }
-        assertTrue(timerFired);
+    // Force timer to start the process
+    Calendar tomorrow = Calendar.getInstance();
+    tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+    processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
+    waitForJobExecutorToProcessAllJobs(2000, 100);
+
+    // Check Timer fired event has been dispatched
+    assertEquals(3, listener.getEventsReceived().size());
+    assertEquals(ActivitiEventType.TIMER_FIRED, listener.getEventsReceived().get(0).getType());
+  }
+
+  /**
+   * Test TIMER_FIRED event for intermediate timer bpmn event.
+   */
+  @Deployment
+  public void testTimerFiredForIntermediateTimer() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTimerFiredForIntermediateTimer");
+
+    // Force timer to start the process
+    Calendar tomorrow = Calendar.getInstance();
+    tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+    processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
+    waitForJobExecutorToProcessAllJobs(2000, 100);
+
+    // Check Timer fired event has been dispatched
+    // there is an issue (ENTITY_DELETED for job is generated twice)
+    boolean timerFired = false;
+    for(ActivitiEvent event : listener.getEventsReceived()) {
+      if (ActivitiEventType.TIMER_FIRED.equals(event.getType())) {
+        timerFired = true;
+      }
     }
+    assertTrue(timerFired);
+  }
 
     /**
 	 * Test create, update and delete events of jobs entities.
