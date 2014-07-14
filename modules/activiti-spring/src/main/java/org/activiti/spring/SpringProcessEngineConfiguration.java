@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.CommandConfig;
@@ -63,6 +64,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   @Override
   public ProcessEngine buildProcessEngine() {
     ProcessEngine processEngine = super.buildProcessEngine();
+    ProcessEngines.setInitialized(true);
     autoDeployResources(processEngine);
     return processEngine;
   }
