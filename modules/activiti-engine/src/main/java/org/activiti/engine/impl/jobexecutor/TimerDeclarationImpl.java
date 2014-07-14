@@ -138,7 +138,8 @@ public class TimerDeclarationImpl implements Serializable {
     if (executionEntity != null) {
       timer.setExecution(executionEntity);
       timer.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
-      
+      timer.setProcessInstanceId(executionEntity.getProcessInstanceId());
+
       // Inherit tenant identifier (if applicable)
       if (executionEntity != null && executionEntity.getTenantId() != null) {
       	timer.setTenantId(executionEntity.getTenantId());
