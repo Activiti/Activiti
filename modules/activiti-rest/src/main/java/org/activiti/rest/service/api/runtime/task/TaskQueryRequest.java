@@ -69,7 +69,7 @@ public class TaskQueryRequest extends PaginateRequest {
   private String tenantId;
   private String tenantIdLike;
   private Boolean withoutTenantId;
-  private String candidateAndAssignee;
+  private String candidateOrAssigned;
 
   private List<QueryVariable> taskVariables;
   private List<QueryVariable> processInstanceVariables;
@@ -418,11 +418,11 @@ public class TaskQueryRequest extends PaginateRequest {
 	  return withoutTenantId;
   }
 
-  public String getCandidateAndAssignee() {
-    return candidateAndAssignee;
+  public String getCandidateOrAssigned() {
+    return candidateOrAssigned;
   }
 
-  public void setCandidateAndAssignee(String candidateAndAssignee) {
-    this.candidateAndAssignee = candidateAndAssignee;
+  public void setCandidateOrAssigned(String candidateOrAssigned) {
+    this.candidateOrAssigned = candidateOrAssigned;
   }
 }
