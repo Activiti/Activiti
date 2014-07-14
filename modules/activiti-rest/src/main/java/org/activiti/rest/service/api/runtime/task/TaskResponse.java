@@ -45,6 +45,7 @@ public class TaskResponse {
   protected String taskDefinitionKey;
   protected String tenantId;
   protected String category;
+  protected String formKey;
   
   // References to other resources
   protected String parentTaskId;
@@ -76,6 +77,7 @@ public class TaskResponse {
     setProcessInstanceId(task.getProcessInstanceId());
     setProcessDefinitionId(task.getProcessDefinitionId());
     setTenantId(task.getTenantId());
+    setFormKey(task.getFormKey());
   }
   
   protected String getDelegationStateString(DelegationState state) {
@@ -249,5 +251,13 @@ public class TaskResponse {
   
   public void setTenantId(String tenantId) {
 	  this.tenantId = tenantId;
+  }
+
+  public String getFormKey() {
+    return formKey;
+  }
+
+  public void setFormKey(String formKey) {
+    this.formKey = formKey;
   }
 }
