@@ -13,16 +13,11 @@
 
 package org.activiti.rest.service.application;
 
-import java.util.List;
-
 import org.activiti.rest.common.api.DefaultResource;
 import org.activiti.rest.common.application.ActivitiRestApplication;
 import org.activiti.rest.common.filter.JsonpFilter;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.restlet.Restlet;
-import org.restlet.engine.Engine;
-import org.restlet.engine.converter.ConverterHelper;
-import org.restlet.ext.jackson.JacksonConverter;
 import org.restlet.routing.Router;
 /**
  * @author Tijs Rademakers
@@ -50,14 +45,6 @@ public class ActivitiRestServicesApplication extends ActivitiRestApplication {
     authenticator.setNext(jsonpFilter);
     jsonpFilter.setNext(router);
 
-    // Get hold of JSONConverter and enable ISO-date format by default
-    List<ConverterHelper> registeredConverters = Engine.getInstance().getRegisteredConverters();
-    for(ConverterHelper helper : registeredConverters) {
-      if(helper instanceof JacksonConverter) {
-        JacksonConverter jacksonConverter = (JacksonConverter) helper;
-        //jacksonConverter.getObjectMapper().configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
-      }
-    }
     return authenticator;
   }
   
