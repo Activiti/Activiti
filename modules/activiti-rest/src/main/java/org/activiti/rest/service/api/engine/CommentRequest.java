@@ -14,26 +14,17 @@
 package org.activiti.rest.service.api.engine;
 
 
-import java.util.Date;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.activiti.rest.common.util.DateToStringSerializer;
-
 /**
  * @author Frederik Heremans
  */
-public class CommentResponse {
+public class CommentRequest {
 
   private String id;
+  private String url;
   private String author;
   private String message;
   private String type;
-  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
-  protected Date time;
-  private String taskId;
-  private String taskUrl;
-  private String processInstanceId;
-  private String processInstanceUrl;
+  private boolean saveProcessInstanceId;
   
   public void setId(String id) {
     this.id = id;
@@ -41,6 +32,14 @@ public class CommentResponse {
   
   public String getId() {
     return id;
+  }
+  
+  public String getUrl() {
+    return url;
+  }
+  
+  public void setUrl(String url) {
+    this.url = url;
   }
   
   public String getAuthor() {
@@ -67,43 +66,11 @@ public class CommentResponse {
     this.type = type;
   }
 
-  public Date getTime() {
-    return time;
+  public boolean isSaveProcessInstanceId() {
+    return saveProcessInstanceId;
   }
 
-  public void setTime(Date time) {
-    this.time = time;
-  }
-
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public String getTaskUrl() {
-    return taskUrl;
-  }
-
-  public void setTaskUrl(String taskUrl) {
-    this.taskUrl = taskUrl;
-  }
-
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-
-  public String getProcessInstanceUrl() {
-    return processInstanceUrl;
-  }
-
-  public void setProcessInstanceUrl(String processInstanceUrl) {
-    this.processInstanceUrl = processInstanceUrl;
+  public void setSaveProcessInstanceId(boolean saveProcessInstanceId) {
+    this.saveProcessInstanceId = saveProcessInstanceId;
   }
 }

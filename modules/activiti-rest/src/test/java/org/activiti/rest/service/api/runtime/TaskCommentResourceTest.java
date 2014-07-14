@@ -15,18 +15,19 @@ package org.activiti.rest.service.api.runtime;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -63,7 +64,7 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       assertEquals("kermit", commentNode.get("author").textValue());
       assertEquals("This is a comment...", commentNode.get("message").textValue());
       assertEquals(comment.getId(), commentNode.get("id").textValue());
-      assertTrue(commentNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertTrue(commentNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
       
       // Test with unexisting task
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, "unexistingtask"));
@@ -109,7 +110,7 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       assertEquals("kermit", responseNode.get("author").textValue());
       assertEquals("This is a comment...", responseNode.get("message").textValue());
       assertEquals(commentsOnTask.get(0).getId(), responseNode.get("id").textValue());
-      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), commentsOnTask.get(0).getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), commentsOnTask.get(0).getId())));
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -117,6 +118,37 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
         taskService.deleteTask(task.getId(), true);
       }
     }
+  }
+
+  @Deployment(resources = {"org/activiti/rest/service/api/oneTaskProcess.bpmn20.xml"})
+  public void testCreateCommentWithProcessInstanceId() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_TASK_COMMENT_COLLECTION, task.getId()));
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    String message = "lol, 9527";
+    requestNode.put("message", message);
+    requestNode.put("type", "redirect");
+    requestNode.put("saveProcessInstanceId", true);
+
+    Representation response = client.post(requestNode);
+    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+
+    List<Comment> commentsOnTask = taskService.getTaskComments(task.getId(), "redirect");
+    assertNotNull(commentsOnTask);
+    assertEquals(1, commentsOnTask.size());
+
+    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals(processInstance.getId(), responseNode.get("processInstanceId").textValue());
+    assertEquals(message, responseNode.get("message").textValue());
+    assertEquals("redirect", responseNode.get("type").textValue());
+    assertNotNull(responseNode.get("time").textValue());
+
+    assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), commentsOnTask.get(0).getId())));
+    assertTrue(responseNode.get("processInstanceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, processInstance.getId(), commentsOnTask.get(0).getId())));
   }
   
   /**
@@ -145,7 +177,7 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       assertEquals("kermit", responseNode.get("author").textValue());
       assertEquals("This is a comment...", responseNode.get("message").textValue());
       assertEquals(comment.getId(), responseNode.get("id").textValue());
-      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
       
       // Test with unexisting task
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, "unexistingtask", "123"));
@@ -252,7 +284,7 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       assertEquals("kermit", responseNode.get("author").textValue());
       assertEquals("This is a comment...", responseNode.get("message").textValue());
       assertEquals(comment.getId(), responseNode.get("id").textValue());
-      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
       
     } finally {
       // Clean adhoc-tasks even if test fails

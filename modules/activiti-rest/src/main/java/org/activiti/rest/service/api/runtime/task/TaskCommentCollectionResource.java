@@ -17,13 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.RestResponseFactory;
+import org.activiti.rest.service.api.engine.CommentRequest;
 import org.activiti.rest.service.api.engine.CommentResponse;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
+import org.apache.commons.lang3.StringUtils;
 import org.restlet.data.Status;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
@@ -42,16 +45,23 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
     List<CommentResponse> result = new ArrayList<CommentResponse>();
     RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     HistoricTaskInstance task = getHistoricTaskFromRequest();
-    
-    for(Comment comment : ActivitiUtil.getTaskService().getTaskComments(task.getId())) {
-      result.add(responseFactory.createRestComment(this, comment));
+    String type = getAttribute("type");
+
+    List<Comment> taskComments;
+    if (StringUtils.isNotBlank(type)) {
+      taskComments = ActivitiUtil.getTaskService().getTaskComments(task.getId(), type);
+    } else {
+      taskComments = ActivitiUtil.getTaskService().getTaskComments(task.getId());
+    }
+    for(Comment comment : taskComments) {
+      result.add(responseFactory.createCommentResponse(this, comment));
     }
     
     return result;
   }
   
   @Post
-  public CommentResponse createComment(CommentResponse comment) {
+  public CommentResponse createComment(CommentRequest comment) {
     if(!authenticate())
       return null;
     
@@ -60,11 +70,17 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
     if(comment.getMessage() == null) {
       throw new ActivitiIllegalArgumentException("Comment text is required.");
     }
-    
-    Comment createdComment = ActivitiUtil.getTaskService().addComment(task.getId(), null, comment.getMessage());
+
+    TaskService taskService = ActivitiUtil.getTaskService();
+    Task taskEntity = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    String processInstanceId = null;
+    if (comment.isSaveProcessInstanceId()) {
+      processInstanceId = taskEntity.getProcessInstanceId();
+    }
+    Comment createdComment = taskService.addComment(taskEntity.getId(), processInstanceId, comment.getType(), comment.getMessage());
     setStatus(Status.SUCCESS_CREATED);
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-           .createRestComment(this, createdComment);
+           .createCommentResponse(this, createdComment);
   }
 }

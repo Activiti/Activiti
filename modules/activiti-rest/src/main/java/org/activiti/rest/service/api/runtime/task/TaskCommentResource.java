@@ -49,7 +49,7 @@ public class TaskCommentResource extends TaskBaseResource {
     }
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestComment(this, comment);
+            .createCommentResponse(this, comment);
   }
   
   @Delete
