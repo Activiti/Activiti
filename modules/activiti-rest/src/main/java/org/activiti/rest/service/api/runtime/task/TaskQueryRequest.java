@@ -69,7 +69,8 @@ public class TaskQueryRequest extends PaginateRequest {
   private String tenantId;
   private String tenantIdLike;
   private Boolean withoutTenantId;
-  
+  private String candidateAndAssignee;
+
   private List<QueryVariable> taskVariables;
   private List<QueryVariable> processInstanceVariables;
   
@@ -415,5 +416,13 @@ public class TaskQueryRequest extends PaginateRequest {
   
   public Boolean getWithoutTenantId() {
 	  return withoutTenantId;
+  }
+
+  public String getCandidateAndAssignee() {
+    return candidateAndAssignee;
+  }
+
+  public void setCandidateAndAssignee(String candidateAndAssignee) {
+    this.candidateAndAssignee = candidateAndAssignee;
   }
 }

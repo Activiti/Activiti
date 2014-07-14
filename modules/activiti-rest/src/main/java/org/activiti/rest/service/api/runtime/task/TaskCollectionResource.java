@@ -203,6 +203,10 @@ public class TaskCollectionResource extends TaskBaseResource {
     if(names.contains("withoutTenantId") && Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", query))) {
     	request.setWithoutTenantId(Boolean.TRUE);
     }
+
+    if(names.contains("candidateAndAssignee")) {
+      request.setCandidateAndAssignee(getQueryParameter("candidateAndAssignee", query));
+    }
     
     return getTasksFromQueryRequest(request);
   }

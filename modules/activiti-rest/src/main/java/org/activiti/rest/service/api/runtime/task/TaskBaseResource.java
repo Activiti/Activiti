@@ -262,6 +262,10 @@ public class TaskBaseResource extends SecuredResource {
     if(Boolean.TRUE.equals(request.getWithoutTenantId())) {
     	taskQuery.taskWithoutTenantId();
     }
+
+    if (request.getCandidateAndAssignee() != null) {
+      taskQuery.taskCandidateOrAssigned(request.getCandidateAndAssignee());
+    }
     
     return new TaskPaginateList(this).paginateList(query, request, taskQuery, "id", properties);
   }
