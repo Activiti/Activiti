@@ -13,14 +13,14 @@
 
 package org.activiti.engine.impl.db;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.apache.ibatis.session.SqlSessionFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -86,6 +86,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("postgres", "selectComment", "selectComment_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByTaskId", "selectCommentsByTaskId_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByProcessInstanceId", "selectCommentsByProcessInstanceId_postgres");
+    addDatabaseSpecificStatement("postgres", "selectCommentsByProcessInstanceIdAndType", "selectCommentsByProcessInstanceIdAndType_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByType", "selectCommentsByType_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByTaskIdAndType", "selectCommentsByTaskIdAndType_postgres");
     addDatabaseSpecificStatement("postgres", "selectEventsByTaskId", "selectEventsByTaskId_postgres");
