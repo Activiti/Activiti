@@ -1,5 +1,5 @@
 alter table ACT_RU_TASK
-	add TASK_FORM_KEY_ nvarchar(255);
+	add FORM_KEY_ nvarchar(255);
 	
 alter table ACT_RU_EXECUTION
 	add NAME_ nvarchar(255);
