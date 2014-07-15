@@ -97,7 +97,10 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** Only select tasks for which users in the given group are candidates. */
   TaskQuery taskCandidateGroup(String candidateGroup);
 
-  /** Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups) */
+  /** Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups).
+   *  If set <strong>isDbIdentityUsed</strong> to <strong>false</strong> you can invoke {@link #taskCandidateGroupIn(List)}
+   *  to include tasks that can be claimed by a user in the given groups.
+   */
   TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee);
   
   /** 
