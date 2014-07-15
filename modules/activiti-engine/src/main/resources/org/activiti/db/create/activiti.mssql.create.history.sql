@@ -134,7 +134,7 @@ create table ACT_HI_IDENTITYLINK (
 );
 
 create table ACT_HI_EVT_LOG (
-    LOG_NR_ numeric(19,0) IDENTITY(1,1) PRIMARY KEY,
+    LOG_NR_ numeric(19,0) not null,
     TYPE_ nvarchar(64),
     PROC_DEF_ID_ nvarchar(64),
     PROC_INST_ID_ nvarchar(64),
