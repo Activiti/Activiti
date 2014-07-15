@@ -117,8 +117,8 @@
     from ${prefix}ACT_RU_JOB RES    
     	LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
     where (RES.RETRIES_ &gt; 0)
-      and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt; #{parameter, jdbcType=TIMESTAMP})
-      and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP})
+      and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+      and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
 	  and (
 	  	    (RES.EXECUTION_ID_ is null)
 	  		or 
@@ -127,44 +127,15 @@
     ${limitAfter}	    
   </select>     
   
-  <!--  ACT-1064: MySQL-specific select's are needed to handle non-millisecond precision -->
-  <select id="selectNextJobsToExecute_mysql" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-    ${limitBefore}
-    select RES.* ${limitBetween} 
-    from ${prefix}ACT_RU_JOB RES
-      LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
-    where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
-      and (
-          (RES.EXECUTION_ID_ is null)
-        or 
-        (PI.SUSPENSION_STATE_ = 1)     
-      )  
-    ${limitAfter}
-  </select>              
-
   <select id="selectExclusiveJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
   	${limitBefore}
     select RES.* ${limitBetween} 
     from ${prefix}ACT_RU_JOB RES    
     where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
-      and (EXCLUSIVE_ = TRUE)
-      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
-    ${limitAfter}
-  </select>
-  
-  <select id="selectExclusiveJobsToExecute_mysql" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-    ${limitBefore}
-    select RES.* ${limitBetween} 
-    from ${prefix}ACT_RU_JOB RES
-    where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
       and (EXCLUSIVE_ = TRUE)
-      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})
+      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
     ${limitAfter}
   </select>
   
@@ -173,8 +144,8 @@
     select RES.* ${limitBetween} 
     from ${prefix}ACT_RU_JOB RES  
     where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
+      and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
       and (EXCLUSIVE_ = 1)
       and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
     ${limitAfter}   
