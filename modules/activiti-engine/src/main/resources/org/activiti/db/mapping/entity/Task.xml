@@ -409,7 +409,7 @@
       <if test="excludeSubtasks">
         and RES.PARENT_TASK_ID_ IS NULL
       </if>
-      <if test="candidateUser != null || candidateGroups != null">
+      <if test="!bothCandidateAndAssigned &amp;&amp; (candidateUser != null || candidateGroups != null)">
         and RES.ASSIGNEE_ is null
         and I.TYPE_ = 'candidate'
         and 
@@ -513,8 +513,26 @@
       </if>
       <choose>
         <when test="bothCandidateAndAssigned">
+          <!-- if isDbIdentityUsed set true -->
           <if test="userIdForCandidateAndAssignee != null">
-            and (RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee} or (RES.ASSIGNEE_ is null and I.USER_ID_ = #{userIdForCandidateAndAssignee} or I.GROUP_ID_ IN (select g.GROUP_ID_ from ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{userIdForCandidateAndAssignee} ) ) )
+            <if test="candidateGroups == null">
+              and (RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee} or (RES.ASSIGNEE_ is null and I.USER_ID_ = #{userIdForCandidateAndAssignee}
+              or I.GROUP_ID_ IN (select g.GROUP_ID_ from ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{userIdForCandidateAndAssignee} ) ) )
+            </if>
+          </if>
+          <!-- if isDbIdentityUsed set false -->
+          <if test="candidateGroups != null">
+            and (RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
+            or (RES.ASSIGNEE_ is null
+            and I.TYPE_ = 'candidate' and (I.USER_ID_ = #{userIdForCandidateAndAssignee}
+            <if test="candidateGroups.size() &gt; 0">
+              or I.GROUP_ID_ IN
+              <foreach item="group" index="index" collection="candidateGroups"
+                       open="(" separator="," close=")">
+                #{group}
+              </foreach>
+            </if>
+            )))
           </if>
         </when>
       </choose>

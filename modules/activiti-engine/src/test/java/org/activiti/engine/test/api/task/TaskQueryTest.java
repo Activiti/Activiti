@@ -343,6 +343,16 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     List<Task> tasks = query.list();
     assertEquals(11, tasks.size());
 
+    // if isDbIdentityUsed set false
+    ArrayList candidateGroups = new ArrayList();
+    candidateGroups.add("management");
+    candidateGroups.add("accountancy");
+    candidateGroups.add("noexist");
+    query = taskService.createTaskQuery().taskCandidateGroupIn(candidateGroups).taskCandidateOrAssigned("kermit");
+    assertEquals(11, query.count());
+    tasks = query.list();
+    assertEquals(11, tasks.size());
+
     // claim a task
     taskService.claim(tasks.get(0).getId(), "kermit");
     query = taskService.createTaskQuery().taskCandidateOrAssigned("kermit");
