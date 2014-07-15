@@ -18,7 +18,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
@@ -64,13 +63,13 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
             .findExclusiveJobsToExecute(job.getProcessInstanceId());
           for (JobEntity exclusiveJob : exclusiveJobs) {
             if (exclusiveJob != null) {
-              lockJob(exclusiveJob, lockOwner, lockTimeInMillis);
+              lockJob(commandContext, exclusiveJob, lockOwner, lockTimeInMillis);
               jobIds.add(exclusiveJob.getId());
             }
           }
           
         } else {
-          lockJob(job, lockOwner, lockTimeInMillis);
+          lockJob(commandContext, job, lockOwner, lockTimeInMillis);
           jobIds.add(job.getId());
         }
         
@@ -82,10 +81,10 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
     return acquiredJobs;
   }
 
-  protected void lockJob(JobEntity job, String lockOwner, int lockTimeInMillis) {    
+  protected void lockJob(CommandContext commandContext, JobEntity job, String lockOwner, int lockTimeInMillis) {    
     job.setLockOwner(lockOwner);
     GregorianCalendar gregorianCalendar = new GregorianCalendar();
-    gregorianCalendar.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
     gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
     job.setLockExpirationTime(gregorianCalendar.getTime());    
   }

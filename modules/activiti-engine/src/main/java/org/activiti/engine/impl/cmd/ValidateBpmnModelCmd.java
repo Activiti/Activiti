@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.validation.ProcessValidator;
@@ -23,7 +22,7 @@ public class ValidateBpmnModelCmd implements Command<List<ValidationError>> {
 
 	@Override
 	public List<ValidationError> execute(CommandContext commandContext) {
-		ProcessValidator processValidator = Context.getProcessEngineConfiguration().getProcessValidator();
+		ProcessValidator processValidator = commandContext.getProcessEngineConfiguration().getProcessValidator();
 		if (processValidator == null) {
 			throw new ActivitiException("No process validator defined");
 		}

@@ -18,7 +18,6 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -66,7 +65,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
       throw new ActivitiException("Cannot start process instance by message: subscription to message with name '"+messageName+"' is not a message start event.");
     }
         
-    DeploymentManager deploymentCache = Context
+    DeploymentManager deploymentCache = commandContext
             .getProcessEngineConfiguration()
             .getDeploymentManager();
           

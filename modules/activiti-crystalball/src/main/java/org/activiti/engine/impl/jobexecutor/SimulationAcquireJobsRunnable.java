@@ -90,12 +90,7 @@ public class SimulationAcquireJobsRunnable extends AcquireJobsRunnable {
 		        
 		      } catch (Exception e) {
 		        log.error("exception during job acquisition: " + e.getMessage(), e);          
-		        millisToWait *= waitIncreaseFactor;
-		        if (millisToWait > maxWait) {
-		          millisToWait = maxWait;
-		        } else if (millisToWait==0) {
-		          millisToWait = jobExecutor.getWaitTimeInMillis();
-		        }
+		        millisToWait = jobExecutor.getWaitTimeInMillis();
 		      }
 
 		      if ((millisToWait > 0) && (!isJobAdded)) {

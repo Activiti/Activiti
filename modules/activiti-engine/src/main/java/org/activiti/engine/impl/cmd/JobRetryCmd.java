@@ -14,6 +14,9 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
@@ -22,7 +25,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.calendar.DurationHelper;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionState;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
@@ -56,10 +58,7 @@ public class JobRetryCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext)  {
-    JobEntity job = Context
-		      .getCommandContext()
-		      .getJobEntityManager()
-		      .findJobById(jobId);
+    JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
      
     ActivityImpl activity = getCurrentActivity(commandContext, job);
    
@@ -68,16 +67,22 @@ public class JobRetryCmd implements Command<Object> {
       job.setRetries(job.getRetries() - 1);
       job.setLockOwner(null);
       job.setLockExpirationTime(null);
+      if (job.getDuedate() == null) {
+        // add wait time for failed async job
+        job.setDuedate(calculateDueDate(commandContext, commandContext.getProcessEngineConfiguration().getAsyncFailedJobWaitTime(), null));
+      } else {
+        // add default wait time for failed job
+        job.setDuedate(calculateDueDate(commandContext, commandContext.getProcessEngineConfiguration().getDefaultFailedJobWaitTime(), job.getDuedate()));
+      }
       
     } else {    	
        String failedJobRetryTimeCycle = activity.getFailedJobRetryTimeCycleValue();
-       DurationHelper  durationHelper;
        try {
-	       durationHelper = new DurationHelper(failedJobRetryTimeCycle, Context.getProcessEngineConfiguration().getClock());
+         DurationHelper durationHelper = new DurationHelper(failedJobRetryTimeCycle, commandContext.getProcessEngineConfiguration().getClock());
 	       job.setLockExpirationTime(durationHelper.getDateAfter());
 	       
 	       if (job.getExceptionMessage() == null) {  // is it the first exception 
-	           log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+durationHelper.getTimes()+" retries");
+	           log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+ durationHelper.getTimes()+" retries");
 	         // then change default retries to the ones configured
 	          job.setRetries(durationHelper.getTimes());
 	       } else {
@@ -89,6 +94,7 @@ public class JobRetryCmd implements Command<Object> {
 	     throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycle, exception);
 	   }  
     }
+    
     if (exception != null) {
         job.setExceptionMessage(exception.getMessage());
         job.setExceptionStacktrace(getExceptionStacktrace());
@@ -102,12 +108,25 @@ public class JobRetryCmd implements Command<Object> {
     	eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(
     			ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
     }
-    JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
+    JobExecutor jobExecutor = commandContext.getProcessEngineConfiguration().getJobExecutor();
     MessageAddedNotification messageAddedNotification = new MessageAddedNotification(jobExecutor);
     TransactionContext transactionContext = commandContext.getTransactionContext();
     transactionContext.addTransactionListener(TransactionState.COMMITTED, messageAddedNotification);
 
     return null;
+  }
+  
+  protected Date calculateDueDate(CommandContext commandContext, int waitTimeInSeconds, Date oldDate) {
+    Calendar newDateCal = new GregorianCalendar();
+    if (oldDate != null) {
+      newDateCal.setTime(oldDate);
+      
+    } else {
+      newDateCal.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+    }
+    
+    newDateCal.add(Calendar.SECOND, waitTimeInSeconds);
+    return newDateCal.getTime();
   }
 
   private ActivityImpl getCurrentActivity(CommandContext commandContext, JobEntity job) {
@@ -116,18 +135,18 @@ public class JobRetryCmd implements Command<Object> {
 
     if (TimerExecuteNestedActivityJobHandler.TYPE.equals(type) ||
         TimerCatchIntermediateEventJobHandler.TYPE.equals(type)) {
-      ExecutionEntity execution = fetchExecutionEntity(job.getExecutionId());
+      ExecutionEntity execution = fetchExecutionEntity(commandContext, job.getExecutionId());
       if (execution != null) {
         activity = execution.getProcessDefinition().findActivity(job.getJobHandlerConfiguration());
       }
     } else if (TimerStartEventJobHandler.TYPE.equals(type)) {
-    	DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
+    	DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
       ProcessDefinitionEntity processDefinition =  deploymentManager.findDeployedLatestProcessDefinitionByKey(job.getJobHandlerConfiguration());
       if (processDefinition != null) {
         activity = processDefinition.getInitial();
       }
     } else if (AsyncContinuationJobHandler.TYPE.equals(type)) {
-      ExecutionEntity execution = fetchExecutionEntity(job.getExecutionId());
+      ExecutionEntity execution = fetchExecutionEntity(commandContext, job.getExecutionId());
       if (execution != null) {
         activity = execution.getActivity();
       }
@@ -144,11 +163,7 @@ public class JobRetryCmd implements Command<Object> {
     return stringWriter.toString();
   }
 
-  private ExecutionEntity fetchExecutionEntity(String executionId) {
-    return Context.getCommandContext()
-                  .getExecutionEntityManager()
-                  .findExecutionById(executionId);
+  private ExecutionEntity fetchExecutionEntity(CommandContext commandContext, String executionId) {
+    return commandContext.getExecutionEntityManager().findExecutionById(executionId);
   }
-
-  
 }

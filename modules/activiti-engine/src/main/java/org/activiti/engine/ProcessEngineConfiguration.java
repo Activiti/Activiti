@@ -138,6 +138,10 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   protected Clock clock;
   protected JobExecutor jobExecutor;
+  /** define the default wait time for a failed job in seconds */
+  protected int defaultFailedJobWaitTime = 10;
+  /** define the default wait time for a failed async job in seconds */
+  protected int asyncFailedJobWaitTime = 10;
 
   /** process diagram generator. Default value is DefaulProcessDiagramGenerator */
   protected ProcessDiagramGenerator processDiagramGenerator;
@@ -679,6 +683,24 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   public ProcessEngineConfiguration setJobExecutor(JobExecutor jobExecutor) {
     this.jobExecutor = jobExecutor;
+    return this;
+  }
+
+  public int getDefaultFailedJobWaitTime() {
+    return defaultFailedJobWaitTime;
+  }
+
+  public ProcessEngineConfiguration setDefaultFailedJobWaitTime(int defaultFailedJobWaitTime) {
+    this.defaultFailedJobWaitTime = defaultFailedJobWaitTime;
+    return this;
+  }
+
+  public int getAsyncFailedJobWaitTime() {
+    return asyncFailedJobWaitTime;
+  }
+
+  public ProcessEngineConfiguration setAsyncFailedJobWaitTime(int asyncFailedJobWaitTime) {
+    this.asyncFailedJobWaitTime = asyncFailedJobWaitTime;
     return this;
   }
 }

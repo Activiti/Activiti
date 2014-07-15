@@ -16,7 +16,6 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -36,7 +35,7 @@ public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, 
   }
   
   public T execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = Context
+    ProcessDefinitionEntity processDefinition = commandContext
             .getProcessEngineConfiguration()
             .getDeploymentManager()
             .findDeployedProcessDefinitionById(processDefinitionId);

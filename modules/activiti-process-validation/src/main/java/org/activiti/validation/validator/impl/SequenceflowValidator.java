@@ -56,7 +56,6 @@ public class SequenceflowValidator extends ProcessLevelValidator {
           addError(errors, Problems.SEQ_FLOW_INVALID_TARGET, process, sequenceFlow, "Invalid target for sequenceflow");
         }
         if (sourceContainer != null && targetContainer != null && sourceContainer.equals(targetContainer) == false) {
-          System.out.println("sourceContainer " + sourceContainer + " " + targetContainer + " " + sequenceFlow);
           addError(errors, Problems.SEQ_FLOW_INVALID_TARGET, process, sequenceFlow, "Invalid target for sequenceflow, the target isn't defined in the same scope as the source");
         }
 			}

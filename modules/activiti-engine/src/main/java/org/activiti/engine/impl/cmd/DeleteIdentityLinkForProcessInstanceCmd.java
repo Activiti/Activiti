@@ -17,7 +17,6 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -61,7 +60,7 @@ public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>,
   }
   
   public Void execute(CommandContext commandContext) {
-	  ExecutionEntity processInstance = Context.getCommandContext().getExecutionEntityManager().findExecutionById(processInstanceId);
+	  ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
       
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);

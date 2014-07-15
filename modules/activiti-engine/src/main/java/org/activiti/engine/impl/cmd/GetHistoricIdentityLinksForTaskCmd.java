@@ -19,7 +19,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
@@ -46,16 +45,15 @@ public class GetHistoricIdentityLinksForTaskCmd implements Command<List<Historic
   
   public List<HistoricIdentityLink> execute(CommandContext commandContext) {
     if(taskId != null) {
-      return getLinksForTask();
+      return getLinksForTask(commandContext);
     } else {
-      return getLinksForProcessInstance();
+      return getLinksForProcessInstance(commandContext);
     }
   }
   
   @SuppressWarnings({"unchecked", "rawtypes" })
-  protected List<HistoricIdentityLink> getLinksForTask() {
-    HistoricTaskInstanceEntity task = Context
-      .getCommandContext()
+  protected List<HistoricIdentityLink> getLinksForTask(CommandContext commandContext) {
+    HistoricTaskInstanceEntity task = commandContext
       .getHistoricTaskInstanceEntityManager()
       .findHistoricTaskInstanceById(taskId);
     
@@ -63,8 +61,8 @@ public class GetHistoricIdentityLinksForTaskCmd implements Command<List<Historic
       throw new ActivitiObjectNotFoundException("No historic task exists with the given id: " + taskId, HistoricTaskInstance.class);
     }
 
-    List<HistoricIdentityLink> identityLinks = (List) Context.getCommandContext().
-            getHistoricIdentityLinkEntityManager()
+    List<HistoricIdentityLink> identityLinks = (List) commandContext
+            .getHistoricIdentityLinkEntityManager()
             .findHistoricIdentityLinksByTaskId(taskId);
     
     // Similar to GetIdentityLinksForTask, return assignee and owner as identity link
@@ -87,9 +85,9 @@ public class GetHistoricIdentityLinksForTaskCmd implements Command<List<Historic
   }
   
   @SuppressWarnings({"unchecked", "rawtypes" })
-  protected List<HistoricIdentityLink> getLinksForProcessInstance() {
-   return (List) Context.getCommandContext().
-            getHistoricIdentityLinkEntityManager()
+  protected List<HistoricIdentityLink> getLinksForProcessInstance(CommandContext commandContext) {
+   return (List) commandContext
+            .getHistoricIdentityLinkEntityManager()
             .findHistoricIdentityLinksByProcessInstanceId(processInstanceId);
   }
   

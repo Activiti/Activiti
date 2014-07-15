@@ -53,7 +53,7 @@ public class SpringJobExecutorTest extends SpringActivitiTestCase {
 	}
 
 	private void waitForTasksToExpire() throws Exception {
-		Thread.sleep(2000L);
+		Thread.sleep(10000L);
 	}
 
 }

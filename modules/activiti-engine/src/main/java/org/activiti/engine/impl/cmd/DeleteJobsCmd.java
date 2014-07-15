@@ -13,10 +13,10 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 /**
  * @author Tom Baeyens
  */
-public class DeleteJobsCmd implements Command<Void> {
+public class DeleteJobsCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
   List<String> jobIds;
@@ -42,8 +42,7 @@ public class DeleteJobsCmd implements Command<Void> {
   public Void execute(CommandContext commandContext) {
     JobEntity jobToDelete = null;
     for (String jobId: jobIds) {
-      jobToDelete = Context
-        .getCommandContext()
+      jobToDelete = commandContext
         .getJobEntityManager()
         .findJobById(jobId);
       
