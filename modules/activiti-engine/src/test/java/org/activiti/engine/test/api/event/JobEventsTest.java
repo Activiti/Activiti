@@ -13,7 +13,7 @@
 package org.activiti.engine.test.api.event;
 
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -99,11 +99,12 @@ public class JobEventsTest extends PluggableActivitiTestCase {
   public void testRepetitionJobEntityEvents() throws Exception {
     Clock previousClock = processEngineConfiguration.getClock();
 
+    Calendar testCal = new GregorianCalendar();
     Clock testClock = new DefaultClockImpl();
 
     processEngineConfiguration.setClock(testClock);
 
-    testClock.setCurrentTime(new Date(0));
+    testClock.setCurrentTime(testCal.getTime());
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testRepetitionJobEvents");
     Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(theJob);
@@ -121,11 +122,13 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     listener.clearEventsReceived();
 
     // fire timer for the first time
-    testClock.setCurrentTime(new Date(20000));
+    testCal.add(Calendar.SECOND, 20);
+    testClock.setCurrentTime(testCal.getTime());
     waitForJobExecutorToProcessAllJobs(5000, 200);
 
     // fire timer for the second time
-    testClock.setCurrentTime(new Date(40000));
+    testCal.add(Calendar.SECOND, 20);
+    testClock.setCurrentTime(testCal.getTime());
     waitForJobExecutorToProcessAllJobs(5000, 200);
 
     // all jobs should have been done now
