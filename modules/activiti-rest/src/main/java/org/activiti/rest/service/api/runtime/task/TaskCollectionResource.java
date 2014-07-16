@@ -13,6 +13,8 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.task.Task;
@@ -114,6 +116,15 @@ public class TaskCollectionResource extends TaskBaseResource {
     
     if(names.contains("candidateGroup")) {
       request.setCandidateGroup(getQueryParameter("candidateGroup", query));
+    }
+
+    if(names.contains("candidateGroups")) {
+      String[] candidateGroupses = getQueryParameter("candidateGroups", query).split(",");
+      List<String> groups = new ArrayList<String>(candidateGroupses.length);
+      for (String candidateGroup : candidateGroupses) {
+        groups.add(candidateGroup);
+      }
+      request.setCandidateGroupIn(groups);
     }
     
     if(names.contains("processDefinitionKey")) {
