@@ -119,9 +119,9 @@ public class TaskCollectionResource extends TaskBaseResource {
     }
 
     if(names.contains("candidateGroups")) {
-      String[] candidateGroupses = getQueryParameter("candidateGroups", query).split(",");
-      List<String> groups = new ArrayList<String>(candidateGroupses.length);
-      for (String candidateGroup : candidateGroupses) {
+      String[] candidateGroups = getQueryParameter("candidateGroups", query).split(",");
+      List<String> groups = new ArrayList<String>(candidateGroups.length);
+      for (String candidateGroup : candidateGroups) {
         groups.add(candidateGroup);
       }
       request.setCandidateGroupIn(groups);
