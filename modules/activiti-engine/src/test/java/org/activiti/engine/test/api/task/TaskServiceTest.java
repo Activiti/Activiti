@@ -1422,8 +1422,10 @@ public void testCompleteWithParametersTask2() {
   	task = taskService.createTaskQuery().singleResult();
   	assertEquals("form-changed.json", task.getFormKey());
   	
-  	HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
-  	assertEquals("form-changed.json", historicTaskInstance.getFormKey());
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+    	HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+    	assertEquals("form-changed.json", historicTaskInstance.getFormKey());
+  	}
   }
   
 }
