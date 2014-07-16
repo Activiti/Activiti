@@ -17,24 +17,28 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 
 /**
+ * Send job cancelled event and delete job
+ *
  * @author Tom Baeyens
  */
-public class DeleteJobsCmd implements Command<Void>, Serializable {
+public class CancelJobsCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
   List<String> jobIds;
   
-  public DeleteJobsCmd(List<String> jobIds) {
+  public CancelJobsCmd(List<String> jobIds) {
     this.jobIds = jobIds;
   }
 
-  public DeleteJobsCmd(String jobId) {
+  public CancelJobsCmd(String jobId) {
     this.jobIds = new ArrayList<String>();
     jobIds.add(jobId);
   }
@@ -48,6 +52,11 @@ public class DeleteJobsCmd implements Command<Void>, Serializable {
       
       if(jobToDelete != null) {
         // When given job doesn't exist, ignore
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
+        }
+
         jobToDelete.delete();
       }
     }

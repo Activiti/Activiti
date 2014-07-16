@@ -16,6 +16,8 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
@@ -109,6 +111,11 @@ public class DeploymentEntityManager extends AbstractManager {
         
         if (nrOfVersions - nrOfProcessDefinitionsWithSameKey <= 1) {
           for (Job job : timerStartJobs) {
+            if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+              Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job, null, null, processDefinition.getId()));
+            }
+
             ((JobEntity)job).delete();        
           }
         }

@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.TransactionListener;
@@ -77,6 +79,10 @@ public class JobEntityManager extends AbstractManager {
       .findTimersByExecutionId(execution.getId());
     
     for (TimerEntity timer: timers) {
+      if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timer));
+      }
       timer.delete();
     }
   }
