@@ -29,7 +29,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.cmd.DeploymentSettings;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -277,7 +277,7 @@ public class BpmnDeployer implements Deployer {
       .findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
     
     for (Job job :jobsToDelete) {
-        new DeleteJobsCmd(job.getId()).execute(Context.getCommandContext());
+        new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
     }
   }
   

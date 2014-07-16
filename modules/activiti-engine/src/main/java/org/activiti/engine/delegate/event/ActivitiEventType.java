@@ -61,7 +61,12 @@ public enum ActivitiEventType {
 	 * Timer has been fired successfully.
 	 */
 	TIMER_FIRED,
-	
+
+    /**
+     * Timer has been cancelled (e.g. user task on which it was bounded has been completed earlier than expected)
+     */
+    JOB_CANCELED,
+
 	/**
 	 * A job has been successfully executed.
 	 */
