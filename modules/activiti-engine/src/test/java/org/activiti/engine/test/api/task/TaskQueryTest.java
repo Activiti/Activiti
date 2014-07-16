@@ -343,7 +343,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     List<Task> tasks = query.list();
     assertEquals(11, tasks.size());
 
-    // if isDbIdentityUsed set false
+    // if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager
     ArrayList candidateGroups = new ArrayList();
     candidateGroups.add("management");
     candidateGroups.add("accountancy");
