@@ -97,6 +97,12 @@ public class TaskBaseResource extends SecuredResource {
     if(taskRequest.isCategorySet()) {
     	task.setCategory(taskRequest.getCategory());
     }
+    if(taskRequest.isTenantIdSet()) {
+      task.setTenantId(taskRequest.getTenantId());
+    }
+    if(taskRequest.isFormKeySet()) {
+      task.setFormKey(taskRequest.getFormKey());
+    }
 
     if(taskRequest.isDelegationStateSet()) {
       DelegationState delegationState = getDelegationState(taskRequest.getDelegationState());
