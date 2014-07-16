@@ -5020,6 +5020,12 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Only return tasks that can be claimed by a user in the given group.</entry>
                   </row>
                   <row>
+                    <entry>candidateGroups</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks that can be claimed by a user in the given groups. Values split by comma.</entry>
+                  </row>
+                  <row>
                     <entry>involvedUser</entry>
                     <entry>No</entry>
                     <entry>String</entry>
@@ -5180,6 +5186,15 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>No</entry>
                     <entry>Boolean</entry>
                     <entry>If <literal>true</literal>, only returns tasks without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
+                  </row>
+                  <row>
+                    <entry>candidateAndAssignee</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups).
+                      If property <literal>isDbIdentityUsed</literal> set <literal>false</literal>, you can set <literal>candidateGroups</literal> to include tasks
+                      that can be claimed by a user in the given groups.
+                    </entry>
                   </row>
                   <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
