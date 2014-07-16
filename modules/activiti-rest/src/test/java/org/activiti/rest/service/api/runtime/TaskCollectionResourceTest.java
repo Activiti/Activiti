@@ -63,6 +63,8 @@ public class TaskCollectionResourceTest extends BaseRestTestCase {
       requestNode.put("delegationState", "resolved");
       requestNode.put("dueDate", dueDateString);
       requestNode.put("parentTaskId", parentTask.getId());
+      requestNode.put("formKey", "testKey");
+      requestNode.put("tenantId", "test");
       
       // Execute the request
       Representation response = client.post(requestNode);
@@ -81,6 +83,9 @@ public class TaskCollectionResourceTest extends BaseRestTestCase {
       assertEquals(DelegationState.RESOLVED, task.getDelegationState());
       assertEquals(dueDate.getTime(), task.getDueDate());
       assertEquals(parentTask.getId(), task.getParentTaskId());
+      assertEquals("testKey", task.getFormKey());
+      assertEquals("test", task.getTenantId());
+      
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();

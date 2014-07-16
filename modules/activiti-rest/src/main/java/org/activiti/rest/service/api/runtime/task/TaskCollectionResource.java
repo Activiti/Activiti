@@ -15,6 +15,7 @@ package org.activiti.rest.service.api.runtime.task;
 
 import java.util.Set;
 
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
@@ -32,9 +33,9 @@ public class TaskCollectionResource extends TaskBaseResource {
 
   @Post
   public TaskResponse createTask(TaskRequest taskRequest) {
-    if(!authenticate()) { return null; }
+    if (!authenticate()) { return null; }
     
-    if(taskRequest == null) {
+    if (taskRequest == null) {
       throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(),
               "A request body was expected when creating the task.", null, null));
     }
@@ -43,6 +44,9 @@ public class TaskCollectionResource extends TaskBaseResource {
 
     // Populate the task properties based on the request
     populateTaskFromRequest(task, taskRequest);
+    if (taskRequest.isTenantIdSet()) {
+      ((TaskEntity) task).setTenantId(taskRequest.getTenantId());
+    }
     ActivitiUtil.getTaskService().saveTask(task);
 
     setStatus(Status.SUCCESS_CREATED);

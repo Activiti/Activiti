@@ -32,6 +32,8 @@ public class TaskRequest {
   private int priority;
   private String parentTaskId;
   private String category;
+  private String tenantId;
+  private String formKey;
   
   private boolean ownerSet = false;
   private boolean assigneeSet = false;
@@ -42,6 +44,8 @@ public class TaskRequest {
   private boolean prioritySet = false;
   private boolean parentTaskIdSet = false;
   private boolean categorySet = false;
+  private boolean tenantIdSet = false;
+  private boolean formKeySet = false;
   
   public String getOwner() {
     return owner;
@@ -99,7 +103,6 @@ public class TaskRequest {
     this.parentTaskId = parentTaskId;
     parentTaskIdSet = true;
   }
-  
   public void setCategory(String category) {
 	  this.category = category;
 	  categorySet = true;
@@ -107,6 +110,21 @@ public class TaskRequest {
   public String getCategory() {
 	  return category;
   }
+  public String getTenantId() {
+    return tenantId;
+  }
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
+    tenantIdSet = true;
+  }
+  public String getFormKey() {
+    return formKey;
+  }
+  public void setFormKey(String formKey) {
+    this.formKey = formKey;
+    formKeySet = true;
+  }
+  
   public boolean isOwnerSet() {
     return ownerSet;
   }
@@ -133,5 +151,11 @@ public class TaskRequest {
   }
   public boolean isCategorySet() {
 	  return categorySet;
+  }
+  public boolean isTenantIdSet() {
+    return tenantIdSet;
+  }
+  public boolean isFormKeySet() {
+    return formKeySet;
   }
 }
