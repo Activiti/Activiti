@@ -91,8 +91,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		assertEquals(ActivitiEventType.JOB_EXECUTION_SUCCESS, event.getType());
 		checkEventContext(event, theJob, true);
 	}
-	
-	/**
+
+  /**
    * Timer repetition
    */
   @Deployment
