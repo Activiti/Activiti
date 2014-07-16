@@ -5188,7 +5188,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>If <literal>true</literal>, only returns tasks without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
                   </row>
                   <row>
-                    <entry>candidateAndAssignee</entry>
+                    <entry>candidateOrAssigned</entry>
                     <entry>No</entry>
                     <entry>String</entry>
                     <entry>Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups).
