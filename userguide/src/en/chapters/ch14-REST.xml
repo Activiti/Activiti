@@ -4086,6 +4086,12 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                     <entry>Only return executions with the given id.</entry>
                   </row>
                   <row>
+                    <entry>activityId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions with the given activity id.</entry>
+                  </row>
+                  <row>
                     <entry>processDefinitionKey</entry>
                     <entry>No</entry>
                     <entry>String</entry>
