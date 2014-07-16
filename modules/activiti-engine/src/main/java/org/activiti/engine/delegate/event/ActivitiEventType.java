@@ -175,10 +175,16 @@ public enum ActivitiEventType {
 	 * for the activity corresponding to the task. 
 	 */
 	TASK_COMPLETED,
-	
-	/**
-	 * A new membership has been created.
-	 */
+
+  /**
+   * A process has been completed. Dispatched after the last activity is ACTIVITY_COMPLETED. Process is completed
+   * when it reaches state in which process instance does not have any transition to take.
+   */
+  PROCESS_COMPLETED,
+
+  /**
+   * A new membership has been created.
+   */
 	MEMBERSHIP_CREATED,
 	
 	/**
@@ -192,7 +198,7 @@ public enum ActivitiEventType {
 	 * so they can still be accessed in the dispatch method of the listener.
 	 */
 	MEMBERSHIPS_DELETED;
-	
+
 	public static final ActivitiEventType[] EMPTY_ARRAY =  new ActivitiEventType[] {};
 	
 	/**
