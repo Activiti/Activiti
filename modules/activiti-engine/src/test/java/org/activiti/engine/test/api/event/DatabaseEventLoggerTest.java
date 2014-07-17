@@ -56,7 +56,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 		
 		// Verify event log entries
 		List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);
-		assertEquals(13, eventLogEntries.size());
+		assertEquals(15, eventLogEntries.size());
 		
 		long lastLogNr = -1;
 		for (int i=0; i< eventLogEntries.size(); i++) {
@@ -125,7 +125,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			}
 			
 			// Sequence flow taken
-			if (i == 4 || i == 7 || i == 10) {
+			if (i == 4 || i == 7 || i == 11) {
 				assertNotNull(entry.getType());
 				assertEquals(entry.getType(), ActivitiEventType.SEQUENCEFLOW_TAKEN.name());
 				assertNotNull(entry.getProcessDefinitionId());
@@ -168,10 +168,39 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			}
 			
 			// Tasks
-			if (i == 9 || i == 12) {
+			if (i == 10 || i == 14) {
 			
 				assertNotNull(entry.getType());
 				assertEquals(entry.getType(), ActivitiEventType.TASK_CREATED.name());
+				assertNotNull(entry.getTimeStamp());
+				assertNotNull(entry.getProcessDefinitionId());
+				assertNotNull(entry.getProcessInstanceId());
+				assertNotNull(entry.getExecutionId());
+				assertNotNull(entry.getTaskId());
+				
+				Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>(){});
+				assertNotNull(data.get(Fields.ID));
+				assertNotNull(data.get(Fields.NAME));
+				assertNotNull(data.get(Fields.ASSIGNEE));
+				assertNotNull(data.get(Fields.CREATE_TIME));
+				assertNotNull(data.get(Fields.PRIORITY));
+				assertNotNull(data.get(Fields.PROCESS_DEFINITION_ID));
+				assertNotNull(data.get(Fields.EXECUTION_ID));
+				assertNotNull(data.get(Fields.TENANT_ID));
+				
+				assertFalse(data.containsKey(Fields.DESCRIPTION));
+				assertFalse(data.containsKey(Fields.CATEGORY));
+				assertFalse(data.containsKey(Fields.OWNER));
+				assertFalse(data.containsKey(Fields.DUE_DATE));
+				assertFalse(data.containsKey(Fields.FORM_KEY));
+				assertFalse(data.containsKey(Fields.USER_ID));
+				
+			}
+			
+			if (i == 9 || i == 13) {
+				
+				assertNotNull(entry.getType());
+				assertEquals(entry.getType(), ActivitiEventType.TASK_ASSIGNED.name());
 				assertNotNull(entry.getTimeStamp());
 				assertNotNull(entry.getProcessDefinitionId());
 				assertNotNull(entry.getProcessInstanceId());

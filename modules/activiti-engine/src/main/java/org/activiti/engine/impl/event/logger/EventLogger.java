@@ -10,12 +10,17 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.event.logger.handler.ActivityCompensatedEventHandler;
 import org.activiti.engine.impl.event.logger.handler.ActivityCompletedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.ActivityErrorReceivedEventHandler;
+import org.activiti.engine.impl.event.logger.handler.ActivityMessageEventHandler;
+import org.activiti.engine.impl.event.logger.handler.ActivitySignaledEventHandler;
 import org.activiti.engine.impl.event.logger.handler.ActivityStartedEventHandler;
 import org.activiti.engine.impl.event.logger.handler.EventLoggerEventHandler;
 import org.activiti.engine.impl.event.logger.handler.ProcessInstanceEndedEventHandler;
 import org.activiti.engine.impl.event.logger.handler.ProcessInstanceStartedEventHandler;
 import org.activiti.engine.impl.event.logger.handler.SequenceFlowTakenEventHandler;
+import org.activiti.engine.impl.event.logger.handler.TaskAssignedEventHandler;
 import org.activiti.engine.impl.event.logger.handler.TaskCompletedEventHandler;
 import org.activiti.engine.impl.event.logger.handler.TaskCreatedEventHandler;
 import org.activiti.engine.impl.event.logger.handler.VariableCreatedEventHandler;
@@ -55,20 +60,18 @@ public class EventLogger implements ActivitiEventListener {
 		
 		// Initialization of all event handlers
 		
-		// Engine lifecycle events
-		
-//		addEventHandler(ActivitiEventType.ENGINE_CREATED, EngineCreatedEventHandler.class);
-//		addEventHandler(ActivitiEventType.ENGINE_CLOSED, EngineClosedEventHandler.class);
-		
-		// Process execution events
-		
 		addEventHandler(ActivitiEventType.TASK_CREATED, TaskCreatedEventHandler.class);
 		addEventHandler(ActivitiEventType.TASK_COMPLETED, TaskCompletedEventHandler.class);
+		addEventHandler(ActivitiEventType.TASK_ASSIGNED, TaskAssignedEventHandler.class);
 		
 		addEventHandler(ActivitiEventType.SEQUENCEFLOW_TAKEN, SequenceFlowTakenEventHandler.class);
 		
 		addEventHandler(ActivitiEventType.ACTIVITY_COMPLETED, ActivityCompletedEventHandler.class);
 		addEventHandler(ActivitiEventType.ACTIVITY_STARTED, ActivityStartedEventHandler.class);
+		addEventHandler(ActivitiEventType.ACTIVITY_SIGNALED, ActivitySignaledEventHandler.class);
+		addEventHandler(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, ActivityMessageEventHandler.class);
+		addEventHandler(ActivitiEventType.ACTIVITY_COMPENSATE, ActivityCompensatedEventHandler.class);
+		addEventHandler(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, ActivityErrorReceivedEventHandler.class);
 		
 		addEventHandler(ActivitiEventType.VARIABLE_CREATED, VariableCreatedEventHandler.class);
 		addEventHandler(ActivitiEventType.VARIABLE_DELETED, VariableDeletedEventHandler.class);
