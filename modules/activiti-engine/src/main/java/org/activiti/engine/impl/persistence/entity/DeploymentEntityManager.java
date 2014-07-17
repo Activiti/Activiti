@@ -102,7 +102,7 @@ public class DeploymentEntityManager extends AbstractManager {
 
         long nrOfProcessDefinitionsWithSameKey = 0;
         for (ProcessDefinition p : processDefinitions) {
-          if (!p.getId().equals(processDefinition) && p.getKey().equals(processDefinition)) {
+          if (!p.getId().equals(processDefinition.getId()) && p.getKey().equals(processDefinition.getKey())) {
             nrOfProcessDefinitionsWithSameKey++;
           }
         }
