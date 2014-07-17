@@ -48,16 +48,10 @@ public class DiagramInterchangeInfoValidator extends ValidatorImpl {
 								"Invalid reference in diagram interchange definition: could not find " + bpmnReference);
 					}
 				} else if (!(bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)) {
-					if (bpmnModel.getFlowLocationMap().get(bpmnReference).size() > 0) {
-						addWarning(errors, Problems.DI_DOES_NOT_REFERENCE_SEQ_FLOW, null, bpmnModel.getFlowElement(bpmnReference),
-								"Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
-					} else {
-						addWarning(errors, Problems.DI_DOES_NOT_REFERENCE_SEQ_FLOW, null, bpmnModel.getFlowElement(bpmnReference),
-								"Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
-					}
+					addWarning(errors, Problems.DI_DOES_NOT_REFERENCE_SEQ_FLOW, null, bpmnModel.getFlowElement(bpmnReference),
+					    "Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
 				}
 			}
 		}
 	}
-
 }
