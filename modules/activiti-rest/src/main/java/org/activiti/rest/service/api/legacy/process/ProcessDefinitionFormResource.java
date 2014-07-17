@@ -35,10 +35,10 @@ public class ProcessDefinitionFormResource extends SecuredResource {
     String processDefinitionId = (String) getRequest().getAttributes().get("processDefinitionId");
     Object form = ActivitiUtil.getFormService().getRenderedStartForm(processDefinitionId);
     InputStream is = null;
-    if (form != null && form instanceof String) {
+    if (form instanceof String) {
       is = new ByteArrayInputStream(((String) form).getBytes());
     }
-    else if (form != null && form instanceof InputStream) {
+    else if (form instanceof InputStream) {
       is = (InputStream) form;
     }
     if (is != null) {
