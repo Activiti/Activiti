@@ -66,6 +66,18 @@ public interface DelegateTask extends VariableScope {
   
   /** The id of the activity in the process defining this task or null if this is not related to a process */
   String getTaskDefinitionKey();
+
+  /** Indicated whether this task is suspended or not. */
+  boolean isSuspended();
+
+  /** The tenant identifier of this task */
+  String getTenantId();
+
+  /** The form key for the user task */
+  String getFormKey();
+
+  /** Change the form key of the task */
+  void setFormKey(String formKey);
   
   /** Returns the execution currently at the task. */
   DelegateExecution getExecution();
