@@ -27,11 +27,10 @@ public class GetEventLogEntriesCmd implements Command<List<EventLogEntry>> {
 	public List<EventLogEntry> execute(CommandContext commandContext) {
 		if (startLogNr == null) {
 			return commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
-		} else {
-			return commandContext.getEventLogEntryEntityManager().findEventLogEntries(
-					startLogNr != null ? startLogNr : 0,
-					pageSize != null ? pageSize : -1);
 		}
+		return commandContext.getEventLogEntryEntityManager().findEventLogEntries(
+					startLogNr,
+					pageSize != null ? pageSize : -1);
 	}
 
 }

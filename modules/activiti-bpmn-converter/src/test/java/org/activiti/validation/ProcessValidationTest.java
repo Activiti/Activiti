@@ -13,12 +13,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.validation.ProcessValidator;
-import org.activiti.validation.ProcessValidatorFactory;
-import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorSetNames;
-import org.activiti.validation.validator.ValidatorSetFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +47,7 @@ public class ProcessValidationTest {
 	@Test
 	public void verifyValidation() {
 		List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-		Assert.assertEquals(65, allErrors.size());
+		Assert.assertEquals(66, allErrors.size());
 		
 		String setName = ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS; // shortening it a bit
 		

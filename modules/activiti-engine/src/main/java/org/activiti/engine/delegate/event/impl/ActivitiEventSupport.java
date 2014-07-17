@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class that allows adding and removing event-listeners and dispatching events
+ * Class that allows adding and removing event listeners and dispatching events
  * to the appropriate listeners.
  * 
  * @author Frederik Heremans
@@ -59,10 +59,11 @@ public class ActivitiEventSupport {
 
 		if (types == null || types.length == 0) {
 			addEventListener(listenerToAdd);
-		}
-
-		for (ActivitiEventType type : types) {
-			addTypedEventListener(listenerToAdd, type);
+		
+		} else {
+  		for (ActivitiEventType type : types) {
+  			addTypedEventListener(listenerToAdd, type);
+  		}
 		}
 	}
 
