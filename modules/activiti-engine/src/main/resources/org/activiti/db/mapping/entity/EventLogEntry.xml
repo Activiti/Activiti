@@ -84,7 +84,7 @@
     <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR"/>
     <result property="timeStamp" column="TIME_STAMP_" jdbcType="TIMESTAMP"/>
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
-    <result property="dataBytes" column="DATA_" jdbcType="BINARY"/>
+    <result property="data" column="DATA_" jdbcType="BINARY"/>
     <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR"/>
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP"/>
     <result property="isProcessed" column="IS_PROCESSED_" jdbcType="INTEGER"/>
