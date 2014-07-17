@@ -32,7 +32,7 @@ public class EventLogEntryEntity implements PersistentObject, EventLogEntry {
 	protected String taskId;
 	protected Date timeStamp;
 	protected String userId;
-	protected String data;
+	protected byte[] data;
 	protected String lockOwner;
 	protected String lockTime;
 	protected int isProcessed;
@@ -119,22 +119,14 @@ public class EventLogEntryEntity implements PersistentObject, EventLogEntry {
 		this.userId = userId;
 	}
 
-	public String getData() {
+	public byte[] getData() {
 		return data;
 	}
-	
-	public byte[] getDataBytes() {
-		return (data != null ? data.getBytes() : null);
-	}
-	
-	public void setDataBytes(byte[] dataBytes) {
-		data = dataBytes != null ? new String(dataBytes) : null;
-	}
 
-	public void setData(String data) {
+	public void setData(byte[] data) {
 		this.data = data;
 	}
-	
+
 	public String getLockOwner() {
 		return lockOwner;
 	}

@@ -50,7 +50,7 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
 				putInMapIfNotNull(data, "userId", userId);
 			}
 			
-			eventLogEntry.setData(objectMapper.writeValueAsString(data));
+			eventLogEntry.setData(objectMapper.writeValueAsBytes(data));
 		
 			return eventLogEntry;
 			

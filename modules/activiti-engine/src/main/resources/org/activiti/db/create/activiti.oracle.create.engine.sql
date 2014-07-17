@@ -174,6 +174,24 @@ create table ACT_RU_EVENT_SUBSCR (
     primary key (ID_)
 );
 
+create table ACT_EVT_LOG (
+    LOG_NR_ NUMBER(19),
+    TYPE_ NVARCHAR2(64),
+    PROC_DEF_ID_ NVARCHAR2(64),
+    PROC_INST_ID_ NVARCHAR2(64),
+    EXECUTION_ID_ NVARCHAR2(64),
+    TASK_ID_ NVARCHAR2(64),
+    TIME_STAMP_ TIMESTAMP(6) not null,
+    USER_ID_ NVARCHAR2(255),
+    DATA_ BLOB,
+    LOCK_OWNER_ NVARCHAR2(255),
+    LOCK_TIME_ TIMESTAMP(6) null,
+    IS_PROCESSED_ NUMBER(3) default 0,
+    primary key (LOG_NR_)
+);
+
+create sequence act_evt_log_seq;
+
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
 create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);

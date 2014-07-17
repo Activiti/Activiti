@@ -23,6 +23,6 @@ public interface EventLogEntry {
 		
 		String getUserId();
 		
-		String getData();
+		byte[] getData();
 		
 }
