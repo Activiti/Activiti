@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
@@ -84,6 +85,9 @@ public interface DelegateTask extends VariableScope {
   
   /** Returns the event name which triggered the task listener to fire for this task. */
   String getEventName();
+
+  /** The current {@link org.activiti.engine.task.DelegationState} for this task. */
+  DelegationState getDelegationState();
   
   /** Adds the given user as a candidate user to this task. */
   void addCandidateUser(String userId);
