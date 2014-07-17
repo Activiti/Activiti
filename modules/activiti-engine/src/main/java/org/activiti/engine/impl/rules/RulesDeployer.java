@@ -35,9 +35,11 @@ import org.slf4j.LoggerFactory;
  */
 public class RulesDeployer implements Deployer {
   
-  private static Logger log = LoggerFactory.getLogger(RulesDeployer.class);
+  private static final Logger log = LoggerFactory.getLogger(RulesDeployer.class);
 
   public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
+    log.debug("Processing deployment {}", deployment.getName());
+    
     KnowledgeBuilder knowledgeBuilder = null;
 
     DeploymentManager deploymentManager = Context
@@ -46,7 +48,7 @@ public class RulesDeployer implements Deployer {
     
     Map<String, ResourceEntity> resources = deployment.getResources();
     for (String resourceName : resources.keySet()) {
-      log.info("Processing resource {}", resourceName);
+      log.debug("Processing resource {}", resourceName);
       if (resourceName.endsWith(".drl")) { // is only parsing .drls sufficient? what about other rule dsl's? (@see ResourceType)
         if (knowledgeBuilder==null) {
           knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
