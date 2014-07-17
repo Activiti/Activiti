@@ -170,6 +170,12 @@ public enum ActivitiEventType {
 	 * for the activity corresponding to the task. 
 	 */
 	TASK_COMPLETED,
+  
+    /**
+     * A task was time outed. After the timer fired event user task timeout is fired in the case when timer is
+     * associated with task.
+     */
+    TASK_TIMEOUT,
 	
 	/**
 	 * A new membership has been created.
