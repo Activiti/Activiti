@@ -398,7 +398,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Complete SubTask", currentTask.getName());
 
     // verify current scoped variables - includes subprocess variables
-    variables = runtimeService.getVariables(pi.getId());
+    variables = runtimeService.getVariables(currentTask.getExecutionId());
     assertEquals(3, variables.size());
 
     varNameIt = variables.keySet().iterator();
