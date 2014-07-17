@@ -474,11 +474,7 @@ public class BpmnParse implements BpmnXMLConstants {
         		LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
         	}	
         } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)) {
-          if (bpmnModel.getFlowLocationMap().get(bpmnReference).size() > 0) {
-            LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
-          } else {
-            LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
-          }
+          LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
         }
       }
       
