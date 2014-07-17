@@ -180,12 +180,20 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   }
   
   public static boolean writeExtensionElements(BaseElement baseElement, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+    return didWriteExtensionStartElement = writeExtensionElements(baseElement, didWriteExtensionStartElement, null, xtw);
+  }
+ 
+  public static boolean writeExtensionElements(BaseElement baseElement, boolean didWriteExtensionStartElement, Map<String, String> namespaceMap, XMLStreamWriter xtw) throws Exception {
     if (baseElement.getExtensionElements().size() > 0) {
       if (didWriteExtensionStartElement == false) {
         xtw.writeStartElement(ELEMENT_EXTENSIONS);
         didWriteExtensionStartElement = true;
       }
-      Map<String, String> namespaceMap = new HashMap<String, String>();
+      
+      if (namespaceMap == null) {
+        namespaceMap = new HashMap<String, String>();
+      }
+      
       for (List<ExtensionElement> extensionElements : baseElement.getExtensionElements().values()) {
         for (ExtensionElement extensionElement : extensionElements) {
           writeExtensionElement(extensionElement, namespaceMap, xtw);
