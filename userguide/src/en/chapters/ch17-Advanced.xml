@@ -482,7 +482,7 @@ INFO  org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl  - class org.a
 	       and provided to an <emphasis>org.activiti.engine.impl.event.logger.EventFlusher</emphasis> which will flush this data to somewhere else.
 	       By default, simple database-backed event handlers/flusher is used, which serializes the said map to JSON using Jackson
 	       and stores it in the database as a <emphasis>EventLogEntryEntity</emphasis> instance.  The table required for this database logging is 
-	       created by default (called <emphasis>ACT_HI_EVT_LOG</emphasis>). This table can be deleted
+	       created by default (called <emphasis>ACT_EVT_LOG</emphasis>). This table can be deleted
            if the event logging is not used.
 	   </para>
 	   

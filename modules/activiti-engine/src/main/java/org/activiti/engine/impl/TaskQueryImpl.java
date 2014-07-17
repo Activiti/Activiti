@@ -94,7 +94,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public TaskQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
-  
+
   public TaskQueryImpl taskId(String taskId) {
     if (taskId == null) {
       throw new ActivitiIllegalArgumentException("Task id is null");
@@ -254,9 +254,6 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     if (candidateUser != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
-    }
-    if (candidateGroups != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
     bothCandidateAndAssigned = true;
     this.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
