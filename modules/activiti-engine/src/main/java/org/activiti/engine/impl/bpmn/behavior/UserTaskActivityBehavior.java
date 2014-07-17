@@ -15,7 +15,10 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -173,7 +176,51 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         }
       }
     }
-  }
+
+    if (!taskDefinition.getCustomUserIdentityLinkExpressions().isEmpty()) {
+      Map<String, Set<Expression>> identityLinks = taskDefinition.getCustomUserIdentityLinkExpressions();
+      for (String identityLinkType : identityLinks.keySet()) {
+        for (Expression idExpression : identityLinks.get(identityLinkType) ) {
+          Object value = idExpression.getValue(execution);
+          if (value instanceof String) {
+            List<String> userIds = extractCandidates((String) value);
+            for (String userId : userIds) {
+              task.addUserIdentityLink(userId, identityLinkType);
+            }
+          } else if (value instanceof Collection) {
+            Iterator userIdSet = ((Collection) value).iterator();
+            while (userIdSet.hasNext()) {
+              task.addUserIdentityLink((String)userIdSet.next(), identityLinkType);
+            }
+          } else {
+            throw new ActivitiException("Expression did not resolve to a string or collection of strings");
+          }
+        }
+      }
+    }
+
+    if (!taskDefinition.getCustomGroupIdentityLinkExpressions().isEmpty()) {
+      Map<String, Set<Expression>> identityLinks = taskDefinition.getCustomGroupIdentityLinkExpressions();
+      for (String identityLinkType : identityLinks.keySet()) {
+        for (Expression idExpression : identityLinks.get(identityLinkType) ) {
+          Object value = idExpression.getValue(execution);
+          if (value instanceof String) {
+            List<String> groupIds = extractCandidates((String) value);
+            for (String groupId : groupIds) {
+              task.addGroupIdentityLink(groupId, identityLinkType);
+            }
+          } else if (value instanceof Collection) {
+            Iterator groupIdSet = ((Collection) value).iterator();
+            while (groupIdSet.hasNext()) {
+              task.addGroupIdentityLink((String)groupIdSet.next(), identityLinkType);
+            }
+          } else {
+            throw new ActivitiException("Expression did not resolve to a string or collection of strings");
+          }
+        }
+      }
+    }
+}
 
   /**
    * Extract a candidate list from a string. 
