@@ -20,6 +20,8 @@ import org.activiti.engine.form.AbstractFormType;
  * @author Joram Barrez
  */
 public class MonthFormType extends AbstractFormType {
+	
+  private static final long serialVersionUID = 1L;
 
   public static final String TYPE_NAME = "month";
   

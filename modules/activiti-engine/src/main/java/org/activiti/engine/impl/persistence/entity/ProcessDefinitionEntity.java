@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,12 +67,17 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
   protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
   protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
-  // TODO: serialisation support?
   protected transient ActivitiEventSupport eventSupport;
   
   public ProcessDefinitionEntity() {
     super(null);
     eventSupport = new ActivitiEventSupport();
+  }
+  
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+	in.defaultReadObject();
+    eventSupport = new ActivitiEventSupport();
+
   }
   
   public ExecutionEntity createProcessInstance(String businessKey, ActivityImpl initial) {
