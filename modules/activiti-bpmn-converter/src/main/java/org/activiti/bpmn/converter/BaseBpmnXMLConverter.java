@@ -164,7 +164,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       }
       if (StringUtils.isNotEmpty(activity.getDefaultFlow())) {
         FlowElement defaultFlowElement = model.getFlowElement(activity.getDefaultFlow());
-        if (defaultFlowElement != null && defaultFlowElement instanceof SequenceFlow) {
+        if (defaultFlowElement instanceof SequenceFlow) {
           writeDefaultAttribute(ATTRIBUTE_DEFAULT, activity.getDefaultFlow(), xtw);
         }
       }
@@ -180,7 +180,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       }
       if (StringUtils.isNotEmpty(gateway.getDefaultFlow())) {
         FlowElement defaultFlowElement = model.getFlowElement(gateway.getDefaultFlow());
-        if (defaultFlowElement != null && defaultFlowElement instanceof SequenceFlow) {
+        if (defaultFlowElement instanceof SequenceFlow) {
           writeDefaultAttribute(ATTRIBUTE_DEFAULT, gateway.getDefaultFlow(), xtw);
         }
       }

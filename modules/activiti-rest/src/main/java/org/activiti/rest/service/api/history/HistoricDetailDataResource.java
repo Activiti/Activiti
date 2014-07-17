@@ -78,7 +78,7 @@ public class HistoricDetailDataResource extends SecuredResource {
     Object value = null;
     HistoricVariableUpdate variableUpdate = null;
     HistoricDetail detailObject = ActivitiUtil.getHistoryService().createHistoricDetailQuery().id(detailId).singleResult();
-    if (detailObject != null && detailObject instanceof HistoricVariableUpdate) {
+    if (detailObject instanceof HistoricVariableUpdate) {
       variableUpdate = (HistoricVariableUpdate) detailObject;
       value = variableUpdate.getValue();
     }

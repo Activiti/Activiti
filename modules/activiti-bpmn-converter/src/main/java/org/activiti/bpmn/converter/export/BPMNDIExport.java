@@ -53,7 +53,7 @@ public class BPMNDIExport implements BpmnXMLConstants {
         
         GraphicInfo graphicInfo = model.getGraphicInfo(elementId);
         FlowElement flowElement = model.getFlowElement(elementId);
-        if (flowElement != null && flowElement instanceof SubProcess && graphicInfo.getExpanded() != null) {
+        if (flowElement instanceof SubProcess && graphicInfo.getExpanded() != null) {
           xtw.writeAttribute(ATTRIBUTE_DI_IS_EXPANDED, String.valueOf(graphicInfo.getExpanded()));
         }
         

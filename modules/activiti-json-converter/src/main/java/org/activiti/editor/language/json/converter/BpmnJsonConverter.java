@@ -580,11 +580,11 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       } else if (flowElement instanceof SequenceFlow) {
     	SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
     	FlowElement sourceFlowElement = process.getFlowElement(sequenceFlow.getSourceRef()) ;
-    	if(sourceFlowElement != null && sourceFlowElement instanceof FlowNode) {
+    	if(sourceFlowElement instanceof FlowNode) {
     	  ((FlowNode) sourceFlowElement).getOutgoingFlows().add(sequenceFlow);
     	}
     	FlowElement targerFlowElement = process.getFlowElement(sequenceFlow.getTargetRef()) ;
-    	if(targerFlowElement != null && targerFlowElement instanceof FlowNode) {
+    	if(targerFlowElement instanceof FlowNode) {
     	  ((FlowNode) targerFlowElement).getIncomingFlows().add(sequenceFlow);
     	}
 	  }
