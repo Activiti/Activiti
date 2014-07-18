@@ -1162,6 +1162,16 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
               <row>
+                <entry>PROCESS_COMPLETED</entry>
+                <entry> A process has been completed. Dispatched after the last activity <literal>ACTIVITY_COMPLETED
+                  </literal> event. Process is completed when it reaches state in which process instance does not have
+                  any transition to take.
+                </entry>
+                <entry>
+                  <literal>org.activiti...ActivitiEntityEvent</literal>
+                </entry>
+              </row>
+              <row>
                 <entry>MEMBERSHIP_CREATED</entry>
                 <entry>A user has been added to a group. The event contains the id's of the user and group involved.</entry>
                 <entry><literal>org.activiti...ActivitiMembershipEvent</literal></entry>
