@@ -15,9 +15,11 @@ package org.activiti.engine.impl.jobexecutor;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,7 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
       if (commandContext.getEventDispatcher().isEnabled()) {
         commandContext.getEventDispatcher().dispatchEvent(
           ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
+        dispatchActivityTimeoutIfNeeded(job, execution, commandContext);
       }
 
       borderEventActivity
@@ -62,4 +65,27 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
       throw new ActivitiException("exception during timer execution: "+e.getMessage(), e);
     }
   }
+
+  protected void dispatchActivityTimeoutIfNeeded(JobEntity timerEntity, ExecutionEntity execution, CommandContext commandContext) {
+    ActivityImpl boundaryEventActivity = execution.getProcessDefinition().findActivity(timerEntity.getJobHandlerConfiguration());
+    ActivityBehavior boundaryActivityBehavior = boundaryEventActivity.getActivityBehavior();
+    if (boundaryActivityBehavior instanceof BoundaryEventActivityBehavior) {
+      BoundaryEventActivityBehavior boundaryEventActivityBehavior = (BoundaryEventActivityBehavior) boundaryActivityBehavior;
+      if (boundaryEventActivityBehavior.isInterrupting()) {
+         
+        ActivityImpl activity = execution.getActivity();
+        if (activity != null && activity.getActivityBehavior() != null) {
+          commandContext.getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, execution.getActivity().getId(),
+              (String) activity.getProperties().get("name"),
+              execution.getId(), 
+              execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
+              (String) activity.getProperties().get("type"), 
+              activity.getActivityBehavior().getClass().getCanonicalName()));
+        }
+      }
+    }
+  }
+  
+  
 }
