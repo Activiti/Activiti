@@ -22,13 +22,13 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Tom Baeyens
  */
-public class MessageAddedNotification implements TransactionListener {
+public class JobAddedNotification implements TransactionListener {
   
-  private static Logger log = LoggerFactory.getLogger(MessageAddedNotification.class);
+  private static Logger log = LoggerFactory.getLogger(JobAddedNotification.class);
   
   protected JobExecutor jobExecutor;
   
-  public MessageAddedNotification(JobExecutor jobExecutor) {
+  public JobAddedNotification(JobExecutor jobExecutor) {
     this.jobExecutor = jobExecutor;
   }
 
