@@ -7,9 +7,12 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
- * This class sends JOB_CANCELLED event and deletes job
+ * Command that dispatches a JOB_CANCELLED event and deletes the job entity.
  */
 public class CancelJobCmd extends DeleteJobCmd {
+    
+  private static final long serialVersionUID = 1L;
+
   public CancelJobCmd(String jobId) {
     super(jobId);
   }
