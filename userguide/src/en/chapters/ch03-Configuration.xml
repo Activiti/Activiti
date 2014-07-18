@@ -1088,6 +1088,16 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
               <row>
+                <entry>JOB_CANCELED</entry>
+                <entry>A job has been canceled. The event contains the job that was canceled. Job can be canceled by
+                  API call, task was completed and associated boundary timer was canceled, on the new process definition
+                  deployment.
+                </entry>
+                <entry>
+                  <literal>org.activiti...ActivitiEntityEvent</literal>
+                </entry>
+              </row>
+              <row>
                 <entry>ACTIVITY_STARTED</entry>
                 <entry>An activity is starting to execute</entry>
                 <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
