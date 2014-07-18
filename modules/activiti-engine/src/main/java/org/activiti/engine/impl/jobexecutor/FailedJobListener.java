@@ -40,11 +40,12 @@ public class FailedJobListener implements TransactionListener {
   }
   
   public void execute(CommandContext commandContext) {
+    CommandConfig commandConfig = commandExecutor.getDefaultConfig().transactionRequiresNew();
 	  FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
 	  Command<Object> cmd = failedJobCommandFactory.getCommand(jobId, exception);
 
 	  log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
-	  commandExecutor.execute(cmd);
+	  commandExecutor.execute(commandConfig, cmd);
   }
 
 }

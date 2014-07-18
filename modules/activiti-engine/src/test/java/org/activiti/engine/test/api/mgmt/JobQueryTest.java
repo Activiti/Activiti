@@ -232,7 +232,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     
     ProcessInstance processInstance = startProcessInstanceWithFailingJob();
     
-    query = managementService.createJobQuery().withException();
+    query = managementService.createJobQuery().processInstanceId(processInstance.getId()).withException();
     verifyFailedJob(query, processInstance);
   }
   
