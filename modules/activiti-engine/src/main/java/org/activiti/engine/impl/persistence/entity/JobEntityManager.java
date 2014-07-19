@@ -19,15 +19,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.jobexecutor.ExclusiveJobAddedNotification;
+import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
-import org.activiti.engine.impl.jobexecutor.MessageAddedNotification;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.runtime.Job;
 
@@ -53,13 +54,9 @@ public class JobEntityManager extends AbstractManager {
     pokeJobExecutor(timer);
   }
     
-  // Check if this timer fires before the next time the job executor will check for new timers to fire.
-  // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)
-  // and timers are usually set further in the future
+  // Check if this timer is before the current process engine time
   public void pokeJobExecutor(JobEntity job) {
-    JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
-    int waitTimeInMillis = jobExecutor.getWaitTimeInMillis();
-    if (job.getDuedate().getTime() < (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()+waitTimeInMillis)) {
+    if (job.getDuedate().getTime() <= (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime())) {
       hintJobExecutor(job);
     }
   }
@@ -67,19 +64,9 @@ public class JobEntityManager extends AbstractManager {
   protected void hintJobExecutor(JobEntity job) {  
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
     JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
-    TransactionListener transactionListener = null;
-    if (job.isExclusive() 
-            && jobExecutorContext != null 
-            && jobExecutorContext.isExecutingExclusiveJob()) {
-      // lock job & add to the queue of the current processor
-      Date currentTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-      job.setLockExpirationTime(new Date(currentTime.getTime() + jobExecutor.getLockTimeInMillis()));
-      job.setLockOwner(jobExecutor.getLockOwner());
-      transactionListener = new ExclusiveJobAddedNotification(job.getId());      
-    } else {
-      // notify job executor:      
-      transactionListener = new MessageAddedNotification(jobExecutor);
-    }
+
+    // notify job executor:      
+    TransactionListener transactionListener = new JobAddedNotification(jobExecutor);
     Context.getCommandContext()
       .getTransactionContext()
       .addTransactionListener(TransactionState.COMMITTED, transactionListener);
@@ -92,6 +79,10 @@ public class JobEntityManager extends AbstractManager {
       .findTimersByExecutionId(execution.getId());
     
     for (TimerEntity timer: timers) {
+      if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timer));
+      }
       timer.delete();
     }
   }

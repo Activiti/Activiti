@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -114,7 +114,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   @Override
   protected void tearDown() throws Exception {
     repositoryService.deleteDeployment(deploymentId, true);
-    commandExecutor.execute(new DeleteJobsCmd(messageId));
+    commandExecutor.execute(new CancelJobsCmd(messageId));
     super.tearDown();
   }
   
@@ -232,7 +232,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     
     ProcessInstance processInstance = startProcessInstanceWithFailingJob();
     
-    query = managementService.createJobQuery().withException();
+    query = managementService.createJobQuery().processInstanceId(processInstance.getId()).withException();
     verifyFailedJob(query, processInstance);
   }
   

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.IoUtil;
@@ -233,7 +233,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
   private void cleanDB() {
     String jobId = managementService.createJobQuery().singleResult().getId();
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    commandExecutor.execute(new DeleteJobsCmd(jobId));
+    commandExecutor.execute(new CancelJobsCmd(jobId));
   }
 
 }

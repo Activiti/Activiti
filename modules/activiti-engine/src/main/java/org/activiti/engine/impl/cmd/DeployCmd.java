@@ -13,11 +13,13 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
@@ -47,15 +49,31 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
     if ( deploymentBuilder.isDuplicateFilterEnabled() ) {
-      List<Deployment> deploymentList = commandContext
-          .getProcessEngineConfiguration().getRepositoryService().createDeploymentQuery()
-          .deploymentName(deployment.getName())
-          .deploymentTenantId(deployment.getTenantId())
-          .orderByDeploymentId().desc().list();
-        
+    	
+    	List<Deployment> existingDeployments = new ArrayList<Deployment>();
+      if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {
+      	DeploymentEntity existingDeployment = commandContext
+     			 .getDeploymentEntityManager()
+     			 .findLatestDeploymentByName(deployment.getName());
+      	if (existingDeployment != null) {
+      		existingDeployments.add(existingDeployment);
+      	}
+      } else {
+      	 List<Deployment> deploymentList = commandContext
+             .getProcessEngineConfiguration().getRepositoryService()
+             .createDeploymentQuery()
+             .deploymentName(deployment.getName())
+             .deploymentTenantId(deployment.getTenantId())
+             .orderByDeploymentId().desc().list();
+      	 
+      	 if (deploymentList.size() > 0) {
+      		 existingDeployments.addAll(deploymentList);
+      	 }
+      }
+      		
       DeploymentEntity existingDeployment = null;
-      if(!deploymentList.isEmpty()) {
-        existingDeployment = (DeploymentEntity) deploymentList.get(0);
+      if(!existingDeployments.isEmpty()) {
+        existingDeployment = (DeploymentEntity) existingDeployments.get(0);
       }
       
       if ( (existingDeployment!=null)

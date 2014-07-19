@@ -16,10 +16,13 @@ public interface Fields {
   String DESCRIPTION = "description";
   String DUE_DATE = "dueDate";
   String DURATION = "duration";
+  String ERROR_CODE = "errorCode";
   String END_TIME = "endTime";
   String EXECUTION_ID = "executionId";
   String FORM_KEY = "formKey";
   String ID = "id";
+  String MESSAGE_NAME = "messageName";
+  String MESSAGE_DATA = "messageData";
   String NAME = "name";
   String OWNER = "owner";
   String PRIORITY = "priority";
@@ -27,6 +30,8 @@ public interface Fields {
   String TASK_DEFINITION_KEY = "taskDefinitionKey";
   String PROCESS_INSTANCE_ID = "processInstanceId";
   String PROCESS_INSTANCE_NAME = "processInstanceName";
+  String SIGNAL_NAME = "signalName";
+  String SIGNAL_DATA = "signalData";
   String SOURCE_ACTIVITY_ID = "sourceActivityId";
   String SOURCE_ACTIVITY_NAME = "sourceActivityName";
   String SOURCE_ACTIVITY_TYPE ="sourceActivityType";

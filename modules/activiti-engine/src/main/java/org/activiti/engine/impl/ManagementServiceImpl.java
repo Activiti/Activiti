@@ -12,25 +12,10 @@
  */
 package org.activiti.engine.impl;
 
-import java.sql.Connection;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.event.EventLogEntry;
-import org.activiti.engine.impl.cmd.CustomSqlExecution;
-import org.activiti.engine.impl.cmd.DeleteEventLogEntry;
-import org.activiti.engine.impl.cmd.DeleteJobCmd;
-import org.activiti.engine.impl.cmd.ExecuteCustomSqlCmd;
-import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
-import org.activiti.engine.impl.cmd.GetEventLogEntriesCmd;
-import org.activiti.engine.impl.cmd.GetJobExceptionStacktraceCmd;
-import org.activiti.engine.impl.cmd.GetPropertiesCmd;
-import org.activiti.engine.impl.cmd.GetTableCountCmd;
-import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
-import org.activiti.engine.impl.cmd.GetTableNameCmd;
-import org.activiti.engine.impl.cmd.SetJobRetriesCmd;
+import org.activiti.engine.impl.cmd.*;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.Command;
@@ -39,6 +24,10 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePageQuery;
 import org.activiti.engine.runtime.JobQuery;
+
+import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -66,7 +55,7 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   }
   
   public void deleteJob(String jobId) {
-    commandExecutor.execute(new DeleteJobCmd(jobId));
+    commandExecutor.execute(new CancelJobCmd(jobId));
   }
 
   public void setJobRetries(String jobId, int retries) {

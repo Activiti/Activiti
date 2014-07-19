@@ -29,7 +29,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.jobexecutor.MessageAddedNotification;
+import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
@@ -109,7 +109,7 @@ public class JobRetryCmd implements Command<Object> {
     			ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
     }
     JobExecutor jobExecutor = commandContext.getProcessEngineConfiguration().getJobExecutor();
-    MessageAddedNotification messageAddedNotification = new MessageAddedNotification(jobExecutor);
+    JobAddedNotification messageAddedNotification = new JobAddedNotification(jobExecutor);
     TransactionContext transactionContext = commandContext.getTransactionContext();
     transactionContext.addTransactionListener(TransactionState.COMMITTED, messageAddedNotification);
 

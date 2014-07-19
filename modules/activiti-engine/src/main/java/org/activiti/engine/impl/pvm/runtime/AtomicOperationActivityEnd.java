@@ -69,6 +69,12 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
       execution.performOperation(ACTIVITY_END);
       
     } else if (execution.isProcessInstanceType()) {
+      // dispatch process completed event
+      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, execution));
+      }
+
       execution.performOperation(PROCESS_END);
     
     } else if (execution.isScope()) {
@@ -101,6 +107,12 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
               // we call end() because it sets isEnded on the execution
               parentScopeExecution.end(); 
           } else {
+            // dispatch process completed event
+            if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+              Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, execution));
+            }
+
         	  parentScopeExecution.performOperation(PROCESS_END);
           }
         } else {          	

@@ -22,6 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -173,6 +174,58 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     listener.clearEventsReceived();
   }
 
+  /**
+   * Test Start->End process on PROCESS_COMPLETED event
+   */
+  @Deployment(resources = {"org/activiti/engine/test/api/event/ProcessInstanceEventsTest.noneTaskProcess.bpmn20.xml"})
+  public void testProcessCompleted_StartEnd() throws Exception {
+    this.runtimeService.startProcessInstanceByKey("noneTaskProcess");
+
+    listener.checkEventCount(1, ActivitiEventType.PROCESS_COMPLETED);
+  }
+
+  /**
+   * Test Start->User Task  process on PROCESS_COMPLETED event
+   */
+  @Deployment(resources = {"org/activiti/engine/test/api/event/ProcessInstanceEventsTest.noEndProcess.bpmn20.xml"})
+  public void testProcessCompleted_NoEnd() throws Exception {
+    ProcessInstance noEndProcess = this.runtimeService.startProcessInstanceByKey("noEndProcess");
+    Task task = taskService.createTaskQuery().processInstanceId(noEndProcess.getId()).singleResult();
+    taskService.complete(task.getId());
+
+    listener.checkEventCount(1, ActivitiEventType.PROCESS_COMPLETED);
+  }
+
+  /**
+   * Test
+   *        +-->Task1
+   * Start-<>
+   *        +-->Task1
+   *
+   * process on PROCESS_COMPLETED event
+   */
+  @Deployment(resources = {"org/activiti/engine/test/api/event/ProcessInstanceEventsTest.parallelGatewayNoEndProcess.bpmn20.xml"})
+  public void testProcessCompleted_ParallelGatewayNoEnd() throws Exception {
+    this.runtimeService.startProcessInstanceByKey("noEndProcess");
+
+    listener.checkEventCount(1, ActivitiEventType.PROCESS_COMPLETED);
+  }
+
+  /**
+   * Test
+   *        +-->End1
+   * Start-<>
+   *        +-->End2
+   * <p/>
+   * process on PROCESS_COMPLETED event
+   */
+  @Deployment(resources = {"org/activiti/engine/test/api/event/ProcessInstanceEventsTest.parallelGatewayTwoEndsProcess.bpmn20.xml"})
+  public void testProcessCompleted_ParallelGatewayTwoEnds() throws Exception {
+    this.runtimeService.startProcessInstanceByKey("noEndProcess");
+
+    listener.checkEventCount(1, ActivitiEventType.PROCESS_COMPLETED);
+  }
+
   @Override
 	protected void initializeServices() {
 	  super.initializeServices();
@@ -221,6 +274,16 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
       return true;
     }
 
+    public void checkEventCount(int expectedCount, ActivitiEventType eventType) {// count timer cancelled events
+      int actualCount = 0;
+      List<ActivitiEvent> eventsReceived = listener.getEventsReceived();
+      for (ActivitiEvent eventReceived : eventsReceived) {
+        if (eventType.equals(eventReceived.getType())) {
+          actualCount++;
+        }
+      }
+      assertEquals(eventType.name() + " event was expected " + expectedCount + " times.", expectedCount, actualCount);
+    }
 
   }
 }
