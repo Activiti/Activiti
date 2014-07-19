@@ -1966,8 +1966,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 		return enableDatabaseEventLogging;
 	}
 
-	public void setEnableDatabaseEventLogging(boolean enableDatabaseEventLogging) {
+	public ProcessEngineConfigurationImpl setEnableDatabaseEventLogging(boolean enableDatabaseEventLogging) {
 		this.enableDatabaseEventLogging = enableDatabaseEventLogging;
+    return this;
 	}
 	
 }

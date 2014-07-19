@@ -24,6 +24,7 @@ public interface Fields {
   String OWNER = "owner";
   String PRIORITY = "priority";
   String PROCESS_DEFINITION_ID = "processDefinitionId";
+  String TASK_DEFINITION_KEY = "taskDefinitionKey";
   String PROCESS_INSTANCE_ID = "processInstanceId";
   String PROCESS_INSTANCE_NAME = "processInstanceName";
   String SOURCE_ACTIVITY_ID = "sourceActivityId";

@@ -41,6 +41,11 @@ public abstract class SimulationRunContext {
 	protected static ThreadLocal<Stack<EventCalendar>> eventCalendarThreadLocal = new ThreadLocal<Stack<EventCalendar>>();
 
   //
+  // Simulation run Id
+  //
+  protected static ThreadLocal<Stack<String>> simulationRunIdThreadLocal = new ThreadLocal<Stack<String>>();
+
+  //
   // Variable scope used for getting/setting variables to the simulationManager
   //
   protected static ThreadLocal<Stack<VariableScope>> executionThreadLocal = new ThreadLocal<Stack<VariableScope>>();
@@ -85,7 +90,19 @@ public abstract class SimulationRunContext {
 	  getStack(eventCalendarThreadLocal).push(eventCalendar);
 	}
 
-	public static void removeEventCalendar() {
+  public static String getSimulationRunId() {
+    Stack<String> stack = getStack(simulationRunIdThreadLocal);
+    if (stack.isEmpty()) {
+      return null;
+    }
+    return stack.peek();
+  }
+
+  public static void setSimulationRunId(String simulationRunId) {
+    getStack(simulationRunIdThreadLocal).push(simulationRunId);
+  }
+
+  public static void removeEventCalendar() {
 	  getStack(eventCalendarThreadLocal).pop();
 	}
 

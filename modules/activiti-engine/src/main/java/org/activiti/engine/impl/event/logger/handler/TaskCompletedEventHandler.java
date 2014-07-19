@@ -24,7 +24,8 @@ public class TaskCompletedEventHandler extends AbstractDatabaseEventLoggerEventH
 		Map<String, Object> data = new HashMap<String, Object>();
 		putInMapIfNotNull(data, Fields.ID, task.getId());
 		putInMapIfNotNull(data, Fields.NAME, task.getName());
-		putInMapIfNotNull(data, Fields.DESCRIPTION, task.getDescription());
+    putInMapIfNotNull(data, Fields.TASK_DEFINITION_KEY, task.getTaskDefinitionKey());
+    putInMapIfNotNull(data, Fields.DESCRIPTION, task.getDescription());
 		putInMapIfNotNull(data, Fields.ASSIGNEE, task.getAssignee());
 		putInMapIfNotNull(data, Fields.OWNER, task.getOwner());
 		putInMapIfNotNull(data, Fields.CATEGORY, task.getCategory());

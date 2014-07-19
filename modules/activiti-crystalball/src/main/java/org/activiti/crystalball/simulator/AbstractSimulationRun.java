@@ -32,6 +32,7 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
 
   private static Logger log = LoggerFactory.getLogger(AbstractSimulationRun.class);
 
+  protected String id;
   /**
    * Map for eventType -> event handlers to execute events on simulation engine
    */
