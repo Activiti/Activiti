@@ -14,6 +14,8 @@ package org.activiti.crystalball.simulator.impl.replay;
  */
 
 
+import java.util.Map;
+
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.SimulationEventHandler;
 import org.activiti.crystalball.simulator.SimulationRunContext;
@@ -23,8 +25,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 /**
  * complete user task handler for replay purposes
@@ -41,19 +41,30 @@ public class ReplayUserTaskCompleteEventHandler implements SimulationEventHandle
     String processInstanceId = (String) event.getProperty(EventLogUserTaskCompleteTransformer.PROCESS_INSTANCE_ID);
     String simulationRunId = SimulationRunContext.getSimulationRunId();
     ProcessInstance processInstance = SimulationRunContext.getRuntimeService().createProcessInstanceQuery().
-      variableValueEquals(StartReplayLogEventHandler.PROCESS_INSTANCE_ID, processInstanceId).
-      variableValueEquals(StartReplayLogEventHandler.SIMULATION_RUN_ID, simulationRunId).
-      singleResult();
+        variableValueEquals(StartReplayLogEventHandler.PROCESS_INSTANCE_ID, processInstanceId).
+        variableValueEquals(StartReplayLogEventHandler.SIMULATION_RUN_ID, simulationRunId).
+        singleResult();
     Task task = SimulationRunContext.getTaskService().createTaskQuery().
-      processInstanceId(processInstance.getId()).
-      taskDefinitionKey(taskDefinitionKey).
-      singleResult();
+        processInstanceId(processInstance.getId()).
+        taskDefinitionKey(taskDefinitionKey).
+        singleResult();
 
 		@SuppressWarnings("unchecked")
-		Map<String, Object> variables = (Map<String, Object>) event.getProperty("variables");		
-
-		SimulationRunContext.getTaskService().complete( task.getId(), variables );
-		log.debug( "completed {}, {}, {}", task, task.getName(), variables);
+		Map<String, Object> variables = (Map<String, Object>) event.getProperty(EventLogUserTaskCompleteTransformer.TASK_VARIABLES);		
+		if (variables != null) {
+		  if (event.getProperty(EventLogUserTaskCompleteTransformer.VARIABLES_LOCAL_SCOPE) != null && 
+		      ((Boolean) event.getProperty(EventLogUserTaskCompleteTransformer.VARIABLES_LOCAL_SCOPE)).booleanValue()) {
+		  
+		    SimulationRunContext.getTaskService().complete(task.getId(), variables, true);
+		      
+		  } else {
+		    SimulationRunContext.getTaskService().complete(task.getId(), variables);
+		  }
+		  log.debug( "completed {}, {}, {}", task, task.getName(), variables);
+		} else {
+		  SimulationRunContext.getTaskService().complete(task.getId());
+      log.debug( "completed {}, {}", task, task.getName());
+		}
 	}
 
 	@Override

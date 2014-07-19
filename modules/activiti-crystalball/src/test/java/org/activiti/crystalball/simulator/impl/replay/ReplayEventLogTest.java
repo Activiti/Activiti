@@ -14,23 +14,9 @@ package org.activiti.crystalball.simulator.impl.replay;
  */
 
 
-import org.activiti.crystalball.simulator.*;
-import org.activiti.crystalball.simulator.delegate.event.Function;
-import org.activiti.crystalball.simulator.delegate.event.impl.EventLogProcessInstanceCreateTransformer;
-import org.activiti.crystalball.simulator.delegate.event.impl.EventLogTransformer;
-import org.activiti.crystalball.simulator.delegate.event.impl.EventLogUserTaskCompleteTransformer;
-import org.activiti.crystalball.simulator.impl.StartReplayLogEventHandler;
-import org.activiti.engine.ManagementService;
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.event.EventLogEntry;
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.el.NoExecutionVariableScope;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +24,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
+import org.activiti.crystalball.simulator.ReplaySimulationRun;
+import org.activiti.crystalball.simulator.SimpleEventCalendar;
+import org.activiti.crystalball.simulator.SimulationDebugger;
+import org.activiti.crystalball.simulator.SimulationEvent;
+import org.activiti.crystalball.simulator.SimulationEventComparator;
+import org.activiti.crystalball.simulator.SimulationEventHandler;
+import org.activiti.crystalball.simulator.delegate.event.Function;
+import org.activiti.crystalball.simulator.delegate.event.impl.EventLogProcessInstanceCreateTransformer;
+import org.activiti.crystalball.simulator.delegate.event.impl.EventLogTransformer;
+import org.activiti.crystalball.simulator.delegate.event.impl.EventLogUserTaskCompleteTransformer;
+import org.activiti.crystalball.simulator.impl.StartReplayLogEventHandler;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.event.EventLogEntry;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.el.NoExecutionVariableScope;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.junit.Test;
 
 /**
  * @author martin.grofcik
@@ -56,6 +65,8 @@ public class ReplayEventLogTest {
   private static final String BUSINESS_KEY = "testBusinessKey";
   private static final String TEST_VALUE = "TestValue";
   private static final String TEST_VARIABLE = "testVariable";
+  private static final String TASK_TEST_VALUE = "TaskTestValue";
+  private static final String TASK_TEST_VARIABLE = "taskTestVariable";
 
   private static final String THE_USERTASK_PROCESS = "org/activiti/crystalball/simulator/impl/playback/PlaybackProcessStartTest.testUserTask.bpmn20.xml";
 
@@ -66,6 +77,7 @@ public class ReplayEventLogTest {
     TaskService taskService = processEngine.getTaskService();
     RuntimeService runtimeService = processEngine.getRuntimeService();
     ManagementService managementService = processEngine.getManagementService();
+    HistoryService historyService = processEngine.getHistoryService();
 
     // record events
     Map<String, Object> variables = new HashMap<String, Object>();
@@ -74,7 +86,9 @@ public class ReplayEventLogTest {
 
     Task task = taskService.createTaskQuery().taskDefinitionKey("userTask").singleResult();
     TimeUnit.MILLISECONDS.sleep(50);
-    taskService.complete(task.getId());
+    variables = new HashMap<String, Object>();
+    variables.put(TASK_TEST_VARIABLE, TASK_TEST_VALUE);
+    taskService.complete(task.getId(), variables);
 
     // transform log events
     List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);
@@ -98,7 +112,12 @@ public class ReplayEventLogTest {
     simRun.step();
 
     // replay process was started
-    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey(USERTASK_PROCESS).count());
+    ProcessInstance replayProcessInstance = runtimeService.createProcessInstanceQuery()
+        .processDefinitionKey(USERTASK_PROCESS)
+        .singleResult();
+    assertNotNull(replayProcessInstance);
+    assertTrue(replayProcessInstance.getId().equals(processInstance.getId()) == false);
+    assertEquals(TEST_VALUE, runtimeService.getVariable(replayProcessInstance.getId(), TEST_VARIABLE));
     // there should be one task
     assertEquals(1, taskService.createTaskQuery().taskDefinitionKey("userTask").count());
 
@@ -107,6 +126,12 @@ public class ReplayEventLogTest {
     // userTask was completed - replay process was finished
     assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey(USERTASK_PROCESS).count());
     assertEquals(0, taskService.createTaskQuery().taskDefinitionKey("userTask").count());
+    HistoricVariableInstance variableInstance = historyService.createHistoricVariableInstanceQuery()
+        .processInstanceId(replayProcessInstance.getId())
+        .variableName(TASK_TEST_VARIABLE)
+        .singleResult();
+    assertNotNull(variableInstance);
+    assertEquals(TASK_TEST_VALUE, variableInstance.getValue());
 
     // close simulation
     simRun.close();

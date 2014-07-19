@@ -14,14 +14,14 @@ package org.activiti.crystalball.simulator.impl;
  */
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.SimulationEventHandler;
 import org.activiti.crystalball.simulator.SimulationRunContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class schedules replay start simulation event and takes care about process start and
@@ -54,16 +54,17 @@ public class StartReplayLogEventHandler implements SimulationEventHandler {
 
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void handle(SimulationEvent event) {
     // start process now
     String processDefinitionId = (String) event.getProperty(processToStartIdKey);
     String businessKey = (String) event.getProperty(this.businessKey);
-    @SuppressWarnings("unchecked")
     Map<String, Object> variables = new HashMap<String, Object>();
     Map<String, Object> processVariables = (Map<String, Object>) event.getProperty(variablesKey);
-    if (processVariables != null)
+    if (processVariables != null) {
       variables.putAll(processVariables);
+    }
     variables.put(PROCESS_INSTANCE_ID, processInstanceId);
     variables.put(SIMULATION_RUN_ID, SimulationRunContext.getSimulationRunId());
 

@@ -14,17 +14,18 @@ package org.activiti.crystalball.simulator.delegate.event.impl;
  */
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.crystalball.simulator.CrystalballException;
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.event.logger.handler.Fields;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author martin.grofcik
@@ -34,11 +35,13 @@ public class EventLogUserTaskCompleteTransformer extends EventLog2SimulationEven
   public static final String PROCESS_INSTANCE_ID = "processInstanceId";
   public static final String TASK_DEFINITION_KEY = "taskDefinitionKey";
   public static final String TASK_VARIABLES = "taskVariables";
+  public static final String VARIABLES_LOCAL_SCOPE = "variablesLocalScope";
 
   public EventLogUserTaskCompleteTransformer(String simulationEventType) {
     super(simulationEventType);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public SimulationEvent apply(EventLogEntry event) {
     if (ActivitiEventType.TASK_COMPLETED.toString().equals(event.getType())) {
@@ -51,16 +54,25 @@ public class EventLogUserTaskCompleteTransformer extends EventLog2SimulationEven
         throw new CrystalballException("unable to parse JSON string.", e);
       }
       String taskIdValue = (String) data.get(Fields.ACTIVITY_ID);
-//      Variables are missing
+      boolean localScope = false;
+      Map<String, Object> variableMap = null;
+      if (data.get(Fields.VARIABLES) != null) {
+        variableMap = (Map<String, Object>) data.get(Fields.VARIABLES);
+      } else {
+        variableMap = (Map<String, Object>) data.get(Fields.LOCAL_VARIABLES);
+        localScope = true;
+      }
       String taskDefinitionKeyValue = (String) data.get(Fields.TASK_DEFINITION_KEY);
-
-
 
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put("taskId", taskIdValue);
       properties.put(TASK_DEFINITION_KEY, taskDefinitionKeyValue);
       properties.put(PROCESS_INSTANCE_ID, event.getProcessInstanceId());
-//      properties.put(TASK_VARIABLES, task.getProcessVariables());
+      if (variableMap != null) {
+        properties.put(TASK_VARIABLES, variableMap);
+        properties.put(VARIABLES_LOCAL_SCOPE, localScope);
+      }
+      
       return
           new SimulationEvent.Builder(this.simulationEventType).
             priority((int) event.getLogNumber()).
