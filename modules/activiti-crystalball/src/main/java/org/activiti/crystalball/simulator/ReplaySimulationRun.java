@@ -43,6 +43,7 @@ public class ReplaySimulationRun extends AbstractSimulationRun {
   protected void initSimulationRunContext(VariableScope execution) {
     SimulationRunContext.setEventCalendar(eventCalendar);
     SimulationRunContext.setProcessEngine(processEngine);
+    SimulationRunContext.setSimulationRunId(processEngine.getProcessEngineConfiguration().getIdGenerator().getNextId());
   }
 
   /**
