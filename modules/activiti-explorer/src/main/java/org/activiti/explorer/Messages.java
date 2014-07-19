@@ -302,6 +302,7 @@ public interface Messages {
   String MGMT_MENU_USERS = "management.menu.users";
   String MGMT_MENU_GROUPS = "management.menu.groups";
   String MGMT_MENU_ADMINISTRATION = "management.menu.admin";
+  String MGMT_MENU_CRYSTALBALL = "management.menu.crystalball";
   
   // Job page
   String JOB_EXECUTE = "job.execute";

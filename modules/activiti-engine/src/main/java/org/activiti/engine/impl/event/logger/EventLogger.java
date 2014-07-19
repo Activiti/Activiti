@@ -102,7 +102,7 @@ public class EventLogger implements ActivitiEventListener {
 
 					    @Override
 					    public void closed(CommandContext commandContext) {
-						    // For those who are interested: we can now broacast the events were added
+						    // For those who are interested: we can now broadcast the events were added
 								if (listeners != null) {
 									for (EventLoggerListener listener : listeners) {
 										listener.eventsAdded(EventLogger.this);

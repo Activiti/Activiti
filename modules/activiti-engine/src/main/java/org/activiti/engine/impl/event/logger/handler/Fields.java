@@ -37,6 +37,8 @@ public interface Fields {
   String TENANT_ID = "tenantId";
   String TIMESTAMP = "timeStamp";
   String USER_ID = "userId";
+  String LOCAL_VARIABLES = "localVariables";
+  String VARIABLES = "variables";
   String VALUE = "value";
   String VALUE_BOOLEAN = "booleanValue";
   String VALUE_DATE = "dateValue";

@@ -3,7 +3,7 @@ package org.activiti.engine.impl.event.logger.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityWithVariablesEvent;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -13,10 +13,12 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  */
 public class TaskCompletedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 	
-	@Override
+  @Override
 	public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
 
-		TaskEntity task = (TaskEntity) ((ActivitiEntityEvent) event).getEntity();
+	  ActivitiEntityWithVariablesEvent eventWithVariables = (ActivitiEntityWithVariablesEvent) event;
+		TaskEntity task = (TaskEntity) eventWithVariables.getEntity();
+		
 		long duration = timeStamp.getTime() - task.getCreateTime().getTime();
 		
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -35,6 +37,18 @@ public class TaskCompletedEventHandler extends AbstractDatabaseEventLoggerEventH
 		putInMapIfNotNull(data, Fields.PROCESS_INSTANCE_ID, task.getProcessInstanceId());
 		putInMapIfNotNull(data, Fields.EXECUTION_ID, task.getExecutionId());
 		putInMapIfNotNull(data, Fields.TENANT_ID, task.getTenantId());
+		
+		if (eventWithVariables.getVariables() != null && eventWithVariables.getVariables().size() > 0) {
+		  Map<String, Object> variableMap = new HashMap<String, Object>();
+		  for (Object variableName : eventWithVariables.getVariables().keySet()) {
+        putInMapIfNotNull(variableMap, (String) variableName, eventWithVariables.getVariables().get(variableName));
+      }
+		  if (eventWithVariables.isLocalScope()) {
+		    putInMapIfNotNull(data, Fields.LOCAL_VARIABLES, variableMap);
+		  } else {
+		    putInMapIfNotNull(data, Fields.VARIABLES, variableMap);
+		  }
+		}
 		
     return createEventLogEntry(task.getProcessDefinitionId(), task.getProcessInstanceId(), task.getExecutionId(), task.getId(), data);
 	}

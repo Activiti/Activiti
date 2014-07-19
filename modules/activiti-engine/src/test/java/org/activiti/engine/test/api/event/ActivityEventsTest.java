@@ -76,7 +76,8 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 		
 		// Complete usertask
 		listener.clearEventsReceived();
-		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId())
+		Task task = taskService.createTaskQuery()
+		    .processInstanceId(processInstance.getId())
 				.singleResult();
 		assertNotNull(task);
 		taskService.complete(task.getId());

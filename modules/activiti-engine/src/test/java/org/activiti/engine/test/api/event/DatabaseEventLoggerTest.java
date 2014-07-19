@@ -52,7 +52,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	public void testDatabaseEvents() throws JsonParseException, JsonMappingException, IOException {
 		
 		// Run process to gather data
-		runtimeService.startProcessInstanceByKey("DatabaseEventLoggerProcess", CollectionUtil.singletonMap("testVar", "helloWorld≈t"));
+		runtimeService.startProcessInstanceByKey("DatabaseEventLoggerProcess", CollectionUtil.singletonMap("testVar", "helloWorld"));
 		
 		// Verify event log entries
 		List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);
@@ -66,7 +66,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			if (i == 0) {
 				
 				assertNotNull(entry.getType());
-				assertEquals(entry.getType(), "VARIABLE_CREATED");
+				assertEquals(entry.getType(), ActivitiEventType.VARIABLE_CREATED.name());
 				assertNotNull(entry.getProcessDefinitionId());
 				assertNotNull(entry.getProcessInstanceId());
 				assertNotNull(entry.getTimeStamp());
@@ -93,6 +93,11 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 				assertNotNull(data.get(Fields.ID));
 				assertNotNull(data.get(Fields.PROCESS_DEFINITION_ID));
 				assertNotNull(data.get(Fields.TENANT_ID));
+				
+				@SuppressWarnings("unchecked")
+        Map<String, Object> variableMap = (Map<String, Object>) data.get(Fields.VARIABLES);
+        assertEquals(1, variableMap.size());
+        assertEquals("helloWorld", variableMap.get("testVar"));
 				
 				assertFalse(data.containsKey(Fields.NAME));
 				assertFalse(data.containsKey(Fields.BUSINESS_KEY));
@@ -203,22 +208,24 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 		// Completing two tasks
 		for (Task task : taskService.createTaskQuery().list()) {
 			Authentication.setAuthenticatedUserId(task.getAssignee());
-			taskService.complete(task.getId());
+			Map<String, Object> varMap = new HashMap<String, Object>();
+	    varMap.put("test", "test");
+			taskService.complete(task.getId(), varMap);
 			Authentication.setAuthenticatedUserId(null);
 		}
 		
 		// Verify events
 		eventLogEntries = managementService.getEventLogEntries(lastLogNr, 100L);
-		assertEquals(13, eventLogEntries.size());
+		assertEquals(15, eventLogEntries.size());
 		
 		for (int i=0; i< eventLogEntries.size(); i++) {
 			
 			EventLogEntry entry = eventLogEntries.get(i);
 			
 			// Task completion 
-			if (i == 0 || i == 4) {
+			if (i == 1 || i == 6) {
 				assertNotNull(entry.getType());
-				assertEquals(entry.getType(), ActivitiEventType.TASK_COMPLETED.name());
+				assertEquals(ActivitiEventType.TASK_COMPLETED.name(), entry.getType());
 				assertNotNull(entry.getProcessDefinitionId());
 				assertNotNull(entry.getProcessInstanceId());
 				assertNotNull(entry.getExecutionId());
@@ -234,6 +241,10 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 				assertNotNull(data.get(Fields.EXECUTION_ID));
 				assertNotNull(data.get(Fields.TENANT_ID));
 				assertNotNull(data.get(Fields.USER_ID));
+				@SuppressWarnings("unchecked")
+        Map<String, Object> variableMap = (Map<String, Object>) data.get(Fields.VARIABLES);
+				assertEquals(1, variableMap.size());
+				assertEquals("test", variableMap.get("test"));
 				
 				assertFalse(data.containsKey(Fields.DESCRIPTION));
 				assertFalse(data.containsKey(Fields.CATEGORY));
@@ -244,9 +255,9 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			}
 			
 			// Activity Completed
-			if (i == 1 || i == 5 || i == 8 || i == 11) {
+			if (i == 2 || i == 7 || i == 10 || i == 13) {
 				assertNotNull(entry.getType());
-				assertEquals(entry.getType(), ActivitiEventType.ACTIVITY_COMPLETED.name());
+				assertEquals(ActivitiEventType.ACTIVITY_COMPLETED.name(), entry.getType());
 				assertNotNull(entry.getProcessDefinitionId());
 				assertNotNull(entry.getProcessInstanceId());
 				assertNotNull(entry.getTimeStamp());
@@ -274,7 +285,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			}
 			
 			// Sequence flow taken
-			if (i == 2 || i == 6 || i == 9) {
+			if (i == 3 || i == 8 || i == 11) {
 				assertNotNull(entry.getType());
 				assertEquals(entry.getType(), ActivitiEventType.SEQUENCEFLOW_TAKEN.name());
 				assertNotNull(entry.getProcessDefinitionId());
@@ -293,7 +304,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 				assertNotNull(data.get(Fields.TARGET_ACTIVITY_BEHAVIOR_CLASS));
 			}
 				
-			if (i == 12) {
+			if (i == 14) {
 				assertNotNull(entry.getType());
 				assertEquals(entry.getType(), "PROCESSINSTANCE_END");
 				assertNotNull(entry.getProcessDefinitionId());
