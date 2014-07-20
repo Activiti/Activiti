@@ -47,13 +47,16 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
  */
 public class ErrorPropagation {
 
-  public static void propagateError(BpmnError error, ActivityExecution execution) throws Exception {
-    execution.setVariable("ERROR_CODE", error.getErrorCode());
-    execution.setVariable("ERROR_MESSAGE",error.getMessage());
+    public static final String ERROR_MESSAGE_VARIABLE_NAME = "ERROR_MESSAGE_VARIABLE_NAME";
+    public static final String ERROR_CODE_VARIABLE_NAME = "ERROR_CODE_VARIABLE_NAME";
+
+    public static void propagateError(BpmnError error, ActivityExecution execution) throws Exception {
+    execution.setVariable(ERROR_MESSAGE_VARIABLE_NAME,error.getMessage());
     propagateError(error.getErrorCode(), execution);
   }
 
   public static void propagateError(String errorCode, ActivityExecution execution) throws Exception {
+      execution.setVariable(ERROR_CODE_VARIABLE_NAME, errorCode);
 	  while (execution != null) {
 		    String eventHandlerId = findLocalErrorEventHandler(execution, errorCode); 
 		    if (eventHandlerId != null) {
