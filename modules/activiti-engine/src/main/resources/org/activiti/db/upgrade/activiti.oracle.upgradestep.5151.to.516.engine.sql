@@ -23,4 +23,4 @@ create table ACT_EVT_LOG (
 create sequence act_evt_log_seq;	
 	
 	
-update ACT_GE_PROPERTY set VALUE_ = '5.16-SNAPSHOT' where NAME_ = 'schema.version';
+update ACT_GE_PROPERTY set VALUE_ = '5.16' where NAME_ = 'schema.version';

@@ -20,4 +20,4 @@ create table ACT_EVT_LOG (
     primary key (LOG_NR_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;      	
 	
-update ACT_GE_PROPERTY set VALUE_ = '5.16-SNAPSHOT' where NAME_ = 'schema.version';
+update ACT_GE_PROPERTY set VALUE_ = '5.16' where NAME_ = 'schema.version';
