@@ -175,7 +175,7 @@ create table ACT_RU_EVENT_SUBSCR (
 );
 
 create table ACT_EVT_LOG (
-    LOG_NR_ bigint not null GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+    LOG_NR_ bigint not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     TYPE_ varchar(64),
     PROC_DEF_ID_ varchar(64),
     PROC_INST_ID_ varchar(64),
