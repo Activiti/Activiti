@@ -15,16 +15,7 @@ package org.activiti.engine;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.repository.DeploymentBuilder;
-import org.activiti.engine.repository.DeploymentQuery;
-import org.activiti.engine.repository.DiagramLayout;
-import org.activiti.engine.repository.Model;
-import org.activiti.engine.repository.ModelQuery;
-import org.activiti.engine.repository.NativeDeploymentQuery;
-import org.activiti.engine.repository.NativeModelQuery;
-import org.activiti.engine.repository.NativeProcessDefinitionQuery;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.repository.*;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.validation.ValidationError;
 
@@ -57,7 +48,14 @@ public interface RepositoryService {
    * instances or jobs. 
    */
   void deleteDeployment(String deploymentId);
-  
+
+    /**
+     *
+     * @param deploymentBuilder
+     * @return
+     */
+  Deployment deploy(DeploymentBuilder deploymentBuilder);
+
   /**
    * Deletes the given deployment and cascade deletion to process instances, 
    * history process instances and jobs.

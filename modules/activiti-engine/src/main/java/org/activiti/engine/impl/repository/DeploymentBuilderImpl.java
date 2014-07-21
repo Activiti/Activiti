@@ -16,7 +16,7 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.util.IoUtil;
@@ -40,14 +40,14 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   private static final long serialVersionUID = 1L;
   protected static final String DEFAULT_ENCODING = "UTF-8";
 
-  protected transient RepositoryServiceImpl repositoryService;
+  protected transient RepositoryService repositoryService;
   protected DeploymentEntity deployment = new DeploymentEntity();
   protected boolean isBpmn20XsdValidationEnabled = true;
   protected boolean isProcessValidationEnabled = true;
   protected boolean isDuplicateFilterEnabled = false;
   protected Date processDefinitionsActivationDate;
 
-  public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
+  public DeploymentBuilderImpl(RepositoryService repositoryService) {
     this.repositoryService = repositoryService;
   }
 
