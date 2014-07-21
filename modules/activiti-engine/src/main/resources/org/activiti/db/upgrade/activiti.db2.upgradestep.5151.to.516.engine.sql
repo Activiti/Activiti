@@ -16,7 +16,7 @@ create table ACT_EVT_LOG (
     USER_ID_ varchar(255),
     DATA_ BLOB,
     LOCK_OWNER_ varchar(255),
-    LOCK_TIME_ timestamp null,
+    LOCK_TIME_ timestamp,
     IS_PROCESSED_ integer default 0,
     primary key (LOG_NR_)
 );
