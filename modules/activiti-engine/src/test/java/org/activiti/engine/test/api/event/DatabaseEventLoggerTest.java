@@ -2,6 +2,7 @@ package org.activiti.engine.test.api.event;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import org.activiti.engine.impl.event.logger.handler.Fields;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -52,10 +54,21 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	public void testDatabaseEvents() throws JsonParseException, JsonMappingException, IOException {
 		
 		// Run process to gather data
-		runtimeService.startProcessInstanceByKey("DatabaseEventLoggerProcess", CollectionUtil.singletonMap("testVar", "helloWorld"));
+		ProcessInstance processInstance = 
+				runtimeService.startProcessInstanceByKey("DatabaseEventLoggerProcess", CollectionUtil.singletonMap("testVar", "helloWorld"));
 		
 		// Verify event log entries
 		List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);
+		
+		String processDefinitionId = processInstance.getProcessDefinitionId();
+		Iterator<EventLogEntry> iterator = eventLogEntries.iterator();
+		while (iterator.hasNext()) {
+			EventLogEntry entry = iterator.next();
+			if (entry.getProcessDefinitionId() != null && !entry.getProcessDefinitionId().equals(processDefinitionId)) {
+				iterator.remove();
+			}
+		}
+		
 		assertEquals(15, eventLogEntries.size());
 		
 		long lastLogNr = -1;

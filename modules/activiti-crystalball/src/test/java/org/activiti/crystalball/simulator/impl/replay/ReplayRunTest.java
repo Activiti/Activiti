@@ -122,7 +122,7 @@ public class ReplayRunTest {
     ProcessEngineConfigurationImpl configuration = new org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration();
     configuration.
       setHistory("full").
-      setDatabaseSchemaUpdate("create-drop").
+      setDatabaseSchemaUpdate("drop-create").
       setJobExecutorActivate(false);
     configuration.setCustomDefaultBpmnParseHandlers(Arrays.<BpmnParseHandler>asList(new AddListenerUserTaskParseHandler(TaskListener.EVENTNAME_CREATE, new UserTaskExecutionListener(USER_TASK_COMPLETED_EVENT_TYPE, USER_TASK_COMPLETED_EVENT_TYPE, listener.getSimulationEvents()))));
     configuration.setEventListeners(Arrays.<ActivitiEventListener>asList(listener));

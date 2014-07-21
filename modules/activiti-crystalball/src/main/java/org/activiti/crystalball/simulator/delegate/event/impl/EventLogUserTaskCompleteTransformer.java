@@ -73,11 +73,10 @@ public class EventLogUserTaskCompleteTransformer extends EventLog2SimulationEven
         properties.put(VARIABLES_LOCAL_SCOPE, localScope);
       }
       
-      return
-          new SimulationEvent.Builder(this.simulationEventType).
-            priority((int) event.getLogNumber()).
-            properties(properties).
-            build();
+      return new SimulationEvent.Builder(this.simulationEventType)
+          .priority((int) event.getLogNumber())
+          .properties(properties)
+          .build();
     }
     return null;
   }

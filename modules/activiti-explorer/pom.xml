@@ -125,6 +125,10 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-simple-workflow</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-crystalball</artifactId>
+    </dependency>
 
     <!-- Logging, using Log4j as SLF4J implementation -->
     <dependency>

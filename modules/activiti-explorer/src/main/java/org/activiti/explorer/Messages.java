@@ -257,6 +257,7 @@ public interface Messages {
   String PROCESS_STARTED_NOTIFICATION = "process.started.notification";
   String PROCESS_INSTANCE_STARTED_ON = "process.instance.started.on";
   String PROCESS_INSTANCE_STARTED = "process.instance.started";
+  String PROCESS_INSTANCE_ENDED = "process.instance.ended";
   String PROCESS_INSTANCE_HEADER_TASKS = "process.instance.header.tasks";
   String PROCESS_INSTANCE_NO_TASKS = "process.instance.no.tasks";
   String PROCESS_INSTANCE_HEADER_VARIABLES = "process.instance.header.variables";
@@ -463,6 +464,12 @@ public interface Messages {
   String EMAIL_RECEIVED_DATE = "email.received.date";
   String EMAIL_HTML_CONTENT = "email.html.content";
   String EMAIL_RECIPIENTS = "email.recipients";
+  
+  // Crystalball
+  String CRYSTALBALL_BUTTON_REPLAY = "crystalball.button.replay";
+  String CRYSTALBALL_BUTTON_NEXTEVENT = "crystalball.button.nextevent";
+  String CRYSTALBALL_EVENT_TYPE = "crystalball.event.type";
+  String CRYSTALBALL_EVENT_EXECUTED = "crystalball.event.executed";
 
   // Time formatting
   String TIME_UNIT_MOMENTS = "time.unit.moments";
