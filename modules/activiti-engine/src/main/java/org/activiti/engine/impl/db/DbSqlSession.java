@@ -1056,7 +1056,7 @@ public class DbSqlSession implements Session {
   public boolean isTablePresent(String tableName) {
   	// ACT-1610: in case the prefix IS the schema itself, we don't add the prefix, since the
   	// check is already aware of the schema
-  	if(!dbSqlSessionFactory.isTablePrefixIsSchema()) {
+  	if (!dbSqlSessionFactory.isTablePrefixIsSchema()) {
   		tableName = prependDatabaseTablePrefix(tableName);
   	}
   	
@@ -1067,12 +1067,12 @@ public class DbSqlSession implements Session {
       ResultSet tables = null;
 
       String catalog = this.connectionMetadataDefaultCatalog;
-      if (dbSqlSessionFactory.getDatabaseCatalog() != null) {
+      if (dbSqlSessionFactory.getDatabaseCatalog() != null && dbSqlSessionFactory.getDatabaseCatalog().length() > 0) {
         catalog = dbSqlSessionFactory.getDatabaseCatalog();
       }
 
       String schema = this.connectionMetadataDefaultSchema;
-      if (dbSqlSessionFactory.getDatabaseSchema()!=null) {
+      if (dbSqlSessionFactory.getDatabaseSchema() != null && dbSqlSessionFactory.getDatabaseSchema().length() > 0) {
         schema = dbSqlSessionFactory.getDatabaseSchema();
       }
       
