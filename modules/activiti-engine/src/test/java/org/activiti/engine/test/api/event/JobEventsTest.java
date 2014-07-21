@@ -105,7 +105,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     processEngineConfiguration.setClock(testClock);
 
-    testClock.setCurrentTime(new Date(0));
+    Date now = new Date();
+    testClock.setCurrentTime(now);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testRepetitionJobEvents");
     Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(theJob);
@@ -123,15 +124,15 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     listener.clearEventsReceived();
 
     // fire timer for the first time
-    testClock.setCurrentTime(new Date(10000));
+    testClock.setCurrentTime(new Date(now.getTime() + 10000L));
     waitForJobExecutorToProcessAllJobs(20000, 100);
 
     // fire timer for the second time
-    testClock.setCurrentTime(new Date(20000));
+    testClock.setCurrentTime(new Date(now.getTime() + 20000L));
     waitForJobExecutorToProcessAllJobs(20000, 100);
 
     // do not fire timer
-    testClock.setCurrentTime(new Date(30000));
+    testClock.setCurrentTime(new Date(now.getTime() + 30000L));
     waitForJobExecutorToProcessAllJobs(20000, 100);
 
     // count timer fired events
@@ -156,7 +157,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     processEngineConfiguration.setClock(testClock);
 
-    testClock.setCurrentTime(new Date(0));
+    testClock.setCurrentTime(new Date());
     runtimeService.startProcessInstanceByKey("testTimerCancelledEvent");
     listener.clearEventsReceived();
 
@@ -170,7 +171,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
   @Deployment(resources = "org/activiti/engine/test/api/event/JobEventsTest.testJobCanceledEventOnBoundaryEvent.bpmn20.xml")
   public void testJobCanceledEventByManagementService() throws Exception {
     // GIVEN
-    processEngineConfiguration.getClock().setCurrentTime(new Date(0));
+    processEngineConfiguration.getClock().setCurrentTime(new Date());
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTimerCancelledEvent");
     listener.clearEventsReceived();
 
