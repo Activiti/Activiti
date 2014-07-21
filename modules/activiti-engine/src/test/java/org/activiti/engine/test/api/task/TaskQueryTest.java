@@ -344,7 +344,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(11, tasks.size());
 
     // if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager
-    ArrayList candidateGroups = new ArrayList();
+    ArrayList<String> candidateGroups = new ArrayList<String>();
     candidateGroups.add("management");
     candidateGroups.add("accountancy");
     candidateGroups.add("noexist");
@@ -366,9 +366,6 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(4, query.count());
     assertEquals(4, query.list().size());
 
-    query = taskService.createTaskQuery().taskCandidateOrAssigned("kermit");
-    assertEquals(10, query.count());
-
     // create a new task that no identity link and assignee to kermit
     Task task = taskService.newTask();
     task.setName("assigneeToKermit");
@@ -384,7 +381,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
     Task assigneeToKermit = taskService.createTaskQuery().taskName("assigneeToKermit").singleResult();
     taskService.deleteTask(assigneeToKermit.getId());
-    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       historyService.deleteHistoricTaskInstance(assigneeToKermit.getId());
     }
   }
