@@ -38,6 +38,7 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.IProcessEngineConfiguration;
 import org.activiti.engine.impl.bpmn.data.ClassStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.data.ItemKind;
@@ -171,7 +172,7 @@ public class BpmnParse implements BpmnXMLConstants {
   public BpmnParse execute() {
     try {
 
-    	ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    	IProcessEngineConfiguration processEngineConfiguration = Context.getProcessEngineConfiguration();
       BpmnXMLConverter converter = new BpmnXMLConverter();
       
       boolean enableSafeBpmnXml = false;

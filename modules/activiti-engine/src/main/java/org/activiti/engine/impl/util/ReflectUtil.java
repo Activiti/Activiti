@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.IProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.slf4j.Logger;
@@ -269,7 +270,7 @@ public abstract class ReflectUtil {
   }
   
   private static ClassLoader getCustomClassLoader() {
-    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    IProcessEngineConfiguration processEngineConfiguration = Context.getProcessEngineConfiguration();
     if(processEngineConfiguration != null) {
       final ClassLoader classLoader = processEngineConfiguration.getClassLoader();
       if(classLoader != null) {

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.interceptor;
 
+import org.activiti.engine.IProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.slf4j.Logger;
@@ -25,12 +26,12 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
   private static final Logger log = LoggerFactory.getLogger(CommandContextInterceptor.class);
 
   protected CommandContextFactory commandContextFactory;
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected IProcessEngineConfiguration processEngineConfiguration;
 
   public CommandContextInterceptor() {
   }
 
-  public CommandContextInterceptor(CommandContextFactory commandContextFactory, ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public CommandContextInterceptor(CommandContextFactory commandContextFactory, IProcessEngineConfiguration processEngineConfiguration) {
     this.commandContextFactory = commandContextFactory;
     this.processEngineConfiguration = processEngineConfiguration;
   }
@@ -83,11 +84,11 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
     this.commandContextFactory = commandContextFactory;
   }
 
-  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+  public IProcessEngineConfiguration getProcessEngineConfiguration() {
     return processEngineConfiguration;
   }
 
-  public void setProcessEngineContext(ProcessEngineConfigurationImpl processEngineContext) {
+  public void setProcessEngineContext(IProcessEngineConfiguration processEngineContext) {
     this.processEngineConfiguration = processEngineContext;
   }
 }

@@ -17,6 +17,7 @@ import javax.naming.NamingException;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.IProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -186,7 +187,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
   }
 
   protected void setMailServerProperties(Email email) {
-    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    IProcessEngineConfiguration processEngineConfiguration = Context.getProcessEngineConfiguration();
 
     String mailSessionJndi = processEngineConfiguration.getMailSesionJndi();
     if (mailSessionJndi != null) {
