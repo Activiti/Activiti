@@ -21,7 +21,7 @@ alter table ACT_HI_VARINST
 alter table ACT_HI_PROCINST
     add TENANT_ID_ varchar(255) default ''; 
     
-Call Sysproc.admin_cmd ('REORG TABLE ACT_HI_PROCINST');    
+Call Sysproc.admin_cmd ('REORG TABLE ACT_HI_PROCINST');
        
 alter table ACT_HI_ACTINST
     add TENANT_ID_ varchar(255) default ''; 

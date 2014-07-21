@@ -1,9 +1,12 @@
 alter table ACT_RU_TASK
 	add FORM_KEY_ varchar(255);
 	
+Call Sysproc.admin_cmd ('REORG TABLE ACT_RU_TASK');
+	
 alter table ACT_RU_EXECUTION
 	add NAME_ varchar(255);
-	
+
+Call Sysproc.admin_cmd ('REORG TABLE ACT_RU_EXECUTION');
 	
 create table ACT_EVT_LOG (
     LOG_NR_ bigint not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)
