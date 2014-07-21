@@ -66,10 +66,10 @@ public class EventLogProcessInstanceCreateTransformer extends EventLog2Simulatio
       simEventProperties.put(variablesKey, variableMap);
       simEventProperties.put(PROCESS_INSTANCE_ID, processInstanceId);
 
-      return new SimulationEvent.Builder(simulationEventType).
-                  priority((int) event.getLogNumber()).
-                  properties(simEventProperties).
-                  build();
+      return new SimulationEvent.Builder(simulationEventType)
+          .priority((int) event.getLogNumber())
+          .properties(simEventProperties)
+          .build();
     }
     return null;
   }

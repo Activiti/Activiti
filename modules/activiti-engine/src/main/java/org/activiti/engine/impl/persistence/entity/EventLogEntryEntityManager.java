@@ -45,6 +45,13 @@ public class EventLogEntryEntityManager extends AbstractManager {
   	return getDbSqlSession().selectList("selectEventLogEntries", params);
   }
   
+  @SuppressWarnings("unchecked")
+  public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId) {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    params.put("processInstanceId", processInstanceId);
+    return getDbSqlSession().selectList("selectEventLogEntriesByProcessInstanceId", params);
+  }
+  
   public void deleteEventLogEntry(long logNr) {
   	getDbSqlSession().getSqlSession().delete("deleteEventLogEntry", logNr);
   }

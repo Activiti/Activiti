@@ -114,6 +114,17 @@
     ORDER BY LOG_NR_ 
   </select>
   
+  <select id="selectEventLogEntriesByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap">
+    select * from ${prefix}ACT_EVT_LOG 
+    WHERE PROC_INST_ID_ = #{parameter.processInstanceId}
+    ORDER BY LOG_NR_ 
+  </select>
+  
+  <select id="selectEventLogEntriesByProcessInstanceId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap_postgres">
+    select * from ${prefix}ACT_EVT_LOG 
+    WHERE PROC_INST_ID_ = #{parameter.processInstanceId}
+    ORDER BY LOG_NR_ 
+  </select>
   
   <!-- DELETE -->
   <delete id="deleteEventLogEntry" parameterType="long">

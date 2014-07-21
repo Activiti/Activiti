@@ -18,6 +18,8 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.crystalball.simulator.SimulationDebugger;
+import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.explorer.identity.LoggedInUser;
@@ -63,6 +65,11 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   
   protected List<String> adminGroups;
   protected List<String> userGroups;
+  
+  protected String crystalBallCurrentDefinitionId = null;
+  protected String crystalBallCurrentInstanceId = null;
+  protected List<SimulationEvent> crystalBallSimulationEvents = null;
+  protected transient SimulationDebugger crystalBallSimulationDebugger = null;
   
   public void init() {
     setMainWindow(mainWindow);
@@ -300,6 +307,38 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   }
   public void setSimpleWorkflowJsonConverter(SimpleWorkflowJsonConverter simpleWorkflowJsonConverter) {
 	  this.simpleWorkflowJsonConverter = simpleWorkflowJsonConverter;
+  }
+
+  public String getCrystalBallCurrentDefinitionId() {
+    return crystalBallCurrentDefinitionId;
+  }
+
+  public void setCrystalBallCurrentDefinitionId(String crystalBallCurrentDefinitionId) {
+    this.crystalBallCurrentDefinitionId = crystalBallCurrentDefinitionId;
+  }
+
+  public String getCrystalBallCurrentInstanceId() {
+    return crystalBallCurrentInstanceId;
+  }
+
+  public void setCrystalBallCurrentInstanceId(String crystalBallCurrentInstanceId) {
+    this.crystalBallCurrentInstanceId = crystalBallCurrentInstanceId;
+  }
+
+  public List<SimulationEvent> getCrystalBallSimulationEvents() {
+    return crystalBallSimulationEvents;
+  }
+
+  public void setCrystalBallSimulationEvents(List<SimulationEvent> crystalBallSimulationEvents) {
+    this.crystalBallSimulationEvents = crystalBallSimulationEvents;
+  }
+
+  public SimulationDebugger getCrystalBallSimulationDebugger() {
+    return crystalBallSimulationDebugger;
+  }
+
+  public void setCrystalBallSimulationDebugger(SimulationDebugger crystalBallSimulationDebugger) {
+    this.crystalBallSimulationDebugger = crystalBallSimulationDebugger;
   }
   
 }
