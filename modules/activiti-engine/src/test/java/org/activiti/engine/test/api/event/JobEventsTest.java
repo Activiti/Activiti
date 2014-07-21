@@ -105,7 +105,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     processEngineConfiguration.setClock(testClock);
 
-    testClock.setCurrentTime(new Date(0));
+    testClock.setCurrentTime(new Date(1));
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testRepetitionJobEvents");
     Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(theJob);
@@ -156,7 +156,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     processEngineConfiguration.setClock(testClock);
 
-    testClock.setCurrentTime(new Date(0));
+    testClock.setCurrentTime(new Date(1));
     runtimeService.startProcessInstanceByKey("testTimerCancelledEvent");
     listener.clearEventsReceived();
 
@@ -170,7 +170,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
   @Deployment(resources = "org/activiti/engine/test/api/event/JobEventsTest.testJobCanceledEventOnBoundaryEvent.bpmn20.xml")
   public void testJobCanceledEventByManagementService() throws Exception {
     // GIVEN
-    processEngineConfiguration.getClock().setCurrentTime(new Date(0));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(1));
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTimerCancelledEvent");
     listener.clearEventsReceived();
 
