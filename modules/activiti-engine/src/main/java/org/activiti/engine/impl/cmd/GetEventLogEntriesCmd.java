@@ -11,11 +11,16 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class GetEventLogEntriesCmd implements Command<List<EventLogEntry>> {
 	
+  protected String processInstanceId = null;
 	protected Long startLogNr = null;
 	protected Long pageSize = null;
 	
 	public GetEventLogEntriesCmd() {
 		
+	}
+	
+	public GetEventLogEntriesCmd(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
 	}
 	
 	public GetEventLogEntriesCmd(Long startLogNr, Long pageSize) {
@@ -25,12 +30,17 @@ public class GetEventLogEntriesCmd implements Command<List<EventLogEntry>> {
 	
 	@Override
 	public List<EventLogEntry> execute(CommandContext commandContext) {
-		if (startLogNr == null) {
-			return commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
-		}
-		return commandContext.getEventLogEntryEntityManager().findEventLogEntries(
-					startLogNr,
-					pageSize != null ? pageSize : -1);
+	  if (processInstanceId != null) {
+	    return commandContext.getEventLogEntryEntityManager().findEventLogEntriesByProcessInstanceId(processInstanceId);
+	  
+	  } else if (startLogNr != null) {
+	    return commandContext.getEventLogEntryEntityManager().findEventLogEntries(
+          startLogNr,
+          pageSize != null ? pageSize : -1);
+		
+	  } else {
+	    return commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
+	  }
 	}
 
 }

@@ -145,6 +145,17 @@ public interface ManagementService {
   List<EventLogEntry> getEventLogEntries(Long startLogNr, Long pageSize);
   
   /**
+   * [EXPERIMENTAL]
+   * 
+   * Returns a list of event log entries for a specific process instance id.
+   * Note that the event logging must specifically must be enabled in the process engine configuration.
+   * 
+   * Passing null as arguments will effectively fetch ALL event log entries. 
+   * Be careful, as this list might be huge!
+   */
+  List<EventLogEntry> getEventLogEntriesByProcessInstanceId(String processInstanceId);
+  
+  /**
    * Delete a EventLogEntry.
    * Typically only used in testing, as deleting log entries defeats the whole purpose of keeping a log.
    */

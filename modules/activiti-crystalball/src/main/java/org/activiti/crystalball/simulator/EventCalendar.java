@@ -1,5 +1,7 @@
 package org.activiti.crystalball.simulator;
 
+import java.util.List;
+
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,6 +29,8 @@ public interface EventCalendar {
   SimulationEvent removeFirstEvent();
 
   void addEvent(SimulationEvent event);
+  
+  List<SimulationEvent> getEvents();
 
   void clear();
 }
