@@ -13,31 +13,34 @@
 package org.activiti.mule;
 
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.test.Deployment;
-import org.mule.tck.FunctionalTestCase;
+import org.junit.Assert;
+import org.junit.Test;
+import org.mule.tck.junit4.FunctionalTestCase;
 
 /**
  * @author Esteban Robles Luna
+ * @author Tijs Rademakers
  */
-public class MuleSendActivitiBehaviorTest extends FunctionalTestCase {
-
-  @Deployment
-  public void testSend() {
-    ProcessEngine processEngine = muleContext.getRegistry().get("processEngine");
-    TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
-
-    RuntimeService runtimeService = muleContext.getRegistry().get("runtimeService");
+public class MuleHttpTest extends FunctionalTestCase {
+  
+  @Test
+  public void http() throws Exception {
+    Assert.assertTrue(muleContext.isStarted());
+    
+    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+    processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti/mule/testHttp.bpmn20.xml").deploy();
+    RuntimeService runtimeService = processEngine.getRuntimeService();
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("muleProcess");
-    assertFalse(processInstance.isEnded());
+    Assert.assertFalse(processInstance.isEnded());
     Object result = runtimeService.getVariable(processInstance.getProcessInstanceId(), "theVariable");
-    assertEquals(10, result);
+    Assert.assertEquals(20, result);
   }
-
+  
   @Override
   protected String getConfigResources() {
-    return "mule-config.xml";
+    return "mule-http-config.xml";
   }
 }

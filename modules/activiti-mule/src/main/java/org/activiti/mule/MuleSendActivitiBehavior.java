@@ -12,16 +12,25 @@
  */
 package org.activiti.mule;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.mule.DefaultMuleMessage;
-import org.mule.MessageExchangePattern;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.client.LocalMuleClient;
@@ -32,47 +41,90 @@ import org.mule.api.client.LocalMuleClient;
 public class MuleSendActivitiBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
-
+  
   private MuleContext muleContext;
 
-  private MessageExchangePattern mep = MessageExchangePattern.REQUEST_RESPONSE;
   private Expression endpointUrl;
   private Expression language;
   private Expression payloadExpression;
   private Expression resultVariable;
+  private Expression username;
+  private Expression password;
 
   public void execute(ActivityExecution execution) throws Exception {
     String endpointUrlValue = this.getStringFromField(this.endpointUrl, execution);
     String languageValue = this.getStringFromField(this.language, execution);
     String payloadExpressionValue = this.getStringFromField(this.payloadExpression, execution);
     String resultVariableValue = this.getStringFromField(this.resultVariable, execution);
-
-    LocalMuleClient client = this.getMuleContext().getClient();
+    String usernameValue = this.getStringFromField(this.username, execution);
+    String passwordValue = this.getStringFromField(this.password, execution);
 
     ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
     Object payload = scriptingEngines.evaluate(payloadExpressionValue, languageValue, execution);
-
-    MuleMessage message = new DefaultMuleMessage(payload, this.getMuleContext());
-
-    switch (this.mep) {
-    case REQUEST_RESPONSE:
+    
+    if (endpointUrlValue.startsWith("vm:")) {
+      LocalMuleClient client = this.getMuleContext().getClient();
+      MuleMessage message = new DefaultMuleMessage(payload, this.getMuleContext());
       MuleMessage resultMessage = client.send(endpointUrlValue, message);
       Object result = resultMessage.getPayload();
       if (resultVariableValue != null) {
         execution.setVariable(resultVariableValue, result);
       }
-      break;
-    case ONE_WAY:
-      client.dispatch(endpointUrlValue, message);
-      break;
-    default:
-      break;
+      
+    } else {
+    
+      HttpClient client = new HttpClient();
+      PostMethod request = new PostMethod(endpointUrlValue);
+      
+      try {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(payload);
+        oos.flush();
+        oos.close();
+        
+        request.setRequestEntity(new ByteArrayRequestEntity(baos.toByteArray()));
+        
+      } catch (Exception e) {
+        throw new ActivitiException("Error setting message payload", e);
+      }
+      
+      if (usernameValue != null && passwordValue != null) {
+        client.getParams().setAuthenticationPreemptive(true);
+        client.getState().setCredentials(new AuthScope("localhost", -1, "mule-realm"), 
+            new UsernamePasswordCredentials(usernameValue, passwordValue));
+        request.setDoAuthentication(true);
+      }
+      
+      byte[] response = null;
+      try {
+        // execute the POST request
+        client.executeMethod(request);
+        response = request.getResponseBody();
+        
+      } finally {
+        // release any connection resources used by the method
+        request.releaseConnection();
+      }
+  
+      if (response != null) {
+        try {
+          ByteArrayInputStream in = new ByteArrayInputStream(response);
+          ObjectInputStream is = new ObjectInputStream(in);
+          Object result = is.readObject();
+          if (resultVariableValue != null) {
+            execution.setVariable(resultVariableValue, result);
+          }
+        } catch (Exception e) {
+          throw new ActivitiException("Failed to read response value", e);
+        }
+      }
     }
 
     this.leave(execution);
   }
-
-  private MuleContext getMuleContext() {
+  
+  protected MuleContext getMuleContext() {
     if (this.muleContext == null) {
       Map<Object, Object> beans = Context.getProcessEngineConfiguration().getBeans();
       this.muleContext = (MuleContext) beans.get("muleContext");
@@ -88,14 +140,6 @@ public class MuleSendActivitiBehavior extends AbstractBpmnActivityBehavior {
       }
     }
     return null;
-  }
-
-  public MessageExchangePattern getMep() {
-    return mep;
-  }
-
-  public void setMep(MessageExchangePattern mep) {
-    this.mep = mep;
   }
 
   public Expression getEndpointUrl() {
@@ -128,5 +172,21 @@ public class MuleSendActivitiBehavior extends AbstractBpmnActivityBehavior {
 
   public void setLanguage(Expression language) {
     this.language = language;
+  }
+
+  public Expression getUsername() {
+    return username;
+  }
+
+  public void setUsername(Expression username) {
+    this.username = username;
+  }
+
+  public Expression getPassword() {
+    return password;
+  }
+
+  public void setPassword(Expression password) {
+    this.password = password;
   }
 }

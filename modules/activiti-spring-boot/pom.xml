@@ -12,7 +12,7 @@
     </parent>
 
     <properties>
-        <spring.framework.version>4.0.3.RELEASE</spring.framework.version>
+        <spring.framework.version>4.0.6.RELEASE</spring.framework.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <activiti.artifact>
             org.activiti.spring.boot
