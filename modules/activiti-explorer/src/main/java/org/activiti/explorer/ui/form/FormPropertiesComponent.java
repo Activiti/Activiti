@@ -66,6 +66,9 @@ public class FormPropertiesComponent extends VerticalLayout {
       for(FormProperty formProperty : formProperties) {
         FormPropertyRenderer renderer = getRenderer(formProperty);
        
+        // Be able to get the Form from any Renderer.
+        renderer.setForm(form);
+       
         Field editorComponent = renderer.getPropertyField(formProperty);
         if(editorComponent != null) {
           // Get label for editor component.
