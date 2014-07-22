@@ -4040,6 +4040,12 @@ public class StartProcessInstanceTestDelegateWithInjection {
                    that don't support rich content. The client will then fall back to this text-only alternative.
                  </entry>
                </row>
+               <row>
+                 <entry>ignoreException</entry>
+                 <entry>no</entry>
+                 <entry>Set to true to ignore a send email exception.
+                 </entry>
+               </row>
              </tbody>
 	         </tgroup>
 	        </table>
