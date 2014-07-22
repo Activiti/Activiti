@@ -186,8 +186,7 @@ create table ACT_EVT_LOG (
     DATA_ longvarbinary,
     LOCK_OWNER_ varchar(255),
     LOCK_TIME_ timestamp,
-    IS_PROCESSED_ bit default 0,
-    primary key (LOG_NR_)
+    IS_PROCESSED_ bit default 0
 );
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
