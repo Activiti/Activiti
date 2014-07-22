@@ -44,6 +44,7 @@ public class ReplayUserTaskCompleteEventHandler implements SimulationEventHandle
         variableValueEquals(StartReplayLogEventHandler.PROCESS_INSTANCE_ID, processInstanceId).
         variableValueEquals(StartReplayLogEventHandler.SIMULATION_RUN_ID, simulationRunId).
         singleResult();
+    
     Task task = SimulationRunContext.getTaskService().createTaskQuery().
         processInstanceId(processInstance.getId()).
         taskDefinitionKey(taskDefinitionKey).

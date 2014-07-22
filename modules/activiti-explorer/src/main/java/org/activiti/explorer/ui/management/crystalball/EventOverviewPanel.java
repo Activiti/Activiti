@@ -40,6 +40,7 @@ import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -407,14 +408,13 @@ public class EventOverviewPanel extends DetailPanel {
   protected void fillEventValues() {
     for (SimulationEvent originalEvent : simulationEvents) {
       boolean executed = true;
-      for (SimulationEvent event : SimulationRunContext.getEventCalendar().getEvents()) {
-        if (originalEvent.equals(event)) {
-          executed = false;
-          stepButton.setEnabled(true);
-          showProcessInstanceButton.setCaption(i18nManager.getMessage(
-              Messages.TASK_PART_OF_PROCESS, definitionMap.get(replayHistoricInstance.getProcessDefinitionId())));
-          showProcessInstanceButton.setVisible(true);
-          break;
+      if (SimulationRunContext.getEventCalendar() != null && SimulationRunContext.getEventCalendar().getEvents() != null) {
+        for (SimulationEvent event : SimulationRunContext.getEventCalendar().getEvents()) {
+          if (originalEvent.equals(event)) {
+            executed = false;
+            stepButton.setEnabled(true);
+            break;
+          }
         }
       }
       
@@ -422,6 +422,16 @@ public class EventOverviewPanel extends DetailPanel {
       eventTable.getItem(itemId).getItemProperty("type").setValue(originalEvent.getType());
       eventTable.getItem(itemId).getItemProperty("executed").setValue(executed);
     }
+    
+    if (replayHistoricInstance != null && replayHistoricInstance.getId() != null) {
+      ProcessInstance testInstance = runtimeService.createProcessInstanceQuery().processInstanceId(replayHistoricInstance.getId()).singleResult();
+      if (testInstance != null) {
+        showProcessInstanceButton.setCaption(i18nManager.getMessage(
+            Messages.TASK_PART_OF_PROCESS, definitionMap.get(replayHistoricInstance.getProcessDefinitionId())));
+        showProcessInstanceButton.setVisible(true);
+      }
+    }
+    
     eventTable.setVisible(true);
   }
   
