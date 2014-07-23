@@ -15,28 +15,34 @@ package org.activiti.mule;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mule.tck.junit4.FunctionalTestCase;
 
 /**
  * @author Esteban Robles Luna
  * @author Tijs Rademakers
  */
-public class MuleHttpTest extends FunctionalTestCase {
+public class MuleHttpTest extends AbstractMuleTest {
   
   @Test
   public void http() throws Exception {
     Assert.assertTrue(muleContext.isStarted());
     
     ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-    processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti/mule/testHttp.bpmn20.xml").deploy();
+    Deployment deployment = processEngine.getRepositoryService().createDeployment()
+        .addClasspathResource("org/activiti/mule/testHttp.bpmn20.xml")
+        .deploy();
     RuntimeService runtimeService = processEngine.getRuntimeService();
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("muleProcess");
     Assert.assertFalse(processInstance.isEnded());
     Object result = runtimeService.getVariable(processInstance.getProcessInstanceId(), "theVariable");
     Assert.assertEquals(20, result);
+    runtimeService.deleteProcessInstance(processInstance.getId(), "test");
+    processEngine.getHistoryService().deleteHistoricProcessInstance(processInstance.getId());
+    processEngine.getRepositoryService().deleteDeployment(deployment.getId());
+    assertAndEnsureCleanDb(processEngine);
   }
   
   @Override

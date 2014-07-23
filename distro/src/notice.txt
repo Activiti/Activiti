@@ -1,5 +1,5 @@
 Activiti BPM Platform
-Copyright 2010-2013 Alfresco Software, Ltd.
+Copyright 2010-2014 Alfresco Software, Ltd.
 
 The following activiti software libraries are distributed under the Apache License Version 2.0 (the License):
  * activiti-bpmn-converter-<version>-sources.jar
@@ -46,17 +46,17 @@ This software package includes changed source code of the following libraries:
 
 JUEL
  * Location: http://juel.sourceforge.net/
- * Included in activiti-engine-5.15.jar in package org.activiti.engine.impl.juel
+ * Included in activiti-engine-5.16.jar in package org.activiti.engine.impl.juel
  * License: Apache V2
  
 Quartz
  * Location: http://www.quartz-scheduler.org/
- * CronExpression is included in activiti-engine-5.15.jar in package org.activiti.engine.impl.calendar
+ * CronExpression is included in activiti-engine-5.16.jar in package org.activiti.engine.impl.calendar
  * License: Apache V2
 
 JSON
  * Location: http://www.JSON.org/java
- * Included in activiti-engine-5.15.jar in package org.activiti.engine.impl.json
+ * Included in activiti-engine-5.16.jar in package org.activiti.engine.impl.json
  * License:
 ===============================================================================
 Copyright (c) 2002 JSON.org
@@ -192,10 +192,10 @@ neethi-2.0.4.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 objenesis-1.0.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 openjpa-1.2.2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 org.osgi.core-4.2.0.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-org.restlet-2.0.4.jar : LGPL 3.0 license http://www.opensource.org/licenses/lgpl-3.0.html, LGPL 2.1 license http://www.opensource.org/licenses/lgpl-2.1.php, CDDL 1.0 license http://www.opensource.org/licenses/cddl1.php, EPL 1.0 http://www.opensource.org/licenses/eclipse-1.0.php
-org.restlet.ext.httpclient-2.0.4.jar : LGPL 3.0 license http://www.opensource.org/licenses/lgpl-3.0.html, LGPL 2.1 license http://www.opensource.org/licenses/lgpl-2.1.php, CDDL 1.0 license http://www.opensource.org/licenses/cddl1.php, EPL 1.0 http://www.opensource.org/licenses/eclipse-1.0.php
-org.restlet.ext.json-2.0.4.jar : LGPL 3.0 license http://www.opensource.org/licenses/lgpl-3.0.html, LGPL 2.1 license http://www.opensource.org/licenses/lgpl-2.1.php, CDDL 1.0 license http://www.opensource.org/licenses/cddl1.php, EPL 1.0 http://www.opensource.org/licenses/eclipse-1.0.php
-org.restlet.ext.xml-2.0.4.jar : LGPL 3.0 license http://www.opensource.org/licenses/lgpl-3.0.html, LGPL 2.1 license http://www.opensource.org/licenses/lgpl-2.1.php, CDDL 1.0 license http://www.opensource.org/licenses/cddl1.php, EPL 1.0 http://www.opensource.org/licenses/eclipse-1.0.php
+org.restlet-2.2.1.jar : LGPL 3.0 license http://www.opensource.org/licenses/lgpl-3.0.html, LGPL 2.1 license http://www.opensource.org/licenses/lgpl-2.1.php, CDDL 1.0 license http://www.opensource.org/licenses/cddl1.php, EPL 1.0 http://www.opensource.org/licenses/eclipse-1.0.php
+org.restlet.ext.httpclient-2.2.1.jar : LGPL 3.0 license http://www.opensource.org/licenses/lgpl-3.0.html, LGPL 2.1 license http://www.opensource.org/licenses/lgpl-2.1.php, CDDL 1.0 license http://www.opensource.org/licenses/cddl1.php, EPL 1.0 http://www.opensource.org/licenses/eclipse-1.0.php
+org.restlet.ext.json-2.2.1.jar : LGPL 3.0 license http://www.opensource.org/licenses/lgpl-3.0.html, LGPL 2.1 license http://www.opensource.org/licenses/lgpl-2.1.php, CDDL 1.0 license http://www.opensource.org/licenses/cddl1.php, EPL 1.0 http://www.opensource.org/licenses/eclipse-1.0.php
+org.restlet.ext.xml-2.2.1.jar : LGPL 3.0 license http://www.opensource.org/licenses/lgpl-3.0.html, LGPL 2.1 license http://www.opensource.org/licenses/lgpl-2.1.php, CDDL 1.0 license http://www.opensource.org/licenses/cddl1.php, EPL 1.0 http://www.opensource.org/licenses/eclipse-1.0.php
 org.restlet.lib.org.json-2.0.jar : LGPL 3.0 license http://www.opensource.org/licenses/lgpl-3.0.html, LGPL 2.1 license http://www.opensource.org/licenses/lgpl-2.1.php, CDDL 1.0 license http://www.opensource.org/licenses/cddl1.php, EPL 1.0 http://www.opensource.org/licenses/eclipse-1.0.php
 persistence-api-1.0.jar : CDDL http://www.opensource.org/licenses/cddl1
 postgresql-8.4-701.jdbc4.jar : BSD http://www.opensource.org/licenses/bsd-license.php
@@ -208,26 +208,18 @@ slf4j-api-1.5.6.jar : MIT http://www.opensource.org/licenses/mit-license.php
 slf4j-api-1.6.1.jar : MIT http://www.opensource.org/licenses/mit-license.php
 slf4j-jdk14-1.6.1.jar : MIT http://www.opensource.org/licenses/mit-license.php
 slf4j-log4j12-1.5.6.jar : MIT http://www.opensource.org/licenses/mit-license.php
-spring-aop-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-asm-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-asm-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-beans-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-beans-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-context-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-context-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-context-support-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-core-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-core-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-expression-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-expression-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-jdbc-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-orm-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-test-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-tx-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-web-2.0.8.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-web-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-web-3.0.3.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
-spring-webmvc-3.0.0.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-aop-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-asm-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-beans-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-context-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-context-support-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-core-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-expression-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-jdbc-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-orm-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-test-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-tx-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
+spring-web-4.0.6.RELEASE.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 stax-api-1.0-2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 subethasmtp-smtp-1.2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
 subethasmtp-wiser-1.2.jar : http://www.apache.org/licenses/LICENSE-2.0.html
