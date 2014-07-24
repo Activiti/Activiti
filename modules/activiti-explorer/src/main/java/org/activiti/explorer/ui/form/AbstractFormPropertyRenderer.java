@@ -58,4 +58,24 @@ public abstract class AbstractFormPropertyRenderer implements FormPropertyRender
     return ExplorerApp.get().getI18nManager().getMessage(key, params);
   }
   
+  /**
+   * Get the Vaadin form that contains the renderer
+   */
+  @Override
+  public com.vaadin.ui.Form getForm() {
+	  return theForm;
+  }
+   
+  /**
+   * Set the Vaadin form that contains de renderer 
+   */
+  @Override
+  public void setForm(com.vaadin.ui.Form p_form) {
+	  theForm = p_form;
+  }
+  
+  /**
+   * The form that contains this renderer
+   */
+  transient private com.vaadin.ui.Form theForm = null;
 }
