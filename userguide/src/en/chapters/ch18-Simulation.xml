@@ -3,7 +3,7 @@
 
 <chapter>
 
-  <title>Simulation with activiti-crystalball</title>
+  <title>Simulation with Activiti-Crystalball (Experimental)</title>
 <section id="crb-introduction">
   <title>Introduction</title>
   <section id="crb-overview">
@@ -197,7 +197,7 @@
          .customEventHandlerMap(EventRecorderTestUtils.getHandlers());
   SimpleSimulationRun simRun = builder.build();
 
-  simRun.execute();
+  simRun.execute(new NoExecutionVariableScope());
 
   // check the status - the same method which was used in record events method
   checkStatus(simulationProcessEngineFactory.getObject());
@@ -206,7 +206,6 @@
   simRun.getProcessEngine().close();
   ProcessEngines.destroy();
 </programlisting>
-              Simple right?
               </para>
             </listitem>
           </itemizedlist>
@@ -230,8 +229,9 @@
   public interface SimulationDebugger {
   /**
   * initialize simulation run
+  * @param execution - variable scope to transfer variables from and to simulation run
   */
-  void init();
+  void init(VariableScope execution);
 
   /**
   * step one simulation event forward

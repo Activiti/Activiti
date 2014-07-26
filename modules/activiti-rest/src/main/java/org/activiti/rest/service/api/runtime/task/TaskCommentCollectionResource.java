@@ -17,11 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.RestResponseFactory;
+import org.activiti.rest.service.api.engine.CommentRequest;
 import org.activiti.rest.service.api.engine.CommentResponse;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 import org.restlet.data.Status;
@@ -51,7 +53,7 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
   }
   
   @Post
-  public CommentResponse createComment(CommentResponse comment) {
+  public CommentResponse createComment(CommentRequest comment) {
     if(!authenticate())
       return null;
     
@@ -61,7 +63,13 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
       throw new ActivitiIllegalArgumentException("Comment text is required.");
     }
     
-    Comment createdComment = ActivitiUtil.getTaskService().addComment(task.getId(), null, comment.getMessage());
+    TaskService taskService = ActivitiUtil.getTaskService();
+    String processInstanceId = null;
+    if (comment.isSaveProcessInstanceId()) {
+      Task taskEntity = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+      processInstanceId = taskEntity.getProcessInstanceId();
+    }
+    Comment createdComment = taskService.addComment(task.getId(), processInstanceId, comment.getMessage());
     setStatus(Status.SUCCESS_CREATED);
     
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()

@@ -438,6 +438,12 @@ public class ExecutionImpl implements
     }
   }
   
+  @Override
+  public void take(PvmTransition transition, boolean fireActivityCompletedEvent) {
+  	// No event firing on executionlevel impl
+  	take(transition); 
+  }
+  
   public void take(PvmTransition transition) {
     if (this.transition!=null) {
       throw new PvmException("already taking a transition");

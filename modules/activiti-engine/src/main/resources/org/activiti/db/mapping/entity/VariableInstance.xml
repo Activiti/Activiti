@@ -54,6 +54,13 @@
     jdbcType=VARCHAR} and REV_ = #{revision}
   </delete>
 
+  <delete id="bulkDeleteVariableInstance" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_VARIABLE where
+    <foreach item="variable" collection="list" index="index" separator=" or ">
+        ID_ = #{variable.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+
   <!-- VARIABLE INSTANCE RESULTMAP -->
 
   <resultMap id="variableInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">

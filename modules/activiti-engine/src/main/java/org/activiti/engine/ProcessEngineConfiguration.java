@@ -17,13 +17,13 @@ import java.io.InputStream;
 
 import javax.sql.DataSource;
 
-import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.runtime.Clock;
+import org.activiti.image.ProcessDiagramGenerator;
 
 
 /** Configuration information from which a process engine can be build.
@@ -138,6 +138,10 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   protected Clock clock;
   protected JobExecutor jobExecutor;
+  /** define the default wait time for a failed job in seconds */
+  protected int defaultFailedJobWaitTime = 10;
+  /** define the default wait time for a failed async job in seconds */
+  protected int asyncFailedJobWaitTime = 10;
 
   /** process diagram generator. Default value is DefaulProcessDiagramGenerator */
   protected ProcessDiagramGenerator processDiagramGenerator;
@@ -156,7 +160,12 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
    * @since 5.9
    */
   protected String databaseTablePrefix = "";
-  
+
+  /**
+   * database catalog to use
+   */
+  protected String databaseCatalog = "";
+
   /**
    * In some situations you want to set the schema to use for table checks / generation if the database metadata
    * doesn't return that correctly, see https://jira.codehaus.org/browse/ACT-1220,
@@ -622,7 +631,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public boolean isTablePrefixIsSchema() {
 	  return tablePrefixIsSchema;
   }
-  
+
+  public String getDatabaseCatalog() {
+    return databaseCatalog;
+  }
+
+  public ProcessEngineConfiguration setDatabaseCatalog(String databaseCatalog) {
+    this.databaseCatalog = databaseCatalog;
+    return this;
+  }
+
   public String getDatabaseSchema() {
     return databaseSchema;
   }
@@ -665,6 +683,24 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   public ProcessEngineConfiguration setJobExecutor(JobExecutor jobExecutor) {
     this.jobExecutor = jobExecutor;
+    return this;
+  }
+
+  public int getDefaultFailedJobWaitTime() {
+    return defaultFailedJobWaitTime;
+  }
+
+  public ProcessEngineConfiguration setDefaultFailedJobWaitTime(int defaultFailedJobWaitTime) {
+    this.defaultFailedJobWaitTime = defaultFailedJobWaitTime;
+    return this;
+  }
+
+  public int getAsyncFailedJobWaitTime() {
+    return asyncFailedJobWaitTime;
+  }
+
+  public ProcessEngineConfiguration setAsyncFailedJobWaitTime(int asyncFailedJobWaitTime) {
+    this.asyncFailedJobWaitTime = asyncFailedJobWaitTime;
     return this;
   }
 }

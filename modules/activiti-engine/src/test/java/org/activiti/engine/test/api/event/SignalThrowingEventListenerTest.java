@@ -152,20 +152,20 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 			Job failedJob = managementService.createJobQuery()
 					.withException()
 					.processInstanceId(processInstance.getId())
-					
 					.singleResult();
-			assertNotNull(failedJob);
-			assertEquals(0, failedJob.getRetries());
 			
-			// Three retries should each have triggered dispatching of a retry-decrement event
-			assertEquals(3, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
+			assertNotNull(failedJob);
+			assertEquals(2, failedJob.getRetries());
+			
+			// One retry should have triggered dispatching of a retry-decrement event
+			assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
 			
 			try {
 				managementService.executeJob(failedJob.getId());
 				fail("Exception expected");
 			} catch(ActivitiException ae) {
 				// Ignore, expected exception
-				assertEquals(4, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
+				assertEquals(2, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
 			}
 		} finally {
 			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
@@ -194,10 +194,10 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 			Job failedJob = managementService.createJobQuery()
 					.withException()
 					.processInstanceId(processInstance.getId())
-					
 					.singleResult();
+			
 			assertNotNull(failedJob);
-			assertEquals(0, failedJob.getRetries());
+			assertEquals(2, failedJob.getRetries());
 			
 			// Three retries should each have triggered dispatching of a retry-decrement event
 			assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());

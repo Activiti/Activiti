@@ -40,6 +40,9 @@ public interface JobQuery extends Query<JobQuery, Job> {
 
   /** Only select jobs which have retries left */
   JobQuery withRetriesLeft();
+  
+  /** Only select jobs which have no retries left */
+  JobQuery noRetriesLeft();
 
   /** Only select jobs which are executable, 
    * ie. retries &gt; 0 and duedate is null or duedate is in the past **/

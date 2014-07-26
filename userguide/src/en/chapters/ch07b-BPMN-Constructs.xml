@@ -5063,7 +5063,7 @@ public void testExecutionListenerFieldInjection() {
         <listitem>
           <para>
             <emphasis role="bold">class</emphasis>: the delegation class that must be called. 
-            This class must implement the <literal>org.activiti.engine.impl.pvm.delegate.TaskListener</literal>
+            This class must implement the <literal>org.activiti.engine.delegate.TaskListener</literal>
             interface.
             <programlisting>
 public class MyTaskCreateListener implements TaskListener {

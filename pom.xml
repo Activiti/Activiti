@@ -14,12 +14,12 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>5.16-SNAPSHOT</version>
+  <version>5.17-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring.framework.version>3.2.7.RELEASE</spring.framework.version>
-    <mule.version>3.3.0</mule.version>
-    <cxf.version>2.6.1</cxf.version>
+    <spring.framework.version>4.0.6.RELEASE</spring.framework.version>
+    <mule.version>3.5.0</mule.version>
+    <cxf.version>2.6.14</cxf.version>
     <restlet.version>2.2.1</restlet.version>
     <batik.version>1.7</batik.version>
 
@@ -103,7 +103,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.1</version>
+        <version>3.3.2</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -114,6 +114,11 @@
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
         <version>1.2.2</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>3.1</version>
       </dependency>
       <dependency>
         <groupId>com.oracle.jdbc</groupId>
@@ -227,6 +232,11 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-crystalball</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-webapp-rest2</artifactId>
         <type>war</type>
         <version>${project.version}</version>
@@ -244,6 +254,11 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-process-validation</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-image-generator</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- EMAIL -->
@@ -446,6 +461,11 @@
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>2.2.3</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>2.2.3</version>
       </dependency>
@@ -546,6 +566,7 @@
   <modules>
     <module>modules/activiti-bpmn-model</module>
     <module>modules/activiti-process-validation</module>
+    <module>modules/activiti-image-generator</module>
     <module>modules/activiti-bpmn-converter</module>
     <module>modules/activiti-engine</module>
   </modules>
@@ -667,6 +688,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
         <module>modules/activiti-bpmn-layout</module>
@@ -687,6 +709,7 @@
         <module>modules/activiti-cdi</module>
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-ldap</module>
+        <module>modules/activiti-crystalball</module>
       </modules>
       <build>
         <plugins>
@@ -737,6 +760,7 @@
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
@@ -798,6 +822,7 @@
         <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
@@ -836,6 +861,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
@@ -847,6 +873,7 @@
         <module>modules/activiti-diagram-rest</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-simple-workflow</module>
+        <module>modules/activiti-crystalball</module>
       </modules>
       <properties>
         <skipTests>true</skipTests>
@@ -876,6 +903,7 @@
       <modules>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>

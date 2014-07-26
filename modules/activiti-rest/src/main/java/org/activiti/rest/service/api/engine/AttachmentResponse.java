@@ -22,6 +22,7 @@ public class AttachmentResponse {
   private String id;
   private String url;
   private String name;
+  private String userId;
   private String description;
   private String type;
   private String taskUrl;
@@ -52,7 +53,15 @@ public class AttachmentResponse {
   public void setName(String name) {
     this.name = name;
   }
-  
+
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
   public String getDescription() {
     return description;
   }

@@ -27,6 +27,7 @@ import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -66,7 +67,8 @@ import org.slf4j.LoggerFactory;
  * @author Saeid Mirzaei
  */
 
-public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, ProcessInstance, InterpretableExecution, PersistentObject, HasRevision {
+public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, 
+	ProcessInstance, InterpretableExecution, PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
   
@@ -253,6 +255,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
         ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, createdExecution));
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, createdExecution));
     }
 
     return createdExecution;
@@ -392,6 +396,20 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   public void take(PvmTransition transition) {
+  	take(transition, true);
+  }
+  
+  /**
+   * @param fireActivityCompletionEvent This method can be called from other places
+   * (like {@link #takeAll(List, List)}), where the event is already fired.
+   * In that case, false is passed an no second event is fired.
+   */
+  public void take(PvmTransition transition, boolean fireActivityCompletionEvent) {
+ 
+  	if (fireActivityCompletionEvent) {
+	  	fireActivityCompletedEvent();
+  	}
+  	
     if (this.transition!=null) {
       throw new PvmException("already taking a transition");
     }
@@ -447,6 +465,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {
+
+  	fireActivityCompletedEvent();
+  	
     transitions = new ArrayList<PvmTransition>(transitions);
     recyclableExecutions = (recyclableExecutions!=null ? new ArrayList<ActivityExecution>(recyclableExecutions) : new ArrayList<ActivityExecution>());
     
@@ -494,7 +515,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       concurrentRoot.setActive(true);
       concurrentRoot.setActivity(activity);
       concurrentRoot.setConcurrent(false);
-      concurrentRoot.take(transitions.get(0));
+      concurrentRoot.take(transitions.get(0), false);
 
     } else {
       
@@ -533,8 +554,22 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
       // then launch all the concurrent executions
       for (OutgoingExecution outgoingExecution: outgoingExecutions) {
-        outgoingExecution.take();
+        outgoingExecution.take(false);
       }
+    }
+  }
+
+	protected void fireActivityCompletedEvent() {
+	  if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, 
+    					getActivity() != null ? getActivity().getId() : getActivityId(), 
+    					getActivity() != null ? (String) getActivity().getProperties().get("name") : null,
+    					getId(),
+    					getProcessInstanceId(), 
+    					getProcessDefinitionId(), 
+    					getActivity() != null ? (String) getActivity().getProperties().get("type") : null,
+    					getActivity() != null ? getActivity().getActivityBehavior().getClass().getCanonicalName() : null));
     }
   }
   
@@ -877,6 +912,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     
     // remove identity links
     removeIdentityLinks();
+    
+    if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
+    }
 
     // finally delete this execution
     Context.getCommandContext()
@@ -1074,7 +1114,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // Dispatch event, if needed
     if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
   		Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-  				ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_CREATED, variableName, value, result.getTaskId(), 
+  				ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_CREATED, variableName, value, result.getType(), result.getTaskId(), 
   						result.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
     }
     return result;
@@ -1088,8 +1128,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // Dispatch event, if needed
     if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value, variableInstance.getTaskId(), 
-    					variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
+    			ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value, variableInstance.getType(), 
+    					variableInstance.getTaskId(), variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
     }
   }
 

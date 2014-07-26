@@ -12,20 +12,25 @@
  */
 package org.activiti.engine.delegate.event.impl;
 
+import java.util.Map;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityWithVariablesEvent;
 import org.activiti.engine.delegate.event.ActivitiErrorEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
 import org.activiti.engine.delegate.event.ActivitiMembershipEvent;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
+import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.Task;
@@ -66,6 +71,42 @@ public class ActivitiEventBuilder {
 
 		// In case an execution-context is active, populate the event fields related to the execution
 		populateEventWithCurrentContext(newEvent);
+		return newEvent;
+	}
+	
+	/**
+   * @param type type of event
+   * @param entity the entity this event targets
+   * @param variables the variables associated with this entity
+   * @return an {@link ActivitiEntityEvent}. In case an {@link ExecutionContext} is active, the execution related
+   * event fields will be populated. If not, execution details will be reteived from the {@link Object} if possible.
+   */
+  @SuppressWarnings("rawtypes")
+  public static ActivitiEntityWithVariablesEvent createEntityWithVariablesEvent(ActivitiEventType type, Object entity, Map variables, boolean localScope) {
+    ActivitiEntityWithVariablesEventImpl newEvent = new ActivitiEntityWithVariablesEventImpl(entity, variables, localScope, type);
+
+    // In case an execution-context is active, populate the event fields related to the execution
+    populateEventWithCurrentContext(newEvent);
+    return newEvent;
+  }
+	
+	public static ActivitiSequenceFlowTakenEvent createSequenceFlowTakenEvent(ActivitiEventType type, String sequenceFlowId, 
+			String sourceActivityId, String sourceActivityName, String sourceActivityType, String sourceActivityBehaviorClass,
+			String targetActivityId, String targetActivityName, String targetActivityType, String targetActivityBehaviorClass) {
+		ActivitiSequenceFlowTakenEventImpl newEvent = new ActivitiSequenceFlowTakenEventImpl(type);
+		
+		populateEventWithCurrentContext(newEvent);
+		
+		newEvent.setId(sequenceFlowId);
+		newEvent.setSourceActivityId(sourceActivityId);
+		newEvent.setSourceActivityName(sourceActivityName);
+		newEvent.setSourceActivityType(sourceActivityType);
+		newEvent.setSourceActivityBehaviorClass(sourceActivityBehaviorClass);
+		newEvent.setTargetActivityId(targetActivityId);
+		newEvent.setTargetActivityName(targetActivityName);
+		newEvent.setTargetActivityType(targetActivityType);
+		newEvent.setTargetActivityBehaviorClass(targetActivityBehaviorClass);
+		
 		return newEvent;
 	}
 	
@@ -115,12 +156,16 @@ public class ActivitiEventBuilder {
 		return newEvent;
 	}
 	
-	public static ActivitiActivityEvent createActivityEvent(ActivitiEventType type, String activityId, String executionId, String processInstanceId, String processDefinitionId) {
+	public static ActivitiActivityEvent createActivityEvent(ActivitiEventType type, String activityId, String activityName,
+			String executionId, String processInstanceId, String processDefinitionId, String activityType, String behaviourClass) {
 		ActivitiActivityEventImpl newEvent = new ActivitiActivityEventImpl(type);
 		newEvent.setActivityId(activityId);
+		newEvent.setActivityName(activityName);
 		newEvent.setExecutionId(executionId);
 		newEvent.setProcessDefinitionId(processDefinitionId);
 		newEvent.setProcessInstanceId(processInstanceId);
+		newEvent.setActivityType(activityType);
+		newEvent.setBehaviorClass(behaviourClass);
 		return newEvent;
 	}
 	
@@ -158,11 +203,12 @@ public class ActivitiEventBuilder {
 		return newEvent;
 	}
 	
-	public static ActivitiVariableEvent createVariableEvent(ActivitiEventType type, String variableName, Object variableValue, String taskId, 
+	public static ActivitiVariableEvent createVariableEvent(ActivitiEventType type, String variableName, Object variableValue, VariableType variableType, String taskId, 
 			String executionId, String processInstanceId, String processDefinitionId) {
 		ActivitiVariableEventImpl newEvent = new ActivitiVariableEventImpl(type);
 		newEvent.setVariableName(variableName);
 		newEvent.setVariableValue(variableValue);
+		newEvent.setVariableType(variableType);
 		newEvent.setTaskId(taskId);
 		newEvent.setExecutionId(executionId);
 		newEvent.setProcessDefinitionId(processDefinitionId);

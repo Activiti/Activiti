@@ -415,11 +415,9 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
     
-    // Update task and process-variable 10 times, using explicit removeVariables to have multiple revisions recorded
+    // Update task and process-variable 10 times
     for(int i=0; i<10; i++) {
-    	taskService.removeVariableLocal(task.getId(), "taskVar");
     	taskService.setVariableLocal(task.getId(), "taskVar", i);
-    	runtimeService.removeVariable(task.getExecutionId(), "procVar");
     	runtimeService.setVariable(task.getExecutionId(), "procVar", i);
     }
     

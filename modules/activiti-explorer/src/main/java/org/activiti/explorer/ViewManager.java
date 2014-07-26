@@ -133,6 +133,8 @@ public interface ViewManager {
   
   void showAdministrationPage(String managementId);
   
+  void showCrystalBallPage();
+  
   // Profile
   
   void showProfilePopup(String userId);

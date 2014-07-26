@@ -27,6 +27,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.subethamail.wiser.WiserMessage;
@@ -144,13 +145,17 @@ public class EmailServiceTaskTest extends EmailTestCase {
   @Deployment
   public void testInvalidAddressWithoutException() throws Exception {
     String piId = runtimeService.startProcessInstanceByKey("invalidAddressWithoutException").getId();
-    assertNotNull(historyService.createHistoricVariableInstanceQuery().processInstanceId(piId).variableName("emailError").singleResult());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      assertNotNull(historyService.createHistoricVariableInstanceQuery().processInstanceId(piId).variableName("emailError").singleResult());
+    }
   }
   
   @Deployment
   public void testInvalidAddressWithoutExceptionVariableName() throws Exception {
     String piId = runtimeService.startProcessInstanceByKey("invalidAddressWithoutException").getId();
-    assertNull(historyService.createHistoricVariableInstanceQuery().processInstanceId(piId).variableName("emailError").singleResult());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      assertNull(historyService.createHistoricVariableInstanceQuery().processInstanceId(piId).variableName("emailError").singleResult());
+    }
   }
   
   // Helper 

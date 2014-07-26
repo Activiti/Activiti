@@ -25,6 +25,13 @@
     delete from ${prefix}ACT_RU_IDENTITYLINK where ID_ = #{id}
   </delete>
   
+  <delete id="bulkDeleteIdentityLink" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_IDENTITYLINK where 
+    <foreach item="identityLink" collection="list" index="index" separator=" or ">
+        ID_ = #{identityLink.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  
   <delete id="deleteIdentityLinkByProcDef" parameterType="string">
     delete from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{id}
   </delete>

@@ -97,6 +97,9 @@ public class TaskBaseResource extends SecuredResource {
     if(taskRequest.isCategorySet()) {
     	task.setCategory(taskRequest.getCategory());
     }
+    if(taskRequest.isFormKeySet()) {
+      task.setFormKey(taskRequest.getFormKey());
+    }
 
     if(taskRequest.isDelegationStateSet()) {
       DelegationState delegationState = getDelegationState(taskRequest.getDelegationState());
@@ -159,6 +162,9 @@ public class TaskBaseResource extends SecuredResource {
     }
     if(request.getCandidateGroup() != null) {
       taskQuery.taskCandidateGroup(request.getCandidateGroup());
+    }
+    if(request.getCandidateGroupIn() != null) {
+      taskQuery.taskCandidateGroupIn(request.getCandidateGroupIn());
     }
     if(request.getProcessInstanceId() != null) {
       taskQuery.processInstanceId(request.getProcessInstanceId());
@@ -258,6 +264,10 @@ public class TaskBaseResource extends SecuredResource {
     
     if(Boolean.TRUE.equals(request.getWithoutTenantId())) {
     	taskQuery.taskWithoutTenantId();
+    }
+
+    if (request.getCandidateOrAssigned() != null) {
+      taskQuery.taskCandidateOrAssigned(request.getCandidateOrAssigned());
     }
     
     return new TaskPaginateList(this).paginateList(query, request, taskQuery, "id", properties);

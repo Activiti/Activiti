@@ -22,4 +22,3 @@ drop table if exists ACT_HI_DETAIL;
 drop table if exists ACT_HI_COMMENT;
 drop table if exists ACT_HI_ATTACHMENT;
 drop table if exists ACT_HI_IDENTITYLINK;
- 

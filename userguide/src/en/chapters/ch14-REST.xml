@@ -4086,6 +4086,12 @@ Note that only <literal>local</literal> scoped variables are returned, as there 
                     <entry>Only return executions with the given id.</entry>
                   </row>
                   <row>
+                    <entry>activityId</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return executions with the given activity id.</entry>
+                  </row>
+                  <row>
                     <entry>processDefinitionKey</entry>
                     <entry>No</entry>
                     <entry>String</entry>
@@ -5014,6 +5020,12 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>Only return tasks that can be claimed by a user in the given group.</entry>
                   </row>
                   <row>
+                    <entry>candidateGroups</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Only return tasks that can be claimed by a user in the given groups. Values split by comma.</entry>
+                  </row>
+                  <row>
                     <entry>involvedUser</entry>
                     <entry>No</entry>
                     <entry>String</entry>
@@ -5176,6 +5188,12 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
                     <entry>If <literal>true</literal>, only returns tasks without a tenantId set. If <literal>false</literal>, the <literal>withoutTenantId</literal> parameter is ignored.</entry>
                   </row>
                   <row>
+                    <entry>candidateOrAssigned</entry>
+                    <entry>No</entry>
+                    <entry>String</entry>
+                    <entry>Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups).</entry>
+                  </row>
+                  <row>
                     <entry namest="c1" nameend="c4"><para>The general <link linkend="restPagingAndSort">paging and sorting query-parameters</link> can be used for this URL.</para></entry>
                   </row>
                 </tbody>
@@ -5271,7 +5289,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
 }</programlisting> 
         </para>
         <para>
-          All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
+          All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link> (except for candidateGroupIn which is only available in this POST task query REST service), but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
           for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processInstanceVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
         </para>
         <para>
@@ -6593,17 +6611,25 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
        <emphasis role="bold">Request body:</emphasis>
         <programlisting>
 { 
-  "message" : "This is a comment on the task."
+  "message" : "This is a comment on the task.",
+  "saveProcessInstanceId" : true
 }</programlisting>
+        </para>
+        <para>
+          Parameter <literal>saveProcessInstanceId</literal> is optional, if <literal>true</literal> save process instance id of task with comment.
         </para>
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
 { 
   "id" : "123",
-  "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+  "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/123",
+  "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
   "message" : "This is a comment on the task.",
-  "author" : "kermit"
+  "author" : "kermit",
+  "time" : "2014-07-13T13:13:52.232+08:00"
+  "taskId" : "101",
+  "processInstanceId" : "100"
 }</programlisting>
           <table>
               <title>Create a new comment on a task - Response codes</title>
@@ -6666,15 +6692,23 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
 [
   { 
     "id" : "123",
-    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+    "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/123",
+    "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
     "message" : "This is a comment on the task.",
     "author" : "kermit"
+    "time" : "2014-07-13T13:13:52.232+08:00"
+    "taskId" : "101",
+    "processInstanceId" : "100"
   },
   { 
     "id" : "456",
-    "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/456",
+    "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/456",
+    "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/456",
     "message" : "This is another comment on the task.",
-    "author" : "gonzo"
+    "author" : "gonzo",
+    "time" : "2014-07-13T13:13:52.232+08:00"
+    "taskId" : "101",
+    "processInstanceId" : "100"
   }
 ]</programlisting>
           <table>
@@ -6739,9 +6773,13 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
             <programlisting>
 { 
   "id" : "123",
-  "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/comments/123",
+  "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/123",
+  "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
   "message" : "This is a comment on the task.",
-  "author" : "kermit"
+  "author" : "kermit",
+  "time" : "2014-07-13T13:13:52.232+08:00"
+  "taskId" : "101",
+  "processInstanceId" : "100"
 }</programlisting>
           <table>
               <title>Get a comment on a task - Response codes</title>
@@ -7881,17 +7919,25 @@ Only the attachment name is required to create a new attachment.
        <emphasis role="bold">Request body:</emphasis>
         <programlisting>
 { 
-  "message" : "This is a comment."
+  "message" : "This is a comment.",
+  "saveProcessInstanceId" : true
 }</programlisting>
         </para>
+        <para>
+         Parameter <literal>saveProcessInstanceId</literal> is optional, if <literal>true</literal> save process instance id of task with comment.
+       </para>
         <para>
           <emphasis role="bold">Success response body:</emphasis>
             <programlisting>
 { 
   "id" : "123",
-  "url" : "http://localhost:8081/activiti-rest/history/historic-process-instances/100/comments/123",
-  "message" : "This is a comment.",
-  "author" : "kermit"
+  "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/123",
+  "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
+  "message" : "This is a comment on the task.",
+  "author" : "kermit",
+  "time" : "2014-07-13T13:13:52.232+08:00",
+  "taskId" : "101",
+  "processInstanceId" : "100"
 }</programlisting>
           <table>
               <title>Create a new comment on a historic process instance - Response codes</title>
@@ -7954,15 +8000,19 @@ Only the attachment name is required to create a new attachment.
 [
   { 
     "id" : "123",
-    "url" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
-    "message" : "This is a comment",
-    "author" : "kermit"
+    "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/123",
+    "message" : "This is a comment on the task.",
+    "author" : "kermit",
+    "time" : "2014-07-13T13:13:52.232+08:00",
+    "processInstanceId" : "100"
   },
   { 
     "id" : "456",
-    "url" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/456",
+    "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/456",
     "message" : "This is another comment.",
-    "author" : "gonzo"
+    "author" : "gonzo",
+    "time" : "2014-07-14T15:16:52.232+08:00",
+    "processInstanceId" : "100"
   }
 ]</programlisting>
           <table>
@@ -8027,9 +8077,11 @@ Only the attachment name is required to create a new attachment.
             <programlisting>
 { 
   "id" : "123",
-  "url" : "http://localhost:8081/activiti-rest/history/historic-process-instances/100/comments/123",
-  "message" : "This is a comment.",
-  "author" : "kermit"
+  "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/456",
+  "message" : "This is another comment.",
+  "author" : "gonzo",
+  "time" : "2014-07-14T15:16:52.232+08:00",
+  "processInstanceId" : "100"
 }</programlisting>
           <table>
               <title>Get a comment on a historic process instance - Response codes</title>

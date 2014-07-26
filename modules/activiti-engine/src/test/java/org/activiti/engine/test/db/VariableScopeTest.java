@@ -150,6 +150,87 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     taskService.complete(subProcessTask.getId());
   }
   
+  @Deployment
+  public void testModeledVariableScope() {
+
+    // After starting the process, the task in the subprocess should be active
+    Map<String, Object> varMap = new HashMap<String, Object>();
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSubProcess", varMap);
+    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    assertEquals("Task in subprocess1", subProcessTask.getName());
+
+    // get variables for execution id user task, should return the new value of
+    // variable test --> test2
+    assertEquals("test2", runtimeService.getVariable(subProcessTask.getExecutionId(), "test"));
+    assertEquals("test2", runtimeService.getVariables(subProcessTask.getExecutionId()).get("test"));
+
+    // get variables for process instance id, should return the initial value of
+    // variable test --> test
+    assertEquals("test", runtimeService.getVariable(pi.getId(), "test"));
+    assertEquals("test", runtimeService.getVariables(pi.getId()).get("test"));
+
+    runtimeService.setVariableLocal(subProcessTask.getExecutionId(), "test", "testX");
+
+    // get variables for execution id user task, should return the new value of
+    // variable test --> test3
+    assertEquals("testX", runtimeService.getVariable(subProcessTask.getExecutionId(), "test"));
+    assertEquals("testX", runtimeService.getVariables(subProcessTask.getExecutionId()).get("test"));
+
+    // get variables for process instance id, should still return the initial
+    // value of variable test --> test
+    assertEquals("test", runtimeService.getVariable(pi.getId(), "test"));
+    assertEquals("test", runtimeService.getVariables(pi.getId()).get("test"));
+
+    runtimeService.setVariable(pi.getId(), "test", "testY");
+
+    // get variables for execution id user task, should return the old value of
+    // variable test --> test3
+    assertEquals("testX", runtimeService.getVariable(subProcessTask.getExecutionId(), "test"));
+    assertEquals("testX", runtimeService.getVariables(subProcessTask.getExecutionId()).get("test"));
+
+    // get variables for process instance id, should also return the initial
+    // value of variable test --> test4
+    assertEquals("testY", runtimeService.getVariable(pi.getId(), "test"));
+    assertEquals("testY", runtimeService.getVariables(pi.getId()).get("test"));
+
+    // After completing the task in the subprocess,
+    // the subprocess scope is destroyed and the complete process ends
+    taskService.complete(subProcessTask.getId());
+
+    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
+
+    for (Task subProcTask : subProcessTasks) {
+      if (subProcTask.getName().equals("Task in subprocess2")) {
+        // get variables for execution id user task, should return the old value
+        // of variable test --> test3
+        assertEquals("test3", runtimeService.getVariable(subProcTask.getExecutionId(), "test"));
+        assertEquals("test3", runtimeService.getVariables(subProcTask.getExecutionId()).get("test"));
+
+        // get variables for process instance id, should also return the initial
+        // value of variable test --> testY
+        assertEquals("testY", runtimeService.getVariable(pi.getId(), "test"));
+        assertEquals("testY", runtimeService.getVariables(pi.getId()).get("test"));
+      } else if (subProcTask.getName().equals("Task in subprocess3")) {
+        // get variables for execution id user task, should return the old value
+        // of variable test --> test4
+        assertEquals("test4", runtimeService.getVariable(subProcTask.getExecutionId(), "test"));
+        assertEquals("test4", runtimeService.getVariables(subProcTask.getExecutionId()).get("test"));
+
+        // get variables for process instance id, should also return the initial
+        // value of variable test --> testY
+        assertEquals("testY", runtimeService.getVariable(pi.getId(), "test"));
+        assertEquals("testY", runtimeService.getVariables(pi.getId()).get("test"));
+      } else {
+        fail("Unexpected subProcessTask: " + subProcTask);
+      }
+    }
+
+    // finish process
+    for (Task subProcTask : subProcessTasks) {
+      taskService.complete(subProcTask.getId());
+    }
+  }
+  
   /**
    * A command to get the names of the variables
    * @author Roman Smirnov

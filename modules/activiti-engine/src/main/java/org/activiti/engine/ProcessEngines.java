@@ -74,7 +74,7 @@ public abstract class ProcessEngines {
    * resources <code>activiti.cfg.xml</code> (plain Activiti style configuration)
    * and for resources <code>activiti-context.xml</code> (Spring style configuration). */
   public synchronized static void init() {
-    if (!isInitialized) {
+    if (!isInitialized()) {
       if(processEngines == null) {
         // Create new map to store process-engines if current map is null
         processEngines = new HashMap<String, ProcessEngine>();        
@@ -109,7 +109,7 @@ public abstract class ProcessEngines {
         initProcessEngineFromSpringResource(resource);
       }
 
-      isInitialized = true;
+      setInitialized(true);
     } else {
       log.info("Process engines already initialized");
     }
@@ -220,7 +220,7 @@ public abstract class ProcessEngines {
   /** obtain a process engine by name.  
    * @param processEngineName is the name of the process engine or null for the default process engine.  */
   public static ProcessEngine getProcessEngine(String processEngineName) {
-    if (!isInitialized) {
+    if (!isInitialized()) {
       init();
     }
     return processEngines.get(processEngineName);
@@ -246,7 +246,7 @@ public abstract class ProcessEngines {
   
   /** closes all process engines.  This method should be called when the server shuts down. */
   public synchronized static void destroy() {
-    if (isInitialized) {
+    if (isInitialized()) {
       Map<String, ProcessEngine> engines = new HashMap<String, ProcessEngine>(processEngines);
       processEngines = new HashMap<String, ProcessEngine>();
       
@@ -263,7 +263,15 @@ public abstract class ProcessEngines {
       processEngineInfosByResourceUrl.clear();
       processEngineInfos.clear();
       
-      isInitialized = false;
+      setInitialized(false);
     }
+  }
+  
+  public static boolean isInitialized() {
+    return isInitialized;
+  }
+  
+  public static void setInitialized(boolean isInitialized) {
+    ProcessEngines.isInitialized = isInitialized;
   }
 }

@@ -75,8 +75,7 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
 			}
 		} else {
 			// Try getting hold of the Process definition, based on the process
-			// definition-key, if a
-			// context is active
+			// definition-key, if a context is active
 			CommandContext commandContext = Context.getCommandContext();
 			if (commandContext != null) {
 				ProcessDefinitionEntity processDefinition = extractProcessDefinitionEntityFromEvent(event);

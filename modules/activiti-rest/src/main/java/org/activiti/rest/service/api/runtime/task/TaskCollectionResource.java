@@ -13,8 +13,11 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
@@ -32,9 +35,9 @@ public class TaskCollectionResource extends TaskBaseResource {
 
   @Post
   public TaskResponse createTask(TaskRequest taskRequest) {
-    if(!authenticate()) { return null; }
+    if (!authenticate()) { return null; }
     
-    if(taskRequest == null) {
+    if (taskRequest == null) {
       throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(),
               "A request body was expected when creating the task.", null, null));
     }
@@ -43,6 +46,9 @@ public class TaskCollectionResource extends TaskBaseResource {
 
     // Populate the task properties based on the request
     populateTaskFromRequest(task, taskRequest);
+    if (taskRequest.isTenantIdSet()) {
+      ((TaskEntity) task).setTenantId(taskRequest.getTenantId());
+    }
     ActivitiUtil.getTaskService().saveTask(task);
 
     setStatus(Status.SUCCESS_CREATED);
@@ -114,6 +120,15 @@ public class TaskCollectionResource extends TaskBaseResource {
     
     if(names.contains("candidateGroup")) {
       request.setCandidateGroup(getQueryParameter("candidateGroup", query));
+    }
+
+    if(names.contains("candidateGroups")) {
+      String[] candidateGroups = getQueryParameter("candidateGroups", query).split(",");
+      List<String> groups = new ArrayList<String>(candidateGroups.length);
+      for (String candidateGroup : candidateGroups) {
+        groups.add(candidateGroup);
+      }
+      request.setCandidateGroupIn(groups);
     }
     
     if(names.contains("processDefinitionKey")) {
@@ -202,6 +217,10 @@ public class TaskCollectionResource extends TaskBaseResource {
     
     if(names.contains("withoutTenantId") && Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", query))) {
     	request.setWithoutTenantId(Boolean.TRUE);
+    }
+
+    if(names.contains("candidateOrAssigned")) {
+      request.setCandidateOrAssigned(getQueryParameter("candidateOrAssigned", query));
     }
     
     return getTasksFromQueryRequest(request);

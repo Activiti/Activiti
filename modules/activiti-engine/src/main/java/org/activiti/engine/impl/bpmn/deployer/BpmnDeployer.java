@@ -13,20 +13,23 @@
 package org.activiti.engine.impl.bpmn.deployer;
 
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.cmd.DeploymentSettings;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -100,6 +103,10 @@ public class BpmnDeployer implements Deployer {
         		bpmnParse.setValidateProcess((Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED));
         	}
         	
+        } else {
+        	// On redeploy, we assume it is validated at the first deploy
+        	bpmnParse.setValidateSchema(false);
+        	bpmnParse.setValidateProcess(false);
         }
         
         bpmnParse.execute();
@@ -121,7 +128,8 @@ public class BpmnDeployer implements Deployer {
                   diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
               try {
                   byte[] diagramBytes = IoUtil.readInputStream(processEngineConfiguration.
-                    getProcessDiagramGenerator().generatePngDiagram(bpmnParse.getBpmnModel()), null);
+                    getProcessDiagramGenerator().generateDiagram(bpmnParse.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
+                        processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader()), null);
                   diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
                   createResource(diagramResourceName, diagramBytes, deployment);
               } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
@@ -269,7 +277,7 @@ public class BpmnDeployer implements Deployer {
       .findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
     
     for (Job job :jobsToDelete) {
-        new DeleteJobsCmd(job.getId()).execute(Context.getCommandContext());
+        new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
     }
   }
   

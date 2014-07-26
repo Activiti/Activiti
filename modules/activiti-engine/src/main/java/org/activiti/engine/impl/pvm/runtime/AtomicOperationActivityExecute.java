@@ -47,8 +47,14 @@ public class AtomicOperationActivityExecute implements AtomicOperation {
     try {
     	if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution.getActivity().getId(), execution.getId(), 
-      					execution.getProcessInstanceId(), execution.getProcessDefinitionId()));
+      			ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, 
+      					execution.getActivity().getId(),
+      					(String) execution.getActivity().getProperty("name"),
+      					execution.getId(), 
+      					execution.getProcessInstanceId(), 
+      					execution.getProcessDefinitionId(),
+      					(String) activity.getProperties().get("type"),
+      					activity.getActivityBehavior().getClass().getCanonicalName()));
       }
     	
       activityBehavior.execute(execution);

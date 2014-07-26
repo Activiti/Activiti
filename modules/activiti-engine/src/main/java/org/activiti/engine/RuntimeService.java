@@ -61,12 +61,6 @@ public interface RuntimeService {
    * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing
    * such a business key is definitely a best practice.
    * 
-   * Note that a business key MUST be unique for the given process definition.
-   * Process instance from different process definition are allowed to have the
-   * same business key.
-   * 
-   * The combination of processdefinitionKey-businessKey must be unique.
-   * 
    * @param processDefinitionKey
    *          key of process definition, cannot be null.
    * @param businessKey
@@ -100,10 +94,6 @@ public interface RuntimeService {
    * then be used to easily look up that process instance , see
    * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing
    * such a business key is definitely a best practice.
-   * 
-   * Note that a business key MUST be unique for the given process definition.
-   * Process instance from different process definition are allowed to have the
-   * same business key.
    * 
    * The combination of processdefinitionKey-businessKey must be unique.
    * 
@@ -161,10 +151,6 @@ public interface RuntimeService {
    * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing
    * such a business key is definitely a best practice.
    * 
-   * Note that a business key MUST be unique for the given process definition.
-   * Process instance from different process definition are allowed to have the
-   * same business key.
-   * 
    * @param processDefinitionId
    *          the id of the process definition, cannot be null.
    * @param businessKey
@@ -198,10 +184,6 @@ public interface RuntimeService {
    * then be used to easily look up that process instance , see
    * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing
    * such a business key is definitely a best practice.
-   * 
-   * Note that a business key MUST be unique for the given process definition.
-   * Process instance from different process definition are allowed to have the
-   * same business key.
    * 
    * @param processDefinitionId
    *          the id of the process definition, cannot be null.

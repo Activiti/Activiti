@@ -17,6 +17,7 @@ package org.activiti.crystalball.simulator;
 import org.activiti.crystalball.simulator.impl.AcquireJobNotificationEventHandler;
 import org.activiti.crystalball.simulator.impl.NoopEventHandler;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 
@@ -55,11 +56,12 @@ public class SimpleSimulationRun extends AbstractSimulationRun {
   }
 
   @Override
-  protected void initSimulationRunContext() {// init new process engine
+  protected void initSimulationRunContext(VariableScope execution) {// init new process engine
     try {
     // add context in which simulation run is executed
     SimulationRunContext.setEventCalendar(eventCalendar);
     SimulationRunContext.setProcessEngine(processEngine);
+    SimulationRunContext.setExecution(execution);
 
     // run simulation
     // init context and task calendar and simulation time is set to current

@@ -28,6 +28,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Clock;
@@ -82,7 +83,7 @@ public class PlaybackRunTest {
       .eventHandlers(getHandlers());
     SimpleSimulationRun simRun = builder.build();
 
-    simRun.execute();
+    simRun.execute(new NoExecutionVariableScope());
 
     checkStatus(simProcessEngine);
 

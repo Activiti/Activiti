@@ -133,6 +133,7 @@ create table ACT_HI_IDENTITYLINK (
     primary key (ID_)
 );
 
+
 create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROCINST(END_TIME_);
 create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROCINST(BUSINESS_KEY_);
 create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACTINST(START_TIME_);

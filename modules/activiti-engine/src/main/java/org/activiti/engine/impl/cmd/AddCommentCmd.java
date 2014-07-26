@@ -15,7 +15,6 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -55,7 +54,7 @@ public class AddCommentCmd implements Command<Comment>{
     
     // Validate task
     if (taskId != null) {
-      TaskEntity task = Context.getCommandContext().getTaskEntityManager().findTaskById(taskId);
+      TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
 
       if (task == null) {
         throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
@@ -82,7 +81,7 @@ public class AddCommentCmd implements Command<Comment>{
     CommentEntity comment = new CommentEntity();
     comment.setUserId(userId);
     comment.setType( (type == null)? CommentEntity.TYPE_COMMENT : type );
-    comment.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    comment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
     comment.setTaskId(taskId);
     comment.setProcessInstanceId(processInstanceId);
     comment.setAction(Event.ACTION_ADD_COMMENT);

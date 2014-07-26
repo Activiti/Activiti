@@ -12,15 +12,11 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
-import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +36,6 @@ public class AcquireJobsRunnable implements Runnable {
   protected final AtomicBoolean isWaiting = new AtomicBoolean(false);
   
   protected long millisToWait = 0;
-  protected float waitIncreaseFactor = 2;
-  protected long maxWait = 60 * 1000;
 
   public AcquireJobsRunnable(JobExecutor jobExecutor) {
     this.jobExecutor = jobExecutor;
@@ -53,11 +47,12 @@ public class AcquireJobsRunnable implements Runnable {
     final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
 
     while (!isInterrupted) {
+      isJobAdded = false;
       int maxJobsPerAcquisition = jobExecutor.getMaxJobsPerAcquisition();
 
       try {
         AcquiredJobs acquiredJobs = commandExecutor.execute(jobExecutor.getAcquireJobsCmd());
-
+        
         for (List<String> jobIds : acquiredJobs.getJobIdBatches()) {
           jobExecutor.executeJobs(jobIds);
         }
@@ -65,23 +60,8 @@ public class AcquireJobsRunnable implements Runnable {
         // if all jobs were executed
         millisToWait = jobExecutor.getWaitTimeInMillis();
         int jobsAcquired = acquiredJobs.getJobIdBatches().size();
-        if (jobsAcquired < maxJobsPerAcquisition) {
-          
-          isJobAdded = false;
-          
-          // check if the next timer should fire before the normal sleep time is over
-          Date duedate = new Date(jobExecutor.getCurrentTime().getTime() + millisToWait);
-          List<TimerEntity> nextTimers = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(duedate, new Page(0, 1)));
-          
-          if (!nextTimers.isEmpty()) {
-          long millisTillNextTimer = nextTimers.get(0).getDuedate().getTime() - jobExecutor.getCurrentTime().getTime();
-            if (millisTillNextTimer < millisToWait) {
-              millisToWait = millisTillNextTimer;
-            }
-          }
-          
-        } else {
-          millisToWait = 0;
+        if (jobsAcquired >= maxJobsPerAcquisition) {
+          millisToWait = 0; 
         }
 
       } catch (ActivitiOptimisticLockingException optimisticLockingException) { 
@@ -95,12 +75,7 @@ public class AcquireJobsRunnable implements Runnable {
         }
       } catch (Throwable e) {
         log.error("exception during job acquisition: {}", e.getMessage(), e);          
-        millisToWait *= waitIncreaseFactor;
-        if (millisToWait > maxWait) {
-          millisToWait = maxWait;
-        } else if (millisToWait==0) {
-          millisToWait = jobExecutor.getWaitTimeInMillis();
-        }
+        millisToWait = jobExecutor.getWaitTimeInMillis();
       }
 
       if ((millisToWait > 0) && (!isJobAdded)) {
@@ -159,21 +134,4 @@ public class AcquireJobsRunnable implements Runnable {
   public void setMillisToWait(long millisToWait) {
     this.millisToWait = millisToWait;
   }
-  
-  public float getWaitIncreaseFactor() {
-    return waitIncreaseFactor;
-  }
-  
-  public void setWaitIncreaseFactor(float waitIncreaseFactor) {
-    this.waitIncreaseFactor = waitIncreaseFactor;
-  }
-  
-  public long getMaxWait() {
-    return maxWait;
-  }
-
-  public void setMaxWait(long maxWait) {
-    this.maxWait = maxWait;
-  }
-
 }

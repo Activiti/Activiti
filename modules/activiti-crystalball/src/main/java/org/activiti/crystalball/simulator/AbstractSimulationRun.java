@@ -14,13 +14,14 @@ package org.activiti.crystalball.simulator;
  */
 
 
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.delegate.VariableScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements all methods for Simulation run
@@ -31,11 +32,12 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
 
   private static Logger log = LoggerFactory.getLogger(AbstractSimulationRun.class);
 
+  protected String id;
   /**
    * Map for eventType -> event handlers to execute events on simulation engine
    */
   protected Map<String, SimulationEventHandler> eventHandlerMap = new HashMap<String, SimulationEventHandler>();
-  protected ProcessEngineImpl processEngine;
+  protected ProcessEngine processEngine;
 
   public AbstractSimulationRun(Map<String, SimulationEventHandler> eventHandlers) {
     if (eventHandlers != null && !eventHandlers.isEmpty()) {
@@ -44,8 +46,8 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
   }
 
   @Override
-  public void execute() throws Exception {
-    init();
+  public void execute(VariableScope execution) throws Exception {
+    init(execution);
 
     runContinue();
 
@@ -60,8 +62,8 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
   }
 
   @Override
-  public void init() {
-    initSimulationRunContext();
+  public void init(VariableScope execution) {
+    initSimulationRunContext(execution);
     initHandlers();
   }
 
@@ -114,7 +116,7 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
   @Override
   public abstract void close();
 
-  protected abstract void initSimulationRunContext();
+  protected abstract void initSimulationRunContext(VariableScope execution);
 
   protected void initHandlers() {
 		for( SimulationEventHandler handler : eventHandlerMap.values()) {

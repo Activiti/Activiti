@@ -42,6 +42,7 @@
   	<property name="transactionManager" ref="transactionManager" />
   	<property name="databaseSchemaUpdate" value="true" />
   	<property name="jobExecutorActivate" value="true" />
+    <property name="enableDatabaseEventLogging" value="true" />
     <property name="customFormTypes">
       <list>
         <bean class="org.activiti.explorer.form.UserFormType"/>

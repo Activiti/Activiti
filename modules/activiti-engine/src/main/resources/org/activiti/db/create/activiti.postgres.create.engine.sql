@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.16-SNAPSHOT', 1);
+values ('schema.version', '5.17-SNAPSHOT', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.16-SNAPSHOT)', 1);
+values ('schema.history', 'create(5.17-SNAPSHOT)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -172,6 +172,21 @@ create table ACT_RU_EVENT_SUBSCR (
     PROC_DEF_ID_ varchar(64),
     TENANT_ID_ varchar(255) default '',
     primary key (ID_)
+);
+
+create table ACT_EVT_LOG (
+    LOG_NR_ SERIAL PRIMARY KEY,
+    TYPE_ varchar(64),
+    PROC_DEF_ID_ varchar(64),
+    PROC_INST_ID_ varchar(64),
+    EXECUTION_ID_ varchar(64),
+    TASK_ID_ varchar(64),
+    TIME_STAMP_ timestamp not null,
+    USER_ID_ varchar(255),
+    DATA_ bytea,
+    LOCK_OWNER_ varchar(255),
+    LOCK_TIME_ timestamp null,
+    IS_PROCESSED_ smallint default 0
 );
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);

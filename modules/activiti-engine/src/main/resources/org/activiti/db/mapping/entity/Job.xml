@@ -10,12 +10,33 @@
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
+  <delete id="bulkDeleteJob" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_JOB where
+     <foreach item="job" collection="list" index="index" separator=" or ">
+        ID_ = #{job.id, jdbcType=VARCHAR}
+    </foreach> 
+  </delete>
+  
   <delete id="deleteTimer" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
+  <delete id="bulkDeleteTimer" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_JOB where
+     <foreach item="job" collection="list" index="index" separator=" or ">
+        ID_ = #{job.id, jdbcType=VARCHAR}
+    </foreach> 
+  </delete>
+  
   <delete id="deleteMessage" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+  
+  <delete id="bulkDeleteMessage" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_JOB where
+     <foreach item="job" collection="list" index="index" separator=" or ">
+        ID_ = #{job.id, jdbcType=VARCHAR}
+    </foreach> 
   </delete>
   
   <!-- JOB UPDATE STATEMENTS -->
@@ -33,7 +54,7 @@
   
     
   <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
-       Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance0 -->
+       Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->
   <update id="updateJobTenantIdForDeployment_mysql" parameterType="java.util.Map">
     update ${prefix}ACT_RU_JOB set
       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
@@ -96,8 +117,8 @@
     from ${prefix}ACT_RU_JOB RES    
     	LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
     where (RES.RETRIES_ &gt; 0)
-      and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt; #{parameter, jdbcType=TIMESTAMP})
-      and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP})
+      and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+      and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
 	  and (
 	  	    (RES.EXECUTION_ID_ is null)
 	  		or 
@@ -106,44 +127,15 @@
     ${limitAfter}	    
   </select>     
   
-  <!--  ACT-1064: MySQL-specific select's are needed to handle non-millisecond precision -->
-  <select id="selectNextJobsToExecute_mysql" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-    ${limitBefore}
-    select RES.* ${limitBetween} 
-    from ${prefix}ACT_RU_JOB RES
-      LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
-    where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
-      and (
-          (RES.EXECUTION_ID_ is null)
-        or 
-        (PI.SUSPENSION_STATE_ = 1)     
-      )  
-    ${limitAfter}
-  </select>              
-
   <select id="selectExclusiveJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
   	${limitBefore}
     select RES.* ${limitBetween} 
     from ${prefix}ACT_RU_JOB RES    
     where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
-      and (EXCLUSIVE_ = TRUE)
-      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
-    ${limitAfter}
-  </select>
-  
-  <select id="selectExclusiveJobsToExecute_mysql" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-    ${limitBefore}
-    select RES.* ${limitBetween} 
-    from ${prefix}ACT_RU_JOB RES
-    where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
       and (EXCLUSIVE_ = TRUE)
-      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})
+      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
     ${limitAfter}
   </select>
   
@@ -152,8 +144,8 @@
     select RES.* ${limitBetween} 
     from ${prefix}ACT_RU_JOB RES  
     where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{parameter.now, jdbcType=TIMESTAMP})
+      and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
       and (EXCLUSIVE_ = 1)
       and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
     ${limitAfter}   
@@ -398,7 +390,8 @@
        LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
        RETRIES_ = #{retries, jdbcType=INTEGER},
        EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-       EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR}
+       EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR},
+       DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}

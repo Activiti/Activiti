@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.validation.ValidationError;
@@ -36,7 +37,6 @@ public class SequenceflowValidator extends ProcessLevelValidator {
 			FlowElement source = process.getFlowElementRecursive(sourceRef);
 			FlowElement target = process.getFlowElementRecursive(targetRef);
 			
-			
 			// Src and target validation
 			if (source == null) {
 				addError(errors, Problems.SEQ_FLOW_INVALID_SRC, process, sequenceFlow, "Invalid source for sequenceflow");
@@ -45,6 +45,20 @@ public class SequenceflowValidator extends ProcessLevelValidator {
 				addError(errors, Problems.SEQ_FLOW_INVALID_TARGET, process, sequenceFlow, "Invalid target for sequenceflow");
 			}
 			
+			if (source != null && target != null) {
+  			FlowElementsContainer sourceContainer = process.getFlowElementsContainerRecursive(source.getId());
+  			FlowElementsContainer targetContainer = process.getFlowElementsContainerRecursive(target.getId());
+  			
+  			if (sourceContainer == null) {
+          addError(errors, Problems.SEQ_FLOW_INVALID_SRC, process, sequenceFlow, "Invalid source for sequenceflow");
+        }
+        if (targetContainer == null) {
+          addError(errors, Problems.SEQ_FLOW_INVALID_TARGET, process, sequenceFlow, "Invalid target for sequenceflow");
+        }
+        if (sourceContainer != null && targetContainer != null && sourceContainer.equals(targetContainer) == false) {
+          addError(errors, Problems.SEQ_FLOW_INVALID_TARGET, process, sequenceFlow, "Invalid target for sequenceflow, the target isn't defined in the same scope as the source");
+        }
+			}
 		}
 	}
 

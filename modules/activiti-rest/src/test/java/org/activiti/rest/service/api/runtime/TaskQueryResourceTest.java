@@ -157,7 +157,17 @@ public class TaskQueryResourceTest extends BaseRestTestCase {
       requestNode.removeAll();
       requestNode.put("candidateGroup", "sales");
       assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+
+      // Candidate group In filtering
+      requestNode.removeAll();
+      ArrayNode arrayNode =  requestNode.arrayNode();
       
+      arrayNode.add("sales");
+      arrayNode.add("someOtherGroup");
+      
+      requestNode.put("candidateGroupIn", arrayNode);
+      assertResultsPresentInDataResponse(url, requestNode, processTask.getId());
+
       // Involved user filtering
       requestNode.removeAll();
       requestNode.put("involvedUser", "misspiggy");

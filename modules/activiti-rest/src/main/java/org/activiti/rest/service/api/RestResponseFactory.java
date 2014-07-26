@@ -374,21 +374,22 @@ public class RestResponseFactory {
   }
   
   public CommentResponse createRestComment(SecuredResource securedResource, Comment comment) {
-    return createCommentResponse(securedResource, comment.getTaskId(), comment.getProcessInstanceId(), comment.getUserId(), comment.getFullMessage(), comment.getId());
-  }
-  
-  public CommentResponse createCommentResponse(SecuredResource securedResource, String taskId, String processInstanceId, String author,
-          String message, String commentId) {
     CommentResponse result = new CommentResponse();
-    result.setAuthor(author);
-    result.setMessage(message);
-    result.setId(commentId);
+    result.setAuthor(comment.getUserId());
+    result.setMessage(comment.getFullMessage());
+    result.setId(comment.getId());
+    result.setTime(comment.getTime());
+    result.setTaskId(comment.getTaskId());
+    result.setProcessInstanceId(comment.getProcessInstanceId());
     
-    if(taskId != null) {
-      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_COMMENT, taskId, commentId));
-    } else if(processInstanceId != null) {
-      result.setUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, processInstanceId, commentId));
+    if (comment.getTaskId() != null) {
+      result.setTaskUrl(securedResource.createFullResourceUrl(RestUrls.URL_TASK_COMMENT, comment.getTaskId(), comment.getId()));
     }
+    
+    if (comment.getProcessInstanceId() != null) {
+      result.setProcessInstanceUrl(securedResource.createFullResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, comment.getProcessInstanceId(), comment.getId()));
+    }
+    
     return result;
   }
   
@@ -415,6 +416,7 @@ public class RestResponseFactory {
     result.setName(attachment.getName());
     result.setDescription(attachment.getDescription());
     result.setType(attachment.getType());
+    result.setUserId(attachment.getUserId());
     
     if(attachment.getUrl() == null && attachment.getTaskId() != null) {
       // Attachment content can be streamed

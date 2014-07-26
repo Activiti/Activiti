@@ -161,6 +161,7 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
             formValue.setName(entry.getName());
             formValues.add(formValue);
           }
+          formProperty.setFormValues(formValues);
         }
       } else {
       	// Fallback to simple text

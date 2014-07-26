@@ -16,7 +16,6 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -54,8 +53,7 @@ public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Se
   }
   
   public Void execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = Context
-      .getCommandContext()
+    ProcessDefinitionEntity processDefinition = commandContext
       .getProcessDefinitionEntityManager()
       .findProcessDefinitionById(processDefinitionId);
     

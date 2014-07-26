@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.IoUtil;
@@ -106,7 +106,6 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobQuery.count());
     //have to manually delete pending timer
     cleanDB();
-
   }
 
   
@@ -121,23 +120,13 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     // After process start, there should be timer created
     JobQuery jobQuery = managementService.createJobQuery();
     assertEquals(1, jobQuery.count());
-
-    final ProcessInstanceQuery piq = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExampleCycle");
     
-    moveByMinutes(5);
-    waitForJobExecutorOnCondition(10000, 500, new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        return 1 ==  piq.count();
-      }      
-    });
+    moveByMinutes(6);
+    managementService.executeJob(managementService.createJobQuery().singleResult().getId());
     assertEquals(1, jobQuery.count());
 
-    moveByMinutes(5);
-    waitForJobExecutorOnCondition(10000, 500, new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        return 2 ==  piq.count();
-      }      
-    });
+    moveByMinutes(6);
+    managementService.executeJob(managementService.createJobQuery().singleResult().getId());
     assertEquals(0, jobQuery.count());
 
   }
@@ -244,7 +233,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
   private void cleanDB() {
     String jobId = managementService.createJobQuery().singleResult().getId();
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    commandExecutor.execute(new DeleteJobsCmd(jobId));
+    commandExecutor.execute(new CancelJobsCmd(jobId));
   }
 
 }

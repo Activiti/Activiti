@@ -173,7 +173,7 @@
   <select id="selectEventsByProcessInstanceId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
     select * 
     from ${prefix}ACT_HI_COMMENT 
-    where PROC_INST_ID_ = #{parameter,jdbcType=BINARY}
+    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
     order by TIME_ desc
   </select>
 
@@ -187,7 +187,23 @@
   <select id="selectCommentsByProcessInstanceId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
     select * 
     from ${prefix}ACT_HI_COMMENT 
-    where PROC_INST_ID_ = #{parameter,jdbcType=BINARY}
+    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+
+  <select id="selectCommentsByProcessInstanceIdAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    select *
+    from ${prefix}ACT_HI_COMMENT
+    where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
+    and TYPE_ = #{type,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+
+  <select id="selectCommentsByProcessInstanceIdAndType_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    select *
+    from ${prefix}ACT_HI_COMMENT
+    where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
+    and TYPE_ = #{type,jdbcType=VARCHAR}
     order by TIME_ desc
   </select>
 

@@ -13,6 +13,8 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -40,6 +42,11 @@ public class TimerCatchIntermediateEventJobHandler implements JobHandler {
     }
 
     try {
+      if (commandContext.getEventDispatcher().isEnabled()) {
+        commandContext.getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
+      }
+
       if(!execution.getActivity().getId().equals(intermediateEventActivity.getId())) {
         execution.setActivity(intermediateEventActivity);
       }

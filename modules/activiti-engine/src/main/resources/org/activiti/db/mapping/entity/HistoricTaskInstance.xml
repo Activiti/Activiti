@@ -93,7 +93,14 @@
   <delete id="deleteHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
     delete from ${prefix}ACT_HI_TASKINST where ID_ = #{id}
   </delete>
-
+  
+  <delete id="bulkDeleteHistoricTaskInstance" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_HI_TASKINST where
+    <foreach item="task" collection="list" index="index" separator=" or ">
+        ID_ = #{task.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  
   <!-- HISTORIC TASK INSTANCE RESULT MAP -->
 
   <resultMap id="historicTaskInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">

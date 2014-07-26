@@ -318,6 +318,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId));
   }
 
+  public List<Comment> getProcessInstanceComments(String processInstanceId, String type) {
+    return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId, type));
+  }
+
   public Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content) {
     return commandExecutor.execute(new CreateAttachmentCmd(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, null));
   }

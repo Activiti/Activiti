@@ -66,5 +66,7 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${delegateExpression}", listener.getImplementation());
     assertEquals("start", listener.getEvent());
+    
+    assertEquals("R5/PT5M", serviceTask.getFailedJobRetryTimeCycleValue());
   }
 }

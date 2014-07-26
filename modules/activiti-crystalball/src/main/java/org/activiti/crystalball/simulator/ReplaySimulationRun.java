@@ -14,9 +14,11 @@ package org.activiti.crystalball.simulator;
  */
 
 
-import org.activiti.engine.impl.ProcessEngineImpl;
-
 import java.util.Map;
+
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
  * This class provides simulation run for replay purposes
@@ -28,20 +30,22 @@ public class ReplaySimulationRun extends AbstractSimulationRun {
 
   private final EventCalendar eventCalendar;
 
-  public ReplaySimulationRun(ProcessEngineImpl processEngine, Map<String, SimulationEventHandler> customEventHandlerMap) {
+  public ReplaySimulationRun(ProcessEngine processEngine, Map<String, SimulationEventHandler> customEventHandlerMap) {
     this(processEngine, new SimpleEventCalendar(processEngine.getProcessEngineConfiguration().getClock(), new SimulationEventComparator()), customEventHandlerMap);
   }
 
-  public ReplaySimulationRun(ProcessEngineImpl processEngine, EventCalendar eventCalendar, Map<String, SimulationEventHandler> customEventHandlerMap) {
+  public ReplaySimulationRun(ProcessEngine processEngine, EventCalendar eventCalendar, Map<String, SimulationEventHandler> customEventHandlerMap) {
     super(customEventHandlerMap);
     this.processEngine = processEngine;
     this.eventCalendar = eventCalendar;
   }
 
   @Override
-  protected void initSimulationRunContext() {
+  protected void initSimulationRunContext(VariableScope execution) {
     SimulationRunContext.setEventCalendar(eventCalendar);
     SimulationRunContext.setProcessEngine(processEngine);
+    ProcessEngineConfigurationImpl configuration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
+    SimulationRunContext.setSimulationRunId(configuration.getIdGenerator().getNextId());
   }
 
   /**

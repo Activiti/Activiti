@@ -12,7 +12,9 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
@@ -53,6 +55,7 @@ public class TimerEntity extends JobEntity {
     retries = te.retries;
     executionId = te.executionId;
     processInstanceId = te.processInstanceId;
+    processDefinitionId = te.processDefinitionId;
 
     // Inherit tenant
     tenantId = te.tenantId;
@@ -71,17 +74,47 @@ public class TimerEntity extends JobEntity {
       delete();
     } else {
       delete();
-      Date newTimer = calculateRepeat();
-      if (newTimer != null) {
-        TimerEntity te = new TimerEntity(this);
-        te.setDuedate(newTimer);
-        Context
-            .getCommandContext()
-            .getJobEntityManager()
-            .schedule(te);
+      int repeatValue = calculateRepeatValue();
+      if (repeatValue != 0) {
+        if (repeatValue > 0) {
+          setNewRepeat(repeatValue);
+        }
+        Date newTimer = calculateRepeat();
+        if (newTimer != null) {
+          TimerEntity te = new TimerEntity(this);
+          te.setDuedate(newTimer);
+          Context
+              .getCommandContext()
+              .getJobEntityManager()
+              .schedule(te);
+        }
       }
     }
 
+  }
+  
+  private int calculateRepeatValue() {
+    int times = -1;
+    List<String> expression = Arrays.asList(repeat.split("/"));
+    if (expression.size() > 1 && expression.get(0).startsWith("R") && expression.get(0).length() > 1) {
+      times = Integer.parseInt(expression.get(0).substring(1));
+      if (times > 0) {
+        times--;
+      }
+    }
+    return times;
+  }
+  
+  private void setNewRepeat(int newRepeatValue) {
+    List<String> expression = Arrays.asList(repeat.split("/"));
+    expression = expression.subList(1, expression.size());
+    StringBuilder repeatBuilder = new StringBuilder("R");
+    repeatBuilder.append(newRepeatValue);
+    for (String value : expression) {
+      repeatBuilder.append("/");
+      repeatBuilder.append(value);
+    }
+    repeat = repeatBuilder.toString();
   }
 
   private Date calculateRepeat() {

@@ -61,7 +61,6 @@ import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
-import org.activiti.engine.impl.bpmn.diagram.DefaultProcessDiagramGenerator;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseHandlers;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
@@ -113,6 +112,7 @@ import org.activiti.engine.impl.event.CompensationEventHandler;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.event.SignalEventHandler;
+import org.activiti.engine.impl.event.logger.EventLogger;
 import org.activiti.engine.impl.form.BooleanFormType;
 import org.activiti.engine.impl.form.DateFormType;
 import org.activiti.engine.impl.form.DoubleFormType;
@@ -161,6 +161,7 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
@@ -208,6 +209,7 @@ import org.activiti.engine.impl.variable.UUIDType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.parse.BpmnParseHandler;
+import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.apache.commons.lang3.ObjectUtils;
@@ -384,6 +386,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<ActivitiEventListener> eventListeners;
   protected Map<String, List<ActivitiEventListener>> typedEventListeners;
   
+  // Event logging to database
+  protected boolean enableDatabaseEventLogging = false;
+  
+  
   // buildProcessEngine ///////////////////////////////////////////////////////
   
   public ProcessEngine buildProcessEngine() {
@@ -423,6 +429,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initFailedJobCommandFactory();
     initEventDispatcher();
     initProcessValidator();
+    initDatabaseEventLogging();
     configuratorsAfterInit();
   }
 
@@ -611,6 +618,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     databaseTypeMappings.setProperty("DB2/SUN64","db2");
     databaseTypeMappings.setProperty("DB2/PTX","db2");
     databaseTypeMappings.setProperty("DB2/2","db2");
+    databaseTypeMappings.setProperty("DB2 UDB AS400", "db2");
     return databaseTypeMappings;
   }
 
@@ -721,6 +729,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
       dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
       dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
+      dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
       dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
       addSessionFactory(dbSqlSessionFactory);
       
@@ -746,6 +755,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(TaskEntityManager.class));
       addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(EventLogEntryEntityManager.class));
       
       addSessionFactory(new DefaultHistoryManagerSessionFactory());
       
@@ -1301,6 +1311,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initProcessValidator() {
   	if (this.processValidator == null) {
   		this.processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
+  	}
+  }
+  
+  protected void initDatabaseEventLogging() {
+  	if (enableDatabaseEventLogging) {
+  		// Database event logging uses the default logging mechanism and adds
+  		// a specific event listener to the list of event listeners
+  		getEventDispatcher().addEventListener(new EventLogger(clock));
   	}
   }
 
@@ -1939,5 +1957,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 	public void setProcessValidator(ProcessValidator processValidator) {
 		this.processValidator = processValidator;
 	}
-  
+
+	public boolean isEnableEventDispatcher() {
+		return enableEventDispatcher;
+	}
+
+	public boolean isEnableDatabaseEventLogging() {
+		return enableDatabaseEventLogging;
+	}
+
+	public ProcessEngineConfigurationImpl setEnableDatabaseEventLogging(boolean enableDatabaseEventLogging) {
+		this.enableDatabaseEventLogging = enableDatabaseEventLogging;
+    return this;
+	}
+	
 }

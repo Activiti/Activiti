@@ -15,6 +15,9 @@ package org.activiti.engine.impl.pvm.runtime;
 import java.util.List;
 
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -55,7 +58,9 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
       execution.performOperation(this);
 
     } else {
-      log.debug("{} takes transition {}", execution, transition);
+    	if (log.isDebugEnabled()) {
+    		log.debug("{} takes transition {}", execution, transition);
+    	}
       execution.setExecutionListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);
@@ -63,6 +68,15 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
       ActivityImpl activity = (ActivityImpl) execution.getActivity();
       ActivityImpl nextScope = findNextScope(activity.getParent(), transition.getDestination());
       execution.setActivity(nextScope);
+      
+      // Firing event that transition is being taken     	
+      if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createSequenceFlowTakenEvent(ActivitiEventType.SEQUENCEFLOW_TAKEN, transition.getId(),
+    					activity.getId(), (String) activity.getProperties().get("name") ,(String) activity.getProperties().get("type"), activity.getActivityBehavior().getClass().getCanonicalName(),
+    					nextScope.getId(), (String) nextScope.getProperties().get("name"), (String) nextScope.getProperties().get("type"), nextScope.getActivityBehavior().getClass().getCanonicalName()));
+      }
+      
       execution.performOperation(TRANSITION_CREATE_SCOPE);
     }
   }

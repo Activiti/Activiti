@@ -21,6 +21,7 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.identity.Authentication;
 
 /**
@@ -28,7 +29,7 @@ import org.activiti.engine.impl.identity.Authentication;
  * @author Christian Stettler
  * @author Joram Barrez
  */
-public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance {
+public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance, BulkDeleteable {
 
   private static final long serialVersionUID = 1L;
   

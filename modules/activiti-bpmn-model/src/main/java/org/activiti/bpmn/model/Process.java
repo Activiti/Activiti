@@ -87,26 +87,46 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   }
   
   /**
-   * Searches the whole process, including subprocesses (unline {@link getFlowElements(String)}
+   * Searches the whole process, including subprocesses (unlike {@link getFlowElements(String)}
    */
   public FlowElement getFlowElementRecursive(String flowElementId) {
   	 return getFlowElementRecursive(this, flowElementId);
   }
   
   protected FlowElement getFlowElementRecursive(FlowElementsContainer flowElementsContainer, String flowElementId) {
- 	 for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
       if (flowElement.getId() != null && flowElement.getId().equals(flowElementId)) {
-     	 return flowElement;
+        return flowElement;
       } else if (flowElement instanceof FlowElementsContainer) {
-     	 FlowElement result =  getFlowElementRecursive((FlowElementsContainer) flowElement, flowElementId);
-     	 if (result != null) {
-     		 return result;
-     	 }
+        FlowElement result =  getFlowElementRecursive((FlowElementsContainer) flowElement, flowElementId);
+        if (result != null) {
+          return result;
+        }
       }
     }
- 	 return null;
- }
+    return null;
+  }
   
+  /**
+   * Searches the whole process, including subprocesses
+   */
+  public FlowElementsContainer getFlowElementsContainerRecursive(String flowElementId) {
+     return getFlowElementsContainerRecursive(this, flowElementId);
+  }
+  
+  protected FlowElementsContainer getFlowElementsContainerRecursive(FlowElementsContainer flowElementsContainer, String flowElementId) {
+    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+      if (flowElement.getId() != null && flowElement.getId().equals(flowElementId)) {
+        return flowElementsContainer;
+      } else if (flowElement instanceof FlowElementsContainer) {
+        FlowElementsContainer result =  getFlowElementsContainerRecursive((FlowElementsContainer) flowElement, flowElementId);
+        if (result != null) {
+          return result;
+        }
+      }
+    }
+    return null;
+  }
   
   protected FlowElement findFlowElementInList(String flowElementId) {
     for (FlowElement f : flowElementList) {
