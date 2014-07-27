@@ -483,7 +483,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 				found = true;
 			}
 		}
-		assertTrue(found);;
+		assertTrue(found);
 	}
 	
 }

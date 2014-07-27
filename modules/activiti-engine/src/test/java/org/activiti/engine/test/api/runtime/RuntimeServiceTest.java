@@ -112,7 +112,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
-  public void startProcessInstanceWithBusinessKey() {
+  public void testStartProcessInstanceWithBusinessKey() {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     
     // by key

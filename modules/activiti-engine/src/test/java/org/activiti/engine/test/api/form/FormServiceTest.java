@@ -176,7 +176,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     Map<String, Object> expectedVariables = new HashMap<String, Object>();
     expectedVariables.put("room", "5b");
     expectedVariables.put("SpeakerName", "Mike");
-    expectedVariables.put("duration", new Long(45));
+    expectedVariables.put("duration", 45l);
     expectedVariables.put("free", Boolean.TRUE);
     expectedVariables.put("double", 45.5d);
 
@@ -242,7 +242,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     expectedVariables = new HashMap<String, Object>();
     expectedVariables.put("room", "5b");
     expectedVariables.put("SpeakerName", "Mike");
-    expectedVariables.put("duration", new Long(45));
+    expectedVariables.put("duration", 45l);
     expectedVariables.put("free", Boolean.TRUE);
     expectedVariables.put("double", 45.5d);
 
@@ -432,8 +432,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinition.getKey());
     assertNotNull(processInstance);
     
-    Task task = null;
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
     
     Map<String, String> properties = new HashMap<String, String>();
