@@ -330,7 +330,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * @see http://jira.codehaus.org/browse/ACT-1072
+   * @see <a href="http://jira.codehaus.org/browse/ACT-1072">http://jira.codehaus.org/browse/ACT-1072</a>
    */
   @Deployment
   public void testNestedSimpleSubProcessWithoutEndEvent() {
@@ -338,7 +338,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * @see http://jira.codehaus.org/browse/ACT-1072
+   * @see <a href="http://jira.codehaus.org/browse/ACT-1072">http://jira.codehaus.org/browse/ACT-1072</a>
    */
   @Deployment
   public void testSimpleSubProcessWithoutEndEvent() {
@@ -347,7 +347,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * @see http://jira.codehaus.org/browse/ACT-1072
+   * @see <a href="http://jira.codehaus.org/browse/ACT-1072">http://jira.codehaus.org/browse/ACT-1072</a>
    */
   @Deployment
   public void testNestedSubProcessesWithoutEndEvents() {
@@ -356,7 +356,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * @see http://jira.codehaus.org/browse/ACT-1847
+   * @see <a href="http://jira.codehaus.org/browse/ACT-1847">http://jira.codehaus.org/browse/ACT-1072</a>
    */
   @Deployment
   public void testDataObjectScope() {

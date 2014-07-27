@@ -94,7 +94,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         timeout = timeout + 200;
       }
     }
-    if(success == false) {
+    if(!success) {
       log.debug("Retrying process start FAILED " + MAX_RETRIES + " times");
     }
   }
@@ -118,7 +118,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
       }
     }
     
-    if(success == false) {
+    if(!success) {
       log.debug("Retrying task completion FAILED " + MAX_RETRIES + " times");
     }
   }
