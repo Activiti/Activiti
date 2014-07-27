@@ -356,7 +356,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * @see <a href="http://jira.codehaus.org/browse/ACT-1847">http://jira.codehaus.org/browse/ACT-1072</a>
+   * @see <a href="http://jira.codehaus.org/browse/ACT-1847">http://jira.codehaus.org/browse/ACT-1847</a>
    */
   @Deployment
   public void testDataObjectScope() {
