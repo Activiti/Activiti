@@ -77,7 +77,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     
     // Completing task 2, will cause the end error event to throw error with code 123
     taskService.complete(tasks.get(1).getId());
-    tasks = taskService.createTaskQuery().list();
+    taskService.createTaskQuery().list();
     Task taskAfterError = taskService.createTaskQuery().singleResult();
     assertEquals("task outside subprocess", taskAfterError.getName());
   }
@@ -106,7 +106,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(procId);
     
     // Completing task B will lead to task C
-    procId = runtimeService.startProcessInstanceByKey(processDefinitionKey).getId();
+    runtimeService.startProcessInstanceByKey(processDefinitionKey).getId();
     tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
     assertEquals(2, tasks.size());
     assertEquals("task A", tasks.get(0).getName());
