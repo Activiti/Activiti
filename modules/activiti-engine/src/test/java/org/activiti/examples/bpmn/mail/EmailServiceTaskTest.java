@@ -75,7 +75,7 @@ public class EmailServiceTaskTest extends PluggableActivitiTestCase {
     MimeMessage mimeMessage = message.getMimeMessage();
     
     assertEquals("Your order " + orderId + " has been shipped", mimeMessage.getHeader("Subject", null));
-    assertEquals("\"" + from + "\" <" +from.toString() + ">" , mimeMessage.getHeader("From", null));
+    assertEquals("\"" + from + "\" <" +from + ">" , mimeMessage.getHeader("From", null));
     assertTrue(mimeMessage.getHeader("To", null).contains(recipient));
   }
 

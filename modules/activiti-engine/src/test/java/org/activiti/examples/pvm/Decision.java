@@ -23,7 +23,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 public class Decision implements ActivityBehavior {
 
   public void execute(ActivityExecution execution) throws Exception {
-    PvmTransition transition = null; 
+    PvmTransition transition;
     String creditRating = (String) execution.getVariable("creditRating");
     if (creditRating.equals("AAA+")) {
       transition = execution.getActivity().findOutgoingTransition("wow");
