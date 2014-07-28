@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 
@@ -230,7 +229,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
     // 1 parent task for kermit
-    ClockUtil.setCurrentTime(sdf.parse("01/01/2008 01:01:01.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2008 01:01:01.000"));
     Task rootTask1 = taskService.newTask();
     rootTask1.setName("rootTestTask");
     rootTask1.setDescription("rootTestTask description");
@@ -238,7 +237,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
     ids.add(rootTask1.getId());
     taskService.addCandidateUser(rootTask1.getId(), "kermit");
     // 2 sub-tasks for the task above
-    ClockUtil.setCurrentTime(sdf.parse("01/01/2009 01:01:01.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2009 01:01:01.000"));
     for (int i = 1; i <= 2; i++) {
       Task subtask = taskService.newTask();
       subtask.setName("kermitSubTask" + i);
@@ -251,7 +250,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
 
     // 2 parent tasks for gonzo
       // first parent task for gonzo
-    ClockUtil.setCurrentTime(sdf.parse("01/02/2008 02:02:02.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/02/2008 02:02:02.000"));
     Task rootTask2 = taskService.newTask();
     rootTask2.setName("gonzoRootTask1");
     rootTask2.setDescription("gonzo Root task1 description");
@@ -259,7 +258,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
     taskService.setAssignee(rootTask2.getId(), "gonzo");
     ids.add(rootTask2.getId());
       // second parent task for gonzo
-    ClockUtil.setCurrentTime(sdf.parse("05/02/2008 02:02:02.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("05/02/2008 02:02:02.000"));
     Task rootTask3 = taskService.newTask();
     rootTask3.setName("gonzoRootTask2");
     rootTask3.setDescription("gonzo Root task2 description");
@@ -267,7 +266,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
     taskService.setAssignee(rootTask3.getId(), "gonzo");
     ids.add(rootTask3.getId());
     // 3 sub-tasks for the first parent task
-    ClockUtil.setCurrentTime(sdf.parse("01/01/2009 01:01:01.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2009 01:01:01.000"));
     for (int i = 1; i <= 3; i++) {
       Task subtask = taskService.newTask();
       subtask.setName("gonzoSubTask1_" + i);
@@ -278,7 +277,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
       ids.add(subtask.getId());
     }
     // 2 sub-tasks for the second parent task
-    ClockUtil.setCurrentTime(sdf.parse("02/01/2009 01:01:01.000"));
+    processEngineConfiguration.getClock().setCurrentTime(sdf.parse("02/01/2009 01:01:01.000"));
     for (int i = 1; i <= 2; i++) {
       Task subtask = taskService.newTask();
       subtask.setName("gonzoSubTask2_" + i);

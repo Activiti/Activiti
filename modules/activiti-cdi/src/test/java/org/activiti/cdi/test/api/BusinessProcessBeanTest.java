@@ -61,6 +61,18 @@ public class BusinessProcessBeanTest extends CdiActivitiTestCase {
     assertNull(processEngine.getRuntimeService().createProcessInstanceQuery().singleResult());
 
   }
+  
+  @Test
+  @Deployment
+  public void testProcessWithoutWaitState() {
+    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+
+    // start the process
+    businessProcess.startProcessByKey("businessProcessBeanTest").getId();
+
+    // assert that the process is ended:
+    assertNull(processEngine.getRuntimeService().createProcessInstanceQuery().singleResult());
+  }
 
   @Test
   @Deployment(resources = "org/activiti/cdi/test/api/BusinessProcessBeanTest.test.bpmn20.xml")

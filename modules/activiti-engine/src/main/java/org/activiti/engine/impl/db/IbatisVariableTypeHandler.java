@@ -36,7 +36,7 @@ public class IbatisVariableTypeHandler implements TypeHandler<VariableType> {
   public VariableType getResult(ResultSet rs, String columnName) throws SQLException {
     String typeName = rs.getString(columnName);
     VariableType type = getVariableTypes().getVariableType(typeName);
-    if (type == null) {
+    if (type == null && typeName != null) {
       throw new ActivitiException("unknown variable type name " + typeName);
     }
     return type;

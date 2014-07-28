@@ -56,6 +56,9 @@ public interface Event extends Serializable {
   /** An attachment was deleted with the attachment name as message. */
   String ACTION_DELETE_ATTACHMENT = "DeleteAttachment";
 
+  /** Unique identifier for this event  */
+  String getId();
+  
   /** Indicates the type of of action and also indicates the meaning of the parts as exposed in {@link #getMessageParts()}  */ 
   String getAction();
 

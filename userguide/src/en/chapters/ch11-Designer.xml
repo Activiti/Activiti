@@ -371,7 +371,7 @@
       <section>
         <title>Extension setup (Eclipse/Maven)</title>
         <para>Download and extract <ulink url="http://www.eclipse.org/downloads">Eclipse</ulink>
-          (Galileo or Helios should both work) and a recent version (3.x) of <ulink
+          (most recent versions should work) and a recent version (3.x) of <ulink
             url="http://maven.apache.org/download.html">Apache Maven</ulink>. If you use a 2.x
           version of Maven, you will run into problems when building your project, so make sure your
           version is up to date. We assume you are familiar with using basic features and the Java
@@ -397,7 +397,7 @@
   &lt;packaging>jar&lt;/packaging>
   &lt;name>Acme Corporation Money Tasks&lt;/name>
 ...
-&lt;/pom></programlisting>
+&lt;/project></programlisting>
         </para>
         <para>As you can see, this is just a basic pom.xml file that defines a
             <literal>groupId</literal>, <literal>artifactId</literal> and <literal>version</literal>
@@ -408,9 +408,9 @@
         <para>
           <programlisting>&lt;dependencies&gt;
   &lt;dependency&gt;
-    &lt;groupId&gt;org.activiti&lt;/groupId&gt;
-    &lt;artifactId&gt;activiti-designer-integration&lt;/artifactId&gt;
-    &lt;version&gt;5.7&lt;/version&gt; &lt;!-- Current Activiti Designer Version --&gt;
+    &lt;groupId&gt;org.activiti.designer&lt;/groupId&gt;
+    &lt;artifactId&gt;org.activiti.designer.integration&lt;/artifactId&gt;
+    &lt;version&gt;5.12.0&lt;/version&gt; &lt;!-- Use the current Activiti Designer version --&gt;
     &lt;scope&gt;compile&lt;/scope&gt;
   &lt;/dependency&gt;
 &lt;/dependencies&gt;
@@ -418,7 +418,7 @@
 &lt;repositories&gt;
   &lt;repository&gt;
       &lt;id&gt;Activiti&lt;/id&gt;
-      &lt;url&gt;https://maven.alfresco.com/nexus/content/repositories/activiti/&lt;/url&gt;
+      &lt;url&gt;https://maven.alfresco.com/nexus/content/groups/public/&lt;/url&gt;
    &lt;/repository&gt;
 &lt;/repositories&gt;</programlisting>
         </para>
@@ -688,6 +688,14 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
                 fileref="images/designer.palette.add.money.properties.required.png"/>
             </imageobject>
           </mediaobject>
+        </para>
+        <para>
+        	Users can enter static text or use expressions that use process variables in the property fields when creating diagrams 
+        	(e.g. &quot;This little piggy went to ${piggyLocation}&quot;). Generally, 
+        	this applies to text fields where users are free to enter any text. If you expect users to want to use expressions and you apply runtime behavior 
+        	to your <literal>CustomServiceTask</literal> (using <literal>@Runtime</literal>), make sure to use <literal>Expression</literal> fields in the 
+        	delegate class so the expressions are correctly resolved at runtime. More information on runtime behavior can be found in  
+        	<link linkend="eclipseDesignerConfiguringRuntime">this section</link>.
         </para>
         <para>The help for fields is offered by the buttons to the right of each property. Clicking
           on the button shows a popup as displayed below.</para>
@@ -1096,6 +1104,15 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
         that can perform validations and save information from the diagram to custom resources in
         the Eclipse workspace. There are built-in extension points for doing this and this section
         explains how to use them.</para>
+        <para>
+        	<note>
+        		<para>
+        			The ExportMarshaller functions were reintroduced recently. We are still working on the 
+        			validation functionality. The documentation below details the old situation and will be updated when the 
+        			new functionality is available. 	
+        		</para>
+        	</note>
+        </para>
       <para>Activiti Designer allows you to write extensions that validate diagrams. There are
         already validations of BPMN constructs in the tool by default, but you can add your own if
         you want to validate additional items such as modeling conventions or the values in
@@ -1105,11 +1122,9 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
         These extensions are called <literal>Export Marshallers</literal> and are invoked
         automatically by Activiti Designer on each save action by the user. This behavior can be
         enabled or disabled by setting a preference in Eclipse's preferences dialog for each format
-        to be saved.</para>
-      <para>You can compare these extensions to the BPMN 2.0 validation, BPMN 2.0 export and process
-        image saving that's performed during save actions by default in Activiti Designer. In fact,
-        these functions use exactly the same extension features you can use to save to your own
-        formats.</para>
+        for which there is an extension detected. Designer will make sure your <literal>ExportMarshaller</literal> is 
+        invoked when saving the diagram, depending on the user's preference.
+       </para>
       <para>Often, you will want to combine a <literal>ProcessValidator</literal> and an
           <literal>ExportMarshaller</literal>. Let's say you have a number of
           <literal>CustomServiceTask</literal>s in use that have properties you would like to use in
@@ -1120,7 +1135,7 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
       <para>To create a <literal>ProcessValidator</literal> or an
           <literal>ExportMarshaller</literal>, you need to create a different kind of extension than
         for extending the palette. The reason for this is simple: from your code you will need
-        access to more APIs than are offered by the integration library. In particular, you will
+        access to more APIs than those that are offered by the integration library. In particular, you will
         need classes that are available in Eclipse itself. So to get started, you should create an
         Eclipse plugin (which you can do by using Eclipse's PDE support) and package it in a custom
         Eclipse product or feature. It's beyond the scope of this user guide to explain all the
@@ -1128,19 +1143,25 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
         functionality for extending Activiti Designer.</para>
       <para>Your bundle should be dependent on the following libraries:</para>
       <para>
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="images/designer.export.dependencies.png"/>
-          </imageobject>
-        </mediaobject>
+        <itemizedlist>
+        	<listitem>org.eclipse.core.runtime</listitem>
+        	<listitem>org.eclipse.core.resources</listitem>
+        	<listitem>org.activiti.designer.eclipse</listitem>
+        	<listitem>org.activiti.designer.libs</listitem>
+        	<listitem>org.activiti.designer.util</listitem>
+        </itemizedlist>
+      </para>
+      <para>
+      	Optionally, the org.apache.commons.lang bundle is available through Designer if you'd like to use that in your extension.
       </para>
       <para>Both <literal>ProcessValidator</literal>s and <literal>ExportMarshaller</literal>s are
         created by extending a base class. These base classes inherit some useful methods from their
         superclass, the <literal>AbstractDiagramWorker</literal> class. Using these methods you can
         create information, warning and error markers that show up in Eclipse's problems view for
-        the user to figure out what's wrong or important. You can also access the diagram through
-          <literal>Resources</literal> and <literal>InputStreams</literal> for the diagram's content
-        using these methods in the <literal>AbstractDiagramWorker</literal> class.</para>
+        the user to figure out what's wrong or important. You can get to information about the diagram in the form of
+        <literal>Resources</literal> and <literal>InputStreams</literal>. This information is provided from the 
+        <literal>DiagramWorkerContext</literal>, which is available from the <literal>AbstractDiagramWorker</literal> class.
+      </para>
       <para>It's probably a good idea to invoke <literal>clearMarkers()</literal> as one of the
         first things you do in either a <literal>ProcessValidator</literal> or an
           <literal>ExportMarshaller</literal>; this will clear any previous markers for your worker
@@ -1148,9 +1169,9 @@ private List&lt;GroceryListItem> groceryList;</programlisting>
         other markers untouched). For example:</para>
       <para>
         <programlisting>// Clear markers for this diagram first
-clearMarkers(getResource(diagram.eResource().getURI()));</programlisting>
+clearMarkersForDiagram();</programlisting>
       </para>
-      <para>You should also use the progress monitor provided to report your progress back to the
+      <para>You should also use the progress monitor provided (in the <literal>DiagramWorkerContext</literal>) to report your progress back to the
         user because validations and/or marshalling actions can take up some time during which the
         user is forced to wait. Reporting progress requires some knowledge of how you should use
         Eclipse's features. Take a look at <ulink
@@ -1158,6 +1179,11 @@ clearMarkers(getResource(diagram.eResource().getURI()));</programlisting>
           article</ulink> for a thorough explanation of the concepts and usage.</para>
       <section>
         <title>Creating a ProcessValidator extension</title>
+        <para>
+        	<note>
+        		<para>Under review!</para>
+        	</note>
+        </para>
         <para>Create an extension to the
             <literal>org.activiti.designer.eclipse.extension.validation.ProcessValidator</literal>
           extension point in your <literal>plugin.xml</literal> file. For this extension point, you
@@ -1206,17 +1232,22 @@ for (final EObject object : contents) {
       <section>
         <title>Creating an ExportMarshaller extension</title>
         <para>Create an extension to the
-            <literal>org.activiti.designer.eclipse.extension.export.ExportMarshaller</literal>
+            <literal>org.activiti.designer.eclipse.extension.ExportMarshaller</literal>
           extension point in your <literal>plugin.xml</literal> file. For this extension point, you
           are required to subclass the <literal>AbstractExportMarshaller</literal> class. This
           abstract base class provides you with a number of useful methods when marshalling to your
           own format, but most importantly it allows you to save resources to the workspace and to
           invoke validators.</para>
+          <para>
+          	An example implementation is available in Designer's examples folder. This example shows how to use 
+          	the methods in the base class to get the basics done, such as accessing the diagram's <literal>InputStream</literal>, 
+          	using its <literal>BpmnModel</literal> and saving resources to the workspace.
+          </para>
         <para>
           <programlisting>&lt;?eclipse version="3.6"?>
 &lt;plugin>
   &lt;extension
-    point="org.activiti.designer.eclipse.extension.export.ExportMarshaller">
+    point="org.activiti.designer.eclipse.extension.ExportMarshaller">
     &lt;ExportMarshaller
       class="org.acme.export.AcmeExportMarshaller">
     &lt;/ExportMarshaller>
@@ -1230,53 +1261,26 @@ for (final EObject object : contents) {
           methods are used to display options to the user and to show information in progress
           dialogs, so make sure the descriptions you return reflect the functionality you are
           implementing. </para>
-        <para>The bulk of your work is performed in the <literal>marshallDiagram(Diagram diagram,
-            IProgressMonitor monitor)</literal> method. You are provided with the diagram object,
-          which contains all of the information about the objects in the diagram (BPMN constructs)
-          and the graphical representation.</para>
+        <para>The bulk of your work is performed in the <literal>doMarshallDiagram()</literal> method.</para>
         <para>If you want to perform a certain validation first, you can invoke the validator
           directly from your marshaller. You receive a boolean result from the validator, so you
           know whether validation succeeded. In most cases you won't want to proceed with
           marshalling the diagram if it's not valid, but you might choose to go ahead anyway or even
-          create a different resource if validation fails. For example:</para>
-        <para>
-          <programlisting>final boolean validDiagram = invokeValidator(AcmeConstants.ACME_VALIDATOR_ID, diagram, monitor);
-if (!validDiagram) { 
-  addProblemToDiagram(diagram, "Marshalling to " + getFormatName() + " format was skipped because validation of the diagram failed.", null);
-} else {
-  //proceed with marshalling
-}</programlisting>
+          create a different resource if validation fails.
         </para>
-        <para>As you can see, here we have chosen to cancel the marshalling if the validator
-          (identified by a constant here) returns false as result. We have also added an additional
-          marker to the diagram so the user can see an explanation why the file wasn't created. This
-          is not required, but seems helpful to the user and shows how you can use these utilities
-          from both <literal>ProcessValidator</literal>s and <literal>ExportMarshaller</literal>s. </para>
         <para>Once you have all the data you need, you should invoke the
             <literal>saveResource()</literal> method to create a file containing your data. You can
           invoke <literal>saveResource()</literal> as many times as you wish from a single
             <markup>ExportMarshaller</markup>; a marshaller can therefore be used to create more
           than one output file.</para>
-        <para>You can construct a filename for your output resource(s) by using some of the methods
-          in the <literal>AbstractDiagramWorker</literal> class. There are a couple of useful
+        <para>You can construct a filename for your output resource(s) by using the <literal>saveResource()</literal> method
+        	in the <literal>AbstractDiagramWorker</literal> class. There are a couple of useful
           variables you can have parsed, allowing you to create filenames such as
-          &lt;original-filename>_&lt;my-format-name>.xml. These variables are described in the
-          Javadocs, but here's an example how to use one of them:</para>
-        <para>
-          <programlisting>private static final String FILENAME_PATTERN = ExportMarshaller.PLACEHOLDER_ORIGINAL_FILENAME + ".acme.axml";
-...
-saveResource(getRelativeURIForDiagram(diagram, FILENAME_PATTERN), bais, this.monitor);</programlisting>
-        </para>
-        <para>What happens here is that a static member is used to describe the filename pattern
-          (this is just a best practice, you can specify the string any way you like of course) and
-          the pattern uses the <literal>ExportMarshaller.PLACEHOLDER_ORIGINAL_FILENAME</literal>
-          constant to insert a variable for the original filename. Later on in the
-            <literal>marshallDiagram()</literal> method,
-            <literal>getRelativeURIForDiagram()</literal> is invoked and it will parse the filename
-          for any variables and substitute them. You provide <literal>saveResource()</literal> with
-          an <literal>InputStream</literal> to your data and it will save the data to a resource
-          with a relative path to the original diagram.</para>
-        <para>Again, you should also use the progress monitor provided to report your progress back
+          _original-filename__my-format-name.xml. These variables are described in the
+          Javadocs and defined by the <literal>ExportMarshaller</literal> interface. 
+          You can also use <literal>resolvePlaceholders()</literal> on a string (e.g. a path) if you want to parse the 
+          placeholders yourself. <literal>getURIRelativeToDiagram()</literal> will invoke this for you.</para>
+        <para>You should use the progress monitor provided to report your progress back
           to the user. How to do this is described in <ulink
             url="http://www.eclipse.org/articles/Article-Progress-Monitors/article.html">this
             article</ulink>.</para>

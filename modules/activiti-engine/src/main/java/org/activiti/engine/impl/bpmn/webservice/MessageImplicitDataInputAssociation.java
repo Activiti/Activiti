@@ -16,7 +16,7 @@ import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * An implicit data input association between a source and a target.

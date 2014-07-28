@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class PluggableActivitiTestCase extends AbstractActivitiTestCase {
+public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase {
   
   private static Logger pluggableActivitiTestCaseLogger = LoggerFactory.getLogger(PluggableActivitiTestCase.class);
   

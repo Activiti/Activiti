@@ -75,7 +75,7 @@ public class CdiExecutionListener implements ExecutionListener, Serializable {
 
   protected BusinessProcessEvent createEvent(DelegateExecution execution) {
     ProcessDefinition processDefinition = Context.getExecutionContext().getProcessDefinition();
-    return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, execution, type, new Date());
+    return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, execution, type, execution.getProcessInstanceId(), execution.getId(), new Date());
   }
 
   protected BeanManager getBeanManager() {

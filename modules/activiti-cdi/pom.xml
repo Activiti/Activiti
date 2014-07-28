@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.13-SNAPSHOT</version>
+    <version>5.17-SNAPSHOT</version>
   </parent>
 
 
@@ -60,7 +60,6 @@
         <dependency>
           <groupId>org.jboss.arquillian.container</groupId>
           <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-          <version>1.0.0.CR3</version>
           <scope>test</scope>
         </dependency>
         <dependency>
@@ -76,6 +75,7 @@
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-simple</artifactId>
+          <version>1.7.6</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
@@ -120,7 +120,6 @@
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
-      <version>1.0.0.CR7</version>
       <scope>test</scope>
     </dependency>
     <dependency>

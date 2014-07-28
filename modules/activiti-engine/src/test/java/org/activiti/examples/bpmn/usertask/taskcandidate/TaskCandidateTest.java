@@ -12,7 +12,10 @@
  */
 package org.activiti.examples.bpmn.usertask.taskcandidate;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
@@ -22,7 +25,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
+ * @author Joram Barrez, Saeid Mirzaei
  */
 public class TaskCandidateTest extends PluggableActivitiTestCase {
 
@@ -158,10 +161,27 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testMultipleCandidateUsers() {
-    runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample");
+    runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample", Collections.singletonMap("Variable", (Object)"var"));
 
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
+    
+    List<Task> tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).list();
+    assertEquals(1, tasks.size());
+    
+    Task task = tasks.get(0);
+    taskService.setVariableLocal(task.getId(), "taskVar", 123);
+    tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).includeProcessVariables().includeTaskLocalVariables().list();
+    task = tasks.get(0);
+    
+    assertEquals(1, task.getProcessVariables().size());
+    assertEquals(1, task.getTaskLocalVariables().size());
+    taskService.addUserIdentityLink(task.getId(), GONZO, "test");
+    
+    tasks = taskService.createTaskQuery().taskInvolvedUser(GONZO).includeProcessVariables().includeTaskLocalVariables().list();
+    assertEquals(1, tasks.size());
+    assertEquals(1, task.getProcessVariables().size());
+    assertEquals(1, task.getTaskLocalVariables().size());
   }
 
   @Deployment
@@ -170,6 +190,28 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
+  }
+  
+  // test if candidate group works with expression, when there is a function with one parameter
+  @Deployment
+    public void testCandidateExpressionOneParam() {
+	  Map<String, Object> params = new HashMap<String, Object>();
+	  params.put("testBean", new TestBean());
+	  
+      runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
+      assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
+       
+    }
+
+  // test if candidate group works with expression, when there is a function with two parameters
+  @Deployment
+  public void testCandidateExpressionTwoParams() {
+	  Map<String, Object> params = new HashMap<String, Object>();
+	  params.put("testBean", new TestBean());
+	  
+    runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("sales").count());
   }
 
 }

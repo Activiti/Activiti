@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.13-SNAPSHOT</version>
+    <version>5.17-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -90,9 +90,17 @@
 
   <dependencies>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>         
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
   </dependencies>
   
   <profiles>
@@ -118,14 +126,4 @@
       </build>
     </profile>
   </profiles>
-  
-  <repositories>
-    <!-- This repo declaration is here for as this will be part of the distro -->
-    <repository>
-      <id>activiti</id>
-      <name>Activiti</name>
-      <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-    </repository>
-  </repositories>
-
 </project>

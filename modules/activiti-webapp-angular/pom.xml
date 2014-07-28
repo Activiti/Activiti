@@ -1,0 +1,129 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Activiti - Angular</name>
+	<artifactId>activiti-webapp-angular</artifactId>
+	<packaging>war</packaging>
+
+	<parent>
+		<groupId>org.activiti</groupId>
+		<artifactId>activiti-root</artifactId>
+		<relativePath>../..</relativePath>
+		<version>5.17-SNAPSHOT</version>
+	</parent>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.zeroturnaround</groupId>
+				<artifactId>jrebel-maven-plugin</artifactId>
+				<configuration>
+					<web>
+						<resources>
+							<resource>
+								<target>/</target>
+								<directory>src/main/webapp/app</directory>
+							</resource>
+							<resource>
+								<!-- Empty resource element marks default configuration. By default 
+									it is placed first in generated configuration. -->
+							</resource>
+						</resources>
+					</web>
+
+				</configuration>
+				<executions>
+					<execution>
+						<id>generate-rebel-xml</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- We don't want the default war plugin to kick in, war should be build 
+					through assembly -->
+				<artifactId>maven-war-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-war</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Custom war building, only cherry picking what we need -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<finalName>activiti-angular</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptors>
+						<descriptor>assembly-descriptor.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<version>2.1</version>
+					<configuration>
+						<warFile>target/activiti-angular.war</warFile>
+						<path>/activiti-angular</path>
+						<url>http://localhost:8080/manager/text</url>
+						<username>admin</username>
+						<password>admin</password>
+						<port>8080</port>
+					</configuration>
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.zeroturnaround
+										</groupId>
+										<artifactId>
+											jrebel-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.0.7,)
+										</versionRange>
+										<goals>
+											<goal>generate</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>

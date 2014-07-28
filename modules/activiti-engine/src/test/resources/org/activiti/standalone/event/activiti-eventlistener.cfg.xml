@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+  
+    <property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
+    <property name="jdbcDriver" value="org.h2.Driver" />
+    <property name="jdbcUsername" value="sa" />
+    <property name="jdbcPassword" value="" />
+    
+    <!-- Database configurations -->
+    <property name="databaseSchemaUpdate" value="true" />
+    
+    <!-- job executor configurations -->
+    <property name="jobExecutorActivate" value="false" />
+    
+    <!-- Add event listener -->
+    <property name="eventListeners">
+      <list>
+         <ref bean="eventListener" />
+      </list>
+    </property>
+    
+    <!-- Also register the eventlistener as bean, to be able to access it from the tests -->
+    <property name="beans">
+      <map>
+        <entry key="eventListener" value-ref="eventListener" />
+        <entry key="testEventListener" value-ref="testEventListener" />
+        <entry key="testAttachmentEventListener" value-ref="testAttachmentEventListener" />
+        <entry key="testCommentEventListener" value-ref="testCommentEventListener" />
+        <entry key="testExecutionEventListener" value-ref="testExecutionEventListener" />
+        <entry key="testIdentityLinkEventListener" value-ref="testIdentityLinkEventListener" />
+        <entry key="testJobEventListener" value-ref="testJobEventListener" />
+        <entry key="testProcessDefinitionEventListener" value-ref="testProcessDefinitionEventListener" />
+        <entry key="testProcessInstanceEventListener" value-ref="testProcessInstanceEventListener" />
+        <entry key="testTaskEventListener" value-ref="testTaskEventListener" />
+      </map>
+    </property>
+  </bean>
+  
+  <!-- The actual event-listener instance -->
+  <bean id="eventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  
+   <!-- An event-listener instance used from within an expression in BPMN XML-->
+  <bean id="testEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  
+  <bean id="testAttachmentEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testCommentEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testExecutionEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testIdentityLinkEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testJobEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testProcessDefinitionEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testProcessInstanceEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  <bean id="testTaskEventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+</beans>

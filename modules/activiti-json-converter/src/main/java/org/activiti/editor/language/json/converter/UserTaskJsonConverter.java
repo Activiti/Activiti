@@ -18,10 +18,11 @@ import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.UserTask;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -86,10 +87,11 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
     }
     
     if (userTask.getPriority() != null) {
-      setPropertyValue(PROPERTY_USERTASK_PRIORITY, userTask.getPriority().toString(), propertiesNode);
+      setPropertyValue(PROPERTY_PRIORITY, userTask.getPriority().toString(), propertiesNode);
     }
-    setPropertyValue(PROPERTY_USERTASK_FORMKEY, userTask.getFormKey(), propertiesNode);
-    setPropertyValue(PROPERTY_USERTASK_DUEDATE, userTask.getDueDate(), propertiesNode);
+    setPropertyValue(PROPERTY_FORMKEY, userTask.getFormKey(), propertiesNode);
+    setPropertyValue(PROPERTY_DUEDATE, userTask.getDueDate(), propertiesNode);
+    setPropertyValue(PROPERTY_CATEGORY, userTask.getCategory(), propertiesNode);;
     
     addFormProperties(userTask.getFormProperties(), propertiesNode);
   }
@@ -97,15 +99,16 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
   @Override
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     UserTask task = new UserTask();
-    task.setPriority(getPropertyValueAsString(PROPERTY_USERTASK_PRIORITY, elementNode));
-    task.setFormKey(getPropertyValueAsString(PROPERTY_USERTASK_FORMKEY, elementNode));
-    task.setDueDate(getPropertyValueAsString(PROPERTY_USERTASK_DUEDATE, elementNode));
+    task.setPriority(getPropertyValueAsString(PROPERTY_PRIORITY, elementNode));
+    task.setFormKey(getPropertyValueAsString(PROPERTY_FORMKEY, elementNode));
+    task.setDueDate(getPropertyValueAsString(PROPERTY_DUEDATE, elementNode));
+    task.setCategory(getPropertyValueAsString(PROPERTY_CATEGORY, elementNode));
     
     JsonNode assignmentNode = getProperty(PROPERTY_USERTASK_ASSIGNMENT, elementNode);
     if (assignmentNode != null) {
       JsonNode itemsNode = assignmentNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
       if (itemsNode != null) {
-        Iterator<JsonNode> assignmentIterator = itemsNode.getElements();
+        Iterator<JsonNode> assignmentIterator = itemsNode.elements();
         while (assignmentIterator.hasNext()) {
           JsonNode assignmentItemNode = assignmentIterator.next();
           if (assignmentItemNode.get(PROPERTY_USERTASK_ASSIGNMENT_TYPE) != null && 

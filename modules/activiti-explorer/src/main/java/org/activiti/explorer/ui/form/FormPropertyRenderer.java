@@ -51,4 +51,14 @@ public interface FormPropertyRenderer extends Serializable {
    * {@link FormPropertyRenderer#getPropertyField(FormProperty)}.
    */
   String getFieldValue(FormProperty formProperty, Field field);
+
+  /**
+   * Get the Vaadin form that contains this renderer
+   */
+  com.vaadin.ui.Form getForm();
+  
+  /**
+   * Set the Vaadin form that contains this renderer
+   */
+  void setForm(com.vaadin.ui.Form p_form);
 }

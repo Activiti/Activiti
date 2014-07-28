@@ -13,12 +13,14 @@
 
 package org.activiti.engine.test.history;
 
-import org.activiti.engine.ActivitiException;
+import java.util.List;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -265,4 +267,103 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
       
     }
   }
+  
+  /**
+   * Test to validate fix for ACT-1399: Boundary-event and event-based auditing
+   */
+  @Deployment
+  public void testBoundaryEvent() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("boundaryEventProcess");
+    // Complete the task with the boundary-event on it
+    Task task = taskService.createTaskQuery()
+    		.processInstanceId(processInstance.getId())
+    		.singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
+    
+    assertEquals(0L, runtimeService.createProcessInstanceQuery()
+    		.processInstanceId(processInstance.getId()).count());
+    
+    // Check if there is NO historic activity instance for a boundary-event that has not triggered
+    HistoricActivityInstance historicActivityInstance = historyService
+      .createHistoricActivityInstanceQuery()
+      .activityId("boundary")
+      .processInstanceId(processInstance.getId())
+      .singleResult();
+    
+    assertNull(historicActivityInstance);
+    
+    // Now check the history when the boundary-event is fired
+    processInstance = runtimeService.startProcessInstanceByKey("boundaryEventProcess");
+    
+    task = taskService.createTaskQuery()
+    		.processInstanceId(processInstance.getId())
+    		.singleResult();
+    
+    runtimeService.signalEventReceived("alert", task.getExecutionId());
+    assertEquals(0L, runtimeService.createProcessInstanceQuery()
+    		.processInstanceId(processInstance.getId()).count());
+    
+    historicActivityInstance = historyService
+        .createHistoricActivityInstanceQuery()
+        .activityId("boundary")
+        .processInstanceId(processInstance.getId())
+        .singleResult();
+      
+      assertNotNull(historicActivityInstance);
+  }
+  
+  /**
+   * Test to validate fix for ACT-1399: Boundary-event and event-based auditing
+   */
+  @Deployment
+  public void testEventBasedGateway() {
+  	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("catchSignal");
+  	Execution waitingExecution = runtimeService.createExecutionQuery()
+  			.signalEventSubscriptionName("alert")
+  			.singleResult();
+  	assertNotNull(waitingExecution);
+  	runtimeService.signalEventReceived("alert", waitingExecution.getId());
+  	
+  	assertEquals(0L, runtimeService.createProcessInstanceQuery()
+  			.processInstanceId(processInstance.getId()).count());
+  	
+  	HistoricActivityInstance historicActivityInstance = historyService
+  			.createHistoricActivityInstanceQuery()
+  			.activityId("eventBasedgateway")
+  			.processInstanceId(processInstance.getId())
+  			.singleResult();
+  	
+  	assertNotNull(historicActivityInstance);
+  }
+  
+  /**
+   * Test to validate fix for ACT-1549: endTime of joining parallel gateway is not set
+   */
+  @Deployment
+  public void testParallelJoinEndTime() {
+ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("forkJoin");
+  	
+  	List<Task> tasksToComplete = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+  	assertEquals(2, tasksToComplete.size());
+  	
+  	// Complete both tasks, second task-complete should end the fork-gateway and set time
+  	taskService.complete(tasksToComplete.get(0).getId());
+  	taskService.complete(tasksToComplete.get(1).getId());
+  	
+  	List<HistoricActivityInstance> historicActivityInstance = historyService
+  			.createHistoricActivityInstanceQuery()
+  			.activityId("join")
+  			.processInstanceId(processInstance.getId())
+  			.list();
+  	
+  	assertNotNull(historicActivityInstance);
+  	
+  	// History contains 2 entries for parallel join (one for each path arriving in the join), should contain end-time
+  	assertEquals(2, historicActivityInstance.size());
+  	assertNotNull(historicActivityInstance.get(0).getEndTime());
+  	assertNotNull(historicActivityInstance.get(1).getEndTime());
+  }
+  
+  
 }

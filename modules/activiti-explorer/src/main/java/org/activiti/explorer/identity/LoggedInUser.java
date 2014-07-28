@@ -14,6 +14,9 @@
 package org.activiti.explorer.identity;
 
 import java.io.Serializable;
+import java.util.List;
+
+import org.activiti.engine.identity.Group;
 
 
 /**
@@ -36,4 +39,9 @@ public interface LoggedInUser extends Serializable {
   boolean isAdmin();
   
   boolean isUser();
+  
+  List<Group> getSecurityRoles();
+
+  List<Group> getGroups();
+  
 }

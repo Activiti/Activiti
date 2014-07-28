@@ -91,4 +91,30 @@ public class FormProperty extends BaseElement {
   public void setFormValues(List<FormValue> formValues) {
     this.formValues = formValues;
   }
+  
+  public FormProperty clone() {
+    FormProperty clone = new FormProperty();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(FormProperty otherProperty) {
+    super.setValues(otherProperty);
+    setName(otherProperty.getName());
+    setExpression(otherProperty.getExpression());
+    setVariable(otherProperty.getVariable());
+    setType(otherProperty.getType());
+    setDefaultExpression(otherProperty.getDefaultExpression());
+    setDatePattern(otherProperty.getDatePattern());
+    setReadable(otherProperty.isReadable());
+    setWriteable(otherProperty.isWriteable());
+    setRequired(otherProperty.isRequired());
+    
+    formValues = new ArrayList<FormValue>();
+    if (otherProperty.getFormValues() != null && otherProperty.getFormValues().size() > 0) {
+      for (FormValue formValue : otherProperty.getFormValues()) {
+        formValues.add(formValue.clone());
+      }
+    }
+  }
 }

@@ -23,6 +23,9 @@ import org.activiti.engine.query.Query;
  */
 public interface HistoricVariableInstanceQuery extends Query<HistoricVariableInstanceQuery, HistoricVariableInstance> {
 
+  /** Only select a historic variable with the given id. */
+  HistoricVariableInstanceQuery id(String id);
+  
   /** Only select historic process variables with the given process instance. */
   HistoricVariableInstanceQuery processInstanceId(String processInstanceId);
   
@@ -37,6 +40,9 @@ public interface HistoricVariableInstanceQuery extends Query<HistoricVariableIns
   
   /** Only select historic process variables which were not set task-local. */
   HistoricVariableInstanceQuery excludeTaskVariables();
+  
+  /** Don't initialize variable values. This is foremost a way to deal with variable delete queries */
+  HistoricVariableInstanceQuery excludeVariableInitialization();
 
   /**
    * only select historic process variables with the given name and value

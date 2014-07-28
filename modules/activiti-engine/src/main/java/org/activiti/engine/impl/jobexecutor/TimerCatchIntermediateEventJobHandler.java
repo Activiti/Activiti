@@ -13,10 +13,13 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.logging.LogMDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,15 +42,24 @@ public class TimerCatchIntermediateEventJobHandler implements JobHandler {
     }
 
     try {
+      if (commandContext.getEventDispatcher().isEnabled()) {
+        commandContext.getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
+      }
+
       if(!execution.getActivity().getId().equals(intermediateEventActivity.getId())) {
         execution.setActivity(intermediateEventActivity);
       }
       execution.signal(null, null);
     } catch (RuntimeException e) {
+      LogMDC.putMDCExecution(execution);
       log.error("exception during timer execution", e);
+      LogMDC.clear();
       throw e;
     } catch (Exception e) {
+      LogMDC.putMDCExecution(execution);
       log.error("exception during timer execution", e);
+      LogMDC.clear();
       throw new ActivitiException("exception during timer execution: " + e.getMessage(), e);
     }
   }

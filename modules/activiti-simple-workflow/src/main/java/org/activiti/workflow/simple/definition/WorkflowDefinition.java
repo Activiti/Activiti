@@ -12,9 +12,16 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Allows to create simple workflows through an easy, fluent Java API.
@@ -50,11 +57,15 @@ import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
  */
 public class WorkflowDefinition extends AbstractStepDefinitionContainer<WorkflowDefinition> {
 
-  protected String id;
   protected String key;
   protected String name;
   protected String description;
+  protected String category;
+  protected FormDefinition startFormDefinition;
   protected ParallelStepsDefinition currentParallelStepsDefinition;
+  protected ChoiceStepsDefinition currentChoiceStepsDefinition;
+  
+  protected Map<String, Object> parameters = new HashMap<String, Object>();
 
   public String getName() {
     return name;
@@ -108,10 +119,50 @@ public class WorkflowDefinition extends AbstractStepDefinitionContainer<Workflow
     return this;
   }
   
+  public String getCategory() {
+	return category;
+  }
+
+  public void setCategory(String category) {
+	this.category = category;
+  }
+  
+  public WorkflowDefinition category(String category) {
+	  setCategory(category);
+	  return this;
+  }
+
+  @JsonInclude(Include.NON_EMPTY)
+  public Map<String, Object> getParameters() {
+	  return parameters;
+  }
+  
+  public void setParameters(Map<String, Object> parameters) {
+	  this.parameters = parameters;
+  }
+  
   public ParallelStepsDefinition inParallel() {
     currentParallelStepsDefinition = new ParallelStepsDefinition(this);
     addStep(currentParallelStepsDefinition);
     return currentParallelStepsDefinition;
   }
   
+  public ChoiceStepsDefinition inChoice() {
+    currentChoiceStepsDefinition = new ChoiceStepsDefinition(this);
+    addStep(currentChoiceStepsDefinition);
+    return currentChoiceStepsDefinition;
+  }
+
+  public FormDefinition getStartFormDefinition() {
+	  return startFormDefinition;
+  }
+  
+  public void setStartFormDefinition(FormDefinition startFormDefinition) {
+	  this.startFormDefinition = startFormDefinition;
+  }
+  
+  public WorkflowDefinition startFormdefinition(FormDefinition startFormDefinition) {
+  	this.startFormDefinition = startFormDefinition;
+  	return this;
+  }
 }

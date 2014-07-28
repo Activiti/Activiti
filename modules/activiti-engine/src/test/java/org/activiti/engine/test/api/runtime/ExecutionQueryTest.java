@@ -53,6 +53,8 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   
   private static String CONCURRENT_PROCESS_KEY = "concurrent";
   private static String SEQUENTIAL_PROCESS_KEY = "oneTaskProcess";
+  private static String CONCURRENT_PROCESS_NAME = "concurrentName";
+  private static String SEQUENTIAL_PROCESS_NAME = "oneTaskProcessName";
   
   private List<String> concurrentProcessInstanceIds;
   private List<String> sequentialProcessInstanceIds;
@@ -92,7 +94,20 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
   }
-  
+
+  public void testQueryByProcessDefinitionName() {
+    // Concurrent process with 3 executions for each process instance
+    assertEquals(12, runtimeService.createExecutionQuery().processDefinitionName(CONCURRENT_PROCESS_NAME).list().size());
+    assertEquals(1, runtimeService.createExecutionQuery().processDefinitionName(SEQUENTIAL_PROCESS_NAME).list().size());
+  }
+
+  public void testQueryByInvalidProcessDefinitionName() {
+    ExecutionQuery query = runtimeService.createExecutionQuery().processDefinitionName("invalid");
+    assertNull(query.singleResult());
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+  }
+
   public void testQueryByProcessInstanceId() {
     for (String processInstanceId : concurrentProcessInstanceIds) {
       ExecutionQuery query =  runtimeService.createExecutionQuery().processInstanceId(processInstanceId); 
@@ -100,6 +115,15 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
       assertEquals(3, query.count());
     }
     assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(sequentialProcessInstanceIds.get(0)).list().size());
+  }
+  
+  public void testQueryByParentId() {
+    // Concurrent processes fork into 2 child-executions. Should be found when parentId is used
+    for (String processInstanceId : concurrentProcessInstanceIds) {
+      ExecutionQuery query =  runtimeService.createExecutionQuery().parentId(processInstanceId); 
+      assertEquals(2, query.list().size());
+      assertEquals(2, query.count());
+    }
   }
   
   public void testQueryByInvalidProcessInstanceId() {
@@ -133,10 +157,24 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryByInvalidActivityId() {
-    ExecutionQuery query = runtimeService.createExecutionQuery().activityId("invalid");
+  	ExecutionQuery query = runtimeService.createExecutionQuery().activityId("invalid");
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
+  }
+  
+  /**
+   * Validate fix for ACT-1896
+   */
+  public void testQueryByActivityIdAndBusinessKeyWithChildren() {
+    ExecutionQuery query = runtimeService.createExecutionQuery().activityId("receivePayment")
+    		.processInstanceBusinessKey("BUSINESS-KEY-1", true);
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+    
+    Execution execution = query.singleResult();
+    assertNotNull(execution);
+    assertEquals("receivePayment", execution.getActivityId());
   }
   
   public void testQueryPaging() {
@@ -177,6 +215,12 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("BUSINESS-KEY-1").list().size());
     assertEquals(1, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("BUSINESS-KEY-2").list().size());
     assertEquals(0, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("NON-EXISTING").list().size());
+  }  
+  
+  public void testQueryByBusinessKeyIncludingChildExecutions() {
+    assertEquals(3, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("BUSINESS-KEY-1", true).list().size());
+    assertEquals(3, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("BUSINESS-KEY-2", true).list().size());
+    assertEquals(0, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).processInstanceBusinessKey("NON-EXISTING", true).list().size());
   }  
   
   @Deployment(resources={
@@ -1241,6 +1285,11 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(executionCount, runtimeService.createNativeExecutionQuery().sql("SELECT * FROM " + managementService.getTableName(Execution.class)).list().size());
     assertEquals(executionCount, runtimeService.createNativeExecutionQuery().sql("SELECT count(*) FROM " + managementService.getTableName(Execution.class)).count());
   }
+  
+  public void testNativeQueryPaging() {
+    assertEquals(5, runtimeService.createNativeExecutionQuery().sql("SELECT * FROM " + managementService.getTableName(Execution.class)).listPage(1, 5).size());
+    assertEquals(1, runtimeService.createNativeExecutionQuery().sql("SELECT * FROM " + managementService.getTableName(Execution.class)).listPage(2, 1).size());
+  }
 
   @Deployment(resources={"org/activiti/engine/test/api/runtime/concurrentExecution.bpmn20.xml"})
   public void testExecutionQueryWithProcessVariable() {
@@ -1252,7 +1301,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     List<Execution> concurrentExecutions = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).list();
     assertEquals(3, concurrentExecutions.size());
     for (Execution execution : concurrentExecutions) {
-      if (!((ExecutionEntity)execution).isProcessInstance()) {
+      if (!((ExecutionEntity)execution).isProcessInstanceType()) {
         // only the concurrent executions, not the root one, would be cooler to query that directly, see http://jira.codehaus.org/browse/ACT-1373        
         runtimeService.setVariableLocal(execution.getId(), "x", "child");
         runtimeService.setVariableLocal(execution.getId(), "xIgnoreCase", "ChILD");

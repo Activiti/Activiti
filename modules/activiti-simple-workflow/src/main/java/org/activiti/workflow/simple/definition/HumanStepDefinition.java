@@ -12,66 +12,59 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.activiti.workflow.simple.definition.HumanStepAssignment.HumanStepAssignmentType;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
  * Defines a step that must be executed by a human actor.
  * 
  * @author Joram Barrez
  */
-public class HumanStepDefinition extends AbstractNamedStepDefinition {
+@JsonTypeName("human-step")
+public class HumanStepDefinition extends AbstractNamedStepDefinition implements FormStepDefinition {
 
-  protected String assignee;
-  protected boolean assigneeIsInitiator = false;
-  protected List<String> candidateUsers;
-  protected List<String> candidateGroups;
+  private static final long serialVersionUID = 1L;
+  
   protected FormDefinition form;
-
-  public boolean isAssigneeInitiator() {
-    return assigneeIsInitiator;
-  }
-
-  public void setAssigneeIsInitiator(boolean assigneeIsInitiator) {
-    this.assigneeIsInitiator = assigneeIsInitiator;
+  protected HumanStepAssignment assignment;
+  
+  @JsonIgnore
+  public HumanStepAssignmentType getAssignmentType() {
+  	return ensureAssignment().getType();
   }
 
   public String getAssignee() {
-    return assignee;
+    return ensureAssignment().getAssignee();
   }
 
   public HumanStepDefinition setAssignee(String assignee) {
-    this.assignee = assignee;
+  	ensureAssignment().setAssignee(assignee);
     return this;
   }
 
   public List<String> getCandidateUsers() {
-    return candidateUsers;
+    return ensureAssignment().getCandidateUsers();
   }
 
   public HumanStepDefinition setCandidateUsers(List<String> candidateUsers) {
-    this.candidateUsers = candidateUsers;
+  	ensureAssignment().setCandidateUsers(candidateUsers);
     return this;
   }
 
   public List<String> getCandidateGroups() {
-    return candidateGroups;
-  }
-  
-  public String getCandidateGroupsCommaSeparated() {
-    if (candidateGroups == null || candidateGroups.size() == 0) {
-      return null;
-    }
-    
-    StringBuilder strb = new StringBuilder();
-    for (String group : candidateGroups) {
-      strb.append(group + ", ");
-    }
-    strb.delete(strb.length() - 2, strb.length());
-    return strb.toString();
+    return ensureAssignment().getCandidateGroups();
   }
 
   public HumanStepDefinition setCandidateGroups(List<String> candidateGroups) {
-    this.candidateGroups = candidateGroups;
+  	ensureAssignment().setCandidateGroups(candidateGroups);
     return this;
   }
 
@@ -79,8 +72,62 @@ public class HumanStepDefinition extends AbstractNamedStepDefinition {
     return form;
   }
 
-  public HumanStepDefinition setForm(FormDefinition form) {
+  public HumanStepDefinition addForm(FormDefinition form) {
     this.form = form;
     return this;
+  }
+  
+  public void setForm(FormDefinition form) {
+    this.form = form;
+  }
+  
+  public HumanStepAssignment getAssignment() {
+	  return ensureAssignment();
+  }
+  
+  public void setAssignment(HumanStepAssignment assignment) {
+	  this.assignment = assignment;
+  }
+  
+  protected HumanStepAssignment ensureAssignment() {
+  	if(assignment == null) {
+  		assignment = new HumanStepAssignment();
+  	}
+  	return assignment;
+  }
+
+  @Override
+  public StepDefinition clone() {
+    HumanStepDefinition clone = new HumanStepDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  @Override
+  public void setValues(StepDefinition otherDefinition) {
+    if(!(otherDefinition instanceof HumanStepDefinition)) {
+      throw new SimpleWorkflowException("An instance of HumanStepDefinition is required to set values");
+    }
+    
+    HumanStepDefinition stepDefinition = (HumanStepDefinition) otherDefinition;
+    setAssignee(stepDefinition.getAssignee());
+    if (stepDefinition.getCandidateGroups() != null && stepDefinition.getCandidateGroups().size() > 0) {
+      setCandidateGroups(new ArrayList<String>(stepDefinition.getCandidateGroups()));
+    }
+    if (stepDefinition.getCandidateUsers() != null && stepDefinition.getCandidateUsers().size() > 0) {
+      setCandidateUsers(new ArrayList<String>(stepDefinition.getCandidateUsers()));
+    }
+    setDescription(stepDefinition.getDescription());
+    if (stepDefinition.getForm() != null) {
+      setForm(stepDefinition.getForm().clone());
+    } else {
+      setForm(null);
+    }
+    setId(stepDefinition.getId());
+    setName(stepDefinition.getName());
+    setStartsWithPrevious(stepDefinition.isStartsWithPrevious());
+    getAssignment().setType(stepDefinition.getAssignmentType());
+    
+    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
   }
 }

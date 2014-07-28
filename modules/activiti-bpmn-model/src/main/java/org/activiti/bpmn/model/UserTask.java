@@ -21,9 +21,11 @@ import java.util.List;
 public class UserTask extends Task {
 
   protected String assignee;
+  protected String owner;
   protected String priority;
   protected String formKey;
   protected String dueDate;
+  protected String category;
   protected List<String> candidateUsers = new ArrayList<String>();
   protected List<String> candidateGroups = new ArrayList<String>();
   protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
@@ -34,6 +36,12 @@ public class UserTask extends Task {
   }
   public void setAssignee(String assignee) {
     this.assignee = assignee;
+  }
+  public String getOwner() {
+    return owner;
+  }
+  public void setOwner(String owner) {
+    this.owner = owner;
   }
   public String getPriority() {
     return priority;
@@ -53,7 +61,13 @@ public class UserTask extends Task {
   public void setDueDate(String dueDate) {
     this.dueDate = dueDate;
   }
-  public List<String> getCandidateUsers() {
+  public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public List<String> getCandidateUsers() {
     return candidateUsers;
   }
   public void setCandidateUsers(List<String> candidateUsers) {
@@ -76,5 +90,38 @@ public class UserTask extends Task {
   }
   public void setTaskListeners(List<ActivitiListener> taskListeners) {
     this.taskListeners = taskListeners;
+  }
+  
+  public UserTask clone() {
+    UserTask clone = new UserTask();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(UserTask otherElement) {
+    super.setValues(otherElement);
+    setAssignee(otherElement.getAssignee());
+    setOwner(otherElement.getOwner());
+    setFormKey(otherElement.getFormKey());
+    setDueDate(otherElement.getDueDate());
+    setPriority(otherElement.getPriority());
+    setCategory(otherElement.getCategory());
+    
+    setCandidateGroups(new ArrayList<String>(otherElement.getCandidateGroups()));
+    setCandidateUsers(new ArrayList<String>(otherElement.getCandidateUsers()));
+    
+    formProperties = new ArrayList<FormProperty>();
+    if (otherElement.getFormProperties() != null && otherElement.getFormProperties().size() > 0) {
+      for (FormProperty property : otherElement.getFormProperties()) {
+        formProperties.add(property.clone());
+      }
+    }
+    
+    taskListeners = new ArrayList<ActivitiListener>();
+    if (otherElement.getTaskListeners() != null && otherElement.getTaskListeners().size() > 0) {
+      for (ActivitiListener listener : otherElement.getTaskListeners()) {
+        taskListeners.add(listener.clone());
+      }
+    }
   }
 }

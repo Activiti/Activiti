@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.SubProcess;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class BPMNDIExport implements BpmnXMLConstants {
 
@@ -53,8 +53,8 @@ public class BPMNDIExport implements BpmnXMLConstants {
         
         GraphicInfo graphicInfo = model.getGraphicInfo(elementId);
         FlowElement flowElement = model.getFlowElement(elementId);
-        if (flowElement != null && flowElement instanceof SubProcess) {
-          xtw.writeAttribute(ATTRIBUTE_DI_IS_EXPANDED, String.valueOf(graphicInfo.isExpanded()));
+        if (flowElement instanceof SubProcess && graphicInfo.getExpanded() != null) {
+          xtw.writeAttribute(ATTRIBUTE_DI_IS_EXPANDED, String.valueOf(graphicInfo.getExpanded()));
         }
         
         xtw.writeStartElement(OMGDC_PREFIX, ELEMENT_DI_BOUNDS, OMGDC_NAMESPACE);
@@ -70,7 +70,7 @@ public class BPMNDIExport implements BpmnXMLConstants {
     
     for (String elementId : model.getFlowLocationMap().keySet()) {
       
-      if (model.getFlowElement(elementId) != null) {
+      if (model.getFlowElement(elementId) != null || model.getArtifact(elementId) != null) {
       
         xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_EDGE, BPMNDI_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_DI_BPMNELEMENT, elementId);

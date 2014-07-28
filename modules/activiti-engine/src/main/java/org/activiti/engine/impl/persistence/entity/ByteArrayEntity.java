@@ -15,17 +15,18 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * @author Tom Baeyens
+ * @author Marcus Klimstra (CGI)
  */
 public class ByteArrayEntity implements Serializable, PersistentObject, HasRevision {
 
   private static final long serialVersionUID = 1L;
-
-  private static final Object PERSISTENTSTATE_NULL = new Object();
 
   protected String id;
   protected int revision;
@@ -33,7 +34,8 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
   protected byte[] bytes;
   protected String deploymentId;
 
-  public ByteArrayEntity() {
+  // Default constructor for SQL mapping
+  protected ByteArrayEntity() {
   }
 
   public ByteArrayEntity(String name, byte[] bytes) {
@@ -45,12 +47,27 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
     this.bytes = bytes;
   }
 
+  public static ByteArrayEntity createAndInsert(String name, byte[] bytes) {
+    ByteArrayEntity byteArrayEntity = new ByteArrayEntity(name, bytes);
+
+    Context
+      .getCommandContext()
+      .getDbSqlSession()
+      .insert(byteArrayEntity);
+  
+    return byteArrayEntity;
+  }
+  
+  public static ByteArrayEntity createAndInsert(byte[] bytes) {
+    return createAndInsert(null, bytes);
+  }
+  
   public byte[] getBytes() {
     return bytes;
   }
 
   public Object getPersistentState() {
-    return (bytes != null ? new ByteArray(bytes) : PERSISTENTSTATE_NULL);
+    return new PersistentState(name, bytes);
   }
   
   public int getRevisionNext() {
@@ -68,6 +85,9 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
   public String getName() {
     return name;
   }
+  public void setName(String name) {
+    this.name = name;
+  }
   public String getDeploymentId() {
     return deploymentId;
   }
@@ -84,22 +104,35 @@ public class ByteArrayEntity implements Serializable, PersistentObject, HasRevis
     this.revision = revision;
   }
   
+  @Override
+  public String toString() {
+    return "ByteArrayEntity[id=" + id + ", name=" + name + ", size=" + (bytes != null ? bytes.length : 0) + "]";
+  }
+
   // Wrapper for a byte array, needed to do byte array comparisons
   // See http://jira.codehaus.org/browse/ACT-1524
-  public static class ByteArray {
+  private static class PersistentState {
     
-    protected byte[] bytes;
+    private final String name;
+    private final byte[] bytes;
     
-    public ByteArray(byte[] bytes) {
+    public PersistentState(String name, byte[] bytes) {
+      this.name = name;
       this.bytes = bytes;
     }
     
-    public boolean equals(Object other) {
-      if (other instanceof ByteArray) {
-        ByteArray otherByteArray = (ByteArray) other;
-        return Arrays.equals(this.bytes, otherByteArray.bytes);
+    public boolean equals(Object obj) {
+      if (obj instanceof PersistentState) {
+        PersistentState other = (PersistentState) obj;
+        return ObjectUtils.equals(this.name, other.name)
+            && Arrays.equals(this.bytes, other.bytes);
       }
       return false;
+    }
+    
+    @Override
+    public int hashCode() {
+      throw new UnsupportedOperationException();
     }
     
   }

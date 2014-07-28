@@ -15,7 +15,7 @@ package org.activiti.engine.test.concurrency;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.RuntimeServiceImpl;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.cfg.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.RetryInterceptor;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
@@ -95,11 +95,12 @@ public class CompetingSignalsTest extends PluggableActivitiTestCase {
   @Deployment(resources={"org/activiti/engine/test/concurrency/CompetingSignalsTest.testCompetingSignals.bpmn20.xml"})
   public void testCompetingSignalsWithRetry() throws Exception {
     RuntimeServiceImpl runtimeServiceImpl = (RuntimeServiceImpl)runtimeService;        
-    CommandExecutor before = runtimeServiceImpl.getCommandExecutor();
+    CommandExecutorImpl before = (CommandExecutorImpl) runtimeServiceImpl.getCommandExecutor();
     try {
       CommandInterceptor retryInterceptor = new RetryInterceptor();
-      retryInterceptor.setNext(before);
-      runtimeServiceImpl.setCommandExecutor(retryInterceptor);
+      retryInterceptor.setNext(before.getFirst());
+
+      runtimeServiceImpl.setCommandExecutor(new CommandExecutorImpl(before.getDefaultConfig(), retryInterceptor));
       
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CompetingSignalsProcess");
       String processInstanceId = processInstance.getId();
@@ -120,7 +121,7 @@ public class CompetingSignalsTest extends PluggableActivitiTestCase {
       threadTwo.proceedAndWaitTillDone();
       assertNull(threadTwo.exception);
     } finally {
-      // reset the command executor
+      // restore the command executor
       runtimeServiceImpl.setCommandExecutor(before);
     }
     

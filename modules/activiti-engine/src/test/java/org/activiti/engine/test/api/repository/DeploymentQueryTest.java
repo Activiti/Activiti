@@ -13,13 +13,14 @@
 
 package org.activiti.engine.test.api.repository;
 
-import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
+
+import java.util.List;
 
 
 /**
@@ -136,7 +137,26 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, query.count());
     assertNotNull(query.singleResult());
   }
+  
+  public void testQueryByProcessDefinitionKey() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKey("one");
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+    assertNotNull(query.singleResult());
+  }
 
+  public void testQueryByProcessDefinitionKeyLike() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("%o%");
+    assertEquals(2, query.list().size());
+    assertEquals(2, query.count());
+  }
+  
+  public void testQueryByInvalidProcessDefinitionKeyLike() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("invalid");
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+  }
+  
   public void testVerifyDeploymentProperties() {
     List<Deployment> deployments = repositoryService.createDeploymentQuery()
       .orderByDeploymentName()
@@ -172,6 +192,22 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
       .list()
       .size());
 
+  }
+
+  public void testNativeQuery() {
+    assertEquals("ACT_RE_DEPLOYMENT", managementService.getTableName(Deployment.class));
+    assertEquals("ACT_RE_DEPLOYMENT", managementService.getTableName(DeploymentEntity.class));
+    String tableName = managementService.getTableName(Deployment.class);
+    String baseQuerySql = "SELECT * FROM " + tableName;
+
+    assertEquals(2, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).list().size());
+
+    assertEquals(1, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql + " where NAME_ = #{name}")
+        .parameter("name", "org/activiti/engine/test/repository/one.bpmn20.xml").list().size());
+
+    // paging
+    assertEquals(2, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).listPage(0, 2).size());
+    assertEquals(1, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).listPage(1, 3).size());
   }
 
 }

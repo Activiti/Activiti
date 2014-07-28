@@ -1,0 +1,17 @@
+<assembly>
+    <id>build-war-dev</id>
+	<formats>
+		<format>war</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<directory>target/classes/</directory>
+			<outputDirectory>WEB-INF/classes</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/webapp/app</directory>
+			<outputDirectory></outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>

@@ -13,36 +13,75 @@
 
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
+import org.activiti.engine.task.Task;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AddCommentCmd extends NeedsActiveTaskCmd<Object> {
+public class AddCommentCmd implements Command<Comment>{
 
-  private static final long serialVersionUID = 1L;
-  
+  protected String taskId;
   protected String processInstanceId;
+  protected String type;
   protected String message;
   
   public AddCommentCmd(String taskId, String processInstanceId, String message) {
-    super(taskId);
+    this.taskId = taskId;
     this.processInstanceId = processInstanceId;
     this.message = message;
   }
   
-  protected Object execute(CommandContext commandContext, TaskEntity task) {
+  public AddCommentCmd(String taskId, String processInstanceId, String type, String message) {
+    this.taskId = taskId;
+    this.processInstanceId = processInstanceId;
+    this.type = type;
+    this.message = message;
+  }
+  
+  public Comment execute(CommandContext commandContext) {
+    
+    // Validate task
+    if (taskId != null) {
+      TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+
+      if (task == null) {
+        throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
+      }
+
+      if (task.isSuspended()) {
+        throw new ActivitiException(getSuspendedTaskException());
+      }
+    }
+    
+    if (processInstanceId != null) {
+      ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+
+      if (execution == null) {
+        throw new ActivitiObjectNotFoundException("execution " + processInstanceId + " doesn't exist", Execution.class);
+      }
+
+      if (execution.isSuspended()) {
+        throw new ActivitiException(getSuspendedExceptionMessage());
+      }
+    }
+    
     String userId = Authentication.getAuthenticatedUserId();
     CommentEntity comment = new CommentEntity();
     comment.setUserId(userId);
-    comment.setType(CommentEntity.TYPE_COMMENT);
-    comment.setTime(ClockUtil.getCurrentTime());
+    comment.setType( (type == null)? CommentEntity.TYPE_COMMENT : type );
+    comment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
     comment.setTaskId(taskId);
     comment.setProcessInstanceId(processInstanceId);
     comment.setAction(Event.ACTION_ADD_COMMENT);
@@ -59,11 +98,14 @@ public class AddCommentCmd extends NeedsActiveTaskCmd<Object> {
       .getCommentEntityManager()
       .insert(comment);
     
-    return null;
+    return comment;
   }
   
-  @Override
   protected String getSuspendedTaskException() {
     return "Cannot add a comment to a suspended task";
+  }
+  
+  protected String getSuspendedExceptionMessage() {
+    return "Cannot add a comment to a suspended execution";
   }
 }

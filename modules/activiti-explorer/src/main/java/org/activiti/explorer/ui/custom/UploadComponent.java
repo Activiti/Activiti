@@ -69,6 +69,8 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
   protected ProgressIndicator progressIndicator;
   protected Upload upload;
   protected Receiver receiver;
+  protected Label descriptionLabel;
+  protected boolean enableDrop = true;
   
   // Additional listeners can be attached to the upload components
   protected List<FinishedListener> finishedListeners = new ArrayList<FinishedListener>();
@@ -76,6 +78,7 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
   protected boolean showGenericFailureMessage = true;
   protected List<FailedListener> failedListeners = new ArrayList<FailedListener>();
   protected List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
+  
 
 
   public UploadComponent(String description, Receiver receiver) {
@@ -83,28 +86,49 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
     this.i18nManager = ExplorerApp.get().getI18nManager();
     this.notificationManager = ExplorerApp.get().getNotificationManager();
     
-    init(description);
+    init();
+  }
+  
+  public UploadComponent(boolean enableDrop) {
+    this(null, null);
+    enableDrop = true;
+  }
+  
+  public void setDescription(String description) {
+    if(description != null) {
+      descriptionLabel.setValue(description);
+      descriptionLabel.setVisible(true);
+    } else {
+      descriptionLabel.setVisible(false);
+    }
+  }
+  
+  public void setReceiver(Receiver receiver) {
+  	this.receiver = receiver;
+    upload.setReceiver(receiver);
   }
 
   // UI initialisation ----------------------------------------------------------------------------
   
-  protected void init(String description) {
+  protected void init() {
     setSpacing(true);
     setSizeFull();
     
-    addDescription(description);
+    addDescription();
     addUpload();
-    addOrLabel();
-    addDropPanel();
+    
+    if(enableDrop) {
+      addOrLabel();
+      addDropPanel();
+    }
   }
 
-  protected void addDescription(String description) {
-    if(description != null) {
-      Label descriptionLabel = new Label(description);
+  protected void addDescription() {
+      descriptionLabel = new Label();
       descriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
       descriptionLabel.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION);
+      descriptionLabel.setVisible(false);
       addComponent(descriptionLabel);      
-    }
   }
   
   protected void addUpload() {
@@ -185,7 +209,7 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
   public void drop(DragAndDropEvent event) {
     WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
     Html5File[] files = transferable.getFiles();
-    if (files.length > 0) {
+    if (files != null && files.length > 0) {
       final Html5File file = files[0]; // only support for one file upload at this moment
       file.setStreamVariable(new StreamVariable() {
         
@@ -237,7 +261,4 @@ public class UploadComponent extends VerticalLayout implements StartedListener, 
   public void addProgressListener(ProgressListener progressListener) {
     progressListeners.add(progressListener);
   }
-  
-  
-  
 }

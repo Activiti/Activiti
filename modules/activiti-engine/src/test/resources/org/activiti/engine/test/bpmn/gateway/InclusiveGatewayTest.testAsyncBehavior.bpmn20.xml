@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="async">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+    
+    <inclusiveGateway id="fork" />
+    
+    <manualTask id="task1" activiti:async="true" activiti:exclusive="false" />
+    
+    <manualTask id="task2" activiti:async="true" activiti:exclusive="false" />
+    
+    <sequenceFlow id="flow2" sourceRef="fork" targetRef="task1" />
+    <sequenceFlow id="flow3" sourceRef="fork" targetRef="task2" />
+    
+    <inclusiveGateway id="join" activiti:async="true" />
+    
+    <sequenceFlow id="flow4" sourceRef="task1" targetRef="join" />
+    <sequenceFlow id="flow5" sourceRef="task2" targetRef="join" />
+
+    <endEvent id="end1" />
+    
+    <sequenceFlow id="flow6" sourceRef="join" targetRef="end1" />
+    
+  </process>
+
+</definitions>

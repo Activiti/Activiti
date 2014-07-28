@@ -20,9 +20,9 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
@@ -46,20 +46,23 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   protected ProcessDefinitionEntity processDefinitionEntity;
   protected boolean includeProcessInstances = false;
   protected Date executionDate;
+  protected String tenantId;
 
   public AbstractSetProcessDefinitionStateCmd(ProcessDefinitionEntity processDefinitionEntity, 
-          boolean includeProcessInstances, Date executionDate) {
+          boolean includeProcessInstances, Date executionDate, String tenantId) {
     this.processDefinitionEntity = processDefinitionEntity;
     this.includeProcessInstances = includeProcessInstances;
     this.executionDate = executionDate;
+    this.tenantId = tenantId;
   }
   
   public AbstractSetProcessDefinitionStateCmd(String processDefinitionId, String processDefinitionKey,
-            boolean includeProcessInstances, Date executionDate) {
+            boolean includeProcessInstances, Date executionDate, String tenantId) {
     this.processDefinitionId = processDefinitionId;
     this.processDefinitionKey = processDefinitionKey;
     this.includeProcessInstances = includeProcessInstances;
     this.executionDate = executionDate;
+    this.tenantId = tenantId;
   }
   
   public Void execute(CommandContext commandContext) {
@@ -101,10 +104,15 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       
     } else {
       
-      List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl(commandContext)
-        .processDefinitionKey(processDefinitionKey)
-        .list();
+       ProcessDefinitionQueryImpl query = new ProcessDefinitionQueryImpl(commandContext).processDefinitionKey(processDefinitionKey);
       
+      if (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
+      	query.processDefinitionWithoutTenantId();
+      } else {
+      	query.processDefinitionTenantId(tenantId);
+      }
+      
+      List<ProcessDefinition> processDefinitions = query.list();
       if(processDefinitions.size() == 0) {
         throw new ActivitiException("Cannot find process definition for key '"+processDefinitionKey+"'");
       }
@@ -121,6 +129,12 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       TimerEntity timer = new TimerEntity();
       timer.setProcessDefinitionId(processDefinition.getId());
+      
+      // Inherit tenant identifier (if applicable)
+      if (processDefinition.getTenantId() != null) {
+      	timer.setTenantId(processDefinition.getTenantId());
+      }
+      
       timer.setDuedate(executionDate);
       timer.setJobHandlerType(getDelayedExecutionJobHandlerType());
       timer.setJobHandlerConfiguration(TimerChangeProcessDefinitionSuspensionStateJobHandler
@@ -135,7 +149,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       SuspensionStateUtil.setSuspensionState(processDefinition, getProcessDefinitionSuspensionState());
       
       // Evict cache
-      Context
+      commandContext
         .getProcessEngineConfiguration()
         .getDeploymentManager()
         .getProcessDefinitionCache()
@@ -157,24 +171,23 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
           currentStartIndex += processInstances.size();
           processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
         }
-        
       }
-      
     }
   }
   
   protected List<ProcessInstance> fetchProcessInstancesPage(CommandContext commandContext, 
           ProcessDefinition processDefinition, int currentPageStartIndex) {
-      if(SuspensionState.ACTIVE.equals(getProcessDefinitionSuspensionState())){
+    
+      if (SuspensionState.ACTIVE.equals(getProcessDefinitionSuspensionState())){
   	      return new ProcessInstanceQueryImpl(commandContext)
-		      .processDefinitionId(processDefinition.getId())
-		      .suspended()
-		      .listPage(currentPageStartIndex, Context.getProcessEngineConfiguration().getBatchSizeProcessInstances());
-	    }else{
+		        .processDefinitionId(processDefinition.getId())
+		        .suspended()
+		        .listPage(currentPageStartIndex, commandContext.getProcessEngineConfiguration().getBatchSizeProcessInstances());
+	    } else {
 		      return new ProcessInstanceQueryImpl(commandContext)
-	        .processDefinitionId(processDefinition.getId())
-	        .active()
-	        .listPage(currentPageStartIndex, Context.getProcessEngineConfiguration().getBatchSizeProcessInstances());
+	          .processDefinitionId(processDefinition.getId())
+	          .active()
+	          .listPage(currentPageStartIndex, commandContext.getProcessEngineConfiguration().getBatchSizeProcessInstances());
 	     }
   }
   

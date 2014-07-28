@@ -15,6 +15,7 @@
 package org.activiti.engine.history;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -64,5 +65,18 @@ public interface HistoricProcessInstance {
   /**
    * The process instance id of a potential super process instance or null if no super process instance exists
    */
-  String getSuperProcessInstanceId(); 
+  String getSuperProcessInstanceId();
+  
+  /**
+   * The tenant identifier for the process instance.
+   */
+  String getTenantId();
+  
+  /**
+   * The name for the process instance.
+   */
+  String getName();
+  
+  /** Returns the process variables if requested in the process instance query */
+  Map<String, Object> getProcessVariables();
 }

@@ -16,12 +16,14 @@
   <!ENTITY ch13 SYSTEM "chapters/ch13-Modeler.xml">
   <!ENTITY ch14 SYSTEM "chapters/ch14-REST.xml">
   <!ENTITY ch15 SYSTEM "chapters/ch15-Cdi.xml">
-  <!ENTITY ch16 SYSTEM "chapters/ch16-Advanced.xml">
+  <!ENTITY ch16 SYSTEM "chapters/ch16-Ldap.xml">
+  <!ENTITY ch17 SYSTEM "chapters/ch17-Advanced.xml">
+  <!ENTITY ch18 SYSTEM "chapters/ch18-Simulation.xml">
 ]>
 
 <book>
 
-  <bookinfo><title>Activiti 5.13-SNAPSHOT User Guide</title></bookinfo>
+  <bookinfo><title>Activiti 5.17-SNAPSHOT User Guide</title></bookinfo>
   
   <toc />
   
@@ -42,5 +44,7 @@
 &ch14;
 &ch15;
 &ch16;
+&ch17;
+&ch18;
 
 </book>

@@ -20,7 +20,7 @@ import org.subethamail.wiser.Wiser;
 /**
  * @author Joram Barrez
  */
-public class EmailTestCase extends PluggableActivitiTestCase {
+public abstract class EmailTestCase extends PluggableActivitiTestCase {
   
   protected Wiser wiser;
   

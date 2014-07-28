@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="Editor" default="js.compress">
+<project name="Activiti BPM Editor" default="js.compress">
 
 	<!-- Editor properties *************************************************** -->
 	<property name="root" value="." />

@@ -32,6 +32,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
     String deploymentOneId = null;
     String deploymentTwoV1Id = null;
     String deploymentTwoV2Id = null;
+    String deploymentTwoNoCategory = null;
             
     try {
       noCategoryDeploymentId = repositoryService
@@ -86,12 +87,27 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
       expectedDeploymentNames.add("0");
 
       assertEquals(expectedDeploymentNames, deploymentNames);
+      
+      deploymentTwoNoCategory = repositoryService
+          .createDeployment()
+          .name("noCategory")
+          .addClasspathResource("org/activiti/engine/test/repository/two.bpmn20.xml")
+          .deploy()
+          .getId();
+      
+      Deployment deploymentNoCategory = repositoryService.createDeploymentQuery().deploymentId(deploymentTwoNoCategory).singleResult();
+      assertNull(deploymentNoCategory.getCategory());
+      
+      repositoryService.setDeploymentCategory(deploymentTwoNoCategory, "newCategory");
+      deploymentNoCategory = repositoryService.createDeploymentQuery().deploymentId(deploymentTwoNoCategory).singleResult();
+      assertEquals("newCategory", deploymentNoCategory.getCategory());
 
     } finally {
       if (noCategoryDeploymentId!=null) undeploy(noCategoryDeploymentId);
       if (deploymentOneId!=null) undeploy(deploymentOneId);
       if (deploymentTwoV1Id!=null) undeploy(deploymentTwoV1Id);
       if (deploymentTwoV2Id!=null) undeploy(deploymentTwoV2Id);
+      if (deploymentTwoNoCategory!=null) undeploy(deploymentTwoNoCategory);
     }
   }
 

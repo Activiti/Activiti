@@ -418,6 +418,7 @@
             <enumeration value="create" />
             <enumeration value="assignment" />
             <enumeration value="complete" />
+            <enumeration value="delete" />
           </restriction>
         </simpleType>
       </attribute>

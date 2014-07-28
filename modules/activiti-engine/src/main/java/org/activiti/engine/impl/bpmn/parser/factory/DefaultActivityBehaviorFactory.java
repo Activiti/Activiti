@@ -40,6 +40,7 @@ import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
@@ -85,7 +86,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskDefinition;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Default implementation of the {@link ActivityBehaviorFactory}. 
@@ -179,10 +180,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
       return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
       
     } catch (ClassNotFoundException e) {
-      
-      bpmnModel.addProblem("Could not find org.activiti.mule.MuleSendActivitiBehavior: " + e.getMessage(), task);
-      return null;
-      
+    	throw new ActivitiException("Could not find org.activiti.mule.MuleSendActivitiBehavior: ", e);
     }
   }
   
@@ -221,9 +219,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
       return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
      
     } catch (ClassNotFoundException e) {
-     
-      bpmnModel.addProblem("Could not find org.activiti.camel.CamelBehavior: " + e.getMessage(), task);
-      return null;
+    	throw new ActivitiException("Could not find org.activiti.camel.CamelBehavior: ", e);
     }
   }
   

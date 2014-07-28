@@ -44,7 +44,7 @@ public class CompetingJobAcquisitionTest extends PluggableActivitiTestCase {
       try {
         JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
         processEngineConfiguration
-          .getCommandExecutorTxRequired()
+          .getCommandExecutor()
           .execute(new ControlledCommand(activeThread, new AcquireJobsCmd(jobExecutor)));
 
       } catch (ActivitiOptimisticLockingException e) {

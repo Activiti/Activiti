@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.persistence.deploy;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
   
   /** Cache which has a hard limit: no more elements will be cached than the limit. */
   public DefaultDeploymentCache(final int limit) {
-    this.cache = new LinkedHashMap<String, T>(limit + 1, 0.75f, true) { // +1 is needed, because the entry is inserted first, before it is removed
+    this.cache = Collections.synchronizedMap(new LinkedHashMap<String, T>(limit + 1, 0.75f, true) { // +1 is needed, because the entry is inserted first, before it is removed
                                                                        // 0.75 is the default (see javadocs)
                                                                        // true will keep the 'access-order', which is needed to have a real LRU cache
       private static final long serialVersionUID = 1L;
@@ -50,7 +51,7 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
         return removeEldest;
       }
       
-    };
+    });
   }
   
   public T get(String id) {

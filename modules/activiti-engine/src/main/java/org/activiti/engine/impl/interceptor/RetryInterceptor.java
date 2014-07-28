@@ -24,15 +24,15 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Daniel Meyer
  */
-public class RetryInterceptor extends CommandInterceptor {
+public class RetryInterceptor extends AbstractCommandInterceptor {
 
-  Logger log = LoggerFactory.getLogger(RetryInterceptor.class);
+  private static Logger log = LoggerFactory.getLogger(RetryInterceptor.class);
 
   protected int numOfRetries = 3;
   protected int waitTimeInMs = 50;
   protected int waitIncreaseFactor = 5;
 
-  public <T> T execute(Command<T> command) {
+  public <T> T execute(CommandConfig config, Command<T> command) {
     long waitTime=waitTimeInMs;
     int failedAttempts=0;   
     
@@ -46,7 +46,7 @@ public class RetryInterceptor extends CommandInterceptor {
       try {
 
         // try to execute the command
-        return next.execute(command);
+        return next.execute(config, command);
 
       } catch (ActivitiOptimisticLockingException e) {
         log.info("Caught optimistic locking exception: "+e);

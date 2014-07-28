@@ -76,7 +76,8 @@ public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
 
     ProcessDefinition processDefinition = getProcessDefinition(processInstance.getProcessDefinitionId());
     
-    String itemName = getProcessDisplayName(processDefinition) + " (" + processInstance.getId() + ")";
+    String itemName = getProcessDisplayName(processDefinition) + " (" + processInstance.getId() + ")"
+      + (processInstance.getBusinessKey() != null? processInstance.getBusinessKey() : "");
     item.addItemProperty("name", new ObjectProperty<String>(itemName, String.class));
     return item;
   }

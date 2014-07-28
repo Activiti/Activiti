@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.Event;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -39,6 +39,8 @@ public class CompensateEventDefinitionParser extends BaseChildElementParser {
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION))) {
       eventDefinition.setWaitForCompletion(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION)));
     }
+    
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_COMPENSATEDEFINITION, eventDefinition, xtr, model);
     
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }

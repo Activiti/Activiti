@@ -67,7 +67,7 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
   }
 
   public void submitTaskFormData(String taskId, Map<String, String> properties) {
-    commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties));
+    commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties, true));
   }
 
   public String getStartFormKey(String processDefinitionId) {
@@ -77,5 +77,8 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
   public String getTaskFormKey(String processDefinitionId, String taskDefinitionKey) {
     return commandExecutor.execute(new GetFormKeyCmd(processDefinitionId, taskDefinitionKey));
   }
-
+  
+  public void saveFormData(String taskId, Map<String, String> properties) {
+    commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties, false));
+  }
 }

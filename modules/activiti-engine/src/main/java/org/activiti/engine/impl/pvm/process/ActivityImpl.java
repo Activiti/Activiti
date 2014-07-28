@@ -32,12 +32,14 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   private static final long serialVersionUID = 1L;
   protected List<TransitionImpl> outgoingTransitions = new ArrayList<TransitionImpl>();
   protected Map<String, TransitionImpl> namedOutgoingTransitions = new HashMap<String, TransitionImpl>();
+  protected Map<String, Object> variables;
   protected List<TransitionImpl> incomingTransitions = new ArrayList<TransitionImpl>();
   protected ActivityBehavior activityBehavior;
   protected ScopeImpl parent;
   protected boolean isScope;
   protected boolean isAsync;
   protected boolean isExclusive;
+  protected String failedJobRetryTimeCycleValue;
   
   // Graphical information
   protected int x = -1;
@@ -51,6 +53,12 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
 
   public TransitionImpl createOutgoingTransition() {
     return createOutgoingTransition(null);
+  }
+  public String getFailedJobRetryTimeCycleValue() {
+		return failedJobRetryTimeCycleValue;
+  }
+  public void setFailedJobRetryTimeCycleValue(String failedJobRetryTimeCycleValue) {
+	  this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
   }
 
   public TransitionImpl createOutgoingTransition(String transitionId) {
@@ -120,6 +128,14 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   @SuppressWarnings("unchecked")
   public List<PvmTransition> getIncomingTransitions() {
     return (List) incomingTransitions;
+  }
+
+  public Map<String, Object> getVariables() {
+    return variables;
+  }
+
+  public void setVariables(Map<String, Object> variables) {
+    this.variables = variables;
   }
 
   public boolean isScope() {

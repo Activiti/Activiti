@@ -12,7 +12,6 @@
  */
 package org.activiti.workflow.simple.converter;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +20,13 @@ import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
 import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
+import org.activiti.workflow.simple.definition.ListStepDefinition;
+import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 
 /**
  * Instances of this class are created by a {@link WorkflowDefinitionConversionFactory}.
@@ -64,11 +64,11 @@ public class WorkflowDefinitionConversion {
   protected boolean sequenceflowGenerationEnabled = true;
   protected boolean updateLastActivityEnabled = true;
 
-  /* package */WorkflowDefinitionConversion(WorkflowDefinitionConversionFactory factory) {
+  /* package */
+  WorkflowDefinitionConversion(WorkflowDefinitionConversionFactory factory) {
     this.conversionFactory = factory;
   }
   
-  /* package */
   public WorkflowDefinitionConversion(WorkflowDefinitionConversionFactory factory, WorkflowDefinition workflowDefinition) {
     this(factory);
     this.workflowDefinition = workflowDefinition;
@@ -81,7 +81,7 @@ public class WorkflowDefinitionConversion {
   public void convert() {
     
     if (workflowDefinition == null) {
-      throw new ActivitiException("Cannot start conversion: need to set a WorkflowDefinition first!");
+      throw new SimpleWorkflowException("Cannot start conversion: need to set a WorkflowDefinition first!");
     }
     
     this.incrementalIdMapping = new HashMap<String, Integer>();
@@ -116,6 +116,12 @@ public class WorkflowDefinitionConversion {
   
   public void convertSteps(List<StepDefinition> stepDefinitions) {
     for (StepDefinition step : stepDefinitions) {
+      conversionFactory.getStepConverterFor(step).convertStepDefinition(step, this);
+    }
+  }
+  
+  public void convertListParallelSteps(List<ListStepDefinition<ParallelStepsDefinition>> stepDefinitions) {
+    for (ListStepDefinition<ParallelStepsDefinition> step : stepDefinitions) {
       conversionFactory.getStepConverterFor(step).convertStepDefinition(step, this);
     }
   }
@@ -177,6 +183,10 @@ public class WorkflowDefinitionConversion {
   public Object getArtifact(String artifactKey) {
     return additionalArtifacts.get(artifactKey);
   }
+  
+  public Map<String, Object> getAdditionalArtifacts() {
+	  return additionalArtifacts;
+  }
 
   public void setArtifact(String artifactKey, Object artifact) {
     additionalArtifacts.put(artifactKey, artifact);
@@ -206,27 +216,19 @@ public class WorkflowDefinitionConversion {
     this.updateLastActivityEnabled = updateLastActivityEnabled;
   }
 
+  public WorkflowDefinitionConversionFactory getConversionFactory() {
+    return conversionFactory;
+  }
+
   /**
    * Returns the BPMN 2.0 xml which is the converted version of the 
    * provided {@link WorkflowDefinition}. 
    */
-  public String getbpm20Xml() {
+  public String getBpmn20Xml() {
     if (bpmnModel == null) {
       convert();
     }
     BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
     return new String(bpmnXMLConverter.convertToXML(bpmnModel));
   }
-  
-  /**
-   * Returns the BPMN 2.0 diagram which is the converted version of the
-   * provided {@link WorkflowDefinition}.
-   */
-  public InputStream getWorkflowDiagramImage() {
-    if (bpmnModel == null) {
-      convert();
-    }
-    return ProcessDiagramGenerator.generatePngDiagram(bpmnModel);
-  }
-  
 }

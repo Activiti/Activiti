@@ -20,11 +20,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -33,7 +31,6 @@ import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -72,7 +69,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   protected void setUp() throws Exception {
     super.setUp();
     
-    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
     
     deploymentId = repositoryService.createDeployment()
         .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
@@ -84,7 +81,8 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     startTime.set(Calendar.MILLISECOND, 0);
     
     Date t1 = startTime.getTime();
-    ClockUtil.setCurrentTime(t1);
+    processEngineConfiguration.getClock().setCurrentTime(t1);
+
     processInstanceIdOne = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     testStartTime = t1;
     timerOneFireTime = new Date(t1.getTime() + ONE_HOUR);
@@ -92,14 +90,14 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     // Create proc inst that has timer that will fire on t2 + 1 hour
     startTime.add(Calendar.HOUR_OF_DAY, 1);
     Date t2 = startTime.getTime();  // t2 = t1 + 1 hour
-    ClockUtil.setCurrentTime(t2);
+    processEngineConfiguration.getClock().setCurrentTime(t2);
     processInstanceIdTwo = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     timerTwoFireTime = new Date(t2.getTime() + ONE_HOUR);
     
     // Create proc inst that has timer that will fire on t3 + 1 hour
     startTime.add(Calendar.HOUR_OF_DAY, 1);
     Date t3 = startTime.getTime(); // t3 = t2 + 1 hour
-    ClockUtil.setCurrentTime(t3);
+    processEngineConfiguration.getClock().setCurrentTime(t3);
     processInstanceIdThree = runtimeService.startProcessInstanceByKey("timerOnTask").getId();
     timerThreeFireTime = new Date(t3.getTime() + ONE_HOUR);
     
@@ -116,7 +114,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   @Override
   protected void tearDown() throws Exception {
     repositoryService.deleteDeployment(deploymentId, true);
-    commandExecutor.execute(new DeleteJobsCmd(messageId));
+    commandExecutor.execute(new CancelJobsCmd(messageId));
     super.tearDown();
   }
   
@@ -167,7 +165,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
   
   public void testQueryByExecutable() {
-    ClockUtil.setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // all jobs should be executable at t3 + 1hour.1second
+    processEngineConfiguration.getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // all jobs should be executable at t3 + 1hour.1second
     JobQuery query = managementService.createJobQuery().executable();
     verifyQueryResults(query, 4);
     
@@ -176,7 +174,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 3);
     
     // Setting the clock before the start of the process instance, makes none of the jobs executable
-    ClockUtil.setCurrentTime(testStartTime);
+    processEngineConfiguration.getClock().setCurrentTime(testStartTime);
     verifyQueryResults(query, 1); // 1, since a message is always executable when retries > 0
   }
   
@@ -199,31 +197,31 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     }
   }
   
-  public void testQueryByDuedateLowerThen() {
-    JobQuery query = managementService.createJobQuery().duedateLowerThen(testStartTime);
+  public void testQueryByDuedateLowerThan() {
+    JobQuery query = managementService.createJobQuery().duedateLowerThan(testStartTime);
     verifyQueryResults(query, 0);
     
-    query = managementService.createJobQuery().duedateLowerThen(new Date(timerOneFireTime.getTime() + ONE_SECOND));
+    query = managementService.createJobQuery().duedateLowerThan(new Date(timerOneFireTime.getTime() + ONE_SECOND));
     verifyQueryResults(query, 1);
     
-    query = managementService.createJobQuery().duedateLowerThen(new Date(timerTwoFireTime.getTime() + ONE_SECOND));
+    query = managementService.createJobQuery().duedateLowerThan(new Date(timerTwoFireTime.getTime() + ONE_SECOND));
     verifyQueryResults(query, 2);
     
-    query = managementService.createJobQuery().duedateLowerThen(new Date(timerThreeFireTime.getTime() + ONE_SECOND));
+    query = managementService.createJobQuery().duedateLowerThan(new Date(timerThreeFireTime.getTime() + ONE_SECOND));
     verifyQueryResults(query, 3);
   }
   
-  public void testQueryByDuedateHigherThen() {
-    JobQuery query = managementService.createJobQuery().duedateHigherThen(testStartTime);
+  public void testQueryByDuedateHigherThan() {
+    JobQuery query = managementService.createJobQuery().duedateHigherThan(testStartTime);
     verifyQueryResults(query, 3);
     
-    query = managementService.createJobQuery().duedateHigherThen(timerOneFireTime);
+    query = managementService.createJobQuery().duedateHigherThan(timerOneFireTime);
     verifyQueryResults(query, 2);
     
-    query = managementService.createJobQuery().duedateHigherThen(timerTwoFireTime);
+    query = managementService.createJobQuery().duedateHigherThan(timerTwoFireTime);
     verifyQueryResults(query, 1);
     
-    query = managementService.createJobQuery().duedateHigherThen(timerThreeFireTime);
+    query = managementService.createJobQuery().duedateHigherThan(timerThreeFireTime);
     verifyQueryResults(query, 0);
   }
   
@@ -234,7 +232,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     
     ProcessInstance processInstance = startProcessInstanceWithFailingJob();
     
-    query = managementService.createJobQuery().withException();
+    query = managementService.createJobQuery().processInstanceId(processInstance.getId()).withException();
     verifyFailedJob(query, processInstance);
   }
   
@@ -314,7 +312,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     
     // sorting on multiple fields
     setRetries(processInstanceIdTwo, 2);
-    ClockUtil.setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // make sure all timers can fire
+    processEngineConfiguration.getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // make sure all timers can fire
     
     JobQuery query = managementService.createJobQuery()
       .timers()
@@ -383,7 +381,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
       managementService.executeJob(timerJob.getId());
       fail("RuntimeException from within the script task expected");
     } catch(RuntimeException re) {
-      assertTextPresent(EXCEPTION_MESSAGE, re.getMessage());
+      assertTextPresent(EXCEPTION_MESSAGE, re.getCause().getMessage());
     }
     return processInstance;
   }
@@ -392,9 +390,9 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 1);
     
     Job failedJob = query.singleResult();
-    Assert.assertNotNull(failedJob);
+    assertNotNull(failedJob);
     assertEquals(processInstance.getId(), failedJob.getProcessInstanceId());
-    Assert.assertNotNull(failedJob.getExceptionMessage());
+    assertNotNull(failedJob.getExceptionMessage());
     assertTextPresent(EXCEPTION_MESSAGE, failedJob.getExceptionMessage());
   }
 
@@ -419,7 +417,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
   
   private void createJobWithoutExceptionMsg() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();
@@ -446,7 +444,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
   
   private void createJobWithoutExceptionStacktrace() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         JobEntityManager jobManager = commandContext.getJobEntityManager();
@@ -469,7 +467,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }  
   
   private void deleteJobInDatabase() {
-      CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+      CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
       commandExecutor.execute(new Command<Void>() {
         public Void execute(CommandContext commandContext) {
           

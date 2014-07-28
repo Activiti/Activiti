@@ -22,6 +22,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
@@ -39,6 +40,30 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  */
 public class RuntimeServiceTest extends PluggableActivitiTestCase {
+
+  @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testStartProcessInstanceWithVariables() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("basicType", new DummySerializable());
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    Task task = taskService.createTaskQuery().includeProcessVariables().singleResult();
+    assertNotNull(task.getProcessVariables());
+  }
+
+  @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testStartProcessInstanceWithLongStringVariable() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    StringBuilder longString = new StringBuilder();
+    for (int i=0; i<4001; i++) {
+      longString.append("c");
+    }
+    vars.put("longString", longString.toString());
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    Task task = taskService.createTaskQuery().includeProcessVariables().singleResult();
+    assertNotNull(task.getProcessVariables());
+    assertEquals( longString.toString(), task.getProcessVariables().get("longString"));
+  }
+
 
   public void testStartProcessInstanceByKeyNullKey() {
     try {
@@ -118,12 +143,10 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testNonUniqueBusinessKey() {
     runtimeService.startProcessInstanceByKey("oneTaskProcess", "123");
-    try {
-      runtimeService.startProcessInstanceByKey("oneTaskProcess", "123");
-      fail("Non-unique business key used, this should fail");
-    } catch(Exception e) {
-      
-    }
+    
+    // Behaviour changed: http://jira.codehaus.org/browse/ACT-1860
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", "123");
+    assertEquals(2, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("123").count());
   }
   
   // some databases might react strange on having mutiple times null for the business key
@@ -161,6 +184,14 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
               .singleResult();
       
       assertEquals(deleteReason, historicTaskInstance.getDeleteReason());
+      
+      HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
+          .processInstanceId(processInstance.getId())
+          .singleResult();
+      
+      assertNotNull(historicInstance);
+      assertEquals(deleteReason, historicInstance.getDeleteReason());
+      assertNotNull(historicInstance.getEndTime());
     }    
   }
   
@@ -173,6 +204,15 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     // Deleting without a reason should be possible
     runtimeService.deleteProcessInstance(processInstance.getId(), null);
     assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    
+  if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+        HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
+            .processInstanceId(processInstance.getId())
+            .singleResult();
+        
+        assertNotNull(historicInstance);
+        assertNull(historicInstance.getDeleteReason());
+      }    
   }
   
   public void testDeleteProcessInstanceUnexistingId() {
@@ -801,6 +841,52 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
      // this is good
    }
   }
+ 
+ 
+ @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+ public void testSetProcessInstanceName() {
+   ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+   assertNotNull(processInstance);
+   assertNull(processInstance.getName());
+   
+   // Set the name
+   runtimeService.setProcessInstanceName(processInstance.getId(), "New name");
+   processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+   assertNotNull(processInstance);
+   assertEquals("New name", processInstance.getName());
+   
+   // Set the name to null
+   runtimeService.setProcessInstanceName(processInstance.getId(), null);
+   processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+   assertNotNull(processInstance);
+   assertNull(processInstance.getName());
+   
+   
+   // Set name for unexisting process instance, should fail
+   try {
+     runtimeService.setProcessInstanceName("unexisting", null);
+     fail("Exception excpected");
+   } catch(ActivitiObjectNotFoundException aonfe) {
+     assertEquals(ProcessInstance.class, aonfe.getObjectClass());
+   }
+   
+   processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+   assertNotNull(processInstance);
+   assertNull(processInstance.getName());
+   
+   // Set name for suspended process instance, should fail
+   runtimeService.suspendProcessInstanceById(processInstance.getId());
+   try {
+     runtimeService.setProcessInstanceName(processInstance.getId(), null);
+     fail("Exception excpected");
+   } catch(ActivitiException ae) {
+     assertEquals("process instance " + processInstance.getId() + " is suspended, cannot set name", ae.getMessage());
+   }
+   
+   processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+   assertNotNull(processInstance);
+   assertNull(processInstance.getName());
+ }
 
   private void startSignalCatchProcesses() {
     for (int i = 0; i < 3; i++) {

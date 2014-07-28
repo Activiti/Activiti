@@ -34,6 +34,7 @@
         <bean class="org.activiti.explorer.ui.form.StringFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.EnumFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.LongFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.DoubleFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.DateFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.UserFormPropertyRenderer" />
         <bean class="org.activiti.explorer.ui.form.BooleanFormPropertyRenderer" />
@@ -58,11 +59,6 @@
     <property name="componentFactories" ref="componentFactories" />
   </bean>
   
-  <!-- User cache usage depends on environment, hence the factory approach -->
-  <bean name="userCache" class="org.activiti.explorer.cache.UserCacheFactoryBean">
-    <property name="environment" value="${activiti.ui.environment}" />
-  </bean>
-  
   <!-- Session scoped UI beans -->
   
   <bean name="navigationFragmentChangeListener" class="org.activiti.explorer.navigation.NavigationFragmentChangeListener" scope="session">
@@ -77,7 +73,6 @@
   <bean name="explorerApp" class="org.activiti.explorer.ExplorerApp" scope="session">
     <property name="environment" value="${activiti.ui.environment}" />
     <property name="useJavascriptDiagram" value="${activiti.ui.jsdiagram}" />
-    <property name="userCache" ref="userCache" />
     <property name="i18nManager" ref="i18nManager" />
     <property name="viewManager" ref="viewManager" />
     <property name="notificationManager" ref="notificationManager" />
@@ -88,7 +83,10 @@
     <property name="componentFactories" ref="componentFactories" />
     <property name="workflowDefinitionConversionFactory" ref="workflowDefinitionConversionFactory" />
     <property name="loginHandler" ref="activitiLoginHandler" />
+    <property name="simpleWorkflowJsonConverter" ref="simpleWorkflowJsonConverter" />
   </bean>
+  
+  <bean id="simpleWorkflowJsonConverter" class="org.activiti.workflow.simple.converter.json.SimpleWorkflowJsonConverter" />
   
   <bean name="i18nManager" class="org.activiti.explorer.I18nManager" scope="session">
     <property name="messageSource" ref="messageSource" />

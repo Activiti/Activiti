@@ -49,4 +49,24 @@ public class SendTask extends Task {
   public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
     this.fieldExtensions = fieldExtensions;
   }
+  
+  public SendTask clone() {
+    SendTask clone = new SendTask();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(SendTask otherElement) {
+    super.setValues(otherElement);
+    setType(otherElement.getType());
+    setImplementationType(otherElement.getImplementationType());
+    setOperationRef(otherElement.getOperationRef());
+    
+    fieldExtensions = new ArrayList<FieldExtension>();
+    if (otherElement.getFieldExtensions() != null && otherElement.getFieldExtensions().size() > 0) {
+      for (FieldExtension extension : otherElement.getFieldExtensions()) {
+        fieldExtensions.add(extension.clone());
+      }
+    }
+  }
 }

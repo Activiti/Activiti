@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -26,6 +26,7 @@ public class SubProcess extends Activity implements FlowElementsContainer {
 
   protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
   protected List<Artifact> artifactList = new ArrayList<Artifact>();
+  protected List<ValuedDataObject> dataObjects = new ArrayList<ValuedDataObject>();
 
   public FlowElement getFlowElement(String id) {
     FlowElement foundElement = null;
@@ -79,5 +80,68 @@ public class SubProcess extends Activity implements FlowElementsContainer {
     if (artifact != null) {
       artifactList.remove(artifact);
     }
+  }
+  
+  public SubProcess clone() {
+    SubProcess clone = new SubProcess();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(SubProcess otherElement) {
+    super.setValues(otherElement);
+
+    /*
+     * This is required because data objects in Designer have no DI info
+     * and are added as properties, not flow elements
+     *
+     * Determine the differences between the 2 elements' data object
+     */
+    for (ValuedDataObject thisObject : getDataObjects()) {
+      boolean exists = false;
+      for (ValuedDataObject otherObject : otherElement.getDataObjects()) {
+        if (thisObject.getId().equals(otherObject.getId())) {
+          exists = true;
+        }
+      }
+      if (!exists) {
+        // missing object
+        removeFlowElement(thisObject.getId());
+      }
+    }
+    
+    dataObjects = new ArrayList<ValuedDataObject>();
+    if (otherElement.getDataObjects() != null && otherElement.getDataObjects().size() > 0) {
+      for (ValuedDataObject dataObject : otherElement.getDataObjects()) {
+          ValuedDataObject clone = dataObject.clone();
+          dataObjects.add(clone);
+          // add it to the list of FlowElements
+          // if it is already there, remove it first so order is same as data object list
+          removeFlowElement(clone.getId());
+          addFlowElement(clone);
+      }
+    }
+    
+    /*flowElementList = new ArrayList<FlowElement>();
+    if (otherElement.getFlowElements() != null && otherElement.getFlowElements().size() > 0) {
+      for (FlowElement element : otherElement.getFlowElements()) {
+        flowElementList.add(element.clone());
+      }
+    }
+    
+    artifactList = new ArrayList<Artifact>();
+    if (otherElement.getArtifacts() != null && otherElement.getArtifacts().size() > 0) {
+      for (Artifact artifact : otherElement.getArtifacts()) {
+        artifactList.add(artifact.clone());
+      }
+    }*/
+  }
+  
+  public List<ValuedDataObject> getDataObjects() {
+    return dataObjects;
+  }
+
+  public void setDataObjects(List<ValuedDataObject> dataObjects) {
+    this.dataObjects = dataObjects;
   }
 }

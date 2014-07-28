@@ -50,5 +50,15 @@ public interface IdentityLink {
    * The id of the task associated with this identity link.
    */
   String getTaskId();
+  
+  /**
+   * The process definition id associated with this identity link.
+   */
+  String getProcessDefinitionId();
+  
+  /**
+   * The process instance id associated with this identity link.
+   */
+  String getProcessInstanceId();
 
 }

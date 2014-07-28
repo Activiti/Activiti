@@ -34,6 +34,9 @@ public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
   }
   
   protected Void execute(CommandContext commandContext, TaskEntity task) {
+    if (variables != null) {
+      task.setVariables(variables);
+    }
     task.resolve();
     return null;
   }

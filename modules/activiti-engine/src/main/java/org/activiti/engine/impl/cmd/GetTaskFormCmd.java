@@ -18,7 +18,6 @@ import java.io.Serializable;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -39,8 +38,7 @@ public class GetTaskFormCmd implements Command<TaskFormData>, Serializable {
   }
 
   public TaskFormData execute(CommandContext commandContext) {
-    TaskEntity task = Context
-      .getCommandContext()
+    TaskEntity task = commandContext
       .getTaskEntityManager()
       .findTaskById(taskId);
     if (task == null) {

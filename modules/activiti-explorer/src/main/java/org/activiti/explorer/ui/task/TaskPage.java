@@ -151,6 +151,16 @@ public abstract class TaskPage extends AbstractTablePage {
     return new TaskListHeader();
   } 
   
+  @Override
+  public void refreshSelectNext() {
+    
+    // Selects new element in the table
+    super.refreshSelectNext();
+    
+    // Update the counts in the header
+    addMenuBar();
+  }
+  
   protected abstract LazyLoadingQuery createLazyLoadingQuery();
   
   protected abstract UriFragment getUriFragment(String taskId);

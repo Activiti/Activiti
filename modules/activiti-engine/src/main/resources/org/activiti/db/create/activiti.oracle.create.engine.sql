@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.12', 1);
+values ('schema.version', '5.17-SNAPSHOT', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.12)', 1);
+values ('schema.history', 'create(5.17-SNAPSHOT)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -28,6 +28,7 @@ create table ACT_RE_DEPLOYMENT (
     ID_ NVARCHAR2(64),
     NAME_ NVARCHAR2(255),
     CATEGORY_ NVARCHAR2(255),
+    TENANT_ID_ NVARCHAR2(255) DEFAULT '',
     DEPLOY_TIME_ TIMESTAMP(6),
     primary key (ID_)
 );
@@ -45,6 +46,7 @@ create table ACT_RE_MODEL (
     DEPLOYMENT_ID_ NVARCHAR2(64),
     EDITOR_SOURCE_VALUE_ID_ NVARCHAR2(64),
     EDITOR_SOURCE_EXTRA_VALUE_ID_ NVARCHAR2(64),
+    TENANT_ID_ NVARCHAR2(255) DEFAULT '',
     primary key (ID_)
 );
 
@@ -63,6 +65,8 @@ create table ACT_RU_EXECUTION (
     IS_EVENT_SCOPE_ NUMBER(1,0) CHECK (IS_EVENT_SCOPE_ IN (1,0)),
     SUSPENSION_STATE_ INTEGER,
     CACHED_ENT_STATE_ INTEGER,
+    TENANT_ID_ NVARCHAR2(255) DEFAULT '',
+    NAME_ NVARCHAR2(255),
     primary key (ID_)
 );
 
@@ -83,6 +87,7 @@ create table ACT_RU_JOB (
     REPEAT_ NVARCHAR2(255),
     HANDLER_TYPE_ NVARCHAR2(255),
     HANDLER_CFG_ NVARCHAR2(2000),
+    TENANT_ID_ NVARCHAR2(255) DEFAULT '',
     primary key (ID_)
 );
 
@@ -99,6 +104,7 @@ create table ACT_RE_PROCDEF (
     DESCRIPTION_ NVARCHAR2(2000),
     HAS_START_FORM_KEY_ NUMBER(1,0) CHECK (HAS_START_FORM_KEY_ IN (1,0)),
     SUSPENSION_STATE_ INTEGER,
+    TENANT_ID_ NVARCHAR2(255) DEFAULT '',
     primary key (ID_)
 );
 
@@ -118,7 +124,10 @@ create table ACT_RU_TASK (
     PRIORITY_ INTEGER,
     CREATE_TIME_ TIMESTAMP(6),
     DUE_DATE_ TIMESTAMP(6),
+    CATEGORY_ NVARCHAR2(255),
     SUSPENSION_STATE_ INTEGER,
+    TENANT_ID_ NVARCHAR2(255) DEFAULT '',
+    FORM_KEY_ NVARCHAR2(255),
     primary key (ID_)
 );
 
@@ -160,8 +169,28 @@ create table ACT_RU_EVENT_SUBSCR (
     ACTIVITY_ID_ NVARCHAR2(64),
     CONFIGURATION_ NVARCHAR2(255),
     CREATED_ TIMESTAMP(6) not null,
+    PROC_DEF_ID_ NVARCHAR2(64),
+    TENANT_ID_ NVARCHAR2(255) DEFAULT '',
     primary key (ID_)
 );
+
+create table ACT_EVT_LOG (
+    LOG_NR_ NUMBER(19),
+    TYPE_ NVARCHAR2(64),
+    PROC_DEF_ID_ NVARCHAR2(64),
+    PROC_INST_ID_ NVARCHAR2(64),
+    EXECUTION_ID_ NVARCHAR2(64),
+    TASK_ID_ NVARCHAR2(64),
+    TIME_STAMP_ TIMESTAMP(6) not null,
+    USER_ID_ NVARCHAR2(255),
+    DATA_ BLOB,
+    LOCK_OWNER_ NVARCHAR2(255),
+    LOCK_TIME_ TIMESTAMP(6) null,
+    IS_PROCESSED_ NUMBER(3) default 0,
+    primary key (LOG_NR_)
+);
+
+create sequence act_evt_log_seq;
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
@@ -178,7 +207,7 @@ alter table ACT_GE_BYTEARRAY
 
 alter table ACT_RE_PROCDEF
     add constraint ACT_UNIQ_PROCDEF
-    unique (KEY_,VERSION_);
+    unique (KEY_,VERSION_, TENANT_ID_);
     
 create index ACT_IDX_EXE_PROCINST on ACT_RU_EXECUTION(PROC_INST_ID_);
 alter table ACT_RU_EXECUTION
@@ -288,7 +317,3 @@ alter table ACT_RE_MODEL
     foreign key (DEPLOYMENT_ID_) 
     references ACT_RE_DEPLOYMENT (ID_);        
     
--- see http://stackoverflow.com/questions/675398/how-can-i-constrain-multiple-columns-to-prevent-duplicates-but-ignore-null-value
-create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION
-   (case when BUSINESS_KEY_ is null then null else PROC_DEF_ID_ end,
-    case when BUSINESS_KEY_ is null then null else BUSINESS_KEY_ end);

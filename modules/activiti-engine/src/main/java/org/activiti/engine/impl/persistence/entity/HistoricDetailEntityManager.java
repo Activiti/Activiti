@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
@@ -59,5 +60,14 @@ public class HistoricDetailEntityManager extends AbstractManager {
         ((HistoricDetailEntity) detail).delete();
       }
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricDetail> findHistoricDetailsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectHistoricDetailByNativeQuery", parameterMap, firstResult, maxResults);
+  }
+
+  public long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByNativeQuery", parameterMap);
   }
 }

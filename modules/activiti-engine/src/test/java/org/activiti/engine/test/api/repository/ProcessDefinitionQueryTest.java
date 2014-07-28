@@ -13,14 +13,15 @@
 
 package org.activiti.engine.test.api.repository;
 
-import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+
+import java.util.List;
 
 
 /**
@@ -330,5 +331,24 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
       .count());
     
     repositoryService.deleteDeployment(deployment.getId());
+  }
+
+  public void testNativeQuery() {
+    assertEquals("ACT_RE_PROCDEF", managementService.getTableName(ProcessDefinition.class));
+    assertEquals("ACT_RE_PROCDEF", managementService.getTableName(ProcessDefinitionEntity.class));
+    String tableName = managementService.getTableName(ProcessDefinition.class);
+    String baseQuerySql = "SELECT * FROM " + tableName;
+
+    assertEquals(3, repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).list().size());
+
+    assertEquals(3, repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql + " where KEY_ like #{key}")
+        .parameter("key", "%o%").list().size());
+    
+    assertEquals(2, repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql + " where NAME_ = #{name}")
+        .parameter("name", "One").list().size());
+
+    // paging
+    assertEquals(2, repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(0, 2).size());
+    assertEquals(2, repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(1, 3).size());
   }
 }

@@ -67,6 +67,11 @@ public class Context {
   public static ExecutionContext getExecutionContext() {
     return getStack(executionContextStackThreadLocal).peek();
   }
+  
+  public static boolean isExecutionContextActive() {
+  	Stack<ExecutionContext> stack = executionContextStackThreadLocal.get();
+  	return stack != null && stack.size() > 0;
+  }
 
   public static void setExecutionContext(InterpretableExecution execution) {
     getStack(executionContextStackThreadLocal).push(new ExecutionContext(execution));

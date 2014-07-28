@@ -13,6 +13,7 @@
     <userTask id="userTask" activiti:async="true">
     	<extensionElements>
 			<activiti:executionListener event="start" class="org.activiti.engine.test.bpmn.async.AsyncListener" />
+            <activiti:taskListener event="create" class="org.activiti.engine.test.bpmn.async.AsyncTaskListener" />
 		</extensionElements>
     </userTask>
         

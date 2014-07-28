@@ -43,6 +43,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
   private static final String TEST_PROCESS_CALL_ACTIVITY = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.withCallActivity.bpmn20.xml";
   private static final String TEST_PROCESS_USER_TASK_V1 = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionWithTask.bpmn20.xml";
   private static final String TEST_PROCESS_USER_TASK_V2 = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionWithTaskV2.bpmn20.xml";
+  private static final String TEST_PROCESS_NESTED_SUB_EXECUTIONS = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionSubExecutionsNested.bpmn20.xml";
 
   public void testSetProcessDefinitionVersionEmptyArguments() {
     try {
@@ -75,7 +76,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
   }
 
   public void testSetProcessDefinitionVersionNonExistingPI() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     try {
       commandExecutor.execute(new SetProcessDefinitionVersionCmd("42", 23));    
       fail("ActivitiException expected");
@@ -93,7 +94,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     Execution execution = runtimeService.createExecutionQuery()
       .activityId("receivePayment")
       .singleResult();
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     SetProcessDefinitionVersionCmd command = new SetProcessDefinitionVersionCmd(execution.getId(), 1);
     try {
       commandExecutor.execute(command);
@@ -108,7 +109,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     // start process instance
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
 
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     try {
       commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 23));    
       fail("ActivitiException expected");
@@ -137,7 +138,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
     // migrate process instance to new process definition version
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     SetProcessDefinitionVersionCmd setProcessDefinitionVersionCmd = new SetProcessDefinitionVersionCmd(pi.getId(), 2);
     try {
       commandExecutor.execute(setProcessDefinitionVersionCmd);
@@ -170,7 +171,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
     // migrate process instance to new process definition version
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
 
     // signal process instance
@@ -216,7 +217,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
 
     // migrate process instance to new process definition version
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
 
     // check that all executions of the instance now use the new process definition version
@@ -256,7 +257,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("parentProcess").count());
 
     // migrate process instance to new process definition version
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
 
     // signal process instance
@@ -288,7 +289,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").processDefinitionVersion(2).singleResult();
 
     // migrate process instance to new process definition version
-    processEngineConfiguration.getCommandExecutorTxRequired().execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
+    processEngineConfiguration.getCommandExecutor().execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
     
     // check UserTask
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
@@ -306,6 +307,42 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     catch (Exception ex) {
      ex.printStackTrace(); 
     }
+  }
+
+  @Deployment(resources = {TEST_PROCESS_NESTED_SUB_EXECUTIONS})
+  public void testSetProcessDefinitionVersionSubExecutionsNested() {
+    // start process instance
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoinNested");
+
+    // check that the user tasks have been reached
+    assertEquals(2, taskService.createTaskQuery().count());
+
+    // deploy new version of the process definition
+    org.activiti.engine.repository.Deployment deployment = repositoryService
+            .createDeployment()
+            .addClasspathResource(TEST_PROCESS_NESTED_SUB_EXECUTIONS)
+            .deploy();
+    assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+
+    // migrate process instance to new process definition version
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 2));
+
+    // check that all executions of the instance now use the new process definition version
+    ProcessDefinition newProcessDefinition = repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionVersion(2)
+            .singleResult();
+    List<Execution> executions = runtimeService
+            .createExecutionQuery()
+            .processInstanceId(pi.getId())
+            .list();
+    for (Execution execution : executions) {
+        assertEquals(newProcessDefinition.getId(), ((ExecutionEntity) execution).getProcessDefinitionId());
+    }
+
+    // undeploy "manually" deployed process definition
+    repositoryService.deleteDeployment(deployment.getId(), true);
   }
   
 }

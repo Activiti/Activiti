@@ -37,7 +37,7 @@ var ProcessDiagramGenerator = {
 		};
 		
 		// start event
-		this.activityDrawInstructions["startMessageEvent"] = function(){
+		this.activityDrawInstructions["messageStartEvent"] = function(){
 			var activityImpl = this.activity;
 			var processDiagramCanvas = this.processDiagramCanvas;
 			processDiagramCanvas.setConextObject(activityImpl);
@@ -404,6 +404,20 @@ var ProcessDiagramGenerator = {
       if (label)
         processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
 		};
+
+    // Boundary message event
+    this.activityDrawInstructions["boundaryMessage"] = function(){
+        var activityImpl = this.activity;
+        var processDiagramCanvas = this.processDiagramCanvas;
+        processDiagramCanvas.setConextObject(activityImpl);
+
+        var isInterrupting = activityImpl.getProperty("isInterrupting");
+        processDiagramCanvas.drawCatchingMessageEvent(activityImpl.getX(), activityImpl.getY(), activityImpl.getWidth(), activityImpl.getHeight(), isInterrupting, null);
+
+        var label = ProcessDiagramGenerator.getActivitiLabel(activityImpl);
+        if (label)
+            processDiagramCanvas.drawLabel(label.text, label.x, label.y, label.width, label.height);
+    };
 		
 		// timer catch event
 		this.activityDrawInstructions["intermediateTimer"] = function(){
@@ -727,7 +741,7 @@ var ProcessDiagramGenerator = {
 			};
 		}
 		return this.getProcessDiagram(processDefinitionDiagramLayout.processDefinition.id);
-		//return new ProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY);
+		//return new DefaultProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY);
 	},
 	
 	drawActivity: function(processDiagramCanvas, activity, highLightedActivities) {

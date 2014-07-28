@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.MessageEventDefinition;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -37,9 +37,7 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
     BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     eventDefinition.setMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF));
     
-    if(StringUtils.isEmpty(eventDefinition.getMessageRef())) {
-      model.addProblem("attribute 'messageRef' is required", xtr);
-    } else {
+    if(!StringUtils.isEmpty(eventDefinition.getMessageRef())) {
       
       int indexOfP = eventDefinition.getMessageRef().indexOf(':');
       if (indexOfP != -1) {
@@ -49,11 +47,11 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
       } else {
         eventDefinition.setMessageRef(model.getTargetNamespace() + ":" + eventDefinition.getMessageRef());
       }
-      
-      if(model.containsMessageId(eventDefinition.getMessageRef()) == false) {
-        model.addProblem("Invalid 'messageRef': no message with id '" + eventDefinition.getMessageRef() + "' found.", xtr);
-      }
+     
     }
+    
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_MESSAGEDEFINITION, eventDefinition, xtr, model);
+    
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 }

@@ -20,7 +20,6 @@ import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
-import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -50,9 +49,44 @@ public class HistoricTaskInstanceEntityManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
-  public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery, Page page) {
+  public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      return getDbSqlSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery, page);
+      return getDbSqlSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery);
+    }
+    return Collections.EMPTY_LIST;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
+    if (getHistoryManager().isHistoryEnabled()) {
+      // paging doesn't work for combining task instances and variables due to an outer join, so doing it in-memory
+      if (historicTaskInstanceQuery.getFirstResult() < 0 || historicTaskInstanceQuery.getMaxResults() <= 0) {
+        return Collections.EMPTY_LIST;
+      }
+      
+      int firstResult = historicTaskInstanceQuery.getFirstResult();
+      int maxResults = historicTaskInstanceQuery.getMaxResults();
+      
+      // setting max results, limit to 20000 results for performance reasons
+      historicTaskInstanceQuery.setMaxResults(20000);
+      historicTaskInstanceQuery.setFirstResult(0);
+      
+      List<HistoricTaskInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricTaskInstancesWithVariablesByQueryCriteria", 
+          historicTaskInstanceQuery, historicTaskInstanceQuery.getFirstResult(), historicTaskInstanceQuery.getMaxResults());
+      
+      if (instanceList != null && instanceList.size() > 0) {
+        if (firstResult > 0) {
+          if (firstResult <= instanceList.size()) {
+            int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
+            return instanceList.subList(firstResult, toIndex);
+          } else {
+            return Collections.EMPTY_LIST;
+          }
+        } else {
+          int toIndex = Math.min(maxResults, instanceList.size());
+          return instanceList.subList(0, toIndex);
+        }
+      }
     }
     return Collections.EMPTY_LIST;
   }
@@ -88,6 +122,9 @@ public class HistoricTaskInstanceEntityManager extends AbstractManager {
         commandContext
           .getAttachmentEntityManager()
           .deleteAttachmentsByTaskId(taskId);
+        
+        commandContext.getHistoricIdentityLinkEntityManager()
+          .deleteHistoricIdentityLinksByTaskId(taskId);
       
         getDbSqlSession().delete(historicTaskInstance);
       }

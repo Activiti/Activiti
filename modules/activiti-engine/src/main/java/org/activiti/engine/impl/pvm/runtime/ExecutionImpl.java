@@ -418,7 +418,7 @@ public class ExecutionImpl implements
   // process instance start implementation ////////////////////////////////////
 
   public void start() {
-    if(startingExecution == null && isProcessInstance()) {
+    if(startingExecution == null && isProcessInstanceType()) {
       startingExecution = new StartingExecution(processDefinition.getInitial());
     }
     performOperation(AtomicOperation.PROCESS_START);
@@ -436,6 +436,12 @@ public class ExecutionImpl implements
     } catch (Exception e) {
       throw new PvmException("couldn't process signal '"+signalName+"' on activity '"+activity.getId()+"': "+e.getMessage(), e);
     }
+  }
+  
+  @Override
+  public void take(PvmTransition transition, boolean fireActivityCompletedEvent) {
+  	// No event firing on executionlevel impl
+  	take(transition); 
   }
   
   public void take(PvmTransition transition) {
@@ -513,6 +519,7 @@ public class ExecutionImpl implements
          && (concurrentActiveExecutions.isEmpty())
        ) {
 
+      @SuppressWarnings("rawtypes")
       List<ExecutionImpl> recyclableExecutionImpls = (List) recyclableExecutions;
       for (ExecutionImpl prunedExecution: recyclableExecutionImpls) {
         // End the pruned executions if necessary.
@@ -683,7 +690,7 @@ public class ExecutionImpl implements
   // toString /////////////////////////////////////////////////////////////////
   
   public String toString() {
-    if (isProcessInstance()) {
+    if (isProcessInstanceType()) {
       return "ProcessInstance["+getToStringIdentity()+"]";
     } else {
       return (isEventScope? "EventScope":"")+(isConcurrent? "Concurrent" : "")+(isScope() ? "Scope" : "")+"Execution["+getToStringIdentity()+"]";
@@ -696,7 +703,7 @@ public class ExecutionImpl implements
   
   // customized getters and setters ///////////////////////////////////////////
 
-  public boolean isProcessInstance() {
+  public boolean isProcessInstanceType() {
     ensureParentInitialized();
     return parent==null;
   }
@@ -797,7 +804,7 @@ public class ExecutionImpl implements
   public void createVariablesLocal(Map<String, ? extends Object> variables) {
   }
 
-  public Object getVariableLocal(Object variableName) {
+  public Object getVariableLocal(String variableName) {
     return null;
   }
 
@@ -867,5 +874,13 @@ public class ExecutionImpl implements
   
   public void disposeStartingExecution() {
     startingExecution = null;
+  }
+  
+  public String updateProcessBusinessKey(String bzKey) {
+    return getProcessInstance().updateProcessBusinessKey(bzKey);
+  }
+  
+  public String getTenantId() {
+    return null; // Not implemented
   }
 }

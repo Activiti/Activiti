@@ -20,6 +20,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.test.Deployment;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 

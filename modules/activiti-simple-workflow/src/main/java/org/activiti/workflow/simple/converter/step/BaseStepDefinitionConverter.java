@@ -23,9 +23,14 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
-import org.activiti.workflow.simple.definition.FormDefinition;
-import org.activiti.workflow.simple.definition.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
+import org.activiti.workflow.simple.definition.form.DatePropertyDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
+import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
+import org.activiti.workflow.simple.definition.form.ListPropertyEntry;
+import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Base class that can be used for {@link StepDefinitionConverter}, contains utility-methods.
@@ -39,13 +44,16 @@ import org.activiti.workflow.simple.definition.StepDefinition;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> implements StepDefinitionConverter {
+public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> implements StepDefinitionConverter<U, T> {
   
-  @SuppressWarnings("unchecked")
-  public void convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
+  private static final long serialVersionUID = 1L;
+
+	@SuppressWarnings("unchecked")
+  public T convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
     U typedStepDefinition = (U) stepDefinition;
     T processArtifact = createProcessArtifact(typedStepDefinition, conversion);
     createAdditionalArtifacts(conversion, typedStepDefinition, processArtifact);
+    return processArtifact;
   }
   
   /**
@@ -65,40 +73,52 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
    * A sequence flow will NOT automatically be added
    */
   protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement) {
-      addFlowElement(conversion, flowElement, false);
+    addFlowElement(conversion, flowElement, false);
   }
 
   protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement, boolean addSequenceFlowToLastActivity) {
-      if (conversion.isSequenceflowGenerationEnabled() && addSequenceFlowToLastActivity) {
-          addSequenceFlow(conversion, conversion.getLastActivityId(), flowElement.getId());
-      }
-      conversion.getProcess().addFlowElement(flowElement);
-      
-      if (conversion.isUpdateLastActivityEnabled()) {
-        conversion.setLastActivityId(flowElement.getId());
-      }
+    if (conversion.isSequenceflowGenerationEnabled() && addSequenceFlowToLastActivity) {
+      addSequenceFlow(conversion, conversion.getLastActivityId(), flowElement.getId());
+    }
+    conversion.getProcess().addFlowElement(flowElement);
+    
+    if (conversion.isUpdateLastActivityEnabled()) {
+      conversion.setLastActivityId(flowElement.getId());
+    }
   }
   
   protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, FlowNode sourceActivity, FlowNode targetActivity) {
     return addSequenceFlow(conversion, sourceActivity.getId(), targetActivity.getId());
   }
 
+  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, String targetActivityId) {
+    return addSequenceFlow(conversion, sourceActivityId, targetActivityId, null);
+  }
+  
   /**
    * Add a sequence-flow to the current process from source to target.
    * Sequence-flow name is set to a user-friendly name, containing an
    * incrementing number.
    *
+   * @param conversion
    * @param sourceActivityId
    * @param targetActivityId
+   * @param condition
    */
-  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, String targetActivityId) {
-      SequenceFlow sequenceFlow = new SequenceFlow();
-      sequenceFlow.setId(conversion.getUniqueNumberedId(getSequenceFlowPrefix()));
-      sequenceFlow.setSourceRef(sourceActivityId);
-      sequenceFlow.setTargetRef(targetActivityId);
+  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, 
+      String targetActivityId, String condition) {
+    
+    SequenceFlow sequenceFlow = new SequenceFlow();
+    sequenceFlow.setId(conversion.getUniqueNumberedId(getSequenceFlowPrefix()));
+    sequenceFlow.setSourceRef(sourceActivityId);
+    sequenceFlow.setTargetRef(targetActivityId);
+    
+    if (StringUtils.isNotEmpty(condition)) {
+      sequenceFlow.setConditionExpression(condition);
+    }
 
-      conversion.getProcess().addFlowElement(sequenceFlow);
-      return sequenceFlow;
+    conversion.getProcess().addFlowElement(sequenceFlow);
+    return sequenceFlow;
   }
   
   // Subclasses can overwrite this if they want a different sequence flow prefix
@@ -114,37 +134,38 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
     
     List<FormProperty> formProperties = new ArrayList<FormProperty>();
     
-    for (FormPropertyDefinition propertyDefinition : formDefinition.getFormProperties()) {
+    for (FormPropertyDefinition propertyDefinition : formDefinition.getFormPropertyDefinitions()) {
       FormProperty formProperty = new FormProperty();
       formProperties.add(formProperty);
       
-      formProperty.setId(propertyDefinition.getPropertyName());
-      formProperty.setName(propertyDefinition.getPropertyName());
-      formProperty.setRequired(propertyDefinition.isRequired());
+      formProperty.setId(propertyDefinition.getName());
+      formProperty.setName(propertyDefinition.getName());
+      formProperty.setRequired(propertyDefinition.isMandatory());
       
       String type = null;
-      if (DefaultFormPropertyTypes.NUMBER.equalsIgnoreCase(propertyDefinition.getType())) {
+      if (propertyDefinition instanceof NumberPropertyDefinition) {
         type = "long";
-      } else if (DefaultFormPropertyTypes.DATE.equalsIgnoreCase(propertyDefinition.getType())) {
+      } else if (propertyDefinition instanceof DatePropertyDefinition) {
         type = "date";
-      } else if (DefaultFormPropertyTypes.LIST.equalsIgnoreCase(propertyDefinition.getType())) {
+      } else if (propertyDefinition instanceof ListPropertyDefinition) {
         
         type = "enum";
+        ListPropertyDefinition listDefinition = (ListPropertyDefinition) propertyDefinition;
         
-        if (!propertyDefinition.getValues().isEmpty()) {
-          List<FormValue> formValues = new ArrayList<FormValue>(propertyDefinition.getValues().size());
-          for (String formValueString : propertyDefinition.getValues()) {
+        if (listDefinition.getEntries().size() > 0) {
+          List<FormValue> formValues = new ArrayList<FormValue>(listDefinition.getEntries().size());
+          for (ListPropertyEntry entry : listDefinition.getEntries()) {
             FormValue formValue = new FormValue();
             // We're using same value for id and name for the moment
-            formValue.setId(formValueString);
-            formValue.setName(formValueString);
+            formValue.setId(entry.getValue());
+            formValue.setName(entry.getName());
             formValues.add(formValue);
           }
+          formProperty.setFormValues(formValues);
         }
-      } else if (DefaultFormPropertyTypes.TEXT.equalsIgnoreCase(propertyDefinition.getType())){
-        type = "string";
       } else {
-        type = propertyDefinition.getType(); // just copy whatever the user provided
+      	// Fallback to simple text
+        type = "string";
       }
       formProperty.setType(type);
     }

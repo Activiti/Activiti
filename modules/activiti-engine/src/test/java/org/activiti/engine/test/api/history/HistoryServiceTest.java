@@ -118,6 +118,19 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertNotNull(historicProcessInstance);
     assertTrue(historicProcessInstance.getProcessDefinitionId().contains("checkCreditProcess"));
   }
+  
+  @Deployment(resources = { "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
+  "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml" })
+  public void testExcludeSubprocesses() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("orderProcess");
+    
+    HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().excludeSubprocesses(true).singleResult();
+    assertNotNull(historicProcessInstance);
+    assertEquals(pi.getId(), historicProcessInstance.getId());
+    
+    List<HistoricProcessInstance> instanceList = historyService.createHistoricProcessInstanceQuery().excludeSubprocesses(false).list();
+    assertEquals(2, instanceList.size());
+  }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
       "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml" })
@@ -485,6 +498,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("oneTaskProcess");    
     assertEquals(1, historyService.createNativeHistoricProcessInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(HistoricProcessInstance.class)).count());
     assertEquals(1, historyService.createNativeHistoricProcessInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list().size());
+//    assertEquals(1, historyService.createNativeHistoricProcessInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).listPage(0, 1).size());
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -492,6 +506,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("oneTaskProcess");    
     assertEquals(1, historyService.createNativeHistoricTaskInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(HistoricProcessInstance.class)).count());
     assertEquals(1, historyService.createNativeHistoricTaskInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list().size());
+    assertEquals(1, historyService.createNativeHistoricTaskInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).listPage(0, 1).size());
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -499,6 +514,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("oneTaskProcess");    
     assertEquals(1, historyService.createNativeHistoricActivityInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(HistoricProcessInstance.class)).count());
     assertEquals(1, historyService.createNativeHistoricActivityInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list().size());
+    assertEquals(1, historyService.createNativeHistoricActivityInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).listPage(0, 1).size());
   }
   
 }

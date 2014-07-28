@@ -13,12 +13,10 @@
 
 package org.activiti.engine.impl;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -41,6 +39,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected boolean unfinished = false;
   protected String startedBy;
   protected String superProcessInstanceId;
+  protected boolean excludeSubprocesses;
   protected List<String> processKeyNotIn;
   protected Date startedBefore;
   protected Date startedAfter;
@@ -48,6 +47,13 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected Date finishedAfter;
   protected String processDefinitionKey;
   protected Set<String> processInstanceIds;
+  protected String involvedUser;
+  protected boolean includeProcessVariables;
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
+  protected String name;
+  protected String nameLike;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -134,11 +140,60 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   
   public HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId) {
-	 this.superProcessInstanceId = superProcessInstanceId;
-	 return this;
+    this.superProcessInstanceId = superProcessInstanceId;
+    return this;
   }
   
-	public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
+  public HistoricProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses) {
+    this.excludeSubprocesses = excludeSubprocesses;
+    return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery involvedUser(String userId) {
+    this.involvedUser = userId;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery includeProcessVariables() {
+    this.includeProcessVariables = true;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery processInstanceTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public HistoricProcessInstanceQuery processInstanceTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public HistoricProcessInstanceQuery processInstanceWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery processInstanceName(String name) {
+    this.name = name;
+    return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery processInstanceNameLike(String nameLike) {
+    this.nameLike = nameLike;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
     return orderBy(HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
   }
   
@@ -162,6 +217,19 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return orderBy(HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
   }
   
+  public HistoricProcessInstanceQuery orderByTenantId() {
+  	return orderBy(HistoricProcessInstanceQueryProperty.TENANT_ID);
+  }
+  
+  public String getMssqlOrDB2OrderBy() {
+    String specialOrderBy = super.getOrderBy();
+    if (specialOrderBy != null && specialOrderBy.length() > 0) {
+      specialOrderBy = specialOrderBy.replace("RES.", "TEMPRES_");
+      specialOrderBy = specialOrderBy.replace("VAR.", "TEMPVAR_");
+    }
+    return specialOrderBy;
+  }
+  
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
@@ -173,9 +241,24 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext
-      .getHistoricProcessInstanceEntityManager()
-      .findHistoricProcessInstancesByQueryCriteria(this, page);
+    if (includeProcessVariables) {
+      return commandContext
+          .getHistoricProcessInstanceEntityManager()
+          .findHistoricProcessInstancesAndVariablesByQueryCriteria(this);
+    } else {
+      return commandContext
+          .getHistoricProcessInstanceEntityManager()
+          .findHistoricProcessInstancesByQueryCriteria(this);
+    }
+  }
+  
+  @Override
+  protected void checkQueryOk() {
+    super.checkQueryOk();
+    
+    if(includeProcessVariables) {
+    	this.orderBy(HistoricProcessInstanceQueryProperty.INCLUDED_VARIABLE_TIME).asc();
+    }
   }
   
   public String getBusinessKey() {
@@ -205,10 +288,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public String getSuperProcessInstanceId() {
     return superProcessInstanceId;
   }
-  public void setSuperProcessInstanceId(String superProcessInstanceId) {
-    this.superProcessInstanceId = superProcessInstanceId;
+  public boolean isExcludeSubprocesses() {
+    return excludeSubprocesses;
   }
-  
   public List<String> getProcessKeyNotIn() {
     return processKeyNotIn;
   }
@@ -224,64 +306,13 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public Date getFinishedBefore() {
     return finishedBefore;
   }
- 
-  
-  // below is deprecated and to be removed in 5.12
-  
-  protected Date startDateBy;
-  protected Date startDateOn;
-  protected Date finishDateBy;
-  protected Date finishDateOn;
-  protected Date startDateOnBegin;
-  protected Date startDateOnEnd;
-  protected Date finishDateOnBegin;
-  protected Date finishDateOnEnd;
-
-  @Deprecated
-  public HistoricProcessInstanceQuery startDateBy(Date date) {
-    this.startDateBy = this.calculateMidnight(date);;
-    return this;
+  public String getInvolvedUser() {
+    return involvedUser;
   }
-
-  @Deprecated
-  public HistoricProcessInstanceQuery startDateOn(Date date) {
-    this.startDateOn = date;
-    this.startDateOnBegin = this.calculateMidnight(date);
-    this.startDateOnEnd = this.calculateBeforeMidnight(date);
-    return this;
+  public String getName() {
+    return name;
   }
-
-  @Deprecated
-  public HistoricProcessInstanceQuery finishDateBy(Date date) {
-    this.finishDateBy = this.calculateBeforeMidnight(date);
-    return this;
-  }
-
-  @Deprecated
-  public HistoricProcessInstanceQuery finishDateOn(Date date) {
-    this.finishDateOn = date;
-    this.finishDateOnBegin = this.calculateMidnight(date);
-    this.finishDateOnEnd = this.calculateBeforeMidnight(date);
-    return this;
-  }
-  
-  @Deprecated
-  private Date calculateBeforeMidnight(Date date){
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(date);
-    cal.add(Calendar.DAY_OF_MONTH, 1);
-    cal.add(Calendar.SECOND, -1);   
-    return cal.getTime();
-  }
-  
-  @Deprecated
-  private Date calculateMidnight(Date date){
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(date);
-    cal.set(Calendar.MILLISECOND, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MINUTE, 0);
-    cal.set(Calendar.HOUR, 0);    
-    return cal.getTime();
+  public String getNameLike() {
+    return nameLike;
   }
 }

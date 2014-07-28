@@ -67,10 +67,23 @@ public abstract class AbstractPage extends CustomComponent {
    * Subclasses are expected to provide their own menuBar.
    */
   protected void addMenuBar() {
+    
+    // Remove any old menu bar
+    String activeEntry = null;
+    if (toolBar != null) {
+      activeEntry = toolBar.getCurrentEntryKey();
+      grid.removeComponent(toolBar);
+    }
+    
+    // Create menu bar
     ToolBar menuBar = createMenuBar();
     if (menuBar != null) {
       toolBar = createMenuBar();
       grid.addComponent(toolBar, 0, 0 , 1, 0);
+      
+      if (activeEntry != null) {
+        toolBar.setActiveEntry(activeEntry);
+      }
     }
   }
   

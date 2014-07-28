@@ -16,7 +16,6 @@ package org.activiti.engine.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -53,109 +52,111 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
   @Override
   public abstract List<U> executeList(CommandContext commandContext, Page page);
   
-  
-  @SuppressWarnings("unchecked")
   public T variableValueEquals(String name, Object value) {
-    addVariable(name, value, QueryOperator.EQUALS, true);
-    return (T) this;
+    return variableValueEquals(name, value, true);
   }
   
   @SuppressWarnings("unchecked")
+  public T variableValueEquals(String name, Object value, boolean localScope) {
+    addVariable(name, value, QueryOperator.EQUALS, localScope);
+    return (T) this;
+  }
+  
   public T variableValueEquals(Object value) {
-    queryVariableValues.add(new QueryVariableValue(null, value, QueryOperator.EQUALS, true));
-    return (T) this;
+    return variableValueEquals(value, true);
   }
   
   @SuppressWarnings("unchecked")
+  public T variableValueEquals(Object value, boolean localScope) {
+    queryVariableValues.add(new QueryVariableValue(null, value, QueryOperator.EQUALS, localScope));
+    return (T) this;
+  }
+  
   public T variableValueEqualsIgnoreCase(String name, String value) {
-    if(value == null) {
-      throw new ActivitiIllegalArgumentException("value is null");
-    }
-    addVariable(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, true);
-    return (T)this;
+    return variableValueEqualsIgnoreCase(name, value, true);
   }
   
   @SuppressWarnings("unchecked")
+  public T variableValueEqualsIgnoreCase(String name, String value, boolean localScope) {
+    if(value == null) {
+      throw new ActivitiIllegalArgumentException("value is null");
+    }
+    addVariable(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, localScope);
+    return (T)this;
+  }
+  
   public T variableValueNotEqualsIgnoreCase(String name, String value) {
-    if(value == null) {
-      throw new ActivitiIllegalArgumentException("value is null");
-    }
-    addVariable(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, true);
-    return (T)this;
+    return variableValueNotEqualsIgnoreCase(name, value, true);
   }
   
   @SuppressWarnings("unchecked")
+  public T variableValueNotEqualsIgnoreCase(String name, String value, boolean localScope) {
+    if(value == null) {
+      throw new ActivitiIllegalArgumentException("value is null");
+    }
+    addVariable(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, localScope);
+    return (T)this;
+  }
+  
   public T variableValueNotEquals(String name, Object value) {
-    addVariable(name, value, QueryOperator.NOT_EQUALS, true);
-    return (T) this;
+    return variableValueNotEquals(name, value, true);
   }
   
   @SuppressWarnings("unchecked")
+  public T variableValueNotEquals(String name, Object value, boolean localScope) {
+    addVariable(name, value, QueryOperator.NOT_EQUALS, localScope);
+    return (T) this;
+  }
+  
   public T variableValueGreaterThan(String name, Object value) {
-    addVariable(name, value, QueryOperator.GREATER_THAN, true);
-    return (T) this;
-  } 
+    return variableValueGreaterThan(name, value, true);
+  }
   
   @SuppressWarnings("unchecked")
+  public T variableValueGreaterThan(String name, Object value, boolean localScope) {
+    addVariable(name, value, QueryOperator.GREATER_THAN, localScope);
+    return (T) this;
+  }
+  
   public T variableValueGreaterThanOrEqual(String name, Object value) {
-    addVariable(name, value, QueryOperator.GREATER_THAN_OR_EQUAL, true);
-    return (T) this;
+    return variableValueGreaterThanOrEqual(name, value, true);
   }
   
   @SuppressWarnings("unchecked")
+  public T variableValueGreaterThanOrEqual(String name, Object value, boolean localScope) {
+    addVariable(name, value, QueryOperator.GREATER_THAN_OR_EQUAL, localScope);
+    return (T) this;
+  }
+  
   public T variableValueLessThan(String name, Object value) {
-    addVariable(name, value, QueryOperator.LESS_THAN, true);
-    return (T) this;
+    return variableValueLessThan(name, value, true);
   }
   
   @SuppressWarnings("unchecked")
+  public T variableValueLessThan(String name, Object value, boolean localScope) {
+    addVariable(name, value, QueryOperator.LESS_THAN, localScope);
+    return (T) this;
+  }
+  
   public T variableValueLessThanOrEqual(String name, Object value) {
-    addVariable(name, value, QueryOperator.LESS_THAN_OR_EQUAL, true);
-    return (T) this;
+    return variableValueLessThanOrEqual(name, value, true);
   }
   
   @SuppressWarnings("unchecked")
+  public T variableValueLessThanOrEqual(String name, Object value, boolean localScope) {
+    addVariable(name, value, QueryOperator.LESS_THAN_OR_EQUAL, localScope);
+    return (T) this;
+  }
+  
   public T variableValueLike(String name, String value) {
-    addVariable(name, value, QueryOperator.LIKE, true);
-    return (T)this;
+    return variableValueLike(name, value, true);
   }
   
   @SuppressWarnings("unchecked")
-  public T processVariableValueEquals(String variableName, Object variableValue) {
-    addVariable(variableName, variableValue, QueryOperator.EQUALS, false);
+  public T variableValueLike(String name, String value, boolean localScope) {
+    addVariable(name, value, QueryOperator.LIKE, localScope);
     return (T)this;
   }
-  
-  @SuppressWarnings("unchecked")
-  public T processVariableValueEquals(Object value) {
-    queryVariableValues.add(new QueryVariableValue(null, value, QueryOperator.EQUALS, false));
-    return (T) this;
-  }
-
-  @SuppressWarnings("unchecked")
-  public T processVariableValueNotEquals(String variableName, Object variableValue) {
-    addVariable(variableName, variableValue, QueryOperator.NOT_EQUALS, false);
-    return (T)this;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public T processVariableValueEqualsIgnoreCase(String name, String value) {
-    if(value == null) {
-      throw new ActivitiIllegalArgumentException("value is null");
-    }
-    addVariable(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, false);
-    return (T)this;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public T processVariableValueNotEqualsIgnoreCase(String name, String value) {
-    if(value == null) {
-      throw new ActivitiIllegalArgumentException("value is null");
-    }
-    addVariable(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, false);
-    return (T)this;
-  }
-
   
   private void addVariable(String name, Object value, QueryOperator operator, boolean localScope) {
     if(name == null) {
@@ -174,17 +175,17 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
         throw new ActivitiIllegalArgumentException("Booleans and null cannot be used in 'less than or equal' condition");
       }
       
-      if(operator == QueryOperator.EQUALS_IGNORE_CASE && (value == null || !(value instanceof String)))
+      if(operator == QueryOperator.EQUALS_IGNORE_CASE && !(value instanceof String))
       {
         throw new ActivitiIllegalArgumentException("Only string values can be used with 'equals ignore case' condition");
       }
       
-      if(operator == QueryOperator.NOT_EQUALS_IGNORE_CASE && (value == null || !(value instanceof String)))
+      if(operator == QueryOperator.NOT_EQUALS_IGNORE_CASE && !(value instanceof String))
       {
         throw new ActivitiIllegalArgumentException("Only string values can be used with 'not equals ignore case' condition");
       }
       
-      if(operator == QueryOperator.LIKE && (value == null || !(value instanceof String)))
+      if(operator == QueryOperator.LIKE && !(value instanceof String))
       {
         throw new ActivitiIllegalArgumentException("Only string values can be used with 'like' condition");
       }
@@ -212,7 +213,5 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
 
   public List<QueryVariableValue> getQueryVariableValues() {
     return queryVariableValues;
-  }
-
-  
+  }   
 }

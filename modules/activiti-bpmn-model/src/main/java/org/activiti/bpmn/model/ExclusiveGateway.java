@@ -17,4 +17,13 @@ package org.activiti.bpmn.model;
  */
 public class ExclusiveGateway extends Gateway {
 
+  public ExclusiveGateway clone() {
+    ExclusiveGateway clone = new ExclusiveGateway();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(ExclusiveGateway otherElement) {
+    super.setValues(otherElement);
+  }
 }

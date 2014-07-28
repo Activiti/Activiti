@@ -12,6 +12,7 @@
  */
 package org.activiti.engine;
 
+
 /**
  * Interface implemented by all classes that expose the Activiti services.
  * 
@@ -33,4 +34,5 @@ public interface EngineServices {
   
   ManagementService getManagementService();
   
+  ProcessEngineConfiguration getProcessEngineConfiguration();
 }

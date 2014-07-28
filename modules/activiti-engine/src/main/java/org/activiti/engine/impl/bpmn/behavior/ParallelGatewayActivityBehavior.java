@@ -15,6 +15,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -58,14 +60,13 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     // Join
     PvmActivity activity = execution.getActivity();
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-    
     execution.inactivate();
     lockConcurrentRoot(execution);
     
     List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
     int nbrOfExecutionsToJoin = execution.getActivity().getIncomingTransitions().size();
     int nbrOfExecutionsJoined = joinedExecutions.size();
-    
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
     if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
       
       // Fork

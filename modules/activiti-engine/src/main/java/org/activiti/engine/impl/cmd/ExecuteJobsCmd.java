@@ -14,8 +14,11 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
@@ -44,13 +47,15 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
   }
 
   public Object execute(CommandContext commandContext) {
-    if(jobId == null) {
+    
+    if (jobId == null) {
       throw new ActivitiIllegalArgumentException("jobId is null");
     }
     
     if (log.isDebugEnabled()) {
       log.debug("Executing job {}", jobId);
     }
+    
     JobEntity job = commandContext
       .getJobEntityManager()
       .findJobById(jobId);
@@ -60,26 +65,42 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     }
     
     JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
-    if(jobExecutorContext != null) { // if null, then we are not called by the job executor     
+    if (jobExecutorContext != null) { // if null, then we are not called by the job executor     
       jobExecutorContext.setCurrentJob(job);
     }
     
-    try { 
+    try {
       job.execute(commandContext);
-    } catch (RuntimeException exception) {
+      
+      if(commandContext.getEventDispatcher().isEnabled()) {
+      	commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(
+      			ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
+      }
+    } catch (Throwable exception) {
       // When transaction is rolled back, decrement retries
       CommandExecutor commandExecutor = Context
         .getProcessEngineConfiguration()
-        .getCommandExecutorTxRequiresNew();
+        .getCommandExecutor();
       
       commandContext.getTransactionContext().addTransactionListener(
         TransactionState.ROLLED_BACK, 
         new FailedJobListener(commandExecutor, jobId, exception));
+      
+      // Dispatch an event, indicating job execution failed in a try-catch block, to prevent the original
+      // exception to be swallowed
+      if (commandContext.getEventDispatcher().isEnabled()) {
+	      try {
+	      	commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(
+	      			ActivitiEventType.JOB_EXECUTION_FAILURE, job, exception));
+	      } catch(Throwable ignore) {
+	      	log.warn("Exception occured while dispatching job failure event, ignoring.", ignore);
+	      }
+      }
        
-      // throw the original exception to indicate the ExecuteJobCmd failed
-      throw exception;
+      // Finally, Throw the exception to indicate the ExecuteJobCmd failed
+      throw new ActivitiException("Job " + jobId + " failed", exception);
     } finally {
-      if(jobExecutorContext != null) {
+      if (jobExecutorContext != null) {
         jobExecutorContext.setCurrentJob(null);
       }
     }

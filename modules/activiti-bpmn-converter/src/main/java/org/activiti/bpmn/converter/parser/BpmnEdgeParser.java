@@ -42,6 +42,8 @@ public class BpmnEdgeParser implements BpmnXMLConstants {
 					  BpmnXMLUtil.addXMLLocation(graphicInfo, xtr);
             graphicInfo.setX(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue());
             graphicInfo.setY(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue());
+            graphicInfo.setWidth(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)).intValue());
+            graphicInfo.setHeight(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)).intValue());
 					  model.addLabelGraphicInfo(id, graphicInfo);
 					  break;
           } else if(xtr.isEndElement() && ELEMENT_DI_LABEL.equalsIgnoreCase(xtr.getLocalName())) {

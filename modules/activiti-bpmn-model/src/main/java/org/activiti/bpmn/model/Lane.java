@@ -15,6 +15,8 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 /**
  * @author Tijs Rademakers
  */
@@ -32,6 +34,7 @@ public class Lane extends BaseElement {
     this.name = name;
   }
 
+  @JsonBackReference
   public Process getParentProcess() {
     return parentProcess;
   }
@@ -46,5 +49,22 @@ public class Lane extends BaseElement {
 
   public void setFlowReferences(List<String> flowReferences) {
     this.flowReferences = flowReferences;
+  }
+  
+  public Lane clone() {
+    Lane clone = new Lane();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(Lane otherElement) {
+    super.setValues(otherElement);
+    setName(otherElement.getName());
+    setParentProcess(otherElement.getParentProcess());
+    
+    flowReferences = new ArrayList<String>();
+    if (otherElement.getFlowReferences() != null && otherElement.getFlowReferences().size() > 0) {
+      flowReferences.addAll(otherElement.getFlowReferences());
+    }
   }
 }

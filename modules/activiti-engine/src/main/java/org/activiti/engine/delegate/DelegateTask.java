@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -103,6 +102,12 @@ public interface DelegateTask extends VariableScope {
   
   /** Change due date of the task. */
   void setDueDate(Date dueDate);
+  
+  /** The category of the task. This is an optional field and allows to 'tag' tasks as belonging to a certain category. */
+  String getCategory();
+	
+  /** Change the category of the task. This is an optional field and allows to 'tag' tasks as belonging to a certain category. */
+  void setCategory(String category);
   
   /**
    * Involves a user with a task. The type of identity link is defined by the given identityLinkType.

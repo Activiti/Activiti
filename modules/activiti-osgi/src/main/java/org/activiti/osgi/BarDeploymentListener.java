@@ -16,6 +16,7 @@ import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
 import static org.osgi.framework.Constants.BUNDLE_VERSION;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -42,11 +43,12 @@ public class BarDeploymentListener implements ArtifactUrlTransformer {
     }
 
     public boolean canHandle(File artifact) {
-        try {
+        JarFile jar = null;
+    	try {
             if (!artifact.getName().endsWith(".bar")) {
                 return false;
             }
-            JarFile jar = new JarFile(artifact);
+            jar = new JarFile(artifact);
             // Only handle non OSGi bundles
             Manifest m = jar.getManifest();
             if (m!= null && m.getMainAttributes().getValue(
@@ -58,6 +60,14 @@ public class BarDeploymentListener implements ArtifactUrlTransformer {
             return true;
         } catch (Exception e) {
             return false;
+        } finally {
+        	if(jar != null) {
+        		try {
+					jar.close();
+				} catch (IOException e) {
+					LOGGER.error("Unable to close jar", e);
+				}
+        	}
         }
     }
 

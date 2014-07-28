@@ -24,16 +24,24 @@ import org.apache.camel.Exchange;
  */
 public class ExchangeUtils {
 
+  public static final String CAMELBODY = "camelBody";
+  protected static final String IGNORE_MESSAGE_PROPERTY = "CamelMessageHistory";
+	
   /**
    * Copies variables from Camel into Activiti.
    * 
-   * This method will conditionally copy the Camel body to the "camelBody" variable if it is of type java.lang.String, OR it will copy the Camel body to
-   * individual variables within Activiti if it is of type Map<String,Object>.
-   * If the copyVariablesFromProperties parameter is set on the endpoint, the properties are copied instead
+   * This method will copy the Camel body to the "camelBody" variable. It will copy the Camel body to individual variables within Activiti if it is of type 
+   * Map&lt;String, Object&gt; or it will copy the Object as it comes.
+   * <ul>
+   * <li>If the copyVariablesFromProperties parameter is set on the endpoint, the properties are copied instead</li>
+   * <li>If the copyCamelBodyToBodyAsString parameter is set on the endpoint, the camelBody is converted to java.lang.String and added as a camelBody variable,
+   * unless it is a Map&lt;String, Object&gt;</li>
+   * <li>If the copyVariablesFromHeader parameter is set on the endpoint, each Camel Header will be copied to an individual variable within Activiti.</li>
+   * </ul>
    * 
    * @param exchange The Camel Exchange object
    * @param activitiEndpoint The ActivitiEndpoint implementation
-   * @return A Map<String,Object> containing all of the variables to be used in Activiti
+   * @return A Map&lt;String, Object&gt; containing all of the variables to be used in Activiti
    */
   
   public static Map<String, Object> prepareVariables(Exchange exchange, ActivitiEndpoint activitiEndpoint) {
@@ -42,18 +50,41 @@ public class ExchangeUtils {
     
     if (shouldReadFromProperties) {
       camelVarMap = exchange.getProperties();
+      // filter camel property that can't be serializable for camel version after 2.12.x+
+      Map<String, Object> newCamelVarMap = new HashMap<String, Object>();
+      for (String s : camelVarMap.keySet()) {
+        if (IGNORE_MESSAGE_PROPERTY.equalsIgnoreCase(s) == false) {
+          newCamelVarMap.put(s, camelVarMap.get(s));
+        }
+      }
+      camelVarMap = newCamelVarMap;
+      
     } else {
       camelVarMap = new HashMap<String, Object>();
-      Object camelBody = exchange.getIn().getBody();
-      if(camelBody instanceof String) {
-        camelVarMap.put("camelBody", camelBody);
-      }
-      else if(camelBody instanceof Map<?,?>) {
+      Object camelBody = null;
+      if (exchange.hasOut())
+    	  camelBody = exchange.getOut().getBody();
+      else
+    	  camelBody = exchange.getIn().getBody();
+      
+      
+      if(camelBody instanceof Map<?,?>) {
         Map<?,?> camelBodyMap = (Map<?,?>)camelBody;
         for (@SuppressWarnings("rawtypes") Map.Entry e : camelBodyMap.entrySet()) {
           if (e.getKey() instanceof String) {
             camelVarMap.put((String) e.getKey(), e.getValue());
           }
+        }
+      } else {
+        if(activitiEndpoint.isCopyCamelBodyToBodyAsString() && !(camelBody instanceof String)) {
+          camelBody = exchange.getContext().getTypeConverter().convertTo(String.class, exchange, camelBody);
+        }
+        camelVarMap.put(CAMELBODY, camelBody);
+      }
+
+      if(activitiEndpoint.isCopyVariablesFromHeader()) {
+        for(Map.Entry<String, Object> header : exchange.getIn().getHeaders().entrySet()) {
+    	  camelVarMap.put(header.getKey(), header.getValue());
         }
       }
     }

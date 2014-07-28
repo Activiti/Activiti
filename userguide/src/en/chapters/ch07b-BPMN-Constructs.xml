@@ -291,6 +291,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 	    </section>
 	    <section id="bpmnSignalEventDefinitionQuery">
 	    	<title>Querying for Signal Event subscriptions</title>
+	    	<para>
 	    	It is possible to query for all executions which have subscribed to a specific signal event:
 	    	<programlisting>
  List&lt;Execution&gt; executions = runtimeService.createExecutionQuery()
@@ -298,8 +299,30 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
       .list();
 	    	</programlisting>
 	    	We could then use the <code>signalEventReceived(String signalName, String executionId)</code> method 
-	    	to deliver the signal to these executions.	    		    	
+	    	to deliver the signal to these executions.
+	    	</para>	    		    	
 	    </section> 
+	    
+	    <section id="bpmnSignalEventDefinitionScope">
+	       <title>Signal event scope</title>
+	       <para>
+	           By default, signals are <emphasis>broadcast process engine wide</emphasis>. This means that you
+	           can throw a signal event in a process instance, and other process instances with different process definitions
+	           can react on the occurrence of this event.
+	       </para>
+	       <para>
+                However, sometimes it is wanted to react to a signal event only within the <emphasis>same process instance</emphasis>.
+                A use case for example is a synchronization mechanism in the process instance, if two or more activities are
+                mutually exclusive.
+	       </para>
+	       <para>
+	           To restrict the <emphasis>scope</emphasis> of the signal event, add the (non-BPMN 2.0 standard!) <emphasis>scope attribute</emphasis>
+	           to the signal event definition:
+	           <programlisting>
+&lt;signal id=&quot;alertSignal&quot; name=&quot;alert&quot; activiti:scope&quot;processInstance&quot;/&gt;</programlisting>
+	           The default value for this is attribute is <emphasis>&quot;global&quot;</emphasis>.
+	       </para>
+	    </section>
 	    
 	    <section id="bpmnSignalEventDefinitionExample">
 	    	<title>Signal Event example(s)</title>
@@ -353,7 +376,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
         
         <para>
       		A message event definition is declared using the <code>messageEventDefinition</code> element. 
-      		The attribute <code>messaageRef</code> references a <code>message</code> element declared as a child element 
+      		The attribute <code>messageRef</code> references a <code>message</code> element declared as a child element 
       		of the <code>definitions</code> root element. The following is an excerpt of a process where two message events
       		is declared and referenced by a start event and an intermediate catching message event.
 <programlisting>
@@ -384,13 +407,13 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
         	<title>Throwing a Message Event</title>
         	<para>
         		As an embeddable process engine, activiti is not concerned with actually receiving a message. This would be environment 
-	        	dependenent and entail platform-specific activities like connecting to a JMS (Java Messaging Service) Queue/Topic or 
+	        	dependent and entail platform-specific activities like connecting to a JMS (Java Messaging Service) Queue/Topic or 
 	        	processing a Webservice or REST request.      	
 	        	The reception of messages is therefore something you have to implement as part of the application or infrastructure into 
 	        	which the process engine is embedded. 
         	</para>       
 	        <para>
-	        	After you have received a messge inside your application, you must decide what to do with it.
+	        	After you have received a message inside your application, you must decide what to do with it.
 	        	If the message should trigger the start of a new process instance, choose between the following methods offered by
 	        	the runtime service:	        	
 	        	<programlisting>
@@ -786,6 +809,74 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         
         
         
+        <!-- //////////////////////////////////////// signal start events -->
+        
+        <section id="bpmnSignalStartEvent">
+
+            <title>Signal Start Event</title>
+            <section id="bpmnSignalStartEventDescription">
+
+            <title>Description</title>
+    
+            <para>
+                A <link linkend="bpmnSignalEventDefinition">signal</link> start event can be used to start a process instance using a named signal. 
+                The signal can be 'fired' from within a process instance using the intermediary signal throw event or through the API
+                (<emphasis>runtimService.signalEventReceivedXXX</emphasis> methods). In both cases, all process definitions that have
+                a signal start event with the same name will be started.
+            </para>
+            
+            <para>
+                Note that in both cases, it is also possible to chose between a synchronous and asynchronous starting of the process instances.
+            </para>
+            
+            <para>
+                The <code>signalName</code> that must be passed in the API is the name given in the <code>name</code> attribute of the <code>signal</code> element referenced by the <code>signalRef</code>
+                attribute of the <code>signalEventDefinition</code>.
+            </para> 
+    
+          </section>
+
+            <section id="signalStartEventGraphicalNotation">
+
+              <title>Graphical notation</title>
+
+              <para>
+                A signal start event is visualized as a circle with a signal event symbol. The symbol is unfilled, to visualize the catching (receiving) behavior. 
+                <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.start.signal.event.png"/></imageobject></mediaobject>
+              </para>
+
+            </section>
+
+            <section id="signalStartEventXml">
+
+        <title>XML representation</title>
+
+        <para>
+          The XML representation of a message start event is the normal
+          start event declaration with a messageEventDefinition child-element:
+          
+          <programlisting>
+    &lt;signal id=&quot;theSignal&quot; name=&quot;The Signal&quot; /&gt;
+
+    &lt;process id=&quot;processWithSignalStart1&quot;&gt;
+        &lt;startEvent id=&quot;theStart&quot;&gt;
+          &lt;signalEventDefinition id=&quot;theSignalEventDefinition&quot; signalRef=&quot;theSignal&quot;  /&gt;
+        &lt;/startEvent&gt;
+        &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;theTask&quot; /&gt;
+        &lt;userTask id=&quot;theTask&quot; name=&quot;Task in process A&quot; /&gt;
+        &lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;theTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+        &lt;endEvent id=&quot;theEnd&quot; /&gt;
+    &lt;/process&gt;</programlisting>
+        
+        </para>
+         
+
+      </section>
+
+        </section>
+        
+        
+        
          <!-- //////////////////////////////////////// error start events -->
         
         <section id="bpmnErrorStartEvent">
@@ -910,8 +1001,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		      When process execution arrives in an <emphasis role="bold">error end event</emphasis>, 
 		      the current path of execution is ended and an error is thrown. This error
 		      can <link linkend="bpmnBoundaryErrorEvent">caught by a matching intermediate boundary error event</link>.
-		      In case no matching boundary error event is found, the execution semantics default to the 
-		      <link linkend="bpmnNoneEndEvent">none end event</link> semantics.
+		      In case no matching boundary error event is found, an exception will be thrown.
 		    </para>
 		  	  
 		  </section>
@@ -1458,8 +1548,8 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		    	A compensation boundary event has a different activation policy from other boundary events. Other boundary events 
 		    	like for instance the signal boundary event are activated when the activity they are attached to is started. 
 		    	When the activity is left, they are deactivated and the corresponding event subscription is cancelled. 
-		    	The compensation boundary event is different. The compensation boundary is activated when the activity is attached
-		    	to <emphasis role="bold">completes successfully</emphasis>. At this point, the corresponding subscription to 
+		    	The compensation boundary event is different. The compensation boundary event is activated when the activity it is attached
+		    	to <emphasis role="bold">completes successfully</emphasis>. At this point, the corresponding subscription to the
 		    	compensation events is created. The subscription is removed either when a compensation event is triggered
 		    	or when the corresponding process instance ends. From this, it follows: 
 		    	<itemizedlist>
@@ -2782,8 +2872,8 @@ assertEquals("Ship Order", task.getName());</programlisting>
               <para>
                 There is an activity extension which allows you to specify an expression in your task-definition to set the initial due
                 date of a task when it is created. The expression <emphasis role="bold">should always resolve to a <literal>java.util.Date</literal>, 
-                <literal>java.util.String (ISO8601 formatted)</literal> or <literal>null</literal></emphasis>. 
-                For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task.
+                <literal>java.util.String (ISO8601 formatted)</literal>, ISO8601 time-duration (eg. PT50M) or <literal>null</literal></emphasis>. 
+                For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task. In case a time-duration is used, the due-date is calculated based on the current time, incremented by the given period. For example, when "PT30M" is used as dueDate, the task is due in thirty minutes from now.
               </para>
                <programlisting>
 &lt;userTask id=&quot;theTask&quot; name=&quot;Important task&quot; <emphasis role="bold">activiti:dueDate=&quot;${dateVariable}&quot;</emphasis>/&gt;</programlisting>
@@ -2935,7 +3025,7 @@ assertEquals("Ship Order", task.getName());</programlisting>
           </para>
           
           <para>
-            Note: Although Actviti provides an identity management component,
+            Note: Although Activiti provides an identity management component,
             which is exposed through the <link linkend="apiEngine">IdentityService</link>,
             no check is done whether a provided user is known by the identity component.
             This allows Activiti to integrate with existing identity management solutions
@@ -3055,6 +3145,17 @@ public class FakeLdapService {
 		      the syntax is pretty similar to that of Java.
 		    </para>
 		    
+		    <para>
+		      Do note that the Groovy scripting engine is bundled with the groovy-all jar. Before version 2.0,
+		      the scripting engine was part of the regular Groovy jar. As such, one must now add following dependency:
+		      <programlisting>
+&lt;dependency&gt;
+      &lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
+      &lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
+      &lt;version&gt;2.x.x&lt;version&gt;
+&lt;/dependency&gt;</programlisting>
+		    </para>
+		    
 		  </section>
 		  
 		  <section id="bpmnScriptTaskVariables">
@@ -3075,36 +3176,32 @@ public class FakeLdapService {
 		    </para>
 		    
 		    <para>
-		      It's also possible to set process variables in a script, simply by using an assignment
-		      statement. In the example above, the <emphasis>'sum'</emphasis> variable will be
-		      stored as a process variable after the script task has been executed. To avoid 
-		      this behavior, script-local variables can be used. In Groovy, the keyword 
-		      <emphasis>'def'</emphasis> must then be used: <emphasis>'def sum = 0'</emphasis>.
-		      In that case, no process variable will be stored.
+		      It's also possible to set process variables in a script, simply by calling 
+		      <emphasis>execution.setVariable("variableName", variableValue)</emphasis>.
+		      By default, no variables are stored automatically (<emphasis role="bold">Note: before Activiti 5.12 this was the case!</emphasis>).
+		      It is possible to automatically store any variable defined in the script
+		      (eg. <emphasis>sum</emphasis> in the example above) by setting the property
+		      <literal>autoStoreVariables</literal> on the <literal>scriptTask</literal> to <literal>true</literal>.
+		      However, <emphasis role="bold">the best practice is not to do this and use an explicit execution.setVariable() call</emphasis>,
+		      as on some recent versions of the JDK auto storing of variables does not work for some scripting languages.
+		      See <ulink url="http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/">this link</ulink> for more details.
 		    </para>
 		    
 		    <para>
-		      However, some languages (for example JavaScript) do not know such capabilities for script-local
-		      variables. Use the <literal>autoStoreVariables</literal> argument on the script task definition:
 <programlisting>
-&lt;scriptTask id=&quot;scrip&quot;" scriptFormat=&quot;JavaScript&quot; activiti:autoStoreVariables=&quot;false&quot;>
+&lt;scriptTask id=&quot;script&quot; scriptFormat=&quot;JavaScript&quot; activiti:autoStoreVariables=&quot;false&quot;>
 </programlisting>
-              The default of this parameter is <literal>true</literal>, meaning that if the parameter is omitted
-              from the script task definition, all the declared variables will be stored as process variables.
-              If set to <literal>false</literal>, any variable can be declared without it being stored
-              as process variable.
+              The default of this parameter is <literal>false</literal>, meaning that if the parameter is omitted
+              from the script task definition, all the declared variables will only exist during the duration of the script.
 		    </para>
 		    
 		    <para>
-		      An alternative is to set variables through the current execution, which is available
-		      as a reserved variable called <emphasis>'execution'</emphasis>.
+		      Example on how to set a variable in a script:
 <programlisting>
 &lt;script&gt;
     def scriptVar = &quot;test123&quot;
     execution.setVariable(&quot;myVar&quot;, scriptVar)
 &lt;/script&gt;</programlisting>
-              As of Activiti 5.12, using this approach in combination with using <literal>activiti:autoStoreVariable=&quot;false&quot;</literal>
-              is the prefered way, as it is the way of least surprises.
 		    </para>
 		    
 		    <para>
@@ -3313,7 +3410,7 @@ public class ToUppercase implements JavaDelegate {
           </itemizedlist>
         </para>
         <para>
-          If available, the value is injected through a public setter method on your delegated class, following the Java Bean naming conventions (e.g. field <literal>fistName</literal> has setter <literal>setFirstName(...)</literal>).
+          If available, the value is injected through a public setter method on your delegated class, following the Java Bean naming conventions (e.g. field <literal>firstName</literal> has setter <literal>setFirstName(...)</literal>).
           If no setter is available for that field, the value of private member will be set on the delegate. SecurityManagers in some environments don't allow modifying private fields,
           so it's safer to expose a public setter-method for the fields you want to have injected. <emphasis role="bold">Regardless of the type of value declared in the process-definition, the type of the setter/private field on the injection target should always be 
           <literal>org.activiti.engine.delegate.Expression</literal>.</emphasis>
@@ -3456,8 +3553,8 @@ public class ThrowBpmnErrorDelegate implements JavaDelegate {
   public void execute(DelegateExecution execution) throws Exception {
     try {
       executeBusinessLogic();
-    } catch (BusinessExeption e) {
-      throw new BpmnError(&quot;BusinessExeptionOccured&quot;);
+    } catch (BusinessException e) {
+      throw new BpmnError(&quot;BusinessExceptionOccurred&quot;);
     }
   }
 
@@ -3790,7 +3887,7 @@ public class StartProcessInstanceTestDelegateWithInjection {
 			</para>
 			
 			<para>
-			  if you want to plug in your implementation of the rule task, e.g. because you want to use Drools differently or you want to use a completly
+			  if you want to plug in your implementation of the rule task, e.g. because you want to use Drools differently or you want to use a completely
 			  different rule engine, then you can use the class or expression attribute on the BusinessRuleTask and it will behave exactly like a
 			  <ulink url="#bpmnJavaServiceTask">ServiceTask</ulink>
 			</para>
@@ -3893,45 +3990,50 @@ public class StartProcessInstanceTestDelegateWithInjection {
 		      <table>
 		        <title>Mail server configuration</title>
             <tgroup cols='3'>
-            <thead>
-              <row>
-                <entry>Property</entry>
-                <entry>Required?</entry>
-                <entry>Description</entry>
-              </row>
-            </thead>
-            <tbody>
-		          <row>
-		            <entry>mailServerHost</entry>
-		            <entry>no</entry>
-		            <entry>The hostname of your mail server (e.g. mail.mycorp.com). Default is <literal>localhost</literal></entry>
-		          </row>
-		          <row>
-                <entry>mailServerPort</entry>
-                <entry>yes, if not on the default port</entry>
-                <entry>The port for SMTP traffic on the mail server. The default is <emphasis>25</emphasis></entry>
-              </row>
-              <row>
-                <entry>mailServerDefaultFrom</entry>
-                <entry>no</entry>
-                <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>activiti@activiti.org</emphasis></entry>
-              </row>
-              <row>
-                <entry>mailServerUsername</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
-              </row>
-              <row>
-                <entry>mailServerPassword</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
-              </row>
-              <row>
-                <entry>mailServerUseSSL</entry>
-                <entry>if applicable for your server</entry>
-                <entry>Some mail servers require ssl communication. By default set to false.</entry>
-              </row> 
-            </tbody>
+              <thead>
+                <row>
+                  <entry>Property</entry>
+                  <entry>Required?</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody>
+  		          <row>
+  		            <entry>mailServerHost</entry>
+  		            <entry>no</entry>
+  		            <entry>The hostname of your mail server (e.g. mail.mycorp.com). Default is <literal>localhost</literal></entry>
+  		          </row>
+  		          <row>
+                  <entry>mailServerPort</entry>
+                  <entry>yes, if not on the default port</entry>
+                  <entry>The port for SMTP traffic on the mail server. The default is <emphasis>25</emphasis></entry>
+                </row>
+                <row>
+                  <entry>mailServerDefaultFrom</entry>
+                  <entry>no</entry>
+                  <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>activiti@activiti.org</emphasis></entry>
+                </row>
+                <row>
+                  <entry>mailServerUsername</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
+                </row>
+                <row>
+                  <entry>mailServerPassword</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
+                </row>
+                <row>
+                  <entry>mailServerUseSSL</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers require ssl communication. By default set to false.</entry>
+                </row> 
+                <row>
+                  <entry>mailServerUseTLS</entry>
+                  <entry>if applicable for your server</entry>
+                  <entry>Some mail servers (for instance gmail) require TLS communication. By default set to false.</entry>
+                </row> 
+              </tbody>
             </tgroup>
           </table>
 		    </para>		  
@@ -3956,7 +4058,7 @@ public class StartProcessInstanceTestDelegateWithInjection {
 		      during process execution.
 		      Following properties can be set:
 		      <table>
-	         <title>Mail server configuration</title>
+	         <title>Mail task configuration</title>
 	         <tgroup cols='3'>
 	           <thead>
 	             <row>
@@ -4010,6 +4112,26 @@ public class StartProcessInstanceTestDelegateWithInjection {
                    Can be used in combination with <emphasis>html</emphasis>, for e-mail clients
                    that don't support rich content. The client will then fall back to this text-only alternative.
                  </entry>
+               </row>
+                <row>
+                 <entry>htmlVar</entry>
+                 <entry>no</entry>
+                 <entry>The name of a process variable that holds the HTML that is the content of the e-mail. The key difference between this and html is that this content will have expressions replaced before being sent by the mail task.</entry>
+               </row>
+                <row>
+                 <entry>textVar</entry>
+                 <entry>no</entry>
+                 <entry>The name of a process variable that holds the plain text content of the e-mail. The key difference between this and html is that this content will have expressions replaced before being sent by the mail task.</entry>
+               </row>
+               <row>
+                  <entry>ignoreException</entry>
+                  <entry>no</entry>
+                  <entry>Whether an failure when handling the e-mail throws an ActivitiException. By default this is set to false.</entry>
+               </row>
+               <row>
+                  <entry>exceptionVariableName</entry>
+                  <entry>no</entry>
+                  <entry>When email handling does not throw an exception since <emphasis>ignoreException = true</emphasis> a variable with the given name is used to hold a failure message</entry>
                </row>
              </tbody>
 	         </tgroup>
@@ -4132,20 +4254,20 @@ public class StartProcessInstanceTestDelegateWithInjection {
 		    <para>
 		      The following XML snippet shows an example of using the Mule Task.
 		      <programlisting>
-      &lt;extensionElements&gt;
-        &lt;activiti:field name=&quot;endpointUrl&quot;&gt;
-          &lt;activiti:string&gt;vm://in&lt;/activiti:string&gt;
-        &lt;/activiti:field&gt;
-        &lt;activiti:field name=&quot;language&quot;&gt;
-          &lt;activiti:string&gt;juel&lt;/activiti:string&gt;
-        &lt;/activiti:field&gt;
-        &lt;activiti:field name=&quot;payloadExpression&quot;&gt;
-          &lt;activiti:string&gt;&quot;hi&quot;&lt;/activiti:string&gt;
-        &lt;/activiti:field&gt;
-        &lt;activiti:field name=&quot;resultVariable&quot;&gt;
-          &lt;activiti:string&gt;theVariable&lt;/activiti:string&gt;
-        &lt;/activiti:field&gt;
-      &lt;/extensionElements&gt;	      
+  &lt;extensionElements&gt;
+    &lt;activiti:field name=&quot;endpointUrl&quot;&gt;
+      &lt;activiti:string&gt;vm://in&lt;/activiti:string&gt;
+    &lt;/activiti:field&gt;
+    &lt;activiti:field name=&quot;language&quot;&gt;
+      &lt;activiti:string&gt;juel&lt;/activiti:string&gt;
+    &lt;/activiti:field&gt;
+    &lt;activiti:field name=&quot;payloadExpression&quot;&gt;
+      &lt;activiti:string&gt;&quot;hi&quot;&lt;/activiti:string&gt;
+    &lt;/activiti:field&gt;
+    &lt;activiti:field name=&quot;resultVariable&quot;&gt;
+      &lt;activiti:string&gt;theVariable&lt;/activiti:string&gt;
+    &lt;/activiti:field&gt;
+  &lt;/extensionElements&gt;	      
 		      </programlisting>
 		    </para>
 		  </section>
@@ -4190,64 +4312,287 @@ public class StartProcessInstanceTestDelegateWithInjection {
         </para>
         
         <para>
-          For more documentation about Camel routes you can look on the Camel website. This user guide only shows an example route definition related to the Activiti integration.
-          When a Camel task is executed a route is searched for that corresponds to the key of process definition and the identifier of that task, like in the short example above &quot;sendCamel&quot;.
-          An example route defined in Java can look like this:
-          <programlisting>
-public class AsyncCamelRoute extends RouteBuilder {
-
-  @Override
-  public void configure() throws Exception {
-
-    from("activiti:asyncCamelProcess:serviceTaskAsync1?copyVariablesToProperties=true").setHeader("destination", constant("activiti:asyncCamelProcess:receive1")).to("seda:asyncQueue");
-    from("seda:asyncQueue").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
-    
-    from("activiti:asyncCamelProcess:serviceTaskAsync2?copyVariablesToProperties=true").setHeader("destination", constant("activiti:asyncCamelProcess:receive2")).to("seda:asyncQueue2");
-    from("seda:asyncQueue2").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
-    
-    from("seda:receiveQueue").recipientList(header("destination"));
-  }
-}</programlisting>
-          Note the from endpoint definition &quot;activiti:asyncCamelProcess:serviceTaskAsync1&quot; where activiti relates to the Activiti Camel component. asyncCamelProcess refers to the process definition
-          key of the process definition. And serviceTaskAsync1 relates to the identifier of the Camel task. The process variables can be copied to the body or the properties of the Camel payload.
-          In this example the variables are copied as message properties (the default). copyVariablesToBodyAsMap=true will copy the variables to the body of the Camel message in a Map instance. 
-          copyCamelBodyToBody=true will copy the camelBody process variable to the body of the Camel message
-          In this example you can also see that a Camel message can be sent to a receive task of an Activiti process instance. In this example a bit of additional Camel logic is used to send the Camel message
-          to the receive task that's defined in the message header destination property. But eventually the message will be sent to the receive1 or receive2 receive tasks.
-          By default the message body of the Camel message is expected as a Map (all Map entries will be copied to the Activiti execution) or as a String that will be copied to the camelBody process variable. 
-          When defining the copyVariablesToProperties=true option the message properties are copied to the Activiti execution.
-        </para>
-        
-        <para>
-          In addition to sending messages from a process instance to Camel and back again you can also start a process instance from a Camel message.
-          <programlisting>from("direct:start").to("activiti:camelProcess");</programlisting>
-          Note that camelProcess is the process definition key of the process definition for which a process instance will be created when a message is read from the direct:start queue.
-        </para>
-        
-        <para>
-          If you want to define multiple Camel context beans and/or want to use a different bean name, this can be overriden on the Camel task definition like this:
-          <programlisting>
+          For more documentation about Camel routes you can look on the <ulink url="http://camel.apache.org/">Camel website</ulink>. 
+		  The basic concepts are demonstrated through a few small samples here in this document.
+		  In the first sample, we will do the simplest form of Camel call from an activiti workflow. Let's call it SimpleCamelCall.
+		</para>
+		<para>
+		If you want to define multiple Camel context beans and/or want to use a different bean name, this can be overridden on the Camel task definition like this:
+		<programlisting>
 &lt;serviceTask id="serviceTask1" activiti:type="camel"&gt;
   &lt;extensionElements&gt;
     &lt;activiti:field name="camelContext" stringValue="customCamelContext" /&gt;
   &lt;/extensionElements&gt;
-&lt;/serviceTask&gt;</programlisting>
-        </para>
-        
-        <para>
-          You can also override the default Camel behavior class (org.activiti.camel.impl.CamelBehaviorDefaultImpl). This can be handy to customize the Camel logic or to change the default behavior of copying the process
-          variables to something else. The Activiti Camel module provide two additional Camel behavior classes, CamelBehaviorBodyAsMapImpl and CamelBehaviorCamelBodyImpl. CamelBehaviorBodyAsMapImpl copies the process variables
-          to a Map instance in the Camel message body by default (remember that you can override this on the endpoint using for example copyVariablesToProperties=true). CamelBehaviorCamelBodyImpl expects a camelBody process variable
-          and copies it to the Camel message body. The default Camel behavior class can be overriden by using the following field definition:
+&lt;/serviceTask&gt;
+		</programlisting>
+		</para>
+		</section>
+		<section id="bpmnCamelTaskSimpleCamelCall">
+		<title> Simple Camel Call example</title>
+<para>
+		All the files related to this example can be found in org.activiti.camel.examples.simpleCamelCall package of activiti-camel module. The target is simply activating a specific camel route.
+		First of all we need an Spring context which contains the introduction to the routes as mentioned previously. This part of the file serves this purpose:
+</para>
+
+		<programlisting>
+&lt;camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring"&gt;
+  &lt;packageScan&gt;
+    &lt;package&gt;org.activiti.camel.examples.simpleCamelCall&lt;/package&gt;
+  &lt;/packageScan&gt;
+&lt;/camelContext>
+         </programlisting>
+	   The route itself is configured in a file named SimpleCamelCallRoute located in the directory mentioned in PackageScan tag above. 
+	   Here is the route:
+	   
+         <programlisting>
+public class SimpleCamelCallRoute extends RouteBuilder {
+
+  @Override
+  public void configure() throws Exception {
+    from("activiti:SimpleCamelCallProcess:simpleCall").to("log:org.activiti.camel.examples.SimpleCamelCall");
+  }
+}
+</programlisting>
+The route just logs the message body and nothing more. Notice the format of the from endpoint. It is consisted of three parts:
+<table>
+<title>Endpoint URL parts:</title>
+	         <tgroup cols='2'>
+	           <thead>
+	             <row>
+	               <entry>Endpoint Url Part</entry>
+	               <entry>Description</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+	               <entry>activiti</entry>
+	               <entry>refers to Activiti endpoint</entry>
+	             </row>
+	             <row>
+	               <entry>SimpleCamelCallProcess</entry>
+	               <entry>name of the process</entry>
+	             </row>
+                <row>
+                 <entry>simpleCall</entry>
+                 <entry>name of the Camel service in the process</entry>
+               </row>
+             </tbody>
+	         </tgroup>
+	        </table>
+	Ok, our route is now properly configured and accessible to the Camel. 
+	Now comes the workflow part. The workflow looks like:
+		
           <programlisting>
+&lt;process id="SimpleCamelCallProcess"&gt;
+  &lt;startEvent id="start"/&gt;
+  &lt;sequenceFlow id="flow1" sourceRef="start" targetRef="simpleCall"/&gt;
+  <emphasis role="bold">
+  &lt;serviceTask id="simpleCall" activiti:type="camel"/&gt;
+  </emphasis>
+  &lt;sequenceFlow id="flow2" sourceRef="simpleCall" targetRef="end"/&gt;      
+  &lt;endEvent id="end"/&gt;
+&lt;/process&gt;	  
+          </programlisting>
+In the service task, it is just mentioned that type of service is Camel and the target route should be named as simpleCall. This matches what was mentioned in the Activiti endpoint. By instantiating the process we will see an empty log entry.
+Great we are done for the simplest case.
+      </section>
+	  <section id="bpmnCamelTaskPingPong">
+
+		<title> Ping Pong example</title>
+		<para>
+Our example worked but nothing is really transferred between Camel and Activiti and there is not much merit in it. In this example we try to send and receive data to and from Camel. 
+We send a string, camel concatenates something to it and returns back the result.
+The sender part is trivial, we send our message in form of a variable to Camel Task. Here is our caller code:
+		</para>
+        <programlisting>
+@Deployment
+public void testPingPong() {
+  Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();
+
+  variables.put("input", "Hello");
+  Map&lt;String, String&gt; outputMap = new HashMap&lt;String, String&gt;();
+  variables.put("outputMap", outputMap);
+  
+  runtimeService.startProcessInstanceByKey("PingPongProcess", variables);
+  assertEquals(1, outputMap.size());
+  assertNotNull(outputMap.get("outputValue"));
+  assertEquals("Hello World", outputMap.get("outputValue"));
+}         
+	</programlisting>
+	<para>
+	variable "input" is actually the input for the Camel route and outputMap is there to capture the result back from Camel. The process should be something like this:
+	</para>
+    <programlisting>
+&lt;process id="PingPongProcess"&gt;
+  &lt;startEvent id="start"/&gt;
+  &lt;sequenceFlow id="flow1" sourceRef="start" targetRef="ping"/&gt;
+  &lt;serviceTask id="ping" activiti:type="camel"/&gt;
+  &lt;sequenceFlow id="flow2" sourceRef="ping" targetRef="saveOutput"/&gt;
+  &lt;serviceTask id="saveOutput"  activiti:class="org.activiti.camel.examples.pingPong.SaveOutput" /&gt;
+  &lt;sequenceFlow id="flow3" sourceRef="saveOutput" targetRef="end"/&gt;
+  &lt;endEvent id="end"/&gt;
+&lt;/process&gt;
+    </programlisting>
+	<para>
+	Note that SaveOutput Service task, stores the value of "Output" variable from context to the previously mentioned OutputMap. 
+	Now we have to know how the variables are send to Camel and returned back. Here comes the notion of Camel behaviour into the play.
+	The way variables are communicated to Camel is configurable via CamelBehavior. Here we use Default one in our sample, a short description of the other ones comes afterwards.
+	With such a code you can configure the desired camel behaviour:
+	</para>
+    <programlisting>
 &lt;serviceTask id="serviceTask1" activiti:type="camel"&gt;
   &lt;extensionElements&gt;
     &lt;activiti:field name="camelBehaviorClass" stringValue="org.activiti.camel.impl.CamelBehaviorCamelBodyImpl" /&gt;
   &lt;/extensionElements&gt;
-&lt;/serviceTask&gt;</programlisting>
-        </para>
-      </section>
-    
+&lt;/serviceTask&gt;
+	</programlisting>
+	<para>
+	If you do not specify and specific behaviour then, org.activiti.camel.impl.CamelBehaviorDefaultImpl will be set.
+	This behaviour copies the variables to Camel properties of the same name. 
+	In return regardless of selected behaviour, if the camel message body is a map, then each of its elements is copied as a variable,
+	else the whole object is copied into a specific variable with the name of "camelBody".
+	Knowing that, this camel route concludes our second example:
+	</para>
+    <programlisting>
+@Override
+public void configure() throws Exception {
+  from("activiti:PingPongProcess:ping").transform().simple("${property.input} World");
+}
+	</programlisting>
+	<para>
+		In this route, the string "world" is concatenated to the end of property named "input" and the result will be in the message body.
+		It is accessible by checking "camelBody" variable in the java service task and copied to "outputMap" and checked in test case.
+		Now that the example on its default behaviour works, lets see what are the other possibilities.
+		In starting every camel route, the Process Instance ID will be copied into a camel property with the specific name of "PROCESS_ID_PROPERTY". 
+		It is later used for correlating the process instance and camel route. Also it can be exploited in the Camel route.
+	</para>
+	<para>
+		There are three different behaviours already available out of the box in Activiti. The behaviour can be overwritten by a specific phrase in the route URL.		
+		Here is an example of overriding the already defined behaviour in URL:
+		<programlisting>
+from("activiti:asyncCamelProcess:serviceTaskAsync2?copyVariablesToProperties=true").
+		</programlisting>
+the following table provides an overview of three available camel behaviours:
+<table>
+<title>Existing camel behaviours:</title>
+	         <tgroup cols='3'>
+	           <thead>
+	             <row>
+	               <entry>Behaviour</entry>
+	               <entry>In Url</entry>
+				   <entry>Description</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+	               <entry>CamelBehaviorDefaultImpl</entry>
+	               <entry>copyVariablesToProperties</entry>
+				   <entry>Copy Activiti variables as Camel properties</entry>
+	             </row>
+	             <row>
+				    <entry>CamelBehaviorCamelBodyImpl</entry>
+ 	                <entry>copyCamelBodyToBody</entry>
+				    <entry>Copy only Activiti variable named "camelBody" as camel message body</entry>
+	             </row>
+                <row>
+				    <entry>CamelBehaviorBodyAsMapImpl</entry>
+	               <entry>copyVariablesToBodyAsMap</entry>
+				   <entry>Copy all the activiti variables in a map as Camel message body</entry>
+               </row>
+             </tbody>
+	         </tgroup>
+	        </table>
+	the above table explains how activiti variables are going to be transfered to Camel. The following table explains how the Camel variables are returned back to Activiti.
+	This can only be configured in route URLs.
+<table>
+<title>Existing camel behaviours:</title>
+	         <tgroup cols='3'>
+	           <thead>
+	             <row>	             
+	               <entry>Url</entry>
+				   <entry>Description</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+				    <entry>Default</entry>
+ 	                <entry>If Camel body is a map, copy each element as Activiti variable, otherwise copy the whole Camel body as "camelBody" activiti variable</entry>
+	             </row>
+	             <row>
+	               <entry>copyVariablesFromProperties</entry>
+	               <entry>Copy Camel properties as Activiti variables of the same name</entry>
+	             </row>
+                <row>
+				   <entry>copyCamelBodyToBodyAsString</entry>
+	               <entry>like default, but if camel Body is not a map, first convert it to String and then copy it in "camelBody"</entry>
+               </row>
+			   
+                <row>
+				   <entry>copyVariablesFromHeader</entry>
+	               <entry>Additionally copy camel headers to Activiti variables of the same names</entry>
+               </row>
+             </tbody>
+	         </tgroup>
+	        </table>
+		Source files of this example are available in org.activiti.camel.examples.pingPong package of activiti-camel module as well.
+	</para>
+	
+	
+	</section>
+	<section id="bpmnCamelTaskAsyncPingPong">
+
+		<title> Asynchronous Ping Pong example</title>
+		<para>
+		Previous examples were all synchronous. The workflow stops, until the camel route is concluded and returned.
+		In some cases, we might need the activiti workflow to continue. For such purposes the asynchronous capability of
+		the Camel service task is useful. You can make use of this feature by setting the async property of the Camel service task to true.
+		<programlisting>
+&lt;serviceTask id="serviceAsyncPing" activiti:type="camel" activiti:async="true"/&gt;
+		</programlisting>
+		By setting this feature the specified Camel route is activated asynchronously by the Activiti job executor. When you define a queue in the Camel route the Activiti process will continue with the activities after the Camel service task. 
+		The Camel route will be executed fully asynchronously from the process execution.
+    If you want to wait for a response of the Camel service task somewhere in your process definition, you can use a receive task.
+		<programlisting>
+&lt;receiveTask id="receiveAsyncPing" name="Wait State" /&gt;
+		</programlisting>
+		</para>
+		The process instance will wait until a signal is received, for example from Camel. In Camel you can send a signal to the process instance by sending a message to the proper activiti endpoint.
+		<programlisting>
+ from("activiti:asyncPingProcess:serviceAsyncPing").to("activiti:asyncPingProcess:receiveAsyncPing");		
+		</programlisting>
+	 As usual endpoint consists of three parts separated by colons: 
+	 	<itemizedlist>
+	        <listitem>
+	          <para>
+			   constant string "activiti" 
+			  </para>
+			</listitem>
+	        <listitem>
+	          <para>
+			    process name
+			  </para>
+			</listitem>
+	        <listitem>
+	          <para>
+			    receive task name
+			  </para>
+			</listitem>
+	 	</itemizedlist>
+	</section>
+	<section id="bpmnCamelTaskAsyncPingPong">
+
+		<title>Instantiate workflow from Camel route</title>
+		<para>
+		In our all previous examples Activiti workflow started first and the Camel route was started within workflow. 
+		It is also possible from the other side. It is possible that a workflow is instantiated from an already started camel route.
+		It is very similar to signalling receive task, except that the last part is not there. Here is a sample route:
+	<programlisting>
+from("direct:start").to("activiti:camelProcess");
+	</programlisting>		
+	as you see the url has two parts, the first is constant string "activiti" and the second name is the name of the process. Obviously the process should already be
+	deployed and startable by engine configuration. 
+		</para>
+	</section>
     </section>
 
 		<section id="bpmnManualTask">
@@ -4706,13 +5051,19 @@ public void testExecutionListenerFieldInjection() {
                   and just before the task is deleted from the runtime data.
                 </para>
               </listitem>            
+              <listitem>
+                <para>
+                  <emphasis role="bold">delete</emphasis>: occurs just before the task is going to be deleted. 
+                  Notice that it will also be executed when task is normally finished via completeTask.
+                </para>
+              </listitem>            
             </itemizedlist>
           </para>
         </listitem>
         <listitem>
           <para>
             <emphasis role="bold">class</emphasis>: the delegation class that must be called. 
-            This class must implement the <literal>org.activiti.engine.impl.pvm.delegate.TaskListener</literal>
+            This class must implement the <literal>org.activiti.engine.delegate.TaskListener</literal>
             interface.
             <programlisting>
 public class MyTaskCreateListener implements TaskListener {
@@ -4823,7 +5174,8 @@ public class MyTaskCreateListener implements TaskListener {
           Additionally, each of the created executions will have an execution-local variable (i.e. not visible
           for the other executions, and not stored on process instance level) :
           <itemizedlist>
-            <listitem><para><emphasis role="bold">loopCounter</emphasis>: indicates the <emphasis>index in the for-each loop</emphasis> of that particular instance.</para></listitem>
+            <listitem><para><emphasis role="bold">loopCounter</emphasis>: indicates the <emphasis>index in the for-each loop</emphasis> of that particular instance. loopCounter variable can be renamed by activiti
+                <emphasis role="bold">elementIndexVariable</emphasis> attribute.</para></listitem>
           </itemizedlist>
         </para>
       
@@ -4885,7 +5237,7 @@ public class MyTaskCreateListener implements TaskListener {
     &lt;inputDataItem name=&quot;assignee&quot; /&gt;
   &lt;/multiInstanceLoopCharacteristics&gt;
 &lt;/userTask&gt;</programlisting>
-          Suppose the variable <literal>assigneeList</literal> contains the values <literal>[kermit, gonzo, foziee]</literal>.
+          Suppose the variable <literal>assigneeList</literal> contains the values <literal>[kermit, gonzo, fozzie]</literal>.
           In the snippet above, three user tasks will be created in parallel. Each of the executions
           will have a process variable named <literal>assignee</literal> containing one value of the 
           collection, which is used to assign the user task in this example.
@@ -5765,7 +6117,7 @@ public class MyTaskCreateListener implements TaskListener {
       <title>Process Initiation Authorization</title>
       By default everyone is allowed to start a new process instance of deployed process definitions. The process initiation authorization functionality allows to define
       users and groups so that web clients can optionally restrict users to start a new process instance. <emphasis role="bold">NOTE</emphasis> that the authorization definition
-      is <emphasis role="bold">NOT</emphasis> validated by the Activiti Engine in any way. This functionality is only meant for developers to ease the implemention of authorization
+      is <emphasis role="bold">NOT</emphasis> validated by the Activiti Engine in any way. This functionality is only meant for developers to ease the implementation of authorization
       rules in a web client. The syntax is similar to the syntax of user assignment for a user task. 
       A user or group can be assigned as potential initiator of a process using &lt;activiti:potentialStarter&gt; tag. Here is an example:
  <programlisting>
@@ -5817,4 +6169,48 @@ Exactly the same way, the list of groups that is configured as a potential start
    </programlisting>
 </para>
 </section>	
+
+<section id="dataobjects">
+      <title>Data objects</title>
+      <link linkend="experimental">
+      <emphasis role="bold">[EXPERIMENTAL]</emphasis>
+    </link>
+    <para>
+      BPMN provides the possibility to define data objects as part of a process or sub process element. According to the BPMN specification it's possible to include complex XML structures
+      that might be imported from XSD definitions. As a first start to support data objects in Activiti the folowing XSD types are supported:
+    </para>
+    <itemizedlist>
+      <programlisting>
+        &lt;dataObject id="dObj1" name="StringTest" itemSubjectRef="xsd:string"/&gt;
+      </programlisting>
+      <programlisting>
+        &lt;dataObject id="dObj2" name="BooleanTest" itemSubjectRef="xsd:boolean"/&gt;
+      </programlisting>
+      <programlisting>
+        &lt;dataObject id="dObj3" name="DateTest" itemSubjectRef="xsd:datetime"/&gt;
+      </programlisting>
+      <programlisting>
+        &lt;dataObject id="dObj4" name="DoubleTest" itemSubjectRef="xsd:double"/&gt;
+      </programlisting>
+      <programlisting>
+        &lt;dataObject id="dObj5" name="IntegerTest" itemSubjectRef="xsd:int"/&gt;
+      </programlisting>
+      <programlisting>
+        &lt;dataObject id="dObj6" name="LongTest" itemSubjectRef="xsd:long"/&gt;
+      </programlisting>
+    </itemizedlist>
+    <para>
+      The data object definitions will be automatically converted to process variables using the 'name' attribute value as the name for the new variable.
+      In addition to the definition of the data object Activiti also provides an extension element to assign a default value to the variable. The following BPMN snippet provides an example:
+    </para>
+    <programlisting>
+        &lt;process id="dataObjectScope" name="Data Object Scope" isExecutable="true"&gt;
+          &lt;dataObject id="dObj123" name="StringTest123" itemSubjectRef="xsd:string"&gt;
+            &lt;extensionElements&gt;
+              &lt;activiti:value&gt;Testing123&lt;/activiti:value&gt;
+            &lt;/extensionElements&gt;
+          &lt;/dataObject&gt;
+      </programlisting>
+</section>
+
 </chapter>

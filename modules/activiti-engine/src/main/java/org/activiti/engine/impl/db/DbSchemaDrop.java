@@ -16,6 +16,7 @@ package org.activiti.engine.impl.db;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
@@ -27,8 +28,9 @@ public class DbSchemaDrop {
 
   public static void main(String[] args) {
     ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
-    CommandExecutor commandExecutor = processEngine.getProcessEngineConfiguration().getCommandExecutorTxRequired();
-    commandExecutor.execute(new Command<Object> (){
+    CommandExecutor commandExecutor = processEngine.getProcessEngineConfiguration().getCommandExecutor();
+    CommandConfig config = new CommandConfig().transactionNotSupported();
+    commandExecutor.execute(config, new Command<Object>() {
       public Object execute(CommandContext commandContext) {
         commandContext
           .getSession(DbSqlSession.class)

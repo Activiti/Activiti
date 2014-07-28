@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.SendTask;
 import org.activiti.bpmn.model.ServiceTask;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers

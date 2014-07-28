@@ -101,10 +101,34 @@
         and U.ID_ = #{userId}
       </if>
       <if test="procDefId != null">
-        and exists (select ID_ from ${prefix} ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and GROUP_ID_=RES.ID_ )
+        and exists (select ID_ from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and GROUP_ID_=RES.ID_ )
       </if>
       
     </where>
-  </sql> 
+  </sql>
+
+  <select id="selectGroupByNativeQuery" parameterType="java.util.Map" resultMap="groupResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectGroupByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="groupResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectGroupCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
   
 </mapper>

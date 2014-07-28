@@ -15,7 +15,6 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -39,7 +38,7 @@ public class DeleteDeploymentCmd implements Command<Void>, Serializable {
     }
     
     // Remove process definitions from cache:
-    Context
+    commandContext
       .getProcessEngineConfiguration()
       .getDeploymentManager()
       .removeDeployment(deploymentId, cascade);

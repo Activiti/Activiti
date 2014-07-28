@@ -12,9 +12,13 @@
  */
 package org.activiti.engine.impl.pvm.runtime;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.logging.LogMDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,10 +45,23 @@ public class AtomicOperationActivityExecute implements AtomicOperation {
     log.debug("{} executes {}: {}", execution, activity, activityBehavior.getClass().getName());
     
     try {
+    	if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+      			ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, 
+      					execution.getActivity().getId(),
+      					(String) execution.getActivity().getProperty("name"),
+      					execution.getId(), 
+      					execution.getProcessInstanceId(), 
+      					execution.getProcessDefinitionId(),
+      					(String) activity.getProperties().get("type"),
+      					activity.getActivityBehavior().getClass().getCanonicalName()));
+      }
+    	
       activityBehavior.execute(execution);
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
+      LogMDC.putMDCExecution(execution);
       throw new PvmException("couldn't execute activity <"+activity.getProperty("type")+" id=\""+activity.getId()+"\" ...>: "+e.getMessage(), e);
     }
   }

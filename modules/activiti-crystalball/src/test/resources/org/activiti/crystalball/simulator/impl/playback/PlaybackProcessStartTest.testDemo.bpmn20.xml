@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
+
+  <process id="theSimplestProcess" name="Without task Process">
+    <documentation>This is a process for testing purposes</documentation>
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

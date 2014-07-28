@@ -70,6 +70,8 @@ public class NavigatorManager implements InitializingBean, Serializable {
     addNavigator(new MyProcessesNavigator());
     addNavigator(new SavedReportNavigator());
     addNavigator(new ReportNavigator());
+    addNavigator(new ActiveProcessDefinitionNavigator());
+    addNavigator(new SuspendedProcessDefinitionNavigator());
   }
 
 }

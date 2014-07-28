@@ -34,6 +34,638 @@
     <a href="http://activiti.org/community.html">Activiti Community page</a>
 
   <h1>Activiti Release Notes</h1>
+  
+  <h3>Release Notes - Activiti - Version 5.16</h3>
+  
+   <h4>Highlights</h4>
+   <ul>
+    <li>Added Spring boot support and more Spring annotation support in general (thanks to Josh Long)</li>
+    <li>Refactoring of the job executor to simplify its logic and prevent possible long wait times.</li>
+    <li>Added new event log table that stores process engine events when wanted, by default this is switched off.</li>
+    <li>Introduction of Crystalball, which is an experimental new project that allows you to replay and simulate process instances (Thanks to Martin)</li>
+    <li>Upgraded to Spring 4.x and Restlet 2.2.x</li>
+    <li>Various fixes and improvements</li>
+   </ul>
+   
+   <h4>Bug fixes and various smaller improvements</h4>
+   
+   <p>Check out the <a href="http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=12091&version=19620">Release notes</a> for more details</p>
+  
+  <h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1945'>ACT-1945</a>] -         Empty diagram produces xml parse error
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1955'>ACT-1955</a>] -         Can not use table-driven editor (Kickstart) with LDAP-User
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1977'>ACT-1977</a>] -         5.15.1 release missing activiti-process-validation jar file
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1978'>ACT-1978</a>] -         Obsolete signal subscriptions are not being removed, causing signals to be fired in old process definitons
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1988'>ACT-1988</a>] -         Camel routes containing activiti consumers cannot be adviced.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1995'>ACT-1995</a>] -         ExtensionElement does not parse correctly and xml generation contains redundant namespace declarations
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2000'>ACT-2000</a>] -         custom attribute parser fails with empty string for namespace
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2005'>ACT-2005</a>] -         NPE ValuedDataObjectXMLConverter class for empty-valued data objects
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2016'>ACT-2016</a>] -         Tenancy does not work for call activity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2023'>ACT-2023</a>] -         Optimize namespace usage - redundant namespace usage in XML
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2026'>ACT-2026</a>] -         Modeler workspace never opens
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2027'>ACT-2027</a>] -         MessageEventDefinitionParseHandler does not set extension elements.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2033'>ACT-2033</a>] -         Camel component cannot be multi instance
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2042'>ACT-2042</a>] -         runtimeService.deleteProcessInstance does not set process instance end time when current activity is a scope
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2047'>ACT-2047</a>] -         Incorrect self comparison of value with itself
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2048'>ACT-2048</a>] -         Redundant null check in org.activiti.engine.impl.persistence.entity.JobEntity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2049'>ACT-2049</a>] -         Multi tenancy support is not working in case of duplicate filtering while deploying processes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2050'>ACT-2050</a>] -         Suspicious equals() test in org.activiti.engine.impl.persistence.entity.DeploymentEntityManager
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2052'>ACT-2052</a>] -         Subprocess DataObjects created in wrong scope.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2055'>ACT-2055</a>] -         Subprocess extensions are not getting parsed
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2056'>ACT-2056</a>] -         Incorrect &#39;contains&#39; comparision
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2057'>ACT-2057</a>] -         Equals method for ValuedDataObject should use .equals()
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2058'>ACT-2058</a>] -         Null deference possible
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2059'>ACT-2059</a>] -         Redundant null test in execute method
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2060'>ACT-2060</a>] -         Method uses the same code for two branches
+</li>
+</ul>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1987'>ACT-1987</a>] -         Portuguese brazilian translation of Activiti
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2002'>ACT-2002</a>] -         Upgrade Restlet &amp; Jackson libraries
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2037'>ACT-2037</a>] -         Performance - Bulk deletion of variables at process end
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2051'>ACT-2051</a>] -         Code change: a null check is not needed before using instanceof.
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1996'>ACT-1996</a>] -         DiagramGenerator does not give possibility to change icons for custom service tasks
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2011'>ACT-2011</a>] -         Expose formKey on Task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2038'>ACT-2038</a>] -         Custom IdentityLinkType support
+</li>
+</ul>
+                
+<h2>        Wish
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2013'>ACT-2013</a>] -         support candidateGroupIn for runtime tasks in activiti-rest
+</li>
+</ul>
+  
+  <h3>Release Notes - Activiti - Version 5.15.1</h3>
+  
+   <h4>Highlights</h4>
+   <ul>
+    <li>Bug fix release for a MySQL upgrade issue (more details <a href="http://forums.activiti.org/content/important-activiti-515-and-mysql-56-users">here</a>)</li>
+    <li>Some small improvements from pull requests</li>
+   </ul>
+  
+  <h3>Release Notes - Activiti - Version 5.15</h3>
+  
+   <h4>Highlights</h4>
+   <ul>
+    <li>Multi tanancy support added to Activiti, including the Java and REST API.</li>
+    <li>Added new event support to listen for events in the Activiti Engine, like task deleted, variable updated, process engine created and many more.</li>
+    <li>Introduction of data object support (thanks to Lori Small and team)</li>
+    <li>Improved Spring support with great and easy to use annotations (thanks to Josh Long)</li>
+    <li>Added an easy way to do custom sql execution (<a href="http://www.jorambarrez.be/blog/2014/01/17/execute-custom-sql-in-activiti/">http://www.jorambarrez.be/blog/2014/01/17/execute-custom-sql-in-activiti/</a>)</li>
+    <li>Improved OSGi support + added OSGi unit testing using Tinybundles</li>
+    <li>Various fixes and improvements</li>
+   </ul>
+   
+   <h4>Bug fixes and various smaller improvements</h4>
+   
+   <p>Check out the <a href="http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=12091&version=19344">Release notes</a> for more details</p>
+   
+   <h2>        Sub-task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1608'>ACT-1608</a>] -         Fix DB2 metadata problem
+</li>
+</ul>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1339'>ACT-1339</a>] -         MultipleInstance UserTask does not use AtomicOperation -&gt; CDI Event Listener fails
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1549'>ACT-1549</a>] -         endTime of joining parallel gateway is not set: HistoricActivityInstance.getEndTime() returns null
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1589'>ACT-1589</a>] -         NPE when executing SignalThrowingEvent
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1610'>ACT-1610</a>] -         DbSqlSession isTablePresent method adds table prefix which causes check to fail
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1627'>ACT-1627</a>] -         Save task will throw assignment-event even if assignee is not altered
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1712'>ACT-1712</a>] -         Duplicate task when signal is sent to User Task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1733'>ACT-1733</a>] -         REST API documentation for Task Query points to wrong URL
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1745'>ACT-1745</a>] -         ProcessDiagramGenerator misses some diagram flow elements and truncates labels
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1752'>ACT-1752</a>] -         In BpmnDeployer, only schedule start timers AFTER process definition has been persisted
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1794'>ACT-1794</a>] -         LDAP - Group lookups for a user fail if the DN has special characters
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1795'>ACT-1795</a>] -         lineChart report hasn&#39;t been rendered
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1816'>ACT-1816</a>] -         ManagementService doesn&#39;t seem to give actual table Name for EventSubscriptionEntity.class
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1822'>ACT-1822</a>] -         MultiInstance loopIndexVariable support
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1823'>ACT-1823</a>] -         CancelEndEvent goes into dead lock
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1825'>ACT-1825</a>] -         Infinite recursion in TestActivityBehaviorFactory
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1826'>ACT-1826</a>] -         OSGI bundle activiti-engine/5.14 failed to deploy due to duplicated imported org.activiti.osgi + WorkAround
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1828'>ACT-1828</a>] -         Completing a task in DelegationState.PENDING does not throw ActivitiException
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1838'>ACT-1838</a>] -         Activiti 5.14 did not ship incremental upgrade DB schema migration script (to auto upgrade 5.13 -&gt; 5.14)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1839'>ACT-1839</a>] -         ACT_FK_VAR_BYTEARRAY violated on variable update
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1842'>ACT-1842</a>] -         Add taskService.complete() method that takes an option boolean to determine the scope of variables
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1844'>ACT-1844</a>] -         ActivitiRule fails if test methods are declared in a super class
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1848'>ACT-1848</a>] -         ClassCastException when using CdiEventSupportBpmnParseHandler with multi instance user task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1854'>ACT-1854</a>] -         ExtensionElements parsing causes NullpointerException in non Process/Activity Context
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1858'>ACT-1858</a>] -         Groovy generated classes aren&#39;t garbage collected
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1859'>ACT-1859</a>] -         TaskListeners configured for ALL event types do not receive DELETE events
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1863'>ACT-1863</a>] -         NPE on HistoricVariableInstanceQuery
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1872'>ACT-1872</a>] -         Text Annotation is not generated in export and in viewer
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1879'>ACT-1879</a>] -         Job Executor job acquisition can lead to deadlocks in clustered setup
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1881'>ACT-1881</a>] -         activiti-engine OSGi bundle requires junit classes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1882'>ACT-1882</a>] -         activiti-spring OSGi bundle requires spring-test classes.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1883'>ACT-1883</a>] -         Listener end event is not notified when compensation done
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1884'>ACT-1884</a>] -         add missing type of serviceTask in activiti-bpmn-extensions-5.15.xsd
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1887'>ACT-1887</a>] -         Inserting a variable with the same name on the same process-instance from 2 threads results in duplicate name/revision entry in ACT_RU_VARIABLE 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1888'>ACT-1888</a>] -         UserTask XML converter error when it has default sequence flow
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1889'>ACT-1889</a>] -         Boundary event don&#39;t follow pool position.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1891'>ACT-1891</a>] -         After edit or click form properties typed enum lose values
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1892'>ACT-1892</a>] -         Repeat add listener
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1894'>ACT-1894</a>] -         the parameter name of HistoricActivityInstanceQuery.activityInstanceId() should be activityInstanceId, not processInstanceId
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1896'>ACT-1896</a>] -         Using activityId(..) and processInstanceBusinessKey(.., true) on Execution-query causes SQL-exception
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1897'>ACT-1897</a>] -         Form-properties (and some other table-based properties) no longer selectable/editable/removable in Designer 5.14.0
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1901'>ACT-1901</a>] -         The coordinates of activity nodes contained in  a DiagramLayout are sometime not correct.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1908'>ACT-1908</a>] -         Activiti designer 5.14 removes custom form property information 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1909'>ACT-1909</a>] -         REST queries should support paging like their normal GET counterparts do
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1912'>ACT-1912</a>] -         Task Listener Bug
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1914'>ACT-1914</a>] -         Activiti designer does not update sequence flow references
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1918'>ACT-1918</a>] -         deploying a process fails with hibernate 4.2.6.Final &quot;The object is already closed&quot;
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1923'>ACT-1923</a>] -         Setting task assignee and using updateTask() does not update task history
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1927'>ACT-1927</a>] -         Manual tasks are actually created as generic tasks in the BPMN source
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1928'>ACT-1928</a>] -         Changing the id of elements in the Properties view does not change references to it leading to broken models
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1929'>ACT-1929</a>] -         Co-ordinates of BPMNEdge labels are relative to the wrong origin
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1930'>ACT-1930</a>] -         Activiti designer 5.14 form editor prevents editing of fields
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1935'>ACT-1935</a>] -         BeanELResolver hides target exception in ELException when catching InvocationTargetException
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1937'>ACT-1937</a>] -         StackOverflowError when using an EndErrorEvent from an Event Sub-Process
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1939'>ACT-1939</a>] -         HistoryService loads invalid task local variables for completed task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1940'>ACT-1940</a>] -         Possible bug in MS-SQL server configuration with  schema
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1941'>ACT-1941</a>] -         IdentityService interface leaking implementation details 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1944'>ACT-1944</a>] -         LDAP-Authentication fails if LDAP-User has no forename
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1949'>ACT-1949</a>] -         Jobs are not being removed from ACT_RU_JOB for for &lt;timeCycle&gt; timers
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1951'>ACT-1951</a>] -         ACT_RU_JOBS has orphaned rows after deleting Process with repeat timers
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1953'>ACT-1953</a>] -         multi instance sub process,variable conflict?
+</li>
+</ul>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1491'>ACT-1491</a>] -         Parsing association, drawing Annotation and connections
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1496'>ACT-1496</a>] -         Replace JSON.org with GSON dependencies
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1781'>ACT-1781</a>] -         Diagram improvement: curved flows, annotations, associations, label position.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1860'>ACT-1860</a>] -         Remove unique constraint on business key
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1867'>ACT-1867</a>] -         MySQL DATETIME and TIMESTAMP precision
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1911'>ACT-1911</a>] -         Adopt MyBatis 3.2.4
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1916'>ACT-1916</a>] -         Double-check all REST-resources for explicit authenticate() call, to improve overall security
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1952'>ACT-1952</a>] -         Refactor process definition validation + allow to plugin in custom validation
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1448'>ACT-1448</a>] -         Support for expressions in candidate/assignee/...
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1797'>ACT-1797</a>] -         Send events for major state changes of domain objects
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1840'>ACT-1840</a>] -         Allow to set a &#39;category&#39; on tasks
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1890'>ACT-1890</a>] -         Multi tenancy support
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1898'>ACT-1898</a>] -         Allow to execute custom SQL
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1904'>ACT-1904</a>] -         Introduce Process Engine Configurator concept
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1907'>ACT-1907</a>] -         Add ProcessInstanceHistoryLog
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1910'>ACT-1910</a>] -         Introduce @EnableActiviti for Spring
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1933'>ACT-1933</a>] -         Delete Identity Link from RuntimeService IdentityLink list
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1936'>ACT-1936</a>] -         Query Tasks by process category
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1954'>ACT-1954</a>] -         Warning Date on Task
+</li>
+</ul>
+        
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1631'>ACT-1631</a>] -         Deploy artifacts to central maven repository
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1833'>ACT-1833</a>] -         get BusinessCalendar from BusinessCalendarManager except new a instance
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1869'>ACT-1869</a>] -         Document signal event scope
+</li>
+</ul>
+  
+  <h3>Release Notes - Activiti - Version 5.14</h3>
+  
+   <h4>Highlights</h4>
+   <ul>
+    <li>Version 5.14 is focused on bug fixes and small improvements.</li>
+    <li>Improved process and task query support</li>
+    <li>Add OSGi bundle headers to all Activiti module JARs</li>
+    <li>Thanks to the community for the large number of pull requests, especially Martin Grofcik, Mike Dias and Saeid Mirzaei</li>
+   </ul>
+   
+   <h4>Important Note for MSSQL and DB2 users</h4>
+    
+   <p>
+        Activiti 5.13 and 5.14 contain changes to the default indexes that are created when using
+        MSSQL or DB2 as database. These indexes <b>are not created automatically when upgrading Activiti</b>,
+        as they may conflict with custom indexes or impact the database load. The purpose if the indexes
+        is to avoid deadlock exceptions when using Activiti under high load.
+   </p>
+   
+   <p>
+        As such, please review carefully following commits and apply to your database (where applicable):
+        <ul>
+            <li><a href="https://github.com/Activiti/Activiti/commit/4911bd176b78fa4c466e3fcbd3617af3bd95eba0">https://github.com/Activiti/Activiti/commit/4911bd176b78fa4c466e3fcbd3617af3bd95eba0</a></li>
+            <li><a href="https://github.com/Activiti/Activiti/commit/22f6c8d0cf126320addb90f86495e89e7d656939">https://github.com/Activiti/Activiti/commit/22f6c8d0cf126320addb90f86495e89e7d656939</a></li>
+        </ul>   
+   </p>
+   
+   <h4>Bug fixes and various smaller improvements</h4>
+   
+   <p>Check out the <a href="https://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=12091&version=19143">Release notes</a> for more details</p>
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-821'>ACT-821</a>] -         HistoryService.deleteHistoricProcessInstance() does not delete sub processes
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1186'>ACT-1186</a>] -         ActivitiRule services not initialized when using SpringJUnit4ClassRunner together with @ContextConfiguration
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1438'>ACT-1438</a>] -         Target expressions for call activities are not supported
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1454'>ACT-1454</a>] -         Support for custom type of comment
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1600'>ACT-1600</a>] -         Activiti Modeler target namespace not saved to BPMN XML
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1609'>ACT-1609</a>] -         problem evaluating script while click &quot;Reports-&gt;Process Instance Overview&quot; on activiti-explorer.(DB2 datasource)
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1612'>ACT-1612</a>] -         Modeler missing cancelActivity
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1625'>ACT-1625</a>] -         Text-annotation elements are ignored when parsed, but the corresponding BPMN-DI is not which causes a warning
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1649'>ACT-1649</a>] -         Deadlock occured in load test with db2
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1663'>ACT-1663</a>] -         StartEvent hasn&#39;t the attribute &quot;formKey&quot; in the Activiti Modeler
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1720'>ACT-1720</a>] -         Redundant space between table prefix and table name in org\activiti\db\mapping\entity\User.xml
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1723'>ACT-1723</a>] -         ORA-01747: select count(RES.*)   from ACT_HI_VARINST RES    WHERE RES.PROC_INST_ID_ = ?
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1725'>ACT-1725</a>] -         Incorrect display subprocess in subprocess, when it open in Activiti Modeler. (Problem with coordinates of elements after convertation BPMN to JSON)
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1727'>ACT-1727</a>] -         activiti-exploer process instance highlight diagram is incorrent
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1728'>ACT-1728</a>] -         If the process instance was started by a callActivity, it will be not have the startEvent activity in ACT_HI_ACTINST table
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1731'>ACT-1731</a>] -         Fail start process with variables
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1740'>ACT-1740</a>] -         REST-status cannot be created when exception contains newlines
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1741'>ACT-1741</a>] -         activiti-spring POM should not depend on slf4j-log4j12
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1743'>ACT-1743</a>] -         candidateGroup can&#39;t use expression with comma
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1749'>ACT-1749</a>] -         Impossible to remove identity-links from create-listener
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1755'>ACT-1755</a>] -         ACT_HI_ACTINST does not record parallel gateway end times and durations
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1756'>ACT-1756</a>] -         Changing ID of an activity or event makes a copy of BPMNShape element
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1758'>ACT-1758</a>] -         MySQL + BTM fails on schema create
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1762'>ACT-1762</a>] -         Support multiple occurrences of extension elements and attributes with same id
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1770'>ACT-1770</a>] -         Model query for lastest version is broken
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1771'>ACT-1771</a>] -         VariableScope#getVariableLocal should take parameter of type String rather than Object
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1775'>ACT-1775</a>] -         NPE when retrieving JPA Entity process variables via REST API /runtime/tasks
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1777'>ACT-1777</a>] -         Activiti sql file problem for MySQL 5.6
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1780'>ACT-1780</a>] -         User Guide: Create a User (new api) does not list password for body
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1788'>ACT-1788</a>] -         Fields of Java services obtained with a delegateExpression aren&#39;t injected when handling signals.
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1789'>ACT-1789</a>] -         Make HistoricTaskInstanceQuery to support &quot;taskCandidateUser&quot; 
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1791'>ACT-1791</a>] -         Modeler does not allow creation ENUM type fields in forms.
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1793'>ACT-1793</a>] -         Process flow through boundary events not rendered in diagram viewer
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1801'>ACT-1801</a>] -         JSON Serialization of Process with Lane leads to infinite recursion
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1806'>ACT-1806</a>] -         Race condition during BPMN deployment
+</li>
+</ul>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1076'>ACT-1076</a>] -         Draw transitions names in diagram generator
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1529'>ACT-1529</a>] -         Declare activiti-webapp-explorer2 as distributable in web.xml
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1630'>ACT-1630</a>] -         Extend SerializableType to *not* support entities with null id
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1634'>ACT-1634</a>] -         FormKey and TargetNameSpace attributes using Activiti Modeler
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1665'>ACT-1665</a>] -         Add support for UUIDs as queryable process variables
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1699'>ACT-1699</a>] -         Mail server configuration using JNDI
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1722'>ACT-1722</a>] -         Property isExecutable aren&#39;t avaliable in Activiti Modeler
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1732'>ACT-1732</a>] -         Updating Procecss Busienss Key
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1738'>ACT-1738</a>] -         Adding MDC (Mapped Diagnostic Context) logging
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1747'>ACT-1747</a>] -         Upgrade some legacy dependencies (commons-lang, jackson)
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1753'>ACT-1753</a>] -         Add missing sql mapping for &#39;selectProcessDefinition&#39;
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1782'>ACT-1782</a>] -         Provide hook to create custom UserTaskActivityBehavior
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1786'>ACT-1786</a>] -         Shared packages between activiti-common-rest &amp; activit-rest modules
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1798'>ACT-1798</a>] -         Provide getter for field MultiInstanceActivityBehavior#innerActivityBehavior
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1807'>ACT-1807</a>] -         Add support for Async Message/Signal triggering from RuntimeService
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1815'>ACT-1815</a>] -         Add getJobExecutor/setJobExecutor to ProcessEngineConfiguration interface
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-830'>ACT-830</a>] -         Provide API ProcessInstanceQuery#processDefinitionName
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1746'>ACT-1746</a>] -         Query for failed process instances
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1751'>ACT-1751</a>] -         Catch Mail sending fail exception
+</li>
+</ul>  
+  
+  <h3>Release Notes - Activiti - Version 5.13</h3>
+   
+   <h4>Highlights</h4>
+   <ul>
+    <li>Fully refactored REST API. The REST API should now offer the same functionality as the Java API.</li>
+    <li>Out-of-the-box LDAP integration</li>
+    <li>Include process and task variables in the result of the process, historic process, task and historic task queries</li>
+    <li>Lots of fixes</li>
+   </ul>
+   
+   <h4>Bug fixes and various smaller improvements</h4>
+    <p>Check out the <a href="https://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=12091&version=18880">Release notes</a> for more details</p>
+    
+<h2>        Sub-task
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1264'>ACT-1264</a>] -         Reintroduce ExportMarshaller invocation
+</li>
+</ul>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1388'>ACT-1388</a>] -         NPE in ExecutionEntity#ensureExecutionsInitialized()
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1426'>ACT-1426</a>] -         Nested multi-instance activities do not work
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1542'>ACT-1542</a>] -         CommandContext Logs and Re-throws Exceptions
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1578'>ACT-1578</a>] -         Update documentation: sort parameter in REST-API method /process-definitions 
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1591'>ACT-1591</a>] -         Referential integrity constraint violation on PROC_INST and IDENTITY_LINK
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1605'>ACT-1605</a>] -         The execution of many processes at once will cause constraint violations with the ID_ field.
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1607'>ACT-1607</a>] -         org.activiti.engine.ActivitiIllegalArgumentException: taskId is null when using taskService.addComment with process instance
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1619'>ACT-1619</a>] -         NullPointerException when no script is given to the script task,leading to process failure
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1620'>ACT-1620</a>] -         My Instances view fails to generate process diagram
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1623'>ACT-1623</a>] -         NPE when eventbased gateway is after referenced event
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1626'>ACT-1626</a>] -         Make not storing variable automatically in scripts the default
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1641'>ACT-1641</a>] -         Process diagram not shown for certain hostnames
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1653'>ACT-1653</a>] -         Deleting candidate users/groups for any user task
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1654'>ACT-1654</a>] -         Camel integration does not handle exceptions propagated back by Camel DefaultErrorHandler 
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1655'>ACT-1655</a>] -         Wrong execution order 
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1656'>ACT-1656</a>] -         Designer puts Task listener class where Execution listener class should be
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1657'>ACT-1657</a>] -         Wrong execution order of execution-listeners on event-based gateway and service-task
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1664'>ACT-1664</a>] -         Parsing results in exception when using textannotation on collaboration tag
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1668'>ACT-1668</a>] -         Auto refresh of task counts after task completion in Explorer
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1669'>ACT-1669</a>] -         Possible NPE in ActivitiDiagramMatchingStrategy
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1673'>ACT-1673</a>] -         CamelBehavior throws Exception when using with StrongUuidGenerator
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1674'>ACT-1674</a>] -         Classloading bug when using ExpressionFactory in OSGI environment
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1679'>ACT-1679</a>] -         Activiti 5.12.1 not compatiable with Mybatis 3.2.2
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1685'>ACT-1685</a>] -         In activiti-web-explorer2, when call method &quot;drawCollapsedCallActivity&quot; throw an error &quot;Object#&lt;Object&gt; has no method &#39;drawCollapsedTask&#39;&quot;
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1688'>ACT-1688</a>] -         Add identity-links to history and allow querying history based on involvedUser
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1690'>ACT-1690</a>] -         NPE when converting to BPMN a model with boundary event that is not attached to a task
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1698'>ACT-1698</a>] -         Activiti fails to build when default charset is Windows-1252
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1702'>ACT-1702</a>] -         Setting the databaseTablePrefix not possible directly on the ProcessEngineConfiguration
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1703'>ACT-1703</a>] -         The &quot;result variable name&quot; attribute of a Java service task is lost when exporting a process
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1709'>ACT-1709</a>] -         Some fields cannot be set directly on the ProcessEngineConfiguration
+</li>
+</ul>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1523'>ACT-1523</a>] -         Always set ProcessDefinitionId available on JobEntity
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1576'>ACT-1576</a>] -         Rest API improvements for getting tasks
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1606'>ACT-1606</a>] -         Create a convenience method in TaskService to set a task&#39;s due date
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1616'>ACT-1616</a>] -         Expose activityID in interface Execution (add a public getter for activityID)
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1642'>ACT-1642</a>] -         Deprecated IMAGE datatype under MS SQL Server
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1672'>ACT-1672</a>] -         Add getKey() to PvmProcessDefinition
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1704'>ACT-1704</a>] -         Option to exclude subprocesses in ProcessInstancesQuery and HistoricProcessInstanceQuery
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1705'>ACT-1705</a>] -         Some methods on the {{ProcessEngineConfiguration}} are not supporting the builder pattern
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1588'>ACT-1588</a>] -         Native query support paging
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1647'>ACT-1647</a>] -         Enable querying TaskService for Tasks including local variables
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1652'>ACT-1652</a>] -         Add support for message start events to the REST-API
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1680'>ACT-1680</a>] -         Support for custom ProcessEngine selection in REST
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1691'>ACT-1691</a>] -         Allow to update process definition category through RepositoryService
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1696'>ACT-1696</a>] -         Provide out of the box LDAP integration
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1706'>ACT-1706</a>] -         Add fullNameLike to UserQuery
+</li>
+</ul>
+        
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1396'>ACT-1396</a>] -         Bring REST api in sync with Java API
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/ACT-1707'>ACT-1707</a>] -         Remove UserCache from Activiti Explorer
+</li>
+</ul>
+        
+   
+   <h3>Release Notes - Activiti - Version 5.12.1</h3>
+   
+   <h4>Highlights</h4>
+   <ul>
+    <li>Fix for ACT-1591, with referential contraint error (<a href="https://jira.codehaus.org/browse/ACT-1591">JIRA link</a>)</li>
+    <li>Resolved javascript JDK 7 issue (<a href="http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/">link to blog post</a>)</li>
+    <li>Small Explorer and Modeler bug fixes</li>
+    <li>Other small fixes</li>
+   </ul>
+   
+   <h4>Important upgrade notes when using script tasks and auto storage of variables</h4>
+   
+   <p>
+    Due to recent changes to the JDK (removing Serializable from sun.org.mozilla.javascript.internal.Undefined), the auto storing of variables is not possible anymore
+    with the built-in Javascript scriping engine. See <a href="http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/">this link</a>
+    for more information. Each script variable that needs to be stored as process variable needs to be explicitely 
+    stored by calling <i>execution.setVariable("variableName", variableValue)</i>. 
+   </p>
+   
+   <p>
+    For backwards compatibility reasons, the old behavior can still be used by setting the <i>autoStoreVariables</i> property
+    on a <i>scriptTask</i> to true. As written in the linked articale from above, this might not work when using a recent JDK version
+    and the built-in Javascript scripting engine.
+   </p>
 
   <h3>Release Notes - Activiti - Version 5.12</h3>
   

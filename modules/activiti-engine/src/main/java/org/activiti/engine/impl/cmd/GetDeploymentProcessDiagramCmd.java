@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -46,7 +45,7 @@ public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Ser
   }
 
   public InputStream execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = Context
+    ProcessDefinitionEntity processDefinition = commandContext
             .getProcessEngineConfiguration()
             .getDeploymentManager()
             .findDeployedProcessDefinitionById(processDefinitionId);

@@ -13,15 +13,15 @@
 
 package org.activiti.camel;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.test.context.ContextConfiguration;
-
-import java.util.Collections;
-import java.util.Map;
 
 @ContextConfiguration("classpath:custom-camel-activiti-context.xml")
 public class CustomContextTest extends SpringActivitiTestCase {
@@ -48,7 +48,6 @@ public class CustomContextTest extends SpringActivitiTestCase {
 
     String instanceId = (String) tpl.requestBody("direct:start", Collections.singletonMap("var1", "ala"));
 
-
     tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
 
     assertProcessEnded(instanceId);
@@ -57,6 +56,5 @@ public class CustomContextTest extends SpringActivitiTestCase {
     Map m = service2.getExchanges().get(0).getIn().getBody(Map.class);
     assertEquals("ala", m.get("var1"));
     assertEquals("var2", m.get("var2"));
-
   }
 }

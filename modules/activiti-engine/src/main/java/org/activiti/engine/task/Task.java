@@ -13,12 +13,14 @@
 package org.activiti.engine.task;
 
 import java.util.Date;
+import java.util.Map;
 
 
 
 /** Represents one task for a human user.
  * 
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public interface Task {
 
@@ -27,20 +29,6 @@ public interface Task {
    */
   int DEFAULT_PRIORITY = 50;
   
-  /**
-   * @deprecated Will be removed in 5.13
-   */
-  int PRIORITY_MINIUM = 0; 
-  /**
-   * @deprecated Will be removed in 5.13
-   */
-  int PRIORITY_NORMAL = 50;
-  
-  /**
-   * @deprecated Will be removed in 5.13
-   */
-  int PRIORITY_MAXIMUM = 100;
-	
   /** DB id of the task. */
 	String getId();
 	
@@ -56,16 +44,10 @@ public interface Task {
   /** Change the description of the task */
 	void setDescription(String description);
 	
-	/** indication of how important/urgent this task is with a number between 
-	 * 0 and 100 where higher values mean a higher priority and lower values mean 
-	 * lower priority: [0..19] lowest, [20..39] low, [40..59] normal, [60..79] high 
-	 * [80..100] highest */
+	/** Indication of how important/urgent this task is */
 	int getPriority();
 	
-  /** indication of how important/urgent this task is with a number between 
-   * 0 and 100 where higher values mean a higher priority and lower values mean 
-   * lower priority: [0..19] lowest, [20..39] low, [40..59] normal, [60..79] high 
-   * [80..100] highest */
+	/** Sets the indication of how important/urgent this task is */
 	void setPriority(int priority);
 	
   /** The {@link User.getId() userId} of the person that is responsible for this task. */
@@ -106,6 +88,12 @@ public interface Task {
 	
 	/** Change due date of the task. */
 	void setDueDate(Date dueDate);
+	
+	/** The category of the task. This is an optional field and allows to 'tag' tasks as belonging to a certain category. */
+	String getCategory();
+	
+	/** Change the category of the task. This is an optional field and allows to 'tag' tasks as belonging to a certain category. */
+	void setCategory(String category);
 
 	/** delegates this task to the given user and sets the {@link #getDelegationState() delegationState} to {@link DelegationState#PENDING}.
 	 * If no owner is set on the task, the owner is set to the current assignee of the task. */
@@ -119,4 +107,19 @@ public interface Task {
   
   /** Indicated whether this task is suspended or not. */
   boolean isSuspended();
+  
+  /** The tenant identifier of this task */
+  String getTenantId();
+  
+  /** The form key for the user task */
+  String getFormKey();
+  
+  /** Change the form key of the task */
+  void setFormKey(String formKey);
+  
+  /** Returns the local task variables if requested in the task query */
+  Map<String, Object> getTaskLocalVariables();
+  
+  /** Returns the process variables if requested in the task query */
+  Map<String, Object> getProcessVariables();
 }

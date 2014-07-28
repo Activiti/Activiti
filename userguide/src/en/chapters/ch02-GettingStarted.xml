@@ -11,7 +11,7 @@
       follow these steps to get the demo setup running with default settings. 
       You'll need a working <ulink url="http://java.sun.com/javase/downloads/index.jsp">Java runtime</ulink> and
       <ulink url="http://tomcat.apache.org/download-70.cgi">Apache Tomcat</ulink> installation (actually, 
-      any web container would work since we only rely on the servlet capablility. But we test on Tomcat primarily).
+      any web container would work since we only rely on the servlet capability. But we test on Tomcat primarily).
       <itemizedlist>
         <listitem>
           <para>Copy the downloaded activiti-explorer.war to the webapps directory of Tomcat.</para>
@@ -145,11 +145,11 @@
         contain all the Activiti jars (and the source jars). The dependencies are not shipped this way.
         The required dependencies of the Activiti engine are (generated using <literal>mvn dependency:tree</literal>):
        <programlisting>
-org.activiti:activiti-engine:jar:5.13-SNAPSHOT
+org.activiti:activiti-engine:jar:5.12.1
 +- org.apache.commons:commons-email:jar:1.2:compile
 |  +- javax.mail:mail:jar:1.4.1:compile
 |  \- javax.activation:activation:jar:1.1:compile
-+- commons-lang:commons-lang:jar:2.4:compile
++- org.apache.commons:commons-lang3:jar:3.1:compile
 +- org.mybatis:mybatis:jar:3.1.1:compile
 +- org.springframework:spring-beans:jar:3.1.2.RELEASE:compile
 |  \- org.springframework:spring-core:jar:3.1.2.RELEASE:compile

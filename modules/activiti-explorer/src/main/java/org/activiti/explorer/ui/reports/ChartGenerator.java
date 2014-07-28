@@ -18,8 +18,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.dussan.vaadin.dcharts.DCharts;
 import org.dussan.vaadin.dcharts.base.elements.XYaxis;
 import org.dussan.vaadin.dcharts.base.elements.XYseries;
@@ -40,6 +38,8 @@ import org.dussan.vaadin.dcharts.options.Options;
 import org.dussan.vaadin.dcharts.options.Series;
 import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -63,7 +63,7 @@ public class ChartGenerator {
     JsonNode titleNode = jsonNode.get("title");
     String title = null;
     if (titleNode != null) {
-      title = titleNode.getTextValue();
+      title = titleNode.textValue();
     }
     
     ChartComponent chartComponent = new ChartComponent(title);
@@ -88,7 +88,7 @@ public class ChartGenerator {
         JsonNode descriptionNode = datasetNode.get("description");
         String description = null;
         if (descriptionNode != null) {
-          description = descriptionNode.getTextValue();
+          description = descriptionNode.textValue();
         }
         JsonNode dataNode = datasetNode.get("data");
         
@@ -100,11 +100,11 @@ public class ChartGenerator {
           Number[] values = new Number[dataNode.size()];
           
           int index = 0;
-          Iterator<String> fieldIterator = dataNode.getFieldNames();
+          Iterator<String> fieldIterator = dataNode.fieldNames();
           while(fieldIterator.hasNext()) {
             String field = fieldIterator.next();
             names[index] = field;
-            values[index] = dataNode.get(field).getNumberValue();
+            values[index] = dataNode.get(field).numberValue();
             index++;
           }
           
@@ -127,18 +127,18 @@ public class ChartGenerator {
   }
 
   protected static Component createChart(JsonNode dataNode, String[] names, Number[] values) {
-    String type = dataNode.get("type").getTextValue();
+    String type = dataNode.get("type").textValue();
     
     JsonNode xAxisNode = dataNode.get("xaxis");
     String xAxis = null;
     if (xAxisNode != null) {
-      xAxis = xAxisNode.getTextValue();
+      xAxis = xAxisNode.textValue();
     }
     
     JsonNode yAxisNode = dataNode.get("yaxis");
     String yAxis = null;
     if (yAxisNode != null) {
-      yAxis = yAxisNode.getTextValue();
+      yAxis = yAxisNode.textValue();
     }
     
     Component chart = null;

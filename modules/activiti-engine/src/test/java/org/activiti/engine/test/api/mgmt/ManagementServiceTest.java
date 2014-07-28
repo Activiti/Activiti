@@ -22,9 +22,9 @@ import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -89,7 +89,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       managementService.executeJob(timerJob.getId());
       fail("RuntimeException from within the script task expected");
     } catch(RuntimeException re) {
-      assertTextPresent("This is an exception thrown from scriptTask", re.getMessage());
+      assertTextPresent("This is an exception thrown from scriptTask", re.getCause().getMessage());
     }
     
     // Fetch the task to see that the exception that occurred is persisted
@@ -217,18 +217,18 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
   public void testDeleteJobThatWasAlreadyAcquired() {
-    ClockUtil.setCurrentTime(new Date());
+    processEngineConfiguration.getClock().setCurrentTime(new Date());
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
     Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     
     // We need to move time at least one hour to make the timer executable
-    ClockUtil.setCurrentTime(new Date(ClockUtil.getCurrentTime().getTime() + 7200000L));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 7200000L));
 
     // Acquire job by running the acquire command manually
     ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
     AcquireJobsCmd acquireJobsCmd = new AcquireJobsCmd(processEngineImpl.getProcessEngineConfiguration().getJobExecutor());
-    CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutorTxRequired();
+    CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     commandExecutor.execute(acquireJobsCmd);
     
     // Try to delete the job. This should fail.
@@ -241,5 +241,12 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     
     // Clean up
     managementService.executeJob(timerJob.getId());
+  }
+  
+  // https://jira.codehaus.org/browse/ACT-1816:
+  // ManagementService doesn't seem to give actual table Name for EventSubscriptionEntity.class
+  public void testGetTableName() {
+	  String table = managementService.getTableName(EventSubscriptionEntity.class);
+	  assertEquals("ACT_RU_EVENT_SUBSCR", table);
   }
 }

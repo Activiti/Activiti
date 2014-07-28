@@ -15,6 +15,7 @@ package org.activiti.engine.test.bpmn.gateway;
 
 import java.util.List;
 
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -110,7 +111,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
    */
   @Deployment
   public void testReceyclingExecutionWithCallActivity() {
-    String processInstanceId = runtimeService.startProcessInstanceByKey("parent-process").getId();
+    runtimeService.startProcessInstanceByKey("parent-process");
     
     // After process start we have two tasks, one from the parent and one from the sub process
     TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc(); 
@@ -133,4 +134,40 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
     //assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).finished().count());    
   }
   
+  // Test to verify ACT-1755
+  @Deployment
+  public void testHistoryTables() {
+	  
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("testHistoryRecords");
+    
+    List<HistoricActivityInstance> history = historyService
+    		.createHistoricActivityInstanceQuery()
+    		.processInstanceId(pi.getId()). list();
+    
+    for (HistoricActivityInstance h: history) {
+    	if (h.getActivityId().equals("parallelgateway2") || h.getActivityId().equals("parallelgateway2")) {
+    		  assertNotNull(h.getEndTime());
+    	}
+    }
+    
+  }
+  
+  @Deployment
+  public void testAsyncBehavior() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
+    waitForJobExecutorToProcessAllJobs(3000, 500);
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+  }
+  
+  /*@Deployment
+  public void testAsyncBehavior() {
+    for (int i = 0; i < 100; i++) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
+    }
+    assertEquals(200, managementService.createJobQuery().count());
+    waitForJobExecutorToProcessAllJobs(120000, 5000);
+    assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  }*/
+    
 }

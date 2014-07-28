@@ -32,4 +32,16 @@ public class CompensateEventDefinition extends EventDefinition {
   public void setWaitForCompletion(boolean waitForCompletion) {
     this.waitForCompletion = waitForCompletion;
   }
+  
+  public CompensateEventDefinition clone() {
+    CompensateEventDefinition clone = new CompensateEventDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(CompensateEventDefinition otherDefinition) {
+    super.setValues(otherDefinition);
+    setActivityRef(otherDefinition.getActivityRef());
+    setWaitForCompletion(otherDefinition.isWaitForCompletion());
+  }
 }

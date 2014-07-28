@@ -18,10 +18,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -34,8 +32,10 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
@@ -146,21 +146,49 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       assertEquals("look at this \n       isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg kajsh dfuieqpgkja rzvkfnjviuqerhogiuvysbegkjz lkhf ais liasduh flaisduh ajiasudh vaisudhv nsfd", comment.getFullMessage());
       assertNotNull(comment.getTime());
 
-      taskService.addComment(taskId, "pid", "one");
-      taskService.addComment(taskId, "pid", "two");
-      
-      Set<String> expectedComments = new HashSet<String>();
-      expectedComments.add("one");
-      expectedComments.add("two");
-      
-      Set<String> comments = new HashSet<String>();
-      for (Comment cmt: taskService.getProcessInstanceComments("pid")) {
-        comments.add(cmt.getFullMessage());
-      }
-      
-      assertEquals(expectedComments, comments);
-
       // Finally, delete task
+      taskService.deleteTask(taskId, true);
+    }
+  }
+  
+  public void testCustomTaskComments() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      Task task = taskService.newTask();
+      task.setOwner("johndoe");
+      taskService.saveTask(task);
+      String taskId = task.getId();
+      
+      identityService.setAuthenticatedUserId("johndoe");
+      String customType1 = "Type1";
+      String customType2 = "Type2";
+      
+      Comment comment = taskService.addComment(taskId, null, "This is a regular comment");
+      Comment customComment1 = taskService.addComment(taskId, null, customType1, "This is a custom comment of type Type1");
+      Comment customComment2 = taskService.addComment(taskId, null, customType1, "This is another Type1 comment");
+      Comment customComment3 = taskService.addComment(taskId, null, customType2, "This is another custom comment. Type2 this time!");
+      
+      assertEquals(CommentEntity.TYPE_COMMENT, comment.getType());
+      assertEquals(customType1, customComment1.getType());
+      assertEquals(customType2, customComment3.getType());
+      
+      assertNotNull(taskService.getComment(comment.getId()));
+      assertNotNull(taskService.getComment(customComment1.getId()));
+      
+      List<Comment> regularComments = taskService.getTaskComments(taskId);
+      assertEquals(1, regularComments.size());
+      assertEquals("This is a regular comment", regularComments.get(0).getFullMessage());
+      
+      List<Event> allComments = taskService.getTaskEvents(taskId);
+      assertEquals(4, allComments.size());
+      
+      List<Comment> type2Comments = taskService.getCommentsByType(customType2);
+      assertEquals(1, type2Comments.size());
+      assertEquals("This is another custom comment. Type2 this time!", type2Comments.get(0).getFullMessage());
+      
+      List<Comment> taskTypeComments = taskService.getTaskComments(taskId, customType1);
+      assertEquals(2, taskTypeComments.size());
+      
+      // Clean up
       taskService.deleteTask(taskId, true);
     }
   }
@@ -182,6 +210,34 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       assertNull(attachment.getProcessInstanceId());
       assertEquals("http://weather.com", attachment.getUrl());
       assertNull(taskService.getAttachmentContent(attachment.getId()));
+      
+      // Finally, clean up
+      taskService.deleteTask(taskId);
+      
+      assertEquals(0, taskService.getTaskComments(taskId).size());
+      assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskId(taskId).list().size());
+
+      taskService.deleteTask(taskId, true);
+    }
+  }
+  
+  public void testSaveTaskAttachment() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      Task task = taskService.newTask();
+      task.setOwner("johndoe");
+      taskService.saveTask(task);
+      String taskId = task.getId();
+      identityService.setAuthenticatedUserId("johndoe");
+      
+      // Fetch attachment and update its name
+      taskService.createAttachment("web page", taskId, null, "weatherforcast", "temperatures and more", "http://weather.com");
+      Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
+      attachment.setName("UpdatedName");
+      taskService.saveAttachment(attachment);
+      
+      // Refetch and verify
+      attachment = taskService.getTaskAttachments(taskId).get(0);
+      assertEquals("UpdatedName", attachment.getName());
       
       // Finally, clean up
       taskService.deleteTask(taskId);
@@ -219,7 +275,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testRap() {
+  public void testMultipleProcessesStarted() {
     
     // Start a few  process instances
     for (int i=0; i<20; i++) {
@@ -242,6 +298,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals("johndoe", task.getOwner());
     assertEquals("joesmoe", task.getAssignee());
     assertEquals(DelegationState.PENDING, task.getDelegationState());
+    
+    // try to complete (should fail)
+    try {
+    	taskService.complete(task.getId());
+    	fail();
+    } catch (ActivitiException e) {}
 
     taskService.resolveTask(taskId);
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -436,7 +498,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals(user.getId(), task.getAssignee());
     
     // Unclaim the task
-    taskService.claim(task.getId(), null);
+    taskService.unclaim(task.getId());
     
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertNull(task.getAssignee());
@@ -539,6 +601,55 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(1, variables.size());
     assertEquals("myValue", variables.get("myParam"));
+  }
+  
+  @Deployment(resources = { 
+  "org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml" })
+public void testCompleteWithParametersTask2() {
+  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
+
+  // Fetch first task
+  Task task = taskService.createTaskQuery().singleResult();
+  assertEquals("First task", task.getName());
+
+  // Complete first task
+  Map<String, Object> taskParams = new HashMap<String, Object>();
+  taskParams.put("myParam", "myValue");
+  taskService.complete(task.getId(), taskParams, false); // Only difference with previous test
+
+  // Fetch second task
+  task = taskService.createTaskQuery().singleResult();
+  assertEquals("Second task", task.getName());
+
+  // Verify task parameters set on execution
+  Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+  assertEquals(1, variables.size());
+  assertEquals("myValue", variables.get("myParam"));
+}
+  
+  @Deployment
+  public void testCompleteWithTaskLocalParameters() {
+  	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTaskLocalVars");
+
+    // Fetch first task
+    Task task = taskService.createTaskQuery().singleResult();
+
+    // Complete first task
+    Map<String, Object> taskParams = new HashMap<String, Object>();
+    taskParams.put("a", 1);
+    taskParams.put("b", 1);
+    taskService.complete(task.getId(), taskParams, true);
+    
+    // Verify vars are not stored process instance wide
+    assertNull(runtimeService.getVariable(processInstance.getId(), "a"));
+    assertNull(runtimeService.getVariable(processInstance.getId(), "b"));
+    
+    // verify script listener has done its job
+    assertEquals(new Integer(2), runtimeService.getVariable(processInstance.getId(), "sum"));
+
+    // Fetch second task
+    task = taskService.createTaskQuery().singleResult();
+
   }
   
   public void testSetAssignee() {
@@ -893,6 +1004,46 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
   }
 
+  public void testSetDueDate() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+
+    //Set the due date to a non-null value
+    Date now = new Date();
+    taskService.setDueDate(task.getId(), now);
+
+    // Fetch task to check if the due date was persisted
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertNotNull(task.getDueDate());
+
+    //Set the due date to null
+    taskService.setDueDate(task.getId(), null);
+
+    // Re-fetch the task to make sure the due date was set to null
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertNull(task.getDueDate());
+
+    taskService.deleteTask(task.getId(), true);
+  }
+
+  public void testSetDueDateUnexistingTaskId() {
+    try {
+      taskService.setDueDate("unexistingtask", new Date());
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+        assertTextPresent("Cannot find task with id unexistingtask", ae.getMessage());
+    }
+  }
+
+  public void testSetDueDateNullTaskId() {
+    try {
+      taskService.setDueDate(null, new Date());
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("taskId is null", ae.getMessage());
+    }
+  }
+
   /**
    * @see http://jira.codehaus.org/browse/ACT-1059
    */
@@ -1128,7 +1279,89 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       
     }
   }
-  
+
+  public void testResolveTaskNullTaskId() {
+    try {
+      taskService.resolveTask(null);
+      fail();
+    } catch (ActivitiException ae) {
+      assertTextPresent("taskId is null", ae.getMessage());
+    }
+  }
+
+  public void testResolveTaskUnexistingTaskId() {
+    try {
+      taskService.resolveTask("blergh");
+      fail();
+    } catch (ActivitiException ae) {
+      assertTextPresent("Cannot find task with id", ae.getMessage());
+    }
+  }
+
+  public void testResolveTaskWithParametersNullParameters() {
+    Task task = taskService.newTask();
+    task.setDelegationState(DelegationState.PENDING);
+    taskService.saveTask(task);
+
+    String taskId = task.getId();
+    taskService.resolveTask(taskId, null);
+
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      historyService.deleteHistoricTaskInstance(taskId);
+    }
+
+    // Fetch the task again
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+
+    taskService.deleteTask(taskId, true);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void testResolveTaskWithParametersEmptyParameters() {
+    Task task = taskService.newTask();
+    task.setDelegationState(DelegationState.PENDING);
+    taskService.saveTask(task);
+
+    String taskId = task.getId();
+    taskService.resolveTask(taskId, Collections.EMPTY_MAP);
+
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      historyService.deleteHistoricTaskInstance(taskId);
+    }
+
+    // Fetch the task again
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    assertEquals(DelegationState.RESOLVED, task.getDelegationState());
+
+    taskService.deleteTask(taskId, true);
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml" })
+  public void testResolveWithParametersTask() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
+
+    // Fetch first task
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("First task", task.getName());
+
+    task.delegate("johndoe");
+
+    // Resolve first task
+    Map<String, Object> taskParams = new HashMap<String, Object>();
+    taskParams.put("myParam", "myValue");
+    taskService.resolveTask(task.getId(), taskParams);
+
+    // Verify that task is resolved
+    task = taskService.createTaskQuery().taskDelegationState(DelegationState.RESOLVED).singleResult();
+    assertEquals("First task", task.getName());
+
+    // Verify task parameters set on execution
+    Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+    assertEquals(1, variables.size());
+    assertEquals("myValue", variables.get("myParam"));
+  }
+
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testDeleteTaskPartOfProcess() {
     runtimeService.startProcessInstanceByKey("oneTaskProcess");
@@ -1171,6 +1404,28 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       assertEquals("The task cannot be deleted because is part of a running process", ae.getMessage());
     }
     
+  }
+  
+  @Deployment
+  public void testFormKeyExpression() {
+  	runtimeService.startProcessInstanceByKey("testFormExpression", CollectionUtil.singletonMap("var", "abc"));
+
+  	Task task = taskService.createTaskQuery().singleResult();
+  	assertEquals("first-form.json", task.getFormKey());
+  	taskService.complete(task.getId());
+  	
+  	task = taskService.createTaskQuery().singleResult();
+  	assertEquals("form-abc.json", task.getFormKey());
+  	
+  	task.setFormKey("form-changed.json");
+  	taskService.saveTask(task);
+  	task = taskService.createTaskQuery().singleResult();
+  	assertEquals("form-changed.json", task.getFormKey());
+  	
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+    	HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+    	assertEquals("form-changed.json", historicTaskInstance.getFormKey());
+  	}
   }
   
 }

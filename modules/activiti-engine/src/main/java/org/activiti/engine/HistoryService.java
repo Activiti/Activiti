@@ -14,10 +14,13 @@
 
 package org.activiti.engine;
 
+import java.util.List;
+
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricDetailQuery;
+import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -25,8 +28,13 @@ import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.NativeHistoricActivityInstanceQuery;
+import org.activiti.engine.history.NativeHistoricDetailQuery;
 import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
 import org.activiti.engine.history.NativeHistoricTaskInstanceQuery;
+import org.activiti.engine.history.NativeHistoricVariableInstanceQuery;
+import org.activiti.engine.history.ProcessInstanceHistoryLog;
+import org.activiti.engine.history.ProcessInstanceHistoryLogQuery;
+import org.activiti.engine.task.IdentityLink;
 
 /** 
  * Service exposing information about ongoing and past process instances.  This is different
@@ -52,9 +60,19 @@ public interface HistoryService {
 
   /** Creates a new programmatic query to search for {@link HistoricDetail}s. */
   HistoricDetailQuery createHistoricDetailQuery();
+
+  /**
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for process definitions.
+   */
+  NativeHistoricDetailQuery createNativeHistoricDetailQuery();
   
   /** Creates a new programmatic query to search for {@link HistoricVariableInstance}s. */
   HistoricVariableInstanceQuery createHistoricVariableInstanceQuery();
+
+  /**
+   * Returns a new {@link org.activiti.engine.query.NativeQuery} for process definitions.
+   */
+  NativeHistoricVariableInstanceQuery createNativeHistoricVariableInstanceQuery();
 
   /** Deletes historic task instance.  This might be useful for tasks that are 
    * {@link TaskService#newTask() dynamically created} and then {@link TaskService#complete(String) completed}. 
@@ -82,5 +100,27 @@ public interface HistoryService {
    * creates a native query to search for {@link HistoricActivityInstance}s via SQL
    */
   NativeHistoricActivityInstanceQuery createNativeHistoricActivityInstanceQuery();
-
+  
+  /**
+   * Retrieves the {@link HistoricIdentityLink}s associated with the given task.
+   * Such an {@link IdentityLink} informs how a certain identity (eg. group or user)
+   * is associated with a certain task (eg. as candidate, assignee, etc.), even if the
+   * task is completed as opposed to {@link IdentityLink}s which only exist for active
+   * tasks.
+   */
+  List<HistoricIdentityLink> getHistoricIdentityLinksForTask(String taskId);
+  
+  /**
+   * Retrieves the {@link HistoricIdentityLink}s associated with the given process instance.
+   * Such an {@link IdentityLink} informs how a certain identity (eg. group or user)
+   * is associated with a certain process instance, even if the instance is completed as 
+   * opposed to {@link IdentityLink}s which only exist for active instances.
+   */
+  List<HistoricIdentityLink> getHistoricIdentityLinksForProcessInstance(String processInstanceId);
+  
+  /**
+   * Allows to retrieve the {@link ProcessInstanceHistoryLog} for one process instance.
+   */
+  ProcessInstanceHistoryLogQuery createProcessInstanceHistoryLogQuery(String processInstanceId);
+  
 }

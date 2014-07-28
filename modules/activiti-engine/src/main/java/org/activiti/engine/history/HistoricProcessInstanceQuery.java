@@ -58,6 +58,9 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /** Only select historic process instance that are not yet finished. */
   HistoricProcessInstanceQuery unfinished();
 
+  /** Only select the historic process instances with which the user with the given id is involved. */
+  HistoricProcessInstanceQuery involvedUser(String userId);
+  
   /** Only select process instances which had a global variable with the given value
    * when they ended. The type only applies to already ended
    * process instances, otherwise use a {@link ProcessInstanceQuery} instead! of
@@ -154,6 +157,15 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   
   /** Only select historic process instance that are started by the given user. */
   HistoricProcessInstanceQuery startedBy(String userId);
+  
+	/** Only select process instances that have the given tenant id. */
+  HistoricProcessInstanceQuery processInstanceTenantId(String tenantId);
+
+	/** Only select process instances with a tenant id like the given one. */
+  HistoricProcessInstanceQuery processInstanceTenantIdLike(String tenantIdLike);
+	
+	/** Only select process instances that do not have a tenant id. */
+  HistoricProcessInstanceQuery processInstanceWithoutTenantId();
 
   /** Order by the process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByProcessInstanceId();
@@ -173,28 +185,31 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /** Order by the duration of the process instance (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByProcessInstanceDuration();
   
+	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricProcessInstanceQuery orderByTenantId();
+  
   /** Only select historic process instances started by the given process
    * instance. {@link ProcessInstance) ids and {@link HistoricProcessInstance}
    * ids match. */
   HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId);
-
-  // below is deprecated and should be removed in 5.12
-
-  /** Only select historic process instances that were started as of the provided
-   * date. (Date will be adjusted to reflect midnight)
-   * @deprecated will be removed in 5.12, use {@link #startedAfter(Date)} and {@link #startedBefore(Date)} instead */
-  HistoricProcessInstanceQuery startDateBy(Date date);
-
-  /** Only select historic process instances that were started on the provided date.
-   * @deprecated will be removed in 5.12, use {@link #startedAfter(Date)} and {@link #startedBefore(Date)} instead */
-  HistoricProcessInstanceQuery startDateOn(Date date);
-
-  /** Only select historic process instances that were finished as of the
-   * provided date. (Date will be adjusted to reflect one second before midnight)
-   * @deprecated will be removed in 5.12, use {@link #startedAfter(Date)} and {@link #startedBefore(Date)} instead */
-  HistoricProcessInstanceQuery finishDateBy(Date date);
-
-  /** Only select historic process instances that were finished on provided date.
-   * @deprecated will be removed in 5.12, use {@link #startedAfter(Date)} and {@link #startedBefore(Date)} instead */
-  HistoricProcessInstanceQuery finishDateOn(Date date);
+  
+  /**
+   * Exclude sub processes from the query result;
+   */
+  HistoricProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses);
+  
+  /**
+   * Include process variables in the process query result
+   */
+  HistoricProcessInstanceQuery includeProcessVariables();
+  
+  /**
+   * Only select process instances with the given name.
+   */
+  HistoricProcessInstanceQuery processInstanceName(String name);
+  
+  /**
+   * Only select process instances with a name like the given value.
+   */
+  HistoricProcessInstanceQuery processInstanceNameLike(String nameLike);
 }

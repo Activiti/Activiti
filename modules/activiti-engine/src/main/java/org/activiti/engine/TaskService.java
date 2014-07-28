@@ -14,6 +14,7 @@ package org.activiti.engine;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -133,6 +134,13 @@ public interface TaskService {
   void claim(String taskId, String userId);
   
   /**
+   * A shortcut to {@link #claim} with null user in order to unclaim the task
+   * @param taskId task to unclaim, cannot be null.
+   * @throws ActivitiObjectNotFoundException when the task doesn't exist. 
+   */
+  void unclaim(String taskId);
+  
+  /**
    * Called when the task is successfully executed.
    * @param taskId the id of the task to complete, cannot be null.
    * @throws ActivitiObjectNotFoundException when no task exists with the given id.
@@ -159,6 +167,19 @@ public interface TaskService {
    * @throws ActivitiObjectNotFoundException when no task exists with the given id.
    */
   void resolveTask(String taskId);
+  
+  /**
+   * Marks that the assignee is done with this task providing the required
+   * variables and that it can be sent back to the owner. Can only be called
+   * when this task is {@link DelegationState#PENDING} delegation. After this
+   * method returns, the {@link Task#getDelegationState() delegationState} is
+   * set to {@link DelegationState#RESOLVED}.
+   * 
+   * @param taskId
+   * @param variables
+   * @throws ProcessEngineException When no task exists with the given id.
+   */
+  void resolveTask(String taskId, Map<String, Object> variables);
 
   /**
    * Called when the task is successfully executed, 
@@ -168,6 +189,17 @@ public interface TaskService {
    * @throws ActivitiObjectNotFoundException when no task exists with the given id.
    */
   void complete(String taskId, Map<String, Object> variables);
+  
+  /**
+   * Called when the task is successfully executed, 
+   * and the required task paramaters are given by the end-user.
+   * @param taskId the id of the task to complete, cannot be null.
+   * @param variables task parameters. May be null or empty.
+   * @param localScope If true, the provided variables will be stored task-local, 
+   * 									 instead of process instance wide (which is the default for {@link #complete(String, Map)}).
+   * @throws ActivitiObjectNotFoundException when no task exists with the given id.
+   */
+  void complete(String taskId, Map<String, Object> variables, boolean localScope);
 
   /**
    * Changes the assignee of the given task to the given userId.
@@ -274,7 +306,16 @@ public interface TaskService {
    * @throws ActivitiObjectNotFoundException when the task doesn't exist.
    */
   void setPriority(String taskId, int priority);
-  
+
+  /**
+   * Changes the due date of the task
+   *
+   * @param taskId id of the task, cannot be null.
+   * @param dueDate the new due date for the task
+   * @throws ActivitiException when the task doesn't exist.
+   */
+  void setDueDate(String taskId, Date dueDate);
+
   /**
    * Returns a new {@link TaskQuery} that can be used to dynamically query tasks.
    */
@@ -305,9 +346,15 @@ public interface TaskService {
 
   /** get a variables and search in the task scope and if available also the execution scopes. */
   Object getVariable(String taskId, String variableName);
+  
+  /** checks whether or not the task has a variable defined with the given name, in the task scope and if available also the execution scopes. */
+  boolean hasVariable(String taskId, String variableName);
 
-  /** get a variables and only search in the task scope.  */
+  /** checks whether or not the task has a variable defined with the given name. */
   Object getVariableLocal(String taskId, String variableName);
+  
+  /** checks whether or not the task has a variable defined with the given name, local task scope only. */
+  boolean hasVariableLocal(String taskId, String variableName);
 
   /** get all variables and search in the task scope and if available also the execution scopes. 
    * If you have many variables and you only need a few, consider using {@link #getVariables(String, Collection)} 
@@ -350,16 +397,45 @@ public interface TaskService {
   void removeVariablesLocal(String taskId, Collection<String> variableNames);
 
   /** Add a comment to a task and/or process instance. */
-  void addComment(String taskId, String processInstanceId, String message);
+  Comment addComment(String taskId, String processInstanceId, String message);
+  
+  /** Add a comment to a task and/or process instance with a custom type. */
+  Comment addComment(String taskId, String processInstanceId, String type, String message);
+  
+  /** 
+   * Returns an individual comment with the given id. Returns null if no comment exists with the given id.
+   */
+  Comment getComment(String commentId);
+  
+  /** Removes all comments from the provided task and/or process instance*/
+  void deleteComments(String taskId, String processInstanceId);
+  
+  /** 
+   * Removes an individual comment with the given id.
+   * @throws ActivitiObjectNotFoundException when no comment exists with the given id. 
+   */
+  void deleteComment(String commentId);
 
   /** The comments related to the given task. */
   List<Comment> getTaskComments(String taskId);
+  
+  /** The comments related to the given task of the given type. */
+  List<Comment> getTaskComments(String taskId, String type);
+  
+  /** All comments of a given type. */
+  List<Comment> getCommentsByType(String type);
 
   /** The all events related to the given task. */
   List<Event> getTaskEvents(String taskId);
+  
+  /** Returns an individual event with the given id. Returns null if no event exists with the given id. */
+  Event getEvent(String eventId);
 
   /** The comments related to the given process instance. */
   List<Comment> getProcessInstanceComments(String processInstanceId);
+
+  /** The comments related to the given process instance. */
+  List<Comment> getProcessInstanceComments(String processInstanceId, String type);
 
   /** Add a new attachment to a task and/or a process instance and use an input stream to provide the content */
   Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content);

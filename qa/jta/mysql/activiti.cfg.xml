@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+  <bean id="dataSource" class="org.activiti.standalone.jta.BitronixDataSourceFactoryBean">
+    <property name="className" value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" />
+    <property name="uniqueName" value="ActivitiDS" />
+    <property name="maxPoolSize" value="20" />
+    <property name="allowLocalTransactions" value="true" />
+    <property name="driverProperties">
+      <!-- MySQL -->
+      <props>
+          <prop key="url">@jdbc.url@</prop>
+          <prop key="user">@jdbc.username@</prop>
+          <prop key="password">@jdbc.password@</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!-- create BTM transaction manager -->
+  <bean id="transactionManager" factory-method="getTransactionManager" class="bitronix.tm.TransactionManagerServices" 
+        destroy-method="shutdown" />
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration">
+    <property name="dataSource" ref="dataSource" />
+    <property name="transactionManager" ref="transactionManager" />
+    <property name="databaseSchemaUpdate" value="true" />
+    <property name="jobExecutorActivate" value="false" />
+    <property name="mailServerPort" value="5025" />
+    <property name="idGenerator">
+      <bean class="org.activiti.engine.impl.persistence.StrongUuidGenerator" />
+    </property>
+  </bean>
+
+</beans>

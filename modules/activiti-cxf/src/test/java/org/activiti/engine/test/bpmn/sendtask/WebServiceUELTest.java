@@ -36,7 +36,7 @@ public class WebServiceUELTest extends AbstractWebServiceTaskTest {
     assertEquals(-1, counter.getCount());
 
     ProcessDefinitionEntity processDefinition = processEngineConfiguration
-      .getCommandExecutorTxRequiresNew()
+      .getCommandExecutor()
       .execute(new Command<ProcessDefinitionEntity>() {
         public ProcessDefinitionEntity execute(CommandContext commandContext) {
           return Context

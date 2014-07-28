@@ -12,6 +12,7 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
 
@@ -54,7 +55,7 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
       xtw.writeStartElement(ELEMENT_MESSAGE);
       String messageId = message.getId();
       // remove the namespace from the message id if set
-      if (messageId.startsWith(model.getTargetNamespace())) {
+      if (model.getTargetNamespace() != null && messageId.startsWith(model.getTargetNamespace())) {
         messageId = messageId.replace(model.getTargetNamespace(), "");
         messageId = messageId.replaceFirst(":", "");
       } else {
@@ -67,7 +68,12 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
         }
       }
       xtw.writeAttribute(ATTRIBUTE_ID, messageId);
-      xtw.writeAttribute(ATTRIBUTE_NAME, message.getName());
+      if (StringUtils.isNotEmpty(message.getName())) {
+        xtw.writeAttribute(ATTRIBUTE_NAME, message.getName());
+      }
+      if (StringUtils.isNotEmpty(message.getItemRef())) {
+        xtw.writeAttribute(ATTRIBUTE_ITEM_REF, message.getItemRef());
+      }
       xtw.writeEndElement();
     }
   }

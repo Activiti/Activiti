@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.runtime;
 
+import java.util.Map;
+
 import org.activiti.engine.repository.ProcessDefinition;
 
 
@@ -38,5 +40,20 @@ public interface ProcessInstance extends Execution {
    * returns true if the process instance is suspended
    */
   boolean isSuspended();
+  
+  /** 
+   * Returns the process variables if requested in the process instance query 
+   */
+  Map<String, Object> getProcessVariables();
+  
+  /** 
+   * The tenant identifier of this process instance 
+   */
+  String getTenantId();
+  
+  /**
+   * Returns the name of this process instance. 
+   */
+  String getName();
   
 }

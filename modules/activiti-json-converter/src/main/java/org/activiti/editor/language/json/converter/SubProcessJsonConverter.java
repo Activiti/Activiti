@@ -18,9 +18,10 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.SubProcess;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -53,7 +54,7 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
     ArrayNode subProcessShapesArrayNode = objectMapper.createArrayNode();
     GraphicInfo graphicInfo = model.getGraphicInfo(flowElement.getId());
     processor.processFlowElements(subProcess.getFlowElements(), model, subProcessShapesArrayNode, 
-        graphicInfo.getX() + subProcessX, graphicInfo.getY() + subProcessY);
+    		graphicInfo.getX(), graphicInfo.getY());
     flowElementNode.put("childShapes", subProcessShapesArrayNode);
   }
   

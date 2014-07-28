@@ -39,7 +39,9 @@
         TASK_DEF_KEY_,
         FORM_KEY_,
         PRIORITY_,
-        DUE_DATE_
+        DUE_DATE_,
+        CATEGORY_,
+        TENANT_ID_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processDefinitionId, jdbcType=VARCHAR},
@@ -58,7 +60,9 @@
         #{taskDefinitionKey ,jdbcType=VARCHAR},
         #{formKey ,jdbcType=VARCHAR},
         #{priority, jdbcType=INTEGER},
-        #{dueDate, jdbcType=TIMESTAMP}
+        #{dueDate, jdbcType=TIMESTAMP},
+        #{category, jdbcType=VARCHAR},
+        #{tenantId, jdbcType=VARCHAR}
       )
   </insert>
 
@@ -79,7 +83,8 @@
       TASK_DEF_KEY_ = #{taskDefinitionKey ,jdbcType=VARCHAR},
       FORM_KEY_ = #{formKey ,jdbcType=VARCHAR},
       PRIORITY_ = #{priority, jdbcType=INTEGER},
-      DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP}
+      DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP},
+      CATEGORY_ = #{category, jdbcType=VARCHAR}
     where ID_ = #{id}
   </update>
 
@@ -88,7 +93,14 @@
   <delete id="deleteHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
     delete from ${prefix}ACT_HI_TASKINST where ID_ = #{id}
   </delete>
-
+  
+  <delete id="bulkDeleteHistoricTaskInstance" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_HI_TASKINST where
+    <foreach item="task" collection="list" index="index" separator=" or ">
+        ID_ = #{task.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  
   <!-- HISTORIC TASK INSTANCE RESULT MAP -->
 
   <resultMap id="historicTaskInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
@@ -110,6 +122,45 @@
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER" />
     <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP" />
+    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="historicTaskInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="parentTaskId" column="PARENT_TASK_ID_" jdbcType="VARCHAR" />
+    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
+    <result property="owner" column="OWNER_" jdbcType="VARCHAR" />
+    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR" />
+    <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
+    <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
+    <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
+    <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
+    <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR" />
+    <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
+    <result property="priority" column="PRIORITY_" jdbcType="INTEGER" />
+    <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP" />
+    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
+      <id property="id" column="VAR_ID_"/>
+      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
+      <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+      <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
+      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
+      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
+      <result property="taskId" column="VAR_TASK_ID_" jdbcType="VARCHAR" />
+      <result property="byteArrayRef" column="VAR_BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
+      <result property="doubleValue" column="VAR_DOUBLE_" jdbcType="DOUBLE" />
+      <result property="textValue" column="VAR_TEXT_" jdbcType="VARCHAR" />
+      <result property="textValue2" column="VAR_TEXT2_" jdbcType="VARCHAR" />
+      <result property="longValue" column="VAR_LONG_" jdbcType="BIGINT" />
+    </collection>
   </resultMap>
 
   <!-- HISTORIC TASK INSTANCE SELECT -->
@@ -126,25 +177,104 @@
 
   <select id="selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
   	${limitBefore}
-    select RES.* ${limitBetween}
+    select distinct RES.* ${limitBetween}
     <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
   </select>
   
   <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">
-    select count(*)
+    select count(RES.ID_)
     <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
   </select>
   
   <sql id="selectHistoricTaskInstancesByQueryCriteriaSql">
     from ${prefix}ACT_HI_TASKINST RES
-    <if test="processFinished || processUnfinished">
+    <include refid="commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
+  </sql>
+  
+  <select id="selectHistoricTaskInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceAndVariablesResultMap">
+    ${limitBefore}
+    select distinct RES.*,
+    VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.VAR_TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
+    VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
+    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, 
+    VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT2_, VAR.LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, VAR.LONG_ as VAR_LONG_
+    ${limitBetween}
+    <include refid="selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <select id="selectHistoricTaskInstancesWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceAndVariablesResultMap">
+    ${limitBefore}
+    select distinct TEMPRES_ID_ as ID_,
+    TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_, TEMPRES_PROC_INST_ID_ as PROC_INST_ID_, TEMPRES_EXECUTION_ID_ as EXECUTION_ID_,
+    TEMPRES_NAME_ as NAME_, TEMPRES_PARENT_TASK_ID_ as PARENT_TASK_ID_,
+    TEMPRES_DESCRIPTION_ as DESCRIPTION_, TEMPRES_OWNER_ as OWNER_, TEMPRES_ASSIGNEE_ as ASSIGNEE_,
+    TEMPRES_START_TIME_ as START_TIME_, TEMPRES_CLAIM_TIME_ as CLAIM_TIME_, TEMPRES_END_TIME_ as END_TIME_,
+    TEMPRES_DURATION_ as DURATION_, TEMPRES_TASK_DEF_KEY_ as TASK_DEF_KEY_, TEMPRES_FORM_KEY_ as FORM_KEY_,
+    TEMPRES_PRIORITY_ as PRIORITY_, TEMPRES_DUE_DATE_ as DUE_DATE_,
+    TEMPRES_DELETE_REASON_ as DELETE_REASON_,
+    TEMPVAR_ID_ as VAR_ID_, TEMPVAR_NAME_ as VAR_NAME_, TEMPVAR_TYPE_ as VAR_TYPE_, TEMPVAR_REV_ as VAR_REV_,
+    TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
+    TEMPVAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, TEMPVAR_DOUBLE_ as VAR_DOUBLE_, 
+    TEMPVAR_TEXT_ as VAR_TEXT_, TEMPVAR_LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, TEMPVAR_TEXT2_ as VAR_TEXT2_, TEMPVAR_LONG_ as VAR_LONG_
+    ${limitOuterJoinBetween}
+    RES.ID_ as TEMPRES_ID_, RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
+    RES.EXECUTION_ID_ as TEMPRES_EXECUTION_ID_, RES.NAME_ as TEMPRES_NAME_ , RES.PARENT_TASK_ID_ as TEMPRES_PARENT_TASK_ID_,
+    RES.DESCRIPTION_ as TEMPRES_DESCRIPTION_, RES.OWNER_ as TEMPRES_OWNER_, RES.ASSIGNEE_ as TEMPRES_ASSIGNEE_,
+    RES.START_TIME_ as TEMPRES_START_TIME_, RES.END_TIME_ as TEMPRES_END_TIME_, RES.CLAIM_TIME_ as TEMPRES_CLAIM_TIME_,
+    RES.DURATION_ as TEMPRES_DURATION_, RES.TASK_DEF_KEY_ as TEMPRES_TASK_DEF_KEY_,
+    RES.FORM_KEY_ as TEMPRES_FORM_KEY_, RES.PRIORITY_ as TEMPRES_PRIORITY_,
+    RES.DUE_DATE_ as TEMPRES_DUE_DATE_, RES.DELETE_REASON_ as TEMPRES_DELETE_REASON_,
+    VAR.ID_ as TEMPVAR_ID_, VAR.NAME_ as TEMPVAR_NAME_, VAR.VAR_TYPE_ as TEMPVAR_TYPE_, VAR.REV_ as TEMPVAR_REV_,
+    VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
+    VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 
+    VAR.TEXT_ as TEMPVAR_TEXT_, VAR.TEXT2_ as TEMPVAR_TEXT2_, VAR.LAST_UPDATED_TIME_ as TEMPVAR_LAST_UPDATED_TIME_, VAR.LONG_ as TEMPVAR_LONG_
+    <include refid="selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <sql id="selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql">  
+    from ${prefix}ACT_HI_TASKINST RES
+    <choose>
+      <when test="includeTaskLocalVariables &amp;&amp; includeProcessVariables">
+        left outer join ${prefix}ACT_HI_VARINST VAR ON RES.ID_ = VAR.TASK_ID_ or RES.PROC_INST_ID_ = VAR.EXECUTION_ID_
+      </when>
+      <otherwise>
+        <if test="includeTaskLocalVariables">
+          left outer join ${prefix}ACT_HI_VARINST VAR ON RES.ID_ = VAR.TASK_ID_
+        </if>
+        <if test="includeProcessVariables">
+          left outer join ${prefix}ACT_HI_VARINST VAR ON RES.PROC_INST_ID_ = VAR.EXECUTION_ID_ and VAR.TASK_ID_ is null
+        </if>
+      </otherwise>
+    </choose>
+    <include refid="commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
+  </sql>
+  
+  <sql id="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
+    <if test="candidateUser != null || candidateGroups != null">
+      inner join ${prefix}ACT_HI_IDENTITYLINK HI on HI.TASK_ID_ = RES.ID_
+    </if>
+    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null">
       inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
     </if>
-    <if test="processDefinitionKey != null || processDefinitionName != null">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionName != null || processDefinitionNameLike != null">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
+    <foreach collection="queryVariableValues" index="index" item="var">
+      <choose>
+        <when test="var.local">
+          inner join ${prefix}ACT_HI_VARINST A${index} on RES.ID_ = A${index}.TASK_ID_ 
+        </when>
+        <otherwise>
+          inner join ${prefix}ACT_HI_VARINST A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_ 
+        </otherwise>
+      </choose>       
+    </foreach>
     <where>
       <if test="taskId != null">
         RES.ID_ = #{taskId}
@@ -155,14 +285,29 @@
       <if test="processDefinitionKey != null">
         and D.KEY_ = #{processDefinitionKey}
       </if>
+      <if test="processDefinitionKeyLike != null">
+        and D.KEY_ like #{processDefinitionKeyLike}
+      </if>
       <if test="processDefinitionName != null">
         and D.NAME_ = #{processDefinitionName}
+      </if>
+      <if test="processDefinitionNameLike != null">
+        and D.NAME_ like #{processDefinitionNameLike}
       </if>
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="processInstanceBusinessKey != null">
+        and HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}
+      </if>
+      <if test="processInstanceBusinessKeyLike != null">
+        and HPI.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}
+      </if>
       <if test="taskDefinitionKey != null">
         and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
+      </if>
+      <if test="taskDefinitionKeyLike != null">
+        and RES.TASK_DEF_KEY_ like #{taskDefinitionKeyLike}
       </if>
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
@@ -203,6 +348,12 @@
       <if test="taskPriority != null">
         and RES.PRIORITY_ = #{taskPriority}
       </if>
+      <if test="taskMinPriority != null">
+        and RES.PRIORITY_ &gt;= #{taskMinPriority}
+      </if>
+      <if test="taskMaxPriority != null">
+        and RES.PRIORITY_ &lt;= #{taskMaxPriority}
+      </if>
       <if test="unfinished">
         and RES.END_TIME_ is null
       </if>
@@ -224,52 +375,158 @@
       <if test="dueAfter != null">
         and RES.DUE_DATE_ &gt; #{dueAfter}
       </if>
-      <foreach collection="variables" index="index" item="var">
-        and exists (
-          select HD.ID_ 
-          from ${prefix}ACT_HI_DETAIL HD 
-          where
-            HD.TYPE_ = 'VariableUpdate' 
-            and HD.NAME_ =  #{var.name}
-            <choose>
-              <when test="var.local">
-                and HD.TASK_ID_ = RES.ID_
-                and HD.REV_ = (select max(HDM.REV_) from ${prefix}ACT_HI_DETAIL HDM where HDM.TASK_ID_ = RES.ID_ and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
-                and HD.TIME_ = (select max(HDM.TIME_) from ${prefix}ACT_HI_DETAIL HDM where HDM.TASK_ID_ = RES.ID_ and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
-              </when>
-              <otherwise>
-                and HD.PROC_INST_ID_ = RES.PROC_INST_ID_ and HD.TASK_ID_ is null
-                and HD.REV_ = (select max(HDM.REV_) from ${prefix}ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = RES.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
-                and HD.TIME_ = (select max(HDM.TIME_) from ${prefix}ACT_HI_DETAIL HDM where HDM.PROC_INST_ID_ = RES.PROC_INST_ID_ and HDM.TASK_ID_ is null and HDM.VAR_TYPE_ = #{var.type} and HDM.NAME_ = #{var.name} and HDM.TYPE_ = 'VariableUpdate')
-              </otherwise>
-            </choose>  
-            <if test="!var.type.equals('null')">
-              and HD.VAR_TYPE_ = #{var.type}
-            </if>
-            <!-- Variable value -->
-            <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
-              and HD.TEXT_ =  #{var.textValue}
-            </if>
-            <if test="var.textValue2 != null">
-              and HD.TEXT2_ = #{var.textValue2}
-            </if>
-            <if test="var.longValue != null">
-              and HD.LONG_ = #{var.longValue}
-            </if>
-            <if test="var.doubleValue != null">
-              and HD.DOUBLE_ = #{var.doubleValue}
-            </if>
-            <!-- Null variable type -->
-            <if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
-              and HD.TEXT_ is null and HD.TEXT2_ is null and HD.LONG_ is null and HD.DOUBLE_ is null and HD.BYTEARRAY_ID_ is null
-            </if>
+      <if test="withoutDueDate">
+        and RES.DUE_DATE_ is null
+      </if>
+      <if test="creationDate != null">
+        and RES.START_TIME_ = #{creationDate}
+      </if>
+      <if test="creationBeforeDate != null">
+        and RES.START_TIME_ &lt; #{creationBeforeDate}
+      </if>
+      <if test="creationAfterDate != null">
+        and RES.START_TIME_ &gt; #{creationAfterDate}
+      </if>
+      <if test="completedDate != null">
+        and RES.END_TIME_ = #{completedDate}
+      </if>
+      <if test="completedBeforeDate != null">
+        and RES.END_TIME_ &lt; #{completedBeforeDate}
+      </if>
+      <if test="completedAfterDate != null">
+        and RES.END_TIME_ &gt; #{completedAfterDate}
+      </if>
+      <if test="category != null">
+        and RES.CATEGORY_ = #{category}
+      </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}
+      </if>
+      <if test="withoutTenantId">
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
+      <if test="candidateUser != null || candidateGroups != null">
+        and RES.ASSIGNEE_ is null
+        and HI.TYPE_ = 'candidate'
+        and
+        (
+          <if test="candidateUser != null">
+            HI.USER_ID_ = #{candidateUser}
+          </if>
+          <if test="candidateUser != null &amp;&amp; candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+            or
+          </if>
+          <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+            HI.GROUP_ID_ IN
+            <foreach item="group" index="index" collection="candidateGroups"
+                     open="(" separator="," close=")">
+              #{group}
+            </foreach>
+          </if>
         )
+      </if>
+      <if test="involvedUser != null">
+        and (
+          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
+          or RES.ASSIGNEE_ = #{involvedUser}
+          or RES.OWNER_ = #{involvedUser}
+          )
+      </if>
+      <foreach item="queryVar" collection="queryVariableValues" index="index">
+        <if test="!queryVar.local">
+          <!-- When process instance variable is queried for, taskId should be null -->
+          and A${index}.TASK_ID_ is null
+        </if>
+        <if test="queryVar.name != null">
+          <!-- Match-all variable-names when name is null -->
+          and A${index}.NAME_= #{queryVar.name}
+        </if>
+        <if test="!queryVar.type.equals('null')">
+          and A${index}.VAR_TYPE_ = #{queryVar.type}
+        </if>
+        <!-- Variable value -->
+        <if test="queryVar.textValue != null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
+          <choose>
+            <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+              and lower(A${index}.TEXT_)
+            </when>
+            <otherwise>
+              and A${index}.TEXT_
+            </otherwise>
+          </choose> 
+          <choose>
+              <when test="queryVar.operator.equals('LIKE')">LIKE</when>
+              <otherwise><include refid="executionVariableOperator" /></otherwise>
+          </choose>          
+          #{queryVar.textValue}
+        </if>
+        <if test="queryVar.textValue2 != null">
+          and A${index}.TEXT2_ 
+          <choose>
+            <when test="queryVar.operator.equals('LIKE')">LIKE</when>
+            <otherwise><include refid="executionVariableOperator" /></otherwise>
+          </choose>          
+          #{queryVar.textValue2}
+        </if>
+        <if test="queryVar.longValue != null">
+          and A${index}.LONG_
+          <include refid="executionVariableOperator" />
+          #{queryVar.longValue}
+        </if>
+        <if test="queryVar.doubleValue != null">
+          and A${index}.DOUBLE_ 
+          <include refid="executionVariableOperator" />
+          #{queryVar.doubleValue}
+        </if>
+        <!-- Null variable type -->
+        <if test="queryVar.textValue == null &amp;&amp; queryVar.textValue2 == null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
+          <choose>
+            <when test="queryVar.operator.equals('NOT_EQUALS')">
+              and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
+            </when>
+            <otherwise>
+              and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+            </otherwise>
+          </choose>          
+        </if>
       </foreach>
     </where>
   </sql>
+  
+  <sql id="executionVariableOperator">
+    <choose>
+      <when test="queryVar.operator.equals('EQUALS')">=</when>
+      <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE')">=</when>
+      <when test="queryVar.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
+      <when test="queryVar.operator.equals('GREATER_THAN')">&gt;</when>
+      <when test="queryVar.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+      <when test="queryVar.operator.equals('LESS_THAN')">&lt;</when>
+      <when test="queryVar.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+   </choose>
+  </sql>
 
   <select id="selectHistoricTaskInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
+    </if>
     ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+  
+  <select id="selectHistoricTaskInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicTaskInstanceResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
   </select>
 
   <select id="selectHistoricTaskInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">

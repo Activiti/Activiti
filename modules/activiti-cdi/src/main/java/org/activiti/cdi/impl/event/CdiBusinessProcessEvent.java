@@ -16,7 +16,7 @@ import java.util.Date;
 
 import org.activiti.cdi.BusinessProcessEvent;
 import org.activiti.cdi.BusinessProcessEventType;
-import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -32,19 +32,23 @@ public class CdiBusinessProcessEvent implements BusinessProcessEvent {
   protected final String executionId;
   protected final BusinessProcessEventType type;
   protected final Date timeStamp;
-
+  protected final VariableScope variableScope;
+  
   public CdiBusinessProcessEvent(String activityId, 
                                      String transitionName,
                                      ProcessDefinition processDefinition, 
-                                     DelegateExecution execution,
+                                     VariableScope execution,
                                      BusinessProcessEventType type,
+                                     String processInstanceId,
+                                     String executionId,
                                      Date timeStamp) {
       this.activityId = activityId;
       this.transitionName = transitionName;
-      this.processInstanceId = execution.getProcessInstanceId();
-      this.executionId = execution.getId();
+      this.processInstanceId = processInstanceId;
+      this.executionId = executionId;
       this.type = type;
       this.timeStamp = timeStamp;
+      this.variableScope = execution;
       this.processDefinition = processDefinition;
   }
   
@@ -86,6 +90,11 @@ public class CdiBusinessProcessEvent implements BusinessProcessEvent {
   @Override
   public String toString() {
     return "Event '" + processDefinition.getKey() + "' ['" + type + "', " + (type == BusinessProcessEventType.TAKE ? transitionName : activityId) + "]";
+  }
+  
+  @Override
+  public VariableScope getVariableScope() {
+    return variableScope;
   }
 
 }

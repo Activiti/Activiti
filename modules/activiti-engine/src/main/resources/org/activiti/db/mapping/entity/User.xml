@@ -27,7 +27,7 @@
       LAST_ = #{lastName ,jdbcType=VARCHAR},
       EMAIL_ = #{email ,jdbcType=VARCHAR},
       PWD_ = #{password ,jdbcType=VARCHAR},
-      PICTURE_ID_ = #{pictureByteArrayId ,jdbcType=VARCHAR}
+      PICTURE_ID_ = #{pictureByteArrayRef ,typeHandler=ByteArrayRefTypeHandler}
     where ID_ = #{id}
       and REV_ = #{revision}
   </update>
@@ -47,7 +47,7 @@
     <result property="lastName" column="LAST_" jdbcType="VARCHAR" />
     <result property="email" column="EMAIL_" jdbcType="VARCHAR" />
     <result property="password" column="PWD_" jdbcType="VARCHAR" />
-    <result property="pictureByteArrayId" column="PICTURE_ID_" jdbcType="VARCHAR" />
+    <result property="pictureByteArrayRef" column="PICTURE_ID_" typeHandler="ByteArrayRefTypeHandler" />
   </resultMap>
   
   <!-- USER SELECT -->
@@ -91,6 +91,9 @@
       <if test="lastNameLike != null">
         and RES.LAST_ like #{lastNameLike}
       </if>
+      <if test="fullNameLike != null">
+        and (RES.FIRST_ like #{fullNameLike} or RES.LAST_ like #{fullNameLike})
+      </if>
       <if test="email != null">
         and RES.EMAIL_ = #{email}
       </if>
@@ -101,10 +104,34 @@
         and G.ID_ = #{groupId}
       </if>
       <if test="procDefId != null">
-        and exists (select ID_ from ${prefix} ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and USER_ID_=RES.ID_ )
+        and exists (select ID_ from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and USER_ID_=RES.ID_ )
       </if>
       
     </where>
   </sql>
+
+  <select id="selectUserByNativeQuery" parameterType="java.util.Map" resultMap="userResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectUserByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="userResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectUserCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
   
 </mapper>

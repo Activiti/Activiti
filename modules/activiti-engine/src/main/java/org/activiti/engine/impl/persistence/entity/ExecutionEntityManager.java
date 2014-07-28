@@ -13,14 +13,15 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.AbstractVariableQueryImpl;
+import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -94,22 +95,55 @@ public class ExecutionEntityManager extends AbstractManager {
     return (ExecutionEntity) getDbSqlSession().selectById(ExecutionEntity.class, executionId);
   }
   
-  public long findExecutionCountByQueryCriteria(AbstractVariableQueryImpl executionQuery) {
+  public long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery) {
     return (Long) getDbSqlSession().selectOne("selectExecutionCountByQueryCriteria", executionQuery);
   }
 
   @SuppressWarnings("unchecked")
-  public List<ExecutionEntity> findExecutionsByQueryCriteria(AbstractVariableQueryImpl executionQuery, Page page) {
+  public List<ExecutionEntity> findExecutionsByQueryCriteria(ExecutionQueryImpl executionQuery, Page page) {
     return getDbSqlSession().selectList("selectExecutionsByQueryCriteria", executionQuery, page);
   }
 
-  public long findProcessInstanceCountByQueryCriteria(AbstractVariableQueryImpl executionQuery) {
+  public long findProcessInstanceCountByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
     return (Long) getDbSqlSession().selectOne("selectProcessInstanceCountByQueryCriteria", executionQuery);
   }
   
   @SuppressWarnings("unchecked")
-  public List<ProcessInstance> findProcessInstanceByQueryCriteria(AbstractVariableQueryImpl executionQuery, Page page) {
-    return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery, page);
+  public List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
+    return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
+    // paging doesn't work for combining process instances and variables due to an outer join, so doing it in-memory
+    if (executionQuery.getFirstResult() < 0 || executionQuery.getMaxResults() <= 0) {
+      return Collections.EMPTY_LIST;
+    }
+    
+    int firstResult = executionQuery.getFirstResult();
+    int maxResults = executionQuery.getMaxResults();
+    
+    // setting max results, limit to 20000 results for performance reasons
+    executionQuery.setMaxResults(20000);
+    executionQuery.setFirstResult(0);
+    
+    List<ProcessInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectProcessInstanceWithVariablesByQueryCriteria", 
+        executionQuery, executionQuery.getFirstResult(), executionQuery.getMaxResults());
+    
+    if (instanceList != null && instanceList.size() > 0) {
+      if (firstResult > 0) {
+        if (firstResult <= instanceList.size()) {
+          int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
+          return instanceList.subList(firstResult, toIndex);
+        } else {
+          return Collections.EMPTY_LIST;
+        }
+      } else {
+        int toIndex = Math.min(maxResults, instanceList.size());
+        return instanceList.subList(0, toIndex);
+      }
+    }
+    return Collections.EMPTY_LIST;
   }
 
   @SuppressWarnings("unchecked")
@@ -117,6 +151,7 @@ public class ExecutionEntityManager extends AbstractManager {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("activityId", activityRef);
     parameters.put("parentExecutionId", parentExecutionId);
+    
     return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parameters);
   }
 
@@ -132,6 +167,13 @@ public class ExecutionEntityManager extends AbstractManager {
 
   public long findExecutionCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectExecutionCountByNativeQuery", parameterMap);
+  }
+  
+  public void updateExecutionTenantIdForDeployment(String deploymentId, String newTenantId) {
+  	HashMap<String, Object> params = new HashMap<String, Object>();
+  	params.put("deploymentId", deploymentId);
+  	params.put("tenantId", newTenantId);
+  	getDbSqlSession().update("updateExecutionTenantIdForDeployment", params);
   }
 
 }

@@ -13,13 +13,18 @@
 
 package org.activiti.engine.test.bpmn.callactivity;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
@@ -57,6 +62,33 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     // Completing this task end the process instance
     taskService.complete(taskAfterSubProcess.getId());
     assertProcessEnded(processInstance.getId());
+    
+    // Validate subprocess history
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+    	// Subprocess should have initial activity set
+    	HistoricProcessInstance historicProcess = historyService.createHistoricProcessInstanceQuery()
+    			.processInstanceId(taskInSubProcess.getProcessInstanceId())
+    			.singleResult();
+    	assertNotNull(historicProcess);
+    	assertEquals("theStart", historicProcess.getStartActivityId());
+    	
+    	List<HistoricActivityInstance> historicInstances = historyService.createHistoricActivityInstanceQuery()
+    			.processInstanceId(taskInSubProcess.getProcessInstanceId())
+    			.list();
+    	
+    	// Should contain a start-event, the task and an end-event
+    	assertEquals(3L, historicInstances.size());
+      Set<String> expectedActivities = new HashSet<String>(Arrays.asList(new String[] {
+      		"theStart",
+      		"task",
+      		"theEnd"
+      }));
+      
+      for(HistoricActivityInstance act : historicInstances) {
+      	expectedActivities.remove(act.getActivityId());
+      }
+      assertTrue("Not all expected activities were found in the history", expectedActivities.isEmpty());
+    }
   }
   
   @Deployment(resources = { "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallSimpleSubProcessWithExpressions.bpmn20.xml",
@@ -201,7 +233,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     "org/activiti/engine/test/bpmn/callactivity/CallActivity.testTimerOnCallActivity.bpmn20.xml",
     "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml"})
   public void testTimerOnCallActivity() {
-    Date startTime = ClockUtil.getCurrentTime();
+    Date startTime = processEngineConfiguration.getClock().getCurrentTime();
     
     // After process start, the task in the subprocess should be active
     runtimeService.startProcessInstanceByKey("timerOnCallActivity");
@@ -210,7 +242,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     assertEquals("Task in subprocess", taskInSubProcess.getName());
     
     // When the timer on the subprocess is fired, the complete subprocess is destroyed
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
     waitForJobExecutorToProcessAllJobs(10000, 5000L);
     
     Task escalatedTask = taskQuery.singleResult();

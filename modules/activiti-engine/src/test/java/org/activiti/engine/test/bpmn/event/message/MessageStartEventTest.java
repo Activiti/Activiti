@@ -37,7 +37,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
       .deploy()
       .getId();
     
-    List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired())
+    List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor())
       .list();
     
     assertEquals(1, eventSubscriptions.size());
@@ -72,9 +72,9 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
         .createDeployment()
         .addClasspathResource("org/activiti/engine/test/bpmn/event/message/testSameMessageNameInSameProcessFails.bpmn20.xml")
         .deploy();
-      fail("exception expected");
+      fail("exception expected: Cannot have more than one message event subscription with name 'newInvoiceMessage' for scope");
     }catch (ActivitiException e) {
-      assertTrue(e.getMessage().contains("Cannot have more than one message event subscription with name 'newInvoiceMessage' for scope"));
+      e.printStackTrace();
     }        
   }
   
@@ -85,7 +85,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
       .deploy()
       .getId();
     
-    List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired()).list();
+    List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
         
     assertEquals(1, eventSubscriptions.size());
@@ -97,7 +97,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
       .deploy()
       .getId();
     
-    List<EventSubscriptionEntity> newEventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired()).list();
+    List<EventSubscriptionEntity> newEventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
     List<ProcessDefinition> newProcessDefinitions = repositoryService.createProcessDefinitionQuery().list();
         
     assertEquals(1, newEventSubscriptions.size());

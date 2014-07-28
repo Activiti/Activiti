@@ -13,37 +13,16 @@
 
 package org.activiti.engine.impl.cfg;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
-import org.activiti.engine.impl.interceptor.LogInterceptor;
-
 
 /**
  * @author Tom Baeyens
  */
 public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
-  protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
-    return createDefaultCommandInterceptors(true);
-  }
-  
-  protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequiresNew() {
-    return createDefaultCommandInterceptors(false);
-  }
-  
-  protected Collection< ? extends CommandInterceptor> createDefaultCommandInterceptors(boolean contextReusePossible) {
-    List<CommandInterceptor> defaultCommandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
-    defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
-    
-    CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor(commandContextFactory, this);
-    commandContextInterceptor.setContextReusePossible(contextReusePossible);
-    defaultCommandInterceptorsTxRequired.add(commandContextInterceptor);
-    
-    return defaultCommandInterceptorsTxRequired;
+  @Override
+  protected CommandInterceptor createTransactionInterceptor() {
+    return null;
   }
   
 }

@@ -15,7 +15,6 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
@@ -23,6 +22,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.impl.variable.CacheableVariable;
+import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
@@ -32,12 +33,14 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
         HistoricVariableInstanceQuery {
 
   private static final long serialVersionUID = 1L;
+  protected String id;
   protected String taskId;
   protected String processInstanceId;
   protected String activityInstanceId;
   protected String variableName;
   protected String variableNameLike;
   protected boolean excludeTaskRelated = false;
+  protected boolean excludeVariableInitialization = false;
   protected QueryVariableValue queryVariableValue;
 
   public HistoricVariableInstanceQueryImpl() {
@@ -49,6 +52,11 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
 
   public HistoricVariableInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
+  }
+  
+  public HistoricVariableInstanceQuery id(String id) {
+    this.id = id;
+    return this;
   }
 
   public HistoricVariableInstanceQueryImpl processInstanceId(String processInstanceId) {
@@ -81,6 +89,11 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
       throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
     }
     excludeTaskRelated = true;
+    return this;
+  }
+  
+  public HistoricVariableInstanceQuery excludeVariableInitialization() {
+    excludeVariableInitialization = true;
     return this;
   }
 
@@ -122,19 +135,31 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceCountByQueryCriteria(this);
+    return commandContext
+        .getHistoricVariableInstanceEntityManager()
+        .findHistoricVariableInstanceCountByQueryCriteria(this);
   }
 
   public List<HistoricVariableInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
+    
     List<HistoricVariableInstance> historicVariableInstances = commandContext
             .getHistoricVariableInstanceEntityManager()
             .findHistoricVariableInstancesByQueryCriteria(this, page);
-    if (historicVariableInstances!=null) {
+    
+    if (excludeVariableInitialization == false) {
       for (HistoricVariableInstance historicVariableInstance: historicVariableInstances) {
         if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
-          ((HistoricVariableInstanceEntity)historicVariableInstance).getByteArrayValue();
+          HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
+          if(variableEntity != null && variableEntity.getVariableType() != null) {
+            variableEntity.getValue();
+            
+            // make sure JPA entities are cached for later retrieval
+            if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())) {
+              ((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
+            }
+          }
         }
       }
     }

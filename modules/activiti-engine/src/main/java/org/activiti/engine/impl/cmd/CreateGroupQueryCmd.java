@@ -29,7 +29,7 @@ public class CreateGroupQueryCmd implements Command<GroupQuery>, Serializable {
 
   public GroupQuery execute(CommandContext commandContext) {
     return commandContext
-      .getGroupEntityManager()
+      .getGroupIdentityManager()
       .createNewGroupQuery();
   }
 

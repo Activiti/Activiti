@@ -4,7 +4,7 @@
 	xmlns:activiti="http://activiti.org/bpmn" 
 	targetNamespace="Examples">
 	
-	<error id="myError" errorCode="" />
+	<error id="myError" errorCode="33" />
 	<error id="myThrownError" errorCode="23" />
 
 	<process id="boundaryErrorOnEmbeddedSubprocess">

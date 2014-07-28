@@ -13,8 +13,6 @@
 
 package org.activiti.explorer.ui.task;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.util.List;
 
 import org.activiti.engine.IdentityService;
@@ -94,21 +92,20 @@ public class TaskMenuBar extends ToolBar {
     tasksEntry.setCount(tasksCount);
     
     // Queued
-    List<Group> groups = identityService.createGroupQuery().groupMember(user.getId()).list();
+    List<Group> groups = user.getGroups();
     ToolbarPopupEntry queuedItem = addPopupEntry(ENTRY_QUEUED, (i18nManager.getMessage(Messages.TASK_MENU_QUEUED)));
     long queuedCount = 0;
     for (final Group group : groups) {
-      if (group.getType().equals("assignment")) {
-        long groupCount = new QueuedListQuery(group.getId()).size(); 
-        
-        queuedItem.addMenuItem(group.getName() + " (" + groupCount + ")", new ToolbarCommand() {
-          public void toolBarItemSelected() {
-            viewManager.showQueuedPage(group.getId());
-          }
-        });
-        
-        queuedCount += groupCount;
-      }
+      long groupCount = new QueuedListQuery(group.getId()).size();
+
+      queuedItem.addMenuItem(group.getName() + " (" + groupCount + ")", new ToolbarCommand() {
+
+        public void toolBarItemSelected() {
+          viewManager.showQueuedPage(group.getId());
+        }
+      });
+
+      queuedCount += groupCount;
     }
     queuedItem.setCount(queuedCount);
     

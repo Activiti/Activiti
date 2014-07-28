@@ -13,8 +13,6 @@
 
 package org.activiti.engine.impl.interceptor;
 
-
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.slf4j.Logger;
@@ -23,13 +21,11 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Tom Baeyens
  */
-public class CommandContextInterceptor extends CommandInterceptor {
-  
-  private final Logger log = LoggerFactory.getLogger(CommandContextInterceptor.class);
+public class CommandContextInterceptor extends AbstractCommandInterceptor {
+  private static final Logger log = LoggerFactory.getLogger(CommandContextInterceptor.class);
 
   protected CommandContextFactory commandContextFactory;
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
-  protected boolean isContextReusePossible; // For backwards compatibility, the default is 'false'
 
   public CommandContextInterceptor() {
   }
@@ -39,17 +35,17 @@ public class CommandContextInterceptor extends CommandInterceptor {
     this.processEngineConfiguration = processEngineConfiguration;
   }
 
-  public <T> T execute(Command<T> command) {
+  public <T> T execute(CommandConfig config, Command<T> command) {
     CommandContext context = Context.getCommandContext();
     
     boolean contextReused = false;
     // We need to check the exception, because the transaction can be in a rollback state,
     // and some other command is being fired to compensate (eg. decrementing job retries)
-    if (!isContextReusePossible || context == null || context.getException() != null) { 
+    if (!config.isContextReusePossible() || context == null || context.getException() != null) { 
     	context = commandContextFactory.createCommandContext(command);    	
     }  
     else {
-    	log.debug("Valid context found. Reusing it for the current comment '{}'", command.getClass().getCanonicalName());
+    	log.debug("Valid context found. Reusing it for the current command '{}'", command.getClass().getCanonicalName());
     	contextReused = true;
     }
 
@@ -58,7 +54,7 @@ public class CommandContextInterceptor extends CommandInterceptor {
       Context.setCommandContext(context);
       Context.setProcessEngineConfiguration(processEngineConfiguration);
       
-      return next.execute(command);
+      return next.execute(config, command);
       
     } catch (Exception e) {
     	
@@ -79,29 +75,6 @@ public class CommandContextInterceptor extends CommandInterceptor {
     return null;
   }
   
-//  public <T> T execute(Command<T> command) {
-//    CommandContext context = commandContextFactory.createCommandContext(command);
-//
-//    try {
-//      Context.setCommandContext(context);
-//      Context.setProcessEngineConfiguration(processEngineConfiguration);
-//      return next.execute(command);
-//      
-//    } catch (Exception e) {
-//      context.exception(e);
-//      
-//    } finally {
-//      try {
-//        context.close();
-//      } finally {
-//        Context.removeCommandContext();
-//        Context.removeProcessEngineConfiguration();
-//      }
-//    }
-//    
-//    return null;
-//  }
-  
   public CommandContextFactory getCommandContextFactory() {
     return commandContextFactory;
   }
@@ -117,15 +90,4 @@ public class CommandContextInterceptor extends CommandInterceptor {
   public void setProcessEngineContext(ProcessEngineConfigurationImpl processEngineContext) {
     this.processEngineConfiguration = processEngineContext;
   }
-
-  
-  public boolean isContextReusePossible() {
-    return isContextReusePossible;
-  }
-
-  
-  public void setContextReusePossible(boolean isContextReusePossible) {
-    this.isContextReusePossible = isContextReusePossible;
-  }
-  
 }

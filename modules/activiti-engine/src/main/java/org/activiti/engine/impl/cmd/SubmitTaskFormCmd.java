@@ -30,11 +30,13 @@ public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
   
   protected String taskId;
   protected Map<String, String> properties;
-  
-  public SubmitTaskFormCmd(String taskId, Map<String, String> properties) {
+  protected boolean completeTask;
+
+  public SubmitTaskFormCmd(String taskId, Map<String, String> properties, boolean completeTask) {
     super(taskId);
     this.taskId = taskId;
     this.properties = properties;
+    this.completeTask = completeTask;
   }
   
   protected Object execute(CommandContext commandContext, TaskEntity task) {
@@ -43,8 +45,10 @@ public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
     
     TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
     taskFormHandler.submitFormProperties(properties, task.getExecution());
-    
-    task.complete();
+
+    if (completeTask) {
+      task.complete(properties, false);
+    }
 
     return null;
   }

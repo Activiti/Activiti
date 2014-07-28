@@ -34,7 +34,8 @@
         ASSIGNEE_,
         START_TIME_,
         END_TIME_,
-        DURATION_
+        DURATION_,
+        TENANT_ID_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processDefinitionId, jdbcType=VARCHAR},
@@ -48,7 +49,8 @@
         #{assignee ,jdbcType=VARCHAR},
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
-        #{durationInMillis ,jdbcType=BIGINT}
+        #{durationInMillis ,jdbcType=BIGINT},
+        #{tenantId, jdbcType=VARCHAR}
       )
   </insert>
 
@@ -68,7 +70,7 @@
   <delete id="deleteHistoricActivityInstancesByProcessInstanceId">
     delete from ${prefix}ACT_HI_ACTINST where PROC_INST_ID_ = #{processInstanceId}
   </delete>
-
+  
   <!-- HISTORIC ACTIVITY INSTANCE RESULT MAP -->
 
   <resultMap id="historicActivityInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
@@ -85,6 +87,7 @@
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- HISTORIC ACTIVITY INSTANCE SELECT -->
@@ -102,7 +105,7 @@
   </select>
   
   <select id="selectHistoricActivityInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultType="long">
-    select count(*)
+    select count(RES.ID_)
     <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
   </select>
   
@@ -133,6 +136,15 @@
       <if test="assignee != null">
         and RES.ASSIGNEE_ = #{assignee}
       </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}
+      </if>
+      <if test="withoutTenantId">
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
       <if test="unfinished">
         and RES.END_TIME_ is null
       </if>
@@ -143,7 +155,23 @@
   </sql>
   
   <select id="selectHistoricActivityInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicActivityInstanceResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+    	${limitBefore}
+    </if>
     ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+    	${limitAfter}
+    </if>
+  </select>
+  
+  <select id="selectHistoricActivityInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicActivityInstanceResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+        ${limitBeforeNativeQuery}
+  	</if>
+  	${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+  		${limitAfter}
+  	</if>
   </select>
 
   <select id="selectHistoricActivityInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">

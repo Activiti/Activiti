@@ -119,7 +119,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
     StartFormData startForm = formService.getStartFormData(procDefId);
     assertNotNull(startForm);
-    assertEquals(deploymentId, startForm.getDeploymentId());
+    assertEquals(deploymentIdFromDeploymentAnnotation, startForm.getDeploymentId());
     assertEquals("org/activiti/engine/test/api/form/start.form", startForm.getFormKey());
     assertEquals(new ArrayList<FormProperty>(), startForm.getFormProperties());
     assertEquals(procDefId, startForm.getProcessDefinition().getId());
@@ -142,7 +142,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().singleResult();
     String taskId = task.getId();
     TaskFormData taskForm = formService.getTaskFormData(taskId);
-    assertEquals(deploymentId, taskForm.getDeploymentId());
+    assertEquals(deploymentIdFromDeploymentAnnotation, taskForm.getDeploymentId());
     assertEquals("org/activiti/engine/test/api/form/task.form", taskForm.getFormKey());
     assertEquals(new ArrayList<FormProperty>(), taskForm.getFormProperties());
     assertEquals(taskId, taskForm.getTask().getId());
@@ -168,6 +168,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     properties.put("speaker", "Mike"); // variable name mapping
     properties.put("duration", "45"); // type conversion
     properties.put("free", "true"); // type conversion
+    properties.put("double", "45.5"); // type conversion
 
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
     String processInstanceId = formService.submitStartFormData(procDefId, properties).getId();
@@ -177,6 +178,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     expectedVariables.put("SpeakerName", "Mike");
     expectedVariables.put("duration", new Long(45));
     expectedVariables.put("free", Boolean.TRUE);
+    expectedVariables.put("double", 45.5d);
 
     Map<String, Object> variables = runtimeService.getVariables(processInstanceId);
     assertEquals(expectedVariables, variables);
@@ -210,8 +212,12 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     FormProperty propertyFree = formProperties.get(4);
     assertEquals("free", propertyFree.getId());
     assertEquals("true", propertyFree.getValue());
+    
+    FormProperty propertyDouble = formProperties.get(5);
+    assertEquals("double", propertyDouble.getId());
+    assertEquals("45.5", propertyDouble.getValue());
 
-    assertEquals(5, formProperties.size());
+    assertEquals(6, formProperties.size());
 
     try {
       formService.submitTaskFormData(taskId, new HashMap<String, String>());
@@ -238,6 +244,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     expectedVariables.put("SpeakerName", "Mike");
     expectedVariables.put("duration", new Long(45));
     expectedVariables.put("free", Boolean.TRUE);
+    expectedVariables.put("double", 45.5d);
 
     variables = runtimeService.getVariables(processInstanceId);
     address = (Address) variables.remove("address");
@@ -415,5 +422,58 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     assertNotNull(task);
     assertEquals("test", formService.getTaskFormData(task.getId()).getFormKey());
   }
-
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testSubmitTaskFormData() {
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
+    assertEquals(1, processDefinitions.size());
+    ProcessDefinition processDefinition = processDefinitions.get(0);
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinition.getKey());
+    assertNotNull(processInstance);
+    
+    Task task = null;
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("room", "5b");
+    
+    formService.submitTaskFormData(task.getId(), properties);
+    
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNull(task);
+    
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testSaveFormData() {
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
+    assertEquals(1, processDefinitions.size());
+    ProcessDefinition processDefinition = processDefinitions.get(0);
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinition.getKey());
+    assertNotNull(processInstance);
+    
+    Task task = null;
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
+    
+    String taskId = task.getId();
+    
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("room", "5b");
+    
+    Map<String, String> expectedVariables = new HashMap<String, String>();
+    expectedVariables.put("room", "5b");
+    
+    formService.saveFormData(task.getId(), properties);
+    
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals(taskId, task.getId());
+    
+    Map<String, Object> variables = taskService.getVariables(taskId);
+    assertEquals(expectedVariables, variables);
+    
+  }
 }

@@ -34,7 +34,7 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryByEventName() {
     
-    processEngineConfiguration.getCommandExecutorTxRequired()
+    processEngineConfiguration.getCommandExecutor()
       .execute(new Command<Void>() {
         public Void execute(CommandContext commandContext) {
           
@@ -70,7 +70,7 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryByEventType() {
     
-    processEngineConfiguration.getCommandExecutorTxRequired()
+    processEngineConfiguration.getCommandExecutor()
       .execute(new Command<Void>() {
         public Void execute(CommandContext commandContext) {
           
@@ -106,7 +106,7 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
   
   public void testQueryByActivityId() {
     
-    processEngineConfiguration.getCommandExecutorTxRequired()
+    processEngineConfiguration.getCommandExecutor()
       .execute(new Command<Void>() {
         public Void execute(CommandContext commandContext) {
           
@@ -175,11 +175,11 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
   }
 
   protected EventSubscriptionQueryImpl newEventSubscriptionQuery() {
-    return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired());
+    return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
   }
 
   protected void cleanDb() {    
-    processEngineConfiguration.getCommandExecutorTxRequired()
+    processEngineConfiguration.getCommandExecutor()
     .execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         final List<EventSubscriptionEntity> subscriptions = new EventSubscriptionQueryImpl(commandContext).list();

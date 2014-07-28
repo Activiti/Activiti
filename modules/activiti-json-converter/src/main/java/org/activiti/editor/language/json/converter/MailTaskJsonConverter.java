@@ -18,9 +18,10 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ServiceTask;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -75,7 +76,7 @@ public class MailTaskJsonConverter extends BaseBpmnJsonConverter {
       } else {
         field.setStringValue(value);
       }
+      task.getFieldExtensions().add(field);
     }
-    task.getFieldExtensions().add(field);
   }
 }

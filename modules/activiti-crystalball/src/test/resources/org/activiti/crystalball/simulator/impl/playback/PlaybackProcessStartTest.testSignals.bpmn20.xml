@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	targetNamespace="Examples">
+
+	<signal id="alertSignal" name="alert" />
+
+	<process id="catchSignal">
+
+		<startEvent id="start" />
+
+		<sequenceFlow sourceRef="start" targetRef="signalEvent" />
+
+		<intermediateCatchEvent id="signalEvent" name="Alert">
+			<signalEventDefinition signalRef="alertSignal" />
+		</intermediateCatchEvent>
+
+		<sequenceFlow sourceRef="signalEvent" targetRef="end" />
+
+		<endEvent id="end" />
+
+	</process>
+
+    <process id="throwSignal">
+
+        <startEvent id="startThrow"/>
+
+        <sequenceFlow sourceRef="startThrow" targetRef="signalEventThrow"/>
+
+        <intermediateThrowEvent id="signalEventThrow" name="Alert">
+            <signalEventDefinition signalRef="alertSignal"/>
+        </intermediateThrowEvent>
+
+        <sequenceFlow sourceRef="signalEventThrow" targetRef="endThrow"/>
+
+        <endEvent id="endThrow"/>
+
+    </process>
+
+</definitions>

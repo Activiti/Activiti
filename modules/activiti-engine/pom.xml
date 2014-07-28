@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.13-SNAPSHOT</version>
+    <version>5.17-SNAPSHOT</version>
   </parent>
 
   <dependencies>
@@ -19,12 +19,20 @@
       <artifactId>activiti-bpmn-converter</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-process-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-image-generator</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-email</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>org.mybatis</groupId>
@@ -140,15 +148,6 @@
     
   </dependencies>
   
-  <repositories>
-    <!-- This repo declaration is here for as this will be part of the distro -->
-    <repository>
-      <id>activiti</id>
-      <name>Activiti</name>
-      <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-    </repository>
-  </repositories>
-
   <properties>
     <activiti.artifact>
       org.activiti.engine
@@ -161,13 +160,14 @@
       org.junit*;resolution:=optional,
       com.sun*;resolution:=optional,
       javax.persistence*;resolution:=optional,
-      org.apache.commons.mail;resolution:=optional,
-      org.apache.tools.ant*;resolution:=optional,
+      org.apache.commons.mail*;resolution:=optional,
       org.apache.xerces*;resolution:=optional,
-      org.activiti.osgi*;resolution:=optional,
+      org.activiti.camel;resolution:=optional,
+      org.activiti.camel.impl;resolution:=optional,
       org.springframework*;resolution:=optional,
       org.drools*;resolution:=optional,
       com.fasterxml*;resolution:=optional,
+      javax.transaction;resolution:=optional,
     </activiti.osgi.import.additional>
   </properties>
 
@@ -180,6 +180,7 @@
             <exclude>**/*TestCase.java</exclude>
             <exclude>**/RepeatingServiceTaskTest.java</exclude>
           </excludes>
+          <runOrder>alphabetical</runOrder>
         </configuration>
       </plugin>
       <plugin>
@@ -359,6 +360,44 @@
       </build>
     </profile>
     
+    <profile>
+      <id>databasemssql</id>
+      <activation>
+        <property>
+          <name>databasemssql</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <!--
+              only worked with this version, there might be a bug with antrun
+              see http://jira.codehaus.org/browse/MANTRUN-109
+            -->
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="updating activiti configuration to db ${databasemssql}" />
+                    <copy file="${basedir}/../../qa/db/mssql/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${databasemssql}.properties" />
+                    </copy>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
     <!--  Config qa profile -->
     <profile>
       <id>configSpring</id>
@@ -380,9 +419,10 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="updating activiti configuration config to db ${config}" />
-                    <copy file="${basedir}/../../qa/spring/activiti-context.xml" todir="target/test-classes" overwrite="true" />
-                    <delete file="target/test-classes/activiti.cfg.xml" />
+                    <echo message="updating activiti configuration config to db ${database}" />
+                    <copy file="${basedir}/../../qa/spring/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+                    </copy>
                   </tasks>
                 </configuration>
               </execution>
@@ -412,6 +452,7 @@
                 <exclude>**/ProcessDiagramRetrievalTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -452,18 +493,18 @@
 							</configuration>
 						</execution>
 						<execution>
-                <id>database-test-drop-schema</id>
-                <phase>prepare-package</phase>
-                <goals>
-                    <goal>run</goal>
-                </goals>
-                <configuration>
-                    <tasks>
-                        <echo message="dropping schema in ${database}" />
-                        <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
-                    </tasks>
-                </configuration>
-            </execution>
+							<id>database-test-drop-schema</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<tasks>
+									<echo message="dropping schema in ${database}" />
+									<java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+								</tasks>
+							</configuration>
+						</execution>
 					</executions>
 				</plugin>
 				<plugin>
@@ -476,6 +517,7 @@
 							<exclude>**/ProcessDiagramRetrievalTest.java</exclude>
 							<exclude>org/activiti/standalone/**</exclude>
 						</excludes>
+						<runOrder>alphabetical</runOrder>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -484,7 +526,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-jdk14</artifactId>
-				<version>1.6.4</version>
+				<version>1.7.6</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
@@ -526,6 +568,7 @@
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -615,6 +658,7 @@
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -654,12 +698,13 @@
                 <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
                 <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
                 <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485  -->
-                
                 <exclude>**/Historic*InstanceTest.java</exclude>
                 <exclude>**/HistoryServiceTest.java</exclude>
                 <exclude>**/RepeatingServiceTaskTest.java</exclude>
+                <exclude>**/ProcessInstanceLogQueryTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
         </plugins>
@@ -682,6 +727,7 @@
                 <include>**/JdbcMetaDataTest.java</include>
               </includes>
               <excludes />
+              <runOrder>alphabetical</runOrder>
             </configuration>
           </plugin>
           <plugin>
@@ -769,14 +815,14 @@
       <id>mssql</id>
       <activation>
         <property>
-          <name>database</name>
+          <name>databasemssql</name>
           <value>mssql</value>
         </property>
       </activation>
       <dependencies>
         <dependency>
-          <groupId>com.microsoft.sqlserver</groupId>
-          <artifactId>sqljdbc4</artifactId>
+          <groupId>net.sourceforge.jtds</groupId>
+          <artifactId>jtds</artifactId>
           <scope>test</scope>
         </dependency>
       </dependencies>

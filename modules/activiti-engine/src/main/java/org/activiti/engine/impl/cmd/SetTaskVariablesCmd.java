@@ -45,6 +45,9 @@ public class SetTaskVariablesCmd extends NeedsActiveTaskCmd<Object> {
       task.setVariables(variables);
     }
     
+    // ACT-1887: Force an update of the task's revision to prevent simultaneous inserts of the same
+    // variable. If not, duplicate variables may occur since optimistic locking doesn't work on inserts
+    task.forceUpdate();
     return null;
   }
   

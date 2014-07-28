@@ -17,16 +17,11 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.activiti.engine.FormService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.ManagementService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
+
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.test.TestHelper;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.test.mock.ActivitiMockSupport;
 
 
 /** Convenience for ProcessEngine and services initialization in the form of a JUnit base class.
@@ -51,16 +46,17 @@ import org.activiti.engine.impl.util.ClockUtil;
  * in order to verify e.g. e.g. due dates of timers.  Or start, end and duration times
  * in the history service.  In the tearDown, the internal clock will automatically be 
  * reset to use the current system time rather then the time that was set during 
- * a test method.  In other words, you don't have to clean up your own time messing mess ;-)
+ * a test method.
  * </p>
  *  
  * @author Tom Baeyens
  */
-public class ActivitiTestCase extends TestCase {
+public abstract class ActivitiTestCase extends TestCase {
 
   protected String configurationResource = "activiti.cfg.xml";
   protected String deploymentId = null;
 
+  protected ProcessEngineConfiguration processEngineConfiguration;
   protected ProcessEngine processEngine;
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
@@ -69,7 +65,9 @@ public class ActivitiTestCase extends TestCase {
   protected IdentityService identityService;
   protected ManagementService managementService;
   protected FormService formService;
-
+  
+  private ActivitiMockSupport mockSupport;
+  
   /** uses 'activiti.cfg.xml' as it's configuration resource */
   public ActivitiTestCase() {
   }
@@ -85,16 +83,37 @@ public class ActivitiTestCase extends TestCase {
     if (processEngine==null) {
       initializeProcessEngine();
       initializeServices();
+      initializeMockSupport();
     }
     
-    deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
   }
-
+  
+  @Override
+  protected void runTest() throws Throwable {
+  	
+  	// Support for mockup annotations on test method
+  	TestHelper.annotationMockSupportSetup(getClass(), getName(), mockSupport);
+  	
+  	// The deployment of processes denoted by @Deployment should
+  	// be done after the setup(). After all, the mockups must be
+  	// configured in the engine before the actual deployment happens
+  	deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
+  	
+    super.runTest();
+    
+    // Remove deployment
+    TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
+    
+    // Reset mocks
+    TestHelper.annotationMockSupportTeardown(mockSupport);
+  }
+  
   protected void initializeProcessEngine() {
     processEngine = TestHelper.getProcessEngine(getConfigurationResource());
   }
 
   protected void initializeServices() {
+    processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
@@ -103,12 +122,23 @@ public class ActivitiTestCase extends TestCase {
     managementService = processEngine.getManagementService();
     formService = processEngine.getFormService();
   }
+  
+  protected void initializeMockSupport() {
+    if (ActivitiMockSupport.isMockSupportPossible(processEngine)) {
+	  this.mockSupport = new ActivitiMockSupport(processEngine);
+	}
+  }
 
   @Override
   protected void tearDown() throws Exception {
-    TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
 
-    ClockUtil.reset();
+    // Reset any timers
+    processEngineConfiguration.getClock().reset();
+    
+    // Reset any mocks
+    if (mockSupport != null) {
+      mockSupport.reset();
+    }
     
     super.tearDown();
   }
@@ -118,7 +148,7 @@ public class ActivitiTestCase extends TestCase {
   }
   
   public void setCurrentTime(Date currentTime) {
-    ClockUtil.setCurrentTime(currentTime);
+    processEngineConfiguration.getClock().setCurrentTime(currentTime);
   }
   
   public String getConfigurationResource() {
@@ -127,6 +157,14 @@ public class ActivitiTestCase extends TestCase {
   
   public void setConfigurationResource(String configurationResource) {
     this.configurationResource = configurationResource;
+  }
+  
+  public ActivitiMockSupport getMockSupport() {
+	  return mockSupport;
+  }
+  
+  public ActivitiMockSupport mockSupport() {
+  	return mockSupport;
   }
   
 }

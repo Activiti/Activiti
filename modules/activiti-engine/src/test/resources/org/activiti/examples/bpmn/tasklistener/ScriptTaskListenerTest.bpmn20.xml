@@ -10,8 +10,8 @@
 					<activiti:field name="script">
 						<activiti:string>
             	def bar = "BAR";  // local variable
-            	foo = "FOO"; // pushes variable to execution context
-              task.setOwner("kermit"); // test access to task instance
+            	task.getExecution().setVariable('foo', "FOO"); // pushes variable to execution context
+                task.setOwner("kermit"); // test access to task instance
             	bar // implicit return value
             </activiti:string>
 					</activiti:field>

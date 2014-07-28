@@ -25,6 +25,7 @@
          <extensionElements/>
       </messageFlow>
    </collaboration>
+   <message id="messageId" name="messageName"/>
    <process id="Team-Assistenz_16" isClosed="true" isExecutable="false" name="Team-Assistenz">
       <laneSet id="sid-dd806f8c-459f-45fe-8aa4-cd1f68bda452">
          <lane id="lane_16">
@@ -49,7 +50,7 @@
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>
          <outgoing>sequenceFlow_91</outgoing>
-         <messageEventDefinition id="sid-c85360e6-3575-4642-8575-ece877d3d6e2"/>
+         <messageEventDefinition id="sid-c85360e6-3575-4642-8575-ece877d3d6e2" messageRef="messageId"/>
       </startEvent>
       <task completionQuantity="1" id="Rechnung_scannen_und_mailen_36" isForCompensation="false" name="Rechnung scannen und mailen" startQuantity="1">
          <extensionElements>
@@ -78,7 +79,7 @@
          </extensionElements>
          <incoming>sequenceFlow_92</incoming>
          <outgoing>sequenceFlow_94</outgoing>
-         <messageEventDefinition id="sid-57c872b4-d591-4f66-92c4-4300e4362719"/>
+         <messageEventDefinition id="sid-57c872b4-d591-4f66-92c4-4300e4362719" messageRef="messageId"/>
       </intermediateCatchEvent>
       <task completionQuantity="1" id="Freigebenden_zuordnen_57" isForCompensation="false" name="Freigebenden zuordnen" startQuantity="1">
          <extensionElements>
@@ -102,7 +103,7 @@
          </extensionElements>
          <incoming>sequenceFlow_97</incoming>
          <outgoing>sequenceFlow_98</outgoing>
-         <messageEventDefinition id="sid-f57ed9c1-2217-4b6a-9c92-e9b92f71422c"/>
+         <messageEventDefinition id="sid-f57ed9c1-2217-4b6a-9c92-e9b92f71422c" messageRef="messageId"/>
       </intermediateCatchEvent>
       <task completionQuantity="1" id="Kl_ren_und_Ergebnis_festhalten_75" isForCompensation="false" name="Klären und Ergebnis festhalten" startQuantity="1">
          <extensionElements>
@@ -252,7 +253,7 @@
       <startEvent id="Rechnung_eingegangen_138" name="Rechnung&#10;eingegangen">
          <extensionElements/>
          <outgoing>sequenceFlow_187</outgoing>
-         <messageEventDefinition id="sid-95acd6c4-27f0-4ceb-880f-d847c8328b7c"/>
+         <messageEventDefinition id="sid-95acd6c4-27f0-4ceb-880f-d847c8328b7c" messageRef="messageId"/>
       </startEvent>
       <userTask activiti:assignee="kermit" activiti:formKey="assignApprover" completionQuantity="1" id="Freigebenden_zuordnen_143" isForCompensation="false" name="Freigebenden zuordnen" startQuantity="1">
          <extensionElements/>

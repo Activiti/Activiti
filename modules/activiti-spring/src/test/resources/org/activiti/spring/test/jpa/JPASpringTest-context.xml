@@ -5,8 +5,8 @@
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-                           http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx.xsd">
 
   <context:component-scan base-package="org.activiti.spring.test.jpa"/>
 
@@ -25,9 +25,7 @@
   
   <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
     <property name="dataSource" ref="dataSource"/>
-     <property name="persistenceXmlLocation">
-      <value>classpath:/org/activiti/spring/test/jpa/custom-persistence.xml</value>
-    </property>
+     <property name="persistenceXmlLocation" value="classpath:/org/activiti/spring/test/jpa/custom-persistence.xml"/>
     <property name="jpaVendorAdapter">
       <bean class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter">
         <property name="databasePlatform" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
@@ -37,7 +35,7 @@
   
   <bean id="loanRequestBean" class="org.activiti.spring.test.jpa.LoanRequestBean">
   </bean>
-  
+
   <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />

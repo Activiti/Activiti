@@ -47,8 +47,8 @@
       #{variableName, jdbcType=VARCHAR},
       #{revision, jdbcType=VARCHAR},
       #{variableType, jdbcType=VARCHAR},
-      #{time, jdbcType=TIMESTAMP },
-      #{byteArrayValueId, jdbcType=VARCHAR},
+      #{time, jdbcType=TIMESTAMP},
+      #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
       #{doubleValue, jdbcType=DOUBLE},
       #{longValue, jdbcType=BIGINT},
       #{textValue, jdbcType=VARCHAR},
@@ -93,7 +93,7 @@
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
     <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
-    <result property="byteArrayValueId" column="BYTEARRAY_ID_" jdbcType="VARCHAR" />
+    <result property="byteArrayRef" column="BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler" />
     <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
     <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
     <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
@@ -116,13 +116,16 @@
   </select>
   
   <select id="selectHistoricDetailCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultType="long">
-    select count(RES.*)
+    select count(RES.ID_)
     <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
   </select>
   
   <sql id="selectHistoricDetailsByQueryCriteriaSql">
     from ${prefix}ACT_HI_DETAIL RES
     <where>
+      <if test="id != null">
+        RES.ID_ = #{id}
+      </if>
       <if test="processInstanceId != null">
         RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
@@ -151,5 +154,29 @@
       </if>
     </where>
   </sql>
+
+  <select id="selectHistoricDetailByNativeQuery" parameterType="java.util.Map" resultMap="historicDetailResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectHistoricDetailByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicDetailResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectHistoricDetailCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
   
 </mapper>

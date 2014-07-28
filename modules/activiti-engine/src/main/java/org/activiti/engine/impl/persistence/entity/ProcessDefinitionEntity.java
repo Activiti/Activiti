@@ -19,7 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
@@ -48,20 +52,25 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected String category;
   protected String deploymentId;
   protected String resourceName;
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected Integer historyLevel;
   protected StartFormHandler startFormHandler;
   protected String diagramResourceName;
   protected boolean isGraphicalNotationDefined;
   protected Map<String, TaskDefinition> taskDefinitions;
+  protected Map<String, Object> variables;
   protected boolean hasStartFormKey;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
   protected boolean isIdentityLinksInitialized = false;
   protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
   protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
   protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
+  // TODO: serialisation support?
+  protected transient ActivitiEventSupport eventSupport;
   
   public ProcessDefinitionEntity() {
     super(null);
+    eventSupport = new ActivitiEventSupport();
   }
   
   public ExecutionEntity createProcessInstance(String businessKey, ActivityImpl initial) {
@@ -77,12 +86,24 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     processInstance.setProcessDefinition(processDefinition);
     // Do not initialize variable map (let it happen lazily)
 
+    // Set business key (if any)
     if (businessKey != null) {
     	processInstance.setBusinessKey(businessKey);
     }
     
+    // Inherit tenant id (if any)
+    if (getTenantId() != null) {
+    	processInstance.setTenantId(getTenantId());
+    }
+    
     // Reset the process instance in order to have the db-generated process instance id available
     processInstance.setProcessInstance(processInstance);
+    
+    // initialize the template-defined data objects as variables first
+    Map<String, Object> dataObjectVars = getVariables();
+    if (dataObjectVars != null) {
+      processInstance.setVariables(dataObjectVars);
+    }
     
     String authenticatedUserId = Authentication.getAuthenticatedUserId();
     String initiatorVariableName = (String) getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
@@ -90,11 +111,16 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
       processInstance.setVariable(initiatorVariableName, authenticatedUserId);
     }
     if (authenticatedUserId != null) {
-      processInstance.addIdentityLink(authenticatedUserId, IdentityLinkType.STARTER);
+      processInstance.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
     }
     
     Context.getCommandContext().getHistoryManager()
       .recordProcessInstanceStart(processInstance);
+    
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstance));
+    }
     
     return processInstance;
   }
@@ -115,12 +141,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   }
   
   public IdentityLinkEntity addIdentityLink(String userId, String groupId) {
-    IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
+    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
     getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setProcessDef(this);
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(IdentityLinkType.CANDIDATE);
+    identityLinkEntity.insert();
     return identityLinkEntity;
   }
   
@@ -133,8 +160,8 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     for (IdentityLinkEntity identityLink: identityLinks) {
       Context
         .getCommandContext()
-        .getDbSqlSession()
-        .delete(identityLink);
+        .getIdentityLinkEntityManager()
+        .deleteIdentityLink(identityLink, false);
     }
   }
   
@@ -160,6 +187,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();  
     persistentState.put("suspensionState", this.suspensionState);
+    persistentState.put("category", this.category);
     return persistentState;
   }
   
@@ -206,8 +234,16 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   public void setResourceName(String resourceName) {
     this.resourceName = resourceName;
   }
+  
+  public String getTenantId() {
+		return tenantId;
+	}
 
-  public Integer getHistoryLevel() {
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public Integer getHistoryLevel() {
     return historyLevel;
   }
 
@@ -229,6 +265,14 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setTaskDefinitions(Map<String, TaskDefinition> taskDefinitions) {
     this.taskDefinitions = taskDefinitions;
+  }
+
+  public Map<String, Object> getVariables() {
+    return variables;
+  }
+
+  public void setVariables(Map<String, Object> variables) {
+    this.variables = variables;
   }
 
   public String getCategory() {
@@ -308,5 +352,9 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void addCandidateStarterGroupIdExpression(Expression groupId) {
     candidateStarterGroupIdExpressions.add(groupId);
+  }
+  
+  public ActivitiEventSupport getEventSupport() {
+	  return eventSupport;
   }
 }

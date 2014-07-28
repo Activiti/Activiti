@@ -13,11 +13,9 @@
 package org.activiti.engine.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.context.Context;
@@ -33,8 +31,9 @@ import org.activiti.engine.task.TaskQuery;
  * @author Joram Barrez
  * @author Tom Baeyens
  * @author Falko Menge
+ * @author Tijs Rademakers
  */
-public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements TaskQuery {
+public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> implements TaskQuery {
   
   private static final long serialVersionUID = 1L;
   protected String taskId;
@@ -46,31 +45,44 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected Integer minPriority;
   protected Integer maxPriority;
   protected String assignee;
+  protected String assigneeLike;
   protected String involvedUser;
   protected String owner;
+  protected String ownerLike;
   protected boolean unassigned = false;
   protected boolean noDelegationState = false;
   protected DelegationState delegationState;
   protected String candidateUser;
   protected String candidateGroup;
-  private List<String> candidateGroups;
+  protected List<String> candidateGroups;
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
   protected String processInstanceId;
   protected String executionId;
   protected Date createTime;
   protected Date createTimeBefore;
   protected Date createTimeAfter;
+  protected String category;
   protected String key;
   protected String keyLike;
   protected String processDefinitionKey;
+  protected String processDefinitionKeyLike;
   protected String processDefinitionId;
   protected String processDefinitionName;
+  protected String processDefinitionNameLike;
   protected String processInstanceBusinessKey;
-  protected List<TaskQueryVariableValue> variables = new ArrayList<TaskQueryVariableValue>();
+  protected String processInstanceBusinessKeyLike;
   protected Date dueDate;
   protected Date dueBefore;
   protected Date dueAfter;
+  protected boolean withoutDueDate = false;
   protected SuspensionState suspensionState;
   protected boolean excludeSubtasks = false;
+  protected boolean includeTaskLocalVariables = false;
+  protected boolean includeProcessVariables = false;
+  protected String userIdForCandidateAndAssignee;
+  protected boolean bothCandidateAndAssigned = false;
 
   public TaskQueryImpl() {
   }
@@ -82,7 +94,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   public TaskQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
-  
+
   public TaskQueryImpl taskId(String taskId) {
     if (taskId == null) {
       throw new ActivitiIllegalArgumentException("Task id is null");
@@ -155,11 +167,27 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
+  public TaskQueryImpl taskAssigneeLike(String assigneeLike) {
+    if (assigneeLike == null) {
+      throw new ActivitiIllegalArgumentException("Assignee is null");
+    }
+    this.assigneeLike = assigneeLike;
+    return this;
+  }
+  
   public TaskQueryImpl taskOwner(String owner) {
     if (owner == null) {
       throw new ActivitiIllegalArgumentException("Owner is null");
     }
     this.owner = owner;
+    return this;
+  }
+  
+  public TaskQueryImpl taskOwnerLike(String ownerLike) {
+    if (ownerLike == null) {
+      throw new ActivitiIllegalArgumentException("Owner is null");
+    }
+    this.ownerLike = ownerLike;
     return this;
   }
   
@@ -218,7 +246,20 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     this.candidateGroup = candidateGroup;
     return this;
   }
-  
+
+  @Override
+  public TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee) {
+    if (candidateGroup != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
+    }
+    if (candidateUser != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
+    }
+    bothCandidateAndAssigned = true;
+    this.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
+    return this;
+  }
+
   public TaskQuery taskCandidateGroupIn(List<String> candidateGroups) {
     if(candidateGroups == null) {
       throw new ActivitiIllegalArgumentException("Candidate group list is null");
@@ -238,6 +279,27 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
+  public TaskQuery taskTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("task tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public TaskQuery taskTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("task tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public TaskQuery taskWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
+  }
+  
   public TaskQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
     return this;
@@ -245,6 +307,11 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
     this.processInstanceBusinessKey = processInstanceBusinessKey;
+    return this;
+  }
+  
+  public TaskQueryImpl processInstanceBusinessKeyLike(String processInstanceBusinessKeyLike) {
+    this.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
     return this;
   }
   
@@ -268,6 +335,11 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
+  public TaskQuery taskCategory(String category) {
+  	this.category = category;
+  	return this;
+  }
+  
   public TaskQuery taskDefinitionKey(String key) {
     this.key = key;
     return this;
@@ -279,69 +351,92 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   
   public TaskQuery taskVariableValueEquals(String variableName, Object variableValue) {
-    variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true));
-    return this;
+    return variableValueEquals(variableName, variableValue);
   }
   
   public TaskQuery taskVariableValueEquals(Object variableValue) {
-    variables.add(new TaskQueryVariableValue(null, variableValue, QueryOperator.EQUALS, true));
-    return this;
+    return variableValueEquals(variableValue);
   }
   
   public TaskQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
-    if(value == null) {
-      throw new ActivitiIllegalArgumentException("value is null");
-    }
-    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, true));
-    return this;
+    return variableValueEqualsIgnoreCase(name, value);
   }
   
   public TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value) {
-    if(value == null) {
-      throw new ActivitiIllegalArgumentException("value is null");
-    }
-    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, true));
-    return this;
+    return variableValueNotEqualsIgnoreCase(name, value);
   }
 
   public TaskQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
-    variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, true));
-    return this;
+    return variableValueNotEquals(variableName, variableValue);
+  }
+  
+  public TaskQuery taskVariableValueGreaterThan(String name, Object value) {
+    return variableValueGreaterThan(name, value);
+  }
+
+  public TaskQuery taskVariableValueGreaterThanOrEqual(String name, Object value) {
+    return variableValueGreaterThanOrEqual(name, value);
+  }
+
+  public TaskQuery taskVariableValueLessThan(String name, Object value) {
+    return variableValueLessThan(name, value);
+  }
+
+  public TaskQuery taskVariableValueLessThanOrEqual(String name, Object value) {
+    return variableValueLessThanOrEqual(name, value);
+  }
+
+  public TaskQuery taskVariableValueLike(String name, String value) {
+    return variableValueLike(name, value);
   }
 
   public TaskQuery processVariableValueEquals(String variableName, Object variableValue) {
-    variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, false));
-    return this;
+    return variableValueEquals(variableName, variableValue, false);
   }
 
   public TaskQuery processVariableValueNotEquals(String variableName, Object variableValue) {
-    variables.add(new TaskQueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, false));
-    return this;
+    return variableValueNotEquals(variableName, variableValue, false);
   }
   
   public TaskQuery processVariableValueEquals(Object variableValue) {
-    variables.add(new TaskQueryVariableValue(null, variableValue, QueryOperator.EQUALS, false));
-    return this;
+    return variableValueEquals(variableValue, false);
   }
   
   public TaskQuery processVariableValueEqualsIgnoreCase(String name, String value) {
-    if(value == null) {
-      throw new ActivitiIllegalArgumentException("value is null");
-    }
-    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, false));
-    return this;
+    return variableValueEqualsIgnoreCase(name, value, false);
   }
   
   public TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
-    if(value == null) {
-      throw new ActivitiIllegalArgumentException("value is null");
-    }
-    variables.add(new TaskQueryVariableValue(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, false));
-    return this;
+    return variableValueNotEqualsIgnoreCase(name, value, false);
+  }
+  
+  public TaskQuery processVariableValueGreaterThan(String name, Object value) {
+    return variableValueGreaterThan(name, value, false);
+  }
+
+  public TaskQuery processVariableValueGreaterThanOrEqual(String name, Object value) {
+    return variableValueGreaterThanOrEqual(name, value, false);
+  }
+
+  public TaskQuery processVariableValueLessThan(String name, Object value) {
+    return variableValueLessThan(name, value, false);
+  }
+
+  public TaskQuery processVariableValueLessThanOrEqual(String name, Object value) {
+    return variableValueLessThanOrEqual(name, value, false);
+  }
+
+  public TaskQuery processVariableValueLike(String name, String value) {
+    return variableValueLike(name, value, false);
   }
 
   public TaskQuery processDefinitionKey(String processDefinitionKey) {
     this.processDefinitionKey = processDefinitionKey;
+    return this;
+  }
+  
+  public TaskQuery processDefinitionKeyLike(String processDefinitionKeyLike) {
+    this.processDefinitionKeyLike = processDefinitionKeyLike;
     return this;
   }
 
@@ -355,18 +450,31 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
+  public TaskQuery processDefinitionNameLike(String processDefinitionNameLike) {
+    this.processDefinitionNameLike = processDefinitionNameLike;
+    return this;
+  }
+  
   public TaskQuery dueDate(Date dueDate) {
     this.dueDate = dueDate;
+    this.withoutDueDate = false;
     return this;
   }
   
   public TaskQuery dueBefore(Date dueBefore) {
     this.dueBefore = dueBefore;
+    this.withoutDueDate = false;
     return this;
   }
   
   public TaskQuery dueAfter(Date dueAfter) {
     this.dueAfter = dueAfter;
+    this.withoutDueDate = false;
+    return this;
+  }
+  
+  public TaskQuery withoutDueDate() {
+    this.withoutDueDate = true;
     return this;
   }
 
@@ -384,10 +492,22 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     this.suspensionState = SuspensionState.ACTIVE;
     return this;
   }
+  
+  public TaskQuery includeTaskLocalVariables() {
+    this.includeTaskLocalVariables = true;
+    return this;
+  }
+  
+  public TaskQuery includeProcessVariables() {
+    this.includeProcessVariables = true;
+    return this;
+  }
 
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
-      return Collections.singletonList(candidateGroup);
+      List<String> candidateGroupList = new java.util.ArrayList<String>(1);
+      candidateGroupList.add(candidateGroup);
+      return candidateGroupList;
     } else if (candidateUser != null) {
       return getGroupsForCandidateUser(candidateUser);
     } else if(candidateGroups != null) {
@@ -401,7 +521,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     // and explain alternatives
     List<Group> groups = Context
       .getCommandContext()
-      .getGroupEntityManager()
+      .getGroupIdentityManager()
       .findGroupsByUser(candidateUser);
     List<String> groupIds = new ArrayList<String>();
     for (Group group : groups) {
@@ -412,7 +532,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   protected void ensureVariablesInitialized() {    
     VariableTypes types = Context.getProcessEngineConfiguration().getVariableTypes();
-    for(QueryVariableValue var : variables) {
+    for (QueryVariableValue var : queryVariableValues) {
       var.initialize(types);
     }
   }
@@ -455,14 +575,33 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return orderBy(TaskQueryProperty.DUE_DATE);
   }
   
-  //results ////////////////////////////////////////////////////////////////
+  @Override
+  public TaskQuery orderByTenantId() {
+  	return orderBy(TaskQueryProperty.TENANT_ID);
+  }
   
+  public String getMssqlOrDB2OrderBy() {
+    String specialOrderBy = super.getOrderBy();
+    if (specialOrderBy != null && specialOrderBy.length() > 0) {
+      specialOrderBy = specialOrderBy.replace("RES.", "TEMPRES_");
+    }
+    return specialOrderBy;
+  }
+  
+  //results ////////////////////////////////////////////////////////////////
+
   public List<Task> executeList(CommandContext commandContext, Page page) {
     ensureVariablesInitialized();
     checkQueryOk();
-    return commandContext
-      .getTaskEntityManager()
-      .findTasksByQueryCriteria(this);
+    if (includeTaskLocalVariables || includeProcessVariables) {
+      return commandContext
+          .getTaskEntityManager()
+          .findTasksAndVariablesByQueryCriteria(this);
+    } else {
+      return commandContext
+          .getTaskEntityManager()
+          .findTasksByQueryCriteria(this);
+    }
   }
   
   public long executeCount(CommandContext commandContext) {
@@ -535,9 +674,6 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   public String getKeyLike() {
     return keyLike;
   }
-  public List<TaskQueryVariableValue> getVariables() {
-    return variables;
-  }
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
   }
@@ -552,5 +688,17 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   public boolean getExcludeSubtasks() {
     return excludeSubtasks;
+  }
+	public String getTenantId() {
+		return tenantId;
+	}
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+	public boolean isWithoutTenantId() {
+		return withoutTenantId;
+	}
+  public String getUserIdForCandidateAndAssignee() {
+    return userIdForCandidateAndAssignee;
   }
 }

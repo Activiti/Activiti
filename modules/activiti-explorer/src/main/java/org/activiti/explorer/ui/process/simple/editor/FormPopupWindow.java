@@ -17,9 +17,13 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.process.simple.editor.table.PropertyTable;
 import org.activiti.explorer.ui.process.simple.editor.table.TaskFormModel;
-import org.activiti.workflow.simple.definition.FormDefinition;
-import org.activiti.workflow.simple.definition.FormPropertyDefinition;
+import org.activiti.workflow.simple.definition.form.DatePropertyDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
+import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
+import org.activiti.workflow.simple.definition.form.TextPropertyDefinition;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
@@ -106,24 +110,53 @@ public class FormPopupWindow extends Window {
   public FormDefinition createForm() {
     FormDefinition formDefinition = new FormDefinition();
     for (Object itemId : propertyTable.getItemIds()) {
-      FormPropertyDefinition formPropertyDefinition = new FormPropertyDefinition();
-      formPropertyDefinition.setPropertyName((String) propertyTable.getItem(itemId).getItemProperty(PropertyTable.ID_PROPERTY_NAME).getValue());
-      formPropertyDefinition.setType((String) ((ComboBox) propertyTable.getItem(itemId).getItemProperty(PropertyTable.ID_PROPERTY_TYPE).getValue()).getValue());
-      formPropertyDefinition.setRequired((Boolean) ((CheckBox) propertyTable.getItem(itemId).getItemProperty(PropertyTable.ID_PROPERTY_REQUIRED).getValue()).getValue());
+    	
+    	Item item = propertyTable.getItem(itemId);
+      FormPropertyDefinition formPropertyDefinition = getFormPropertyDefinition(item);
       formDefinition.addFormProperty(formPropertyDefinition);
     }
     return formDefinition;
   }
 
-  protected void fillFormFields() {
+  protected FormPropertyDefinition getFormPropertyDefinition(Item item) {
+  	String type = (String) ((ComboBox) item.getItemProperty(PropertyTable.ID_PROPERTY_TYPE).getValue()).getValue();
+  	
+  	FormPropertyDefinition result = null;
+  	if(type.equals("number")) {
+  		result = new NumberPropertyDefinition();
+  	} else if(type.equals("date")) {
+  		result = new DatePropertyDefinition();
+  	} else {
+  		result = new TextPropertyDefinition();
+  	}
+  	
+  	// Set generic properties
+  	result.setName((String) item.getItemProperty(PropertyTable.ID_PROPERTY_NAME).getValue());
+  	result.setMandatory((Boolean) ((CheckBox) item.getItemProperty(PropertyTable.ID_PROPERTY_REQUIRED).getValue()).getValue());
+  	
+  	return result;
+  }
+
+	protected void fillFormFields() {
     FormDefinition form = formModel.getForm(taskItemId);
     if (form == null) {
       propertyTable.addPropertyRow();
     } else {
-      for (FormPropertyDefinition property : form.getFormProperties()) {
-        propertyTable.addPropertyRow(property.getPropertyName(), property.getType(), property.isRequired());
+      for (FormPropertyDefinition property : form.getFormPropertyDefinitions()) {
+        propertyTable.addPropertyRow(property.getName(), getPropertyTypeDisplay(property), property.isMandatory());
       }
     }
   }
+	
+	protected String getPropertyTypeDisplay(FormPropertyDefinition definition) {
+	  if(definition instanceof NumberPropertyDefinition) {
+			return "number";
+		} else if(definition instanceof DatePropertyDefinition) {
+			return "date";
+		} else {
+			// Default
+			return "text";
+		}
+	}
 
 }

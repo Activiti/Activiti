@@ -10,21 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cfg;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import javax.transaction.TransactionManager;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.jta.JtaTransactionContextFactory;
-import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.JtaTransactionInterceptor;
-import org.activiti.engine.impl.interceptor.LogInterceptor;
-
 
 /**
  * @author Tom Baeyens
@@ -33,27 +26,22 @@ public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImp
 
   protected TransactionManager transactionManager;
   
-  @Override
-  protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
-    List<CommandInterceptor> defaultCommandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
-    defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
-    defaultCommandInterceptorsTxRequired.add(new JtaTransactionInterceptor(transactionManager, false));
-    defaultCommandInterceptorsTxRequired.add(new CommandContextInterceptor(commandContextFactory, this));
-    return defaultCommandInterceptorsTxRequired;
+  public JtaProcessEngineConfiguration() {
+    this.transactionsExternallyManaged = true;
   }
 
   @Override
-  protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequiresNew() {
-    List<CommandInterceptor> defaultCommandInterceptorsTxRequiresNew = new ArrayList<CommandInterceptor>();
-    defaultCommandInterceptorsTxRequiresNew.add(new LogInterceptor());
-    defaultCommandInterceptorsTxRequiresNew.add(new JtaTransactionInterceptor(transactionManager, true));
-    defaultCommandInterceptorsTxRequiresNew.add(new CommandContextInterceptor(commandContextFactory, this));
-    return defaultCommandInterceptorsTxRequiresNew;
+  protected CommandInterceptor createTransactionInterceptor() {
+    if (transactionManager==null) {
+      throw new ActivitiException("transactionManager is required property for JtaProcessEngineConfiguration, use "+StandaloneProcessEngineConfiguration.class.getName()+" otherwise");
+    }
+    
+    return new JtaTransactionInterceptor(transactionManager);
   }
-  
+
   @Override
   protected void initTransactionContextFactory() {
-    if(transactionContextFactory == null) {
+    if (transactionContextFactory == null) {
       transactionContextFactory = new JtaTransactionContextFactory(transactionManager);
     }
   }

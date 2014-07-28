@@ -10,9 +10,16 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.13-SNAPSHOT</version>
-
+    <version>5.17-SNAPSHOT</version>
   </parent>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring.mule.version>3.2.10.RELEASE</spring.mule.version>
+    <activiti.artifact>
+      org.activiti.mule
+    </activiti.artifact>
+  </properties>
 
   <build>
     <resources>
@@ -34,21 +41,89 @@
             <propertyName>mule.workingDirectory</propertyName>
             <buildDirectory>${project.build.directory}</buildDirectory>
           </systemPropertyVariables>
+          <runOrder>alphabetical</runOrder>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>cleanVersions</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>
+                      maven-bundle-plugin
+                    </artifactId>
+                    <versionRange>
+                      [2.1.0,)
+                    </versionRange>
+                    <goals>
+                      <goal>cleanVersions</goal>
+                      <goal>manifest</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -56,81 +131,57 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.mule.modules</groupId>
-      <artifactId>mule-module-cxf</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>jcl104-over-slf4j</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>opensaml</groupId>
-          <artifactId>opensaml</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.safehaus.jug</groupId>
-          <artifactId>jug</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>asm</groupId>
-          <artifactId>asm</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.opensaml</groupId>
-      <artifactId>opensaml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.safehaus.jug</groupId>
-      <artifactId>jug</artifactId>
-      <classifier>lgpl</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.mule.tests</groupId>
-      <artifactId>mule-tests-functional</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>jcl104-over-slf4j</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.safehaus.jug</groupId>
-          <artifactId>jug</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-    </dependency>
-    <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
     </dependency>
     <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
+      <version>${spring.mule.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.mule.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.mule.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>${spring.mule.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>${spring.mule.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+      <version>${spring.mule.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jms</artifactId>
+      <version>${spring.mule.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>${spring.mule.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>${spring.mule.version}</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -139,14 +190,31 @@
     </dependency>
     <dependency>
       <groupId>org.mule.transports</groupId>
+      <artifactId>mule-transport-http</artifactId>
+      <version>${mule.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.transports</groupId>
       <artifactId>mule-transport-vm</artifactId>
       <version>${mule.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mule.modules</groupId>
       <artifactId>mule-module-scripting</artifactId>
       <version>${mule.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.modules</groupId>
+      <artifactId>mule-module-spring-security</artifactId>
+      <version>${mule.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.tests</groupId>
+      <artifactId>mule-tests-functional</artifactId>
     </dependency>
   </dependencies>
 
@@ -185,5 +253,14 @@
       </plugin>
     </plugins>
   </reporting>
+  
+  <repositories>
+      <repository>
+          <id>mulesoft-releases</id>
+          <name>MuleSoft Releases Repository</name>
+          <url>http://repository.mulesoft.org/releases/</url>
+          <layout>default</layout>
+      </repository>
+  </repositories>
 
 </project>

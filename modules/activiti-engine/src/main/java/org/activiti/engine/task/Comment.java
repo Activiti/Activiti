@@ -16,15 +16,20 @@ package org.activiti.engine.task;
 import java.util.Date;
 
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricData;
 
 
 /** User comments that form discussions around tasks.
  * 
  * @see {@link TaskService#getTaskComments(String)
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public interface Comment {
+public interface Comment extends HistoricData {
 
+  /** unique identifier for this comment */
+  String getId();
+  
   /** reference to the user that made the comment */ 
   String getUserId();
 
@@ -36,6 +41,9 @@ public interface Comment {
 
   /** reference to the process instance on which this comment was made */ 
   String getProcessInstanceId();
+  
+  /** reference to the type given to the comment */
+  String getType();
 
   /** the full comment message the user had related to the task and/or process instance
    * @see TaskService#getTaskComments(String) */ 

@@ -48,15 +48,21 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     taskService.addCandidateUser(taskId, "kermit");
     taskService.addCandidateUser(taskId, "gonzo");
 
-    // Retrieve task list for jbarrez
+    // Retrieve task list for kermit
     List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
 
-    // Retrieve task list for tbaeyens
+    // Retrieve task list for gonzo
     tasks = taskService.createTaskQuery().taskCandidateUser("gonzo").list();
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
+    
+    task.setName("Update name");
+    taskService.saveTask(task);
+    tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
+    assertEquals(1, tasks.size());
+    assertEquals("Update name", tasks.get(0).getName());
 
     // Claim task
     taskService.claim(taskId, "kermit");

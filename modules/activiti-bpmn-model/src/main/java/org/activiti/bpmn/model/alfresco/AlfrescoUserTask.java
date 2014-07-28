@@ -21,4 +21,16 @@ public class AlfrescoUserTask extends UserTask {
 	public void setScriptProcessor(String scriptProcessor) {
   	this.scriptProcessor = scriptProcessor;
   }
+	
+	public AlfrescoUserTask clone() {
+	  AlfrescoUserTask clone = new AlfrescoUserTask();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(AlfrescoUserTask otherElement) {
+    super.setValues(otherElement);
+    setRunAs(otherElement.getRunAs());
+    setScriptProcessor(otherElement.getScriptProcessor());
+  }
 }

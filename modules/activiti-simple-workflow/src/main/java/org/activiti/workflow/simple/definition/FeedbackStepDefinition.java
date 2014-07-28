@@ -12,9 +12,16 @@
  */
 package org.activiti.workflow.simple.definition;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.workflow.simple.converter.step.FeedbackStepDefinitionConverter;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.activiti.workflow.simple.exception.SimpleWorkflowException;
+
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
@@ -38,9 +45,12 @@ import org.activiti.workflow.simple.converter.step.FeedbackStepDefinitionConvert
  * 
  * @author Joram Barrez
  */
+@JsonTypeName("feedback-step")
 public class FeedbackStepDefinition extends AbstractNamedStepDefinition {
   
-  /**
+  private static final long serialVersionUID = 1L;
+
+	/**
    * The person who want to collect feedback.
    */
   protected String feedbackInitiator;
@@ -69,6 +79,7 @@ public class FeedbackStepDefinition extends AbstractNamedStepDefinition {
     this.feedbackInitiator = feedbackInitiator;
   }
 
+  @JsonSerialize(contentAs=String.class)
   public List<String> getFeedbackProviders() {
     return feedbackProviders;
   }
@@ -93,4 +104,35 @@ public class FeedbackStepDefinition extends AbstractNamedStepDefinition {
     this.formDefinitionForFeedbackProviders = formDefinitionForFeedbackProviders;
   }
   
+  @Override
+  public StepDefinition clone() {
+    FeedbackStepDefinition clone = new FeedbackStepDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  @Override
+  public void setValues(StepDefinition otherDefinition) {
+    if(!(otherDefinition instanceof FeedbackStepDefinition)) {
+      throw new SimpleWorkflowException("An instance of FeedbackStepDefinition is required to set values");
+    }
+    
+    FeedbackStepDefinition stepDefinition = (FeedbackStepDefinition) otherDefinition;
+    setDescription(stepDefinition.getDescription());
+    setDescriptionForFeedbackProviders(stepDefinition.getDescriptionForFeedbackProviders());
+    setFeedbackInitiator(stepDefinition.getFeedbackInitiator());
+    if (stepDefinition.getFeedbackProviders() != null && stepDefinition.getFeedbackProviders().size() > 0) {
+      setFeedbackProviders(new ArrayList<String>(stepDefinition.getFeedbackProviders()));
+    }
+    if (stepDefinition.getFormDefinitionForFeedbackProviders() != null) {
+      setFormDefinitionForFeedbackProviders(stepDefinition.getFormDefinitionForFeedbackProviders().clone());
+    } else {
+      setFormDefinitionForFeedbackProviders(null);
+    }
+    setId(stepDefinition.getId());
+    setName(stepDefinition.getName());
+    setStartsWithPrevious(stepDefinition.isStartsWithPrevious());
+    
+    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
+  }
 }

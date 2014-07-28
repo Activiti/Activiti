@@ -11,24 +11,96 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.13-SNAPSHOT</version>
+    <version>5.17-SNAPSHOT</version>
   </parent>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <activiti.artifact>
+      org.activiti.modeler
+    </activiti.artifact>
   </properties>
+  
+  <repositories>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Public online Restlet repository</name>
+      <url>http://maven.restlet.org</url>
+    </repository>
+  </repositories>
 
   <build>
-	<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<configuration>
-				<source>1.6</source>
-				<target>1.6</target>
-			</configuration>
-		</plugin>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>cleanVersions</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>
+                      maven-bundle-plugin
+                    </artifactId>
+                    <versionRange>
+                      [2.1.0,)
+                    </versionRange>
+                    <goals>
+                      <goal>cleanVersions</goal>
+                      <goal>manifest</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <dependencies>
@@ -46,36 +118,40 @@
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet</artifactId>
+      <version>${restlet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.servlet</artifactId>
+      <version>${restlet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.jackson</artifactId>
+      <version>${restlet.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-core-asl</artifactId>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-mapper-asl</artifactId>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.fileupload</artifactId>
+      <version>${restlet.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
@@ -156,16 +232,4 @@
       </build>
     </profile>
   </profiles>
-  
-  <repositories>
-    <repository>
-      <id>buzzmedia</id>
-      <url>http://maven.thebuzzmedia.com</url> <!-- ImageScalr -->
-    </repository>
-    <repository>
-      <id>Alfresco thirdparty</id>
-      <url>https://maven.alfresco.com/nexus/content/repositories/thirdparty/</url>
-    </repository>
-  </repositories>
-
 </project>

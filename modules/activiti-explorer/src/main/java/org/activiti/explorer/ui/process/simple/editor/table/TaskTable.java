@@ -15,6 +15,9 @@ package org.activiti.explorer.ui.process.simple.editor.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -22,12 +25,14 @@ import org.activiti.explorer.ui.process.simple.editor.listener.AddTaskClickListe
 import org.activiti.explorer.ui.process.simple.editor.listener.DeleteTaskClickListener;
 import org.activiti.explorer.ui.process.simple.editor.listener.ShowFormClickListener;
 import org.activiti.explorer.ui.process.simple.editor.listener.TaskFormModelListener;
-import org.activiti.workflow.simple.definition.FormDefinition;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.form.FormDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -61,8 +66,8 @@ public class TaskTable extends Table implements TaskFormModelListener {
     setPageLength(0);
 
     addContainerProperty(ID_NAME, String.class, null);
-    addContainerProperty(ID_ASSIGNEE, String.class, null);
-    addContainerProperty(ID_GROUPS, String.class, null);
+    addContainerProperty(ID_ASSIGNEE, ComboBox.class, null);
+    addContainerProperty(ID_GROUPS, ComboBox.class, null);
     addContainerProperty(ID_DESCRIPTION, TextField.class, null);
     addContainerProperty(ID_START_WITH_PREVIOUS, CheckBox.class, null);
     addContainerProperty(ID_ACTIONS, HorizontalLayout.class, null);
@@ -84,14 +89,21 @@ public class TaskTable extends Table implements TaskFormModelListener {
 
   public void addTaskRow(HumanStepDefinition humanStepDefinition) {
     Object taskItemId = addTaskRow(null, humanStepDefinition.getName(), humanStepDefinition.getAssignee(), 
-            humanStepDefinition.getCandidateGroupsCommaSeparated(), humanStepDefinition.getDescription(),
+            getCommaSeperated(humanStepDefinition.getCandidateGroups()), humanStepDefinition.getDescription(),
             humanStepDefinition.isStartsWithPrevious());
     if (humanStepDefinition.getForm() != null) {
       taskFormModel.addForm(taskItemId, humanStepDefinition.getForm());
     }
   }
 
-  public void addDefaultTaskRow() {
+  protected String getCommaSeperated(List<String> list) {
+	  if(list != null && list.size() > 0) {
+	  	return StringUtils.join(list, ", ");
+	  }
+	  return null;
+  }
+
+	public void addDefaultTaskRow() {
     addDefaultTaskRowAfter(null);
   }
 
@@ -114,10 +126,42 @@ public class TaskTable extends Table implements TaskFormModelListener {
     newItem.getItemProperty(ID_NAME).setValue(taskName == null ? "my task" : taskName);
 
     // assignee
-    newItem.getItemProperty(ID_ASSIGNEE).setValue(taskAssignee == null ? "" : taskAssignee);
+    ComboBox assigneeComboBox = new ComboBox();
+    assigneeComboBox.setNullSelectionAllowed(true);
+   
+    try {
+      for (User user : ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().orderByUserFirstName().asc().list()) {
+	    assigneeComboBox.addItem(user.getId());
+	    assigneeComboBox.setItemCaption(user.getId(), user.getFirstName() + " " + user.getLastName());
+	  }
+    } catch(Exception e) { 
+    	// Don't do anything. Will be an empty dropdown.
+    }
+    
+    if (taskAssignee != null) {
+      assigneeComboBox.select(taskAssignee);
+    }
+    
+    newItem.getItemProperty(ID_ASSIGNEE).setValue(assigneeComboBox);
     
     // groups
-    newItem.getItemProperty(ID_GROUPS).setValue(taskGroups == null ? "" : taskGroups);
+    ComboBox groupComboBox = new ComboBox();
+    groupComboBox.setNullSelectionAllowed(true);
+    
+    try {
+      for (Group group : ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().orderByGroupName().asc().list()) {
+        groupComboBox.addItem(group.getId());
+        groupComboBox.setItemCaption(group.getId(), group.getName());
+      }
+    } catch (Exception e) {
+    	// Don't do anything. Will be an empty dropdown.
+    }
+    
+    if (taskGroups != null) {
+      groupComboBox.select(taskGroups);
+    }
+    
+    newItem.getItemProperty(ID_GROUPS).setValue(groupComboBox);
 
     // description
     TextField descriptionTextField = new TextField();
@@ -174,12 +218,12 @@ public class TaskTable extends Table implements TaskFormModelListener {
         humanStepDefinition.setName(name);
       }
       
-      String assignee = (String) item.getItemProperty(ID_ASSIGNEE).getValue();
+      String assignee = (String) ((ComboBox) item.getItemProperty(ID_ASSIGNEE).getValue()).getValue();
       if (assignee != null && assignee.length() > 0) {
         humanStepDefinition.setAssignee(assignee);
       }
       
-      String groups = (String) item.getItemProperty("groups").getValue();
+      String groups = (String) ((ComboBox) item.getItemProperty("groups").getValue()).getValue();
       List<String> candidateGroups = new ArrayList<String>();
       if (groups != null && groups.length() > 0) {
         for (String group : groups.split(",")) {

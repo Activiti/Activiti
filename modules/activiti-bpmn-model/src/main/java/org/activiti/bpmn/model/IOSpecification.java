@@ -35,4 +35,28 @@ public class IOSpecification extends BaseElement {
     this.dataOutputRefs = dataOutputRefs;
   }
   
+  public IOSpecification clone() {
+    IOSpecification clone = new IOSpecification();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(IOSpecification otherSpec) {
+    dataInputs = new ArrayList<DataSpec>();
+    if (otherSpec.getDataInputs() != null && otherSpec.getDataInputs().size() > 0) {
+      for (DataSpec dataSpec : otherSpec.getDataInputs()) {
+        dataInputs.add(dataSpec.clone());
+      }
+    }
+    
+    dataOutputs = new ArrayList<DataSpec>();
+    if (otherSpec.getDataOutputs() != null && otherSpec.getDataOutputs().size() > 0) {
+      for (DataSpec dataSpec : otherSpec.getDataOutputs()) {
+        dataOutputs.add(dataSpec.clone());
+      }
+    }
+    
+    dataInputRefs = new ArrayList<String>(otherSpec.getDataInputRefs());
+    dataOutputRefs = new ArrayList<String>(otherSpec.getDataOutputRefs());
+  }
 }

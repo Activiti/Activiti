@@ -3,12 +3,13 @@
  */
 package org.activiti.engine.test.jobexecutor;
 
-import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tom Baeyens
@@ -21,7 +22,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
   public void setUp() throws Exception {
     processEngineConfiguration.getJobHandlers().put(tweetExceptionHandler.getType(), tweetExceptionHandler);
-    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
   }
 
   public void tearDown() throws Exception {
@@ -38,7 +39,30 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       }
     });
 
-    waitForJobExecutorToProcessAllJobs(15000L, 50L);
+    Job job = managementService.createJobQuery().singleResult();
+    assertEquals(3, job.getRetries());
+    
+    try {
+      managementService.executeJob(job.getId());
+      fail("exception expected");
+    } catch (Exception e) {
+      // exception expected;
+    }
+    
+    job = managementService.createJobQuery().singleResult();
+    assertEquals(2, job.getRetries());
+    
+    try {
+      managementService.executeJob(job.getId());
+      fail("exception expected");
+    } catch (Exception e) {
+      // exception expected;
+    }
+    
+    job = managementService.createJobQuery().singleResult();
+    assertEquals(1, job.getRetries());
+    
+    managementService.executeJob(job.getId());
   }
 
   public void testJobCommandsWith3Exceptions() {
@@ -53,11 +77,40 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       }
     });
 
-    waitForJobExecutorToProcessAllJobs(15000L, 50L);
-
-    // TODO check if there is a failed job in the DLQ
-
-    commandExecutor.execute(new DeleteJobsCmd(jobId));
+    Job job = managementService.createJobQuery().singleResult();
+    assertEquals(3, job.getRetries());
+    
+    try {
+      managementService.executeJob(job.getId());
+      fail("exception expected");
+    } catch (Exception e) {
+      // exception expected;
+    }
+    
+    job = managementService.createJobQuery().singleResult();
+    assertEquals(2, job.getRetries());
+    
+    try {
+      managementService.executeJob(job.getId());
+      fail("exception expected");
+    } catch (Exception e) {
+      // exception expected;
+    }
+    
+    job = managementService.createJobQuery().singleResult();
+    assertEquals(1, job.getRetries());
+    
+    try {
+      managementService.executeJob(job.getId());
+      fail("exception expected");
+    } catch (Exception e) {
+      // exception expected;
+    }
+    
+    job = managementService.createJobQuery().singleResult();
+    assertEquals(0, job.getRetries());
+    
+    managementService.deleteJob(job.getId());
   }
 
   protected MessageEntity createTweetExceptionMessage() {

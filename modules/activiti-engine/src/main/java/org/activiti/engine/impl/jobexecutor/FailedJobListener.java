@@ -14,14 +14,20 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.cfg.TransactionListener;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Frederik Heremans
+ * @author Saeid Mirzaei
  */
 public class FailedJobListener implements TransactionListener {
+  private static final Logger log = LoggerFactory.getLogger(FailedJobListener.class);
 
   protected CommandExecutor commandExecutor;
   protected String jobId;
@@ -34,8 +40,12 @@ public class FailedJobListener implements TransactionListener {
   }
   
   public void execute(CommandContext commandContext) {
-    commandExecutor.execute(commandContext.getFailedJobCommandFactory()
-                                          .getCommand(jobId, exception));
+    CommandConfig commandConfig = commandExecutor.getDefaultConfig().transactionRequiresNew();
+	  FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
+	  Command<Object> cmd = failedJobCommandFactory.getCommand(jobId, exception);
+
+	  log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
+	  commandExecutor.execute(commandConfig, cmd);
   }
 
 }

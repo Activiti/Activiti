@@ -28,21 +28,24 @@ public class HistoricTaskInstanceQueryProperty implements QueryProperty {
 
   private static final Map<String, HistoricTaskInstanceQueryProperty> properties = new HashMap<String, HistoricTaskInstanceQueryProperty>();
 
-  public static final HistoricTaskInstanceQueryProperty HISTORIC_TASK_INSTANCE_ID = new HistoricTaskInstanceQueryProperty("ID_");
-  public static final HistoricTaskInstanceQueryProperty PROCESS_DEFINITION_ID = new HistoricTaskInstanceQueryProperty("PROC_DEF_ID_");
-  public static final HistoricTaskInstanceQueryProperty PROCESS_INSTANCE_ID = new HistoricTaskInstanceQueryProperty("PROC_INST_ID_");
-  public static final HistoricTaskInstanceQueryProperty EXECUTION_ID = new HistoricTaskInstanceQueryProperty("EXECUTION_ID_");
-  public static final HistoricTaskInstanceQueryProperty TASK_NAME = new HistoricTaskInstanceQueryProperty("NAME_");
-  public static final HistoricTaskInstanceQueryProperty TASK_DESCRIPTION = new HistoricTaskInstanceQueryProperty("DESCRIPTION_");
-  public static final HistoricTaskInstanceQueryProperty TASK_ASSIGNEE = new HistoricTaskInstanceQueryProperty("ASSIGNEE_");
-  public static final HistoricTaskInstanceQueryProperty TASK_OWNER = new HistoricTaskInstanceQueryProperty("OWNER_");
-  public static final HistoricTaskInstanceQueryProperty TASK_DEFINITION_KEY = new HistoricTaskInstanceQueryProperty("TASK_DEF_KEY_");
-  public static final HistoricTaskInstanceQueryProperty DELETE_REASON = new HistoricTaskInstanceQueryProperty("DELETE_REASON_");
+  public static final HistoricTaskInstanceQueryProperty HISTORIC_TASK_INSTANCE_ID = new HistoricTaskInstanceQueryProperty("RES.ID_");
+  public static final HistoricTaskInstanceQueryProperty PROCESS_DEFINITION_ID = new HistoricTaskInstanceQueryProperty("RES.PROC_DEF_ID_");
+  public static final HistoricTaskInstanceQueryProperty PROCESS_INSTANCE_ID = new HistoricTaskInstanceQueryProperty("RES.PROC_INST_ID_");
+  public static final HistoricTaskInstanceQueryProperty EXECUTION_ID = new HistoricTaskInstanceQueryProperty("RES.EXECUTION_ID_");
+  public static final HistoricTaskInstanceQueryProperty TASK_NAME = new HistoricTaskInstanceQueryProperty("RES.NAME_");
+  public static final HistoricTaskInstanceQueryProperty TASK_DESCRIPTION = new HistoricTaskInstanceQueryProperty("RES.DESCRIPTION_");
+  public static final HistoricTaskInstanceQueryProperty TASK_ASSIGNEE = new HistoricTaskInstanceQueryProperty("RES.ASSIGNEE_");
+  public static final HistoricTaskInstanceQueryProperty TASK_OWNER = new HistoricTaskInstanceQueryProperty("RES.OWNER_");
+  public static final HistoricTaskInstanceQueryProperty TASK_DEFINITION_KEY = new HistoricTaskInstanceQueryProperty("RES.TASK_DEF_KEY_");
+  public static final HistoricTaskInstanceQueryProperty DELETE_REASON = new HistoricTaskInstanceQueryProperty("RES.DELETE_REASON_");
   public static final HistoricTaskInstanceQueryProperty START = new HistoricTaskInstanceQueryProperty("RES.START_TIME_");
   public static final HistoricTaskInstanceQueryProperty END = new HistoricTaskInstanceQueryProperty("RES.END_TIME_");
-  public static final HistoricTaskInstanceQueryProperty DURATION = new HistoricTaskInstanceQueryProperty("DURATION_");
-  public static final HistoricTaskInstanceQueryProperty TASK_PRIORITY = new HistoricTaskInstanceQueryProperty("PRIORITY_");
-  public static final HistoricTaskInstanceQueryProperty TASK_DUE_DATE = new HistoricTaskInstanceQueryProperty("DUE_DATE_");
+  public static final HistoricTaskInstanceQueryProperty DURATION = new HistoricTaskInstanceQueryProperty("RES.DURATION_");
+  public static final HistoricTaskInstanceQueryProperty TASK_PRIORITY = new HistoricTaskInstanceQueryProperty("RES.PRIORITY_");
+  public static final HistoricTaskInstanceQueryProperty TASK_DUE_DATE = new HistoricTaskInstanceQueryProperty("RES.DUE_DATE_");
+  public static final HistoricTaskInstanceQueryProperty TENANT_ID_ = new HistoricTaskInstanceQueryProperty("RES.TENANT_ID_");
+  
+  public static final HistoricTaskInstanceQueryProperty INCLUDED_VARIABLE_TIME = new HistoricTaskInstanceQueryProperty("VAR.LAST_UPDATED_TIME_");
 
   private String name;
 

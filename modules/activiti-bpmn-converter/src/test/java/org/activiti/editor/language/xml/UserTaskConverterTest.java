@@ -12,7 +12,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.UserTask;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 public class UserTaskConverterTest extends AbstractConverterTest {
@@ -56,7 +56,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertTrue(userTask.getCandidateGroups().contains("sales"));
     
     List<FormProperty> formProperties = userTask.getFormProperties();
-    assertEquals(2, formProperties.size());
+    assertEquals(3, formProperties.size());
     FormProperty formProperty = formProperties.get(0);
     assertEquals("formId", formProperty.getId());
     assertEquals("formName", formProperty.getName());
@@ -69,6 +69,13 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertEquals("long", formProperty.getType());
     assertTrue(StringUtils.isEmpty(formProperty.getVariable()));
     assertTrue(StringUtils.isEmpty(formProperty.getExpression()));
+    formProperty = formProperties.get(2);
+    assertEquals("formId3", formProperty.getId());
+    assertEquals("enumName", formProperty.getName());
+    assertEquals("enum", formProperty.getType());
+    assertTrue(StringUtils.isEmpty(formProperty.getVariable()));
+    assertTrue(StringUtils.isEmpty(formProperty.getExpression()));
+    assertEquals(2, formProperty.getFormValues().size());
     
     List<ActivitiListener> listeners = userTask.getTaskListeners();
     assertEquals(3, listeners.size());

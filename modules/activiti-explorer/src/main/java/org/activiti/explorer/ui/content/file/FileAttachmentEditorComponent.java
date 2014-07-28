@@ -26,6 +26,7 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.Images;
 import org.activiti.explorer.ui.content.AttachmentEditorComponent;
 import org.activiti.explorer.ui.custom.UploadComponent;
+import org.activiti.explorer.ui.custom.UploadComponentFactory;
 
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Form;
@@ -95,7 +96,9 @@ public class FileAttachmentEditorComponent extends VerticalLayout implements Att
   }
 
   protected void initFileUpload() {
-    uploadComponent = new UploadComponent(null, new Receiver() {
+    uploadComponent = ExplorerApp.get().getComponentFactory(UploadComponentFactory.class).create(); 
+    
+    Receiver receiver = new Receiver() {
       private static final long serialVersionUID = 1L;
       
       public OutputStream receiveUpload(String filename, String mType) {
@@ -113,8 +116,9 @@ public class FileAttachmentEditorComponent extends VerticalLayout implements Att
         byteArrayOutputStream = new ByteArrayOutputStream();
         return byteArrayOutputStream;
       }
-    });
+    };
     
+    uploadComponent.setReceiver(receiver);
     uploadComponent.addFinishedListener(new FinishedListener() {
       
       private static final long serialVersionUID = 1L;

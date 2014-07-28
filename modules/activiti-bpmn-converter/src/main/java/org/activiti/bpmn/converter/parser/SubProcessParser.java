@@ -22,7 +22,7 @@ import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers

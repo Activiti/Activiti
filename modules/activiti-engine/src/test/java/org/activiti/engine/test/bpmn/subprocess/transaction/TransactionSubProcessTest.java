@@ -403,7 +403,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
   }
   
   private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
-    return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutorTxRequired());
+    return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
   }
   
   @Deployment

@@ -38,6 +38,7 @@ public class ToolBar extends HorizontalLayout {
   private static final long serialVersionUID = 7957488256766569264L;
   
   protected Map<String, ToolbarEntry> entryMap;
+  protected String currentEntryKey;
   protected ToolbarEntry currentEntry;
   protected List<Button> actionButtons;
   protected List<Component> additionalComponents;
@@ -159,6 +160,8 @@ public class ToolBar extends HorizontalLayout {
       currentEntry.setActive(false);
     }
     
+    this.currentEntryKey = key;
+    
     currentEntry = entryMap.get(key);
     if(currentEntry != null) {
       currentEntry.setActive(true);
@@ -168,6 +171,10 @@ public class ToolBar extends HorizontalLayout {
   protected void addEntryComponent(ToolbarEntry entry) {
     addComponent(entry, getComponentCount() - 1 - actionButtons.size());
     setComponentAlignment(entry, Alignment.MIDDLE_LEFT);
+  }
+
+  public String getCurrentEntryKey() {
+    return currentEntryKey;
   }
   
 }

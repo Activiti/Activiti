@@ -20,7 +20,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Joram Barrez

@@ -18,11 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamReader;
-
-import org.activiti.bpmn.model.parse.Problem;
-import org.activiti.bpmn.model.parse.Warning;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -30,33 +26,69 @@ import org.apache.commons.lang.StringUtils;
  */
 public class BpmnModel {
   
+  protected Map<String, List<ExtensionAttribute>> definitionsAttributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
 	protected List<Process> processes = new ArrayList<Process>();
 	protected Map<String, GraphicInfo> locationMap = new LinkedHashMap<String, GraphicInfo>();
 	protected Map<String, GraphicInfo> labelLocationMap = new LinkedHashMap<String, GraphicInfo>();
 	protected Map<String, List<GraphicInfo>> flowLocationMap = new LinkedHashMap<String, List<GraphicInfo>>();
-	protected Map<String, Signal> signalMap = new LinkedHashMap<String, Signal>();
+	protected List<Signal> signals = new ArrayList<Signal>();
 	protected Map<String, Message> messageMap = new LinkedHashMap<String, Message>();
 	protected Map<String, String> errorMap = new LinkedHashMap<String, String>();
 	protected Map<String, ItemDefinition> itemDefinitionMap = new LinkedHashMap<String, ItemDefinition>();
 	protected List<Pool> pools = new ArrayList<Pool>();
 	protected List<Import> imports = new ArrayList<Import>();
 	protected List<Interface> interfaces = new ArrayList<Interface>();
-	protected List<Problem> problems = new ArrayList<Problem>();
-	protected List<Warning> warnings = new ArrayList<Warning>();
+	protected List<Artifact> globalArtifacts = new ArrayList<Artifact>();
 	protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
 	protected String targetNamespace;
+	protected List<String> userTaskFormTypes;
+  protected List<String> startEventFormTypes;
 	protected int nextFlowIdCounter = 1;
+	
+	
+	public Map<String, List<ExtensionAttribute>> getDefinitionsAttributes() {
+    return definitionsAttributes;
+  }
+
+  public String getDefinitionsAttributeValue(String namespace, String name) {
+    List<ExtensionAttribute> attributes = getDefinitionsAttributes().get(name);
+    if (attributes != null && !attributes.isEmpty()) {
+      for (ExtensionAttribute attribute : attributes) {
+        if ( namespace.equals(attribute.getNamespace()))
+          return attribute.getValue();
+      }
+    }
+    return null;
+  }
+
+  public void addDefinitionsAttribute(ExtensionAttribute attribute) {
+    if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
+      List<ExtensionAttribute> attributeList = null;
+      if (this.definitionsAttributes.containsKey(attribute.getName()) == false) {
+        attributeList = new ArrayList<ExtensionAttribute>();
+        this.definitionsAttributes.put(attribute.getName(), attributeList);
+      }
+      this.definitionsAttributes.get(attribute.getName()).add(attribute);
+    }
+  }
+
+  public void setDefinitionsAttributes(Map<String, List<ExtensionAttribute>> attributes) {
+    this.definitionsAttributes = attributes;
+  }
 
 	public Process getMainProcess() {
-	  Process process = getProcess(null);
-	  return process;
+	  if (getPools().size() > 0) {
+	    return getProcess(getPools().get(0).getId());
+	  } else {
+	    return getProcess(null);
+	  }
 	}
 
 	public Process getProcess(String poolRef) {
 	  for (Process process : processes) {
 	    boolean foundPool = false;
 	    for (Pool pool : pools) {
-        if(pool.getProcessRef().equalsIgnoreCase(process.getId())) {
+        if (StringUtils.isNotEmpty(pool.getProcessRef()) && pool.getProcessRef().equalsIgnoreCase(process.getId())) {
           
           if(poolRef != null) {
             if(pool.getId().equalsIgnoreCase(poolRef)) {
@@ -239,35 +271,42 @@ public class BpmnModel {
 	  labelLocationMap.remove(key);
   }
 	
+	public Map<String, GraphicInfo> getLabelLocationMap() {
+    return labelLocationMap;
+  }
+	
 	public void addFlowGraphicInfoList(String key, List<GraphicInfo> graphicInfoList) {
 		flowLocationMap.put(key, graphicInfoList);
 	}
 	
   public Collection<Signal> getSignals() {
-    return signalMap.values();
+  	return signals;
   }
   
   public void setSignals(Collection<Signal> signalList) {
     if (signalList != null) {
-      signalMap.clear();
-      for (Signal signal : signalList) {
-        addSignal(signal);
-      }
+      signals.clear();
+      signals.addAll(signalList);
     }
   }
   
   public void addSignal(Signal signal) {
-    if (signal != null && StringUtils.isNotEmpty(signal.getId())) {
-      signalMap.put(signal.getId(), signal);
+    if (signal != null) {
+    	signals.add(signal);
     }
   }
   
   public boolean containsSignalId(String signalId) {
-    return signalMap.containsKey(signalId);
+    return getSignal(signalId) != null;
   }
   
   public Signal getSignal(String id) {
-    return signalMap.get(id);
+    for (Signal signal : signals) {
+    	if (id.equals(signal.getId())) {
+    		return signal;
+    	}
+    }
+    return null;
   }
 
   public Collection<Message> getMessages() {
@@ -357,6 +396,14 @@ public class BpmnModel {
     this.interfaces = interfaces;
   }
 
+  public List<Artifact> getGlobalArtifacts() {
+    return globalArtifacts;
+  }
+
+  public void setGlobalArtifacts(List<Artifact> globalArtifacts) {
+    this.globalArtifacts = globalArtifacts;
+  }
+
   public void addNamespace(String prefix, String uri) {
     namespaceMap.put(prefix, uri);
   }
@@ -381,31 +428,19 @@ public class BpmnModel {
     this.targetNamespace = targetNamespace;
   }
   
-  public void addProblem(String errorMessage, XMLStreamReader xtr) {
-    problems.add(new Problem(errorMessage, xtr));
+  public List<String> getUserTaskFormTypes() {
+    return userTaskFormTypes;
   }
   
-  public void addProblem(String errorMessage, BaseElement element) {
-    problems.add(new Problem(errorMessage, element));
+  public void setUserTaskFormTypes(List<String> userTaskFormTypes) {
+    this.userTaskFormTypes = userTaskFormTypes;
   }
   
-  public void addProblem(String errorMessage, GraphicInfo graphicInfo) {
-    problems.add(new Problem(errorMessage, graphicInfo));
+  public List<String> getStartEventFormTypes() {
+    return startEventFormTypes;
   }
   
-  public List<Problem> getProblems() {
-    return problems;
-  }
-  
-  public void addWarning(String warningMessage, XMLStreamReader xtr) {
-    warnings.add(new Warning(warningMessage, xtr));
-  }
-  
-  public void addWarning(String warningMessage, BaseElement element) {
-    warnings.add(new Warning(warningMessage, element));
-  }
-  
-  public List<Warning> getWarning() {
-    return warnings;
+  public void setStartEventFormTypes(List<String> startEventFormTypes) {
+    this.startEventFormTypes = startEventFormTypes;
   }
 }

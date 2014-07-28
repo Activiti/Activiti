@@ -18,7 +18,7 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ItemDefinition;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -45,6 +45,7 @@ public class ItemDefinitionParser implements BpmnXMLConstants {
         
         item.setStructureRef(structureRef);
         item.setItemKind(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_KIND));
+        BpmnXMLUtil.parseChildElements(ELEMENT_ITEM_DEFINITION, item, xtr, model);
         model.addItemDefinition(itemDefinitionId, item);
       }
     }

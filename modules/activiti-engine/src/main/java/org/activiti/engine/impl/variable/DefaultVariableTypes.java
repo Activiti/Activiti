@@ -23,7 +23,7 @@ import org.activiti.engine.ActivitiException;
 /**
  * @author Tom Baeyens
  */
-public class DefaultVariableTypes implements Serializable, VariableTypes {
+public class DefaultVariableTypes implements VariableTypes, Serializable {
 
   private static final long serialVersionUID = 1L;
 

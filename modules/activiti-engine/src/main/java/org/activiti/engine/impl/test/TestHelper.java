@@ -30,6 +30,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
@@ -39,12 +40,18 @@ import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+import org.activiti.engine.test.TestActivityBehaviorFactory;
+import org.activiti.engine.test.mock.ActivitiMockSupport;
+import org.activiti.engine.test.mock.MockServiceTask;
+import org.activiti.engine.test.mock.MockServiceTasks;
+import org.activiti.engine.test.mock.NoOpServiceTasks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public abstract class TestHelper {
   
@@ -58,6 +65,8 @@ public abstract class TestHelper {
 
   static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>(); 
   
+  // Assertion methods ///////////////////////////////////////////////////
+  
   public static void assertProcessEnded(ProcessEngine processEngine, String processInstanceId) {
     ProcessInstance processInstance = processEngine
       .getRuntimeService()
@@ -70,13 +79,16 @@ public abstract class TestHelper {
     }
   }
   
+  // Test annotation support /////////////////////////////////////////////
+  
   public static String annotationDeploymentSetUp(ProcessEngine processEngine, Class<?> testClass, String methodName) {
     String deploymentId = null;
     Method method = null;
     try {
-      method = testClass.getDeclaredMethod(methodName, (Class<?>[])null);
+      method = testClass.getMethod(methodName, (Class<?>[]) null);
     } catch (Exception e) {
-      throw new ActivitiException("can't get method by reflection", e);
+    	log.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e);
+    	return null;
     }
     Deployment deploymentAnnotation = method.getAnnotation(Deployment.class);
     if (deploymentAnnotation != null) {
@@ -112,6 +124,83 @@ public abstract class TestHelper {
       }
     }
   }
+  
+  public static void annotationMockSupportSetup(Class<?> testClass, String methodName, ActivitiMockSupport mockSupport) {
+  	
+  	// Get method
+  	 Method method = null;
+     try {
+       method = testClass.getMethod(methodName, (Class<?>[]) null);
+     } catch (Exception e) {
+    	log.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e); 
+    	return;
+     }
+     
+     handleMockServiceTaskAnnotation(mockSupport, method);
+     handleMockServiceTasksAnnotation(mockSupport, method);
+     handleNoOpServiceTasksAnnotation(mockSupport, method);
+  }
+
+	protected static void handleMockServiceTaskAnnotation(ActivitiMockSupport mockSupport, Method method) {
+	  MockServiceTask mockedServiceTask = method.getAnnotation(MockServiceTask.class);
+     if (mockedServiceTask != null) {
+    	 handleMockServiceTaskAnnotation(mockSupport, mockedServiceTask);
+     }
+  }
+
+	protected static void handleMockServiceTaskAnnotation(ActivitiMockSupport mockSupport, MockServiceTask mockedServiceTask) {
+	  mockSupport.mockServiceTaskWithClassDelegate(mockedServiceTask.originalClassName(), mockedServiceTask.mockedClassName());
+  }
+	
+	protected static void handleMockServiceTasksAnnotation(ActivitiMockSupport mockSupport, Method method) {
+	  MockServiceTasks mockedServiceTasks = method.getAnnotation(MockServiceTasks.class);
+     if (mockedServiceTasks != null) {
+    	 for (MockServiceTask mockedServiceTask : mockedServiceTasks.value()) {
+    		 handleMockServiceTaskAnnotation(mockSupport, mockedServiceTask);
+    	 }
+     }
+  }
+	
+	protected static void handleNoOpServiceTasksAnnotation(ActivitiMockSupport mockSupport,Method  method) {
+		NoOpServiceTasks noOpServiceTasks = method.getAnnotation(NoOpServiceTasks.class);
+		if (noOpServiceTasks != null) {
+			
+			String[] ids = noOpServiceTasks.ids();
+			Class<?>[] classes = noOpServiceTasks.classes();
+			String[] classNames = noOpServiceTasks.classNames();
+			
+			if ( (ids == null || ids.length == 0) 
+					&& (classes == null || classes.length == 0)
+					&& (classNames == null || classNames.length == 0)) {
+				mockSupport.setAllServiceTasksNoOp();
+			} else {
+				
+				if (ids != null && ids.length > 0) {
+					for (String id : ids) {
+						mockSupport.addNoOpServiceTaskById(id);
+					}
+				}
+				
+				if (classes != null && classes.length > 0) {
+					for (Class<?> clazz : classes) {
+						mockSupport.addNoOpServiceTaskByClassName(clazz.getName());
+					}
+				}
+				
+				if (classNames != null && classNames.length > 0) {
+					for (String className : classNames) {
+						mockSupport.addNoOpServiceTaskByClassName(className);
+					}
+				}
+				
+			}
+			
+		}
+	}
+  
+  public static void annotationMockSupportTeardown(ActivitiMockSupport mockSupport) {
+  	mockSupport.reset();
+  }
 
   /**
    * get a resource location by convention based on a class (type) and a
@@ -132,11 +221,36 @@ public abstract class TestHelper {
     }
     return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIXES[0];
   }
+  
+  
+  // Engine startup and shutdown helpers  ///////////////////////////////////////////////////
 
-  /** Each test is assumed to clean up all DB content it entered.
+  public static ProcessEngine getProcessEngine(String configurationResource) {
+	ProcessEngine processEngine = processEngines.get(configurationResource);
+	if (processEngine == null) {
+	  log.debug("==== BUILDING PROCESS ENGINE ========================================================================");
+	  processEngine = ProcessEngineConfiguration
+		.createProcessEngineConfigurationFromResource(
+			configurationResource).buildProcessEngine();
+		log.debug("==== PROCESS ENGINE CREATED =========================================================================");
+		processEngines.put(configurationResource, processEngine);
+	  }
+	  return processEngine;
+	}
+
+  public static void closeProcessEngines() {
+    for (ProcessEngine processEngine : processEngines.values()) {
+	  processEngine.close();
+	}
+	processEngines.clear();
+  }
+
+  /** 
+   * Each test is assumed to clean up all DB content it entered.
    * After a test method executed, this method scans all tables to see if the DB is completely clean. 
    * It throws AssertionFailed in case the DB is not clean.
-   * If the DB is not clean, it is cleaned by performing a create a drop. */
+   * If the DB is not clean, it is cleaned by performing a create a drop. 
+   */
   public static void assertAndEnsureCleanDb(ProcessEngine processEngine) {
     log.debug("verifying that db is clean after test");
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
@@ -155,8 +269,7 @@ public abstract class TestHelper {
       log.error(outputMessage.toString());
 
       ((ProcessEngineImpl)processEngine)
-        .getProcessEngineConfiguration()
-        .getCommandExecutorTxRequired()
+      .getProcessEngineConfiguration().getCommandExecutor()
         .execute(new Command<Object>() {
           public Object execute(CommandContext commandContext) {
             DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
@@ -169,6 +282,14 @@ public abstract class TestHelper {
       throw new AssertionError(outputMessage.toString());
     }
   }
+  
+  // Mockup support ////////////////////////////////////////////////////////
+  
+  public static TestActivityBehaviorFactory initializeTestActivityBehaviorFactory(ActivityBehaviorFactory existingActivityBehaviorFactory) {
+    return new TestActivityBehaviorFactory(existingActivityBehaviorFactory);
+  }
+  
+  // Helper method for working with timers ///////////////////////////////////////////////////
   
   public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfigurationImpl processEngineConfiguration, long maxMillisToWait, long intervalMillis) {
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
@@ -221,23 +342,4 @@ public abstract class TestHelper {
     }
   }
 
-  public static ProcessEngine getProcessEngine(String configurationResource) {
-    ProcessEngine processEngine = processEngines.get(configurationResource);
-    if (processEngine==null) {
-      log.debug("==== BUILDING PROCESS ENGINE ========================================================================");
-      processEngine = ProcessEngineConfiguration
-        .createProcessEngineConfigurationFromResource(configurationResource)
-        .buildProcessEngine();
-      log.debug("==== PROCESS ENGINE CREATED =========================================================================");
-      processEngines.put(configurationResource, processEngine);
-    }
-    return processEngine;
-  }
-
-  public static void closeProcessEngines() {
-    for (ProcessEngine processEngine: processEngines.values()) {
-      processEngine.close();
-    }
-    processEngines.clear();
-  }
 }

@@ -30,6 +30,7 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  * @author Tom Van Buskirk
  * @author Tijs Rademakers
+ * @author Saeid Mirzaei
  */
 public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
@@ -54,9 +55,6 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
         expectedNames.add(TASK2_NAME);
       }
       expectedNames.add(TASK3_NAME);
-      for (Task task : tasks) {
-        System.out.println("task " + task.getName());
-      }
       assertEquals(4 - i, tasks.size());
       for (Task task : tasks) {
         expectedNames.remove(task.getName());
@@ -432,5 +430,56 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 		
 		processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNull(processInstance);
-	}	
+	}
+  
+  @Deployment
+  public void testAsyncBehavior() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
+    waitForJobExecutorToProcessAllJobs(3000, 500);
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+  }
+  
+  /*@Deployment
+  public void testAsyncBehavior() {
+    for (int i = 0; i < 100; i++) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
+    }
+    assertEquals(200, managementService.createJobQuery().count());
+    waitForJobExecutorToProcessAllJobs(120000, 5000);
+    assertEquals(0, managementService.createJobQuery().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  }*/
+
+//  /* This test case is related to ACT-1877 */
+//  
+//  @Deployment(resources={"org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testWithSignalBoundaryEvent.bpmn20.xml"})	
+//  public void testJoinAfterBoudarySignalEvent() {
+//		
+//	
+//		ProcessInstance processInstanceId = runtimeService.startProcessInstanceByKey("InclusiveGatewayAfterSignalBoundaryEvent");
+//		
+//		/// Gets the execution waiting for a message notification*/
+//		String subcriptedExecutionId = runtimeService.createExecutionQuery().processInstanceId(processInstanceId.getId()).messageEventSubscriptionName("MyMessage").singleResult().getId();
+//	
+//		/*Notify message received: this makes one execution to go on*/
+//		runtimeService.messageEventReceived("MyMessage", subcriptedExecutionId);
+//	
+//		/*The other execution goes on*/
+//		Task userTask = taskService.createTaskQuery().processInstanceId(processInstanceId.getId()).singleResult();
+//		assertEquals("There's still an active execution waiting in the first task",
+//				"usertask1",userTask.getTaskDefinitionKey());
+//		
+//		taskService.complete( userTask.getId());
+//		
+//		/*The two executions become one because of Inclusive Gateway*/
+//		/*The process ends*/
+//		userTask = taskService.createTaskQuery().processInstanceId(processInstanceId.getId()).singleResult();
+//		assertEquals("Only when both executions reach the inclusive gateway, flow arrives to the last user task",
+//				"usertask2",userTask.getTaskDefinitionKey());
+//		taskService.complete(userTask.getId());
+//		
+//		long nExecutions = runtimeService.createExecutionQuery().processInstanceId(processInstanceId.getId()).count();
+//		assertEquals(0, nExecutions);
+//  
+//  }
 }

@@ -52,6 +52,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     Object delegate = expression.getValue(execution);
     if( delegate instanceof SignallableActivityBehavior){
+      ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
       ((SignallableActivityBehavior) delegate).signal( execution , signalName , signalData);
     }
   }

@@ -21,7 +21,7 @@
         <sequenceFlow sourceRef="serviceTaskAsync2" targetRef="parallelJoin"/>
         <parallelGateway id="parallelJoin"/>
         <sequenceFlow sourceRef="parallelJoin" targetRef="testJoin"/>
-        <serviceTask id="testJoin" activiti:class="org.activiti.camel.TestJoinDelegate" />
+        <serviceTask id="testJoin" activiti:class="org.activiti.camel.util.TestJoinDelegate" />
         <sequenceFlow sourceRef="testJoin" targetRef="end"/>
         <endEvent id="end"/>
 

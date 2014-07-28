@@ -30,6 +30,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
  * @author Tom Baeyens
+ * @author Marcus Klimstra (CGI)
  */
 public class SerializableType extends ByteArrayType {
 
@@ -43,40 +44,45 @@ public class SerializableType extends ByteArrayType {
 
   public Object getValue(ValueFields valueFields) {
     Object cachedObject = valueFields.getCachedValue();
-    if (cachedObject!=null) {
+    if (cachedObject != null) {
       return cachedObject;
     }
+    
     byte[] bytes = (byte[]) super.getValue(valueFields);
-    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-    Object deserializedObject;
-    try {
-      ObjectInputStream ois = createObjectInputStream(bais);
-      deserializedObject = ois.readObject();
-      valueFields.setCachedValue(deserializedObject);
-      
-      if (valueFields instanceof VariableInstanceEntity) {
-        Context
-          .getCommandContext()
-          .getDbSqlSession()
-          .addDeserializedObject(deserializedObject, bytes, (VariableInstanceEntity) valueFields);
-      }
-      
-    } catch (Exception e) {
-      throw new ActivitiException("Couldn't deserialize object in variable '"+valueFields.getName()+"'", e);
-    } finally {
-      IoUtil.closeSilently(bais);
+    if (bytes != null) {
+	    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+	    try {
+	      ObjectInputStream ois = createObjectInputStream(bais);
+	      Object deserializedObject = ois.readObject();
+	      valueFields.setCachedValue(deserializedObject);
+	      
+	      if (valueFields instanceof VariableInstanceEntity) {
+	        // we need to register the deserialized object for dirty checking, 
+	        // so that it can be serialized again if it was changed. 
+	        Context.getCommandContext()
+	          .getDbSqlSession()
+	          .addDeserializedObject(deserializedObject, bytes, (VariableInstanceEntity) valueFields);
+	      }
+	      
+	      return deserializedObject;
+	    } catch (Exception e) {
+	      throw new ActivitiException("Couldn't deserialize object in variable '"+valueFields.getName()+"'", e);
+	    } finally {
+	      IoUtil.closeSilently(bais);
+	    }
     }
-    return deserializedObject;
+    return null; // byte array is null
   }
 
   public void setValue(Object value, ValueFields valueFields) {
     byte[] byteArray = serialize(value, valueFields);
     valueFields.setCachedValue(value);
     
-    if(valueFields.getByteArrayValue() == null) {
-      if(valueFields instanceof VariableInstanceEntity) {
-        Context
-          .getCommandContext()
+    if (valueFields.getBytes() == null) {
+      // TODO why the null check? won't this cause issues when setValue is called the second this with a different object?
+      if (valueFields instanceof VariableInstanceEntity) {
+        // register the deserialized object for dirty checking.
+        Context.getCommandContext()
           .getDbSqlSession()
           .addDeserializedObject(valueFields.getCachedValue(), byteArray, (VariableInstanceEntity)valueFields);
       }
@@ -86,23 +92,24 @@ public class SerializableType extends ByteArrayType {
   }
 
   public static byte[] serialize(Object value, ValueFields valueFields) {
-    if(value == null) {
+    if (value == null) {
       return null;
     }
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    ObjectOutputStream ois = null;
+    ObjectOutputStream oos = null;
     try {
-      ois = createObjectOutputStream(baos);
-      ois.writeObject(value);
+      oos = createObjectOutputStream(baos);
+      oos.writeObject(value);
     } catch (Exception e) {
       throw new ActivitiException("Couldn't serialize value '"+value+"' in variable '"+valueFields.getName()+"'", e);
     } finally {
-      IoUtil.closeSilently(ois);
+      IoUtil.closeSilently(oos);
     }
     return baos.toByteArray();
   }
 
   public boolean isAbleToStore(Object value) {
+    // TODO don't we need null support here?
     return value instanceof Serializable;
   }
 

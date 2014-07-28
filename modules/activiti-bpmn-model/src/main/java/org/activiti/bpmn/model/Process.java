@@ -14,9 +14,7 @@ package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Tijs Rademakers
@@ -30,10 +28,11 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
   protected List<Lane> lanes = new ArrayList<Lane>();
   protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
-  protected Map<String, FlowElement> flowElementMap = new HashMap<String, FlowElement>(); // The flow elements are twice stored. The map is used for performance when retrieving by id 
+  protected List<ValuedDataObject> dataObjects = new ArrayList<ValuedDataObject>();
   protected List<Artifact> artifactList = new ArrayList<Artifact>();
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
+  protected List<EventListener> eventListeners = new ArrayList<EventListener>();
 
   public String getDocumentation() {
     return documentation;
@@ -84,15 +83,49 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   }
   
   public FlowElement getFlowElement(String flowElementId) {
-    FlowElement flowElement = flowElementMap.get(flowElementId);
-    
-    // It could be the id has changed after insertion into the map,
-    // So if it is not found, we loop through the list
-    if (flowElement == null) {
-     flowElement = findFlowElementInList(flowElementId);
+    return findFlowElementInList(flowElementId);
+  }
+  
+  /**
+   * Searches the whole process, including subprocesses (unlike {@link getFlowElements(String)}
+   */
+  public FlowElement getFlowElementRecursive(String flowElementId) {
+  	 return getFlowElementRecursive(this, flowElementId);
+  }
+  
+  protected FlowElement getFlowElementRecursive(FlowElementsContainer flowElementsContainer, String flowElementId) {
+    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+      if (flowElement.getId() != null && flowElement.getId().equals(flowElementId)) {
+        return flowElement;
+      } else if (flowElement instanceof FlowElementsContainer) {
+        FlowElement result =  getFlowElementRecursive((FlowElementsContainer) flowElement, flowElementId);
+        if (result != null) {
+          return result;
+        }
+      }
     }
-    
-    return flowElement;
+    return null;
+  }
+  
+  /**
+   * Searches the whole process, including subprocesses
+   */
+  public FlowElementsContainer getFlowElementsContainerRecursive(String flowElementId) {
+     return getFlowElementsContainerRecursive(this, flowElementId);
+  }
+  
+  protected FlowElementsContainer getFlowElementsContainerRecursive(FlowElementsContainer flowElementsContainer, String flowElementId) {
+    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+      if (flowElement.getId() != null && flowElement.getId().equals(flowElementId)) {
+        return flowElementsContainer;
+      } else if (flowElement instanceof FlowElementsContainer) {
+        FlowElementsContainer result =  getFlowElementsContainerRecursive((FlowElementsContainer) flowElement, flowElementId);
+        if (result != null) {
+          return result;
+        }
+      }
+    }
+    return null;
   }
   
   protected FlowElement findFlowElementInList(String flowElementId) {
@@ -110,19 +143,12 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   
   public void addFlowElement(FlowElement element) {
     flowElementList.add(element);
-    flowElementMap.put(element.getId(), element);
   }
   
   public void removeFlowElement(String elementId) {
-    FlowElement element = flowElementMap.get(elementId);
-    
-    if (element == null) {
-      element = findFlowElementInList(elementId);
-    }
-    
+    FlowElement element = findFlowElementInList(elementId);
     if (element != null) {
       flowElementList.remove(element);
-      flowElementMap.remove(elementId);
     }
   }
   
@@ -168,15 +194,151 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     this.candidateStarterGroups = candidateStarterGroups;
   }
   
-  @SuppressWarnings("unchecked")
-  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsOfType(Class<FlowElementType> type) {
-    List<FlowElementType> flowElements = new ArrayList<FlowElementType>();
-    for (FlowElement flowElement : this.getFlowElements()) {
-      if (type.isInstance(flowElement)) {
-        flowElements.add((FlowElementType) flowElement);
-      }
-    }
-    return flowElements;
+  public List<EventListener> getEventListeners() {
+	  return eventListeners;
   }
   
+  public void setEventListeners(List<EventListener> eventListeners) {
+	  this.eventListeners = eventListeners;
+  }
+  
+  
+  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsOfType(Class<FlowElementType> type) {
+    	return findFlowElementsOfType(type, true);
+  }
+
+  @SuppressWarnings("unchecked")
+  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsOfType(Class<FlowElementType> type, boolean goIntoSubprocesses) {
+    List<FlowElementType> foundFlowElements = new ArrayList<FlowElementType>();
+    for (FlowElement flowElement : this.getFlowElements()) {
+      if (type.isInstance(flowElement)) {
+        foundFlowElements.add((FlowElementType) flowElement);
+      }
+      if (flowElement instanceof SubProcess) {
+      	if (goIntoSubprocesses) {
+      		foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
+      	}
+      }
+    }
+    return foundFlowElements;
+  }
+  
+  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsInSubProcessOfType(SubProcess subProcess, Class<FlowElementType> type) {
+  	return findFlowElementsInSubProcessOfType(subProcess, type, true);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <FlowElementType extends FlowElement> List<FlowElementType> findFlowElementsInSubProcessOfType(SubProcess subProcess, Class<FlowElementType> type, boolean goIntoSubprocesses) {
+    List<FlowElementType> foundFlowElements = new ArrayList<FlowElementType>();
+    for (FlowElement flowElement : subProcess.getFlowElements()) {
+      if (type.isInstance(flowElement)) {
+        foundFlowElements.add((FlowElementType) flowElement);
+      }
+      if (flowElement instanceof SubProcess) {
+      	if (goIntoSubprocesses) {
+      		foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
+      	}
+      }
+    }
+    return foundFlowElements;
+  }
+  
+  public FlowElementsContainer findParent(FlowElement childElement) {
+  	 return findParent(childElement, this);
+  }
+  
+  public FlowElementsContainer findParent(FlowElement childElement, FlowElementsContainer flowElementsContainer) {
+  	for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+      if (childElement.getId() != null && childElement.getId().equals(flowElement.getId())) {
+        return flowElementsContainer;
+      }
+      if (flowElement instanceof FlowElementsContainer) {
+      	FlowElementsContainer result = findParent(childElement, (FlowElementsContainer) flowElement);
+      	if (result != null) {
+      		return result;
+      	}
+      }
+    }
+  	return null;
+  }
+  
+  public Process clone() {
+    Process clone = new Process();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(Process otherElement) {
+    super.setValues(otherElement);
+    
+    setName(otherElement.getName());
+    setExecutable(otherElement.isExecutable());
+    setDocumentation(otherElement.getDocumentation());
+    if (otherElement.getIoSpecification() != null) {
+      setIoSpecification(otherElement.getIoSpecification().clone());
+    }
+    
+    executionListeners = new ArrayList<ActivitiListener>();
+    if (otherElement.getExecutionListeners() != null && otherElement.getExecutionListeners().size() > 0) {
+      for (ActivitiListener listener : otherElement.getExecutionListeners()) {
+        executionListeners.add(listener.clone());
+      }
+    }
+    
+    candidateStarterUsers = new ArrayList<String>();
+    if (otherElement.getCandidateStarterUsers() != null && otherElement.getCandidateStarterUsers().size() > 0) {
+      candidateStarterUsers.addAll(otherElement.getCandidateStarterUsers());
+    }
+    
+    candidateStarterGroups = new ArrayList<String>();
+    if (otherElement.getCandidateStarterGroups() != null && otherElement.getCandidateStarterGroups().size() > 0) {
+      candidateStarterGroups.addAll(otherElement.getCandidateStarterGroups());
+    }
+    
+    eventListeners = new ArrayList<EventListener>();
+    if(otherElement.getEventListeners() != null && !otherElement.getEventListeners().isEmpty()) {
+    	for(EventListener listener : otherElement.getEventListeners()) {
+    		eventListeners.add(listener.clone());
+    	}
+    }
+    
+    /*
+     * This is required because data objects in Designer have no DI info
+     * and are added as properties, not flow elements
+     *
+     * Determine the differences between the 2 elements' data object
+     */
+    for (ValuedDataObject thisObject : getDataObjects()) {
+      boolean exists = false;
+      for (ValuedDataObject otherObject : otherElement.getDataObjects()) {
+        if (thisObject.getId().equals(otherObject.getId())) {
+          exists = true;
+        }
+      }
+      if (!exists) {
+        // missing object
+        removeFlowElement(thisObject.getId());
+      }
+    }
+    
+    dataObjects = new ArrayList<ValuedDataObject>();
+    if (otherElement.getDataObjects() != null && otherElement.getDataObjects().size() > 0) {
+      for (ValuedDataObject dataObject : otherElement.getDataObjects()) {
+          ValuedDataObject clone = dataObject.clone();
+          dataObjects.add(clone);
+          // add it to the list of FlowElements
+          // if it is already there, remove it first so order is same as data object list
+          removeFlowElement(clone.getId());
+          addFlowElement(clone);
+      }
+    }
+  }
+
+  public List<ValuedDataObject> getDataObjects() {
+    return dataObjects;
+  }
+
+  public void setDataObjects(List<ValuedDataObject> dataObjects) {
+    this.dataObjects = dataObjects;
+  }
 }

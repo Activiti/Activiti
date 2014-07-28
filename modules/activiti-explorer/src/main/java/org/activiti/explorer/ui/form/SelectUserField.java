@@ -15,6 +15,7 @@ package org.activiti.explorer.ui.form;
 
 import java.util.Collection;
 
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
@@ -173,8 +174,7 @@ public class SelectUserField extends HorizontalLayout implements Field {
     // Update label
     if(newValue != null) {
       if(selectedUser == null || !selectedUser.getId().equals(newValue)) {
-        // fetch selected user based on id
-         selectedUser = ExplorerApp.get().getUserCache().findUser((String) newValue);
+        selectedUser = ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().userId((String) newValue).singleResult();
       }
       selectedUserLabel.setValue(getSelectedUserLabel());
       selectedUserLabel.addStyleName(ExplorerLayout.STYLE_FORM_USER_SELECTED);

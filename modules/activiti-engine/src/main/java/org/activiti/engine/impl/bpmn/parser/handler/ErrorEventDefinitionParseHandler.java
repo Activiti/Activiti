@@ -23,7 +23,7 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -42,9 +42,6 @@ public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<E
     org.activiti.bpmn.model.ErrorEventDefinition modelErrorEvent = (org.activiti.bpmn.model.ErrorEventDefinition) eventDefinition;
     if (bpmnParse.getBpmnModel().containsErrorRef(modelErrorEvent.getErrorCode())) {
       String errorCode = bpmnParse.getBpmnModel().getErrors().get(modelErrorEvent.getErrorCode());
-      if (StringUtils.isEmpty(errorCode)) {
-        bpmnParse.getBpmnModel().addProblem("errorCode is required for an error event", eventDefinition);
-      }
       modelErrorEvent.setErrorCode(errorCode);
     }
     
@@ -60,8 +57,6 @@ public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<E
         ScopeImpl catchingScope = ((ActivityImpl) scope).getParent();
         
         createErrorStartEventDefinition(modelErrorEvent, activity, catchingScope);
-      } else {
-        bpmnParse.getBpmnModel().addProblem("multiple start events not supported for subprocess", bpmnParse.getCurrentSubProcess());
       }
       
     } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {

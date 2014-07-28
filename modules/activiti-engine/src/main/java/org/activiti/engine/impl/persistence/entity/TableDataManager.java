@@ -13,6 +13,32 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricFormProperty;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.TablePageQueryImpl;
+import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.management.TableMetaData;
+import org.activiti.engine.management.TablePage;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.apache.ibatis.session.RowBounds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -22,29 +48,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.history.HistoricFormProperty;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.history.HistoricVariableInstance;
-import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.impl.TablePageQueryImpl;
-import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.management.TableMetaData;
-import org.activiti.engine.management.TablePage;
-import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.Job;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
-import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -68,10 +71,10 @@ public class TableDataManager extends AbstractManager {
     persistentObjectToTableNameMap.put(MessageEntity.class, "ACT_RU_JOB");
     persistentObjectToTableNameMap.put(TimerEntity.class, "ACT_RU_JOB");
     
-    persistentObjectToTableNameMap.put(EventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCRIPTION");
-    persistentObjectToTableNameMap.put(CompensateEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCRIPTION");    
-    persistentObjectToTableNameMap.put(MessageEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCRIPTION");    
-    persistentObjectToTableNameMap.put(SignalEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCRIPTION");
+    persistentObjectToTableNameMap.put(EventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
+    persistentObjectToTableNameMap.put(CompensateEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");    
+    persistentObjectToTableNameMap.put(MessageEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");    
+    persistentObjectToTableNameMap.put(SignalEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
         
     // repository
     persistentObjectToTableNameMap.put(DeploymentEntity.class, "ACT_RE_DEPLOYMENT");
@@ -86,6 +89,7 @@ public class TableDataManager extends AbstractManager {
     persistentObjectToTableNameMap.put(HistoricProcessInstanceEntity.class, "ACT_HI_PROCINST");
     persistentObjectToTableNameMap.put(HistoricVariableInstanceEntity.class, "ACT_HI_VARINST");
     persistentObjectToTableNameMap.put(HistoricTaskInstanceEntity.class, "ACT_HI_TASKINST");
+    persistentObjectToTableNameMap.put(HistoricIdentityLinkEntity.class, "ACT_HI_IDENTITYLINK");
     
     // a couple of stuff goes to the same table
     persistentObjectToTableNameMap.put(HistoricDetailAssignmentEntity.class, "ACT_HI_DETAIL");
@@ -113,6 +117,7 @@ public class TableDataManager extends AbstractManager {
     apiTypeToTableNameMap.put(ProcessDefinition.class, "ACT_RE_PROCDEF");
     apiTypeToTableNameMap.put(Deployment.class, "ACT_RE_DEPLOYMENT");    
     apiTypeToTableNameMap.put(Job.class, "ACT_RU_JOB");
+    apiTypeToTableNameMap.put(Model.class, "ACT_RE_MODEL");
     
     // history
     apiTypeToTableNameMap.put(HistoricProcessInstance.class, "ACT_HI_PROCINST");
@@ -122,7 +127,11 @@ public class TableDataManager extends AbstractManager {
     apiTypeToTableNameMap.put(HistoricFormProperty.class, "ACT_HI_DETAIL");
     apiTypeToTableNameMap.put(HistoricTaskInstance.class, "ACT_HI_TASKINST");        
     apiTypeToTableNameMap.put(HistoricVariableInstance.class, "ACT_HI_VARINST");
-    
+
+    // identity
+    apiTypeToTableNameMap.put(Group.class, "ACT_ID_GROUP");
+    apiTypeToTableNameMap.put(User.class, "ACT_ID_USER");
+
     // TODO: Identity skipped for the moment as no SQL injection is provided here
   }
 

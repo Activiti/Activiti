@@ -64,7 +64,7 @@ public abstract class AbstractEventHandler implements EventHandler {
       if (!activity.equals( execution.getActivity() )) {
         execution.setActivity(activity);
       }
-      execution.signal("signal", null);
+      execution.signal(eventSubscription.getEventName(), payload);
     }
 
   }

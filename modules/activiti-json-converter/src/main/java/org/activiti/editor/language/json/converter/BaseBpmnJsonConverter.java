@@ -28,6 +28,7 @@ import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.FormProperty;
+import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Lane;
@@ -44,13 +45,14 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.activiti.editor.language.json.converter.util.JsonConverterUtil;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -184,14 +186,28 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       String multiInstanceCardinality = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CARDINALITY, elementNode);
       String multiInstanceCollection = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_COLLECTION, elementNode);
       String multiInstanceCondition = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CONDITION, elementNode);
+      String multiInstanceLoopType = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_LOOP_TYPE, elementNode);
       
       if (StringUtils.isNotEmpty(multiInstanceCardinality) || StringUtils.isNotEmpty(multiInstanceCollection) ||
-          StringUtils.isNotEmpty(multiInstanceCondition)) {
+          StringUtils.isNotEmpty(multiInstanceCondition) || StringUtils.isNotEmpty(multiInstanceLoopType)) {
         
         String multiInstanceVariable = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_VARIABLE, elementNode);
         
         MultiInstanceLoopCharacteristics multiInstanceObject = new MultiInstanceLoopCharacteristics();
         multiInstanceObject.setSequential(getPropertyValueAsBoolean(PROPERTY_MULTIINSTANCE_SEQUENTIAL, elementNode));
+        
+        // There is another property used for multi-instance sequential control, that is used for rendering the correct
+        // BPMN loop symbol on the task. In case this is set, also take that into account.
+        
+        if(multiInstanceLoopType != null) {
+        	if(PROPERTY_MULTIINSTANCE_LOOP_TYPE_SEQUENTIAL.equals(multiInstanceLoopType)) {
+        		multiInstanceObject.setSequential(true);
+        	} else if(PROPERTY_MULTIINSTANCE_LOOP_TYPE_PARALLEL.equals(multiInstanceLoopType)) {
+        		multiInstanceObject.setSequential(false);
+        	}
+        }
+        
+        
         multiInstanceObject.setLoopCardinality(multiInstanceCardinality);
         multiInstanceObject.setInputDataItem(multiInstanceCollection);
         multiInstanceObject.setElementVariable(multiInstanceVariable);
@@ -240,6 +256,23 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       } else {
         propertyItemNode.putNull(PROPERTY_FORM_VARIABLE);
       }
+      
+      propertyItemNode.put(PROPERTY_FORM_REQUIRED, property.isRequired() ? PROPERTY_VALUE_YES : PROPERTY_VALUE_NO);
+      propertyItemNode.put(PROPERTY_FORM_READABLE, property.isReadable() ? PROPERTY_VALUE_YES : PROPERTY_VALUE_NO);
+      propertyItemNode.put(PROPERTY_FORM_WRITEABLE, property.isWriteable() ? PROPERTY_VALUE_YES : PROPERTY_VALUE_NO);
+      
+      ObjectNode formValueNode = objectMapper.createObjectNode();
+      ArrayNode formValueItemNode = objectMapper.createArrayNode();
+      
+      for (FormValue formValue : property.getFormValues()) {
+        ObjectNode propertyFormValueNode = objectMapper.createObjectNode();
+        propertyFormValueNode.put(PROPERTY_FORM_FORM_VALUE_ID, formValue.getId());
+        propertyFormValueNode.put(PROPERTY_FORM_FORM_VALUE_NAME, formValue.getName());
+        formValueItemNode.add(propertyFormValueNode);
+      }
+      formValueNode.put("totalCount", formValueItemNode.size());
+      formValueNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, formValueItemNode);
+      propertyItemNode.put(PROPERTY_FORM_FORM_VALUES, formValueNode.toString());
       
       itemsNode.add(propertyItemNode);
     }
@@ -326,6 +359,26 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
           propertiesNode.put(PROPERTY_ERRORREF, errorDefinition.getErrorCode());
         }
         
+      } else if (eventDefinition instanceof MessageEventDefinition) {
+        MessageEventDefinition messageDefinition = (MessageEventDefinition) eventDefinition;
+        if (StringUtils.isNotEmpty(messageDefinition.getMessageRef())) {
+          String messageRef = messageDefinition.getMessageRef();
+          // remove the namespace from the message id if set
+          if (messageRef.startsWith(model.getTargetNamespace())) {
+            messageRef = messageRef.replace(model.getTargetNamespace(), "");
+            messageRef = messageRef.replaceFirst(":", "");
+          } else {
+            for (String prefix : model.getNamespaces().keySet()) {
+              String namespace = model.getNamespace(prefix);
+              if (messageRef.startsWith(namespace)) {
+                messageRef = messageRef.replace(model.getTargetNamespace(), "");
+                messageRef = prefix + messageRef;
+              }
+            }
+          }
+          propertiesNode.put(PROPERTY_MESSAGEREF, messageRef);
+        }
+        
       } else if (eventDefinition instanceof SignalEventDefinition) {
         SignalEventDefinition signalDefinition = (SignalEventDefinition) eventDefinition;
         if (StringUtils.isNotEmpty(signalDefinition.getSignalRef())) {
@@ -351,7 +404,17 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     
     JsonNode formPropertiesNode = getProperty(PROPERTY_FORM_PROPERTIES, objectNode);
     if (formPropertiesNode != null) {
+      if (formPropertiesNode.isValueNode() && StringUtils.isNotEmpty(formPropertiesNode.asText())) {
+        try {
+          formPropertiesNode = objectMapper.readTree(formPropertiesNode.asText());
+        } catch (Exception e) {
+          LOGGER.info("Form properties node can not be read", e);
+        }
+      }
       JsonNode itemsArrayNode = formPropertiesNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+      String readWriteReqNode = null;
+      JsonNode formValuesNode = null;
+      JsonNode formValuesArrayNode = null;
       if (itemsArrayNode != null) {
         for (JsonNode formNode : itemsArrayNode) {
           JsonNode formIdNode = formNode.get(PROPERTY_FORM_ID);
@@ -363,6 +426,38 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             formProperty.setType(getValueAsString(PROPERTY_FORM_TYPE, formNode));
             formProperty.setExpression(getValueAsString(PROPERTY_FORM_EXPRESSION, formNode));
             formProperty.setVariable(getValueAsString(PROPERTY_FORM_VARIABLE, formNode));
+            readWriteReqNode = getValueAsString(PROPERTY_FORM_REQUIRED, formNode);
+            if (PROPERTY_VALUE_YES.equalsIgnoreCase(readWriteReqNode))
+              formProperty.setRequired(true);
+            readWriteReqNode = getValueAsString(PROPERTY_FORM_READABLE, formNode);
+            if (PROPERTY_VALUE_NO.equalsIgnoreCase(readWriteReqNode))
+              formProperty.setReadable(false);
+            readWriteReqNode = getValueAsString(PROPERTY_FORM_WRITEABLE, formNode);
+            if (PROPERTY_VALUE_NO.equalsIgnoreCase(readWriteReqNode))
+                formProperty.setWriteable(false);
+            
+            formValuesNode = formNode.get(PROPERTY_FORM_FORM_VALUES);
+            if (formValuesNode != null && StringUtils.isNotEmpty(formValuesNode.asText()) && !("undefined".equals(formValuesNode.asText()))) {
+              if (formValuesNode.isValueNode()) {
+                try {
+                  formValuesNode = objectMapper.readTree(formValuesNode.asText());
+                } catch (Exception e) {
+                  LOGGER.info("Form properties values node can not be read", e);
+                }
+              }
+              formValuesArrayNode = formValuesNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+              List<FormValue> formValues = new ArrayList<FormValue>();
+              for (JsonNode valueNode : formValuesArrayNode) {
+                JsonNode valueIdNode = valueNode.get(PROPERTY_FORM_FORM_VALUE_ID);
+                if (valueIdNode != null && StringUtils.isNotEmpty(valueIdNode.asText())) {
+                  FormValue formValue = new FormValue();
+                  formValue.setId(valueIdNode.asText());
+                  formValue.setName(getValueAsString(PROPERTY_FORM_FORM_VALUE_NAME, valueNode));
+                  formValues.add(formValue);
+                }
+              }
+              formProperty.setFormValues(formValues);
+            }
             
             if (element instanceof StartEvent) {
               ((StartEvent) element).getFormProperties().add(formProperty);
@@ -383,6 +478,13 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     String listenerClass = null;
     String listenerExpression = null;
     String listenerDelegateExpression = null;
+    String listenerFields = null;
+    String listenerFieldName = null;
+    String listenerFieldValue = null;
+    String listenerFieldExpression = null;
+    
+    JsonNode listenerFieldsNode = null;
+    JsonNode listenerFieldsArrayNode = null;
     
     if (element instanceof UserTask) {
       propertyName = PROPERTY_TASK_LISTENERS;
@@ -390,6 +492,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       listenerClass = PROPERTY_TASK_LISTENER_CLASS;
       listenerExpression = PROPERTY_TASK_LISTENER_EXPRESSION;
       listenerDelegateExpression = PROPERTY_TASK_LISTENER_DELEGATEEXPRESSION;
+      listenerFields = PROPERTY_TASK_LISTENER_FIELDS;
+      listenerFieldName = PROPERTY_TASK_LISTENER_FIELD_NAME;
+      listenerFieldValue = PROPERTY_TASK_LISTENER_FIELD_VALUE;
+      listenerFieldExpression = PROPERTY_TASK_LISTENER_EXPRESSION;
       
     } else {
       propertyName = PROPERTY_EXECUTION_LISTENERS;
@@ -397,6 +503,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       listenerClass = PROPERTY_EXECUTION_LISTENER_CLASS;
       listenerExpression = PROPERTY_EXECUTION_LISTENER_EXPRESSION;
       listenerDelegateExpression = PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION;
+      listenerFields = PROPERTY_EXECUTION_LISTENER_FIELDS;
+      listenerFieldName = PROPERTY_EXECUTION_LISTENER_FIELD_NAME;
+      listenerFieldValue = PROPERTY_EXECUTION_LISTENER_FIELD_VALUE;
+      listenerFieldExpression = PROPERTY_EXECUTION_LISTENER_EXPRESSION;
     }
     
     listenersNode = getProperty(propertyName, objectNode);
@@ -428,6 +538,34 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             } else if (StringUtils.isNotEmpty(getValueAsString(listenerDelegateExpression, itemNode))) {
               listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
               listener.setImplementation(getValueAsString(listenerDelegateExpression, itemNode));
+            }
+            
+            listenerFieldsNode = itemNode.get(listenerFields);
+            if (listenerFieldsNode != null && StringUtils.isNotEmpty(listenerFieldsNode.asText()) && !("undefined".equals(listenerFieldsNode.asText()))){
+              if(listenerFieldsNode.isValueNode()){
+                try{
+                  listenerFieldsNode = objectMapper.readTree(listenerFieldsNode.asText());
+                } catch(Exception e){
+                  LOGGER.info("Listener fields node can not be read", e);
+                }
+              }
+            }
+            if (listenerFieldsNode != null) {
+              listenerFieldsArrayNode = listenerFieldsNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+              List<FieldExtension> fields = new ArrayList<FieldExtension>();
+              if (listenerFieldsArrayNode != null) {
+                for (JsonNode fieldNode : listenerFieldsArrayNode){
+                  JsonNode fieldNameNode = fieldNode.get(listenerFieldName);
+                  if (fieldNameNode != null && StringUtils.isNotEmpty(fieldNameNode.asText())){
+                    FieldExtension field = new FieldExtension();
+                    field.setFieldName(fieldNameNode.asText());
+                    field.setStringValue(getValueAsString(listenerFieldValue, fieldNode));
+                    field.setExpression(getValueAsString(listenerFieldExpression, fieldNode));
+                    fields.add(field);
+                  }
+                }
+              }
+              listener.setFieldExtensions(fields);
             }
             
             if (element instanceof Process) {
@@ -525,6 +663,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
   
   protected boolean getPropertyValueAsBoolean(String name, JsonNode objectNode) {
     return JsonConverterUtil.getPropertyValueAsBoolean(name, objectNode);
+  }
+  
+  protected boolean getPropertyValueAsBoolean(String name, JsonNode objectNode, boolean defaultValue) {
+    return JsonConverterUtil.getPropertyValueAsBoolean(name, objectNode, defaultValue);
   }
   
   protected List<String> getPropertyValueAsList(String name, JsonNode objectNode) {

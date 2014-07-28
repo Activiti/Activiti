@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 
 /**
  * @author Tom Baeyens
@@ -30,21 +29,11 @@ public class ByteArrayType implements VariableType {
   }
 
   public Object getValue(ValueFields valueFields) {
-    if (valueFields.getByteArrayValueId()==null) {
-      return null;
-    }
-    return valueFields.getByteArrayValue().getBytes();
+    return valueFields.getBytes();
   }
 
   public void setValue(Object value, ValueFields valueFields) {
-    ByteArrayEntity byteArray = valueFields.getByteArrayValue();
-    byte[] bytes = (byte[]) value;
-    if (byteArray==null) {
-      valueFields.setByteArrayValue(bytes);
-   
-    } else {
-      byteArray.setBytes(bytes);
-    }
+    valueFields.setBytes((byte[]) value);
   }
 
   public boolean isAbleToStore(Object value) {

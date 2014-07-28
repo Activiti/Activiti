@@ -31,7 +31,7 @@
       "popular" : true
     } ]
   }, {
-    "name" : "diagrambase",
+    "name" : "processbase",
     "properties" : [ {
       "id" : "process_id",
       "type" : "String",
@@ -46,6 +46,22 @@
       "value" : "",
       "description" : "Author of the process definition.",
       "popular" : false
+    }, {
+      "id" : "process_executable",
+	  "type" : "Choice",
+	  "title" : "Executable",
+	  "value" : "Yes",
+	  "description" : "Define if the process is executable.",
+	  "popular" : true,
+	  "items" : [ {
+	    "id" : "no",
+	    "title" : "No",
+	    "value" : "No"
+	  }, {
+	    "id" : "yes",
+	    "title" : "Yes",
+	    "value" : "Yes"
+	  }]
     }, {
       "id" : "process_version",
       "type" : "String",
@@ -137,7 +153,7 @@
     "name" : "formdefinition",
     "properties" : [ {
       "id" : "formproperties",
-      "type" : "Complex",
+      "type" : "multiplecomplex",
       "title" : "Form properties",
       "value" : "",
       "description" : "Definition of the form with a list of form properties",
@@ -189,10 +205,16 @@
           "value" : "long",
           "refToView" : ""
         }, {
-          "id" : "c3",
+          "id" : "c4",
           "title" : "Boolean",
           "title_de" : "Boolean",
           "value" : "boolean",
+          "refToView" : ""
+        }, {
+          "id" : "c5",
+          "title" : "Enum",
+          "title_de" : "Enum",
+          "value" : "enum",
           "refToView" : ""
         } ]
       }, {
@@ -215,6 +237,79 @@
         "value" : "",
         "width" : 200,
         "optional" : false
+      }, {
+        "id" : "formproperty_required",
+        "name" : "Required",
+        "name_de" : "Typ",
+        "type" : "Choice",
+        "value" : "No",
+        "width" : 100,
+        "optional" : false,
+        "items" : [ {
+          "id" : "yes",
+          "title" : "Yes",
+          "value" : "Yes"
+        }, {
+          "id" : "no",
+          "title" : "No",
+          "value" : "No"
+        } ]
+      }, {
+        "id" : "formproperty_readable",
+        "name" : "Readable",
+        "name_de" : "Typ",
+        "type" : "Choice",
+        "value" : "Yes",
+        "width" : 100,
+        "optional" : false,
+        "items" : [ {
+          "id" : "yes",
+          "title" : "Yes",
+          "value" : "Yes"
+        }, {
+          "id" : "no",
+          "title" : "No",
+          "value" : "No"
+        } ]
+      }, {
+        "id" : "formproperty_writeable",
+        "name" : "Writeable",
+        "name_de" : "Typ",
+        "type" : "Choice",
+        "value" : "Yes",
+        "width" : 100,
+        "optional" : false,
+        "items" : [ {
+          "id" : "yes",
+          "title" : "Yes",
+          "value" : "Yes"
+        }, {
+          "id" : "no",
+          "title" : "No",
+          "value" : "No"
+        } ]
+      }, {
+        "id" : "formproperty_formvalues",
+        "name" : "Form values",
+        "name_de" : "Typ",
+        "type" : "Complex",
+        "width" : 300,
+        "optional" : false,
+        "complexItems" : [ {
+          "id" : "formproperty_formvalue_id",
+          "name" : "Id",
+          "type" : "String",
+          "value" : "",
+          "width" : 100,
+          "optional" : false
+        }, {
+          "id" : "formproperty_formvalue_name",
+          "name" : "Name",
+          "type" : "String",
+          "value" : "",
+          "width" : 200,
+          "optional" : false
+        } ]
       } ]
     } ]
   }, {
@@ -609,6 +704,27 @@
       } ]
     } ]
   }, {
+    "name" : "cancelactivityattribute",
+    "properties" : [ {
+      "id" : "cancelactivity",
+      "type" : "Choice",
+      "title" : "Cancel activity",
+      "value" : "yes",
+      "description" : "Define activity cancelation",
+      "popular" : true,
+      "items" : [ {
+        "id" : "yes",
+        "title" : "Yes",
+        "title_de" : "Yes",
+        "value" : "yes"
+      }, {
+        "id" : "no",
+        "title" : "No",
+        "title_de" : "No",
+        "value" : "no"
+      } ]
+    } ]
+  }, {
     "name" : "timerdefinition",
     "properties" : [ {
       "id" : "timerdurationdefinition",
@@ -671,7 +787,14 @@
       "value" : "",
       "description" : "Initiator of the process.",
       "popular" : true
-    } ]
+    }, {
+      "id" : "formkeydefinition",
+      "type" : "String",
+      "title" : "Form key",
+      "value" : "",
+      "description" : "Form key of the start event.",
+      "popular" : true
+    }]
   }, {
     "name" : "textannotationbase",
     "properties" : [ {
@@ -805,6 +928,127 @@
       } ]
     } ]
   }, {
+    "name" : "eventListener",
+    "properties" : [ {
+      "id" : "eventlisteners",
+      "type" : "multiplecomplex",
+      "title" : "Event listeners",
+      "value" : "",
+      "description" : "Event listeners for events related to the process definition.",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "event_listener_events",
+        "name" : "Events",
+        "type" : "String",
+        "description" : "Listener events.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      }, {
+        "id" : "event_listener_class",
+        "name" : "Class",
+        "type" : "String",
+        "description" : "Listener implementation class.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      }, {
+        "id" : "event_listener_delegate_expression",
+        "name" : "Delegate expression",
+        "type" : "String",
+        "description" : "Listener delegate expression definition.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      },{
+        "id" : "event_listener_entity_type",
+        "name" : "Entity type",
+        "type" : "Choice",
+        "description" : "Listener entity type.",
+        "value" : "",
+        "width" : 100,
+        "optional" : true,
+        "items" : [ {
+          "id" : "attachment",
+          "title" : "Attachment",
+          "value" : "attachment",
+          "refToView" : ""
+        }, {
+          "id" : "comment",
+          "title" : "Comment",
+          "value" : "comment",
+          "refToView" : ""
+        }, {
+          "id" : "execution",
+          "title" : "Execution",
+          "value" : "execution",
+          "refToView" : ""
+        }, {
+          "id" : "identity-link",
+          "title" : "Indentity link",
+          "value" : "identity-link",
+          "refToView" : ""
+        }, {
+          "id" : "job",
+          "title" : "Job",
+          "value" : "job",
+          "refToView" : ""
+        }, {
+          "id" : "process-definition",
+          "title" : "Process definition",
+          "value" : "process-definition",
+          "refToView" : ""
+        }, {
+          "id" : "process-instance",
+          "title" : "Process instance",
+          "value" : "process-instance",
+          "refToView" : ""
+        }, {
+          "id" : "execution",
+          "title" : "Execution",
+          "value" : "execution",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "event_listener_throw_event",
+        "name" : "Throw event",
+        "type" : "Choice",
+        "description" : "Listener event type to throw.",
+        "value" : "",
+        "width" : 100,
+        "optional" : true,
+        "items" : [ {
+          "id" : "signal",
+          "title" : "Signal",
+          "value" : "signal",
+          "refToView" : ""
+        }, {
+          "id" : "globalSignal",
+          "title" : "Glocal signal",
+          "value" : "globalSignal",
+          "refToView" : ""
+        }, {
+          "id" : "message",
+          "title" : "Message",
+          "value" : "message",
+          "refToView" : ""
+        }, {
+          "id" : "error",
+          "title" : "Error",
+          "value" : "error",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "event_listener_throw_event_ref",
+        "name" : "Signal/Message name - Error code",
+        "type" : "String",
+        "description" : "Signal name, Message name or error-code.",
+        "value" : "",
+        "width" : 150,
+        "optional" : true
+      } ]
+    } ]
+  }, {
     "name" : "customformdefinition",
     "properties" : [ {
       "id" : "customformdefinition",
@@ -931,7 +1175,7 @@
     "groups" : [ "Diagram" ],
     "mayBeRoot" : true,
     "hide" : true,
-    "propertyPackages" : [ "baseattributes", "diagrambase", "executionlistenersbase" ],
+    "propertyPackages" : [ "baseattributes", "processbase", "executionlistenersbase", "eventListener" ],
     "roles" : [ ]
   }, {
     "type" : "node",
@@ -1115,6 +1359,27 @@
     "roles" : [ "sequence_start", "sequence_end", "GatewaysMorph", "all" ]
   }, {
     "type" : "node",
+    "id" : "Pool",
+    "title" : "Pool",
+    "groups" : ["Swimlanes"],
+    "description" : "Pools and Lanes represent responsibilities for activities in a process. A pool or a lane can be an organization, a role or a system.",
+    "view" : "swimlane/pool.svg",
+    "icon" : "swimlane/pool.png",
+    "propertyPackages" : [ "elementbase", "baseattributes", "processbase" ],
+    "roles" : [ "all", "messageflow_start", "messageflow_end", "fromtoall", "canContainArtifacts" ],
+    "layout" : [{"type" : "layout.bpmn2_0.pool", "orientation" : "horizontal"}]
+  }, {
+    "type" : "node",
+    "id" : "Lane",
+    "title" : "Lane",
+    "groups" : ["Swimlanes"],
+    "description" : "Pools and lanes represent responsibilities for activities in a process. A pool or a lane can be an organization, a role or a system. Lanes subdivide pools or other lanes hierarchically.",
+    "view" : "swimlane/lane.svg",
+    "icon" : "swimlane/lane.png",
+    "propertyPackages" : [ "elementbase", "baseattributes" ],
+    "roles": [ "PoolChild", "fromtoall", "canContainArtifacts" ]
+  }, {
+    "type" : "node",
     "id" : "BoundaryErrorEvent",
     "title" : "Boundary error event",
     "description" : "A boundary event that catches a BPMN error",
@@ -1131,7 +1396,7 @@
     "view" : "intermediateevent/timer.svg",
     "icon" : "catching/timer.png",
     "groups" : [ "Boundary Events" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "timerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "timerdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
     "type" : "node",
@@ -1141,9 +1406,20 @@
     "view" : "intermediateevent/signal.catching.svg",
     "icon" : "catching/signal.png",
     "groups" : [ "Boundary Events" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "signalrefdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "signalrefdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
+    "type" : "node",
+    "id" : "BoundaryMessageEvent",
+    "title" : "Boundary message event",
+    "description" : "A boundary event with a message trigger",
+    "view" : "intermediateevent/message.catching.svg",
+    "icon" : "catching/message.png",
+    "groups" : [ "Boundary Events" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "messagerefdefinition" ],
+    "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
+  },
+  {
     "type" : "node",
     "id" : "CatchTimerEvent",
     "title" : "Intermediate timer catching event",
@@ -1224,7 +1500,7 @@
     "layout" : [ {
       "type" : "layout.bpmn2_0.sequenceflow"
     } ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "sequenceflowbase" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "sequenceflowbase", "executionlistenersbase" ],
     "roles" : [ "ConnectingObjectsMorph", "all" ]
   }, {
     "type" : "edge",
@@ -1298,6 +1574,12 @@
     }, {
       "role" : "EventSubProcess",
       "contains" : [ "sequence_start", "sequence_end", "from_task_event", "to_task_event", "TextAnnotation" ]
+    }, {
+      "role" : "Pool",
+      "contains" : [ "Lane" ]
+    }, {
+       "role" : "Lane",
+       "contains" : [ "all" ]
     } ],
     "morphingRules" : [ {
       "role" : "ActivitiesMorph",

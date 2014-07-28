@@ -34,4 +34,23 @@ public class DataAssociation extends BaseElement {
   public void setAssignments(List<Assignment> assignments) {
     this.assignments = assignments;
   }
+  
+  public DataAssociation clone() {
+    DataAssociation clone = new DataAssociation();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(DataAssociation otherAssociation) {
+    setSourceRef(otherAssociation.getSourceRef());
+    setTargetRef(otherAssociation.getTargetRef());
+    setTransformation(otherAssociation.getTransformation());
+    
+    assignments = new ArrayList<Assignment>();
+    if (otherAssociation.getAssignments() != null && otherAssociation.getAssignments().size() > 0) {
+      for (Assignment assignment : otherAssociation.getAssignments()) {
+        assignments.add(assignment.clone());
+      }
+    }
+  }
 }

@@ -14,6 +14,7 @@
 package org.activiti.explorer.ui.custom;
 
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.activiti.explorer.ExplorerApp;
@@ -86,9 +87,12 @@ public class UserProfileLink extends HorizontalLayout {
   }
   
   protected void initUserLink(final String userId) {
-    User user = ExplorerApp.get().getUserCache().findUser(userId);
+    User user = ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().userId(userId).singleResult();
     Button userButton = new Button(user.getFirstName() + " " + user.getLastName());
     ClickListener buttonClickListener = new ClickListener() {
+      
+      private static final long serialVersionUID = 1L;
+
       public void buttonClick(ClickEvent event) {
         viewManager.showProfilePopup(userId);
       }

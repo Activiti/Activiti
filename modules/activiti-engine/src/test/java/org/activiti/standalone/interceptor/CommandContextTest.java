@@ -26,7 +26,7 @@ public class CommandContextTest extends PluggableActivitiTestCase {
 
   public void testCommandContextGetCurrentAfterException() {
     try {
-      processEngineConfiguration.getCommandExecutorTxRequired().execute(new Command<Object>() {
+      processEngineConfiguration.getCommandExecutor().execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {
           throw new IllegalStateException("here i come!");
         }

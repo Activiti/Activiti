@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn"
+	xmlns:fox="http://www.camunda.com/fox"
+	targetNamespace="Examples">
+
+	<process id="failedJobRetry">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="failingServiceTask" />
+
+ 		<serviceTask id="failingServiceTask" activiti:async="true" activiti:class="org.activiti.engine.test.jobexecutor.RetryFailingDelegate">
+			<extensionElements>
+	       		<activiti:failedJobRetryTimeCycle>R2/PT6S</activiti:failedJobRetryTimeCycle>
+	       	</extensionElements>
+		</serviceTask>
+        
+		<sequenceFlow id="flow2" sourceRef="failingServiceTask" targetRef="theEnd" />
+		
+		<endEvent id="theEnd" />
+
+	</process>
+	
+</definitions>

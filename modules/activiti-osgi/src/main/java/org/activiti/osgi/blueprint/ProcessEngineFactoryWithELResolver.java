@@ -8,6 +8,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.VariableScopeElResolver;
 import org.activiti.engine.impl.javax.el.ArrayELResolver;
+import org.activiti.engine.impl.javax.el.BeanELResolver;
 import org.activiti.engine.impl.javax.el.CompositeELResolver;
 import org.activiti.engine.impl.javax.el.ELResolver;
 import org.activiti.engine.impl.javax.el.ListELResolver;
@@ -49,6 +50,7 @@ public class ProcessEngineFactoryWithELResolver extends ProcessEngineFactory {
         compositeElResolver.add(blueprintContextELResolver);
       }
       compositeElResolver.add(blueprintELResolver);
+      compositeElResolver.add(new BeanELResolver());
       compositeElResolver.add(new ArrayELResolver());
       compositeElResolver.add(new ListELResolver());
       compositeElResolver.add(new MapELResolver());

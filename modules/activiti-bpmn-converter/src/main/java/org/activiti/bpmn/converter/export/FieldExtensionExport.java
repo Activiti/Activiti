@@ -19,7 +19,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.FieldExtension;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class FieldExtensionExport implements BpmnXMLConstants {
 
@@ -42,7 +42,7 @@ public class FieldExtensionExport implements BpmnXMLConstants {
           
           if (StringUtils.isNotEmpty(fieldExtension.getStringValue())) {
             xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_FIELD_STRING, ACTIVITI_EXTENSIONS_NAMESPACE);
-            xtw.writeCharacters(fieldExtension.getStringValue());
+            xtw.writeCData(fieldExtension.getStringValue());
           } else {
             xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ATTRIBUTE_FIELD_EXPRESSION, ACTIVITI_EXTENSIONS_NAMESPACE);
             xtw.writeCharacters(fieldExtension.getExpression());

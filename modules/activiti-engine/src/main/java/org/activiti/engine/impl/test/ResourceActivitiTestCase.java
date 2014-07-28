@@ -21,7 +21,7 @@ import org.activiti.engine.ProcessEngines;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ResourceActivitiTestCase extends AbstractActivitiTestCase {
+public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase {
   
   protected String activitiConfigurationResource;
   
