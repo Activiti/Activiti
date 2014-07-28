@@ -55,6 +55,13 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertTrue(userTask.getCandidateGroups().contains("management"));
     assertTrue(userTask.getCandidateGroups().contains("sales"));
     
+    assertEquals(1, userTask.getCustomUserIdentityLinks().size());
+    assertEquals(2, userTask.getCustomGroupIdentityLinks().size());
+    assertTrue(userTask.getCustomUserIdentityLinks().get("businessAdministrator").contains("kermit"));
+    assertTrue(userTask.getCustomGroupIdentityLinks().get("manager").contains("management"));
+    assertTrue(userTask.getCustomGroupIdentityLinks().get("businessAdministrator").contains("management"));
+    
+    
     List<FormProperty> formProperties = userTask.getFormProperties();
     assertEquals(3, formProperties.size());
     FormProperty formProperty = formProperties.get(0);
