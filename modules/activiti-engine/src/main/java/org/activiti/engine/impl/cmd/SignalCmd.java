@@ -13,11 +13,10 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
+import java.util.Map;
 
 /**
  * @author Tom Baeyens
@@ -41,7 +40,6 @@ public class SignalCmd extends NeedsActiveExecutionCmd<Object> {
     if(processVariables != null) {
       execution.setVariables(processVariables);
     }
-    
     execution.signal(signalName, signalData);
     return null;
   }

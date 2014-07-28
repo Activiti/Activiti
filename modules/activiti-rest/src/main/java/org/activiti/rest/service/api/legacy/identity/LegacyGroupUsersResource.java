@@ -44,7 +44,7 @@ public class LegacyGroupUsersResource extends SecuredResource {
     properties.put("email", UserQueryProperty.EMAIL);
   }
 
-  @Get
+  @Get("json")
   public DataResponse getGroups() {
     if (authenticate() == false)
       return null;

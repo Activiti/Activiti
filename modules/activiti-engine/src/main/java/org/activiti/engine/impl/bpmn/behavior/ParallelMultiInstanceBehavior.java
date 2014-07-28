@@ -55,7 +55,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       
       // In case of an embedded subprocess, and extra child execution is required
       // Otherwise, all child executions would end up under the same parent,
-      // without any differentation to which embedded subprocess they belong
+      // without any differentiation to which embedded subprocess they belong
       if (isExtraScopeNeeded()) {
         ActivityExecution extraScopedExecution = concurrentExecution.createExecution();
         extraScopedExecution.setActive(true);
@@ -78,7 +78,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       if (concurrentExecution.isActive() && !concurrentExecution.isEnded() 
               && concurrentExecution.getParent().isActive() 
               && !concurrentExecution.getParent().isEnded()) { 
-        setLoopVariable(concurrentExecution, LOOP_COUNTER, loopCounter);
+        setLoopVariable(concurrentExecution, getCollectionElementIndexVariable(), loopCounter);
         executeOriginalBehavior(concurrentExecution, loopCounter);
       }
     }
@@ -101,7 +101,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   public void leave(ActivityExecution execution) {
     callActivityEndListeners(execution);
     
-    int loopCounter = getLoopVariable(execution, LOOP_COUNTER);
+    int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable());
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;

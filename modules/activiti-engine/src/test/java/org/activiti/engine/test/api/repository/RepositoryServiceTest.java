@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.ZipInputStream;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
@@ -30,7 +31,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
@@ -149,7 +149,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   public void testDeploymentWithDelayedProcessDefinitionActivation() {
     
     Date startTime = new Date();
-    ClockUtil.setCurrentTime(startTime);
+    processEngineConfiguration.getClock().setCurrentTime(startTime);
     Date inThreeDays = new Date(startTime.getTime() + (3 * 24 * 60 * 60 * 1000));
     
     // Deploy process, but activate after three days
@@ -174,7 +174,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     
     // Move time four days forward, the timer will fire and the process definitions will be active
     Date inFourDays = new Date(startTime.getTime() + (4 * 24 * 60 * 60 * 1000));
-    ClockUtil.setCurrentTime(inFourDays);
+    processEngineConfiguration.getClock().setCurrentTime(inFourDays);
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
     
     assertEquals(1, repositoryService.createDeploymentQuery().count());
@@ -369,6 +369,34 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     EndEvent endEvent = (EndEvent) process.getFlowElement(nextElementId);
     assertEquals(0, endEvent.getOutgoingFlows().size());
     assertEquals(1, endEvent.getIncomingFlows().size());
+  }
+  
+  /**
+   * This test was added due to issues with unzip of JDK 7,
+   * where the default is changed to UTF8 instead of the platform
+   * encoding (which is, in fact, good). 
+   * However, some platforms do not create UTF8-compatible ZIP files.
+   * 
+   * The tested zip file is created on OS X (non-UTF-8).
+   * 
+   * See https://blogs.oracle.com/xuemingshen/entry/non_utf_8_encoding_in
+   */
+  public void testDeployZipFile() {
+	  InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/api/repository/test-processes.zip");
+	  assertNotNull(inputStream);
+	  ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+	  assertNotNull(zipInputStream);
+	  repositoryService.createDeployment()
+	  	.addZipInputStream(zipInputStream)
+	  	.deploy();
+	  
+	  assertEquals(6, repositoryService.createProcessDefinitionQuery().count());
+	  
+	  
+	  // Delete
+	  for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+		  repositoryService.deleteDeployment(deployment.getId(), true);
+	  }
   }
   
   

@@ -67,6 +67,16 @@ public interface HistoricProcessInstance {
    */
   String getSuperProcessInstanceId();
   
+  /**
+   * The tenant identifier for the process instance.
+   */
+  String getTenantId();
+  
+  /**
+   * The name for the process instance.
+   */
+  String getName();
+  
   /** Returns the process variables if requested in the process instance query */
   Map<String, Object> getProcessVariables();
 }

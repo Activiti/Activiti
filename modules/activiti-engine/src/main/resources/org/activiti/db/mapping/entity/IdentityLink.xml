@@ -25,6 +25,13 @@
     delete from ${prefix}ACT_RU_IDENTITYLINK where ID_ = #{id}
   </delete>
   
+  <delete id="bulkDeleteIdentityLink" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_IDENTITYLINK where 
+    <foreach item="identityLink" collection="list" index="index" separator=" or ">
+        ID_ = #{identityLink.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  
   <delete id="deleteIdentityLinkByProcDef" parameterType="string">
     delete from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{id}
   </delete>
@@ -68,6 +75,21 @@
     select * 
     from ${prefix}ACT_RU_IDENTITYLINK 
     where TASK_ID_ = #{parameter.taskId}
+      <if test="parameter.userId != null">
+        and USER_ID_ = #{parameter.userId}
+      </if>
+      <if test="parameter.groupId != null">
+        and GROUP_ID_ = #{parameter.groupId}
+      </if>
+      <if test="parameter.type != null">
+        and TYPE_ = #{parameter.type}
+      </if>
+  </select>
+  
+   <select id="selectIdentityLinkByProcessInstanceUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+    select * 
+    from ${prefix}ACT_RU_IDENTITYLINK 
+    where PROC_INST_ID_ = #{parameter.processInstanceId}
       <if test="parameter.userId != null">
         and USER_ID_ = #{parameter.userId}
       </if>

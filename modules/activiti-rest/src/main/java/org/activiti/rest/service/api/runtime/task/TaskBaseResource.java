@@ -52,6 +52,7 @@ public class TaskBaseResource extends SecuredResource {
     properties.put("priority", TaskQueryProperty.PRIORITY);
     properties.put("executionId", TaskQueryProperty.EXECUTION_ID);
     properties.put("processInstanceId", TaskQueryProperty.PROCESS_INSTANCE_ID);
+    properties.put("tenantId", TaskQueryProperty.TENANT_ID);
   }
 
   protected DelegationState getDelegationState(String delegationState) {
@@ -92,6 +93,12 @@ public class TaskBaseResource extends SecuredResource {
     }
     if(taskRequest.isPrioritySet()) {
       task.setPriority(taskRequest.getPriority());
+    }
+    if(taskRequest.isCategorySet()) {
+    	task.setCategory(taskRequest.getCategory());
+    }
+    if(taskRequest.isFormKeySet()) {
+      task.setFormKey(taskRequest.getFormKey());
     }
 
     if(taskRequest.isDelegationStateSet()) {
@@ -155,6 +162,9 @@ public class TaskBaseResource extends SecuredResource {
     }
     if(request.getCandidateGroup() != null) {
       taskQuery.taskCandidateGroup(request.getCandidateGroup());
+    }
+    if(request.getCandidateGroupIn() != null) {
+      taskQuery.taskCandidateGroupIn(request.getCandidateGroupIn());
     }
     if(request.getProcessInstanceId() != null) {
       taskQuery.processInstanceId(request.getProcessInstanceId());
@@ -244,7 +254,23 @@ public class TaskBaseResource extends SecuredResource {
       addProcessvariables(taskQuery, request.getProcessInstanceVariables());
     }
     
-    return new TaskPaginateList(this).paginateList(query, taskQuery, "id", properties);
+    if(request.getTenantId() != null) {
+    	taskQuery.taskTenantId(request.getTenantId());
+    }
+    
+    if(request.getTenantIdLike() != null) {
+    	taskQuery.taskTenantIdLike(request.getTenantIdLike());
+    }
+    
+    if(Boolean.TRUE.equals(request.getWithoutTenantId())) {
+    	taskQuery.taskWithoutTenantId();
+    }
+
+    if (request.getCandidateOrAssigned() != null) {
+      taskQuery.taskCandidateOrAssigned(request.getCandidateOrAssigned());
+    }
+    
+    return new TaskPaginateList(this).paginateList(query, request, taskQuery, "id", properties);
   }
   
   protected void addTaskvariables(TaskQuery taskQuery, List<QueryVariable> variables) {

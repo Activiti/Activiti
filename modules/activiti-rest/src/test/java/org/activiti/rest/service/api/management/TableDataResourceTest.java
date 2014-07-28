@@ -6,12 +6,13 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * Test for all REST-operations related to the Table columns.
@@ -44,9 +45,9 @@ public class TableDataResourceTest extends BaseRestTestCase {
       // Check paging result
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals(3, responseNode.get("total").getIntValue());
-      assertEquals(3, responseNode.get("size").getIntValue());
-      assertEquals(0, responseNode.get("start").getIntValue());
+      assertEquals(3, responseNode.get("total").intValue());
+      assertEquals(3, responseNode.get("size").intValue());
+      assertEquals(0, responseNode.get("start").intValue());
       assertTrue(responseNode.get("order").isNull());
       assertTrue(responseNode.get("sort").isNull());
       
@@ -63,18 +64,18 @@ public class TableDataResourceTest extends BaseRestTestCase {
 
       responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals(3, responseNode.get("total").getIntValue());
-      assertEquals(3, responseNode.get("size").getIntValue());
-      assertEquals(0, responseNode.get("start").getIntValue());
-      assertEquals("asc", responseNode.get("order").getTextValue());
-      assertEquals("LONG_", responseNode.get("sort").getTextValue());
+      assertEquals(3, responseNode.get("total").intValue());
+      assertEquals(3, responseNode.get("size").intValue());
+      assertEquals(0, responseNode.get("start").intValue());
+      assertEquals("asc", responseNode.get("order").textValue());
+      assertEquals("LONG_", responseNode.get("sort").textValue());
       rows = (ArrayNode) responseNode.get("data");
       assertNotNull(rows);
       assertEquals(3, rows.size());
       
-      assertEquals("var1", rows.get(0).get("NAME_").getTextValue());
-      assertEquals("var2", rows.get(1).get("NAME_").getTextValue());
-      assertEquals("var3", rows.get(2).get("NAME_").getTextValue());
+      assertEquals("var1", rows.get(0).get("NAME_").textValue());
+      assertEquals("var2", rows.get(1).get("NAME_").textValue());
+      assertEquals("var3", rows.get(2).get("NAME_").textValue());
       
       // Check sorting, descending
       client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderDescendingColumn=LONG_");
@@ -83,18 +84,18 @@ public class TableDataResourceTest extends BaseRestTestCase {
 
       responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals(3, responseNode.get("total").getIntValue());
-      assertEquals(3, responseNode.get("size").getIntValue());
-      assertEquals(0, responseNode.get("start").getIntValue());
-      assertEquals("desc", responseNode.get("order").getTextValue());
-      assertEquals("LONG_", responseNode.get("sort").getTextValue());
+      assertEquals(3, responseNode.get("total").intValue());
+      assertEquals(3, responseNode.get("size").intValue());
+      assertEquals(0, responseNode.get("start").intValue());
+      assertEquals("desc", responseNode.get("order").textValue());
+      assertEquals("LONG_", responseNode.get("sort").textValue());
       rows = (ArrayNode) responseNode.get("data");
       assertNotNull(rows);
       assertEquals(3, rows.size());
       
-      assertEquals("var3", rows.get(0).get("NAME_").getTextValue());
-      assertEquals("var2", rows.get(1).get("NAME_").getTextValue());
-      assertEquals("var1", rows.get(2).get("NAME_").getTextValue());
+      assertEquals("var3", rows.get(0).get("NAME_").textValue());
+      assertEquals("var2", rows.get(1).get("NAME_").textValue());
+      assertEquals("var1", rows.get(2).get("NAME_").textValue());
       
       
       // Finally, check result limiting
@@ -104,13 +105,13 @@ public class TableDataResourceTest extends BaseRestTestCase {
 
       responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals(3, responseNode.get("total").getIntValue());
-      assertEquals(1, responseNode.get("size").getIntValue());
-      assertEquals(1, responseNode.get("start").getIntValue());
+      assertEquals(3, responseNode.get("total").intValue());
+      assertEquals(1, responseNode.get("size").intValue());
+      assertEquals(1, responseNode.get("start").intValue());
       rows = (ArrayNode) responseNode.get("data");
       assertNotNull(rows);
       assertEquals(1, rows.size());
-      assertEquals("var2", rows.get(0).get("NAME_").getTextValue());
+      assertEquals("var2", rows.get(0).get("NAME_").textValue());
 
     } finally {
       // Clean adhoc-tasks even if test fails

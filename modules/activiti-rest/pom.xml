@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.15-SNAPSHOT</version>
+    <version>5.17-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -19,6 +19,14 @@
       org.activiti.rest.service
     </activiti.artifact>
   </properties>
+  
+  <repositories>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Public online Restlet repository</name>
+      <url>http://maven.restlet.org</url>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>
@@ -117,6 +125,7 @@
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.fileupload</artifactId>
+      <version>${restlet.version}</version>
     </dependency>
 
     <dependency>
@@ -129,6 +138,11 @@
     </dependency>
 
     <!-- Test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring</artifactId>
@@ -153,6 +167,18 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet.jse</groupId>
+      <artifactId>org.restlet.ext.jetty</artifactId>
+      <version>${restlet.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet.jse</groupId>
+      <artifactId>org.restlet.ext.httpclient</artifactId>
+      <version>${restlet.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

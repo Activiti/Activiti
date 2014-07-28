@@ -15,7 +15,6 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -42,6 +41,9 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   protected String deploymentId;
   protected boolean notDeployed;
   protected boolean deployed;
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
 
   public ModelQueryImpl() {
   }
@@ -146,6 +148,27 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     return this;
   }
   
+  public ModelQuery modelTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("Model tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public ModelQuery modelTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("Model tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public ModelQuery modelWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
+  }
+  
   //sorting ////////////////////////////////////////////
   
   public ModelQuery orderByModelCategory() {
@@ -174,6 +197,10 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   
   public ModelQuery orderByLastUpdateTime() {
     return orderBy(ModelQueryProperty.MODEL_LAST_UPDATE_TIME);
+  }
+  
+  public ModelQuery orderByTenantId() {
+  	return orderBy(ModelQueryProperty.MODEL_TENANT_ID);
   }
   
   //results ////////////////////////////////////////////

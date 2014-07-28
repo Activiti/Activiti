@@ -88,6 +88,18 @@ public class M2Class {
 	  return propertyOverrides;
   }
 	
+	public M2PropertyOverride getPropertyOverride(String propertyName) {
+		M2PropertyOverride found = null;
+		if(propertyOverrides != null) {
+			for(M2PropertyOverride override : propertyOverrides) {
+				if(propertyName.equals(override.getName())) {
+					return override;
+				}
+			}
+		}
+		return found;
+	}
+	
 	public void setPropertyOverrides(List<M2PropertyOverride> propertyOverrides) {
 	  this.propertyOverrides = propertyOverrides;
   }

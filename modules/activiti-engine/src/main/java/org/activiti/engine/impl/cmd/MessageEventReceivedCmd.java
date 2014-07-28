@@ -63,6 +63,7 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
     this.payload = null;
     this.async = async;
   }
+  
   protected Void execute(CommandContext commandContext, ExecutionEntity execution) {
     if(messageName == null) {
       throw new ActivitiIllegalArgumentException("messageName cannot be null");

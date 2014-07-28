@@ -22,10 +22,9 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.StartProcessVariableScope;
+import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Tom Baeyens
@@ -116,7 +115,7 @@ public class TimerDeclarationImpl implements Serializable {
     // evaluating variables but other context, evaluating should happen nevertheless
     VariableScope scopeForExpression = executionEntity;
     if(scopeForExpression == null) {
-      scopeForExpression = StartProcessVariableScope.getSharedInstance();
+      scopeForExpression = NoExecutionVariableScope.getSharedInstance();
     }
 
     Object dueDateValue = description.getValue(scopeForExpression);
@@ -139,12 +138,25 @@ public class TimerDeclarationImpl implements Serializable {
     if (executionEntity != null) {
       timer.setExecution(executionEntity);
       timer.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
+      timer.setProcessInstanceId(executionEntity.getProcessInstanceId());
+
+      // Inherit tenant identifier (if applicable)
+      if (executionEntity != null && executionEntity.getTenantId() != null) {
+      	timer.setTenantId(executionEntity.getTenantId());
+      }
     }
     
     if (type == TimerDeclarationType.CYCLE) {
       
-      // See ACT-1427: A boundary timer with a cancelActivity='true', doesn't need to repeat itself
-      if (!isInterruptingTimer) {
+    	// See ACT-1427: A boundary timer with a cancelActivity='true', doesn't need to repeat itself
+    	boolean repeat = !isInterruptingTimer;
+    	
+    	// ACT-1951: intermediate catching timer events shouldn't repeat accoring to spec
+    	if(TimerCatchIntermediateEventJobHandler.TYPE.equals(jobHandlerType)) {
+    		repeat = false;
+    	}
+    	
+      if (repeat) {
         String prepared = prepareRepeat(dueDateString);
         timer.setRepeat(prepared);
       }
@@ -155,7 +167,7 @@ public class TimerDeclarationImpl implements Serializable {
   private String prepareRepeat(String dueDate) {
     if (dueDate.startsWith("R") && dueDate.split("/").length==2) {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-      return dueDate.replace("/","/"+sdf.format(ClockUtil.getCurrentTime())+"/");
+      return dueDate.replace("/","/"+sdf.format(Context.getProcessEngineConfiguration().getClock().getCurrentTime())+"/");
     }
     return dueDate;
   }

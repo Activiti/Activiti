@@ -58,9 +58,13 @@ public abstract class ActivitiRestApplication extends Application {
     Verifier verifier = new SecretVerifier() {
 
       @Override
-      public boolean verify(String username, char[] password) throws IllegalArgumentException {
+      public int verify(String username, char[] password) throws IllegalArgumentException {
         boolean verified = ActivitiUtil.getIdentityService().checkPassword(username, new String(password));
-        return verified;
+        if (verified) {
+          return RESULT_VALID;
+        } else {
+          return RESULT_INVALID;
+        }
       }
     };
     

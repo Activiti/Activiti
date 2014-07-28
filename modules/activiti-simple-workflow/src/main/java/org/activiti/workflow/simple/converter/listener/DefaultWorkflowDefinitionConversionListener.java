@@ -57,6 +57,10 @@ public class DefaultWorkflowDefinitionConversionListener implements WorkflowDefi
     process.setId(generateProcessId(workflowDefinition));
     process.setName(workflowDefinition.getName());
     process.setDocumentation(workflowDefinition.getDescription());
+    
+    if (workflowDefinition.getCategory() != null) {
+    	conversion.getBpmnModel().setTargetNamespace(workflowDefinition.getCategory());
+    }
 
     conversion.setProcess(process);
 

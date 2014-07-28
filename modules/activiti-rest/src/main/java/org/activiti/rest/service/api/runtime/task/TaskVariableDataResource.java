@@ -19,13 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.restlet.data.MediaType;
-import org.restlet.data.Status;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get;
-import org.restlet.resource.ResourceException;
 
 /**
  * @author Frederik Heremans
@@ -53,12 +53,12 @@ public class TaskVariableDataResource extends TaskVariableBaseResource {
         mediaType = MediaType.APPLICATION_JAVA_OBJECT;
         
       } else {
-        throw new ResourceException(new Status(Status.CLIENT_ERROR_NOT_FOUND.getCode(), "The variable does not have a binary data stream.", null, null));
+        throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
       }
       return new InputRepresentation(dataStream, mediaType);
     } catch(IOException ioe) {
       // Re-throw IOException
-      throw new ResourceException(Status.SERVER_ERROR_INTERNAL, ioe);
+      throw new ActivitiException("Unexpected error getting variable data", ioe);
     }
   }
 }

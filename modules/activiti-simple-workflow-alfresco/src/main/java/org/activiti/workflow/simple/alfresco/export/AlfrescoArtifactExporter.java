@@ -31,7 +31,9 @@ import org.activiti.workflow.simple.alfresco.model.beans.BeanProperty;
 import org.activiti.workflow.simple.alfresco.model.beans.BeanPropertyProp;
 import org.activiti.workflow.simple.alfresco.model.beans.Beans;
 import org.activiti.workflow.simple.alfresco.model.config.AlfrescoConfiguration;
+import org.activiti.workflow.simple.alfresco.model.config.Extension;
 import org.activiti.workflow.simple.alfresco.model.config.Module;
+import org.activiti.workflow.simple.alfresco.model.config.ModuleDeployment;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 
 /**
@@ -48,6 +50,7 @@ public class AlfrescoArtifactExporter {
 	protected static final String MODEL_FILE_SUFFIX = "-model.xml";
 	protected static final String SPRING_CONTEXT_FILE_SUFFIX = "-context.xml";
 	protected static final String SHARE_CONFIG_FILE_SUFFIX = "-config-custom.xml";
+	protected static final String SHARE_CONFIG_MODULE_DEPLOYMENT_SUFFIX = "-module-deployment.xml";
 	protected static final String SHARE_CONTEXT_FILE_SUFFIX = "-share-context.xml";
 	
 	protected static final String WORKFLOW_DEPLOYER_PARENT = "workflowDeployer";
@@ -79,7 +82,7 @@ public class AlfrescoArtifactExporter {
 		bpmnConverter = new BpmnXMLConverter();
 		try {
 			modelJaxbContext = JAXBContext.newInstance(M2Model.class);
-			moduleJaxbContext = JAXBContext.newInstance(Module.class, AlfrescoConfiguration.class);
+			moduleJaxbContext = JAXBContext.newInstance(Extension.class, Module.class, AlfrescoConfiguration.class, ModuleDeployment.class);
 			beansJaxbContext = JAXBContext.newInstance(Beans.class);
 		} catch (JAXBException jaxbe) {
 			throw new AlfrescoSimpleWorkflowException("Error while building JAXB-context for exporting content-model", jaxbe);
@@ -94,21 +97,21 @@ public class AlfrescoArtifactExporter {
 	 * @param repositoryFolder the folder where all repository-artifacts and configurations are exported to
 	 * @param shareFolder the folder where all share-artifacts and configurations are exported to
 	 */
-	public void exportArtifacts(WorkflowDefinitionConversion conversion, File repositoryFolder, File shareFolder) {
+	public void exportArtifacts(WorkflowDefinitionConversion conversion, File repositoryFolder, File shareFolder, boolean asExtension) {
 			validateArtifactTargets(repositoryFolder, shareFolder);
 		
 			String processId = conversion.getProcess().getId();
 			try {
 				
 				// Export process BPMN
-				File processFile = new File(repositoryFolder, processId + PROCESS_FILE_SUFFIX);
+				File processFile = new File(repositoryFolder, getBpmnFileName(conversion));
 	      processFile.createNewFile();
 	      FileOutputStream processStream = new FileOutputStream(processFile);
 	      writeBpmnModel(processStream, conversion);
 	      processStream.close();
 	      
 	      // Export content model
-	      File contentModelFile = new File(repositoryFolder, processId + MODEL_FILE_SUFFIX);
+	      File contentModelFile = new File(repositoryFolder, getContentModelFileName(conversion));
 	      contentModelFile.createNewFile();
 	      FileOutputStream modelStream = new FileOutputStream(contentModelFile);
 	      writeContentModel(modelStream, conversion);
@@ -122,11 +125,19 @@ public class AlfrescoArtifactExporter {
 	      springContextStream.close();
 	      
 	      // Export share config
-	      File shareConfigFile = new File(shareFolder, processId + SHARE_CONFIG_FILE_SUFFIX);
+	      File shareConfigFile = new File(shareFolder, getShareConfigFileName(conversion));
 	      shareConfigFile.createNewFile();
 	      FileOutputStream shareConfigStream = new FileOutputStream(shareConfigFile);
-	      writeShareConfig(shareConfigStream, conversion, false);
+	      writeShareConfig(shareConfigStream, conversion, asExtension);
 	      shareConfigStream.close();
+	      
+	      if(asExtension) {
+	      	File shareModuleDeploymentFile = new File(shareFolder, getShareModuleDeploymentFileName(conversion));
+		      shareModuleDeploymentFile.createNewFile();
+		      FileOutputStream shareModuleStream = new FileOutputStream(shareModuleDeploymentFile);
+		      writeShareExtensionModule(shareModuleStream, conversion);
+		      shareModuleStream.close();
+	      }
 	      
 	      // Export share custom context
 	      File shareContextFile = new File(shareFolder, processId + SHARE_CONTEXT_FILE_SUFFIX);
@@ -138,6 +149,26 @@ public class AlfrescoArtifactExporter {
       } catch (IOException ioe) {
       	throw new AlfrescoSimpleWorkflowException("Error while exporting artifacts", ioe);
       }
+	}
+	
+	public String getBpmnFileName(WorkflowDefinitionConversion conversion) {
+		String processId = conversion.getProcess().getId();
+		return processId + PROCESS_FILE_SUFFIX;
+	}
+	
+	public String getContentModelFileName(WorkflowDefinitionConversion conversion) {
+		String processId = conversion.getProcess().getId();
+		return processId + MODEL_FILE_SUFFIX;
+	}
+	
+	public String getShareConfigFileName(WorkflowDefinitionConversion conversion) {
+		String processId = conversion.getProcess().getId();
+		return processId + SHARE_CONFIG_FILE_SUFFIX;
+	}
+	
+	public String getShareModuleDeploymentFileName(WorkflowDefinitionConversion conversion) {
+		String processId = conversion.getProcess().getId();
+		return processId + SHARE_CONFIG_MODULE_DEPLOYMENT_SUFFIX;
 	}
 	
 	/**
@@ -152,17 +183,35 @@ public class AlfrescoArtifactExporter {
 	/**
 	 * Write the Share module XML in the given conversion to the given stream. 
 	 */
-	public void writeShareConfig(OutputStream out, WorkflowDefinitionConversion conversion, boolean asModule) throws IOException {
-		Module module = AlfrescoConversionUtil.getModule(conversion);
+	public void writeShareConfig(OutputStream out, WorkflowDefinitionConversion conversion, boolean asExtension) throws IOException {
+		Extension extension = AlfrescoConversionUtil.getExtension(conversion);
 		try {
-			Object toMarshall = module;
+			Object toMarshall = extension;
 			
 			// In case the configuration should NOT be exported as a module, wrap the configurations
 			// in a "alfresco-configuration" element instead
-			if(!asModule) {
+			if(!asExtension) {
 				toMarshall = new AlfrescoConfiguration();
-				((AlfrescoConfiguration) toMarshall).setConfigurations(module.getConfigurations());
+				((AlfrescoConfiguration) toMarshall).setConfigurations(extension.getModules().get(0).getConfigurations());
 			}
+	    Marshaller marshaller = moduleJaxbContext.createMarshaller();
+	    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+	    marshaller.marshal(toMarshall, out);
+    } catch (JAXBException jaxbe) {
+    	throw new IOException(jaxbe);
+    }
+	}
+	
+	/**
+	 * Write the Share module XML in the given conversion to the given stream. 
+	 */
+	public void writeShareExtensionModule(OutputStream out, WorkflowDefinitionConversion conversion) throws IOException {
+		Extension extension = AlfrescoConversionUtil.getExtension(conversion);
+		try {
+			ModuleDeployment toMarshall = new ModuleDeployment();
+			toMarshall.setModule(extension.getModules().get(0).getId());
+			// In case the configuration should NOT be exported as a module, wrap the configurations
+			// in a "alfresco-configuration" element instead
 	    Marshaller marshaller = moduleJaxbContext.createMarshaller();
 	    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 	    marshaller.marshal(toMarshall, out);

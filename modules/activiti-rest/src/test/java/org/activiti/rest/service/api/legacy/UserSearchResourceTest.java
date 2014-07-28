@@ -1,9 +1,10 @@
 package org.activiti.rest.service.api.legacy;
 
 import org.activiti.rest.service.BaseRestTestCase;
-import org.codehaus.jackson.JsonNode;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class UserSearchResourceTest extends BaseRestTestCase {
 

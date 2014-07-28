@@ -39,6 +39,7 @@
     <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
         <packageScan>
             <package>org.activiti.camel.route</package>
+            <package>org.activiti.camel.examples</package>
         </packageScan>
     </camelContext>
 

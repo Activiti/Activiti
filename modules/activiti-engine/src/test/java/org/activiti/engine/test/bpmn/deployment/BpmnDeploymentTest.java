@@ -181,7 +181,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     String diagramResourceName = processDefinition.getDiagramResourceName();
     assertEquals("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg", diagramResourceName);
     
-    InputStream diagramStream = repositoryService.getResourceAsStream(deploymentId, "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg");
+    InputStream diagramStream = repositoryService.getResourceAsStream(deploymentIdFromDeploymentAnnotation, "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg");
     byte[] diagramBytes = IoUtil.readInputStream(diagramStream, "diagram stream");
     assertEquals(33343, diagramBytes.length);
   }
@@ -223,6 +223,27 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
       // Check if no deployments are made
       assertEquals(0, repositoryService.createDeploymentQuery().count());
       assertTrue(expected.getMessage().startsWith("Error parsing XML"));
+    }
+  }
+  
+  public void testDeploySameFileTwiceForDifferentTenantId() {
+    String bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
+    repositoryService.createDeployment().enableDuplicateFiltering().addClasspathResource(bpmnResourceName).name("twice").tenantId("Tenant_A").deploy();
+    
+    String deploymentId = repositoryService.createDeploymentQuery().singleResult().getId();
+    List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
+    
+    // verify bpmn file name
+    assertEquals(1, deploymentResources.size());
+    assertEquals(bpmnResourceName, deploymentResources.get(0));
+    
+    repositoryService.createDeployment().enableDuplicateFiltering().addClasspathResource(bpmnResourceName).name("twice").tenantId("Tenant_B").deploy();
+    List<org.activiti.engine.repository.Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
+    //Now, we should have two deployment for same process file, one for each tenant
+    assertEquals(2, deploymentList.size());
+    
+    for(org.activiti.engine.repository.Deployment deployment: deploymentList) {
+    	repositoryService.deleteDeployment(deployment.getId());
     }
   }
   

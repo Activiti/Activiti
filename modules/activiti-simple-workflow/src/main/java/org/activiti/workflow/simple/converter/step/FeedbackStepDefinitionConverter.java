@@ -35,6 +35,7 @@ import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.FeedbackStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
+import org.activiti.workflow.simple.util.JvmUtil;
 
 
 /**
@@ -146,6 +147,9 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
       scriptField.setFieldName("script");
       
       StringBuilder script = new StringBuilder();
+      if (JvmUtil.isJDK8()) {
+      	script.append("load(\"nashorn:mozilla_compat.js\");");
+      }
       script.append("importPackage (java.util); var feedbackProviders = new ArrayList();" + System.getProperty("line.separator"));
       for (String feedbackProvider : feedbackStepDefinition.getFeedbackProviders()) {
         script.append("feedbackProviders.add('" + feedbackProvider + "');" + System.getProperty("line.separator"));

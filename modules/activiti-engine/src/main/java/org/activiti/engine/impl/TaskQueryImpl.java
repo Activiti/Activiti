@@ -54,12 +54,16 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected DelegationState delegationState;
   protected String candidateUser;
   protected String candidateGroup;
-  private List<String> candidateGroups;
+  protected List<String> candidateGroups;
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
   protected String processInstanceId;
   protected String executionId;
   protected Date createTime;
   protected Date createTimeBefore;
   protected Date createTimeAfter;
+  protected String category;
   protected String key;
   protected String keyLike;
   protected String processDefinitionKey;
@@ -77,6 +81,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean excludeSubtasks = false;
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
+  protected String userIdForCandidateAndAssignee;
+  protected boolean bothCandidateAndAssigned = false;
 
   public TaskQueryImpl() {
   }
@@ -88,7 +94,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public TaskQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
-  
+
   public TaskQueryImpl taskId(String taskId) {
     if (taskId == null) {
       throw new ActivitiIllegalArgumentException("Task id is null");
@@ -240,7 +246,20 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     this.candidateGroup = candidateGroup;
     return this;
   }
-  
+
+  @Override
+  public TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee) {
+    if (candidateGroup != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
+    }
+    if (candidateUser != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
+    }
+    bothCandidateAndAssigned = true;
+    this.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
+    return this;
+  }
+
   public TaskQuery taskCandidateGroupIn(List<String> candidateGroups) {
     if(candidateGroups == null) {
       throw new ActivitiIllegalArgumentException("Candidate group list is null");
@@ -258,6 +277,27 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     
     this.candidateGroups = candidateGroups;
     return this;
+  }
+  
+  public TaskQuery taskTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("task tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public TaskQuery taskTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("task tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public TaskQuery taskWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
   }
   
   public TaskQueryImpl processInstanceId(String processInstanceId) {
@@ -293,6 +333,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public TaskQuery taskCreatedAfter(Date after) {
     this.createTimeAfter = after;
     return this;
+  }
+  
+  public TaskQuery taskCategory(String category) {
+  	this.category = category;
+  	return this;
   }
   
   public TaskQuery taskDefinitionKey(String key) {
@@ -530,6 +575,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return orderBy(TaskQueryProperty.DUE_DATE);
   }
   
+  @Override
+  public TaskQuery orderByTenantId() {
+  	return orderBy(TaskQueryProperty.TENANT_ID);
+  }
+  
   public String getMssqlOrDB2OrderBy() {
     String specialOrderBy = super.getOrderBy();
     if (specialOrderBy != null && specialOrderBy.length() > 0) {
@@ -638,5 +688,17 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
   public boolean getExcludeSubtasks() {
     return excludeSubtasks;
+  }
+	public String getTenantId() {
+		return tenantId;
+	}
+	public String getTenantIdLike() {
+		return tenantIdLike;
+	}
+	public boolean isWithoutTenantId() {
+		return withoutTenantId;
+	}
+  public String getUserIdForCandidateAndAssignee() {
+    return userIdForCandidateAndAssignee;
   }
 }

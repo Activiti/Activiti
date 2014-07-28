@@ -12,6 +12,7 @@
  */
 package org.activiti.bpmn.model;
 
+
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
@@ -46,5 +47,19 @@ public class ScriptTask extends Task {
   }
   public void setAutoStoreVariables(boolean autoStoreVariables) {
     this.autoStoreVariables = autoStoreVariables;
+  }
+  
+  public ScriptTask clone() {
+    ScriptTask clone = new ScriptTask();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(ScriptTask otherElement) {
+    super.setValues(otherElement);
+    setScriptFormat(otherElement.getScriptFormat());
+    setScript(otherElement.getScript());
+    setResultVariable(otherElement.getResultVariable());
+    setAutoStoreVariables(otherElement.isAutoStoreVariables());
   }
 }

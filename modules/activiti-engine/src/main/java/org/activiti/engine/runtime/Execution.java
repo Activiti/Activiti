@@ -52,4 +52,10 @@ public interface Execution {
    * Gets the id of the parent of this execution. If null, the execution represents a process-instance.
    */
   String getParentId();
+  
+  /** 
+   * The tenant identifier of this process instance 
+   */
+  String getTenantId();
+  
 }

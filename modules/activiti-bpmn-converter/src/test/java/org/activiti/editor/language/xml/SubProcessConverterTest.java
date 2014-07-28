@@ -60,6 +60,12 @@ public class SubProcessConverterTest extends AbstractConverterTest {
     assertEquals("${assignee == \"\"}", subProcess.getLoopCharacteristics().getCompletionCondition());
     assertTrue(subProcess.getFlowElements().size() == 5);
     
+    assertEquals(1, subProcess.getExecutionListeners().size());
+    ActivitiListener listenerSubProcess = subProcess.getExecutionListeners().get(0);
+    assertEquals("SubProcessTestClass", listenerSubProcess.getImplementation());
+    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_CLASS, listenerSubProcess.getImplementationType());
+    assertEquals("start", listenerSubProcess.getEvent());    
+    
     flowElement = model.getMainProcess().getFlowElement("boundaryEvent1");
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof BoundaryEvent);
@@ -71,9 +77,9 @@ public class SubProcessConverterTest extends AbstractConverterTest {
     assertTrue(boundaryEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition);
     
     assertEquals(1, model.getMainProcess().getExecutionListeners().size());
-    ActivitiListener listener = model.getMainProcess().getExecutionListeners().get(0);
-    assertEquals("TestClass", listener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_CLASS, listener.getImplementationType());
-    assertEquals("start", listener.getEvent());
+    ActivitiListener listenerMainProcess = model.getMainProcess().getExecutionListeners().get(0);
+    assertEquals("TestClass", listenerMainProcess.getImplementation());
+    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_CLASS, listenerMainProcess.getImplementationType());
+    assertEquals("start", listenerMainProcess.getEvent());
   }
 }

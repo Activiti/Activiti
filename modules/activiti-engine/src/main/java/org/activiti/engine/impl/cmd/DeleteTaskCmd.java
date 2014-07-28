@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -46,10 +45,10 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
 
   public Void execute(CommandContext commandContext) {
     if (taskId != null) {
-      deleteTask(taskId);
+      deleteTask(commandContext, taskId);
     } else if (taskIds != null) {
         for (String taskId : taskIds) {
-          deleteTask(taskId);
+          deleteTask(commandContext, taskId);
         }   
     } else {
       throw new ActivitiIllegalArgumentException("taskId and taskIds are null");
@@ -59,9 +58,8 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
     return null;
   }
 
-  protected void deleteTask(String taskId) {
-    Context
-      .getCommandContext()
+  protected void deleteTask(CommandContext commandContext, String taskId) {
+    commandContext
       .getTaskEntityManager()
       .deleteTask(taskId, deleteReason, cascade);
   }

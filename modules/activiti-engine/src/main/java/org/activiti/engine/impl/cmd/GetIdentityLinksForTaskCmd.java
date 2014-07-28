@@ -15,7 +15,6 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.List;
 
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -39,8 +38,7 @@ public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>>, 
   
   @SuppressWarnings({"unchecked", "rawtypes" })
   public List<IdentityLink> execute(CommandContext commandContext) {
-    TaskEntity task = Context
-      .getCommandContext()
+    TaskEntity task = commandContext
       .getTaskEntityManager()
       .findTaskById(taskId);
 

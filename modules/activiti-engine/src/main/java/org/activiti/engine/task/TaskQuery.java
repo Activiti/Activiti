@@ -96,6 +96,13 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
 
   /** Only select tasks for which users in the given group are candidates. */
   TaskQuery taskCandidateGroup(String candidateGroup);
+
+  /** Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups).
+   *  You can invoke {@link #taskCandidateGroupIn(List)} to include tasks that can be claimed by a user in the given groups
+   *  while set property <strong>dbIdentityUsed</strong> to <strong>false</strong> in process engine configuration
+   *  or using custom session factory of GroupIdentityManager.
+   */
+  TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee);
   
   /** 
    * Only select tasks for which the 'candidateGroup' is one of the given groups.
@@ -106,6 +113,21 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    *   When passed group list is empty or <code>null</code>. 
    */
   TaskQuery taskCandidateGroupIn(List<String> candidateGroups);
+  
+	/**
+	 * Only select tasks that have the given tenant id.
+	 */
+  TaskQuery taskTenantId(String tenantId);
+
+	/**
+	 * Only select tasks with a tenant id like the given one.
+	 */
+  TaskQuery taskTenantIdLike(String tenantIdLike);
+	
+	/**
+	 * Only select tasks that do not have a tenant id.
+	 */
+  TaskQuery taskWithoutTenantId();
 
   /** Only select tasks for the given process instance id. */
   TaskQuery processInstanceId(String processInstanceId);
@@ -121,17 +143,20 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** Only select tasks for the given execution. */
   TaskQuery executionId(String executionId);
   
-  /** Only select tasks that are created on the given date. **/
+  /** Only select tasks that are created on the given date. */
   TaskQuery taskCreatedOn(Date createTime);
   
-  /** Only select tasks that are created before the given date. **/
+  /** Only select tasks that are created before the given date. */
   TaskQuery taskCreatedBefore(Date before);
 
-  /** Only select tasks that are created after the given date. **/
+  /** Only select tasks that are created after the given date. */
   TaskQuery taskCreatedAfter(Date after);
   
-  /** Only select tasks that have no parent (i.e. do not select subtasks). **/
+  /** Only select tasks that have no parent (i.e. do not select subtasks). */
   TaskQuery excludeSubtasks();
+  
+  /** Only select tasks with the given category. */
+  TaskQuery taskCategory(String category);
 
   /** 
    * Only select tasks with the given taskDefinitionKey.
@@ -411,4 +436,7 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   
   /** Order by due date (needs to be followed by {@link #asc()} or {@link #desc()}). */
   TaskQuery orderByDueDate();
+  
+	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  TaskQuery orderByTenantId();
 }

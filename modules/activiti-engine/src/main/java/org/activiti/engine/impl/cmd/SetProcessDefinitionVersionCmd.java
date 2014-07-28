@@ -20,7 +20,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -95,7 +94,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     }
     ProcessDefinitionImpl currentProcessDefinitionImpl = processInstance.getProcessDefinition();
 
-    DeploymentManager deploymentCache = Context
+    DeploymentManager deploymentCache = commandContext
       .getProcessEngineConfiguration()
       .getDeploymentManager();
     ProcessDefinitionEntity currentProcessDefinition;
@@ -115,7 +114,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     
     // switch all sub-executions of the process instance to the new process definition version
     List<ExecutionEntity> childExecutions = executionManager
-      .findChildExecutionsByParentExecutionId(processInstanceId);
+      .findChildExecutionsByProcessInstanceId(processInstanceId);
     for (ExecutionEntity executionEntity : childExecutions) {
       validateAndSwitchVersionOfExecution(commandContext, executionEntity, newProcessDefinition);
     }

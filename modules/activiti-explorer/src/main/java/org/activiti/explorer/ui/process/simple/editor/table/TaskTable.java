@@ -129,9 +129,13 @@ public class TaskTable extends Table implements TaskFormModelListener {
     ComboBox assigneeComboBox = new ComboBox();
     assigneeComboBox.setNullSelectionAllowed(true);
    
-    for (User user : ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().orderByUserFirstName().asc().list()) {
-      assigneeComboBox.addItem(user.getId());
-      assigneeComboBox.setItemCaption(user.getId(), user.getFirstName() + " " + user.getLastName());
+    try {
+      for (User user : ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().orderByUserFirstName().asc().list()) {
+	    assigneeComboBox.addItem(user.getId());
+	    assigneeComboBox.setItemCaption(user.getId(), user.getFirstName() + " " + user.getLastName());
+	  }
+    } catch(Exception e) { 
+    	// Don't do anything. Will be an empty dropdown.
     }
     
     if (taskAssignee != null) {
@@ -143,9 +147,14 @@ public class TaskTable extends Table implements TaskFormModelListener {
     // groups
     ComboBox groupComboBox = new ComboBox();
     groupComboBox.setNullSelectionAllowed(true);
-    for (Group group : ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().orderByGroupName().asc().list()) {
-      groupComboBox.addItem(group.getId());
-      groupComboBox.setItemCaption(group.getId(), group.getName());
+    
+    try {
+      for (Group group : ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().orderByGroupName().asc().list()) {
+        groupComboBox.addItem(group.getId());
+        groupComboBox.setItemCaption(group.getId(), group.getName());
+      }
+    } catch (Exception e) {
+    	// Don't do anything. Will be an empty dropdown.
     }
     
     if (taskGroups != null) {

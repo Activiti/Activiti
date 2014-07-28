@@ -39,4 +39,16 @@ public class FieldExtension extends BaseElement {
   public void setExpression(String expression) {
     this.expression = expression;
   }
+  
+  public FieldExtension clone() {
+    FieldExtension clone = new FieldExtension();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(FieldExtension otherExtension) {
+    setFieldName(otherExtension.getFieldName());
+    setStringValue(otherExtension.getStringValue());
+    setExpression(otherExtension.getExpression());
+  }
 }

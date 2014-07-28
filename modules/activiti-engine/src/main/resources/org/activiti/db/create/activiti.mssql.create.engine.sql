@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.15-SNAPSHOT', 1);
+values ('schema.version', '5.17-SNAPSHOT', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.15-SNAPSHOT)', 1);
+values ('schema.history', 'create(5.17-SNAPSHOT)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -28,6 +28,7 @@ create table ACT_RE_DEPLOYMENT (
     ID_ nvarchar(64),
     NAME_ nvarchar(255),
     CATEGORY_ nvarchar(255),
+    TENANT_ID_ nvarchar(255) default '',
     DEPLOY_TIME_ datetime,
     primary key (ID_)
 );
@@ -45,6 +46,7 @@ create table ACT_RE_MODEL (
     DEPLOYMENT_ID_ nvarchar(64),
     EDITOR_SOURCE_VALUE_ID_ nvarchar(64),
     EDITOR_SOURCE_EXTRA_VALUE_ID_ nvarchar(64),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -63,6 +65,8 @@ create table ACT_RU_EXECUTION (
     IS_EVENT_SCOPE_ tinyint,
     SUSPENSION_STATE_ tinyint,
     CACHED_ENT_STATE_ int,
+    TENANT_ID_ nvarchar(255) default '',
+    NAME_ nvarchar(255),
     primary key (ID_)
 );
 
@@ -83,6 +87,7 @@ create table ACT_RU_JOB (
     REPEAT_ nvarchar(255),
     HANDLER_TYPE_ nvarchar(255),
     HANDLER_CFG_ nvarchar(4000),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -99,6 +104,7 @@ create table ACT_RE_PROCDEF (
     DESCRIPTION_ nvarchar(4000),
     HAS_START_FORM_KEY_ tinyint,
     SUSPENSION_STATE_ tinyint,
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
 );
 
@@ -118,7 +124,10 @@ create table ACT_RU_TASK (
     PRIORITY_ int,
     CREATE_TIME_ datetime,
     DUE_DATE_ datetime,
+    CATEGORY_ nvarchar(255),
     SUSPENSION_STATE_ int,
+    TENANT_ID_ nvarchar(255) default '',
+    FORM_KEY_ nvarchar(255),
     primary key (ID_)
 );
 
@@ -160,7 +169,25 @@ create table ACT_RU_EVENT_SUBSCR (
     ACTIVITY_ID_ nvarchar(64),
     CONFIGURATION_ nvarchar(255),
     CREATED_ datetime not null,
+    PROC_DEF_ID_ nvarchar(64),
+    TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)
+);
+
+create table ACT_EVT_LOG (
+    LOG_NR_ numeric(19,0) IDENTITY(1,1),
+    TYPE_ nvarchar(64),
+    PROC_DEF_ID_ nvarchar(64),
+    PROC_INST_ID_ nvarchar(64),
+    EXECUTION_ID_ nvarchar(64),
+    TASK_ID_ nvarchar(64),
+    TIME_STAMP_ datetime not null,
+    USER_ID_ nvarchar(255),
+    DATA_ varbinary(max),
+    LOCK_OWNER_ nvarchar(255),
+    LOCK_TIME_ datetime null,
+    IS_PROCESSED_ tinyint default 0,
+    primary key (LOG_NR_)
 );
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
@@ -169,7 +196,6 @@ create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);
 create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITYLINK(GROUP_ID_);
 create index ACT_IDX_EVENT_SUBSCR_CONFIG_ on ACT_RU_EVENT_SUBSCR(CONFIGURATION_);
 create index ACT_IDX_VARIABLE_TASK_ID on ACT_RU_VARIABLE(TASK_ID_);
-create unique index ACT_UNIQ_RU_BUS_KEY on ACT_RU_EXECUTION (PROC_DEF_ID_, BUSINESS_KEY_) where BUSINESS_KEY_ is not null;
 create index ACT_IDX_ATHRZ_PROCEDEF on ACT_RU_IDENTITYLINK(PROC_DEF_ID_);
 create index ACT_IDX_EXECUTION_PROC on ACT_RU_EXECUTION(PROC_DEF_ID_);
 create index ACT_IDX_EXECUTION_PARENT on ACT_RU_EXECUTION(PARENT_ID_);
@@ -180,7 +206,6 @@ create index ACT_IDX_VARIABLE_EXEC on ACT_RU_VARIABLE(EXECUTION_ID_);
 create index ACT_IDX_VARIABLE_PROCINST on ACT_RU_VARIABLE(PROC_INST_ID_);
 create index ACT_IDX_IDENT_LNK_TASK on ACT_RU_IDENTITYLINK(TASK_ID_);
 create index ACT_IDX_IDENT_LNK_PROCINST on ACT_RU_IDENTITYLINK(PROC_INST_ID_);
-create index ACT_IDX_IDENT_LNK_PROCDEF on ACT_RU_IDENTITYLINK(PROC_DEF_ID_);
 create index ACT_IDX_TASK_EXEC on ACT_RU_TASK(EXECUTION_ID_);
 create index ACT_IDX_TASK_PROCINST on ACT_RU_TASK(PROC_INST_ID_);
 create index ACT_IDX_EXEC_PROC_INST_ID on ACT_RU_EXECUTION(PROC_INST_ID_);
@@ -195,7 +220,7 @@ alter table ACT_GE_BYTEARRAY
 
 alter table ACT_RE_PROCDEF
     add constraint ACT_UNIQ_PROCDEF
-    unique (KEY_,VERSION_);
+    unique (KEY_,VERSION_, TENANT_ID_);
     
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PARENT 

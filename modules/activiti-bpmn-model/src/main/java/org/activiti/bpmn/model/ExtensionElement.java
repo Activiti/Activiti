@@ -55,4 +55,32 @@ public class ExtensionElement extends BaseElement {
   public void setChildElements(Map<String, List<ExtensionElement>> childElements) {
     this.childElements = childElements;
   }
+  
+  public ExtensionElement clone() {
+    ExtensionElement clone = new ExtensionElement();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(ExtensionElement otherElement) {
+    setName(otherElement.getName());
+    setNamespacePrefix(otherElement.getNamespacePrefix());
+    setNamespace(otherElement.getNamespace());
+    setElementText(otherElement.getElementText());
+    setAttributes(otherElement.getAttributes());
+    
+    childElements = new LinkedHashMap<String, List<ExtensionElement>>();
+    if (otherElement.getChildElements() != null && otherElement.getChildElements().size() > 0) {
+      for (String key : otherElement.getChildElements().keySet()) {
+        List<ExtensionElement> otherElementList = otherElement.getChildElements().get(key);
+        if (otherElementList != null && otherElementList.size() > 0) {
+          List<ExtensionElement> elementList = new ArrayList<ExtensionElement>();
+          for (ExtensionElement extensionElement : otherElementList) {
+            elementList.add(extensionElement.clone());
+          }
+          childElements.put(key, elementList);
+        }
+      }
+    }
+  }
 }

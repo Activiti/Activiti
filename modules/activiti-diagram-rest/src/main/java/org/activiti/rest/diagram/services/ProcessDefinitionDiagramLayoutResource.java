@@ -32,11 +32,12 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.SecuredResource;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.resource.Get;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ProcessDefinitionDiagramLayoutResource extends SecuredResource {
 
@@ -55,7 +56,7 @@ public class ProcessDefinitionDiagramLayoutResource extends SecuredResource {
 
   // List<Object> sequenceFlowList = new ArrayList<Object>();
 
-  @Get
+  @Get("json")
   public ObjectNode getDiagram() {
     // TODO: do it all with Map and convert at the end to JSON
     processDefinitionId = (String) getRequest().getAttributes().get("processDefinitionId");

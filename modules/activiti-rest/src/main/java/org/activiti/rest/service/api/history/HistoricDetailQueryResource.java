@@ -25,6 +25,7 @@ public class HistoricDetailQueryResource extends HistoricDetailBaseResource {
 
   @Post
   public DataResponse queryHistoricDetail(HistoricDetailQueryRequest queryRequest) {
+  	if(authenticate() == false) return null;
     return getQueryResponse(queryRequest, getQuery());
   }
 }

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.variable.ValueFields;
@@ -27,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tom Baeyens
  * @author Marcus Klimstra (CGI)
  */
-public class VariableInstanceEntity implements ValueFields, PersistentObject, HasRevision, Serializable {
+public class VariableInstanceEntity implements ValueFields, PersistentObject, HasRevision, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -53,6 +54,13 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   
   // Default constructor for SQL mapping
   protected VariableInstanceEntity() {
+  }
+  
+  public static void touch(VariableInstanceEntity variableInstance) {
+	  Context.getCommandContext()
+      .getDbSqlSession()
+      .touch(variableInstance);
+	  
   }
   
   public static VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {

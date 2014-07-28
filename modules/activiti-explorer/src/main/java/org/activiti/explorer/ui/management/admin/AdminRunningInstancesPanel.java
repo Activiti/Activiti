@@ -26,6 +26,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -40,6 +41,7 @@ import org.activiti.explorer.ui.custom.UserProfileLink;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.ProcessDefinitionImageStreamResourceBuilder;
 import org.activiti.explorer.ui.variable.VariableRendererManager;
+import org.activiti.image.ProcessDiagramGenerator;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -304,10 +306,12 @@ public class AdminRunningInstancesPanel extends DetailPanel {
 	    	imageHeader.addStyleName(ExplorerLayout.STYLE_NO_LINE);
 	    	addDetailComponent(imageHeader);
     	}
-      
+
+      ProcessDiagramGenerator diagramGenerator = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getProcessEngineConfiguration().getProcessDiagramGenerator();
+
       StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
         	.buildStreamResource(processInstance.getId(), processInstance.getProcessDefinitionId(), 
-        			repositoryService, runtimeService);
+        			repositoryService, runtimeService, diagramGenerator);
 
       currentEmbedded = new Embedded(null, diagram);
       currentEmbedded.setType(Embedded.TYPE_IMAGE);

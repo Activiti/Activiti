@@ -13,12 +13,14 @@
 
 package org.activiti.engine.impl.jobexecutor;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.runtime.ClockReader;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,12 +51,24 @@ public abstract class JobExecutor {
   
   protected boolean isAutoActivate = false;
   protected boolean isActive = false;
-  
-  protected int maxJobsPerAcquisition = 3;
+
+  /**
+   * To avoid deadlocks, the default for this is one.
+   * This way, in a clustered setup, multiple job executors can acquire jobs
+   * without creating a deadlock due to fetching multiple jobs at once and
+   * trying to lock them all at once.
+   * 
+   * In a non-clustered setup, this setting can be changed to any value > 0
+   * without problems.
+   * 
+   * See http://jira.codehaus.org/browse/ACT-1879 for more information.
+   */
+  protected int maxJobsPerAcquisition = 1;
   protected int waitTimeInMillis = 5 * 1000;
   protected String lockOwner = UUID.randomUUID().toString();
   protected int lockTimeInMillis = 5 * 60 * 1000;
-      
+  protected ClockReader clockReader;
+
   public void start() {
     if (isActive) {
       return;
@@ -185,4 +199,12 @@ public abstract class JobExecutor {
 		}	
 		jobAcquisitionThread = null;
 	}
+
+  public Date getCurrentTime() {
+    return clockReader.getCurrentTime();
+  }
+
+  public void setClockReader(ClockReader clockReader) {
+    this.clockReader = clockReader;
+  }
 }

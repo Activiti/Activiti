@@ -37,28 +37,29 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.test.TestHelper;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.util.ISO8601Utils;
-import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.restlet.Component;
 import org.restlet.data.ChallengeScheme;
-import org.restlet.data.Form;
 import org.restlet.data.Protocol;
 import org.restlet.data.Status;
-import org.restlet.engine.http.header.HeaderConstants;
+import org.restlet.engine.header.Header;
+import org.restlet.engine.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+import org.restlet.util.Series;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.util.ISO8601Utils;
 
 public class BaseRestTestCase extends PvmTestCase {
 
@@ -139,7 +140,7 @@ public class BaseRestTestCase extends PvmTestCase {
       dropUsers();
       assertAndEnsureCleanDb();
       stopRestServer();
-      ClockUtil.reset();
+      processEngineConfiguration.getClock().reset();
     }
   }
   
@@ -356,7 +357,7 @@ public class BaseRestTestCase extends PvmTestCase {
     List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
     Iterator<JsonNode> it = dataNode.iterator();
     while(it.hasNext()) {
-      String id = it.next().get("id").getTextValue();
+      String id = it.next().get("id").textValue();
       toBeFound.remove(id);
     }
     assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
@@ -389,7 +390,7 @@ public class BaseRestTestCase extends PvmTestCase {
       List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
       Iterator<JsonNode> it = dataNode.iterator();
       while(it.hasNext()) {
-        String id = it.next().get("id").getTextValue();
+        String id = it.next().get("id").textValue();
         toBeFound.remove(id);
       }
       assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
@@ -434,7 +435,8 @@ public class BaseRestTestCase extends PvmTestCase {
   }
   
   protected String getMediaType(ClientResource client) {
-    Form headers = (Form) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
+    @SuppressWarnings("unchecked")
+    Series<Header> headers = (Series<Header>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
     return headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE);
   }
 }

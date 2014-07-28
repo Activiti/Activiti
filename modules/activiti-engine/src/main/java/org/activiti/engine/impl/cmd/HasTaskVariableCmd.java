@@ -17,7 +17,6 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -48,8 +47,7 @@ public class HasTaskVariableCmd implements Command<Boolean>, Serializable {
       throw new ActivitiIllegalArgumentException("variableName is null");
     }
     
-    TaskEntity task = Context
-      .getCommandContext()
+    TaskEntity task = commandContext
       .getTaskEntityManager()
       .findTaskById(taskId);
     

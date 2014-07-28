@@ -39,6 +39,8 @@ public class ModelQueryProperty implements QueryProperty {
   public static final ModelQueryProperty MODEL_CREATE_TIME = new ModelQueryProperty("RES.CREATE_TIME_");
   public static final ModelQueryProperty MODEL_LAST_UPDATE_TIME = new ModelQueryProperty("RES.LAST_UPDATE_TIME_");
   public static final ModelQueryProperty MODEL_KEY = new ModelQueryProperty("RES.KEY_");
+  public static final ModelQueryProperty MODEL_TENANT_ID = new ModelQueryProperty("RES.TENANT_ID_");
+  
   
   private String name;
 

@@ -741,7 +741,7 @@ var ProcessDiagramGenerator = {
 			};
 		}
 		return this.getProcessDiagram(processDefinitionDiagramLayout.processDefinition.id);
-		//return new ProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY);
+		//return new DefaultProcessDiagramCanvas(maxX + 10, maxY + 10, minX, minY);
 	},
 	
 	drawActivity: function(processDiagramCanvas, activity, highLightedActivities) {

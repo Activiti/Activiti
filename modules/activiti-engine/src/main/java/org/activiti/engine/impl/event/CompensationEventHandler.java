@@ -16,6 +16,8 @@ package org.activiti.engine.impl.event;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -60,6 +62,17 @@ public class CompensationEventHandler implements EventHandler {
     } else {
       try {
 
+      	if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      		commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+      				ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPENSATE, 
+      						compensationHandler.getId(), 
+      						(String) compensationHandler.getProperty("name"),
+      						compensatingExecution.getId(), 
+      						compensatingExecution.getProcessInstanceId(), 
+      						compensatingExecution.getProcessDefinitionId(),
+      						(String) compensatingExecution.getActivity().getProperties().get("type"), 
+      						compensatingExecution.getActivity().getActivityBehavior().getClass().getCanonicalName()));
+      	}
         compensatingExecution.setActivity(compensationHandler);
         
         // executing the atomic operation makes sure activity start events are fired

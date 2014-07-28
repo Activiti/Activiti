@@ -6,12 +6,13 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class TaskOperationResourceTest extends BaseRestTestCase {
 
@@ -27,7 +28,7 @@ public class TaskOperationResourceTest extends BaseRestTestCase {
     Representation response = client.put(null);
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertTrue(responseNode.get("success").getBooleanValue());
+    assertTrue(responseNode.get("success").booleanValue());
     
     task = taskService.createTaskQuery().singleResult();
     assertEquals("kermit", task.getAssignee());
@@ -72,7 +73,7 @@ public class TaskOperationResourceTest extends BaseRestTestCase {
     Representation response = client.put(varNode);
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertTrue(responseNode.get("success").getBooleanValue());
+    assertTrue(responseNode.get("success").booleanValue());
     
     task = taskService.createTaskQuery().singleResult();
     assertNotNull(task);
@@ -101,7 +102,7 @@ public class TaskOperationResourceTest extends BaseRestTestCase {
     requestNode.put("userId", "jenny");
     Representation response = client.put(requestNode);
     JsonNode responseNode = objectMapper.readTree(response.getStream());
-    assertTrue(responseNode.get("success").getBooleanValue());
+    assertTrue(responseNode.get("success").booleanValue());
     
     task = taskService.createTaskQuery().singleResult();
     assertEquals("jenny", task.getAssignee());

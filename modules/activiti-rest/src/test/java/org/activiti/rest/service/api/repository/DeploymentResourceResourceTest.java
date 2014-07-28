@@ -6,11 +6,12 @@ import java.util.List;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Test for all REST-operations related to a resources that is part of a deployment.
@@ -45,12 +46,12 @@ public class DeploymentResourceResourceTest extends BaseRestTestCase {
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       
       // Check URL's for the resource
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_DEPLOYMENT_RESOURCE, deployment.getId(), encodedResourceId)));
-      assertTrue(responseNode.get("contentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertTrue(responseNode.get("contentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deployment.getId(), encodedResourceId)));
-      assertEquals("text/xml", responseNode.get("mediaType").getTextValue());
-      assertEquals("processDefinition", responseNode.get("type").getTextValue());
+      assertEquals("text/xml", responseNode.get("mediaType").textValue());
+      assertEquals("processDefinition", responseNode.get("type").textValue());
       
     } finally {
       // Always cleanup any created deployments, even if the test failed

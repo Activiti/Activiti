@@ -35,6 +35,7 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
@@ -297,6 +298,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals("johndoe", task.getOwner());
     assertEquals("joesmoe", task.getAssignee());
     assertEquals(DelegationState.PENDING, task.getDelegationState());
+    
+    // try to complete (should fail)
+    try {
+    	taskService.complete(task.getId());
+    	fail();
+    } catch (ActivitiException e) {}
 
     taskService.resolveTask(taskId);
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -594,6 +601,55 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(1, variables.size());
     assertEquals("myValue", variables.get("myParam"));
+  }
+  
+  @Deployment(resources = { 
+  "org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml" })
+public void testCompleteWithParametersTask2() {
+  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
+
+  // Fetch first task
+  Task task = taskService.createTaskQuery().singleResult();
+  assertEquals("First task", task.getName());
+
+  // Complete first task
+  Map<String, Object> taskParams = new HashMap<String, Object>();
+  taskParams.put("myParam", "myValue");
+  taskService.complete(task.getId(), taskParams, false); // Only difference with previous test
+
+  // Fetch second task
+  task = taskService.createTaskQuery().singleResult();
+  assertEquals("Second task", task.getName());
+
+  // Verify task parameters set on execution
+  Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+  assertEquals(1, variables.size());
+  assertEquals("myValue", variables.get("myParam"));
+}
+  
+  @Deployment
+  public void testCompleteWithTaskLocalParameters() {
+  	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTaskLocalVars");
+
+    // Fetch first task
+    Task task = taskService.createTaskQuery().singleResult();
+
+    // Complete first task
+    Map<String, Object> taskParams = new HashMap<String, Object>();
+    taskParams.put("a", 1);
+    taskParams.put("b", 1);
+    taskService.complete(task.getId(), taskParams, true);
+    
+    // Verify vars are not stored process instance wide
+    assertNull(runtimeService.getVariable(processInstance.getId(), "a"));
+    assertNull(runtimeService.getVariable(processInstance.getId(), "b"));
+    
+    // verify script listener has done its job
+    assertEquals(new Integer(2), runtimeService.getVariable(processInstance.getId(), "sum"));
+
+    // Fetch second task
+    task = taskService.createTaskQuery().singleResult();
+
   }
   
   public void testSetAssignee() {
@@ -1348,6 +1404,28 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       assertEquals("The task cannot be deleted because is part of a running process", ae.getMessage());
     }
     
+  }
+  
+  @Deployment
+  public void testFormKeyExpression() {
+  	runtimeService.startProcessInstanceByKey("testFormExpression", CollectionUtil.singletonMap("var", "abc"));
+
+  	Task task = taskService.createTaskQuery().singleResult();
+  	assertEquals("first-form.json", task.getFormKey());
+  	taskService.complete(task.getId());
+  	
+  	task = taskService.createTaskQuery().singleResult();
+  	assertEquals("form-abc.json", task.getFormKey());
+  	
+  	task.setFormKey("form-changed.json");
+  	taskService.saveTask(task);
+  	task = taskService.createTaskQuery().singleResult();
+  	assertEquals("form-changed.json", task.getFormKey());
+  	
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+    	HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+    	assertEquals("form-changed.json", historicTaskInstance.getFormKey());
+  	}
   }
   
 }

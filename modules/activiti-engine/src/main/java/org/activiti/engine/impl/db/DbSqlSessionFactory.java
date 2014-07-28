@@ -13,14 +13,14 @@
 
 package org.activiti.engine.impl.db;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.apache.ibatis.session.SqlSessionFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -54,13 +54,14 @@ public class DbSqlSessionFactory implements SessionFactory {
     databaseSpecificLimitBetweenStatements.put("mysql", "");
     databaseOuterJoinLimitBetweenStatements.put("mysql", "");
     databaseSpecificOrderByStatements.put("mysql", defaultOrderBy);
-    addDatabaseSpecificStatement("mysql", "selectNextJobsToExecute", "selectNextJobsToExecute_mysql");
-    addDatabaseSpecificStatement("mysql", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_mysql");
     addDatabaseSpecificStatement("mysql", "selectProcessDefinitionsByQueryCriteria", "selectProcessDefinitionsByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectProcessDefinitionCountByQueryCriteria", "selectProcessDefinitionCountByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectDeploymentsByQueryCriteria", "selectDeploymentsByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectDeploymentCountByQueryCriteria", "selectDeploymentCountByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectModelCountByQueryCriteria", "selectModelCountByQueryCriteria_mysql");
+    addDatabaseSpecificStatement("mysql", "updateExecutionTenantIdForDeployment", "updateExecutionTenantIdForDeployment_mysql");
+    addDatabaseSpecificStatement("mysql", "updateTaskTenantIdForDeployment", "updateTaskTenantIdForDeployment_mysql");
+    addDatabaseSpecificStatement("mysql", "updateJobTenantIdForDeployment", "updateJobTenantIdForDeployment_mysql");
     
     //postgres specific
     databaseSpecificLimitBeforeStatements.put("postgres", "");
@@ -83,9 +84,14 @@ public class DbSqlSessionFactory implements SessionFactory {
     addDatabaseSpecificStatement("postgres", "selectComment", "selectComment_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByTaskId", "selectCommentsByTaskId_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByProcessInstanceId", "selectCommentsByProcessInstanceId_postgres");
+    addDatabaseSpecificStatement("postgres", "selectCommentsByProcessInstanceIdAndType", "selectCommentsByProcessInstanceIdAndType_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByType", "selectCommentsByType_postgres");
     addDatabaseSpecificStatement("postgres", "selectCommentsByTaskIdAndType", "selectCommentsByTaskIdAndType_postgres");
     addDatabaseSpecificStatement("postgres", "selectEventsByTaskId", "selectEventsByTaskId_postgres");
+    addDatabaseSpecificStatement("postgres", "insertEventLogEntry", "insertEventLogEntry_postgres");
+    addDatabaseSpecificStatement("postgres", "selectAllEventLogEntries", "selectAllEventLogEntries_postgres");
+    addDatabaseSpecificStatement("postgres", "selectEventLogEntries", "selectEventLogEntries_postgres");
+    addDatabaseSpecificStatement("postgres", "selectEventLogEntriesByProcessInstanceId", "selectEventLogEntriesByProcessInstanceId_postgres");
         
     // oracle
     databaseSpecificLimitBeforeStatements.put("oracle", "select * from ( select a.*, ROWNUM rnum from (");
@@ -94,7 +100,9 @@ public class DbSqlSessionFactory implements SessionFactory {
     databaseOuterJoinLimitBetweenStatements.put("oracle", "");
     databaseSpecificOrderByStatements.put("oracle", defaultOrderBy);
     addDatabaseSpecificStatement("oracle", "selectExclusiveJobsToExecute", "selectExclusiveJobsToExecute_integerBoolean");
-    
+    addDatabaseSpecificStatement("oracle", "selectUnlockedTimersByDuedate", "selectUnlockedTimersByDuedate_oracle");
+    addDatabaseSpecificStatement("oracle", "insertEventLogEntry", "insertEventLogEntry_oracle");
+
     // db2
     databaseSpecificLimitBeforeStatements.put("db2", "SELECT SUB.* FROM (");
     databaseSpecificLimitAfterStatements.put("db2", ")RES ) SUB WHERE SUB.rnk >= #{firstRow} AND SUB.rnk < #{lastRow}");
@@ -148,6 +156,9 @@ public class DbSqlSessionFactory implements SessionFactory {
   
   protected String databaseType;
   protected String databaseTablePrefix = "";
+  private boolean tablePrefixIsSchema;
+
+  protected String databaseCatalog;
   /**
    * In some situations you want to set the schema to use for table checks /
    * generation if the database metadata doesn't return that correctly, see
@@ -161,9 +172,11 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  insertStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String>  updateStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String>  deleteStatements = new ConcurrentHashMap<Class<?>, String>();
+  protected Map<Class<?>,String>  bulkDeleteStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String>  selectStatements = new ConcurrentHashMap<Class<?>, String>();
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
+
 
   public Class< ? > getSessionType() {
     return DbSqlSession.class;
@@ -186,6 +199,10 @@ public class DbSqlSessionFactory implements SessionFactory {
   public String getDeleteStatement(Class<?> persistentObjectClass) {
     return getStatement(persistentObjectClass, deleteStatements, "delete");
   }
+  
+  public String getBulkDeleteStatement(Class<?> persistentObjectClass) {
+    return getStatement(persistentObjectClass, bulkDeleteStatements, "bulkDelete");
+  }
 
   public String getSelectStatement(Class<?> persistentObjectClass) {
     return getStatement(persistentObjectClass, selectStatements, "select");
@@ -197,7 +214,7 @@ public class DbSqlSessionFactory implements SessionFactory {
       return statement;
     }
     statement = prefix + persistentObjectClass.getSimpleName();
-    statement = statement.substring(0, statement.length()-6);
+    statement = statement.substring(0, statement.length()-6); // removing 'entity'
     cachedStatements.put(persistentObjectClass, statement);
     return statement;
   }
@@ -290,9 +307,17 @@ public class DbSqlSessionFactory implements SessionFactory {
   public void setDeleteStatements(Map<Class< ? >, String> deleteStatements) {
     this.deleteStatements = deleteStatements;
   }
-
   
-  public Map<Class< ? >, String> getSelectStatements() {
+  
+  public Map<Class<?>, String> getBulkDeleteStatements() {
+		return bulkDeleteStatements;
+	}
+
+	public void setBulkDeleteStatements(Map<Class<?>, String> bulkDeleteStatements) {
+		this.bulkDeleteStatements = bulkDeleteStatements;
+	}
+
+	public Map<Class< ? >, String> getSelectStatements() {
     return selectStatements;
   }
 
@@ -324,7 +349,15 @@ public class DbSqlSessionFactory implements SessionFactory {
   public String getDatabaseTablePrefix() {
     return databaseTablePrefix;
   }
-  
+
+  public String getDatabaseCatalog() {
+    return databaseCatalog;
+  }
+
+  public void setDatabaseCatalog(String databaseCatalog) {
+    this.databaseCatalog = databaseCatalog;
+  }
+
   public String getDatabaseSchema() {
     return databaseSchema;
   }
@@ -333,4 +366,12 @@ public class DbSqlSessionFactory implements SessionFactory {
     this.databaseSchema = databaseSchema;
   }
 
+	public void setTablePrefixIsSchema(boolean tablePrefixIsSchema) {
+		this.tablePrefixIsSchema = tablePrefixIsSchema;
+  }
+	
+	public boolean isTablePrefixIsSchema() {
+	  return tablePrefixIsSchema;
+  }
+	
 }

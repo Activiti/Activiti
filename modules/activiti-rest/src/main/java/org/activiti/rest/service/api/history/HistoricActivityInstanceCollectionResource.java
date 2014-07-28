@@ -24,7 +24,7 @@ import org.restlet.resource.Get;
  */
 public class HistoricActivityInstanceCollectionResource extends HistoricActivityInstanceBaseResource {
 
-  @Get
+  @Get("json")
   public DataResponse getHistoricActivityInstances() {
     if(!authenticate()) {
       return null;
@@ -68,6 +68,18 @@ public class HistoricActivityInstanceCollectionResource extends HistoricActivity
     
     if (getQueryParameter("processDefinitionId", urlQuery) != null) {
       query.setProcessDefinitionId(getQueryParameter("processDefinitionId", urlQuery));
+    }
+    
+    if(getQueryParameter("tenantId", urlQuery) != null) {
+    	query.setTenantId(getQueryParameter("tenantId", urlQuery));
+    }
+    
+    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
+    	query.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    }
+    
+    if(getQueryParameter("withoutTenantId", urlQuery) != null) {
+    	query.setWithoutTenantId(getQueryParameterAsBoolean("withoutTenantId", urlQuery));
     }
 
     return getQueryResponse(query, urlQuery);

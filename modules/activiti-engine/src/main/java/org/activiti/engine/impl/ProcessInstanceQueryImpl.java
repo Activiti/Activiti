@@ -48,6 +48,12 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String involvedUser;
   protected SuspensionState suspensionState;
   protected boolean includeProcessVariables;
+  protected String name;
+  protected String nameLike;
+  
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
   
   // Unused, see dynamic query
   protected String activityId;
@@ -98,6 +104,27 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     this.businessKey = businessKey;
     this.processDefinitionKey = processDefinitionKey;
     return this;
+  }
+  
+  public ProcessInstanceQuery processInstanceTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public ProcessInstanceQuery processInstanceTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public ProcessInstanceQuery processInstanceWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
   }
 
   @Override
@@ -163,6 +190,11 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     return this;
   }
   
+  public ProcessInstanceQuery orderByTenantId() {
+    this.orderProperty = ProcessInstanceQueryProperty.TENANT_ID;
+    return this;
+  }
+  
   public ProcessInstanceQuery active() {
     this.suspensionState = SuspensionState.ACTIVE;
     return this;
@@ -175,6 +207,18 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   
   public ProcessInstanceQuery includeProcessVariables() {
     this.includeProcessVariables = true;
+    return this;
+  }
+  
+  @Override
+  public ProcessInstanceQuery processInstanceName(String name) {
+    this.name = name;
+    return this;
+  }
+  
+  @Override
+  public ProcessInstanceQuery processInstanceNameLike(String nameLike) {
+    this.nameLike = nameLike;
     return this;
   }
   
@@ -259,13 +303,39 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public void setSuspensionState(SuspensionState suspensionState) {
     this.suspensionState = suspensionState;
   }  
-
   public List<EventSubscriptionQueryValue> getEventSubscriptions() {
     return eventSubscriptions;
   }
-
   public void setEventSubscriptions(List<EventSubscriptionQueryValue> eventSubscriptions) {
     this.eventSubscriptions = eventSubscriptions;
+  }
+
+  public String getTenantId() {
+    return tenantId;
+  }
+
+  public String getTenantIdLike() {
+    return tenantIdLike;
+  }
+
+  public boolean isWithoutTenantId() {
+    return withoutTenantId;
+  }
+  
+  public String getName() {
+    return name;
+  }
+  
+  public String getNameLike() {
+    return nameLike;
+  }
+  
+  public void setName(String name) {
+    this.name = name;
+  }
+  
+  public void setNameLike(String nameLike) {
+    this.nameLike = nameLike;
   }
   
   /**

@@ -16,16 +16,16 @@ package org.activiti.rest.service.api.runtime;
 import java.util.Calendar;
 import java.util.List;
 
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 /**
@@ -74,7 +74,7 @@ public class TaskEventResourceTest extends BaseRestTestCase {
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(now.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(now.getTime());
       
       Task task = taskService.newTask();
       taskService.saveTask(task);
@@ -89,14 +89,14 @@ public class TaskEventResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals(event.getId(), responseNode.get("id").getTextValue());
-      assertEquals(event.getAction(), responseNode.get("action").getTextValue());
-      assertEquals(event.getUserId(), responseNode.get("userId").getTextValue());
+      assertEquals(event.getId(), responseNode.get("id").textValue());
+      assertEquals(event.getAction(), responseNode.get("action").textValue());
+      assertEquals(event.getUserId(), responseNode.get("userId").textValue());
       assertTrue(responseNode.get("url").asText().endsWith(
               RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT, task.getId(), event.getId())));
       assertTrue(responseNode.get("taskUrl").asText().endsWith(
               RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
-      assertEquals(now.getTime(), getDateFromISOString(responseNode.get("time").getTextValue()));
+      assertEquals(now.getTime(), getDateFromISOString(responseNode.get("time").textValue()));
       
     } finally {
       // Clean adhoc-tasks even if test fails

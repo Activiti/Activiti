@@ -15,9 +15,12 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.Attachment;
 
 
@@ -40,6 +43,21 @@ public class SaveAttachmentCmd implements Command<Object>, Serializable {
     
     updateAttachment.setName(attachment.getName());
     updateAttachment.setDescription(attachment.getDescription());
+    
+    if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	// Forced to fetch the process-instance to associate the right process definition
+    	String processDefinitionId = null;
+    	String processInstanceId = updateAttachment.getProcessInstanceId();
+    	if(updateAttachment.getProcessInstanceId() != null) {
+    		ExecutionEntity process = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+    		if(process != null) {
+    			processDefinitionId = process.getProcessDefinitionId();
+    		}
+    	}
+    	
+    	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+    }
     
     return null;
   }

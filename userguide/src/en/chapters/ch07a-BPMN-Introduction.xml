@@ -109,7 +109,9 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
       <title>Prerequisites</title>
       
       <para>
-        This tutorial assumes that you have the <link linkend="demo.setup.one.minute.version">Activiti demo setup running</link>.
+        This tutorial assumes that you have the <link linkend="demo.setup.one.minute.version">Activiti demo setup running</link>,
+        and that you are using a standalone H2 server. Edit <literal>db.properties</literal> and set the <literal>jdbc.url=jdbc:h2:tcp://localhost/activiti</literal>,
+        and then run the standalone server according to <ulink url="http://www.h2database.com/html/tutorial.html#using_server">H2's documentation</ulink>.
       </para>
     
     </section>
@@ -385,9 +387,10 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;
       
       <para>
         Since we've configured our <literal>ProcessEngine</literal> to use the same database as the demo setup is using,
-        we can now log into <ulink url="http://localhost:8080/activiti-explorer/">Activiti Explorer</ulink> 
-        (login with fozzie/fozzie), and we will find that we can start our business process after
-        selecting the <emphasis>Processes</emphasis> page and
+        we can now log into <ulink url="http://localhost:8080/activiti-explorer/">Activiti Explorer</ulink>.
+        By default, no user is in the <emphasis>accountancy</emphasis> group. Login with kermit/kermit, click Groups and
+        then "Create group". Then click Users and add the group to fozzie. Now login with fozzie/fozzie, and we will find 
+        that we can start our business process after selecting the <emphasis>Processes</emphasis> page and
         and clicking on the <emphasis>'Start Process'</emphasis> link in the <emphasis>'Actions'</emphasis> column corresponding to the <emphasis>'Monthly financial report'</emphasis> process.
         
         <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.financial.report.example.start.process.png"/></imageobject></mediaobject>

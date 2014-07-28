@@ -1,6 +1,7 @@
 package org.activiti.bpmn.model;
 
 
+
 public class ExtensionAttribute {
 
   protected String name;
@@ -56,5 +57,18 @@ public class ExtensionAttribute {
     if (value != null)
       sb.append("=").append(value);
     return sb.toString();
+  }
+  
+  public ExtensionAttribute clone() {
+    ExtensionAttribute clone = new ExtensionAttribute();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(ExtensionAttribute otherAttribute) {
+    setName(otherAttribute.getName());
+    setValue(otherAttribute.getValue());
+    setNamespacePrefix(otherAttribute.getNamespacePrefix());
+    setNamespace(otherAttribute.getNamespace());
   }
 }

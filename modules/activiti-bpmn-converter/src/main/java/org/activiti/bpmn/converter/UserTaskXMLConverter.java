@@ -12,9 +12,10 @@
  */
 package org.activiti.bpmn.converter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -34,35 +35,26 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   
-  List<String> formTypes = new ArrayList<String>();
+  protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();
 
-  /** default attributes taken from bpmn spec  and from activiti extension */
-  protected static final List<ExtensionAttribute> defaultAttributes =    Arrays.asList(
-      new ExtensionAttribute(ATTRIBUTE_ID)
-      , new ExtensionAttribute(ATTRIBUTE_NAME)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_DUEDATE)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ASSIGNEE)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_PRIORITY)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEUSERS)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEGROUPS)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE)
-      , new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION)
+  /** default attributes taken from bpmn spec and from activiti extension */
+  protected static final List<ExtensionAttribute> defaultUserTaskAttributes = Arrays.asList(
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_DUEDATE), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ASSIGNEE), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_PRIORITY), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEUSERS), 
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEGROUPS)
   );
 
   public UserTaskXMLConverter() {
     HumanPerformerParser humanPerformerParser = new HumanPerformerParser();
-    childElementParsers.put(humanPerformerParser.getElementName(), humanPerformerParser);
+    childParserMap.put(humanPerformerParser.getElementName(), humanPerformerParser);
     PotentialOwnerParser potentialOwnerParser = new PotentialOwnerParser();
-    childElementParsers.put(potentialOwnerParser.getElementName(), potentialOwnerParser);
+    childParserMap.put(potentialOwnerParser.getElementName(), potentialOwnerParser);
   }
   
-  public static String getXMLType() {
-    return ELEMENT_TASK_USER;
-  }
-  
-  public static Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return UserTask.class;
   }
   
@@ -72,11 +64,12 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
+  @SuppressWarnings("unchecked")
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     String formKey = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY);
     UserTask userTask = null;
     if (StringUtils.isNotEmpty(formKey)) {
-      if (formTypes.contains(formKey)) {
+      if (model.getUserTaskFormTypes() != null && model.getUserTaskFormTypes().contains(formKey)) {
         userTask = new AlfrescoUserTask();
       }
     }
@@ -85,6 +78,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     }
     BpmnXMLUtil.addXMLLocation(userTask, xtr);
     userTask.setDueDate(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_DUEDATE));
+    userTask.setCategory(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CATEGORY));
     userTask.setFormKey(formKey);
     userTask.setAssignee(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ASSIGNEE)); 
     userTask.setOwner(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_OWNER));
@@ -100,43 +94,42 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       userTask.getCandidateGroups().addAll(parseDelimitedList(expression));
     }
 
-    BpmnXMLUtil.addCustomAttributes(xtr, userTask, defaultAttributes);
+    BpmnXMLUtil.addCustomAttributes(xtr, userTask, defaultElementAttributes, 
+        defaultActivityAttributes, defaultUserTaskAttributes);
 
-    parseChildElements(getXMLElementName(), userTask, xtr);
+    parseChildElements(getXMLElementName(), userTask, childParserMap, model, xtr);
     
     return userTask;
   }
-
+  
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  @SuppressWarnings("unchecked")
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     UserTask userTask = (UserTask) element;
     writeQualifiedAttribute(ATTRIBUTE_TASK_USER_ASSIGNEE, userTask.getAssignee(), xtw);
     writeQualifiedAttribute(ATTRIBUTE_TASK_USER_OWNER, userTask.getOwner(), xtw);
     writeQualifiedAttribute(ATTRIBUTE_TASK_USER_CANDIDATEUSERS, convertToDelimitedString(userTask.getCandidateUsers()), xtw);
     writeQualifiedAttribute(ATTRIBUTE_TASK_USER_CANDIDATEGROUPS, convertToDelimitedString(userTask.getCandidateGroups()), xtw);
     writeQualifiedAttribute(ATTRIBUTE_TASK_USER_DUEDATE, userTask.getDueDate(), xtw);
+    writeQualifiedAttribute(ATTRIBUTE_TASK_USER_CATEGORY, userTask.getCategory(), xtw);
     writeQualifiedAttribute(ATTRIBUTE_FORM_FORMKEY, userTask.getFormKey(), xtw);
     if (userTask.getPriority() != null) {
       writeQualifiedAttribute(ATTRIBUTE_TASK_USER_PRIORITY, userTask.getPriority().toString(), xtw);
     }
     // write custom attributes
-    BpmnXMLUtil.writeAttribute(userTask.getAttributes().values(), xtw, defaultAttributes);
+    BpmnXMLUtil.writeCustomAttributes(userTask.getAttributes().values(), xtw, defaultElementAttributes, 
+        defaultActivityAttributes, defaultUserTaskAttributes);
   }
   
   @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     UserTask userTask = (UserTask) element;
-    writeFormProperties(userTask, xtw);
+    didWriteExtensionStartElement = writeFormProperties(userTask, didWriteExtensionStartElement, xtw);
+    return didWriteExtensionStartElement;
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
-  }
-  
-  public void addFormType(String formType) {
-    if (StringUtils.isNotEmpty(formType)) {
-      formTypes.add(formType);
-    }
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
   
   public class HumanPerformerParser extends BaseChildElementParser {
@@ -146,10 +139,6 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     }
 
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-      UserTask userTask = (UserTask) parentElement;
-      if (StringUtils.isNotEmpty(userTask.getAssignee())) {
-        model.addProblem("No duplicate assignee and humanPerformer definition allowed", xtr);
-      }
       String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
       if (StringUtils.isNotEmpty(resourceElement) && "resourceAssignmentExpression".equals(resourceElement)) {
         String expression = XMLStreamReaderUtil.moveDown(xtr);

@@ -41,6 +41,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String processInstanceId;
   protected List<EventSubscriptionQueryValue> eventSubscriptions;
   
+  protected String tenantId;
+  protected String tenantIdLike;
+  protected boolean withoutTenantId;
+  
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
@@ -50,7 +54,11 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected boolean isActive;
   protected String involvedUser;
-  
+
+  // Not exposed in API, but here for the ProcessInstanceQuery support, since the name lives on the
+  // Execution entity/table
+  protected String name;
+  protected String nameLike;
   
   public ExecutionQueryImpl() {
   }
@@ -146,6 +154,27 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return this;
   }
   
+  public ExecutionQueryImpl executionTenantId(String tenantId) {
+  	if (tenantId == null) {
+  		throw new ActivitiIllegalArgumentException("execution tenant id is null");
+  	}
+  	this.tenantId = tenantId;
+  	return this;
+  }
+  
+  public ExecutionQueryImpl executionTenantIdLike(String tenantIdLike) {
+  	if (tenantIdLike == null) {
+  		throw new ActivitiIllegalArgumentException("execution tenant id is null");
+  	}
+  	this.tenantIdLike = tenantIdLike;
+  	return this;
+  }
+  
+  public ExecutionQueryImpl executionWithoutTenantId() {
+  	this.withoutTenantId = true;
+  	return this;
+  }
+  
   public ExecutionQuery signalEventSubscription(String signalName) {    
     return eventSubscription("signal", signalName);
   }
@@ -208,6 +237,11 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public ExecutionQueryImpl orderByProcessDefinitionKey() {
     this.orderProperty = ExecutionQueryProperty.PROCESS_DEFINITION_KEY;
     return this;
+  }
+  
+  public ExecutionQueryImpl orderByTenantId() {
+  	this.orderProperty = ExecutionQueryProperty.TENANT_ID;
+  	return this;
   }
   
   //results ////////////////////////////////////////////////////
@@ -295,5 +329,34 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public String getParentId() {
     return parentId;
   }
+
+  public String getTenantId() {
+    return tenantId;
+  }
+
+  public String getTenantIdLike() {
+    return tenantIdLike;
+  }
+
+  public boolean isWithoutTenantId() {
+    return withoutTenantId;
+  }
+  
+  public String getName() {
+    return name;
+  }
+  
+  public String getNameLike() {
+    return nameLike;
+  }
+  
+  public void setName(String name) {
+    this.name = name;
+  }
+  
+  public void setNameLike(String nameLike) {
+    this.nameLike = nameLike;
+  }
+	
   
 }

@@ -21,6 +21,7 @@ public interface BpmnXMLConstants {
   public static final String XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance";
   public static final String XSI_PREFIX = "xsi";
   public static final String SCHEMA_NAMESPACE = "http://www.w3.org/2001/XMLSchema";
+  public static final String XSD_PREFIX = "xsd";
   public static final String TYPE_LANGUAGE_ATTRIBUTE = "typeLanguage";
   public static final String XPATH_NAMESPACE = "http://www.w3.org/1999/XPath";
   public static final String EXPRESSION_LANGUAGE_ATTRIBUTE = "expressionLanguage";
@@ -65,11 +66,23 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_EXTENSIONS = "extensionElements";
   
   public static final String ELEMENT_EXECUTION_LISTENER = "executionListener";
+  public static final String ELEMENT_EVENT_LISTENER = "eventListener";
   public static final String ELEMENT_TASK_LISTENER = "taskListener";
   public static final String ATTRIBUTE_LISTENER_EVENT = "event";
+  public static final String ATTRIBUTE_LISTENER_EVENTS = "events";
+  public static final String ATTRIBUTE_LISTENER_ENTITY_TYPE = "entityType";
   public static final String ATTRIBUTE_LISTENER_CLASS = "class";
   public static final String ATTRIBUTE_LISTENER_EXPRESSION = "expression";
   public static final String ATTRIBUTE_LISTENER_DELEGATEEXPRESSION = "delegateExpression";
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE = "throwEvent";
+  public static final String ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME = "signalName";
+  public static final String ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME = "messageName";
+  public static final String ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE = "errorCode";
+  
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL = "signal";
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL = "globalSignal";
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_MESSAGE = "message";
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_ERROR = "error";
   
   public static final String ATTRIBUTE_VALUE_TRUE = "true";
   public static final String ATTRIBUTE_VALUE_FALSE = "false";
@@ -133,7 +146,8 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL = "isSequential";
   public static final String ATTRIBUTE_MULTIINSTANCE_COLLECTION = "collection";
   public static final String ATTRIBUTE_MULTIINSTANCE_VARIABLE = "elementVariable";
-  
+  public static final String ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE = "elementIndexVariable";
+
   public static final String ATTRIBUTE_TASK_IMPLEMENTATION = "implementation";
   public static final String ATTRIBUTE_TASK_OPERATION_REF = "operationRef";
   
@@ -153,6 +167,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_TASK_USER_CANDIDATEUSERS = "candidateUsers";
   public static final String ATTRIBUTE_TASK_USER_CANDIDATEGROUPS = "candidateGroups";
   public static final String ATTRIBUTE_TASK_USER_DUEDATE = "dueDate";
+  public static final String ATTRIBUTE_TASK_USER_CATEGORY = "category";
   public static final String ATTRIBUTE_TASK_USER_PRIORITY = "priority";
   
   public static final String ATTRIBUTE_TASK_RULE_VARIABLES_INPUT = "ruleVariablesInput";
@@ -245,4 +260,17 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_DI_HEIGHT = "height";
   public static final String ATTRIBUTE_DI_X = "x";
   public static final String ATTRIBUTE_DI_Y = "y";
+  
+  public static final String ELEMENT_DATA_OBJECT = "dataObject";
+  public static final String ATTRIBUTE_DATA_ID = "id";
+  public static final String ATTRIBUTE_DATA_NAME = "name";
+  public static final String ATTRIBUTE_DATA_ITEM_REF = "itemSubjectRef";
+  // only used by valued data objects
+  public static final String ELEMENT_DATA_VALUE = "value";
+  
+  public static final String ELEMENT_CUSTOM_RESOURCE = "customResource";
+  public static final String ELEMENT_RESOURCE_ASSIGNMENT = "resourceAssignmentExpression";
+  public static final String ELEMENT_FORMAL_EXPRESSION = "formalExpression";
+  
+  public static final String FAILED_JOB_RETRY_TIME_CYCLE = "failedJobRetryTimeCycle";
 }

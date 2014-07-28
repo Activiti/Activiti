@@ -13,6 +13,7 @@
 
 package org.activiti.engine;
 
+import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
@@ -25,10 +26,16 @@ import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
+import org.activiti.validation.ValidationError;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 
 /** Service providing access to the repository of process definitions and deployments.
@@ -89,6 +96,40 @@ public interface RepositoryService {
    * for the given deploymentId.
    */
   InputStream getResourceAsStream(String deploymentId, String resourceName);
+  
+  /**
+   * 
+   * EXPERIMENTAL FEATURE!
+   * 
+   * Changes the tenant identifier of a deployment to match the given tenant identifier.
+   * This change will cascade to any related entity:
+   * - process definitions related to the deployment
+   * - process instances related to those process definitions
+   * - executions related to those process instances
+   * - tasks related to those process instances
+   * - jobs related to the process definitions and process instances
+   * 
+   * This method can be used in the case that there was no tenant identifier set
+   * on the deployment or those entities before.
+   * 
+   * This method can be used to remove a tenant identifier from the 
+   * deployment and related entities (simply pass null).
+   * 
+   * Important: no optimistic locking will be done while executing the tenant identifier change!
+   * 
+   * This is an experimental feature, mainly because it WILL NOT work
+   * properly in a clustered environment without special care:
+   * suppose some process instance is in flight. The process definition is in the
+   * process definition cache. When a task or job is created when continuing the process
+   * instance, the process definition cache will be consulted to get the process definition
+   * and from it the tenant identifier. Since it's cached, it will not be the new tenant identifier.
+   * This method does clear the cache for this engineinstance , but it will not be cleared
+   * on other nodes in a cluster (unless using a shared process definition cache). 
+   * 
+   * @param deploymentId The id of the deployment of which the tenant identifier will be changed.
+   * @param newTenantId The new tenant identifier.
+   */
+  void changeDeploymentTenantId(String deploymentId, String newTenantId);
 
   /** Query process definitions. */
   ProcessDefinitionQuery createProcessDefinitionQuery();
@@ -168,6 +209,16 @@ public interface RepositoryService {
   void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate);
   
   /**
+   * Similar to {@link #suspendProcessDefinitionByKey(String)}, but only applicable for the given tenant identifier.
+   */
+  void suspendProcessDefinitionByKey(String processDefinitionKey, String tenantId);
+  
+  /**
+   * Similar to {@link #suspendProcessDefinitionByKey(String, boolean, Date)}, but only applicable for the given tenant identifier.
+   */
+  void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate, String tenantId);
+  
+  /**
    * Activates the process definition with the given id. 
    * 
    * @throws ActivitiObjectNotFoundException if no such processDefinition can be found or if the process definition is already in state active.
@@ -205,6 +256,16 @@ public interface RepositoryService {
    * @throws ActivitiException if the process definition is already in state active.
    */
   void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances,  Date activationDate);
+  
+  /**
+   * Similar to {@link #activateProcessDefinitionByKey(String)}, but only applicable for the given tenant identifier. 
+   */
+  void activateProcessDefinitionByKey(String processDefinitionKey, String tenantId);
+  
+  /**
+   * Similar to {@link #activateProcessDefinitionByKey(String, boolean, Date)}, but only applicable for the given tenant identifier. 
+   */
+  void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances,  Date activationDate, String tenantId);
   
   /**
    * Sets the category of the process definition.
@@ -360,5 +421,19 @@ public interface RepositoryService {
    * is authorized for a certain process definition
    */
   List<IdentityLink> getIdentityLinksForProcessDefinition(String processDefinitionId);
+  
+  /**
+   * Validates the given process definition against the rules for executing a process definition
+   * on the Activiti engine.
+   * 
+   * To create such a {@link BpmnModel} from a String, following code may be used:
+   * 
+   * XMLInputFactory xif = XMLInputFactory.newInstance();
+   * InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(myProcess.getBytes()), "UTF-8"); // Change to other streams for eg from classpath
+   * XMLStreamReader xtr = xif.createXMLStreamReader(in);
+   * bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+   * 
+   */
+  List<ValidationError> validateProcess(BpmnModel bpmnModel);
 
 }

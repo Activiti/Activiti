@@ -17,13 +17,14 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -33,7 +34,7 @@ public class ModelEditorJsonRestResource extends ServerResource implements Model
   protected static final Logger LOGGER = LoggerFactory.getLogger(ModelEditorJsonRestResource.class);
   private ObjectMapper objectMapper = new ObjectMapper();
   
-  @Get
+  @Get("json")
   public ObjectNode getEditorJson() {
     ObjectNode modelNode = null;
     String modelId = (String) getRequest().getAttributes().get("modelId");

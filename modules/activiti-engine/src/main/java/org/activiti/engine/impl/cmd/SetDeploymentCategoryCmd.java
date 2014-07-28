@@ -14,7 +14,8 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -39,8 +40,7 @@ public class SetDeploymentCategoryCmd implements Command<Void> {
       throw new ActivitiIllegalArgumentException("Deployment id is null");
     }
     
-    DeploymentEntity deployment = Context
-            .getCommandContext()
+    DeploymentEntity deployment = commandContext
             .getDeploymentEntityManager()
             .findDeploymentById(deploymentId);
 
@@ -50,6 +50,11 @@ public class SetDeploymentCategoryCmd implements Command<Void> {
     
     // Update category
     deployment.setCategory(category);
+    
+    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
+    }
     
     return null;
   }

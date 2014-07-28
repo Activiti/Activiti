@@ -15,6 +15,10 @@ package org.activiti.rest.service.api.history;
 
 import java.util.Date;
 
+import org.activiti.rest.common.util.DateToStringSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 /**
  * @author Tijs Rademakers
  */
@@ -32,9 +36,12 @@ public class HistoricActivityInstanceResponse {
   protected String taskId;
   protected String calledProcessInstanceId;
   protected String assignee;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   protected Date startTime;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   protected Date endTime;
   protected Long durationInMillis;
+  protected String tenantId;
   
   public String getId() {
     return id;
@@ -125,5 +132,11 @@ public class HistoricActivityInstanceResponse {
   }
   public void setDurationInMillis(Long durationInMillis) {
     this.durationInMillis = durationInMillis;
+  }
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  public String getTenantId() {
+	  return tenantId;
   }
 }

@@ -19,7 +19,9 @@ package org.activiti.engine.impl.variable;
  */
 public class StringType implements VariableType {
 
-  private static final long serialVersionUID = 1L;
+  private final int maxLength;
+
+  public StringType(int maxLength) {this.maxLength = maxLength;}
 
   public String getTypeName() {
     return "string";
@@ -41,6 +43,10 @@ public class StringType implements VariableType {
     if (value==null) {
       return true;
     }
-    return String.class.isAssignableFrom(value.getClass());
+    if (String.class.isAssignableFrom(value.getClass())) {
+      String stringValue = (String) value;
+      return stringValue.length() <= maxLength;
+    }
+    return false;
   }
 }

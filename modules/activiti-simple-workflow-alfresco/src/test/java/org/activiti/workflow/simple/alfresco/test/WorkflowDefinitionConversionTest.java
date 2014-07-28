@@ -13,30 +13,40 @@
 package org.activiti.workflow.simple.alfresco.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.ArrayList;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionConstants;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoConversionUtil;
 import org.activiti.workflow.simple.alfresco.conversion.AlfrescoWorkflowDefinitionConversionFactory;
+import org.activiti.workflow.simple.alfresco.conversion.script.PropertyReference;
+import org.activiti.workflow.simple.alfresco.form.AlfrescoTransitionsPropertyDefinition;
 import org.activiti.workflow.simple.alfresco.model.M2ClassAssociation;
 import org.activiti.workflow.simple.alfresco.model.M2Model;
 import org.activiti.workflow.simple.alfresco.model.M2Property;
 import org.activiti.workflow.simple.alfresco.model.M2Type;
 import org.activiti.workflow.simple.alfresco.model.config.Configuration;
 import org.activiti.workflow.simple.alfresco.model.config.Module;
+import org.activiti.workflow.simple.alfresco.step.AlfrescoEmailStepDefinition;
+import org.activiti.workflow.simple.alfresco.step.AlfrescoReviewStepDefinition;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
+import org.activiti.workflow.simple.definition.HumanStepAssignment.HumanStepAssignmentType;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyGroup;
+import org.activiti.workflow.simple.definition.form.ListPropertyEntry;
 import org.activiti.workflow.simple.definition.form.ReferencePropertyDefinition;
 import org.activiti.workflow.simple.definition.form.TextPropertyDefinition;
 import org.junit.Assert;
@@ -89,7 +99,7 @@ public class WorkflowDefinitionConversionTest {
 		assertNotNull(contentModel);
 		
 		// Check presence of form-config and default workflow-details
-		Module module = AlfrescoConversionUtil.getModule(conversion);
+		Module module = AlfrescoConversionUtil.getExtension(conversion).getModules().get(0);
 		assertNotNull(module);
 		assertEquals(1L, module.getConfigurations().size());
 		
@@ -319,7 +329,117 @@ public class WorkflowDefinitionConversionTest {
 		assertEquals("cm:person", association.getTarget().getClassName());
 		assertTrue(association.getTarget().isMandatory());
 	}
+	
+	@Test
+	public void testConvertEmailStep() throws Exception {
+		WorkflowDefinition definition = new WorkflowDefinition();
+		AlfrescoEmailStepDefinition emailStep = new AlfrescoEmailStepDefinition();
+		emailStep.setTo("fred");
+		emailStep.setSubject("jos");
+		
+		definition.addStep(emailStep);
+		
+		WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(definition);
+		conversion.convert();
+		
+		// Process should contain a single service-task
+		ServiceTask task = null;
+		
+		for(FlowElement element : conversion.getProcess().getFlowElements()) {
+			if(element instanceof ServiceTask) {
+				if(task != null) {
+					Assert.fail("More than one service-task found");
+				}
+				task = (ServiceTask) element;
+			}
+		}
+		
+		assertNotNull(task);
+		assertEquals(AlfrescoConversionConstants.CLASSNAME_SCRIPT_DELEGATE, task.getImplementation());
+	}
+	
+	@Test
+	public void testPropertyReferenceParsing() throws Exception {
+		String absoluteReference = "{{Property Name}}";
+		
+		assertTrue(PropertyReference.isPropertyReference(absoluteReference));
+		assertFalse(PropertyReference.isPropertyReference("{{incomplete}"));
+		assertTrue(PropertyReference.containsPropertyReference(absoluteReference));
+		assertEquals("test_propertyname", PropertyReference.createReference(absoluteReference).getVariableReference("test"));
+		
+		String referenceWithProperties = "{{Property Name.test}}";
+		
+		assertTrue(PropertyReference.isPropertyReference(referenceWithProperties));
+		assertTrue(PropertyReference.containsPropertyReference(referenceWithProperties));
+		assertEquals("test_propertyname.test", PropertyReference.createReference(referenceWithProperties).getVariableReference("test"));
 
+		absoluteReference = "{{Property Name.}}";
+		assertTrue(PropertyReference.isPropertyReference(absoluteReference));
+		assertFalse(PropertyReference.isPropertyReference("{{incomplete}"));
+		assertTrue(PropertyReference.containsPropertyReference(absoluteReference));
+		assertEquals("test_propertyname", PropertyReference.createReference(absoluteReference).getVariableReference("test"));
+		
+		
+		String referenceInText = "This is a {{reference}}";
+		assertEquals("This is a ${test_reference}", PropertyReference.replaceAllPropertyReferencesInString(referenceInText, "test", new ArrayList<PropertyReference>(), true));
+		assertEquals("This is a test_reference", PropertyReference.replaceAllPropertyReferencesInString(referenceInText, "test", new ArrayList<PropertyReference>(), false));
+		
+	}
+	
+	@Test
+	public void testTransitionProperty() throws Exception {
+		WorkflowDefinition definition = new WorkflowDefinition();
+		definition.setId("process");
+		
+		HumanStepDefinition humanStep = new HumanStepDefinition();
+		humanStep.setId("step1");
+		FormDefinition form = new FormDefinition();
+		humanStep.setForm(form);
+		
+		AlfrescoTransitionsPropertyDefinition transition = new AlfrescoTransitionsPropertyDefinition();
+		transition.addEntry(new ListPropertyEntry("One", "One"));
+		transition.addEntry(new ListPropertyEntry("Two", "Two"));
+		humanStep.getForm().addFormProperty(transition);
+		
+		definition.addStep(humanStep);
+		
+		WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(definition);
+		conversion.convert();
+
+		M2Model model = AlfrescoConversionUtil.getContentModel(conversion);
+		assertEquals(1L, model.getTypes().size());
+		
+		M2Type taskType = model.getTypes().get(0);
+		assertEquals(1L, taskType.getPropertyOverrides().size());
+		assertEquals("bpm:outcomePropertyName", taskType.getPropertyOverrides().get(0).getName());
+		assertTrue(taskType.getPropertyOverrides().get(0).getDefaultValue().contains("step1transitions"));
+		
+		assertEquals(1L, taskType.getProperties().size());
+		assertEquals(1L, model.getConstraints().size());
+	}
+	
+	@Test
+	public void testReviewStep() throws Exception {
+		WorkflowDefinition definition = new WorkflowDefinition();
+		definition.setId("process");
+		
+		AlfrescoReviewStepDefinition review = new AlfrescoReviewStepDefinition();
+		review.setName("Review");
+		review.setAssignmentPropertyName("bpm:people");
+		review.setAssignmentType(HumanStepAssignmentType.USERS);
+		review.setRequiredApprovalCount("1");
+		AlfrescoEmailStepDefinition emailStepDefinition = new AlfrescoEmailStepDefinition();
+		emailStepDefinition.setName("Send rejection email");
+		review.getRejectionSteps().add(emailStepDefinition);
+		definition.addStep(review);
+		
+		WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(definition);
+		conversion.convert();
+		new File("target/repo").mkdir();
+		new File("target/share").mkdir();
+		conversionFactory.getArtifactExporter().exportArtifacts(conversion, new File("target/repo"), new File("target/share"), false);
+	}
+	
 	protected M2Property getPropertyFromType(String shortName, M2Type type) {
 		for(M2Property prop : type.getProperties()) {
 			if(prop.getName().endsWith(shortName)) {

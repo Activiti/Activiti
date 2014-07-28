@@ -28,8 +28,8 @@ import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.QueryVariable;
-import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.QueryVariable.QueryVariableOperation;
+import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 import org.restlet.data.Form;
 
@@ -44,6 +44,7 @@ public class ExecutionBaseResource extends SecuredResource {
     allowedSortProperties.put("processDefinitionId", ExecutionQueryProperty.PROCESS_DEFINITION_ID);
     allowedSortProperties.put("processDefinitionKey", ExecutionQueryProperty.PROCESS_DEFINITION_KEY);
     allowedSortProperties.put("processInstanceId", ExecutionQueryProperty.PROCESS_INSTANCE_ID);
+    allowedSortProperties.put("tenantId", ExecutionQueryProperty.TENANT_ID);
   }
 
   protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest, Form urlQuery) {
@@ -85,7 +86,20 @@ public class ExecutionBaseResource extends SecuredResource {
     if(queryRequest.getProcessInstanceVariables() != null) {
       addVariables(query, queryRequest.getProcessInstanceVariables(), true);
     }
-    return new ExecutionPaginateList(this).paginateList(urlQuery, query, "processInstanceId", allowedSortProperties);
+    
+    if(queryRequest.getTenantId() != null) {
+    	query.executionTenantId(queryRequest.getTenantId());
+    }
+    
+    if(queryRequest.getTenantIdLike() != null) {
+    	query.executionTenantIdLike(queryRequest.getTenantIdLike());
+    }
+    
+    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+    	query.executionWithoutTenantId();
+    }
+    
+    return new ExecutionPaginateList(this).paginateList(urlQuery ,queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 
   protected void addVariables(ExecutionQuery processInstanceQuery, List<QueryVariable> variables, boolean process) {

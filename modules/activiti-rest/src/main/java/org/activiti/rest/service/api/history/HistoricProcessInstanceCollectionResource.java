@@ -24,7 +24,7 @@ import org.restlet.resource.Get;
  */
 public class HistoricProcessInstanceCollectionResource extends HistoricProcessInstanceBaseResource {
 
-  @Get
+  @Get("json")
   public DataResponse getHistoricProcessInstances() {
     if(!authenticate()) {
       return null;
@@ -88,6 +88,18 @@ public class HistoricProcessInstanceCollectionResource extends HistoricProcessIn
     
     if(getQueryParameter("includeProcessVariables", urlQuery) != null) {
       queryRequest.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", urlQuery));
+    }
+    
+    if(getQueryParameter("tenantId", urlQuery) != null) {
+      queryRequest.setTenantId(getQueryParameter("tenantId", urlQuery));
+    }
+    
+    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
+    	queryRequest.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    }
+    
+    if(getQueryParameter("withoutTenantId", urlQuery) != null) {
+    	queryRequest.setWithoutTenantId(getQueryParameterAsBoolean("withoutTenantId", urlQuery));
     }
     
     return getQueryResponse(queryRequest, urlQuery);

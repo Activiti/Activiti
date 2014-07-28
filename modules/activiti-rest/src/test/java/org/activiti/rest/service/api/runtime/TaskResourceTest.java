@@ -18,21 +18,22 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -49,7 +50,7 @@ public class TaskResourceTest extends BaseRestTestCase {
   @Deployment
   public void testGetProcessTask() throws Exception {
     Calendar now = Calendar.getInstance();
-    ClockUtil.setCurrentTime(now.getTime());
+    processEngineConfiguration.getClock().setCurrentTime(now.getTime());
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -74,6 +75,7 @@ public class TaskResourceTest extends BaseRestTestCase {
     assertEquals(task.getPriority(), responseNode.get("priority").asInt());
     assertTrue(responseNode.get("parentTaskId").isNull());
     assertTrue(responseNode.get("delegationState").isNull());
+    assertEquals("", responseNode.get("tenantId").textValue());
     
     assertTrue(responseNode.get("executionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, task.getExecutionId())));
@@ -81,6 +83,15 @@ public class TaskResourceTest extends BaseRestTestCase {
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, task.getProcessInstanceId())));
     assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(task.getProcessDefinitionId()))));
+    
+    // Set tenant on deployment
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+    
+    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
+    response = client.get();
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    responseNode = objectMapper.readTree(response.getStream());
+    assertEquals("myTenant", responseNode.get("tenantId").asText());
   }
   
   /**
@@ -91,7 +102,7 @@ public class TaskResourceTest extends BaseRestTestCase {
     try {
       
       Calendar now = Calendar.getInstance();
-      ClockUtil.setCurrentTime(now.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(now.getTime());
       
       Task parentTask = taskService.newTask();
       taskService.saveTask(parentTask);
@@ -126,6 +137,7 @@ public class TaskResourceTest extends BaseRestTestCase {
       assertTrue(responseNode.get("executionId").isNull());
       assertTrue(responseNode.get("processInstanceId").isNull());
       assertTrue(responseNode.get("processDefinitionId").isNull());
+      assertEquals("", responseNode.get("tenantId").textValue());
       
       assertTrue(responseNode.get("parentTaskUrl").asText().endsWith(
               RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, parentTask.getId())));
@@ -481,16 +493,16 @@ public class TaskResourceTest extends BaseRestTestCase {
       
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
       
-      // Claiming without assignee fails
+      task.setAssignee("fred");
+      // Claiming without assignee should set asisgnee to null
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("action", "claim");
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("An assignee is required when claiming a task.", expected.getStatus().getDescription());
-      }
+      
+      client.post(requestNode);
+      task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      assertNotNull(task);
+      assertNull(task.getAssignee());
+      assertEquals(1L, taskService.createTaskQuery().taskCandidateUser("newAssignee").count());
 
       // Claim the task and check result
       requestNode.put("assignee", "newAssignee");

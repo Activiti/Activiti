@@ -60,10 +60,6 @@ public class ExplorerApplicationServlet extends AbstractApplicationServlet {
           String appId, HttpServletRequest request) throws ServletException, IOException {
     super.writeAjaxPageHtmlVaadinScripts(window, themeName, application, page, appUrl, themeUri, appId, request);
     
-    // Add static JS files
-    String scrollJs = themeUri + "/js/vscrollarea.js";
-    page.write("<script type=\"text/javascript\" src=\"" + scrollJs + "\" />");
-    
     String browserDependentCss = "<script type=\"text/javascript\">//<![CDATA[" +
       "var mobi = ['opera', 'iemobile', 'webos', 'android', 'blackberry', 'ipad', 'safari'];" +
       "var midp = ['blackberry', 'symbian'];" +

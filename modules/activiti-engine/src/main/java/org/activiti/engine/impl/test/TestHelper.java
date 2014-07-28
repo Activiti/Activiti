@@ -85,7 +85,7 @@ public abstract class TestHelper {
     String deploymentId = null;
     Method method = null;
     try {
-      method = testClass.getDeclaredMethod(methodName, (Class<?>[])null);
+      method = testClass.getMethod(methodName, (Class<?>[]) null);
     } catch (Exception e) {
     	log.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e);
     	return null;
@@ -130,7 +130,7 @@ public abstract class TestHelper {
   	// Get method
   	 Method method = null;
      try {
-       method = testClass.getDeclaredMethod(methodName, (Class<?>[])null);
+       method = testClass.getMethod(methodName, (Class<?>[]) null);
      } catch (Exception e) {
     	log.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e); 
     	return;

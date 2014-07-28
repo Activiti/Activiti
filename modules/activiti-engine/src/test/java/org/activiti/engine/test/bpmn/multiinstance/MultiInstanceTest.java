@@ -26,7 +26,6 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -43,28 +42,37 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     
   @Deployment(resources = {"org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml"})
   public void testSequentialUserTasks() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks", 
+    checkSequentialUserTasks("miSequentialUserTasks");
+  }
+
+  @Deployment
+  public void testSequentialUserTasksCustomExtensions() {
+    checkSequentialUserTasks("miSequentialUserTasksCustomExtensions");
+  }
+
+  private void checkSequentialUserTasks(String processDefinitionKey) {
+    String procId = runtimeService.startProcessInstanceByKey(processDefinitionKey,
             CollectionUtil.singletonMap("nrOfLoops", 3)).getId();
-    
+
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("My Task", task.getName());
     assertEquals("kermit_0", task.getAssignee());
     taskService.complete(task.getId());
-    
+
     task = taskService.createTaskQuery().singleResult();
     assertEquals("My Task", task.getName());
     assertEquals("kermit_1", task.getAssignee());
     taskService.complete(task.getId());
-    
+
     task = taskService.createTaskQuery().singleResult();
     assertEquals("My Task", task.getName());
     assertEquals("kermit_2", task.getAssignee());
     taskService.complete(task.getId());
-    
+
     assertNull(taskService.createTaskQuery().singleResult());
     assertProcessEnded(procId);
   }
-  
+
   @Deployment(resources = {"org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml"})
   public void testSequentialUserTasksHistory() {
     runtimeService.startProcessInstanceByKey("miSequentialUserTasks", 
@@ -240,18 +248,39 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testParallelUserTasksCustomExtensions() {
+    checkParallelUserTasksCustomExtensions("miParallelUserTasks");
+  }
+
+  @Deployment
+  public void testParallelUserTasksCustomExtensionsLoopIndexVariable() {
+    checkParallelUserTasksCustomExtensions("miParallelUserTasksLoopVariable");
+  }
+
+  private void checkParallelUserTasksCustomExtensions(String processDefinitionKey) {
     Map<String, Object> vars = new HashMap<String, Object>();
     List<String> assigneeList = Arrays.asList("kermit", "gonzo", "fozzie");
     vars.put("assigneeList", assigneeList);
-    runtimeService.startProcessInstanceByKey("miSequentialUserTasks", vars);
-    
-    for (String assignee : assigneeList) {
-      Task task = taskService.createTaskQuery().singleResult();
-      assertEquals(assignee, task.getAssignee());
-      taskService.complete(task.getId());
-    }
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey, vars);
+
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    assertEquals(3, tasks.size());
+    assertEquals("My Task 0", tasks.get(0).getName());
+    assertEquals("My Task 1", tasks.get(1).getName());
+    assertEquals("My Task 2", tasks.get(2).getName());
+
+    tasks = taskService.createTaskQuery().orderByTaskAssignee().asc().list();
+    assertEquals("fozzie", tasks.get(0).getAssignee());
+    assertEquals("gonzo", tasks.get(1).getAssignee());
+    assertEquals("kermit", tasks.get(2).getAssignee());
+
+    // Completing 3 tasks will trigger completioncondition
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(1).getId());
+    taskService.complete(tasks.get(2).getId());
+    assertEquals(0, taskService.createTaskQuery().count());
+    assertProcessEnded(processInstance.getProcessInstanceId());
   }
-  
+
   @Deployment
   public void testParallelUserTasksExecutionAndTaskListeners() {
     runtimeService.startProcessInstanceByKey("miParallelUserTasks");
@@ -922,12 +951,12 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   @Deployment
   public void testAct901() {
     
-    Date startTime = ClockUtil.getCurrentTime();
+    Date startTime = processEngineConfiguration.getClock().getCurrentTime();
     
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("multiInstanceSubProcess");
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
     
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer is set to one minute
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer is set to one minute
     List<Job> timers = managementService.createJobQuery().list();
     assertEquals(5, timers.size());
     
@@ -1015,7 +1044,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   @Deployment
   public void testMultiInstanceParalelReceiveTaskWithTimer() {
     Date startTime = new Date();
-    ClockUtil.setCurrentTime(startTime);
+    processEngineConfiguration.getClock().setCurrentTime(startTime);
     
     runtimeService.startProcessInstanceByKey("multiInstanceReceiveWithTimer");
     List<Execution> executions = runtimeService.createExecutionQuery().activityId("theReceiveTask").list();
@@ -1023,7 +1052,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     
     // Signal only one execution. Then the timer will fire
     runtimeService.signal(executions.get(1).getId());
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + 60000L));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 60000L));
     waitForJobExecutorToProcessAllJobs(10000L, 1000L);
     
     // The process should now be in the task after the timer

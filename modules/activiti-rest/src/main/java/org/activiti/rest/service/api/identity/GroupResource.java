@@ -38,7 +38,7 @@ public class GroupResource extends BaseGroupResource {
   
   @Put
   public GroupResponse updateGroup(GroupRequest request) {
-
+  	if(authenticate() == false) return null;
     Group group = getGroupFromRequest();
 
     if(request.getId() == null || request.getId().equals(group.getId())) {
@@ -59,6 +59,7 @@ public class GroupResource extends BaseGroupResource {
   
   @Delete
   public void deleteGroup() {
+  	if(authenticate() == false) return;
     Group group = getGroupFromRequest();
     ActivitiUtil.getIdentityService().deleteGroup(group.getId());
     setStatus(Status.SUCCESS_NO_CONTENT);

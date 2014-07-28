@@ -14,7 +14,11 @@
 package org.activiti.camel;
 
 import org.activiti.engine.RuntimeService;
-import org.apache.camel.*;
+import org.apache.camel.CamelContext;
+import org.apache.camel.Consumer;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
 
 /**
@@ -60,6 +64,10 @@ public class ActivitiEndpoint extends DefaultEndpoint {
       throw new RuntimeException("Activit consumer already defined for " + getEndpointUri() + "!");
     }
     activitiConsumer = consumer;
+  }
+  
+  void removeConsumer() {
+    activitiConsumer = null;
   }
 
   public void process(Exchange ex) throws Exception {

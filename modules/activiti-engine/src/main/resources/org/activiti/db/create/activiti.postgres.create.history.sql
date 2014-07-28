@@ -11,9 +11,10 @@ create table ACT_HI_PROCINST (
     END_ACT_ID_ varchar(255),
     SUPER_PROCESS_INSTANCE_ID_ varchar(64),
     DELETE_REASON_ varchar(4000),
+    TENANT_ID_ varchar(255) default '',
+    NAME_ varchar(255),
     primary key (ID_),
-    unique (PROC_INST_ID_),
-    unique (PROC_DEF_ID_, BUSINESS_KEY_)
+    unique (PROC_INST_ID_)
 );
 
 create table ACT_HI_ACTINST (
@@ -30,6 +31,7 @@ create table ACT_HI_ACTINST (
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,
     DURATION_ bigint,
+    TENANT_ID_ varchar(255) default '',
     primary key (ID_)
 );
 
@@ -52,6 +54,8 @@ create table ACT_HI_TASKINST (
     PRIORITY_ integer,
     DUE_DATE_ timestamp,
     FORM_KEY_ varchar(255),
+    CATEGORY_ varchar(255),
+    TENANT_ID_ varchar(255) default '',
     primary key (ID_)
 );
 
@@ -68,6 +72,8 @@ create table ACT_HI_VARINST (
     LONG_ bigint,
     TEXT_ varchar(4000),
     TEXT2_ varchar(4000),
+    CREATE_TIME_ timestamp,
+    LAST_UPDATED_TIME_ timestamp,
     primary key (ID_)
 );
 

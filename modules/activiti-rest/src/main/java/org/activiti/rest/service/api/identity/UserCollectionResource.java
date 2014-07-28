@@ -45,7 +45,7 @@ public class UserCollectionResource extends SecuredResource {
     properties.put("email", UserQueryProperty.EMAIL);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getUsers() {
     if(!authenticate())
       return null;
@@ -87,6 +87,8 @@ public class UserCollectionResource extends SecuredResource {
   
   @Post
   public UserResponse createUser(UserRequest request) {
+  	if(authenticate() == false) return null;
+  	
     if(request.getId() == null) {
       throw new ActivitiIllegalArgumentException("Id cannot be null.");
     }

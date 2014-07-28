@@ -15,16 +15,16 @@ package org.activiti.rest.service.api.repository;
 
 import java.util.Calendar;
 
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -112,6 +112,35 @@ public class ModelCollectionResourceTest extends BaseRestTestCase {
       repositoryService.saveModel(model2);
       assertResultsPresentInDataResponse(url, model2.getId());
       
+      // Filter without tenant ID, before tenant update
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?withoutTenantId=true";
+      assertResultsPresentInDataResponse(url, model1.getId(), model2.getId());
+
+      // Set tenant ID
+      model1 = repositoryService.getModel(model1.getId());
+      model1.setTenantId("myTenant");
+      repositoryService.saveModel(model1);
+      
+      // Filter without tenant ID, after tenant update
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?withoutTenantId=true";
+      assertResultsPresentInDataResponse(url, model2.getId());
+      
+      // Filter based on tenantId
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?tenantId=myTenant";
+      assertResultsPresentInDataResponse(url, model1.getId());
+      
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?tenantId=anotherTenant";
+      assertResultsPresentInDataResponse(url);
+      
+      // Filter based on tenantId like
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?tenantIdLike=" + encode("%enant");
+      assertResultsPresentInDataResponse(url, model1.getId());
+      
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?tenantIdLike=anotherTenant";
+      assertResultsPresentInDataResponse(url);
+      
+      
+      
     } finally {
       if(model1 != null) {
         try {
@@ -133,7 +162,7 @@ public class ModelCollectionResourceTest extends BaseRestTestCase {
       
       Calendar createTime = Calendar.getInstance();
       createTime.set(Calendar.MILLISECOND, 0);
-      ClockUtil.setCurrentTime(createTime.getTime());
+      processEngineConfiguration.getClock().setCurrentTime(createTime.getTime());
       
       // Create create request
       ObjectNode requestNode = objectMapper.createObjectNode();
@@ -143,6 +172,7 @@ public class ModelCollectionResourceTest extends BaseRestTestCase {
       requestNode.put("metaInfo", "Model metainfo");
       requestNode.put("deploymentId", deploymentId);
       requestNode.put("version", 2);
+      requestNode.put("tenantId", "myTenant");
       
       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
               RestUrls.URL_MODEL_COLLECTION));
@@ -153,26 +183,28 @@ public class ModelCollectionResourceTest extends BaseRestTestCase {
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
       assertNotNull(responseNode);
-      assertEquals("Model name", responseNode.get("name").getTextValue());
-      assertEquals("Model key", responseNode.get("key").getTextValue());
-      assertEquals("Model category", responseNode.get("category").getTextValue());
-      assertEquals(2, responseNode.get("version").getIntValue());
-      assertEquals("Model metainfo", responseNode.get("metaInfo").getTextValue());
-      assertEquals(deploymentId, responseNode.get("deploymentId").getTextValue());
+      assertEquals("Model name", responseNode.get("name").textValue());
+      assertEquals("Model key", responseNode.get("key").textValue());
+      assertEquals("Model category", responseNode.get("category").textValue());
+      assertEquals(2, responseNode.get("version").intValue());
+      assertEquals("Model metainfo", responseNode.get("metaInfo").textValue());
+      assertEquals(deploymentId, responseNode.get("deploymentId").textValue());
+      assertEquals("myTenant", responseNode.get("tenantId").textValue());
       
-      assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
-      assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
+      assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").textValue()).getTime());
+      assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").textValue()).getTime());
       
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, responseNode.get("id").getTextValue())));
-      assertTrue(responseNode.get("deploymentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, responseNode.get("id").textValue())));
+      assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
       
-      model = repositoryService.createModelQuery().modelId(responseNode.get("id").getTextValue()).singleResult();
+      model = repositoryService.createModelQuery().modelId(responseNode.get("id").textValue()).singleResult();
       assertNotNull(model);
       assertEquals("Model category", model.getCategory());
       assertEquals("Model name", model.getName());
       assertEquals("Model key", model.getKey());
       assertEquals(deploymentId, model.getDeploymentId());
       assertEquals("Model metainfo", model.getMetaInfo());
+      assertEquals("myTenant", model.getTenantId());
       assertEquals(2, model.getVersion().intValue());
       
     } finally {

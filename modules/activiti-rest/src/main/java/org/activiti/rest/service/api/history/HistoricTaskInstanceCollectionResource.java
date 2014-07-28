@@ -24,7 +24,7 @@ import org.restlet.resource.Get;
  */
 public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstanceBaseResource {
 
-  @Get
+  @Get("json")
   public DataResponse getHistoricProcessInstances() {
     if(!authenticate()) {
       return null;
@@ -142,12 +142,44 @@ public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstance
       queryRequest.setTaskCreatedOn(getQueryParameterAsDate("taskCreatedOn", urlQuery));
     }
     
+    if(getQueryParameter("taskCreatedBefore", urlQuery) != null) {
+    	queryRequest.setTaskCreatedBefore(getQueryParameterAsDate("taskCreatedBefore", urlQuery));
+    }
+    
+    if(getQueryParameter("taskCreatedAfter", urlQuery) != null) {
+    	queryRequest.setTaskCreatedAfter(getQueryParameterAsDate("taskCreatedAfter", urlQuery));
+    }
+    
+    if(getQueryParameter("taskCompletedOn", urlQuery) != null) {
+    	queryRequest.setTaskCompletedOn(getQueryParameterAsDate("taskCompletedOn", urlQuery));
+    }
+    
+    if(getQueryParameter("taskCompletedBefore", urlQuery) != null) {
+    	queryRequest.setTaskCompletedBefore(getQueryParameterAsDate("taskCompletedBefore", urlQuery));
+    }
+    
+    if(getQueryParameter("taskCompletedAfter", urlQuery) != null) {
+    	queryRequest.setTaskCompletedAfter(getQueryParameterAsDate("taskCompletedAfter", urlQuery));
+    }
+    
     if(getQueryParameter("includeTaskLocalVariables", urlQuery) != null) {
       queryRequest.setIncludeTaskLocalVariables(getQueryParameterAsBoolean("includeTaskLocalVariables", urlQuery));
     }
     
     if(getQueryParameter("includeProcessVariables", urlQuery) != null) {
       queryRequest.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", urlQuery));
+    }
+    
+    if(getQueryParameter("tenantId", urlQuery) != null) {
+      queryRequest.setTenantId(getQueryParameter("tenantId", urlQuery));
+    }
+    
+    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
+    	queryRequest.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    }
+    
+    if(getQueryParameter("withoutTenantId", urlQuery) != null) {
+    	queryRequest.setWithoutTenantId(getQueryParameterAsBoolean("withoutTenantId", urlQuery));
     }
     
     return getQueryResponse(queryRequest, urlQuery);

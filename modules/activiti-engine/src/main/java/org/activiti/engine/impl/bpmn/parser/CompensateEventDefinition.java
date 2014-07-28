@@ -15,13 +15,12 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.Serializable;
 
+
 /**
  * @author Daniel Meyer
  */
 public class CompensateEventDefinition implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
   protected String activityRef;
   protected boolean waitForCompletion;
 

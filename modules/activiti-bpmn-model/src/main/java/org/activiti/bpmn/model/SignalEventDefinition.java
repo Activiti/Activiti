@@ -35,4 +35,16 @@ public class SignalEventDefinition extends EventDefinition {
   public void setAsync(boolean async) {
     this.async = async;
   }
+  
+  public SignalEventDefinition clone() {
+    SignalEventDefinition clone = new SignalEventDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(SignalEventDefinition otherDefinition) {
+    super.setValues(otherDefinition);
+    setSignalRef(otherDefinition.getSignalRef());
+    setAsync(otherDefinition.isAsync());
+  }
 }

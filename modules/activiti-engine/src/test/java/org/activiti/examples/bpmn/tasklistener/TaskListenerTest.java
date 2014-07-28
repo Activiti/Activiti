@@ -12,12 +12,12 @@
  */
 package org.activiti.examples.bpmn.tasklistener;
 
-import java.util.List;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import java.util.List;
 
 /**
  * @author Joram Barrez
@@ -26,22 +26,90 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testTaskCreateListener() {
-    runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("Schedule meeting", task.getName());
     assertEquals("TaskCreateListener is listening!", task.getDescription());
+
+    //Manually cleanup the process instance.  If we don't do this, the following actions will occur:
+    //   1. The cleanup rule will delete the process
+    //   2. The process deletion will fire a DELETE event to the TaskAllEventsListener
+    //   3. The TaskAllEventsListener will set a variable on the Task
+    //   4. Setting that variable will result in an entry in the ACT_HI_DETAIL table
+    //   5. The AbstractActivitiTestCase will fail the test because the DB is not clean
+    //By triggering the DELETE event from within the test, we ensure that all of the records
+    //are written before the test cleanup begins
+    runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
   }
   
   @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testTaskAssignmentListener() {
-    runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("TaskCreateListener is listening!", task.getDescription());
     
     // Set assignee and check if event is received
     taskService.setAssignee(task.getId(), "kermit");
     task = taskService.createTaskQuery().singleResult();
-  assertEquals("TaskAssignmentListener is listening: kermit", task.getDescription());
+    assertEquals("TaskAssignmentListener is listening: kermit", task.getDescription());
+
+    //Manually cleanup the process instance.  If we don't do this, the following actions will occur:
+    //   1. The cleanup rule will delete the process
+    //   2. The process deletion will fire a DELETE event to the TaskAllEventsListener
+    //   3. The TaskAllEventsListener will set a variable on the Task
+    //   4. Setting that variable will result in an entry in the ACT_HI_DETAIL table
+    //   5. The AbstractActivitiTestCase will fail the test because the DB is not clean
+    //By triggering the DELETE event from within the test, we ensure that all of the records
+    //are written before the test cleanup begins
+    runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
+  }
+  
+  /**
+   * Validate fix for ACT-1627: Not throwing assignment event on every update
+   */
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
+  public void testTaskAssignmentListenerNotCalledWhenAssigneeNotUpdated() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("TaskCreateListener is listening!", task.getDescription());
+    
+    // Set assignee and check if event is received
+    taskService.setAssignee(task.getId(), "kermit");
+    task = taskService.createTaskQuery().singleResult();
+    
+    assertEquals("TaskAssignmentListener is listening: kermit", task.getDescription());
+    
+    // Reset description and assign to same person. This should NOT trigger an assignment
+    task.setDescription("Clear");
+    taskService.saveTask(task);
+    taskService.setAssignee(task.getId(), "kermit");
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Clear", task.getDescription());
+    
+    // Set assignee through task-update
+    task.setAssignee("kermit");
+    taskService.saveTask(task);
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Clear", task.getDescription());
+    
+    // Update another property should not trigger assignment
+    task.setName("test");
+    taskService.saveTask(task);
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Clear", task.getDescription());
+    
+    // Update to different
+    task.setAssignee("john");
+    taskService.saveTask(task);
+    
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("TaskAssignmentListener is listening: john", task.getDescription());
+    
+
+    //Manually cleanup the process instance.
+    runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
   }
   
   @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
@@ -81,7 +149,7 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     
     // Verify the all-listener has received all events
     String eventsReceived = (String) runtimeService.getVariable(task.getProcessInstanceId(), "events");
-    assertEquals("create - assignment - complete", eventsReceived);
+    assertEquals("create - assignment - complete - delete", eventsReceived);
   }
   
   @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.testTaskListenersOnDelete.bpmn20.xml"})
@@ -110,7 +178,7 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
 	  assertEquals("Delete Task Listener executed.", TaskDeleteListener.getCurrentMessages().get(0));
 	  
 	  assertEquals(1, TaskSimpleCompleteListener.getCurrentMessages().size());
-    assertEquals("Complete Task Listener executed.", TaskSimpleCompleteListener.getCurrentMessages().get(0));
+      assertEquals("Complete Task Listener executed.", TaskSimpleCompleteListener.getCurrentMessages().get(0));
   }
   
   @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.testTaskListenersOnDelete.bpmn20.xml"})

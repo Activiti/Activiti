@@ -12,14 +12,17 @@
  */
 package org.activiti.engine.impl.interceptor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.JobNotFoundException;
+import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.context.Context;
@@ -30,6 +33,7 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
@@ -60,6 +64,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Tom Baeyens
  * @author Agim Emruli
+ * @author Joram Barrez
  */
 public class CommandContext {
 
@@ -73,6 +78,8 @@ public class CommandContext {
   protected LinkedList<AtomicOperation> nextOperations = new LinkedList<AtomicOperation>();
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected FailedJobCommandFactory failedJobCommandFactory;
+	protected List<CommandContextCloseListener> closeListeners;
+  protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
 
   
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
@@ -85,7 +92,11 @@ public class CommandContext {
           if (log.isTraceEnabled()) {
             log.trace("AtomicOperation: {} on {}", currentOperation, this);
           }
-          currentOperation.execute(execution);
+          if (execution.getReplacedBy() == null) {
+          	currentOperation.execute(execution);
+          } else {
+          	currentOperation.execute(execution.getReplacedBy());
+          }
         }
       } finally {
         Context.removeExecutionContext();
@@ -104,14 +115,23 @@ public class CommandContext {
   }
 
   public void close() {
-    // the intention of this method is that all resources are closed properly,
-    // even
+    // the intention of this method is that all resources are closed properly, even
     // if exceptions occur in close or flush methods of the sessions or the
     // transaction context.
 
     try {
       try {
         try {
+        	
+        	if (exception == null && closeListeners != null) {
+	        	try {
+	        		for (CommandContextCloseListener listener : closeListeners) {
+	        			listener.closing(this);
+	        		}
+	        	} catch (Throwable exception) {
+	        		exception(exception);
+	        	}
+        	}
 
           if (exception == null) {
             flushSessions();
@@ -120,7 +140,7 @@ public class CommandContext {
         } catch (Throwable exception) {
           exception(exception);
         } finally {
-
+        	
           try {
             if (exception == null) {
               transactionContext.commit();
@@ -128,6 +148,16 @@ public class CommandContext {
           } catch (Throwable exception) {
             exception(exception);
           }
+          
+        	if (exception == null && closeListeners != null) {
+	        	try {
+	        		for (CommandContextCloseListener listener : closeListeners) {
+	        			listener.closed(this);
+	        		}
+	        	} catch (Throwable exception) {
+	        		exception(exception);
+	        	}
+        	}
 
           if (exception != null) {
             if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
@@ -137,7 +167,7 @@ public class CommandContext {
               // reduce log level, as normally we're not interested in logging this exception
               log.debug("Optimistic locking exception : " + exception);
             } else {
-              log.error("Error while closing command context", exception);
+              log.debug("Error while closing command context", exception);
             }
 
             transactionContext.rollback();
@@ -164,6 +194,17 @@ public class CommandContext {
       }
     }
   }
+  
+  public void addCloseListener(CommandContextCloseListener commandContextCloseListener) {
+  	if (closeListeners == null) {
+  		closeListeners = new ArrayList<CommandContextCloseListener>(1);
+  	}
+  	closeListeners.add(commandContextCloseListener);
+  }
+  
+  public List<CommandContextCloseListener> getCloseListeners() {
+  	return closeListeners;
+  }
  
   protected void flushSessions() {
     for (Session session : sessions.values()) {
@@ -185,10 +226,26 @@ public class CommandContext {
     if (this.exception == null) {
       this.exception = exception;
     } else {
-    	LogMDC.putMDCExecution(Context.getExecutionContext().getExecution());    	    
+      if (Context.isExecutionContextActive()) {
+        LogMDC.putMDCExecution(Context.getExecutionContext().getExecution());
+      }
     	log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);    	
     	LogMDC.clear();
     }
+  }
+  
+  public void addAttribute(String key, Object value) {
+  	if (attributes == null) {
+  		attributes = new HashMap<String, Object>(1);
+  	}
+  	attributes.put(key, value);
+  }
+  
+  public Object getAttribute(String key) {
+  	if (attributes != null) {
+  		return attributes.get(key);
+  	}
+  	return null;
   }
 
   @SuppressWarnings({"unchecked"})
@@ -270,6 +327,10 @@ public class CommandContext {
     return getSession(HistoricIdentityLinkEntityManager.class);
   }
   
+  public EventLogEntryEntityManager getEventLogEntryEntityManager() {
+  	return getSession(EventLogEntryEntityManager.class);
+  }
+  
   public JobEntityManager getJobEntityManager() {
     return getSession(JobEntityManager.class);
   }
@@ -317,7 +378,7 @@ public class CommandContext {
   public HistoryManager getHistoryManager() {
     return getSession(HistoryManager.class);
   }
-
+  
   // getters and setters //////////////////////////////////////////////////////
 
   public TransactionContext getTransactionContext() {
@@ -334,5 +395,11 @@ public class CommandContext {
   }
   public FailedJobCommandFactory getFailedJobCommandFactory() {
     return failedJobCommandFactory;
+  }
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+	  return processEngineConfiguration;
+  }
+  public ActivitiEventDispatcher getEventDispatcher() {
+  	return processEngineConfiguration.getEventDispatcher();
   }
 }

@@ -16,12 +16,13 @@ package org.activiti.rest.service.api.identity;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -61,15 +62,15 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       
       for(int i=0; i<responseNode.size(); i++) {
         ObjectNode info = (ObjectNode) responseNode.get(i);
-        assertNotNull(info.get("key").getTextValue());
-        assertNotNull(info.get("url").getTextValue());
+        assertNotNull(info.get("key").textValue());
+        assertNotNull(info.get("url").textValue());
         
-        if(info.get("key").getTextValue().equals("key1")) {
+        if(info.get("key").textValue().equals("key1")) {
           foundFirst = true;
-          assertTrue(info.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+          assertTrue(info.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
                   RestUrls.URL_USER_INFO, newUser.getId(), "key1")));
-        } else if(info.get("key").getTextValue().equals("key2")) {
-          assertTrue(info.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+        } else if(info.get("key").textValue().equals("key2")) {
+          assertTrue(info.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
                   RestUrls.URL_USER_INFO, newUser.getId(), "key2")));
           foundSecond = true;
         }
@@ -108,10 +109,10 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals("key1", responseNode.get("key").getTextValue());
-      assertEquals("Value 1", responseNode.get("value").getTextValue());
+      assertEquals("key1", responseNode.get("key").textValue());
+      assertEquals("Value 1", responseNode.get("value").textValue());
       
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
                   RestUrls.URL_USER_INFO, newUser.getId(), "key1")));
       
     } finally {
@@ -225,10 +226,10 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals("key1", responseNode.get("key").getTextValue());
-      assertEquals("Updated value", responseNode.get("value").getTextValue());
+      assertEquals("key1", responseNode.get("key").textValue());
+      assertEquals("Updated value", responseNode.get("value").textValue());
       
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
                   RestUrls.URL_USER_INFO, newUser.getId(), "key1")));
       
       // Check if info is actually updated
@@ -359,10 +360,10 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
       
       JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals("key1", responseNode.get("key").getTextValue());
-      assertEquals("Value 1", responseNode.get("value").getTextValue());
+      assertEquals("key1", responseNode.get("key").textValue());
+      assertEquals("Value 1", responseNode.get("value").textValue());
       
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
                   RestUrls.URL_USER_INFO, newUser.getId(), "key1")));
       
     } finally {

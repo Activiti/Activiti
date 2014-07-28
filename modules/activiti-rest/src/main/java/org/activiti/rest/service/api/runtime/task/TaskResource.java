@@ -147,9 +147,6 @@ public class TaskResource extends TaskBaseResource {
   }
 
   protected void claimTask(Task task, TaskActionRequest actionRequest) {
-    if(actionRequest.getAssignee() == null) {
-      throw new ActivitiIllegalArgumentException("An assignee is required when claiming a task.");
-    }
     // In case the task is already claimed, a ActivitiTaskAlreadyClaimedException is thown and converted to
     // a CONFLICT response by the StatusService
     ActivitiUtil.getTaskService().claim(task.getId(), actionRequest.getAssignee());

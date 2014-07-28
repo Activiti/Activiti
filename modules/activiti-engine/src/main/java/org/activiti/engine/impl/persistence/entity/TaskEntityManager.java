@@ -14,12 +14,15 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.context.Context;
@@ -79,6 +82,11 @@ public class TaskEntityManager extends AbstractManager {
       }
         
       getDbSqlSession().delete(task);
+      
+      if(commandContext.getEventDispatcher().isEnabled()) {
+      	commandContext.getEventDispatcher().dispatchEvent(
+      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, task));
+      }
     }
   }
 
@@ -128,7 +136,7 @@ public class TaskEntityManager extends AbstractManager {
     taskQuery.setMaxResults(20000);
     taskQuery.setFirstResult(0);
     
-    List<Task> instanceList = getDbSqlSession().selectList(query, taskQuery);
+    List<Task> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter(query, taskQuery, taskQuery.getFirstResult(), taskQuery.getMaxResults());
     
     if (instanceList != null && instanceList.size() > 0) {
       if (firstResult > 0) {
@@ -184,4 +192,12 @@ public class TaskEntityManager extends AbstractManager {
         .deleteHistoricTaskInstanceById(taskId);
     }
   }
+  
+  public void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId) {
+  	HashMap<String, Object> params = new HashMap<String, Object>();
+  	params.put("deploymentId", deploymentId);
+  	params.put("tenantId", newTenantId);
+  	getDbSqlSession().update("updateTaskTenantIdForDeployment", params);
+  }
+  
 }

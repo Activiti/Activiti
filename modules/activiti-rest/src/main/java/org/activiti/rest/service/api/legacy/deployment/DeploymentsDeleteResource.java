@@ -17,13 +17,14 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.RequestUtil;
 import org.activiti.rest.common.api.SecuredResource;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Post;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -41,10 +42,10 @@ public class DeploymentsDeleteResource extends SecuredResource {
       ArrayNode idArray = (ArrayNode) idJSON.get("deploymentIds");
       for (JsonNode deploymentId : idArray) {
         if (cascade) {
-          ActivitiUtil.getRepositoryService().deleteDeployment(deploymentId.getTextValue(), true);
+          ActivitiUtil.getRepositoryService().deleteDeployment(deploymentId.textValue(), true);
         }
         else {
-          ActivitiUtil.getRepositoryService().deleteDeployment(deploymentId.getTextValue());
+          ActivitiUtil.getRepositoryService().deleteDeployment(deploymentId.textValue());
         }
       }
       ObjectNode successNode = new ObjectMapper().createObjectNode();

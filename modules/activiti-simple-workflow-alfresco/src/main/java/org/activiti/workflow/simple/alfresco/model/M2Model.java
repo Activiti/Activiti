@@ -152,6 +152,52 @@ public class M2Model {
 		return null;
 	}
 	
+	public M2Type getType(String typeName) {
+		if(types != null) {
+			for(M2Type type : types) {
+				if(type.getName().equals(typeName)) {
+					return type;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * @return true, if a property, aspect or association exists with the given name
+	 * in any of the types present in this model.
+	 */
+	public boolean isContainedInModel(String qualifiedName) {
+		boolean found = getAspect(qualifiedName) != null;
+		
+		if(!found) {
+			if(getTypes() != null) {
+				for(M2Type type : getTypes()) {
+					if(found) {
+						break;
+					}
+					
+					if(type.getProperties() != null) {
+						for(M2Property prop : type.getProperties()) {
+							if(qualifiedName.equals(prop.getName())) {
+								found = true;
+								break;
+							}
+						}
+						
+						for(M2ClassAssociation assoc : type.getAssociations()) {
+							if(qualifiedName.equals(assoc.getName())) {
+								found = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		return found;
+	}
+	
 	private void ensureNamespacesInitialized() {
 		if(namespaces == null) {
 			namespaces = new ArrayList<M2Namespace>();

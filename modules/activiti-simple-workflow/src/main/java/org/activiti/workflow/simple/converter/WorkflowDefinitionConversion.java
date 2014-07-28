@@ -22,6 +22,8 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.workflow.simple.converter.listener.WorkflowDefinitionConversionListener;
 import org.activiti.workflow.simple.converter.step.StepDefinitionConverter;
+import org.activiti.workflow.simple.definition.ListStepDefinition;
+import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
@@ -62,11 +64,11 @@ public class WorkflowDefinitionConversion {
   protected boolean sequenceflowGenerationEnabled = true;
   protected boolean updateLastActivityEnabled = true;
 
-  /* package */WorkflowDefinitionConversion(WorkflowDefinitionConversionFactory factory) {
+  /* package */
+  WorkflowDefinitionConversion(WorkflowDefinitionConversionFactory factory) {
     this.conversionFactory = factory;
   }
   
-  /* package */
   public WorkflowDefinitionConversion(WorkflowDefinitionConversionFactory factory, WorkflowDefinition workflowDefinition) {
     this(factory);
     this.workflowDefinition = workflowDefinition;
@@ -114,6 +116,12 @@ public class WorkflowDefinitionConversion {
   
   public void convertSteps(List<StepDefinition> stepDefinitions) {
     for (StepDefinition step : stepDefinitions) {
+      conversionFactory.getStepConverterFor(step).convertStepDefinition(step, this);
+    }
+  }
+  
+  public void convertListParallelSteps(List<ListStepDefinition<ParallelStepsDefinition>> stepDefinitions) {
+    for (ListStepDefinition<ParallelStepsDefinition> step : stepDefinitions) {
       conversionFactory.getStepConverterFor(step).convertStepDefinition(step, this);
     }
   }
@@ -175,6 +183,10 @@ public class WorkflowDefinitionConversion {
   public Object getArtifact(String artifactKey) {
     return additionalArtifacts.get(artifactKey);
   }
+  
+  public Map<String, Object> getAdditionalArtifacts() {
+	  return additionalArtifacts;
+  }
 
   public void setArtifact(String artifactKey, Object artifact) {
     additionalArtifacts.put(artifactKey, artifact);
@@ -202,6 +214,10 @@ public class WorkflowDefinitionConversion {
   
   public void setUpdateLastActivityEnabled(boolean updateLastActivityEnabled) {
     this.updateLastActivityEnabled = updateLastActivityEnabled;
+  }
+
+  public WorkflowDefinitionConversionFactory getConversionFactory() {
+    return conversionFactory;
   }
 
   /**

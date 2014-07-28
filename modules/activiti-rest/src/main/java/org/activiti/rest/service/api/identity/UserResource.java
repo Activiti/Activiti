@@ -37,7 +37,8 @@ public class UserResource extends BaseUserResource {
   
   @Put
   public UserResponse updateUser(UserRequest request) {
-
+  	if(authenticate() == false) return null;
+  	
     User user = getUserFromRequest();
     if(request.isEmailChanged()) {
       user.setEmail(request.getEmail());
@@ -60,6 +61,8 @@ public class UserResource extends BaseUserResource {
   
   @Delete
   public void deleteUser() {
+  	if(authenticate() == false) return;
+  	
     User user = getUserFromRequest();
     ActivitiUtil.getIdentityService().deleteUser(user.getId());
     setStatus(Status.SUCCESS_NO_CONTENT);

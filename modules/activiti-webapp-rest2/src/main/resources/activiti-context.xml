@@ -14,13 +14,17 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <property name="createDemoModels" value="true" />
 	</bean>
 
-	<bean id="dbProperties"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="classpath:db.properties" />
-		<!-- Allow other PropertyPlaceholderConfigurer to run as well -->
+	<bean id="dbProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="locations">
+            <list>
+                <value>classpath:db.properties</value>
+                <value>file:activiti-rest.properties</value>
+            </list>
+        </property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="ignoreResourceNotFound" value="true" />
 	</bean>
-
+	
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driverClass" value="${jdbc.driver}" />
@@ -41,6 +45,13 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 		<property name="mailServerHost" value="localhost" />
 		<property name="mailServerPort" value="5025" />
 		<property name="jobExecutorActivate" value="false" />
+        <property name="customFormTypes">
+          <list>
+            <bean class="org.activiti.rest.form.UserFormType"/>
+            <bean class="org.activiti.rest.form.ProcessDefinitionFormType"/> 
+            <bean class="org.activiti.rest.form.MonthFormType"/>   
+          </list>
+        </property>
 	</bean>
 
 	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">

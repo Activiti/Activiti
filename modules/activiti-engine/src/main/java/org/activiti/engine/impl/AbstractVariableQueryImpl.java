@@ -175,17 +175,17 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
         throw new ActivitiIllegalArgumentException("Booleans and null cannot be used in 'less than or equal' condition");
       }
       
-      if(operator == QueryOperator.EQUALS_IGNORE_CASE && (value == null || !(value instanceof String)))
+      if(operator == QueryOperator.EQUALS_IGNORE_CASE && !(value instanceof String))
       {
         throw new ActivitiIllegalArgumentException("Only string values can be used with 'equals ignore case' condition");
       }
       
-      if(operator == QueryOperator.NOT_EQUALS_IGNORE_CASE && (value == null || !(value instanceof String)))
+      if(operator == QueryOperator.NOT_EQUALS_IGNORE_CASE && !(value instanceof String))
       {
         throw new ActivitiIllegalArgumentException("Only string values can be used with 'not equals ignore case' condition");
       }
       
-      if(operator == QueryOperator.LIKE && (value == null || !(value instanceof String)))
+      if(operator == QueryOperator.LIKE && !(value instanceof String))
       {
         throw new ActivitiIllegalArgumentException("Only string values can be used with 'like' condition");
       }

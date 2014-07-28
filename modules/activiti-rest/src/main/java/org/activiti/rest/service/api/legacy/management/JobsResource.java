@@ -42,7 +42,7 @@ public class JobsResource extends SecuredResource {
     properties.put("retries", JobQueryProperty.RETRIES);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getJobs() {
     if(authenticate(SecuredResource.ADMIN) == false) return null;
     

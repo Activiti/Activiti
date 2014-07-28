@@ -13,16 +13,18 @@
 
 package org.activiti.rest.service.api.runtime;
 
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Test for all REST-operations related to a single Process instance resource.
@@ -44,15 +46,26 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
     // Check resulting instance
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals(processInstance.getId(), responseNode.get("id").getTextValue());
-    assertEquals("myBusinessKey", responseNode.get("businessKey").getTextValue());
-    assertEquals("processTask", responseNode.get("activityId").getTextValue());
-    assertFalse(responseNode.get("suspended").getBooleanValue());
+    assertEquals(processInstance.getId(), responseNode.get("id").textValue());
+    assertEquals("myBusinessKey", responseNode.get("businessKey").textValue());
+    assertEquals("processTask", responseNode.get("activityId").textValue());
+    assertFalse(responseNode.get("suspended").booleanValue());
+    assertEquals("", responseNode.get("tenantId").textValue());
     
     assertTrue(responseNode.get("url").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
     assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(processInstance.getProcessDefinitionId()))));
+    
+    // Check result after tenant has been changed
+    managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
+    response = client.get();
+    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    
+    // Check resulting instance tenant id
+    responseNode = objectMapper.readTree(response.getStream());
+    assertNotNull(responseNode);
+    assertEquals("myTenant", responseNode.get("tenantId").textValue());
   }
   
   /**
@@ -117,8 +130,8 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
     // Check resulting instance is suspended
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals(processInstance.getId(), responseNode.get("id").getTextValue());
-    assertTrue(responseNode.get("suspended").getBooleanValue());
+    assertEquals(processInstance.getId(), responseNode.get("id").textValue());
+    assertTrue(responseNode.get("suspended").booleanValue());
     
     // Suspending again should result in conflict
     try {
@@ -151,8 +164,8 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
     // Check resulting instance is suspended
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertEquals(processInstance.getId(), responseNode.get("id").getTextValue());
-    assertFalse(responseNode.get("suspended").getBooleanValue());
+    assertEquals(processInstance.getId(), responseNode.get("id").textValue());
+    assertFalse(responseNode.get("suspended").booleanValue());
     
     // Activating again should result in conflict
     try {

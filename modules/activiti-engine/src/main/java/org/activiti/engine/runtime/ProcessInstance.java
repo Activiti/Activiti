@@ -41,6 +41,19 @@ public interface ProcessInstance extends Execution {
    */
   boolean isSuspended();
   
-  /** Returns the process variables if requested in the process instance query */
+  /** 
+   * Returns the process variables if requested in the process instance query 
+   */
   Map<String, Object> getProcessVariables();
+  
+  /** 
+   * The tenant identifier of this process instance 
+   */
+  String getTenantId();
+  
+  /**
+   * Returns the name of this process instance. 
+   */
+  String getName();
+  
 }

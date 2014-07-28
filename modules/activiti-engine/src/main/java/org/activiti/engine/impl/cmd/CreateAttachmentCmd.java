@@ -17,8 +17,10 @@ import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
@@ -67,6 +69,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     attachment.setTaskId(taskId);
     attachment.setProcessInstanceId(processInstanceId);
     attachment.setUrl(url);
+    attachment.setUserId(Authentication.getAuthenticatedUserId());
     
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.insert(attachment);
@@ -80,12 +83,28 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     commandContext.getHistoryManager()
       .createAttachmentComment(taskId, processInstanceId, attachmentName, true);
     
+    if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	// Forced to fetch the process-instance to associate the right process definition
+    	String processDefinitionId = null;
+    	if(attachment.getProcessInstanceId() != null) {
+    		ExecutionEntity process = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+    		if(process != null) {
+    			processDefinitionId = process.getProcessDefinitionId();
+    		}
+    	}
+    	
+    	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+    	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+    }
+    
     return attachment;
   }
 
   private void verifyParameters(CommandContext commandContext) {
     if (taskId != null) {
-      TaskEntity task = Context.getCommandContext().getTaskEntityManager().findTaskById(taskId);
+      TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
 
       if (task == null) {
         throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);

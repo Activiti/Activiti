@@ -72,17 +72,23 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
   
   @Put
   public Object createOrUpdateExecutionVariable(Representation representation) {
+  	if(!authenticate()) { return null; }
+  	
     return createExecutionVariable(representation, true);
   }
   
   
   @Post
   public Object createExecutionVariable(Representation representation) {
+  	if(!authenticate()) { return null; }
+  	
    return createExecutionVariable(representation, false);
   }
   
   @Delete
   public void deleteAllLocalVariables() {
+  	if(!authenticate()) { return; }
+  	
     Execution execution = getExecutionFromRequest();
     Collection<String> currentVariables = ActivitiUtil.getRuntimeService().getVariablesLocal(execution.getId()).keySet();
     ActivitiUtil.getRuntimeService().removeVariablesLocal(execution.getId(), currentVariables);
@@ -109,7 +115,7 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
         
         RestVariable[] restVariables = getConverterService().toObject(representation, RestVariable[].class, this);
         if(restVariables == null || restVariables.length == 0) {
-          throw new ActivitiIllegalArgumentException("Request didn't cantain a list of variables to create.");
+          throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
         }
         
         RestVariableScope sharedScope = null;

@@ -29,11 +29,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
   
-  public static String getXMLType() {
-    return ELEMENT_TASK_SERVICE;
-  }
-  
-  public static Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return ServiceTask.class;
   }
   
@@ -43,7 +39,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
 		ServiceTask serviceTask = new ServiceTask();
 		BpmnXMLUtil.addXMLLocation(serviceTask, xtr);
 		if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_CLASS))) {
@@ -68,22 +64,16 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
 		  serviceTask.setResultVariableName(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, "resultVariable"));
 		}
 		
-		if (StringUtils.isNotEmpty(serviceTask.getResultVariableName()) && (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(serviceTask.getImplementationType()) || 
-		    ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(serviceTask.getImplementationType()))) {
-		  
-		  model.addProblem("'resultVariableName' not supported for service tasks using 'class' or 'delegateExpression", xtr);
-		}
-		
 		serviceTask.setType(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TYPE));
 		serviceTask.setExtensionId(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_EXTENSIONID));
 	
-		parseChildElements(getXMLElementName(), serviceTask, xtr);
+		parseChildElements(getXMLElementName(), serviceTask, model, xtr);
 		
 		return serviceTask;
   }
   
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     
     ServiceTask serviceTask = (ServiceTask) element;
     
@@ -107,7 +97,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     ServiceTask serviceTask = (ServiceTask) element;
     
     if (serviceTask.getCustomProperties().size() > 0) {
@@ -137,10 +127,12 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
     } else {
       didWriteExtensionStartElement = FieldExtensionExport.writeFieldExtensions(serviceTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
     }
+    
+    return didWriteExtensionStartElement;
   }
   
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
   
   protected String parseOperationRef(String operationRef, BpmnModel model) {

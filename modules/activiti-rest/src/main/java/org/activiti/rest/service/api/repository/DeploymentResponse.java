@@ -16,6 +16,9 @@ package org.activiti.rest.service.api.repository;
 import java.util.Date;
 
 import org.activiti.engine.repository.Deployment;
+import org.activiti.rest.common.util.DateToStringSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Tijs Rademakers
@@ -25,15 +28,18 @@ public class DeploymentResponse {
 
   String id;
   String name;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   Date deploymentTime;
   String category;
   String url;
+  String tenantId;
   
   public DeploymentResponse(Deployment deployment, String url) {
     setId(deployment.getId());
     setName(deployment.getName());
     setDeploymentTime(deployment.getDeploymentTime());
     setCategory(deployment.getCategory());
+    setTenantId(deployment.getTenantId());
     setUrl(url);
   }
   
@@ -66,5 +72,11 @@ public class DeploymentResponse {
   }
   public String getUrl() {
     return url;
+  }
+  public void setTenantId(String tenantId) {
+	  this.tenantId = tenantId;
+  }
+  public String getTenantId() {
+	  return tenantId;
   }
 }

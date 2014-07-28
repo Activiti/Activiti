@@ -10,9 +10,9 @@ create table ACT_HI_PROCINST (
     START_ACT_ID_ varchar(255),
     END_ACT_ID_ varchar(255),
     SUPER_PROCESS_INSTANCE_ID_ varchar(64),
-	  UNI_BUSINESS_KEY varchar (255)  not null  generated always as (case when "BUSINESS_KEY_" is null then "ID_" else "BUSINESS_KEY_" end),
-	  UNI_PROC_DEF_ID varchar (64)  not null  generated always as (case when "PROC_DEF_ID_" is null then "ID_" else "PROC_DEF_ID_" end),
     DELETE_REASON_ varchar(4000),
+    TENANT_ID_ varchar(255) default '',
+    NAME_ varchar(255),
     primary key (ID_)
 );
 
@@ -33,6 +33,7 @@ create table ACT_HI_ACTINST (
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,
     DURATION_ bigint,
+    TENANT_ID_ varchar(255) default '',
     primary key (ID_)
 );
 
@@ -55,6 +56,8 @@ create table ACT_HI_TASKINST (
     PRIORITY_ integer,
     DUE_DATE_ timestamp,
     FORM_KEY_ varchar(255),
+    CATEGORY_ varchar(255),
+    TENANT_ID_ varchar(255) default '',
     primary key (ID_)
 );
 
@@ -71,6 +74,8 @@ create table ACT_HI_VARINST (
     LONG_ bigint,
     TEXT_ varchar(4000),
     TEXT2_ varchar(4000),
+    CREATE_TIME_ timestamp,
+    LAST_UPDATED_TIME_ timestamp,
     primary key (ID_)
 );
 
@@ -130,7 +135,6 @@ create table ACT_HI_IDENTITYLINK (
     primary key (ID_)
 );
 
-create unique index ACT_UNIQ_HI_BUS_KEY on ACT_HI_PROCINST(UNI_PROC_DEF_ID, UNI_BUSINESS_KEY);
 create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROCINST(END_TIME_);
 create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROCINST(BUSINESS_KEY_);
 create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACTINST(START_TIME_);

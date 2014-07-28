@@ -438,6 +438,12 @@ public class ExecutionImpl implements
     }
   }
   
+  @Override
+  public void take(PvmTransition transition, boolean fireActivityCompletedEvent) {
+  	// No event firing on executionlevel impl
+  	take(transition); 
+  }
+  
   public void take(PvmTransition transition) {
     if (this.transition!=null) {
       throw new PvmException("already taking a transition");
@@ -872,5 +878,9 @@ public class ExecutionImpl implements
   
   public String updateProcessBusinessKey(String bzKey) {
     return getProcessInstance().updateProcessBusinessKey(bzKey);
+  }
+  
+  public String getTenantId() {
+    return null; // Not implemented
   }
 }

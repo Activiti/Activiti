@@ -24,12 +24,14 @@ import org.activiti.cdi.annotation.event.AssignTaskLiteral;
 import org.activiti.cdi.annotation.event.BusinessProcessLiteral;
 import org.activiti.cdi.annotation.event.CompleteTaskLiteral;
 import org.activiti.cdi.annotation.event.CreateTaskLiteral;
+import org.activiti.cdi.annotation.event.DeleteTaskLiteral;
 import org.activiti.cdi.impl.util.BeanManagerLookup;
 import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -73,8 +75,7 @@ public class CdiTaskListener implements TaskListener, Serializable {
   }
 
   protected BusinessProcessEvent createEvent(DelegateTask task) {
-    String processDefinitionId = task.getExecution().getProcessDefinitionId();
-    ProcessDefinition processDefinition = task.getExecution().getEngineServices().getRepositoryService().getProcessDefinition(processDefinitionId);
+    ProcessDefinition processDefinition = Context.getProcessEngineConfiguration().getProcessDefinitionCache().get(task.getExecution().getProcessDefinitionId());
     return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, task, type, task.getExecution().getProcessInstanceId(), task.getExecutionId(), new Date());
   }
 
@@ -96,6 +97,9 @@ public class CdiTaskListener implements TaskListener, Serializable {
     }
     if (type == BusinessProcessEventType.COMPLETE_TASK) {
       return new Annotation[] {businessProcessQualifier, new CompleteTaskLiteral(activityId) };
+    }
+    if (type == BusinessProcessEventType.DELETE_TASK) {
+      return new Annotation[] {businessProcessQualifier, new DeleteTaskLiteral(activityId) };
     }
     return new Annotation[] {};
   }

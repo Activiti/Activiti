@@ -23,6 +23,7 @@ import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.AddEditorSourceExtraForModelCmd;
 import org.activiti.engine.impl.cmd.AddEditorSourceForModelCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.impl.cmd.CreateModelCmd;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeleteIdentityLinkForProcessDefinitionCmd;
@@ -43,6 +44,7 @@ import org.activiti.engine.impl.cmd.SaveModelCmd;
 import org.activiti.engine.impl.cmd.SetDeploymentCategoryCmd;
 import org.activiti.engine.impl.cmd.SetProcessDefinitionCategoryCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.ValidateBpmnModelCmd;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
@@ -58,6 +60,7 @@ import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
+import org.activiti.validation.ValidationError;
 
 
 /**
@@ -108,6 +111,11 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   public InputStream getResourceAsStream(String deploymentId, String resourceName) {
     return commandExecutor.execute(new GetDeploymentResourceCmd(deploymentId, resourceName));
   }
+  
+  @Override
+  public void changeDeploymentTenantId(String deploymentId, String newTenantId) {
+  	commandExecutor.execute(new ChangeDeploymentTenantIdCmd(deploymentId, newTenantId));
+  }
 
   public DeploymentQuery createDeploymentQuery() {
     return new DeploymentQueryImpl(commandExecutor);
@@ -131,35 +139,52 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   }
 
   public void suspendProcessDefinitionById(String processDefinitionId) {
-    commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null, false, null));
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null, false, null, null));
   }
   
   public void suspendProcessDefinitionById(String processDefinitionId, boolean suspendProcessInstances, Date suspensionDate) {
-    commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null, suspendProcessInstances, suspensionDate));
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(processDefinitionId, null, suspendProcessInstances, suspensionDate, null));
   }
   
   public void suspendProcessDefinitionByKey(String processDefinitionKey) {
-    commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey, false, null));
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey, false, null, null));
   }
 
   public void suspendProcessDefinitionByKey(String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate) {
-    commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey, suspendProcessInstances, suspensionDate));
+    commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey, suspendProcessInstances, suspensionDate, null));
+  }
+  
+  public void suspendProcessDefinitionByKey(String processDefinitionKey, String tenantId) {
+  	commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey, false, null, tenantId));
+  }
+  
+  public void suspendProcessDefinitionByKey(String processDefinitionKey,
+      boolean suspendProcessInstances, Date suspensionDate, String tenantId) {
+  	commandExecutor.execute(new SuspendProcessDefinitionCmd(null, processDefinitionKey, suspendProcessInstances, suspensionDate, tenantId));
   }
   
   public void activateProcessDefinitionById(String processDefinitionId) {
-    commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null, false, null));
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null, false, null, null));
   }
   
   public void activateProcessDefinitionById(String processDefinitionId, boolean activateProcessInstances, Date activationDate) {
-    commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null, activateProcessInstances, activationDate));
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(processDefinitionId, null, activateProcessInstances, activationDate, null));
   }
 
   public void activateProcessDefinitionByKey(String processDefinitionKey) {
-    commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, false, null));
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, false, null, null));
   }
   
   public void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances, Date activationDate) {
-    commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, activateProcessInstances, activationDate));
+    commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, activateProcessInstances, activationDate, null));
+  }
+  
+  public void activateProcessDefinitionByKey(String processDefinitionKey, String tenantId) {
+  	commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, false, null, tenantId));
+  }
+  
+  public void activateProcessDefinitionByKey(String processDefinitionKey, boolean activateProcessInstances, Date activationDate, String tenantId) {
+  	commandExecutor.execute(new ActivateProcessDefinitionCmd(null, processDefinitionKey, activateProcessInstances, activationDate, tenantId));
   }
   
   public void setProcessDefinitionCategory(String processDefinitionId, String category) {
@@ -237,6 +262,10 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public List<IdentityLink> getIdentityLinksForProcessDefinition(String processDefinitionId) {
     return commandExecutor.execute(new GetIdentityLinksForProcessDefinitionCmd(processDefinitionId));
+  }
+  
+  public List<ValidationError> validateProcess(BpmnModel bpmnModel) {
+  	return commandExecutor.execute(new ValidateBpmnModelCmd(bpmnModel));
   }
 
 }

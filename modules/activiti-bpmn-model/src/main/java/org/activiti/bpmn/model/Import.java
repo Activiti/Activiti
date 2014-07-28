@@ -1,5 +1,6 @@
 package org.activiti.bpmn.model;
 
+
 public class Import extends BaseElement {
 
   protected String importType;
@@ -23,5 +24,18 @@ public class Import extends BaseElement {
   }
   public void setNamespace(String namespace) {
     this.namespace = namespace;
+  }
+  
+  public Import clone() {
+    Import clone = new Import();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(Import otherElement) {
+    super.setValues(otherElement);
+    setImportType(otherElement.getImportType());
+    setLocation(otherElement.getLocation());
+    setNamespace(otherElement.getNamespace());
   }
 }

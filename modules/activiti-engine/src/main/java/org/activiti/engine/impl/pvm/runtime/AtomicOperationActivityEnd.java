@@ -15,6 +15,10 @@ package org.activiti.engine.impl.pvm.runtime;
 
 import java.util.List;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
@@ -40,8 +44,22 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
   @SuppressWarnings("unchecked")
   @Override
   protected void eventNotificationsCompleted(InterpretableExecution execution) {
+  	
     ActivityImpl activity = (ActivityImpl) execution.getActivity();
     ActivityImpl parentActivity = activity.getParentActivity();
+    
+  	if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+  		if (execution instanceof ExecutionEntity) {
+	  		ExecutionEntity executionEntity = (ExecutionEntity) execution;
+	    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+	    			ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, execution.getActivity().getId(),
+	    					(String) executionEntity.getActivity().getProperties().get("name"),
+	    					execution.getId(), 
+	    					execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
+	    					(String) executionEntity.getActivity().getProperties().get("type"), 
+	    					executionEntity.getActivity().getActivityBehavior().getClass().getCanonicalName()));
+  		}
+    }
 
     // if the execution is a single path of execution inside the process definition scope
     if ( (parentActivity!=null)
@@ -51,6 +69,12 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
       execution.performOperation(ACTIVITY_END);
       
     } else if (execution.isProcessInstanceType()) {
+      // dispatch process completed event
+      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, execution));
+      }
+
       execution.performOperation(PROCESS_END);
     
     } else if (execution.isScope()) {
@@ -83,6 +107,12 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
               // we call end() because it sets isEnded on the execution
               parentScopeExecution.end(); 
           } else {
+            // dispatch process completed event
+            if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+              Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, execution));
+            }
+
         	  parentScopeExecution.performOperation(PROCESS_END);
           }
         } else {          	

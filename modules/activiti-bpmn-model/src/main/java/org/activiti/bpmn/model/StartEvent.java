@@ -42,4 +42,23 @@ public class StartEvent extends Event {
   public void setFormProperties(List<FormProperty> formProperties) {
     this.formProperties = formProperties;
   }
+  
+  public StartEvent clone() {
+    StartEvent clone = new StartEvent();
+    clone.setValues(this);
+    return clone;
+  }
+  
+  public void setValues(StartEvent otherEvent) {
+    super.setValues(otherEvent);
+    setInitiator(otherEvent.getInitiator());
+    setFormKey(otherEvent.getFormKey());
+    
+    formProperties = new ArrayList<FormProperty>();
+    if (otherEvent.getFormProperties() != null && otherEvent.getFormProperties().size() > 0) {
+      for (FormProperty property : otherEvent.getFormProperties()) {
+        formProperties.add(property.clone());
+      }
+    }
+  }
 }

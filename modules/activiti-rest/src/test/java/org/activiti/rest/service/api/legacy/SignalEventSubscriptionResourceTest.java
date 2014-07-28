@@ -7,11 +7,12 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseRestTestCase;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class SignalEventSubscriptionResourceTest extends BaseRestTestCase {
 
@@ -26,7 +27,7 @@ public class SignalEventSubscriptionResourceTest extends BaseRestTestCase {
     Representation response = client.post(null);
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertTrue(responseNode.get("success").getBooleanValue());
+    assertTrue(responseNode.get("success").booleanValue());
     
     instanceList = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, instanceList.size());
@@ -49,7 +50,7 @@ public class SignalEventSubscriptionResourceTest extends BaseRestTestCase {
     Representation response = client.post(objectNode);
     JsonNode responseNode = objectMapper.readTree(response.getStream());
     assertNotNull(responseNode);
-    assertTrue(responseNode.get("success").getBooleanValue());
+    assertTrue(responseNode.get("success").booleanValue());
     
     Task task = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
     assertNotNull(task);

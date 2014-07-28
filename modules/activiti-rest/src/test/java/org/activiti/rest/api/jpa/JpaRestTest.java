@@ -17,8 +17,6 @@ import org.activiti.rest.service.ProcessEnginesRest;
 import org.activiti.rest.service.api.RestUrls;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.restlet.Component;
 import org.restlet.data.ChallengeScheme;
@@ -28,6 +26,9 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ContextConfiguration("classpath:activiti-jpa-context.xml")
 public class JpaRestTest extends SpringActivitiTestCase {

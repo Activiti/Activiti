@@ -17,7 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.task.IdentityLink;
 
@@ -25,7 +28,7 @@ import org.activiti.engine.task.IdentityLink;
 /**
  * @author Joram Barrez
  */
-public class IdentityLinkEntity implements Serializable, IdentityLink, PersistentObject {
+public class IdentityLinkEntity implements Serializable, IdentityLink, BulkDeleteable, PersistentObject {
   
   private static final long serialVersionUID = 1L;
   
@@ -86,6 +89,13 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
    
     Context.getCommandContext().getHistoryManager()
       .recordIdentityLinkCreated(this);
+    
+    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
+    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, this));
+    }
   }
   
   public boolean isUser() {

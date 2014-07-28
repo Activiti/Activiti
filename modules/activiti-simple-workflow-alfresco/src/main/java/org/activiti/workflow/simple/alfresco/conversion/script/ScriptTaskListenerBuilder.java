@@ -45,6 +45,12 @@ public class ScriptTaskListenerBuilder {
 		}
 	}
 	
+	public void addLine(String script) {
+		if(script != null) {
+			finalScript.append(script).append("\n");
+		}
+	}
+	
 	public void addIncomingProperty(String workflowPropertyName, String taskPropertyName) {
 		addScript(MessageFormat.format(INCOMING_VARIABLE_SCRIPT_TEMPLATE, getVariableName(workflowPropertyName),
 				getVariableName(taskPropertyName)));

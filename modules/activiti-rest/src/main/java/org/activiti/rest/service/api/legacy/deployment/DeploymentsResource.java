@@ -38,7 +38,7 @@ public class DeploymentsResource extends SecuredResource {
     properties.put("deploymentTime", DeploymentQueryProperty.DEPLOY_TIME);
   }
   
-  @Get
+  @Get("json")
   public DataResponse getDeployments() {
     if(authenticate() == false) return null;
     

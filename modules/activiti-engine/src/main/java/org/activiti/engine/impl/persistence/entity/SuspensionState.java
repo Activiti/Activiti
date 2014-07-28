@@ -13,6 +13,9 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.context.Context;
 
 /**
  * Contains a predefined set of states for process definitions and process instances
@@ -79,6 +82,7 @@ public interface SuspensionState {
         throw new ActivitiException("Cannot set suspension state '"+state+"' for "+processDefinitionEntity+"': already in state '"+state+"'.");
       }
       processDefinitionEntity.setSuspensionState(state.getStateCode());
+      dispatchStateChangeEvent(processDefinitionEntity, state);
     }
     
     public static void setSuspensionState(ExecutionEntity executionEntity, SuspensionState state) {
@@ -86,6 +90,7 @@ public interface SuspensionState {
         throw new ActivitiException("Cannot set suspension state '"+state+"' for "+executionEntity+"': already in state '"+state+"'.");
       }
       executionEntity.setSuspensionState(state.getStateCode());
+      dispatchStateChangeEvent(executionEntity, state);
     }
     
     public static void setSuspensionState(TaskEntity taskEntity, SuspensionState state) {
@@ -93,6 +98,20 @@ public interface SuspensionState {
         throw new ActivitiException("Cannot set suspension state '"+state+"' for " + taskEntity + "': already in state '"+state+"'.");
       }
       taskEntity.setSuspensionState(state.getStateCode());
+      dispatchStateChangeEvent(taskEntity, state);
+    }
+    
+    protected static void dispatchStateChangeEvent(Object entity, SuspensionState state) {
+    	if(Context.getCommandContext() != null && Context.getCommandContext().getEventDispatcher().isEnabled()) {
+      	ActivitiEventType eventType = null;
+      	if(state == SuspensionState.ACTIVE) {
+      		eventType = ActivitiEventType.ENTITY_ACTIVATED;
+      	} else {
+      		eventType = ActivitiEventType.ENTITY_SUSPENDED;
+      	}
+      	Context.getCommandContext().getEventDispatcher().dispatchEvent(
+      			ActivitiEventBuilder.createEntityEvent(eventType, entity));
+      }
     }
   }
   

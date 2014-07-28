@@ -64,6 +64,21 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   /** Only select executions which are a direct child-execution of the execution with the given id. **/
   ExecutionQuery parentId(String parentId);
   
+	/**
+	 * Only select process instances that have the given tenant id.
+	 */
+  ExecutionQuery executionTenantId(String tenantId);
+
+	/**
+	 * Only select process instances with a tenant id like the given one.
+	 */
+  ExecutionQuery executionTenantIdLike(String tenantIdLike);
+	
+	/**
+	 * Only select process instances that do not have a tenant id.
+	 */
+  ExecutionQuery executionWithoutTenantId();
+  
   /** 
    * Only select executions which have a local variable with the given value. The type
    * of variable is determined based on the value, using types configured in 
@@ -259,5 +274,8 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   
   /** Order by process definition id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ExecutionQuery orderByProcessDefinitionId();
+  
+	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  ExecutionQuery orderByTenantId();
   
 }
