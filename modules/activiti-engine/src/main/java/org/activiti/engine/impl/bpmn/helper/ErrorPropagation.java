@@ -33,9 +33,6 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 /**
  * This class is responsible for finding and executing error handlers for BPMN
@@ -50,14 +47,16 @@ import org.slf4j.LoggerFactory;
  */
 public class ErrorPropagation {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ErrorPropagation.class);
+    public static final String ERROR_MESSAGE_VARIABLE_NAME = "ERROR_MESSAGE_VARIABLE_NAME";
+    public static final String ERROR_CODE_VARIABLE_NAME = "ERROR_CODE_VARIABLE_NAME";
 
-  public static void propagateError(BpmnError error, ActivityExecution execution) throws Exception {    
+    public static void propagateError(BpmnError error, ActivityExecution execution) throws Exception {
+    execution.setVariable(ERROR_MESSAGE_VARIABLE_NAME,error.getMessage());
     propagateError(error.getErrorCode(), execution);
   }
-  
-  public static void propagateError(String errorCode, ActivityExecution execution) throws Exception {
 
+  public static void propagateError(String errorCode, ActivityExecution execution) throws Exception {
+      execution.setVariable(ERROR_CODE_VARIABLE_NAME, errorCode);
 	  while (execution != null) {
 		    String eventHandlerId = findLocalErrorEventHandler(execution, errorCode); 
 		    if (eventHandlerId != null) {
@@ -65,7 +64,7 @@ public class ErrorPropagation {
 		    	 break;
 		    }
 		    execution = getSuperExecution(execution);
-	  };
+	  }
 	  if (execution == null) {
 		  throw new BpmnError(errorCode, "No catching boundary event found for error with errorCode '" 
 	                + errorCode + "', neither in same process nor in parent process");		  
