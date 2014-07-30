@@ -49,7 +49,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String involvedUser;
   protected String owner;
   protected String ownerLike;
-  protected boolean unassigned = false;
+  protected Boolean owned;
+  protected Boolean assigned;
   protected boolean noDelegationState = false;
   protected DelegationState delegationState;
   protected String candidateUser;
@@ -83,6 +84,10 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean includeProcessVariables = false;
   protected String userIdForCandidateAndAssignee;
   protected boolean bothCandidateAndAssigned = false;
+  
+  protected String involvementType;
+  protected List<String> involvedGroups;
+  protected String involvedGroup;
 
   public TaskQueryImpl() {
   }
@@ -198,8 +203,13 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskUnassigned() {
-    this.unassigned = true;
+    this.assigned = false;
     return this;
+  }
+  
+  public TaskQuery taskAssigned() {
+	this.assigned = true;
+	return this;
   }
 
   public TaskQuery taskDelegationState(DelegationState delegationState) {
@@ -209,6 +219,49 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       this.delegationState = delegationState;
     }
     return this;
+  }
+  
+  public TaskQuery taskInvolvedGroup(String involvedGroup) {
+	if (involvedGroup == null) {
+	  throw new ActivitiIllegalArgumentException("involvedGroup group is null");
+	}
+	if (involvedGroups != null) {
+	  throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both involvedGroup and involvedGroupIn");
+	}
+	this.involvedGroup = involvedGroup;
+	return this;
+  }
+
+  public TaskQuery taskInvolvedGroupIn(List<String> involvedGroups) {
+	if (involvedGroups == null) {
+	  throw new ActivitiIllegalArgumentException("involvedGroups list is null");
+	}
+	if (involvedGroups.size()== 0) {
+	  throw new ActivitiIllegalArgumentException("involvedGroups list is empty");
+	}
+	if (involvedGroup != null) {
+	  throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both involvedGroupIn and involvedGroup");
+	}
+	this.involvedGroups = involvedGroups;
+	return this;
+  }
+
+  public TaskQuery taskInvolvementType(String involvementType) {
+	if (involvementType == null) {
+	  throw new ActivitiIllegalArgumentException("involvementType is null");
+	}
+	this.involvementType = involvementType;
+	return this;
+  }
+
+  public TaskQuery taskOwned() {
+	this.owned = true;
+	return this;
+  }
+
+  public TaskQuery taskUnowned() {
+	this.owned = false;
+	return this;
   }
 
   public TaskQueryImpl taskCandidateUser(String candidateUser) {
@@ -509,7 +562,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       candidateGroupList.add(candidateGroup);
       return candidateGroupList;
     } else if (candidateUser != null) {
-      return getGroupsForCandidateUser(candidateUser);
+    	candidateGroups = getGroupsForCandidateUser(candidateUser); // cache candidate user groups
+      return candidateGroups;
     } else if(candidateGroups != null) {
       return candidateGroups;
     }
@@ -623,8 +677,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public String getAssignee() {
     return assignee;
   }
-  public boolean getUnassigned() {
-    return unassigned;
+  public Boolean getAssigned() {
+    return assigned;
   }
   public DelegationState getDelegationState() {
     return delegationState;
@@ -700,5 +754,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
 	}
   public String getUserIdForCandidateAndAssignee() {
     return userIdForCandidateAndAssignee;
+  }
+  public List<String> getInvolvedGroups() {
+	if(involvedGroup != null && involvedGroups == null){
+	  involvedGroups = new ArrayList<String>();
+	  involvedGroups.add(involvedGroup);
+	}
+	return involvedGroups;
   }
 }
