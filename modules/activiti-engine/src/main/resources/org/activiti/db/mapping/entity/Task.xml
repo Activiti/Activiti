@@ -279,7 +279,7 @@
   </sql>
   
   <sql id="commonSelectTaskByQueryCriteriaSql">
-    <if test="candidateUser != null || candidateGroups != null || bothCandidateAndAssigned">
+    <if test="involvementType!=null || involvedUser !=null || involvedGroups != null || candidateUser != null || candidateGroups != null || bothCandidateAndAssigned">
       <if test="bothCandidateAndAssigned">left</if>
       <if test="!bothCandidateAndAssigned">inner</if>
       join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = RES.ID_
@@ -337,8 +337,21 @@
       <if test="ownerLike != null">
         and RES.OWNER_ like #{ownerLike}
       </if>
-      <if test="unassigned">
-        and RES.ASSIGNEE_ IS NULL
+      <if test="owned != null">
+        <if test="owned == false">
+          and RES.OWNER_ IS NULL
+        </if>
+        <if test="owned == true">
+          and RES.OWNER_ IS NOT NULL
+        </if>
+      </if>
+      <if test="assigned != null">
+        <if test="assigned == false">
+          and RES.ASSIGNEE_ IS NULL
+        </if>
+        <if test="assigned == true">
+          and RES.ASSIGNEE_ IS NOT NULL
+        </if>
       </if>
       <if test="noDelegationState">
         and RES.DELEGATION_ IS NULL
@@ -429,12 +442,66 @@
           </if>
         )
       </if>
-      <if test="involvedUser != null">
-        and (
-          exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
-          or RES.ASSIGNEE_ = #{involvedUser}
+      <if test="involvementType!=null || involvedUser != null || involvedGroups != null">
+	  <if test="!bothCandidateAndAssigned">
+      	<if test="involvementType != null">
+       	 and I.TYPE_ = #{involvementType}
+		</if> 
+		<if test="involvedUser != null || involvedGroups != null">
+		and (
+		  <if test="involvementType == null">
+		   <if test="involvedUser != null">
+          RES.ASSIGNEE_ = #{involvedUser}
           or RES.OWNER_ = #{involvedUser}
+		  or
+		  </if>
+		</if> 
+          <if test="involvedUser != null">
+            I.USER_ID_ = #{involvedUser}          
+          </if>
+          <if test="involvedUser != null &amp;&amp; involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+            or
+          </if>
+          <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+            I.GROUP_ID_ IN
+            <foreach item="group" index="index" collection="involvedGroups" 
+                     open="(" separator="," close=")">
+              #{group}
+            </foreach>
+          </if>
+        )
+        </if>
+	</if>
+    <if test="bothCandidateAndAssigned">
+        and (
+      <if test="involvedUser != null &amp;&amp; involvementType==null">
+          RES.ASSIGNEE_ = #{involvedUser}
+          or RES.OWNER_ = #{involvedUser}
+		  or 
+		</if> 
+          exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where LINK.TASK_ID_ = RES.ID_
+          <if test="involvementType != null">
+       	 and LINK.TYPE_ = #{involvementType}
+		</if> 
+		<if test="involvedUser != null || involvedGroups != null">
+		and (
+          <if test="involvedUser != null">
+            LINK.USER_ID_ = #{involvedUser}          
+          </if>
+          <if test="involvedUser != null &amp;&amp; involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+            or
+          </if>
+          <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+            LINK.GROUP_ID_ IN
+            <foreach item="group" index="index" collection="involvedGroups" 
+                     open="(" separator="," close=")">
+              #{group}
+            </foreach>
+          </if>
           )
+          </if>
+		))
+      </if>
       </if>
       <foreach item="var" collection="queryVariableValues" index="index">
         <if test="!var.local">

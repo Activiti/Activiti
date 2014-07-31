@@ -257,11 +257,15 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       adhocTask.setOwner("fozzie");
       taskService.saveTask(adhocTask);
       taskService.addUserIdentityLink(adhocTask.getId(), "gonzo", "customType");
+      taskService.addCandidateUser(adhocTask.getId(), "kermit");
+      taskService.addUserIdentityLink(adhocTask.getId(), "gonzo", "anotherCustomType");
       
-      assertEquals(3, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
+      assertEquals(5, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
       
       assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("gonzo").count());
-      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("kermit").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("gonzo").taskInvolvementType("customType").count());
+      assertEquals(1, taskService.createTaskQuery().taskInvolvedUser("gonzo").taskInvolvementType("customType").taskCandidateOrAssigned("kermit").count());
+      assertEquals(0, taskService.createTaskQuery().taskInvolvedUser("gonzo").taskInvolvementType("noSuchType").taskCandidateOrAssigned("kermit").count());
       assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("fozzie").count());
       
     } finally {
@@ -275,6 +279,83 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         }
       }
     }
+  }
+  
+  public void testQueryByInvolvedGroup() {
+    try {
+      Task adhocTask = taskService.newTask();
+      adhocTask.setAssignee("kermit");
+      adhocTask.setOwner("fozzie");
+      taskService.saveTask(adhocTask);
+      taskService.addGroupIdentityLink(adhocTask.getId(), "sales", "customType");
+      taskService.addGroupIdentityLink(adhocTask.getId(), "management", "customType");
+      
+      assertEquals(4, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
+      
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedGroup("sales").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedGroup("management").taskInvolvementType("customType").count());
+      
+    } finally {
+      List<Task> allTasks = taskService.createTaskQuery().list();
+      for(Task task : allTasks) {
+        if(task.getExecutionId() == null) {
+          taskService.deleteTask(task.getId());
+          if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            historyService.deleteHistoricTaskInstance(task.getId());
+          }
+        }
+      }
+    }
+  }
+  
+  public void testQueryByInvolvedUserAndGroup() {
+    try {
+      Task adhocTask = taskService.newTask();
+      adhocTask.setAssignee("kermit");
+      adhocTask.setOwner("fozzie");
+      taskService.saveTask(adhocTask);
+      taskService.addGroupIdentityLink(adhocTask.getId(), "sales", "customType");
+      taskService.addGroupIdentityLink(adhocTask.getId(), "management", "anotherCustomType");
+      taskService.addUserIdentityLink(adhocTask.getId(), "gonzo", "anotherCustomType");
+      
+      assertEquals(5, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
+      
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("gonzo").taskInvolvedGroup("sales").count());
+      assertEquals(0, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("gonzo").taskInvolvedGroup("management").taskInvolvementType("customType").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("gonzo").taskInvolvedGroup("management").taskInvolvementType("anotherCustomType").count());
+      assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvementType("anotherCustomType").count());
+      
+    } finally {
+      List<Task> allTasks = taskService.createTaskQuery().list();
+      for(Task task : allTasks) {
+        if(task.getExecutionId() == null) {
+          taskService.deleteTask(task.getId());
+          if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            historyService.deleteHistoricTaskInstance(task.getId());
+          }
+        }
+      }
+    }
+  }
+  
+  public void testQueryByInvolvementType() {
+	assertEquals(0, taskService.createTaskQuery().taskInvolvementType("noSuchType").count());
+	assertEquals(11, taskService.createTaskQuery().taskInvolvementType("candidate").count());
+	assertEquals(6, taskService.createTaskQuery().taskInvolvedUser("kermit").taskInvolvementType("candidate").count());
+	assertEquals(3, taskService.createTaskQuery().taskInvolvedGroup("management").taskInvolvementType("candidate").count());
+	
+	try {
+	  taskService.createTaskQuery().taskInvolvementType("owner");
+	  fail("expected exception");
+	  } catch (ActivitiException e) {
+	    // OK
+	  }
+	try {
+	  taskService.createTaskQuery().taskInvolvementType("assignee");
+	  fail("expected exception");
+	  } catch (ActivitiException e) {
+	    // OK
+	  }
   }
   
   public void testQueryByNullAssignee() {
@@ -291,6 +372,24 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(11, query.count());
     assertEquals(11, query.list().size());
   }
+  
+  public void testQueryByAssigned() {
+	TaskQuery query = taskService.createTaskQuery().taskAssigned();
+	assertEquals(1, query.count());
+	assertEquals(1, query.list().size());
+  }
+
+  public void testQueryByUnowned() {
+	TaskQuery query = taskService.createTaskQuery().taskUnowned();
+	assertEquals(12, query.count());
+	assertEquals(12, query.list().size());
+  }
+	  
+  public void testQueryByOwned() {
+	TaskQuery query = taskService.createTaskQuery().taskOwned();
+	assertEquals(0, query.count());
+	assertEquals(0, query.list().size());
+ }
   
   public void testQueryByCandidateUser() {
     TaskQuery query = taskService.createTaskQuery().taskCandidateUser("kermit");

@@ -77,8 +77,17 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery taskOwnerLike(String ownerLike);
   
+  /** Only select tasks which have an owner. */
+  TaskQuery taskOwned();
+  
+  /** Only select tasks which don't have an owner. */
+  TaskQuery taskUnowned();
+  
   /** Only select tasks which don't have an assignee. */
   TaskQuery taskUnassigned();
+  
+  /** Only select tasks which have an assignee. */
+  TaskQuery taskAssigned();
   
   /** @see {@link #taskUnassigned} */
   @Deprecated
@@ -93,6 +102,22 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** Only select tasks for which there exist an {@link IdentityLink} with the given user, including tasks which have been 
    * assigned to the given user (assignee) or owned by the given user (owner). */
   TaskQuery taskInvolvedUser(String involvedUser);
+  
+  /** Only select tasks for which users in the given group are involved. */
+  TaskQuery taskInvolvedGroup(String involvedGroup);
+  
+  /** 
+   * Only select tasks for which the 'involvedGroups' is one of the given groups involved in the task.
+   */
+  TaskQuery taskInvolvedGroupIn(List<String> involvedGroups);
+  
+  /** Only select tasks which have an {@link IdentityLink} of given involvementType, whether {@link IdentityLink} was for a user or a group.
+   * Use with taskInvolvedUser, taskInvolvedGroup, taskInvolvedGroupIn methods to limit results to specific user or group or group list
+   *
+   * @throws ActivitiIllegalArgumentException 
+   *   When involvementType value is null or 'owner' or 'assignee' 
+   */
+  TaskQuery taskInvolvementType(String involvementType);
 
   /** Only select tasks for which users in the given group are candidates. */
   TaskQuery taskCandidateGroup(String candidateGroup);
