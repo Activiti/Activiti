@@ -343,6 +343,19 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 	assertEquals(11, taskService.createTaskQuery().taskInvolvementType("candidate").count());
 	assertEquals(6, taskService.createTaskQuery().taskInvolvedUser("kermit").taskInvolvementType("candidate").count());
 	assertEquals(3, taskService.createTaskQuery().taskInvolvedGroup("management").taskInvolvementType("candidate").count());
+	
+	try {
+	  taskService.createTaskQuery().taskInvolvementType("owner");
+	  fail("expected exception");
+	  } catch (ActivitiException e) {
+	    // OK
+	  }
+	try {
+	  taskService.createTaskQuery().taskInvolvementType("assignee");
+	  fail("expected exception");
+	  } catch (ActivitiException e) {
+	    // OK
+	  }
   }
   
   public void testQueryByNullAssignee() {
