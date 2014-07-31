@@ -250,6 +250,9 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
 	if (involvementType == null) {
 	  throw new ActivitiIllegalArgumentException("involvementType is null");
 	}
+	if ("owner".equals(involvementType) || "assignee".equals(involvementType)) {
+	  throw new ActivitiIllegalArgumentException("involvementType "+involvementType+" is not a valid option");
+	}
 	this.involvementType = involvementType;
 	return this;
   }
