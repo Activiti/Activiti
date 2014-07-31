@@ -109,7 +109,7 @@ public class MapELResolver extends ELResolver {
 					feature.setExpert(true);
 					feature.setHidden(false);
 					feature.setPreferred(true);
-					feature.setValue(TYPE, key == null ? null : key.getClass());
+					feature.setValue(TYPE, key == null ? "null" : key.getClass());
 					feature.setValue(RESOLVABLE_AT_DESIGN_TIME, true);
 					return feature;
 					
