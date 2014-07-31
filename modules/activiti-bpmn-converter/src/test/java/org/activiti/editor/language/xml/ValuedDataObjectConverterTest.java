@@ -5,9 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,13 +77,8 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertEquals("DateTest", dataObj.getName());
     assertEquals("xsd:datetime", dataObj.getItemSubjectRef().getStructureRef());
     assertTrue(dataObj.getValue() instanceof Date);
-    GregorianCalendar dateCal = new GregorianCalendar();
-    dateCal.setTime((Date) dataObj.getValue());
-    assertEquals(2013, dateCal.get(Calendar.YEAR));
-    assertEquals(8, dateCal.get(Calendar.MONTH));
-    assertEquals(16, dateCal.get(Calendar.DAY_OF_MONTH));
-    assertEquals(11, dateCal.get(Calendar.HOUR_OF_DAY));
-    assertEquals(23, dateCal.get(Calendar.MINUTE));
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    assertEquals("2013-09-16T11:23:00", sdf.format(dataObj.getValue()));
     
     dataObj = objectMap.get("dObj4");
     assertEquals("dObj4", dataObj.getId());
@@ -161,11 +155,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertEquals("DateSubTest", dataObj.getName());
     assertEquals("xsd:datetime", dataObj.getItemSubjectRef().getStructureRef());
     assertTrue(dataObj.getValue() instanceof Date);
-    dateCal = new GregorianCalendar();
-    dateCal.setTime((Date) dataObj.getValue());
-    assertEquals(2013, dateCal.get(Calendar.YEAR));
-    assertEquals(10, dateCal.get(Calendar.MONTH));
-    assertEquals(11, dateCal.get(Calendar.DAY_OF_MONTH));
+    assertEquals("2013-11-11T22:00:00", sdf.format(dataObj.getValue()));
       
     dataObj = objectMap.get("dObj10");
     assertEquals("dObj10", dataObj.getId());

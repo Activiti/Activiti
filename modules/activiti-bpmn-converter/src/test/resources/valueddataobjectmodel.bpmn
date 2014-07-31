@@ -52,7 +52,7 @@
 	  </dataObject>
       <dataObject id="dObj9" name="DateSubTest" itemSubjectRef="xsd:datetime">
       <extensionElements>
-        <activiti:value>2013-11-11</activiti:value>
+        <activiti:value>2013-11-11T22:00:00</activiti:value>
       </extensionElements>
 	  </dataObject>
       <dataObject id="dObj10" name="DoubleSubTest" itemSubjectRef="xsd:double">

@@ -172,6 +172,12 @@ public interface StencilConstants {
   final String PROPERTY_FORM_FORM_VALUE_ID = "formproperty_formvalue_id";
   final String PROPERTY_FORM_FORM_VALUE_NAME = "formproperty_formvalue_name";
 
+  final String PROPERTY_DATA_PROPERTIES = "dataproperties";
+  final String PROPERTY_DATA_ID = "dataproperty_id";
+  final String PROPERTY_DATA_NAME = "dataproperty_name";
+  final String PROPERTY_DATA_TYPE = "dataproperty_type";
+  final String PROPERTY_DATA_VALUE = "dataproperty_value";
+
 	final String PROPERTY_SCRIPT_FORMAT = "scriptformat";
 	final String PROPERTY_SCRIPT_TEXT = "scripttext";
 	

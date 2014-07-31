@@ -12,6 +12,7 @@
  */
 package org.activiti.editor.language.json.converter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,11 +24,15 @@ import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polyline2D;
 
+import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BooleanDataObject;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.DateDataObject;
+import org.activiti.bpmn.model.DoubleDataObject;
 import org.activiti.bpmn.model.EventListener;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
@@ -35,11 +40,16 @@ import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.bpmn.model.IntegerDataObject;
+import org.activiti.bpmn.model.ItemDefinition;
 import org.activiti.bpmn.model.Lane;
+import org.activiti.bpmn.model.LongDataObject;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.StringDataObject;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.activiti.editor.language.json.converter.util.JsonConverterUtil;
@@ -66,6 +76,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   
   protected static Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap = 
       new HashMap<String, Class<? extends BaseBpmnJsonConverter>>();
+  
+  private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
   
   static {
     
@@ -184,6 +196,11 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     if (StringUtils.isNotEmpty(mainProcess.getDocumentation())) {
       propertiesNode.put(PROPERTY_DOCUMENTATION, mainProcess.getDocumentation());
     }
+
+    if (mainProcess.getDataObjects().size() > 0) {
+      convertDataPropertiesToJson(mainProcess.getDataObjects(), propertiesNode);
+    }
+    
     modelNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
     
     if (model.getPools().size() > 0) {
@@ -355,6 +372,14 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       	process.setEventListeners(convertJsonToEventListeners(processEventListenerNode));
       }
       
+      JsonNode processDataPropertiesNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_DATA_PROPERTIES);
+
+      if (processDataPropertiesNode != null) {
+        List<ValuedDataObject> dataObjects = convertJsonToDataProperties(processDataPropertiesNode, process);
+        process.setDataObjects(dataObjects);
+        process.getFlowElements().addAll(dataObjects);
+      }
+
       processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
     }
     
@@ -538,6 +563,108 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       }
     }
     return eventListeners;
+  }
+  
+  protected List<ValuedDataObject> convertJsonToDataProperties(JsonNode objectNode, BaseElement element) {
+    List<ValuedDataObject> dataObjects = new ArrayList<ValuedDataObject>();
+
+    if (objectNode != null) {
+      if (objectNode.isValueNode() && StringUtils.isNotEmpty(objectNode.asText())) {
+        try {
+          objectNode = objectMapper.readTree(objectNode.asText());
+        } catch (Exception e) {
+          LOGGER.info("Data properties node cannot be read", e);
+        }
+      }
+
+      JsonNode itemsArrayNode = objectNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+      if (itemsArrayNode != null) {
+        for (JsonNode dataNode : itemsArrayNode) {
+
+          JsonNode dataIdNode = dataNode.get(PROPERTY_DATA_ID);
+          if (dataIdNode != null && StringUtils.isNotEmpty(dataIdNode.asText())) {
+            ValuedDataObject dataObject = null;
+            ItemDefinition itemSubjectRef = new ItemDefinition();
+            String dataType = dataNode.get(PROPERTY_DATA_TYPE).asText();
+
+            if (dataType.equals("string")) {
+              dataObject = new StringDataObject();
+            } else if (dataType.equals("int")) {
+              dataObject = new IntegerDataObject();
+            } else if (dataType.equals("long")) {
+              dataObject = new LongDataObject();
+            } else if (dataType.equals("double")) {
+              dataObject = new DoubleDataObject();
+            } else if (dataType.equals("boolean")) {
+              dataObject = new BooleanDataObject();
+            } else if (dataType.equals("datetime")) {
+              dataObject = new DateDataObject();
+            } else {
+              LOGGER.error("Error converting {}", dataIdNode.asText());
+            }
+
+            if (null != dataObject) {
+              dataObject.setId(dataIdNode.asText());
+              dataObject.setName(dataNode.get(PROPERTY_DATA_NAME).asText());
+
+              itemSubjectRef.setStructureRef(BpmnXMLConstants.XSD_PREFIX + ":" + dataType);
+              dataObject.setItemSubjectRef(itemSubjectRef);
+
+              if (dataObject instanceof DateDataObject) {
+                try {
+                  dataObject.setValue(sdf.parse(dataNode.get(PROPERTY_DATA_VALUE).asText()));
+                } catch (Exception e) {
+                  LOGGER.error("Error converting {}", dataObject.getName(), e);
+                }
+              } else {
+                dataObject.setValue(dataNode.get(PROPERTY_DATA_VALUE).asText());
+              }
+
+              dataObjects.add(dataObject);
+            }
+          }
+        }
+      }
+    }
+    return dataObjects;
+  }
+
+  protected void convertDataPropertiesToJson(List<ValuedDataObject> dataObjects, ObjectNode propertiesNode) {
+    ObjectNode dataPropertiesNode = objectMapper.createObjectNode();
+    ArrayNode itemsNode = objectMapper.createArrayNode();
+
+    for (ValuedDataObject dObj : dataObjects) {
+      ObjectNode propertyItemNode = objectMapper.createObjectNode();
+      propertyItemNode.put(PROPERTY_DATA_ID, dObj.getId());
+      propertyItemNode.put(PROPERTY_DATA_NAME, dObj.getName());
+
+      String itemSubjectRefQName = dObj.getItemSubjectRef().getStructureRef();
+      // remove namespace prefix
+      String dataType = itemSubjectRefQName.substring(itemSubjectRefQName.indexOf(':') + 1);
+      propertyItemNode.put(PROPERTY_DATA_TYPE, dataType);
+
+      Object dObjValue = dObj.getValue();
+      String value = new String();
+      if (null == dObjValue)
+      {
+        propertyItemNode.put(PROPERTY_DATA_VALUE, "");
+      }
+      else 
+      {
+        if ("datetime". equals(dataType)) {
+          value = sdf.format(dObjValue);
+        } else {
+          value = new String(dObjValue.toString());
+        }
+        propertyItemNode.put(PROPERTY_DATA_VALUE, value.toString());
+      }
+
+      itemsNode.add(propertyItemNode);
+    }
+
+    dataPropertiesNode.put("totalCount", itemsNode.size());
+    dataPropertiesNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
+    propertiesNode.put("dataproperties", dataPropertiesNode);
   }
   
   private boolean isNotEmpty(String propertyName, JsonNode node) {

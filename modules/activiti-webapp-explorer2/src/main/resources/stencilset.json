@@ -1110,6 +1110,79 @@
       } ]
     } ]
   }, {
+    "name" : "datadefinition",
+    "properties" : [ {
+      "id" : "dataproperties",
+      "type" : "Complex",
+      "title" : "Data properties",
+      "value" : "",
+      "description" : "Definition of the data object properties",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "dataproperty_id",
+        "name" : "Id",
+        "type" : "String",
+        "description" : "This defines the id for the data object.",
+        "value" : "",
+        "width" : 150,
+        "popular" : true,
+      }, {
+        "id" : "dataproperty_name",
+        "name" : "Name",
+        "type" : "String",
+        "description" : "This defines the name for the data object.",
+        "value" : "",
+        "width" : 150,
+        "popular" : true,
+      }, {
+        "id" : "dataproperty_type",
+        "name" : "Type",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 100,
+        "popular" : true,
+        "items" : [ {
+          "id" : "Boolean",
+          "title" : "Boolean",
+          "value" : "boolean",
+          "refToView" : ""
+        }, {
+          "id" : "Date",
+          "title" : "Date",
+          "value" : "datetime",
+          "refToView" : ""
+        }, {
+          "id" : "Double",
+          "title" : "Double",
+          "value" : "double",
+          "refToView" : ""
+        }, {
+          "id" : "Integer",
+          "title" : "Integer",
+          "value" : "int",
+          "refToView" : ""
+        }, {
+          "id" : "Long",
+          "title" : "Long",
+          "value" : "long",
+          "refToView" : ""
+        }, {
+          "id" : "String",
+          "title" : "String",
+          "value" : "string",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "dataproperty_value",
+        "name" : "Value",
+        "type" : "String",
+        "description" : "This defines the value for the data object.",
+        "value" : "",
+        "width" : 200,
+        "popular" : true,
+      } ]
+    } ]
+  }, {
     "name" : "activity",
     "properties" : [ {
       "id" : "multiinstance_sequential",
@@ -1175,7 +1248,7 @@
     "groups" : [ "Diagram" ],
     "mayBeRoot" : true,
     "hide" : true,
-    "propertyPackages" : [ "baseattributes", "processbase", "executionlistenersbase", "eventListener" ],
+    "propertyPackages" : [ "baseattributes", "processbase", "executionlistenersbase", "eventListener", "datadefinition" ],
     "roles" : [ ]
   }, {
     "type" : "node",
@@ -1295,7 +1368,7 @@
     "view" : "activity/subprocess.expanded.svg",
     "icon" : "activity/expanded.subprocess.png",
     "groups" : [ "Structural" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "datadefinition" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
   }, {
     "type" : "node",
