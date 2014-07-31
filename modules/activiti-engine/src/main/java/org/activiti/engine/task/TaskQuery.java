@@ -112,7 +112,11 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery taskInvolvedGroupIn(List<String> involvedGroups);
   
   /** Only select tasks which have an {@link IdentityLink} of given involvementType, whether {@link IdentityLink} was for a user or a group.
-   Use with taskInvolvedUser, taskInvolvedGroup, taskInvolvedGroupIn methods to limit results to specific user or group or group list*/
+   * Use with taskInvolvedUser, taskInvolvedGroup, taskInvolvedGroupIn methods to limit results to specific user or group or group list
+   *
+   * @throws ActivitiIllegalArgumentException 
+   *   When involvementType value is null or 'owner' or 'assignee' 
+   */
   TaskQuery taskInvolvementType(String involvementType);
 
   /** Only select tasks for which users in the given group are candidates. */
