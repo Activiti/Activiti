@@ -565,7 +565,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       candidateGroupList.add(candidateGroup);
       return candidateGroupList;
     } else if (candidateUser != null) {
-    	candidateGroups = getGroupsForCandidateUser(candidateUser); // cache candidate user groups
+    	if(candidateGroups == null)
+    	  candidateGroups = getGroupsForCandidateUser(candidateUser); // cache candidate user groups
       return candidateGroups;
     } else if(candidateGroups != null) {
       return candidateGroups;
