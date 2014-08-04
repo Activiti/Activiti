@@ -56,7 +56,7 @@ public class SubProcessParseHandler extends AbstractActivityBpmnParseHandler<Sub
     processArtifacts(bpmnParse, subProcess.getArtifacts(), activity);
     
     // no data objects for event subprocesses
-    if (subProcess instanceof SubProcess) {
+    if (!(subProcess instanceof EventSubProcess)) {
       // parse out any data objects from the template in order to set up the necessary process variables
       Map<String, Object> variables = processDataObjects(bpmnParse, subProcess.getDataObjects(), activity);
       activity.setVariables(variables);
