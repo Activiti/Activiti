@@ -12,19 +12,17 @@
  */
 package org.activiti.engine.test.api.event;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import org.activiti.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti.engine.delegate.event.ActivitiErrorEvent;
-import org.activiti.engine.delegate.event.ActivitiEvent;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiMessageEvent;
-import org.activiti.engine.delegate.event.ActivitiSignalEvent;
+import org.activiti.engine.delegate.event.*;
+import org.activiti.engine.delegate.event.impl.ActivitiActivityEventImpl;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.event.logger.EventLogger;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -472,9 +470,81 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 		assertEquals(processInstance.getProcessDefinitionId(), errorEvent.getProcessDefinitionId());
 		assertFalse(processInstance.getId().equals(errorEvent.getExecutionId()));
 	}
-	
-	
-	protected void assertDatabaseEventPresent(ActivitiEventType eventType) {
+
+  @Deployment(resources = "org/activiti/engine/test/api/event/JobEventsTest.testJobEntityEvents.bpmn20.xml")
+  public void testActivityTimeOutEvent(){
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJobEvents");
+    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(theJob);
+
+    // Force timer to fire
+    Calendar tomorrow = Calendar.getInstance();
+    tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+    processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
+    waitForJobExecutorToProcessAllJobs(2000, 100);
+
+    // Check timeout has been dispatched
+    assertEquals(1, listener.getEventsReceived().size());
+    ActivitiEvent timeOutEvent = listener.getEventsReceived().get(0);
+    assertEquals("ACTIVITY_TIMEOUT evet expected", ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
+  }
+
+  @Deployment(resources = "org/activiti/engine/test/bpmn/event/timer/BoundaryTimerEventTest.testTimerOnNestingOfSubprocesses.bpmn20.xml")
+  public void testActivityTimeOutEventInSubProcess() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
+    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(theJob);
+
+    // Force timer to fire
+    Calendar timeToFire = Calendar.getInstance();
+    timeToFire.add(Calendar.HOUR, 2);
+    timeToFire.add(Calendar.SECOND, 5);
+    processEngineConfiguration.getClock().setCurrentTime(timeToFire.getTime());
+    waitForJobExecutorToProcessAllJobs(2000, 100);
+
+    // Check timeout-events have been dispatched
+    assertEquals(3, listener.getEventsReceived().size());
+    ActivitiActivityEventImpl timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
+    assertEquals("innerTask1", timeOutEvent.getActivityId());
+    timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
+    assertEquals("innerTask2", timeOutEvent.getActivityId());
+    timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(2);
+    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
+    assertEquals("innerFork", timeOutEvent.getActivityId());
+  }
+
+  @Deployment
+  public void testActivityTimeOutEventInCallActivity() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnCallActivity");
+    Job theJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(theJob);
+
+    // Force timer to fire
+    Calendar timeToFire = Calendar.getInstance();
+    timeToFire.add(Calendar.HOUR, 2);
+    timeToFire.add(Calendar.SECOND, 5);
+    processEngineConfiguration.getClock().setCurrentTime(timeToFire.getTime());
+    waitForJobExecutorToProcessAllJobs(200000, 100);
+
+    // Check timeout-events have been dispatched
+    assertEquals(4, listener.getEventsReceived().size());
+    ActivitiActivityEventImpl timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
+    assertEquals("innerTask1", timeOutEvent.getActivityId());
+    timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
+    assertEquals("innerTask2", timeOutEvent.getActivityId());
+    timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(2);
+    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
+    assertEquals("innerFork", timeOutEvent.getActivityId());
+    timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(3);
+    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
+    assertEquals("callActivity", timeOutEvent.getActivityId());
+  }
+
+  protected void assertDatabaseEventPresent(ActivitiEventType eventType) {
 		String eventTypeString = eventType.name();
 		List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(0L, 100000L);
 		boolean found = false;
@@ -483,7 +553,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 				found = true;
 			}
 		}
-		assertTrue(found);;
+		assertTrue(found);
 	}
 	
 }
