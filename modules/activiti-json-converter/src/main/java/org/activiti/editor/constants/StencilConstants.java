@@ -146,9 +146,15 @@ public interface StencilConstants {
 	final String PROPERTY_USERTASK_ASSIGNMENT = "usertaskassignment";
   final String PROPERTY_USERTASK_ASSIGNMENT_TYPE = "assignment_type";
   final String PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION = "resourceassignmentexpr";
+  final String PROPERTY_USERTASK_OWNER = "owner";
   final String PROPERTY_USERTASK_ASSIGNEE = "assignee";
   final String PROPERTY_USERTASK_CANDIDATE_USERS = "candidateUsers";
   final String PROPERTY_USERTASK_CANDIDATE_GROUPS = "candidateGroups";
+  
+  final String PROPERTY_USERTASK_CUSTOM_IDENTITY_LINKS = "customidentitylinks";
+  final String PROPERTY_USERTASK_IDENTITY_TYPE = "identity_type";
+  final String PROPERTY_USERTASK_IDENTITY_LINK_TYPE = "identity_link_type";
+  final String PROPERTY_USERTASK_IDENTITY_LINK_EXPRESSION = "identitylinkexpr";
 	
 	final String PROPERTY_SERVICETASK_CLASS = "servicetaskclass";
 	final String PROPERTY_SERVICETASK_EXPRESSION = "servicetaskexpression";

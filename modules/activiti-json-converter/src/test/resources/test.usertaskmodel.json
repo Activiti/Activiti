@@ -39,6 +39,7 @@
             "duedatedefinition" : "2012-11-01",
             "exclusivedefinition" : "No",
             "formkeydefinition" : "testKey",
+            "categoryDefinition" : "defaultCategory",
             "formproperties" : { "items" : [ { "formproperty_expression" : "${expression}",
                       "formproperty_id" : "formId",
                       "formproperty_name" : "formName",
@@ -62,11 +63,29 @@
             "usertaskassignment" : { "items" : [ { "assignment_type" : "assignee",
                       "resourceassignmentexpr" : "kermit"
                     },
+                    { "assignment_type" : "owner",
+                      "resourceassignmentexpr" : "gonzo"
+                    },
                     { "assignment_type" : "candidateUsers",
                       "resourceassignmentexpr" : "kermit,fozzie"
                     },
                     { "assignment_type" : "candidateGroups",
                       "resourceassignmentexpr" : "management,sales"
+                    }
+                  ],
+                "totalCount" : 4
+              },
+            "customidentitylinks" : { "items" : [ { "identity_type" : "user",
+            		  "identity_link_type" : "manager",
+                      "identitylinkexpr" : "fozzie, gonzo"
+                    },
+                    { "identity_type" : "user",
+                      "identity_link_type" : "bizAdmin",
+                      "identitylinkexpr" : "kermit"
+                    },
+                    { "identity_type" : "group",
+                      "identity_link_type" : "bizAdmin",
+                      "identitylinkexpr" : "management,sales"
                     }
                   ],
                 "totalCount" : 3
