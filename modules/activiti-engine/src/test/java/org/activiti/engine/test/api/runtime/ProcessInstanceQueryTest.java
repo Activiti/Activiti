@@ -44,6 +44,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   private static String PROCESS_DEFINITION_NAME = "oneTaskProcessName";
   private static String PROCESS_DEFINITION_NAME_2 = "oneTaskProcess2Name";
   
+  private org.activiti.engine.repository.Deployment deployment;
   private List<String> processInstanceIds;
 
   /**
@@ -52,7 +53,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
    */
   protected void setUp() throws Exception {
     super.setUp();
-    repositoryService.createDeployment()
+    deployment = repositoryService.createDeployment()
       .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
       .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml")
       .deploy();
@@ -167,6 +168,22 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   public void testQueryByInvalidProcessDefinitionName() {
     assertNull(runtimeService.createProcessInstanceQuery().processDefinitionName("invalid").singleResult());
     assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionName("invalid").count());
+  }
+  
+  public void testQueryByDeploymentId() {
+    List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().deploymentId(deployment.getId()).list();
+    assertEquals(5, instances.size());
+    ProcessInstance processInstance = instances.get(0);
+    assertEquals(deployment.getId(), processInstance.getDeploymentId());
+    assertEquals(new Integer(1), processInstance.getProcessDefinitionVersion());
+    assertEquals(PROCESS_DEFINITION_KEY, processInstance.getProcessDefinitionKey());
+    assertEquals("oneTaskProcessName", processInstance.getProcessDefinitionName());
+    assertEquals(5, runtimeService.createProcessInstanceQuery().deploymentId(deployment.getId()).count());
+  }
+  
+  public void testQueryByInvalidDeploymentId() {
+    assertNull(runtimeService.createProcessInstanceQuery().deploymentId("invalid").singleResult());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().deploymentId("invalid").count());
   }
 
   public void testQueryByInvalidProcessInstanceId() {

@@ -42,6 +42,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String processDefinitionName;
   protected Set<String> processInstanceIds; 
   protected String processDefinitionKey;
+  protected String deploymentId;
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
   protected boolean excludeSubprocesses;
@@ -149,6 +150,11 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
       throw new ActivitiIllegalArgumentException("Process definition key is null");
     }
     this.processDefinitionKey = processDefinitionKey;
+    return this;
+  }
+  
+  public ProcessInstanceQueryImpl deploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
     return this;
   }
   

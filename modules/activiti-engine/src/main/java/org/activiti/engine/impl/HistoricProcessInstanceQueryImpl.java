@@ -35,6 +35,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String processInstanceId;
   protected String processDefinitionId;
   protected String businessKey;
+  protected String deploymentId;
   protected boolean finished = false;
   protected boolean unfinished = false;
   protected String startedBy;
@@ -94,6 +95,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   
   public HistoricProcessInstanceQuery processInstanceBusinessKey(String businessKey) {
     this.businessKey = businessKey;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery deploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
     return this;
   }
 
