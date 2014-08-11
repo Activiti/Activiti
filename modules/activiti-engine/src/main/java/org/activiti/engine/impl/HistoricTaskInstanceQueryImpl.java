@@ -38,6 +38,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String processDefinitionKeyLike;
   protected String processDefinitionName;
   protected String processDefinitionNameLike;
+  protected String deploymentId;
   protected String processInstanceId;
   protected String processInstanceBusinessKey;
   protected String processInstanceBusinessKeyLike;
@@ -158,6 +159,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery processDefinitionNameLike(String processDefinitionNameLike) {
     this.processDefinitionNameLike = processDefinitionNameLike;
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery deploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
     return this;
   }
 

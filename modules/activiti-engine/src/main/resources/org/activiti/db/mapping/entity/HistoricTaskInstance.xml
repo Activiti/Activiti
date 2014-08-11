@@ -265,6 +265,9 @@
     <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionName != null || processDefinitionNameLike != null">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
+    <if test="deploymentId != null">
+      left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
+    </if>
     <foreach collection="queryVariableValues" index="index" item="var">
       <choose>
         <when test="var.local">
@@ -293,6 +296,9 @@
       </if>
       <if test="processDefinitionNameLike != null">
         and D.NAME_ like #{processDefinitionNameLike}
+      </if>
+      <if test="deploymentId != null">
+        and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}

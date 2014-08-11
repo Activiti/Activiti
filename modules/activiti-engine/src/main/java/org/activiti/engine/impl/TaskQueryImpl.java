@@ -71,6 +71,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String processDefinitionId;
   protected String processDefinitionName;
   protected String processDefinitionNameLike;
+  protected String deploymentId;
   protected String processInstanceBusinessKey;
   protected String processInstanceBusinessKeyLike;
   protected Date dueDate;
@@ -452,6 +453,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   
   public TaskQuery processDefinitionNameLike(String processDefinitionNameLike) {
     this.processDefinitionNameLike = processDefinitionNameLike;
+    return this;
+  }
+  
+  public TaskQuery deploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
     return this;
   }
   

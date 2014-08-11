@@ -300,6 +300,9 @@
     <if test="processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null">
         inner join ${prefix}ACT_RU_EXECUTION E on RES.PROC_INST_ID_ = E.ID_
     </if>
+    <if test="deploymentId != null">
+      left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
+    </if>
     <where> 
       <if test="taskId != null">
         RES.ID_ = #{taskId}
@@ -387,6 +390,9 @@
       </if>
       <if test="processDefinitionNameLike != null">
         and D.NAME_ like #{processDefinitionNameLike}
+      </if>
+      <if test="deploymentId != null">
+        and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
       <if test="dueDate != null">
         and RES.DUE_DATE_ = #{dueDate}
