@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.context.Context;
@@ -84,6 +85,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean includeProcessVariables = false;
   protected String userIdForCandidateAndAssignee;
   protected boolean bothCandidateAndAssigned = false;
+  protected boolean orActive;
+  protected TaskQueryImpl orQueryObject;
 
   public TaskQueryImpl() {
   }
@@ -100,7 +103,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (taskId == null) {
       throw new ActivitiIllegalArgumentException("Task id is null");
     }
-    this.taskId = taskId;
+    
+    if(orActive) {
+      orQueryObject.taskId = taskId;
+    } else {
+      this.taskId = taskId;
+    }
     return this;
   }
   
@@ -108,7 +116,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (name == null) {
       throw new ActivitiIllegalArgumentException("Task name is null");
     }
-    this.name = name;
+    
+    if(orActive) {
+      orQueryObject.name = name;
+    } else {
+      this.name = name;
+    }
     return this;
   }
   
@@ -116,7 +129,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (nameLike == null) {
       throw new ActivitiIllegalArgumentException("Task namelike is null");
     }
-    this.nameLike = nameLike;
+    
+    if(orActive) {
+      orQueryObject.nameLike = nameLike;
+    } else {
+      this.nameLike = nameLike;
+    }
     return this;
   }
   
@@ -124,7 +142,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (description == null) {
       throw new ActivitiIllegalArgumentException("Description is null");
     }
-    this.description = description;
+    
+    if(orActive) {
+      orQueryObject.description = description;
+    } else {
+      this.description = description;
+    }
     return this;
   }
   
@@ -132,7 +155,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (descriptionLike == null) {
       throw new ActivitiIllegalArgumentException("Task descriptionlike is null");
     }
-    this.descriptionLike = descriptionLike;
+    if(orActive) {
+      orQueryObject.descriptionLike = descriptionLike;
+    } else {
+      this.descriptionLike = descriptionLike;
+    }
     return this;
   }
   
@@ -140,7 +167,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (priority == null) {
       throw new ActivitiIllegalArgumentException("Priority is null");
     }
-    this.priority = priority;
+    if(orActive) {
+      orQueryObject.priority = priority;
+    } else {
+      this.priority = priority;
+    }
     return this;
   }
 
@@ -148,7 +179,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (minPriority == null) {
       throw new ActivitiIllegalArgumentException("Min Priority is null");
     }
-    this.minPriority = minPriority;
+    if(orActive) {
+      orQueryObject.minPriority = minPriority;
+    } else {
+      this.minPriority = minPriority;
+    }
     return this;
   }
 
@@ -156,7 +191,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (maxPriority == null) {
       throw new ActivitiIllegalArgumentException("Max Priority is null");
     }
-    this.maxPriority = maxPriority;
+    if(orActive) {
+      orQueryObject.maxPriority = maxPriority;
+    } else {
+      this.maxPriority = maxPriority;
+    }
     return this;
   }
 
@@ -164,7 +203,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (assignee == null) {
       throw new ActivitiIllegalArgumentException("Assignee is null");
     }
-    this.assignee = assignee;
+    if(orActive) {
+      orQueryObject.assignee = assignee;
+    } else {
+      this.assignee = assignee;
+    }
     return this;
   }
   
@@ -172,7 +215,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (assigneeLike == null) {
       throw new ActivitiIllegalArgumentException("Assignee is null");
     }
-    this.assigneeLike = assigneeLike;
+    if(orActive) {
+      orQueryObject.assigneeLike = assignee;
+    } else {
+      this.assigneeLike = assigneeLike;
+    }
     return this;
   }
   
@@ -180,7 +227,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (owner == null) {
       throw new ActivitiIllegalArgumentException("Owner is null");
     }
-    this.owner = owner;
+    if(orActive) {
+      orQueryObject.owner = owner;
+    } else {
+      this.owner = owner;
+    }
     return this;
   }
   
@@ -188,7 +239,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (ownerLike == null) {
       throw new ActivitiIllegalArgumentException("Owner is null");
     }
-    this.ownerLike = ownerLike;
+    if(orActive) {
+      orQueryObject.ownerLike = ownerLike;
+    } else {
+      this.ownerLike = ownerLike;
+    }
     return this;
   }
   
@@ -199,15 +254,27 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskUnassigned() {
-    this.unassigned = true;
+    if(orActive) {
+      orQueryObject.unassigned = true;
+    } else {
+      this.unassigned = true;
+    }
     return this;
   }
 
   public TaskQuery taskDelegationState(DelegationState delegationState) {
-    if (delegationState == null) {
-      this.noDelegationState = true;
+    if(orActive) {
+      if (delegationState == null) {
+        orQueryObject.noDelegationState = true;
+      } else {
+        orQueryObject.delegationState = delegationState;
+      }
     } else {
-      this.delegationState = delegationState;
+      if (delegationState == null) {
+        this.noDelegationState = true;
+      } else {
+        this.delegationState = delegationState;
+      }
     }
     return this;
   }
@@ -222,7 +289,13 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (candidateGroups != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateUser and candidateGroupIn");
     }
-    this.candidateUser = candidateUser;
+    
+    if(orActive) {
+      orQueryObject.candidateUser = candidateUser;
+    } else {
+      this.candidateUser = candidateUser;
+    }
+    
     return this;
   }
   
@@ -230,7 +303,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (involvedUser == null) {
       throw new ActivitiIllegalArgumentException("Involved user is null");
     }
-    this.involvedUser = involvedUser;
+    if(orActive) {
+      orQueryObject.involvedUser = involvedUser;
+    } else {
+      this.involvedUser = involvedUser;
+    }
     return this;
   }
   
@@ -244,7 +321,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (candidateGroups != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
-    this.candidateGroup = candidateGroup;
+    if(orActive) {
+      orQueryObject.candidateGroup = candidateGroup;
+    } else {
+      this.candidateGroup = candidateGroup;
+    }
     return this;
   }
 
@@ -256,8 +337,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (candidateUser != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
     }
-    bothCandidateAndAssigned = true;
-    this.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
+    
+    if(orActive) {
+      orQueryObject.bothCandidateAndAssigned = true;
+      orQueryObject.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
+    } else {
+      this.bothCandidateAndAssigned = true;
+      this.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
+    }
+    
     return this;
   }
 
@@ -276,7 +364,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
     }
     
-    this.candidateGroups = candidateGroups;
+    if(orActive) {
+      orQueryObject.candidateGroups = candidateGroups;
+    } else {
+      this.candidateGroups = candidateGroups;
+    }
     return this;
   }
   
@@ -284,7 +376,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   	if (tenantId == null) {
   		throw new ActivitiIllegalArgumentException("task tenant id is null");
   	}
-  	this.tenantId = tenantId;
+  	 if(orActive) {
+       orQueryObject.tenantId = tenantId;
+     } else {
+       this.tenantId = tenantId;
+     }
   	return this;
   }
   
@@ -292,210 +388,413 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   	if (tenantIdLike == null) {
   		throw new ActivitiIllegalArgumentException("task tenant id is null");
   	}
-  	this.tenantIdLike = tenantIdLike;
+  	if(orActive) {
+      orQueryObject.tenantIdLike = tenantIdLike;
+    } else {
+      this.tenantIdLike = tenantIdLike;
+    }
   	return this;
   }
   
   public TaskQuery taskWithoutTenantId() {
-  	this.withoutTenantId = true;
+    if(orActive) {
+      orQueryObject.withoutTenantId = true;
+    } else {
+      this.withoutTenantId = true;
+    }
   	return this;
   }
   
   public TaskQueryImpl processInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
+    if(orActive) {
+      orQueryObject.processInstanceId = processInstanceId;
+    } else {
+      this.processInstanceId = processInstanceId;
+    }
     return this;
   }
   
   public TaskQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
-    this.processInstanceBusinessKey = processInstanceBusinessKey;
+    if(orActive) {
+      orQueryObject.processInstanceBusinessKey = processInstanceBusinessKey;
+    } else {
+      this.processInstanceBusinessKey = processInstanceBusinessKey;
+    }
     return this;
   }
   
   public TaskQueryImpl processInstanceBusinessKeyLike(String processInstanceBusinessKeyLike) {
-    this.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
+    if(orActive) {
+      orQueryObject.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
+    } else {
+      this.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
+    }
     return this;
   }
   
   public TaskQueryImpl executionId(String executionId) {
-    this.executionId = executionId;
+    if(orActive) {
+      orQueryObject.executionId = executionId;
+    } else {
+      this.executionId = executionId;
+    }
     return this;
   }
   
   public TaskQueryImpl taskCreatedOn(Date createTime) {
-    this.createTime = createTime;
+    if(orActive) {
+      orQueryObject.createTime = createTime;
+    } else {
+      this.createTime = createTime;
+    }
     return this;
   }
   
   public TaskQuery taskCreatedBefore(Date before) {
-    this.createTimeBefore = before;
+    if(orActive) {
+      orQueryObject.createTimeBefore = before;
+    } else {
+      this.createTimeBefore = before;
+    }
     return this;
   }
   
   public TaskQuery taskCreatedAfter(Date after) {
-    this.createTimeAfter = after;
+    if(orActive) {
+      orQueryObject.createTimeAfter = after;
+    } else {
+      this.createTimeAfter = after;
+    }
     return this;
   }
   
   public TaskQuery taskCategory(String category) {
-  	this.category = category;
+    if(orActive) {
+      orQueryObject.category = category;
+    } else {
+      this.category = category;
+    }
   	return this;
   }
   
   public TaskQuery taskDefinitionKey(String key) {
-    this.key = key;
+    if(orActive) {
+      orQueryObject.key = key;
+    } else {
+      this.key = key;
+    }
     return this;
   }
   
   public TaskQuery taskDefinitionKeyLike(String keyLike) {
-    this.keyLike = keyLike;
+    if(orActive) {
+      orQueryObject.keyLike = keyLike;
+    } else {
+      this.keyLike = keyLike;
+    }
     return this;
   }
   
   public TaskQuery taskVariableValueEquals(String variableName, Object variableValue) {
-    return variableValueEquals(variableName, variableValue);
+    if(orActive) {
+      orQueryObject.variableValueEquals(variableName, variableValue);
+    } else {
+      this.variableValueEquals(variableName, variableValue);
+    }
+    return this;
   }
   
   public TaskQuery taskVariableValueEquals(Object variableValue) {
-    return variableValueEquals(variableValue);
+    if(orActive) {
+      orQueryObject.variableValueEquals(variableValue);
+    } else {
+      this.variableValueEquals(variableValue);
+    }
+    return this;
   }
   
   public TaskQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
-    return variableValueEqualsIgnoreCase(name, value);
+    if(orActive) {
+      orQueryObject.variableValueEqualsIgnoreCase(name, value);
+    } else {
+      this.variableValueEqualsIgnoreCase(name, value);
+    }
+    return this;
   }
   
   public TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value) {
-    return variableValueNotEqualsIgnoreCase(name, value);
+    if(orActive) {
+      orQueryObject.variableValueNotEqualsIgnoreCase(name, value);
+    } else {
+      this.variableValueNotEqualsIgnoreCase(name, value);
+    }
+    return this;
   }
 
   public TaskQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
-    return variableValueNotEquals(variableName, variableValue);
+    if(orActive) {
+      orQueryObject.variableValueNotEquals(variableName, variableValue);
+    } else {
+      this.variableValueNotEquals(variableName, variableValue);
+    }
+    return this;
   }
   
   public TaskQuery taskVariableValueGreaterThan(String name, Object value) {
-    return variableValueGreaterThan(name, value);
+    if(orActive) {
+      orQueryObject.variableValueGreaterThan(name, value);
+    } else {
+      this.variableValueGreaterThan(name, value);
+    }
+    return this;
   }
 
   public TaskQuery taskVariableValueGreaterThanOrEqual(String name, Object value) {
-    return variableValueGreaterThanOrEqual(name, value);
+    if(orActive) {
+      orQueryObject.variableValueGreaterThanOrEqual(name, value);
+    } else {
+      this.variableValueGreaterThanOrEqual(name, value);
+    }
+    return this;
   }
 
   public TaskQuery taskVariableValueLessThan(String name, Object value) {
-    return variableValueLessThan(name, value);
+    if(orActive) {
+      orQueryObject.variableValueLessThan(name, value);
+    } else {
+      this.variableValueLessThan(name, value);
+    }
+    return this;
   }
 
   public TaskQuery taskVariableValueLessThanOrEqual(String name, Object value) {
-    return variableValueLessThanOrEqual(name, value);
+    if(orActive) {
+      orQueryObject.variableValueLessThanOrEqual(name, value);
+    } else {
+      this.variableValueLessThanOrEqual(name, value);
+    }
+    return this;
   }
 
   public TaskQuery taskVariableValueLike(String name, String value) {
-    return variableValueLike(name, value);
+    if(orActive) {
+      orQueryObject.variableValueLike(name, value);
+    } else {
+      this.variableValueLike(name, value);
+    }
+    return this;
   }
 
   public TaskQuery processVariableValueEquals(String variableName, Object variableValue) {
-    return variableValueEquals(variableName, variableValue, false);
+    if(orActive) {
+      orQueryObject.variableValueEquals(variableName, variableValue, false);
+    } else {
+      this.variableValueEquals(variableName, variableValue, false);
+    }
+    return this;
   }
 
   public TaskQuery processVariableValueNotEquals(String variableName, Object variableValue) {
-    return variableValueNotEquals(variableName, variableValue, false);
+    if(orActive) {
+      orQueryObject.variableValueNotEquals(variableName, variableValue, false);
+    } else {
+      this.variableValueNotEquals(variableName, variableValue, false);
+    }
+    return this;
   }
   
   public TaskQuery processVariableValueEquals(Object variableValue) {
-    return variableValueEquals(variableValue, false);
+    if(orActive) {
+      orQueryObject.variableValueEquals(variableValue, false);
+    } else {
+      this.variableValueEquals(variableValue, false);
+    }
+    return this;
   }
   
   public TaskQuery processVariableValueEqualsIgnoreCase(String name, String value) {
-    return variableValueEqualsIgnoreCase(name, value, false);
+    if(orActive) {
+      orQueryObject.variableValueEqualsIgnoreCase(name, value, false);
+    } else {
+      this.variableValueEqualsIgnoreCase(name, value, false);
+    }
+    return this;
   }
   
   public TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
-    return variableValueNotEqualsIgnoreCase(name, value, false);
+    if(orActive) {
+      orQueryObject.variableValueNotEqualsIgnoreCase(name, value, false);
+    } else {
+      this.variableValueNotEqualsIgnoreCase(name, value, false);
+    }
+    return this;
   }
   
   public TaskQuery processVariableValueGreaterThan(String name, Object value) {
-    return variableValueGreaterThan(name, value, false);
+    if(orActive) {
+      orQueryObject.variableValueGreaterThan(name, value, false);
+    } else {
+      this.variableValueGreaterThan(name, value, false);
+    }
+    return this;
   }
 
   public TaskQuery processVariableValueGreaterThanOrEqual(String name, Object value) {
-    return variableValueGreaterThanOrEqual(name, value, false);
+    if(orActive) {
+      orQueryObject.variableValueGreaterThanOrEqual(name, value, false);
+    } else {
+      this.variableValueGreaterThanOrEqual(name, value, false);
+    }
+    return this;
   }
 
   public TaskQuery processVariableValueLessThan(String name, Object value) {
-    return variableValueLessThan(name, value, false);
+    if(orActive) {
+      orQueryObject.variableValueLessThan(name, value, false);
+    } else {
+      this.variableValueLessThan(name, value, false);
+    }
+    return this;
   }
 
   public TaskQuery processVariableValueLessThanOrEqual(String name, Object value) {
-    return variableValueLessThanOrEqual(name, value, false);
+    if(orActive) {
+      orQueryObject.variableValueLessThanOrEqual(name, value, false);
+    } else {
+      this.variableValueLessThanOrEqual(name, value, false);
+    }
+    return this;
   }
 
   public TaskQuery processVariableValueLike(String name, String value) {
-    return variableValueLike(name, value, false);
+    if(orActive) {
+      orQueryObject.variableValueLike(name, value, false);
+    } else {
+      this.variableValueLike(name, value, false);
+    }
+    return this;
   }
 
   public TaskQuery processDefinitionKey(String processDefinitionKey) {
-    this.processDefinitionKey = processDefinitionKey;
+    if(orActive) {
+      orQueryObject.processDefinitionKey = processDefinitionKey;
+    } else {
+      this.processDefinitionKey = processDefinitionKey;
+    }
     return this;
   }
   
   public TaskQuery processDefinitionKeyLike(String processDefinitionKeyLike) {
-    this.processDefinitionKeyLike = processDefinitionKeyLike;
+    if(orActive) {
+      orQueryObject.processDefinitionKeyLike = processDefinitionKeyLike;
+    } else {
+      this.processDefinitionKeyLike = processDefinitionKeyLike;
+    }
     return this;
   }
 
   public TaskQuery processDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
+    if(orActive) {
+      orQueryObject.processDefinitionId = processDefinitionId;
+    } else {
+      this.processDefinitionId = processDefinitionId;
+    }
     return this;
   }
   
   public TaskQuery processDefinitionName(String processDefinitionName) {
-    this.processDefinitionName = processDefinitionName;
+    if(orActive) {
+      orQueryObject.processDefinitionName = processDefinitionName;
+    } else {
+      this.processDefinitionName = processDefinitionName;
+    }
     return this;
   }
   
   public TaskQuery processDefinitionNameLike(String processDefinitionNameLike) {
-    this.processDefinitionNameLike = processDefinitionNameLike;
+    if(orActive) {
+      orQueryObject.processDefinitionNameLike = processDefinitionNameLike;
+    } else {
+      this.processDefinitionNameLike = processDefinitionNameLike;
+    }
     return this;
   }
   
   public TaskQuery deploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
+    if(orActive) {
+      orQueryObject.deploymentId = deploymentId;
+    } else {
+      this.deploymentId = deploymentId;
+    }
     return this;
   }
   
   public TaskQuery dueDate(Date dueDate) {
-    this.dueDate = dueDate;
-    this.withoutDueDate = false;
+    if(orActive) {
+      orQueryObject.dueDate = dueDate;
+      orQueryObject.withoutDueDate = false;
+    } else {
+      this.dueDate = dueDate;
+      this.withoutDueDate = false;
+    }
     return this;
   }
   
   public TaskQuery dueBefore(Date dueBefore) {
-    this.dueBefore = dueBefore;
-    this.withoutDueDate = false;
+    if(orActive) {
+      orQueryObject.dueBefore = dueBefore;
+      orQueryObject.withoutDueDate = false;
+    } else {
+      this.dueBefore = dueBefore;
+      this.withoutDueDate = false;
+    }
     return this;
   }
   
   public TaskQuery dueAfter(Date dueAfter) {
-    this.dueAfter = dueAfter;
-    this.withoutDueDate = false;
+    if(orActive) {
+      orQueryObject.dueAfter = dueAfter;
+      orQueryObject.withoutDueDate = false;
+    } else {
+      this.dueAfter = dueAfter;
+      this.withoutDueDate = false;
+    }
     return this;
   }
   
   public TaskQuery withoutDueDate() {
-    this.withoutDueDate = true;
+    if(orActive) {
+      orQueryObject.withoutDueDate = true;
+    } else {
+      this.withoutDueDate = true;
+    }
     return this;
   }
 
   public TaskQuery excludeSubtasks() {
-    this.excludeSubtasks = true;
+    if(orActive) {
+      orQueryObject.excludeSubtasks = true;
+    } else {
+      this.excludeSubtasks = true;
+    }
     return this;
   }
   
   public TaskQuery suspended() {
-    this.suspensionState = SuspensionState.SUSPENDED;
+    if(orActive) {
+      orQueryObject.suspensionState = SuspensionState.SUSPENDED;
+    } else {
+      this.suspensionState = SuspensionState.SUSPENDED;
+    }
     return this;
   }
 
   public TaskQuery active() {
-    this.suspensionState = SuspensionState.ACTIVE;
+    if(orActive) {
+      orQueryObject.suspensionState = SuspensionState.ACTIVE;
+    } else {
+      this.suspensionState = SuspensionState.ACTIVE;
+    }
     return this;
   }
   
@@ -541,7 +840,35 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     for (QueryVariableValue var : queryVariableValues) {
       var.initialize(types);
     }
+    
+    if(orQueryObject != null) {
+      orQueryObject.ensureVariablesInitialized();
+    }
   }
+  
+  //or query ////////////////////////////////////////////////////////////////
+  
+  @Override
+  public TaskQuery or() {
+    if(orActive || orQueryObject != null) {
+        throw new ActivitiException("or() can only be called once");
+    }
+    
+    // Create instance of the orQuery
+    orActive = true;
+    orQueryObject = new TaskQueryImpl();
+    return this;
+  }
+  
+  @Override
+  public TaskQuery endOr() {
+    if(!orActive || orQueryObject == null) {
+      throw new ActivitiException("endOr() can only be called after calling or()");
+    }
+    orActive = false;
+    return this;
+  }
+  
 
   //ordering ////////////////////////////////////////////////////////////////
   
@@ -695,16 +1022,104 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public boolean getExcludeSubtasks() {
     return excludeSubtasks;
   }
-	public String getTenantId() {
-		return tenantId;
-	}
-	public String getTenantIdLike() {
-		return tenantIdLike;
-	}
-	public boolean isWithoutTenantId() {
-		return withoutTenantId;
-	}
+  public String getTenantId() {
+	return tenantId;
+  }
+  public String getTenantIdLike() {
+	return tenantIdLike;
+  }
+  public boolean isWithoutTenantId() {
+	return withoutTenantId;
+  }
   public String getUserIdForCandidateAndAssignee() {
     return userIdForCandidateAndAssignee;
   }
+  public TaskQueryImpl getOrQueryObject() {
+    return orQueryObject;
+  }
+
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
+
+  public Integer getMinPriority() {
+    return minPriority;
+  }
+
+  public Integer getMaxPriority() {
+    return maxPriority;
+  }
+
+  public String getAssigneeLike() {
+    return assigneeLike;
+  }
+
+  public String getInvolvedUser() {
+    return involvedUser;
+  }
+
+  public String getOwner() {
+    return owner;
+  }
+
+  public String getOwnerLike() {
+    return ownerLike;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public String getProcessDefinitionKeyLike() {
+    return processDefinitionKeyLike;
+  }
+
+  public String getProcessDefinitionNameLike() {
+    return processDefinitionNameLike;
+  }
+
+  public String getDeploymentId() {
+    return deploymentId;
+  }
+
+  public String getProcessInstanceBusinessKeyLike() {
+    return processInstanceBusinessKeyLike;
+  }
+
+  public Date getDueDate() {
+    return dueDate;
+  }
+
+  public Date getDueBefore() {
+    return dueBefore;
+  }
+
+  public Date getDueAfter() {
+    return dueAfter;
+  }
+
+  public boolean isWithoutDueDate() {
+    return withoutDueDate;
+  }
+
+  public SuspensionState getSuspensionState() {
+    return suspensionState;
+  }
+
+  public boolean isIncludeTaskLocalVariables() {
+    return includeTaskLocalVariables;
+  }
+
+  public boolean isIncludeProcessVariables() {
+    return includeProcessVariables;
+  }
+
+  public boolean isBothCandidateAndAssigned() {
+    return bothCandidateAndAssigned;
+  }
+
+  public boolean isOrActive() {
+    return orActive;
+  }
+  
 }

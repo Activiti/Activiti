@@ -414,6 +414,19 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery includeProcessVariables();
   
+  /**
+   * TODO: javadoc
+   * 
+   * All query clauses called will be added to a single or-statement. This or-statement will be
+   * included with the other already existing clauses in the query, joined by an 'and'.
+   * 
+   * Calling endOr() will add all clauses to the regular query again. Calling or() after endOr() has been called
+   * will result in an exception.
+   */
+  TaskQuery or();
+  
+  TaskQuery endOr();
+  
   // ordering ////////////////////////////////////////////////////////////
   
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */
