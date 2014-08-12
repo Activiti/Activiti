@@ -442,6 +442,17 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   HistoricTaskInstanceQuery includeTaskLocalVariables();
   
   /**
+   * Begin an OR statement. Make sure you invoke the endOr method at the end of your OR statement.
+   * Only one OR statement is allowed, for the second call to this method an exception will be thrown.
+   */
+  HistoricTaskInstanceQuery or();
+  
+  /**
+   * End an OR statement. Only one OR statement is allowed, for the second call to this method an exception will be thrown.
+   */
+  HistoricTaskInstanceQuery endOr();
+  
+  /**
    * Include global task variables in the task query result
    */
   HistoricTaskInstanceQuery includeProcessVariables();
