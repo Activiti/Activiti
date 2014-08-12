@@ -338,7 +338,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery taskVariableValueEquals(String variableName, Object variableValue) {
     if (inOrStatement) {
-      return orQueryObject.variableValueEquals(variableName, variableValue);
+      orQueryObject.variableValueEquals(variableName, variableValue);
+      return this;
     } else {
       return variableValueEquals(variableName, variableValue);
     }
@@ -346,7 +347,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery taskVariableValueEquals(Object variableValue) {
     if (inOrStatement) {
-      return orQueryObject.variableValueEquals(variableValue);
+      orQueryObject.variableValueEquals(variableValue);
+      return this;
     } else {
       return variableValueEquals(variableValue);
     }
@@ -354,7 +356,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueEqualsIgnoreCase(name, value);
+      orQueryObject.variableValueEqualsIgnoreCase(name, value);
+      return this;
     } else {
       return variableValueEqualsIgnoreCase(name, value);
     }
@@ -362,7 +365,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery taskVariableValueNotEqualsIgnoreCase(String name, String value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueNotEqualsIgnoreCase(name, value);
+      orQueryObject.variableValueNotEqualsIgnoreCase(name, value);
+      return this;
     } else {
       return variableValueNotEqualsIgnoreCase(name, value);
     }
@@ -370,7 +374,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
     if (inOrStatement) {
-      return orQueryObject.variableValueNotEquals(variableName, variableValue);
+      orQueryObject.variableValueNotEquals(variableName, variableValue);
+      return this;
     } else {
       return variableValueNotEquals(variableName, variableValue);
     }
@@ -378,7 +383,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery taskVariableValueGreaterThan(String name, Object value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueGreaterThan(name, value);
+      orQueryObject.variableValueGreaterThan(name, value);
+      return this;
     } else {
       return variableValueGreaterThan(name, value);
     }
@@ -386,7 +392,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery taskVariableValueGreaterThanOrEqual(String name, Object value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueGreaterThanOrEqual(name, value);
+      orQueryObject.variableValueGreaterThanOrEqual(name, value);
+      return this;
     } else {
       return variableValueGreaterThanOrEqual(name, value);
     }
@@ -394,7 +401,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery taskVariableValueLessThan(String name, Object value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueLessThan(name, value);
+      orQueryObject.variableValueLessThan(name, value);
+      return this;
     } else {
       return variableValueLessThan(name, value);
     }
@@ -402,7 +410,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery taskVariableValueLessThanOrEqual(String name, Object value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueLessThanOrEqual(name, value);
+      orQueryObject.variableValueLessThanOrEqual(name, value);
+      return this;
     } else {
       return variableValueLessThanOrEqual(name, value);
     }
@@ -410,7 +419,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery taskVariableValueLike(String name, String value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueLike(name, value);
+      orQueryObject.variableValueLike(name, value);
+      return this;
     } else {
       return variableValueLike(name, value);
     }
@@ -426,7 +436,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery processVariableValueNotEquals(String variableName, Object variableValue) {
     if (inOrStatement) {
-      return orQueryObject.variableValueNotEquals(variableName, variableValue, false);
+      orQueryObject.variableValueNotEquals(variableName, variableValue, false);
+      return this;
     } else {
       return variableValueNotEquals(variableName, variableValue, false);
     }
@@ -434,7 +445,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery processVariableValueEquals(Object variableValue) {
     if (inOrStatement) {
-      return orQueryObject.variableValueEquals(variableValue, false);
+      orQueryObject.variableValueEquals(variableValue, false);
+      return this;
     } else {
       return variableValueEquals(variableValue, false);
     }
@@ -442,7 +454,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery processVariableValueEqualsIgnoreCase(String name, String value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueEqualsIgnoreCase(name, value, false);
+      orQueryObject.variableValueEqualsIgnoreCase(name, value, false);
+      return this;
     } else {
       return variableValueEqualsIgnoreCase(name, value, false);
     }
@@ -450,7 +463,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueNotEqualsIgnoreCase(name, value, false);
+      orQueryObject.variableValueNotEqualsIgnoreCase(name, value, false);
+      return this;
     } else {
       return variableValueNotEqualsIgnoreCase(name, value, false);
     }
@@ -458,7 +472,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public HistoricTaskInstanceQuery processVariableValueGreaterThan(String name, Object value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueGreaterThan(name, value, false);
+      orQueryObject.variableValueGreaterThan(name, value, false);
+      return this;
     } else {
       return variableValueGreaterThan(name, value, false);
     } 
@@ -466,7 +481,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery processVariableValueGreaterThanOrEqual(String name, Object value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueGreaterThanOrEqual(name, value, false);
+      orQueryObject.variableValueGreaterThanOrEqual(name, value, false);
+      return this;
     } else {
       return variableValueGreaterThanOrEqual(name, value, false);
     }
@@ -474,7 +490,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery processVariableValueLessThan(String name, Object value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueLessThan(name, value, false);
+      orQueryObject.variableValueLessThan(name, value, false);
+      return this;
     } else {
       return variableValueLessThan(name, value, false);
     }
@@ -482,7 +499,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery processVariableValueLessThanOrEqual(String name, Object value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueLessThanOrEqual(name, value, false);
+      orQueryObject.variableValueLessThanOrEqual(name, value, false);
+      return this;
     } else {
       return variableValueLessThanOrEqual(name, value, false);
     }
@@ -490,7 +508,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery processVariableValueLike(String name, String value) {
     if (inOrStatement) {
-      return orQueryObject.variableValueLike(name, value, false);
+      orQueryObject.variableValueLike(name, value, false);
+      return this;
     } else {
       return variableValueLike(name, value, false);
     }
@@ -563,6 +582,9 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     VariableTypes types = Context.getProcessEngineConfiguration().getVariableTypes();
     for (QueryVariableValue var : queryVariableValues) {
       var.initialize(types);
+    }
+    if (orQueryObject != null) {
+      orQueryObject.ensureVariablesInitialized();
     }
   }
   
