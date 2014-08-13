@@ -203,6 +203,49 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     }
   }
   
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testHistoricProcessInstanceQueryForDelete() {
+    String processInstanceId = runtimeService.startProcessInstanceByKey("oneTaskProcess").getId();
+    runtimeService.deleteProcessInstance(processInstanceId, null);
+
+    HistoricProcessInstanceQuery processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId);
+    assertEquals(1, processInstanceQuery.count());
+    HistoricProcessInstance processInstance = processInstanceQuery.singleResult();
+    assertEquals(processInstanceId, processInstance.getId());
+    assertEquals("ACTIVITI_DELETED", processInstance.getDeleteReason());
+
+    processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).deleted();
+    assertEquals(1, processInstanceQuery.count());
+    processInstance = processInstanceQuery.singleResult();
+    assertEquals(processInstanceId, processInstance.getId());
+    assertEquals("ACTIVITI_DELETED", processInstance.getDeleteReason());
+    
+    processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).notDeleted();
+    assertEquals(0, processInstanceQuery.count());
+    
+    historyService.deleteHistoricProcessInstance(processInstanceId);
+    processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId);
+    assertEquals(0, processInstanceQuery.count());
+    
+    processInstanceId = runtimeService.startProcessInstanceByKey("oneTaskProcess").getId();
+    runtimeService.deleteProcessInstance(processInstanceId, "custom message");
+    
+    processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId);
+    assertEquals(1, processInstanceQuery.count());
+    processInstance = processInstanceQuery.singleResult();
+    assertEquals(processInstanceId, processInstance.getId());
+    assertEquals("custom message", processInstance.getDeleteReason());
+
+    processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).deleted();
+    assertEquals(1, processInstanceQuery.count());
+    processInstance = processInstanceQuery.singleResult();
+    assertEquals(processInstanceId, processInstance.getId());
+    assertEquals("custom message", processInstance.getDeleteReason());
+    
+    processInstanceQuery = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).notDeleted();
+    assertEquals(0, processInstanceQuery.count());
+  }
+  
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml" })
   public void testHistoricProcessInstanceQueryByDeploymentId() {
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
