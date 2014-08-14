@@ -32,10 +32,11 @@ public class ServiceTaskSpringDelegationTest extends SpringActivitiTestCase {
   }
   
   @Deployment
-  public void testAsyncDelegateExpression() {
+  public void testAsyncDelegateExpression() throws Exception {
     ProcessInstance procInst = runtimeService.startProcessInstanceByKey("delegateExpressionToSpringBean");
     assertTrue(areJobsAvailable());
-    waitForJobExecutorToProcessAllJobs(5000, 1000);
+    waitForJobExecutorToProcessAllJobs(5000, 500);
+    Thread.sleep(1000);
     assertEquals("Activiti BPMN 2.0 process engine", runtimeService.getVariable(procInst.getId(), "myVar"));
     assertEquals("fieldInjectionWorking", runtimeService.getVariable(procInst.getId(), "fieldInjection"));
   }
@@ -50,7 +51,7 @@ public class ServiceTaskSpringDelegationTest extends SpringActivitiTestCase {
   public void testAsyncMethodExpressionOnSpringBean() {
     ProcessInstance procInst = runtimeService.startProcessInstanceByKey("methodExpressionOnSpringBean");
     assertTrue(areJobsAvailable());
-    waitForJobExecutorToProcessAllJobs(5000, 1000);
+    waitForJobExecutorToProcessAllJobs(5000, 500);
     assertEquals("ACTIVITI BPMN 2.0 PROCESS ENGINE", runtimeService.getVariable(procInst.getId(), "myVar"));
   }
 

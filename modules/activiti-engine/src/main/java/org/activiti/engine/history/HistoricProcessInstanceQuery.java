@@ -27,6 +27,7 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Tijs Rademakers
  * @author Falko Menge
  */
 public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInstanceQuery, HistoricProcessInstance> {
@@ -176,6 +177,17 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
 	
 	/** Only select process instances that do not have a tenant id. */
   HistoricProcessInstanceQuery processInstanceWithoutTenantId();
+  
+  /**
+   * Begin an OR statement. Make sure you invoke the endOr method at the end of your OR statement.
+   * Only one OR statement is allowed, for the second call to this method an exception will be thrown.
+   */
+  HistoricProcessInstanceQuery or();
+  
+  /**
+   * End an OR statement. Only one OR statement is allowed, for the second call to this method an exception will be thrown.
+   */
+  HistoricProcessInstanceQuery endOr();
 
   /** Order by the process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByProcessInstanceId();

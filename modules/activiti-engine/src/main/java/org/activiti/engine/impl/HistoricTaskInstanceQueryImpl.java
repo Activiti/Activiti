@@ -428,7 +428,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQuery processVariableValueEquals(String variableName, Object variableValue) {
     if (inOrStatement) {
-      return orQueryObject.variableValueEquals(variableName, variableValue, false);
+      orQueryObject.variableValueEquals(variableName, variableValue, false);
+      return this;
     } else {
       return variableValueEquals(variableName, variableValue, false);
     }
