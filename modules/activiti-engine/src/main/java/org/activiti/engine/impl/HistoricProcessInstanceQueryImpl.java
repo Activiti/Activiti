@@ -28,6 +28,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  * @author Tom Baeyens
  * @author Falko Menge
  * @author Bernd Ruecker
+ * @author Tijs Rademakers
  */
 public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
 
@@ -35,8 +36,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String processInstanceId;
   protected String processDefinitionId;
   protected String businessKey;
+  protected String deploymentId;
   protected boolean finished = false;
   protected boolean unfinished = false;
+  protected boolean deleted = false;
+  protected boolean notDeleted = false;
   protected String startedBy;
   protected String superProcessInstanceId;
   protected boolean excludeSubprocesses;
@@ -96,6 +100,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     this.businessKey = businessKey;
     return this;
   }
+  
+  public HistoricProcessInstanceQuery deploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
+    return this;
+  }
 
   public HistoricProcessInstanceQuery finished() {
     this.finished = true;
@@ -104,6 +113,16 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   
   public HistoricProcessInstanceQuery unfinished() {
     this.unfinished = true;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery deleted() {
+    this.deleted = true;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery notDeleted() {
+    this.notDeleted = true;
     return this;
   }
   

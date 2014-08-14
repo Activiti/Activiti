@@ -27,7 +27,6 @@ import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -178,6 +177,26 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
    * @see #getProcessDefinition()
    */
   protected String processDefinitionId;
+  
+  /**
+   * persisted reference to the process definition key.
+   */
+  protected String processDefinitionKey;
+  
+  /**
+   * persisted reference to the process definition name.
+   */
+  protected String processDefinitionName;
+  
+  /**
+   * persisted reference to the process definition version.
+   */
+  protected Integer processDefinitionVersion;
+  
+  /**
+   * persisted reference to the deployment id.
+   */
+  protected String deploymentId;
 
   /**
    * persisted reference to the current position in the diagram within the
@@ -715,6 +734,38 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   public String getProcessDefinitionId() {
     return processDefinitionId;
+  }
+
+  public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
+
+  public void setProcessDefinitionKey(String processDefinitionKey) {
+    this.processDefinitionKey = processDefinitionKey;
+  }
+
+  public String getProcessDefinitionName() {
+    return processDefinitionName;
+  }
+
+  public void setProcessDefinitionName(String processDefinitionName) {
+    this.processDefinitionName = processDefinitionName;
+  }
+
+  public Integer getProcessDefinitionVersion() {
+    return processDefinitionVersion;
+  }
+
+  public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
+    this.processDefinitionVersion = processDefinitionVersion;
+  }
+
+  public String getDeploymentId() {
+    return deploymentId;
+  }
+
+  public void setDeploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
   }
 
   /** for setting the process definition, this setter must be used as subclasses can override */  

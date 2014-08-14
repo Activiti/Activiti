@@ -68,6 +68,12 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * with the given id.
    */
   ProcessInstanceQuery processDefinitionId(String processDefinitionId);
+  
+  /**
+   * Select the process instances which are defined by a deployment
+   * with the given id.
+   */
+  ProcessInstanceQuery deploymentId(String deploymentId);
 
   /**
    * Select the process instances which are a sub process instance of the given
