@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.DataObject;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowElementsContainer;
@@ -299,7 +300,7 @@ public class BpmnAutoLayout {
               graphicInfo.setX(graphicInfo.getX() + translationX);
               graphicInfo.setY(graphicInfo.getY() + translationY);
             }
-          } else {
+          } else if (subProcessElement instanceof DataObject == false) {
             GraphicInfo graphicInfo = bpmnModel.getLocationMap().get(subProcessElement.getId());
             graphicInfo.setX(graphicInfo.getX() + translationX);
             graphicInfo.setY(graphicInfo.getY() + translationY);

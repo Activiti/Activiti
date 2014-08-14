@@ -98,6 +98,15 @@
       <artifactId>jgraphx</artifactId>
       <version>1.10.4.1</version>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.activiti</groupId>
+    	<artifactId>activiti-bpmn-converter</artifactId>
+    </dependency>
   </dependencies>
 
   <profiles>
