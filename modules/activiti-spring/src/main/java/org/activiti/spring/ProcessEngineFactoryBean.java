@@ -14,7 +14,6 @@
 package org.activiti.spring;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.SpringBeanFactoryProxyMap;
 import org.springframework.beans.BeansException;
@@ -33,7 +32,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected ApplicationContext applicationContext;
-  protected ProcessEngineImpl processEngine;
+  protected ProcessEngine processEngine;
   
   public void destroy() throws Exception {
     if (processEngine != null) {
@@ -53,7 +52,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
       processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(applicationContext));
     }
     
-    processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
+    processEngine = processEngineConfiguration.buildProcessEngine();
 
     return processEngine;
   }
