@@ -22,6 +22,7 @@ import org.activiti.engine.query.Query;
  * Allows programmatic querying of {@link ProcessInstance}s.
  * 
  * @author Joram Barrez
+ * @author Tijs Rademakers
  * @author Frederik Heremans
  * @author Falko Menge
  */
@@ -226,6 +227,17 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Include process variables in the process query result
    */
   ProcessInstanceQuery includeProcessVariables();
+  
+  /**
+   * Begin an OR statement. Make sure you invoke the endOr method at the end of your OR statement.
+   * Only one OR statement is allowed, for the second call to this method an exception will be thrown.
+   */
+  ProcessInstanceQuery or();
+  
+  /**
+   * End an OR statement. Only one OR statement is allowed, for the second call to this method an exception will be thrown.
+   */
+  ProcessInstanceQuery endOr();
   
   //ordering /////////////////////////////////////////////////////////////////
   
