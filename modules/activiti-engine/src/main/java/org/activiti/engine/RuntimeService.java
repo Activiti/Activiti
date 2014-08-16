@@ -537,6 +537,26 @@ public interface RuntimeService {
    */
   Object getVariable(String executionId, String variableName);
 
+    /**
+     * The variable value. Searching for the variable is done in all scopes that
+     * are visible to the given execution (including parent scopes). Returns null
+     * when no variable value is found with the given name or when the value is
+     * set to null. Throws ClassCastException when cannot cast variable to
+     * given class
+     *
+     * @param executionId
+     *          id of execution, cannot be null.
+     * @param variableName
+     *          name of variable, cannot be null.
+     * @param variableClass
+     *          name of variable, cannot be null.
+     * @return the variable value or null if the variable is undefined or the
+     *         value of the variable is null.
+     * @throws ActivitiObjectNotFoundException
+     *           when no execution is found for the given executionId.
+     */
+    <T> T getVariable(String executionId, String variableName, Class<T> variableClass);
+
   /**
    * Check whether or not this execution has variable set with the given name,
    * Searching for the variable is done in all scopes that are visible to the
@@ -551,6 +571,14 @@ public interface RuntimeService {
    * null.
    */
   Object getVariableLocal(String executionId, String variableName);
+
+    /**
+     * The variable value for an execution. Returns the value casted to given class
+     * when the variable is set for the execution (and not searching parent scopes).
+     * Returns null when no variable value is found with the given name or when the
+     * value is set to null.
+     */
+    <T> T  getVariableLocal(String executionId, String variableName, Class<T> variableClass);
 
   /**
    * Check whether or not this execution has a local variable set with the given
