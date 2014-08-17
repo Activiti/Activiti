@@ -810,15 +810,15 @@ public class ExecutionImpl implements
 
     @Override
     public <T> T getVariable(String variableName, Class<T> variableClass) {
-        return null;
+        return variableClass.cast(getVariable(variableName));
     }
 
     @Override
     public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
-        return null;
+        return variableClass.cast(getVariableLocal(variableName));
     }
 
-    public Set<String> getVariableNames() {
+  public Set<String> getVariableNames() {
     return null;
   }
 

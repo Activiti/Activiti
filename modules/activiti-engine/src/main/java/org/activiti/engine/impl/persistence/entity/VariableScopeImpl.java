@@ -412,10 +412,10 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   }
 
     public <T> T getVariable(String variableName, Class<T> variableClass){
-        return null;
+        return variableClass.cast(getVariable(variableName));
     }
 
     public <T> T getVariableLocal(String variableName, Class<T> variableClass){
-        return null;
+        return variableClass.cast(getVariableLocal(variableName));
     }
 }

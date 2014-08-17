@@ -153,10 +153,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
     @Override
     public <T> T getVariable(String executionId, String variableName, Class<T> variableClass) {
-        return null;
+        return variableClass.cast(getVariable(executionId, variableName));
     }
 
-    @Override
+  @Override
   public boolean hasVariable(String executionId, String variableName) {
     return commandExecutor.execute(new HasExecutionVariableCmd(executionId, variableName, false));
   }
@@ -165,12 +165,12 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, true));
   }
 
-    @Override
-    public <T> T getVariableLocal(String executionId, String variableName, Class<T> variableClass) {
-        return null;
-    }
+  @Override
+  public <T> T getVariableLocal(String executionId, String variableName, Class<T> variableClass) {
+      return variableClass.cast(getVariableLocal(executionId, variableName));
+  }
 
-    @Override
+  @Override
   public boolean hasVariableLocal(String executionId, String variableName) {
     return commandExecutor.execute(new HasExecutionVariableCmd(executionId, variableName, true));
   }

@@ -1466,7 +1466,7 @@ public void testCompleteWithParametersTask2() {
 
         taskService.setVariableLocal(currentTask.getId(), "variable1", "value1");
 
-        catchException(taskService.getVariableLocal(currentTask.getId(), "variable1", Boolean.class));
+        catchException(taskService).getVariableLocal(currentTask.getId(), "variable1", Boolean.class);
 
         Exception e = caughtException();
         assertNotNull(e);
@@ -1508,7 +1508,7 @@ public void testCompleteWithParametersTask2() {
 
         taskService.setVariable(currentTask.getId(), "variable1", "value1");
 
-        catchException(taskService.getVariable(currentTask.getId(), "variable1", Boolean.class));
+        catchException(taskService).getVariable(currentTask.getId(), "variable1", Boolean.class);
 
         Exception e = caughtException();
         assertNotNull(e);

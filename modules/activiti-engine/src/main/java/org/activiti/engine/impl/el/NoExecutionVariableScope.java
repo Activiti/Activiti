@@ -69,7 +69,7 @@ public class NoExecutionVariableScope implements VariableScope {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
+  @SuppressWarnings("unchecked")
   public Set<String> getVariableNames() {
     return Collections.EMPTY_SET;
   }

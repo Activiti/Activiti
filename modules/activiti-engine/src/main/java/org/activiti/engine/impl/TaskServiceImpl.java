@@ -223,8 +223,8 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
     @Override
-    public <T> T getVariable(String taskId, String variableName, Class<T> className) {
-        return null;
+    public <T> T getVariable(String taskId, String variableName, Class<T> variableClass) {
+        return variableClass.cast(getVariable(taskId, variableName));
     }
 
   public boolean hasVariable(String taskId, String variableName) {
@@ -236,8 +236,8 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
     @Override
-    public <T> T getVariableLocal(String taskId, String variableName, Class<T> className) {
-        return null;
+    public <T> T getVariableLocal(String taskId, String variableName, Class<T> variableClass) {
+        return variableClass.cast(getVariableLocal(taskId, variableName));
     }
 
   public boolean hasVariableLocal(String taskId, String variableName) {
