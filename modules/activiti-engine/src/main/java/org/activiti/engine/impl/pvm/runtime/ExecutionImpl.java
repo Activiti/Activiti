@@ -808,7 +808,17 @@ public class ExecutionImpl implements
     return null;
   }
 
-  public Set<String> getVariableNames() {
+    @Override
+    public <T> T getVariable(String variableName, Class<T> variableClass) {
+        return null;
+    }
+
+    @Override
+    public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
+        return null;
+    }
+
+    public Set<String> getVariableNames() {
     return null;
   }
 

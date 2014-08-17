@@ -410,4 +410,12 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   public void setId(String id) {
     this.id = id;
   }
+
+    public <T> T getVariable(String variableName, Class<T> variableClass){
+        return null;
+    }
+
+    public <T> T getVariableLocal(String variableName, Class<T> variableClass){
+        return null;
+    }
 }

@@ -29,6 +29,5 @@ public interface PvmExecution {
   boolean hasVariable(String variableName);
   void setVariable(String variableName, Object value);
   Object getVariable(String variableName);
-    <T> T getVariable(String variableName, Class<T> variableClass);
   Map<String, Object> getVariables();
 }
