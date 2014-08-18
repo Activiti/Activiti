@@ -35,6 +35,20 @@
 
   <h1>Activiti Release Notes</h1>
   
+  <h3>Release Notes - Activiti - Version 5.17</h3>
+  
+  <h4>Implementation changes</h4>
+  
+  <ul>
+    <li>
+    	<a href="https://jira.codehaus.org/browse/ACT-2071">https://jira.codehaus.org/browse/ACT-2071</a>:
+    	A deployment must always contain at least one executable (property 'isExecutable' on the process element) process definition
+    	to be deployable. However, a deployment can now contain process definitions that are not executable.  
+    	Before, any non-executable process definition would result in a validation error.
+    	Now, these are warnings which do not prevent the deployment.
+    </li>
+  </ul>
+  
   <h3>Release Notes - Activiti - Version 5.16.1</h3>
   
    <h4>Highlights</h4>

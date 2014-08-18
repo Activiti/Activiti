@@ -8,6 +8,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ValidationError;
+import org.activiti.validation.validator.ValidatorSet;
  
 /**
  * Sample Process Validator for Activiti Test case.
@@ -32,6 +33,11 @@ public class ActivitiTestCaseProcessValidator implements ProcessValidator {
       errorList.add(error);
     }
     return errorList;
+  }
+  
+  @Override
+  public List<ValidatorSet> getValidatorSets() {
+    return null;
   }
  
   class CustomParseValidator {
