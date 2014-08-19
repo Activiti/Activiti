@@ -45,7 +45,7 @@ public class ClaimTaskCmd extends NeedsActiveTaskCmd<Void> {
       }      
     } else {
       // Task should be assigned to no one
-      task.setAssignee(null);
+      task.setAssignee(null, true, true);
     }
     
     // Add claim time
