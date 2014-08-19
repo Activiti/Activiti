@@ -374,7 +374,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     for (IdentityLinkEntity identityLinkEntity : this.getIdentityLinks()) {
       if (IdentityLinkType.CANDIDATE.equals(identityLinkEntity.getType())) {
         if ((userId != null && userId.equals(identityLinkEntity.getUserId()))
-          || (groupId != null && identityLinkEntity.getGroupId().equals(groupId))) {
+          || (groupId != null && groupId.equals(identityLinkEntity.getGroupId()))) {
           Context
             .getCommandContext()
             .getIdentityLinkEntityManager()

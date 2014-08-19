@@ -421,6 +421,40 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     existingTask = taskService.createTaskQuery().taskId(existingTask.getId()).singleResult();
     assertNull(existingTask);
   }
+  
+  public void testDeleteTaskIdentityLink() {
+    Task task = null;
+    try {
+      task = taskService.newTask();
+      task.setName("test");
+      taskService.saveTask(task);
+      
+      taskService.addCandidateGroup(task.getId(), "sales");
+      taskService.addCandidateUser(task.getId(), "kermit");
+      
+      assertNotNull(taskService.createTaskQuery().taskCandidateGroup("sales").singleResult());
+      assertNotNull(taskService.createTaskQuery().taskCandidateUser("kermit").singleResult());
+     
+      // Delete identity link for group
+      taskService.deleteGroupIdentityLink(task.getId(), "sales", "candidate");
+      
+      // Link should be removed
+      assertNull(taskService.createTaskQuery().taskCandidateGroup("sales").singleResult());
+      
+      // User link should remain unaffected
+      assertNotNull(taskService.createTaskQuery().taskCandidateUser("kermit").singleResult());
+      
+    } finally {
+      // Adhoc task not part of deployment, cleanup
+      if(task != null && task.getId() != null) {
+        taskService.deleteTask(task.getId());
+        if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+          historyService.deleteHistoricTaskInstance(task.getId());
+        }
+      }
+    }
+  }
+
 
   public void testClaimNullArguments() {
     try {
