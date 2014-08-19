@@ -26,7 +26,6 @@ public class ProcessInstanceStartedEventHandler extends AbstractDatabaseEventLog
 		putInMapIfNotNull(data, Fields.BUSINESS_KEY, processInstanceEntity.getBusinessKey());
 		putInMapIfNotNull(data, Fields.PROCESS_DEFINITION_ID, processInstanceEntity.getProcessDefinitionId());
 		putInMapIfNotNull(data, Fields.NAME, processInstanceEntity.getName());
-		putInMapIfNotNull(data, Fields.TENANT_ID, processInstanceEntity.getTenantId());
 		putInMapIfNotNull(data, Fields.CREATE_TIME, timeStamp);
 		
 		if (eventWithVariables.getVariables() != null && eventWithVariables.getVariables().size() > 0) {
