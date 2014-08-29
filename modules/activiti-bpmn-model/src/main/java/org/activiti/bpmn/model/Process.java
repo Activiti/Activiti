@@ -33,6 +33,10 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
   protected List<EventListener> eventListeners = new ArrayList<EventListener>();
+  
+  public Process() {
+  	
+  }
 
   public String getDocumentation() {
     return documentation;

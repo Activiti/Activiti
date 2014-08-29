@@ -369,6 +369,12 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery processDefinitionNameLike(String processDefinitionNameLike);
   
   /**
+   * Only select tasks which are part of a process instance which has the given
+   * deployment id.
+   */
+  TaskQuery deploymentId(String deploymentId);
+  
+  /**
    * Only select tasks with the given due date.
    */
   TaskQuery dueDate(Date dueDate);
@@ -407,6 +413,19 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    * Include global task variables in the task query result
    */
   TaskQuery includeProcessVariables();
+  
+  /**
+   * TODO: javadoc
+   * 
+   * All query clauses called will be added to a single or-statement. This or-statement will be
+   * included with the other already existing clauses in the query, joined by an 'and'.
+   * 
+   * Calling endOr() will add all clauses to the regular query again. Calling or() after endOr() has been called
+   * will result in an exception.
+   */
+  TaskQuery or();
+  
+  TaskQuery endOr();
   
   // ordering ////////////////////////////////////////////////////////////
   

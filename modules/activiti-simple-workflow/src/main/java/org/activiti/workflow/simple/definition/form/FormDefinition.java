@@ -19,6 +19,7 @@ import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
@@ -48,7 +49,7 @@ public class FormDefinition implements FormPropertyDefinitionContainer {
 /**
    * @return All {@link FormPropertyDefinition}s that are not part of any {@link FormPropertyGroup}.
    */
-  @JsonSerialize(contentAs=FormPropertyDefinition.class)
+  @JsonDeserialize(contentAs=FormPropertyDefinition.class)
   @JsonProperty(value="formProperties")
   public List<FormPropertyDefinition> getFormPropertyDefinitions() {
     return formProperties;

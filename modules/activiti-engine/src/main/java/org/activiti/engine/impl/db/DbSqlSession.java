@@ -103,6 +103,7 @@ public class DbSqlSession implements Session {
 	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.15"));
 	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.15.1"));
 	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.1"));
 	  
 	  /* Current */
 	  
@@ -649,17 +650,17 @@ public class DbSqlSession implements Session {
   			
   			PersistentObject persistentObject = ((CheckedDeleteOperation) deleteOperation).getPersistentObject();
   			if (persistentObject instanceof BulkDeleteable) {
-					String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(persistentObject.getClass());
-					bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
-					if (bulkDeleteStatement != null) {
-						BulkCheckedDeleteOperation bulkCheckedDeleteOperation = null;
-						
-						// Find all objects of the same type
-						for (int j=0; j<deleteOperations.size(); j++) {
-							DeleteOperation otherDeleteOperation = deleteOperations.get(j);
-							if (j != i && checkedIndices[j] == false && otherDeleteOperation instanceof CheckedDeleteOperation) {
-								PersistentObject otherPersistentObject = ((CheckedDeleteOperation) otherDeleteOperation).getPersistentObject();
-								if (otherPersistentObject.getClass().equals(persistentObject.getClass())) {
+				String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(persistentObject.getClass());
+				bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
+				if (bulkDeleteStatement != null) {
+					BulkCheckedDeleteOperation bulkCheckedDeleteOperation = null;
+					
+					// Find all objects of the same type
+					for (int j=0; j<deleteOperations.size(); j++) {
+						DeleteOperation otherDeleteOperation = deleteOperations.get(j);
+						if (j != i && checkedIndices[j] == false && otherDeleteOperation instanceof CheckedDeleteOperation) {
+							PersistentObject otherPersistentObject = ((CheckedDeleteOperation) otherDeleteOperation).getPersistentObject();
+							if (otherPersistentObject.getClass().equals(persistentObject.getClass())) {
 	  							if (bulkCheckedDeleteOperation == null) {
 	  								bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(persistentObject.getClass());
 	  								bulkCheckedDeleteOperation.addPersistentObject(persistentObject);
@@ -668,16 +669,19 @@ public class DbSqlSession implements Session {
 	  							couldOptimize = true;
 	  							bulkCheckedDeleteOperation.addPersistentObject(otherPersistentObject);
 	  							checkedIndices[j] = true;
-								}
+							} else {
+							    // We may only optimize subsequent delete operations of the same type, to prevent messing up 
+							    // the order of deletes of related entities which may depend on the referenced entity being deleted before
+							    break;
 							}
-							
 						}
+						
 					}
+				}
   			}
-  			
   		}
   		
-  		if (!couldOptimize) {
+   		if (!couldOptimize) {
   			optimizedDeleteOperations.add(deleteOperation);
   		}
   		checkedIndices[i]=true;

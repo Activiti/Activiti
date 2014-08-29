@@ -77,6 +77,12 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    */
   HistoricTaskInstanceQuery processDefinitionNameLike(String processDefinitionNameLike);
   
+  /**
+   * Only select historic task instances which are part of a (historic) process instance 
+   * which has the given deployment id.
+   */
+  HistoricTaskInstanceQuery deploymentId(String deploymentId);
+  
   /** 
    * Only select historic task instances with the given task name.
    * This is the last name given to the task. 
@@ -434,6 +440,17 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    * Include local task variables in the task query result
    */
   HistoricTaskInstanceQuery includeTaskLocalVariables();
+  
+  /**
+   * Begin an OR statement. Make sure you invoke the endOr method at the end of your OR statement.
+   * Only one OR statement is allowed, for the second call to this method an exception will be thrown.
+   */
+  HistoricTaskInstanceQuery or();
+  
+  /**
+   * End an OR statement. Only one OR statement is allowed, for the second call to this method an exception will be thrown.
+   */
+  HistoricTaskInstanceQuery endOr();
   
   /**
    * Include global task variables in the task query result

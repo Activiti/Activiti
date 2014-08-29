@@ -1,4 +1,16 @@
-package org.activiti.validation;
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.activiti.standalone.validation;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -13,6 +25,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.test.util.TestProcessUtil;
+import org.activiti.validation.ProcessValidator;
+import org.activiti.validation.ProcessValidatorFactory;
+import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorSetNames;
 import org.junit.Assert;
@@ -22,11 +38,9 @@ import org.junit.Test;
 /**
  * @author jbarrez
  */
-public class ProcessValidationTest {
+public class DefaultProcessValidatorTest {
 	
 	protected ProcessValidator processValidator;
-	
-	protected BpmnModel bpmnModel;
 	
 	@Before
 	public void setupProcessValidator() {
@@ -34,26 +48,26 @@ public class ProcessValidationTest {
 		this.processValidator = processValidatorFactory.createDefaultProcessValidator();
 	}
 	
-	@Before
-	public void parseXml() throws Exception {
-		InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("invalidProcess.bpmn20.xml");
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
-    XMLStreamReader xtr = xif.createXMLStreamReader(in);
-    bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-    Assert.assertNotNull(bpmnModel);
-	}
-	
 	@Test
-	public void verifyValidation() {
+	public void verifyValidation() throws Exception {
+		
+		InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/validation/invalidProcess.bpmn20.xml");
+	  XMLInputFactory xif = XMLInputFactory.newInstance();
+	  InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
+	  XMLStreamReader xtr = xif.createXMLStreamReader(in);
+	  BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+	  Assert.assertNotNull(bpmnModel);
+		
 		List<ValidationError> allErrors = processValidator.validate(bpmnModel);
 		Assert.assertEquals(66, allErrors.size());
 		
 		String setName = ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS; // shortening it a bit
 		
 		// isExecutable should be true
-		List<ValidationError> problems = findErrors(allErrors, setName, Problems.PROCESS_DEFINITION_IS_NOT_EXECUTABLE, 1);
-		assertProcessElementError(problems.get(0));
+		List<ValidationError> problems = findErrors(allErrors, setName, Problems.ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE, 1);
+		Assert.assertNotNull(problems.get(0).getValidatorSetName());
+		Assert.assertNotNull(problems.get(0).getProblem());
+		Assert.assertNotNull(problems.get(0).getDefaultDescription());
 		
 		// Event listeners
 		problems = findErrors(allErrors, setName, Problems.EVENT_LISTENER_IMPLEMENTATION_MISSING, 1);
@@ -242,15 +256,68 @@ public class ProcessValidationTest {
         "  </process>" + 
         "</definitions>";    
 
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(flowWithoutConditionNoDefaultFlow.getBytes()), "UTF-8");
-    XMLStreamReader xtr = xif.createXMLStreamReader(in);
-    bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-    Assert.assertNotNull(bpmnModel);
-    List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(1, allErrors.size());
-    Assert.assertTrue(allErrors.get(0).isWarning());
+	    XMLInputFactory xif = XMLInputFactory.newInstance();
+	    InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(flowWithoutConditionNoDefaultFlow.getBytes()), "UTF-8");
+	    XMLStreamReader xtr = xif.createXMLStreamReader(in);
+	    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+	    Assert.assertNotNull(bpmnModel);
+	    List<ValidationError> allErrors = processValidator.validate(bpmnModel);
+	    Assert.assertEquals(1, allErrors.size());
+	    Assert.assertTrue(allErrors.get(0).isWarning());
 	}
+	
+	/*
+	 * Test for https://jira.codehaus.org/browse/ACT-2071:
+	 * 
+	 * If all processes in a deployment are not executable, throw an exception
+	 * as this doesn't make sense to do.
+	 */
+	@Test
+	public void testAllNonExecutableProcesses() {
+		BpmnModel bpmnModel = new BpmnModel();
+		for (int i=0; i<5; i++) {
+			org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
+			process.setExecutable(false);
+			bpmnModel.addProcess(process);
+		}
+		
+		List<ValidationError> errors = processValidator.validate(bpmnModel);
+		Assert.assertEquals(1, errors.size());
+	}
+	
+	/*
+	 * Test for https://jira.codehaus.org/browse/ACT-2071:
+	 * 
+	 * If there is at least one process definition which is executable, 
+	 * and the deployment contains other process definitions which are not executable,
+	 * then add a warning for those non executable process definitions
+	 */
+	@Test
+	public void testNonExecutableProcessDefinitionWarning() {
+		BpmnModel bpmnModel = new BpmnModel();
+		
+		// 3 non-executables
+		for (int i=0; i<3; i++) {
+			org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
+			process.setExecutable(false);
+			bpmnModel.addProcess(process);
+		}
+		
+		// 1 executables
+		org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
+		process.setExecutable(true);
+		bpmnModel.addProcess(process);
+		
+		List<ValidationError> errors = processValidator.validate(bpmnModel);
+		Assert.assertEquals(3, errors.size());
+		for (ValidationError error : errors) {
+			Assert.assertTrue(error.isWarning());
+			Assert.assertNotNull(error.getValidatorSetName());
+			Assert.assertNotNull(error.getProblem());
+			Assert.assertNotNull(error.getDefaultDescription());
+		}
+	}
+	
 	
 	protected void assertCommonProblemFieldForActivity(ValidationError error) {
 		assertProcessElementError(error);

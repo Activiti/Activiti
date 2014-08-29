@@ -157,6 +157,11 @@ public class JsonConverterTest {
 						assertEquals(1L, parsedDef.getParameters().size());
 						assertEquals("This is a test", parsedDef.getParameters().get("custom-parameter"));
 					}
+					
+					if(parsedDef instanceof ListPropertyDefinition) {
+					    ListPropertyDefinition parsed = (ListPropertyDefinition) parsedDef;
+					    assertEquals(2L, parsed.getEntries().size());
+					}
 				}
 			}
 			index++;

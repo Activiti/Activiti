@@ -59,6 +59,8 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   // Execution entity/table
   protected String name;
   protected String nameLike;
+  protected String deploymentId;
+  protected ExecutionQueryImpl orQueryObject;
   
   public ExecutionQueryImpl() {
   }

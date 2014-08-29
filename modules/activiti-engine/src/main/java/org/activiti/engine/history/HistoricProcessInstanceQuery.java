@@ -27,6 +27,7 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Tijs Rademakers
  * @author Falko Menge
  */
 public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInstanceQuery, HistoricProcessInstance> {
@@ -51,12 +52,22 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
 
   /** Only select historic process instances with the given business key */
   HistoricProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey);
+  
+  /** Only select historic process instances that are defined by a process
+   * definition with the given deployment identifier.  */
+  HistoricProcessInstanceQuery deploymentId(String deploymentId);
 
   /** Only select historic process instances that are completely finished. */
   HistoricProcessInstanceQuery finished();
 
   /** Only select historic process instance that are not yet finished. */
   HistoricProcessInstanceQuery unfinished();
+  
+  /** Only select historic process instances that are deleted. */
+  HistoricProcessInstanceQuery deleted();
+  
+  /** Only select historic process instance that are not deleted. */
+  HistoricProcessInstanceQuery notDeleted();
 
   /** Only select the historic process instances with which the user with the given id is involved. */
   HistoricProcessInstanceQuery involvedUser(String userId);
@@ -166,6 +177,17 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
 	
 	/** Only select process instances that do not have a tenant id. */
   HistoricProcessInstanceQuery processInstanceWithoutTenantId();
+  
+  /**
+   * Begin an OR statement. Make sure you invoke the endOr method at the end of your OR statement.
+   * Only one OR statement is allowed, for the second call to this method an exception will be thrown.
+   */
+  HistoricProcessInstanceQuery or();
+  
+  /**
+   * End an OR statement. Only one OR statement is allowed, for the second call to this method an exception will be thrown.
+   */
+  HistoricProcessInstanceQuery endOr();
 
   /** Order by the process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByProcessInstanceId();

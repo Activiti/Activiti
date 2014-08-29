@@ -679,19 +679,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           properties.put("orderBy" , DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
           properties.put("limitBeforeNativeQuery" , ObjectUtils.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
         }
-        XMLConfigBuilder parser = new XMLConfigBuilder(reader,"", properties);
-        Configuration configuration = parser.getConfiguration();
-        configuration.setEnvironment(environment);
-        configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
         
-        if (getCustomMybatisMappers() != null) {
-        	for (Class<?> clazz : getCustomMybatisMappers()) {
-        		configuration.addMapper(clazz);
-        	}
-        }
-        
-        configuration = parser.parse();
-
+        Configuration configuration = initMybatisConfiguration(environment, reader, properties);
         sqlSessionFactory = new DefaultSqlSessionFactory(configuration);
 
       } catch (Exception e) {
@@ -700,6 +689,34 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         IoUtil.closeSilently(inputStream);
       }
     }
+  }
+
+	protected Configuration initMybatisConfiguration(Environment environment, Reader reader, Properties properties) {
+	  XMLConfigBuilder parser = new XMLConfigBuilder(reader,"", properties);
+	  Configuration configuration = parser.getConfiguration();
+	  configuration.setEnvironment(environment);
+	  
+	  initMybatisTypeHandlers(configuration);
+	  initCustomMybatisMappers(configuration);
+	  
+	  configuration = parseMybatisConfiguration(configuration, parser);
+	  return configuration;
+  }
+
+	protected void initMybatisTypeHandlers(Configuration configuration) {
+	  configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
+  }
+
+	protected void initCustomMybatisMappers(Configuration configuration) {
+	  if (getCustomMybatisMappers() != null) {
+	  	for (Class<?> clazz : getCustomMybatisMappers()) {
+	  		configuration.addMapper(clazz);
+	  	}
+	  }
+  }
+	
+	protected Configuration parseMybatisConfiguration(Configuration configuration, XMLConfigBuilder parser) {
+	  return parser.parse();
   }
   
   protected InputStream getMyBatisXmlConfigurationSteam() {

@@ -55,14 +55,19 @@ public class DeploymentManager {
     if (processDefinitionId == null) {
       throw new ActivitiIllegalArgumentException("Invalid process definition id : null");
     }
-    ProcessDefinitionEntity processDefinition = Context
-      .getCommandContext()
-      .getProcessDefinitionEntityManager()
-      .findProcessDefinitionById(processDefinitionId);
-    if(processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("no deployed process definition found with id '" + processDefinitionId + "'", ProcessDefinition.class);
+    
+    // first try the cache
+    ProcessDefinitionEntity processDefinition = processDefinitionCache.get(processDefinitionId);
+    
+    if (processDefinition == null) {
+      processDefinition = Context.getCommandContext()
+        .getProcessDefinitionEntityManager()
+        .findProcessDefinitionById(processDefinitionId);
+      if (processDefinition == null) {
+        throw new ActivitiObjectNotFoundException("no deployed process definition found with id '" + processDefinitionId + "'", ProcessDefinition.class);
+      }
+      processDefinition = resolveProcessDefinition(processDefinition);
     }
-    processDefinition = resolveProcessDefinition(processDefinition);
     return processDefinition;
   }
   
@@ -71,6 +76,7 @@ public class DeploymentManager {
       .getCommandContext()
       .getProcessDefinitionEntityManager()
       .findLatestProcessDefinitionByKey(processDefinitionKey);
+    
     if (processDefinition==null) {
       throw new ActivitiObjectNotFoundException("no processes deployed with key '"+processDefinitionKey+"'", ProcessDefinition.class);
     }

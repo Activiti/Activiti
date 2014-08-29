@@ -279,9 +279,11 @@
   </sql>
   
   <sql id="commonSelectTaskByQueryCriteriaSql">
-    <if test="candidateUser != null || candidateGroups != null || bothCandidateAndAssigned">
-      <if test="bothCandidateAndAssigned">left</if>
-      <if test="!bothCandidateAndAssigned">inner</if>
+    <if test="candidateUser != null || candidateGroups != null || bothCandidateAndAssigned || (orQueryObject != null &amp;&amp; (orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.bothCandidateAndAssigned))">
+      <choose>
+        <when test="bothCandidateAndAssigned || (orQueryObject != null &amp;&amp; orQueryObject.bothCandidateAndAssigned)">left</when>
+        <otherwise>inner</otherwise>
+      </choose>
       join ${prefix}ACT_RU_IDENTITYLINK I on I.TASK_ID_ = RES.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="var">
@@ -294,11 +296,27 @@
         </otherwise>
       </choose>       
     </foreach>
-    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionName != null || processDefinitionNameLike != null">
+     <if test="orQueryObject != null">
+      <foreach collection="orQueryObject.queryVariableValues" index="index" item="var">
+        <choose>
+          <when test="var.local">
+            inner join ${prefix}ACT_RU_VARIABLE A_OR${index} on RES.ID_ = A_OR${index}.TASK_ID_ 
+          </when>
+          <otherwise>
+            inner join ${prefix}ACT_RU_VARIABLE A_OR${index} on RES.PROC_INST_ID_ = A_OR${index}.PROC_INST_ID_ 
+          </otherwise>
+        </choose>       
+      </foreach>
+      </if>
+    
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionName != null || processDefinitionNameLike != null || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null))">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
-    <if test="processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null">
+    <if test="processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null  || (orQueryObject != null &amp;&amp; (orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike))">
         inner join ${prefix}ACT_RU_EXECUTION E on RES.PROC_INST_ID_ = E.ID_
+    </if>
+    <if test="deploymentId != null || (orQueryObject != null &amp;&amp; orQueryObject.deploymentId != null)">
+      left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <where> 
       <if test="taskId != null">
@@ -387,6 +405,9 @@
       </if>
       <if test="processDefinitionNameLike != null">
         and D.NAME_ like #{processDefinitionNameLike}
+      </if>
+      <if test="deploymentId != null">
+        and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
       <if test="dueDate != null">
         and RES.DUE_DATE_ = #{dueDate}
@@ -536,7 +557,251 @@
           </if>
         </when>
       </choose>
-    </where>
+      <if test="orQueryObject != null">
+        and 
+        <trim prefix="(" prefixOverrides="OR" suffix=")">
+            <if test="orQueryObject.taskId != null">
+              RES.ID_ = #{orQueryObject.taskId}
+            </if>
+            <if test="orQueryObject.name != null">
+              or RES.NAME_ = #{orQueryObject.name}
+            </if>
+            <if test="orQueryObject.nameLike != null">
+              or RES.NAME_ like #{orQueryObject.nameLike}
+            </if>
+            <if test="orQueryObject.description != null">
+              or RES.DESCRIPTION_ = #{orQueryObject.description}
+            </if>
+            <if test="orQueryObject.descriptionLike != null">
+              or RES.DESCRIPTION_ like #{orQueryObject.descriptionLike}
+            </if>
+            <if test="orQueryObject.priority != null">
+              or RES.PRIORITY_ = #{orQueryObject.priority}
+            </if> 
+            <if test="orQueryObject.minPriority != null">
+              or RES.PRIORITY_ &gt;= #{orQueryObject.minPriority}
+            </if> 
+            <if test="orQueryObject.maxPriority != null">
+              or RES.PRIORITY_ &lt;= #{orQueryObject.maxPriority}
+            </if> 
+            <if test="orQueryObject.assignee != null">
+              or RES.ASSIGNEE_ = #{orQueryObject.assignee}
+            </if>
+            <if test="orQueryObject.assigneeLike != null">
+              or RES.ASSIGNEE_ like #{orQueryObject.assigneeLike}
+            </if>
+            <if test="orQueryObject.owner != null">
+              or RES.OWNER_ = #{orQueryObject.owner}
+            </if>
+            <if test="orQueryObject.ownerLike != null">
+              or RES.OWNER_ like #{orQueryObject.ownerLike}
+            </if>
+            <if test="orQueryObject.unassigned">
+              or RES.ASSIGNEE_ IS NULL
+            </if>
+            <if test="orQueryObject.noDelegationState">
+              or RES.DELEGATION_ IS NULL
+            </if>
+            <if test="orQueryObject.delegationState != null">
+              or RES.DELEGATION_ = #{orQueryObject.delegationStateString}
+            </if>
+            <if test="orQueryObject.processInstanceId != null">
+              or RES.PROC_INST_ID_ = #{orQueryObject.processInstanceId}
+            </if>
+            <if test="orQueryObject.processInstanceBusinessKey != null">
+              or E.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}
+            </if>
+            <if test="orQueryObject.processInstanceBusinessKeyLike != null">
+              or E.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}
+            </if>         
+            <if test="orQueryObject.executionId != null">
+              or RES.EXECUTION_ID_ = #{orQueryObject.executionId}
+            </if>
+            <if test="orQueryObject.createTime != null">
+              or RES.CREATE_TIME_ = #{orQueryObject.createTime}
+            </if>
+            <if test="orQueryObject.createTimeBefore != null">
+              or RES.CREATE_TIME_ &lt; #{orQueryObject.createTimeBefore}
+            </if>
+            <if test="orQueryObject.createTimeAfter != null">
+              or RES.CREATE_TIME_ &gt; #{orQueryObject.createTimeAfter}
+            </if>
+            <if test="orQueryObject.key != null">
+              or RES.TASK_DEF_KEY_ = #{orQueryObject.key}
+            </if>
+            <if test="orQueryObject.keyLike != null">
+              or RES.TASK_DEF_KEY_ like #{orQueryObject.keyLike}
+            </if>
+            <if test="orQueryObject.processDefinitionId != null">
+              or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
+            </if>
+            <if test="orQueryObject.processDefinitionKey != null">
+              or D.KEY_ = #{orQueryObject.processDefinitionKey}
+            </if>
+            <if test="orQueryObject.processDefinitionKeyLike != null">
+              or D.KEY_ like #{orQueryObject.processDefinitionKeyLike}
+            </if>
+            <if test="orQueryObject.processDefinitionName != null">
+              or D.NAME_ = #{orQueryObject.processDefinitionName}
+            </if>
+            <if test="orQueryObject.processDefinitionNameLike != null">
+              or D.NAME_ like #{orQueryObject.processDefinitionNameLike}
+            </if>
+            <if test="orQueryObject.deploymentId != null">
+              or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+            </if>
+            <if test="orQueryObject.dueDate != null">
+              or RES.DUE_DATE_ = #{orQueryObject.dueDate}
+            </if>
+            <if test="orQueryObject.dueBefore != null">
+              or (RES.DUE_DATE_ &lt; #{orQueryObject.dueBefore} and RES.DUE_DATE_ is not null)
+            </if>
+            <if test="orQueryObject.dueAfter != null">
+              or (RES.DUE_DATE_ &gt; #{orQueryObject.dueAfter} and RES.DUE_DATE_ is not null)
+            </if>
+            <if test="orQueryObject.withoutDueDate">
+              or RES.DUE_DATE_ is null
+            </if>
+            <if test="orQueryObject.category != null">
+              or RES.CATEGORY_ = #{orQueryObject.category}
+            </if>
+            <if test="orQueryObject.excludeSubtasks">
+              or RES.PARENT_TASK_ID_ IS NULL
+            </if>
+            
+            <if test="!orQueryObject.bothCandidateAndAssigned &amp;&amp; (orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null)">
+              or (RES.ASSIGNEE_ is null
+              and I.TYPE_ = 'candidate'
+              and 
+              ( 
+                <if test="orQueryObject.candidateUser != null">
+                  I.USER_ID_ = #{orQueryObject.candidateUser}          
+                </if>
+                <if test="orQueryObject.candidateUser != null &amp;&amp; orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
+                  or
+                </if>
+                <if test="orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
+                  I.GROUP_ID_ IN
+                  <foreach item="group" index="index" collection="orQueryObject.candidateGroups" 
+                           open="(" separator="," close=")">
+                    #{group}
+                  </foreach>
+                </if>
+              ))
+            </if>
+            <if test="orQueryObject.involvedUser != null">
+              or (
+                exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where USER_ID_ = #{orQueryObject.involvedUser} and LINK.TASK_ID_ = RES.ID_)
+                or RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
+                or RES.OWNER_ = #{orQueryObject.involvedUser}
+                )
+            </if>
+            <foreach item="var" collection="orQueryObject.queryVariableValues" index="index">
+              or 
+              <trim prefix="(" prefixOverrides="AND" suffix=")">
+              <if test="!var.local">
+                <!-- When process instance variable is queried for, taskId should be null -->
+                and A_OR${index}.TASK_ID_ is null
+              </if>
+              <if test="var.name != null">
+                <!-- Match-all variable-names when name is null -->
+                and A_OR${index}.NAME_= #{var.name}
+              </if>
+              <if test="!var.type.equals('null')">
+                and A_OR${index}.TYPE_ = #{var.type}
+              </if>
+              <!-- Variable value -->
+              <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+                <choose>
+                  <when test="var.operator.equals('EQUALS_IGNORE_CASE') || var.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+                    and lower(A_OR${index}.TEXT_)
+                  </when>
+                  <otherwise>
+                    and A_OR${index}.TEXT_
+                  </otherwise>
+                </choose> 
+                <choose>
+                    <when test="var.operator.equals('LIKE')">LIKE</when>
+                    <otherwise><include refid="executionVariableOperator" /></otherwise>
+                </choose>          
+                #{var.textValue}
+              </if>
+              <if test="var.textValue2 != null">
+                and A_OR${index}.TEXT2_ 
+                <choose>
+                  <when test="var.operator.equals('LIKE')">LIKE</when>
+                  <otherwise><include refid="executionVariableOperator" /></otherwise>
+                </choose>          
+                #{var.textValue2}
+              </if>
+              <if test="var.longValue != null">
+                and A_OR${index}.LONG_
+                <include refid="executionVariableOperator" />
+                #{var.longValue}
+              </if>
+              <if test="var.doubleValue != null">
+                and A_OR${index}.DOUBLE_ 
+                <include refid="executionVariableOperator" />
+                #{var.doubleValue}
+              </if>
+              <!-- Null variable type -->
+              <if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+                <choose>
+                  <when test="var.operator.equals('NOT_EQUALS')">
+                    and (A_OR${index}.TEXT_ is not null or A_OR${index}.TEXT2_ is not null or A_OR${index}.LONG_ is not null or A_OR${index}.DOUBLE_ is not null or A_OR${index}.BYTEARRAY_ID_ is not null)
+                  </when>
+                  <otherwise>
+                    and A_OR${index}.TEXT_ is null and A_OR${index}.TEXT2_ is null and A_OR${index}.LONG_ is null and A_OR${index}.DOUBLE_ is null and A_OR${index}.BYTEARRAY_ID_ is null
+                  </otherwise>
+                </choose>          
+              </if>
+              </trim>
+            </foreach>
+            <if test="orQueryObject.suspensionState != null">
+              <if test="orQueryObject.suspensionState.stateCode == 1">
+                  or RES.SUSPENSION_STATE_ = 1
+              </if>
+              <if test="orQueryObject.suspensionState.stateCode == 2">
+                  or RES.SUSPENSION_STATE_ = 2
+              </if>
+            </if>
+            <if test="orQueryObject.tenantId != null">
+              or RES.TENANT_ID_ = #{orQueryObject.tenantId}
+            </if>
+            <if test="orQueryObject.tenantIdLike != null">
+              or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}
+            </if>
+            <if test="orQueryObject.withoutTenantId">
+              or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+            </if>
+            <choose>
+              <when test="orQueryObject.bothCandidateAndAssigned">
+                <!-- if dbIdentityUsed set true in process engine configuration -->
+                <if test="orQueryObject.userIdForCandidateAndAssignee != null">
+                  <if test="orQueryObject.candidateGroups == null">
+                    or (RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee} or (RES.ASSIGNEE_ is null and (I.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
+                    or I.GROUP_ID_ IN (select g.GROUP_ID_ from ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee} ) ) ) )
+                  </if>
+                </if>
+                <!-- if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager -->
+                <if test="orQueryObject.candidateGroups != null">
+                  or (RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee}
+                  or (RES.ASSIGNEE_ is null
+                  and I.TYPE_ = 'candidate' and (I.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
+                  <if test="orQueryObject.candidateGroups.size() &gt; 0">
+                    or I.GROUP_ID_ IN
+                    <foreach item="group" index="index" collection="orQueryObject.candidateGroups"
+                             open="(" separator="," close=")">
+                      #{group}
+                    </foreach>
+                  </if>
+                  )))
+                </if>
+              </when>
+            </choose>
+          </trim>
+        </if>
+     </where>
   </sql>
   
   <sql id="executionVariableOperator">

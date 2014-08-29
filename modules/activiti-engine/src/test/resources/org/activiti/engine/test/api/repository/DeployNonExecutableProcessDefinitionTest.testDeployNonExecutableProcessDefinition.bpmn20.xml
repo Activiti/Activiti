@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="testCategory"
+  xmlns:tns="one">
+  
+   <process id="oneTaskProcess" name="The One Task Process" isExecutable="true">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <userTask id="theTask" name="my task" />    
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+  
+   <process id="oneTaskProcessNonExecutable" name="The One Task Process" isExecutable="false">
+  
+    <startEvent id="theStart2" />
+    <sequenceFlow id="flow3" sourceRef="theStart2" targetRef="theTask2" />
+    <userTask id="theTask2" name="my task" />    
+    <sequenceFlow id="flow4" sourceRef="theTask2" targetRef="theEnd2" />
+    <endEvent id="theEnd2" />
+    
+  </process>
+
+
+</definitions>
