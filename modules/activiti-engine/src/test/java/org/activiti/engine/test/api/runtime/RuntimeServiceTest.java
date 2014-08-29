@@ -31,6 +31,7 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -138,6 +139,57 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
     assertEquals("var", runtimeService.getVariable(processInstance.getId(), "var"));
   }
+  
+  @Deployment(resources={
+  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+public void testStartProcessInstanceByProcessInstanceBuilder() {
+  ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+  
+  ProcessInstanceBuilder processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
+  
+  // by key
+  ProcessInstance processInstance = processInstanceBuilder.processDefinitionKey("oneTaskProcess").businessKey("123").start();
+  assertNotNull(processInstance);
+  assertEquals("123", processInstance.getBusinessKey());
+  assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+  
+  processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
+  
+  // by key, with processInstance name with variables
+  processInstance = processInstanceBuilder.processDefinitionKey("oneTaskProcess").businessKey("456").addVariable("var", "value")
+      .processInstanceName("processName1").start();
+  assertNotNull(processInstance);
+  assertEquals(2, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+  assertEquals("processName1", processInstance.getName());
+  assertEquals("456", processInstance.getBusinessKey());
+  assertEquals("value", runtimeService.getVariable(processInstance.getId(), "var"));
+  
+  processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
+  
+  // by id
+  processInstance = processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("789").start();
+  assertNotNull(processInstance);
+  assertEquals(3, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+  assertEquals("789", processInstance.getBusinessKey());
+  
+  processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
+  // by id with variables
+  processInstance = processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("101123")
+      .addVariable("var", "value2").start();
+  assertNotNull(processInstance);
+  assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+  assertEquals("value2", runtimeService.getVariable(processInstance.getId(), "var"));
+  assertEquals("101123", processInstance.getBusinessKey());
+  
+  processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
+  // by id and processInstance name
+  processInstance = processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("101124")
+      .processInstanceName("processName2").start();
+  assertNotNull(processInstance);
+  assertEquals(5, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+  assertEquals("processName2", processInstance.getName());
+  assertEquals("101124", processInstance.getBusinessKey());
+}
   
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
