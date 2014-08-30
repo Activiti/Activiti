@@ -98,6 +98,8 @@
                 &lt;property name=&quot;userIdAttribute&quot; value=&quot;uid&quot; /&gt;
                 &lt;property name=&quot;userFirstNameAttribute&quot; value=&quot;cn&quot; /&gt;
                 &lt;property name=&quot;userLastNameAttribute&quot; value=&quot;sn&quot; /&gt;
+                &lt;property name=&quot;userEmailAttribute&quot; value=&quot;mail&quot; /&gt;
+                
                 
                 &lt;property name=&quot;groupIdAttribute&quot; value=&quot;cn&quot; /&gt;
                 &lt;property name=&quot;groupNameAttribute&quot; value=&quot;cn&quot; /&gt;
