@@ -110,6 +110,9 @@ public interface Task {
   
   /** The tenant identifier of this task */
   String getTenantId();
+
+  /** Change the tenantId of the task */
+  void setTenantId(String tenantId);
   
   /** The form key for the user task */
   String getFormKey();
