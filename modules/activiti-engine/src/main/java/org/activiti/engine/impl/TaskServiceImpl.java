@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.AddCommentCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
@@ -71,6 +72,14 @@ import org.activiti.engine.task.TaskQuery;
  * @author Joram Barrez
  */
 public class TaskServiceImpl extends ServiceImpl implements TaskService {
+	
+	public TaskServiceImpl() {
+		
+	}
+	
+	public TaskServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+		super(processEngineConfiguration);
+	}
 
   public Task newTask() {
     return newTask(null);
@@ -195,7 +204,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public TaskQuery createTaskQuery() {
-    return new TaskQueryImpl(commandExecutor);
+    return new TaskQueryImpl(commandExecutor, processEngineConfiguration.getDatabaseType());
   }
  
   public NativeTaskQuery createNativeTaskQuery() {

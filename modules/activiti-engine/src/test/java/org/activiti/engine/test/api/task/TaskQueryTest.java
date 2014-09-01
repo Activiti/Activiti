@@ -2251,6 +2251,14 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         .deploymentId("invalid").count());
   }
   
+  private Task createTask(String name, Date dueDate) {
+  	Task task = taskService.newTask();
+  	task.setName(name);
+  	task.setDueDate(dueDate);
+  	taskService.saveTask(task);
+  	return task;
+  }
+  
   /**
    * Generates some test tasks. - 6 tasks where kermit is a candidate - 1 tasks
    * where gonzo is assignee - 2 tasks assigned to management group - 2 tasks

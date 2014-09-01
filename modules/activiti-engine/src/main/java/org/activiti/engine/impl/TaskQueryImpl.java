@@ -37,6 +37,7 @@ import org.activiti.engine.task.TaskQuery;
 public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> implements TaskQuery {
   
   private static final long serialVersionUID = 1L;
+  
   protected String taskId;
   protected String name;
   protected String nameLike;
@@ -87,7 +88,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean bothCandidateAndAssigned = false;
   protected boolean orActive;
   protected TaskQueryImpl orQueryObject;
-
+  
   public TaskQueryImpl() {
   }
   
@@ -98,7 +99,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public TaskQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
-
+  
+  public TaskQueryImpl(CommandExecutor commandExecutor, String databaseType) {
+    super(commandExecutor);
+    this.databaseType = databaseType;
+  }
+  
   public TaskQueryImpl taskId(String taskId) {
     if (taskId == null) {
       throw new ActivitiIllegalArgumentException("Task id is null");
@@ -906,6 +912,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   
   public TaskQuery orderByDueDate() {
     return orderBy(TaskQueryProperty.DUE_DATE);
+  }
+  
+  public TaskQuery orderByDueDateNullsFirst() {
+  	return orderBy(TaskQueryProperty.DUE_DATE, NullHandlingOnOrder.NULLS_FIRST);
+  }
+  
+  @Override
+  public TaskQuery orderByDueDateNullsLast() {
+  	return orderBy(TaskQueryProperty.DUE_DATE, NullHandlingOnOrder.NULLS_LAST);
   }
   
   @Override

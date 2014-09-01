@@ -248,7 +248,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected RuntimeService runtimeService = new RuntimeServiceImpl();
   protected HistoryService historyService = new HistoryServiceImpl();
   protected IdentityService identityService = new IdentityServiceImpl();
-  protected TaskService taskService = new TaskServiceImpl();
+  protected TaskService taskService = new TaskServiceImpl(this);
   protected FormService formService = new FormServiceImpl();
   protected ManagementService managementService = new ManagementServiceImpl();
   
@@ -591,34 +591,41 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
   
   protected static Properties databaseTypeMappings = getDefaultDatabaseTypeMappings();
+  
+  public static final String DATABASE_TYPE_H2 = "h2";
+  public static final String DATABASE_TYPE_MYSQL = "mysql";
+  public static final String DATABASE_TYPE_ORACLE = "oracle";
+  public static final String DATABASE_TYPE_POSTGRES = "postgres";
+  public static final String DATABASE_TYPE_MSSQL = "mssql";
+  public static final String DATABASE_TYPE_DB2 = "db2";
 
   protected static Properties getDefaultDatabaseTypeMappings() {
     Properties databaseTypeMappings = new Properties();
-    databaseTypeMappings.setProperty("H2","h2");
-    databaseTypeMappings.setProperty("MySQL","mysql");
-    databaseTypeMappings.setProperty("Oracle","oracle");
-    databaseTypeMappings.setProperty("PostgreSQL","postgres");
-    databaseTypeMappings.setProperty("Microsoft SQL Server","mssql");
-    databaseTypeMappings.setProperty("DB2","db2");
-    databaseTypeMappings.setProperty("DB2","db2");
-    databaseTypeMappings.setProperty("DB2/NT","db2");
-    databaseTypeMappings.setProperty("DB2/NT64","db2");
-    databaseTypeMappings.setProperty("DB2 UDP","db2");
-    databaseTypeMappings.setProperty("DB2/LINUX","db2");
-    databaseTypeMappings.setProperty("DB2/LINUX390","db2");
-    databaseTypeMappings.setProperty("DB2/LINUXX8664","db2");
-    databaseTypeMappings.setProperty("DB2/LINUXZ64","db2");
-    databaseTypeMappings.setProperty("DB2/400 SQL","db2");
-    databaseTypeMappings.setProperty("DB2/6000","db2");
-    databaseTypeMappings.setProperty("DB2 UDB iSeries","db2");
-    databaseTypeMappings.setProperty("DB2/AIX64","db2");
-    databaseTypeMappings.setProperty("DB2/HPUX","db2");
-    databaseTypeMappings.setProperty("DB2/HP64","db2");
-    databaseTypeMappings.setProperty("DB2/SUN","db2");
-    databaseTypeMappings.setProperty("DB2/SUN64","db2");
-    databaseTypeMappings.setProperty("DB2/PTX","db2");
-    databaseTypeMappings.setProperty("DB2/2","db2");
-    databaseTypeMappings.setProperty("DB2 UDB AS400", "db2");
+    databaseTypeMappings.setProperty("H2", DATABASE_TYPE_H2);
+    databaseTypeMappings.setProperty("MySQL", DATABASE_TYPE_MYSQL);
+    databaseTypeMappings.setProperty("Oracle", DATABASE_TYPE_ORACLE);
+    databaseTypeMappings.setProperty("PostgreSQL", DATABASE_TYPE_POSTGRES);
+    databaseTypeMappings.setProperty("Microsoft SQL Server", DATABASE_TYPE_MSSQL);
+    databaseTypeMappings.setProperty(DATABASE_TYPE_DB2,DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty(DATABASE_TYPE_DB2,DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/NT",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/NT64",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2 UDP",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUX",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUX390",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUXX8664",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUXZ64",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/400 SQL",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/6000",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2 UDB iSeries",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/AIX64",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/HPUX",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/HP64",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/SUN",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/SUN64",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/PTX",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/2",DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2 UDB AS400", DATABASE_TYPE_DB2);
     return databaseTypeMappings;
   }
 

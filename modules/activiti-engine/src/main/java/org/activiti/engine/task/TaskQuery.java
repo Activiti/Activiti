@@ -453,8 +453,23 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   TaskQuery orderByExecutionId();
   
-  /** Order by due date (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  /** 
+   * Order by due date (needs to be followed by {@link #asc()} or {@link #desc()}).
+   * This will use the default handling of null values of the used database. 
+   */
   TaskQuery orderByDueDate();
+  
+  /** 
+   * Order by due date (needs to be followed by {@link #asc()} or {@link #desc()}).
+   * If any of the tasks have null for the due date, these will be first in the result.
+   */
+  TaskQuery orderByDueDateNullsFirst();
+  
+  /** 
+   * Order by due date (needs to be followed by {@link #asc()} or {@link #desc()}).
+   * If any of the tasks have null for the due date, these will be last in the result.
+   */
+  TaskQuery orderByDueDateNullsLast();
   
 	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   TaskQuery orderByTenantId();
