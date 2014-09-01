@@ -218,7 +218,7 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> extends ListQueryPa
   					|| ProcessEngineConfigurationImpl.DATABASE_TYPE_ORACLE.equals(databaseType)) {
   				orderBy = orderBy + column + " "+sortOrder + " NULLS LAST";
   			} else if (ProcessEngineConfigurationImpl.DATABASE_TYPE_MYSQL.equals(databaseType)) {
-    			orderBy = orderBy + "order by isnull(" + column +") asc," + defaultOrderByClause;
+    			orderBy = orderBy + "isnull(" + column +") asc," + defaultOrderByClause;
     		} else if (ProcessEngineConfigurationImpl.DATABASE_TYPE_DB2.equals(databaseType)
     				|| ProcessEngineConfigurationImpl.DATABASE_TYPE_MSSQL.equals(databaseType)) {
     			orderBy = orderBy + "case when " + column + " is null then 0 else 1 end," + defaultOrderByClause;
