@@ -37,25 +37,31 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String processDefinitionId;
   protected String processDefinitionKey;
   protected String processDefinitionKeyLike;
+  protected String processDefinitionKeyLikeIgnoreCase;
   protected String processDefinitionName;
   protected String processDefinitionNameLike;
   protected String deploymentId;
   protected String processInstanceId;
   protected String processInstanceBusinessKey;
   protected String processInstanceBusinessKeyLike;
+  protected String processInstanceBusinessKeyLikeIgnoreCase;
   protected String executionId;
   protected String taskId;
   protected String taskName;
   protected String taskNameLike;
+  protected String taskNameLikeIgnoreCase;
   protected String taskParentTaskId;
   protected String taskDescription;
   protected String taskDescriptionLike;
+  protected String taskDescriptionLikeIgnoreCase;
   protected String taskDeleteReason;
   protected String taskDeleteReasonLike;
   protected String taskOwner;
   protected String taskOwnerLike;
+  protected String taskOwnerLikeIgnoreCase;
   protected String taskAssignee;
   protected String taskAssigneeLike;
+  protected String taskAssigneeLikeIgnoreCase;
   protected String taskDefinitionKey;
   protected String taskDefinitionKeyLike;
   protected String candidateUser;
@@ -146,6 +152,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
     return this;
   }
+  
+  public HistoricTaskInstanceQuery processInstanceBusinessKeyLikeIgnoreCase(String processInstanceBusinessKeyLikeIgnoreCase) {
+  	if (inOrStatement) {
+      this.orQueryObject.processInstanceBusinessKeyLikeIgnoreCase = processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
+    } else {
+      this.processInstanceBusinessKeyLikeIgnoreCase = processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
+    }
+    return this;
+  }
 
   public HistoricTaskInstanceQueryImpl executionId(String executionId) {
     if (inOrStatement) {
@@ -181,6 +196,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.processDefinitionKeyLike = processDefinitionKeyLike;
     }
     return this;
+  }
+  
+  public HistoricTaskInstanceQuery processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase) {
+  	 if (inOrStatement) {
+       this.orQueryObject.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
+     } else {
+       this.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
+     }
+     return this;
   }
   
   public HistoricTaskInstanceQuery processDefinitionName(String processDefinitionName) {
@@ -237,6 +261,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
   
+  public HistoricTaskInstanceQuery taskNameLikeIgnoreCase(String taskNameLikeIgnoreCase) {
+  	if (inOrStatement) {
+      this.orQueryObject.taskNameLikeIgnoreCase = taskNameLikeIgnoreCase.toLowerCase();
+    } else {
+      this.taskNameLikeIgnoreCase = taskNameLikeIgnoreCase.toLowerCase();
+    }
+    return this;
+  }
+  
   public HistoricTaskInstanceQuery taskParentTaskId(String parentTaskId) {
     if (inOrStatement) {
       this.orQueryObject.taskParentTaskId = parentTaskId;
@@ -260,6 +293,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.orQueryObject.taskDescriptionLike = taskDescriptionLike;
     } else {
       this.taskDescriptionLike = taskDescriptionLike;
+    }
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery taskDescriptionLikeIgnoreCase(String taskDescriptionLikeIgnoreCase) {
+    if (inOrStatement) {
+      this.orQueryObject.taskDescriptionLikeIgnoreCase = taskDescriptionLikeIgnoreCase.toLowerCase();
+    } else {
+      this.taskDescriptionLikeIgnoreCase = taskDescriptionLikeIgnoreCase.toLowerCase();
     }
     return this;
   }
@@ -300,6 +342,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
   
+  public HistoricTaskInstanceQuery taskAssigneeLikeIgnoreCase(String taskAssigneeLikeIgnoreCase) {
+  	 if (inOrStatement) {
+       this.orQueryObject.taskAssigneeLikeIgnoreCase = taskAssigneeLikeIgnoreCase.toLowerCase();
+     } else {
+       this.taskAssigneeLikeIgnoreCase = taskAssigneeLikeIgnoreCase.toLowerCase();
+     }
+     return this;
+  }
+  
   public HistoricTaskInstanceQuery taskOwner(String taskOwner) {
     if (inOrStatement) {
       this.orQueryObject.taskOwner = taskOwner;
@@ -314,6 +365,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.orQueryObject.taskOwnerLike = taskOwnerLike;
     } else {
       this.taskOwnerLike = taskOwnerLike;
+    }
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery taskOwnerLikeIgnoreCase(String taskOwnerLikeIgnoreCase) {
+  	if (inOrStatement) {
+      this.orQueryObject.taskOwnerLikeIgnoreCase = taskOwnerLikeIgnoreCase.toLowerCase();
+    } else {
+      this.taskOwnerLikeIgnoreCase = taskOwnerLikeIgnoreCase.toLowerCase();
     }
     return this;
   }
@@ -1117,7 +1177,25 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getInvolvedUser() {
     return involvedUser;
   }
-  public HistoricTaskInstanceQueryImpl getOrQueryObject() {
+	public String getProcessDefinitionKeyLikeIgnoreCase() {
+		return processDefinitionKeyLikeIgnoreCase;
+	}
+	public String getProcessInstanceBusinessKeyLikeIgnoreCase() {
+		return processInstanceBusinessKeyLikeIgnoreCase;
+	}
+	public String getTaskNameLikeIgnoreCase() {
+		return taskNameLikeIgnoreCase;
+	}
+	public String getTaskDescriptionLikeIgnoreCase() {
+		return taskDescriptionLikeIgnoreCase;
+	}
+	public String getTaskOwnerLikeIgnoreCase() {
+		return taskOwnerLikeIgnoreCase;
+	}
+	public String getTaskAssigneeLikeIgnoreCase() {
+		return taskAssigneeLikeIgnoreCase;
+	}
+	public HistoricTaskInstanceQueryImpl getOrQueryObject() {
     return orQueryObject;
   }
 }

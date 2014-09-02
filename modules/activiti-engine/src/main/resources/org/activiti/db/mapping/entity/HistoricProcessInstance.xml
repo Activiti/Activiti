@@ -308,6 +308,9 @@
       <if test="nameLike != null">
         and RES.NAME_ like #{nameLike}
       </if>
+        <if test="nameLikeIgnoreCase != null">
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase}
+      </if>
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
         <if test="queryVariableValue.name != null">
           <!-- Match-all variable-names when name is null -->
@@ -446,6 +449,9 @@
           </if>
           <if test="orQueryObject.nameLike != null">
             or RES.NAME_ like #{orQueryObject.nameLike}
+          </if>
+          <if test="orQueryObject.nameLikeIgnoreCase != null">
+            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}
           </if>
           <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
             or

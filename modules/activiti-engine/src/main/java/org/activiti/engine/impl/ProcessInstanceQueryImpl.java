@@ -53,6 +53,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected boolean includeProcessVariables;
   protected String name;
   protected String nameLike;
+  protected String nameLikeIgnoreCase;
   
   protected String tenantId;
   protected String tenantIdLike;
@@ -290,6 +291,15 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
       this.orQueryObject.nameLike = nameLike;
     } else {
       this.nameLike = nameLike;
+    }
+    return this;
+  }
+  
+  public ProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase) {
+  	if (inOrStatement) {
+      this.orQueryObject.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
+    } else {
+      this.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
     }
     return this;
   }
@@ -569,6 +579,10 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
 
   public boolean isIncludeProcessVariables() {
     return includeProcessVariables;
+  }
+  
+  public String getNameLikeIgnoreCase() {
+  	return nameLikeIgnoreCase;
   }
 
   public ProcessInstanceQueryImpl getOrQueryObject() {

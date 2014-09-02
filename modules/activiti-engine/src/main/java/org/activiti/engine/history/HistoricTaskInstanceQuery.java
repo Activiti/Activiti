@@ -45,6 +45,12 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    */
   HistoricTaskInstanceQuery processInstanceBusinessKeyLike(String processInstanceBusinessKeyLike);
   
+  /** 
+   * Only select historic process instances with a business key like the given value, ignoring any upper/lower case.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  HistoricTaskInstanceQuery processInstanceBusinessKeyLikeIgnoreCase(String processInstanceBusinessKeyLikeIgnoreCase);
+  
   /** Only select historic task instances for the given execution. */
   HistoricTaskInstanceQuery executionId(String executionId);
   
@@ -63,6 +69,13 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    * The syntax that should be used is the same as in SQL, eg. %activiti%.
    */
   HistoricTaskInstanceQuery processDefinitionKeyLike(String processDefinitionKeyLike);
+  
+  /**
+   * Only select historic task instances which are part of a (historic) process instance, ignoring any upper/lower case.
+   * which has a process definition key like the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  HistoricTaskInstanceQuery processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase);
   
   /**
    * Only select historic task instances which are part of a (historic) process instance 
@@ -97,6 +110,13 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   HistoricTaskInstanceQuery taskNameLike(String taskNameLike);
   
   /** 
+   * Only select historic task instances with a task name like the given value, ignoring any upper/lower case.
+   * This is the last name given to the task.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  HistoricTaskInstanceQuery taskNameLikeIgnoreCase(String taskNameLikeIgnoreCase);
+  
+  /** 
    * Only select historic task instances with the given task description.
    * This is the last description given to the task.  
    */
@@ -108,6 +128,13 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    * The syntax that should be used is the same as in SQL, eg. %activiti%.
    */
   HistoricTaskInstanceQuery taskDescriptionLike(String taskDescriptionLike);
+  
+  /** 
+   * Only select historic task instances with a task description like the given value, ignoring any upper/lower case.
+   * This is the last description given to the task.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  HistoricTaskInstanceQuery taskDescriptionLikeIgnoreCase(String taskDescriptionLikeIgnoreCase);
   
   /**
    * Only select historic task instances with the given task definition key.
@@ -143,6 +170,13 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
   HistoricTaskInstanceQuery taskAssigneeLike(String taskAssigneeLike);
   
   /** 
+   * Only select historic task instances which were last assigned to an assignee like, ignoring any upper/lower case.
+   * the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  HistoricTaskInstanceQuery taskAssigneeLikeIgnoreCase(String taskAssigneeLikeIgnoreCase);
+  
+  /** 
    * Only select historic task instances which have the given owner.
    */
   HistoricTaskInstanceQuery taskOwner(String taskOwner);
@@ -152,6 +186,12 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    * The syntax that should be used is the same as in SQL, eg. %activiti%.
    */
   HistoricTaskInstanceQuery taskOwnerLike(String taskOwnerLike);
+  
+  /** 
+   * Only select historic task instances which have an owner like the one specified, ignoring any upper/lower case.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
+  HistoricTaskInstanceQuery taskOwnerLikeIgnoreCase(String taskOwnerLikeIgnoreCase);
   
   /** Only select historic tasks for which the given user is a candidate. */
   HistoricTaskInstanceQuery taskCandidateUser(String candidateUser);

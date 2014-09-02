@@ -153,6 +153,30 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertNull(runtimeService.createProcessInstanceQuery().or().processInstanceNameLike("%nope").processDefinitionId("undefined").endOr().singleResult());
   }
   
+  public void testOrQueryByProcessInstanceNameLikeIgnoreCase() {
+    runtimeService.setProcessInstanceName(processInstanceIds.get(0), "new name");
+    runtimeService.setProcessInstanceName(processInstanceIds.get(1), "other Name!");
+    
+    // Runtime
+    assertEquals(2, runtimeService.createProcessInstanceQuery().or().processInstanceNameLikeIgnoreCase("%name%").processDefinitionId("undefined").endOr().list().size());
+    assertEquals(2, runtimeService.createProcessInstanceQuery().processInstanceNameLikeIgnoreCase("%name%").list().size());
+    assertEquals(2, runtimeService.createProcessInstanceQuery().processInstanceNameLikeIgnoreCase("%NAME%").list().size());
+    assertEquals(2, runtimeService.createProcessInstanceQuery().processInstanceNameLikeIgnoreCase("%NaM%").list().size());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceNameLikeIgnoreCase("%the%").list().size());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceNameLikeIgnoreCase("new%").list().size());
+    assertNull(runtimeService.createProcessInstanceQuery().or().processInstanceNameLikeIgnoreCase("%nope").processDefinitionId("undefined").endOr().singleResult());
+    
+    // History
+    assertEquals(2, historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLikeIgnoreCase("%name%").processDefinitionId("undefined").endOr().list().size());
+    assertEquals(2, historyService.createHistoricProcessInstanceQuery().processInstanceNameLikeIgnoreCase("%name%").list().size());
+    assertEquals(2, historyService.createHistoricProcessInstanceQuery().processInstanceNameLikeIgnoreCase("%NAME%").list().size());
+    assertEquals(2, historyService.createHistoricProcessInstanceQuery().processInstanceNameLikeIgnoreCase("%NaM%").list().size());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceNameLikeIgnoreCase("%the%").list().size());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceNameLikeIgnoreCase("new%").list().size());
+    assertNull(historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLikeIgnoreCase("%nope").processDefinitionId("undefined").endOr().singleResult());
+    
+  }
+  
   public void testQueryByBusinessKeyAndProcessDefinitionKey() {
     assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("0", PROCESS_DEFINITION_KEY).count());
     assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("1", PROCESS_DEFINITION_KEY).count());

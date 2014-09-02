@@ -41,16 +41,20 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String taskId;
   protected String name;
   protected String nameLike;
+  protected String nameLikeIgnoreCase;
   protected String description;
   protected String descriptionLike;
+  protected String descriptionLikeIgnoreCase;
   protected Integer priority;
   protected Integer minPriority;
   protected Integer maxPriority;
   protected String assignee;
   protected String assigneeLike;
+  protected String assigneeLikeIgnoreCase;
   protected String involvedUser;
   protected String owner;
   protected String ownerLike;
+  protected String ownerLikeIgnoreCase;
   protected boolean unassigned = false;
   protected boolean noDelegationState = false;
   protected DelegationState delegationState;
@@ -70,12 +74,14 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String keyLike;
   protected String processDefinitionKey;
   protected String processDefinitionKeyLike;
+  protected String processDefinitionKeyLikeIgnoreCase;
   protected String processDefinitionId;
   protected String processDefinitionName;
   protected String processDefinitionNameLike;
   protected String deploymentId;
   protected String processInstanceBusinessKey;
   protected String processInstanceBusinessKeyLike;
+  protected String processInstanceBusinessKeyLikeIgnoreCase;
   protected Date dueDate;
   protected Date dueBefore;
   protected Date dueAfter;
@@ -144,6 +150,19 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
   
+  public TaskQuery taskNameLikeIgnoreCase(String nameLikeIgnoreCase) {
+  	 if (nameLikeIgnoreCase == null) {
+       throw new ActivitiIllegalArgumentException("Task nameLikeIgnoreCase is null");
+     }
+     
+     if(orActive) {
+       orQueryObject.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
+     } else {
+       this.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
+     }
+     return this;
+  }
+  
   public TaskQueryImpl taskDescription(String description) {
     if (description == null) {
       throw new ActivitiIllegalArgumentException("Description is null");
@@ -165,6 +184,18 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       orQueryObject.descriptionLike = descriptionLike;
     } else {
       this.descriptionLike = descriptionLike;
+    }
+    return this;
+  }
+  
+  public TaskQuery taskDescriptionLikeIgnoreCase(String descriptionLikeIgnoreCase) {
+  	if (descriptionLikeIgnoreCase == null) {
+      throw new ActivitiIllegalArgumentException("Task descriptionLikeIgnoreCase is null");
+    }
+    if(orActive) {
+      orQueryObject.descriptionLikeIgnoreCase = descriptionLikeIgnoreCase.toLowerCase();
+    } else {
+      this.descriptionLikeIgnoreCase = descriptionLikeIgnoreCase.toLowerCase();
     }
     return this;
   }
@@ -219,7 +250,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   
   public TaskQueryImpl taskAssigneeLike(String assigneeLike) {
     if (assigneeLike == null) {
-      throw new ActivitiIllegalArgumentException("Assignee is null");
+      throw new ActivitiIllegalArgumentException("AssigneeLike is null");
     }
     if(orActive) {
       orQueryObject.assigneeLike = assignee;
@@ -227,6 +258,18 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       this.assigneeLike = assigneeLike;
     }
     return this;
+  }
+  
+  public TaskQuery taskAssigneeLikeIgnoreCase(String assigneeLikeIgnoreCase) {
+  	 if (assigneeLikeIgnoreCase == null) {
+       throw new ActivitiIllegalArgumentException("assigneeLikeIgnoreCase is null");
+     }
+     if(orActive) {
+       orQueryObject.assigneeLikeIgnoreCase = assigneeLikeIgnoreCase.toLowerCase();
+     } else {
+       this.assigneeLikeIgnoreCase = assigneeLikeIgnoreCase.toLowerCase();
+     }
+     return this;
   }
   
   public TaskQueryImpl taskOwner(String owner) {
@@ -249,6 +292,18 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       orQueryObject.ownerLike = ownerLike;
     } else {
       this.ownerLike = ownerLike;
+    }
+    return this;
+  }
+  
+  public TaskQuery taskOwnerLikeIgnoreCase(String ownerLikeIgnoreCase) {
+  	if (ownerLikeIgnoreCase == null) {
+      throw new ActivitiIllegalArgumentException("OwnerLikeIgnoreCase");
+    }
+    if(orActive) {
+      orQueryObject.ownerLikeIgnoreCase = ownerLikeIgnoreCase.toLowerCase();
+    } else {
+      this.ownerLikeIgnoreCase = ownerLikeIgnoreCase.toLowerCase();
     }
     return this;
   }
@@ -436,6 +491,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       this.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
     }
     return this;
+  }
+  
+  public TaskQuery processInstanceBusinessKeyLikeIgnoreCase(String processInstanceBusinessKeyLikeIgnoreCase) {
+  	 if(orActive) {
+       orQueryObject.processInstanceBusinessKeyLikeIgnoreCase = processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
+     } else {
+       this.processInstanceBusinessKeyLikeIgnoreCase = processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
+     }
+     return this;
   }
   
   public TaskQueryImpl executionId(String executionId) {
@@ -695,6 +759,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       orQueryObject.processDefinitionKeyLike = processDefinitionKeyLike;
     } else {
       this.processDefinitionKeyLike = processDefinitionKeyLike;
+    }
+    return this;
+  }
+  
+  public TaskQuery processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase) {
+  	if(orActive) {
+      orQueryObject.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
+    } else {
+      this.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
     }
     return this;
   }
@@ -1132,8 +1205,32 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public boolean isBothCandidateAndAssigned() {
     return bothCandidateAndAssigned;
   }
+  
+  public String getNameLikeIgnoreCase() {
+		return nameLikeIgnoreCase;
+	}
 
-  public boolean isOrActive() {
+	public String getDescriptionLikeIgnoreCase() {
+		return descriptionLikeIgnoreCase;
+	}
+
+	public String getAssigneeLikeIgnoreCase() {
+		return assigneeLikeIgnoreCase;
+	}
+
+	public String getOwnerLikeIgnoreCase() {
+		return ownerLikeIgnoreCase;
+	}
+
+	public String getProcessInstanceBusinessKeyLikeIgnoreCase() {
+		return processInstanceBusinessKeyLikeIgnoreCase;
+	}
+	
+	public String getProcessDefinitionKeyLikeIgnoreCase() {
+		return processDefinitionKeyLikeIgnoreCase;
+	}
+
+	public boolean isOrActive() {
     return orActive;
   }
   

@@ -224,6 +224,11 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery processInstanceNameLike(String nameLike);
   
   /**
+   * Only select process instances with a name like the given value, ignoring upper/lower case.
+   */
+  ProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase);
+  
+  /**
    * Include process variables in the process query result
    */
   ProcessInstanceQuery includeProcessVariables();

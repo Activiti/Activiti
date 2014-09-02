@@ -2251,12 +2251,187 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         .deploymentId("invalid").count());
   }
   
-  private Task createTask(String name, Date dueDate) {
-  	Task task = taskService.newTask();
-  	task.setName(name);
-  	task.setDueDate(dueDate);
-  	taskService.saveTask(task);
-  	return task;
+  public void testQueryByTaskNameLikeIgnoreCase() {
+  	
+  	// Runtime
+  	assertEquals(12, taskService.createTaskQuery().taskNameLikeIgnoreCase("%task%").count());
+  	assertEquals(12, taskService.createTaskQuery().taskNameLikeIgnoreCase("%Task%").count());
+  	assertEquals(12, taskService.createTaskQuery().taskNameLikeIgnoreCase("%TASK%").count());
+  	assertEquals(12, taskService.createTaskQuery().taskNameLikeIgnoreCase("%TasK%").count());
+  	assertEquals(1, taskService.createTaskQuery().taskNameLikeIgnoreCase("gonzo%").count());
+  	assertEquals(1, taskService.createTaskQuery().taskNameLikeIgnoreCase("%Gonzo%").count());
+  	assertEquals(0, taskService.createTaskQuery().taskNameLikeIgnoreCase("Task%").count());
+  	
+  	// History
+  	assertEquals(12, historyService.createHistoricTaskInstanceQuery().taskNameLikeIgnoreCase("%task%").count());
+  	assertEquals(12, historyService.createHistoricTaskInstanceQuery().taskNameLikeIgnoreCase("%Task%").count());
+  	assertEquals(12, historyService.createHistoricTaskInstanceQuery().taskNameLikeIgnoreCase("%TASK%").count());
+  	assertEquals(12, historyService.createHistoricTaskInstanceQuery().taskNameLikeIgnoreCase("%TasK%").count());
+  	assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskNameLikeIgnoreCase("gonzo%").count());
+  	assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskNameLikeIgnoreCase("%Gonzo%").count());
+  	assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskNameLikeIgnoreCase("Task%").count());
+  }
+  
+  public void testQueryByTaskNameOrDescriptionLikeIgnoreCase() {
+  	
+  	// Runtime
+  	assertEquals(12, taskService.createTaskQuery()
+  			.or()
+  				.taskNameLikeIgnoreCase("%task%")
+  				.taskDescriptionLikeIgnoreCase("%task%")
+  			.endOr()
+  			.count());
+  	
+  	assertEquals(9, taskService.createTaskQuery()
+  			.or()
+  				.taskNameLikeIgnoreCase("ACCOUN%")
+  				.taskDescriptionLikeIgnoreCase("%ESCR%")
+  			.endOr()
+  			.count());
+  	
+  	// History
+  	assertEquals(12, historyService.createHistoricTaskInstanceQuery()
+  			.or()
+  				.taskNameLikeIgnoreCase("%task%")
+  				.taskDescriptionLikeIgnoreCase("%task%")
+  			.endOr()
+  			.count());
+  	
+  	assertEquals(9, historyService.createHistoricTaskInstanceQuery()
+  			.or()
+  				.taskNameLikeIgnoreCase("ACCOUN%")
+  				.taskDescriptionLikeIgnoreCase("%ESCR%")
+  			.endOr()
+  			.count());
+  	
+  }
+  
+  public void testQueryByTaskDescriptionLikeIgnoreCase() {
+  	
+  	// Runtime
+  	assertEquals(6, taskService.createTaskQuery().taskDescriptionLikeIgnoreCase("%task%").count());
+  	assertEquals(6, taskService.createTaskQuery().taskDescriptionLikeIgnoreCase("%Task%").count());
+  	assertEquals(6, taskService.createTaskQuery().taskDescriptionLikeIgnoreCase("%TASK%").count());
+  	assertEquals(6, taskService.createTaskQuery().taskDescriptionLikeIgnoreCase("%TaSk%").count());
+  	assertEquals(0, taskService.createTaskQuery().taskDescriptionLikeIgnoreCase("task%").count());
+  	assertEquals(1, taskService.createTaskQuery().taskDescriptionLikeIgnoreCase("gonzo%").count());
+  	assertEquals(1, taskService.createTaskQuery().taskDescriptionLikeIgnoreCase("Gonzo%").count());
+  	assertEquals(0, taskService.createTaskQuery().taskDescriptionLikeIgnoreCase("%manage%").count());
+  	
+  	// History
+  	assertEquals(6, historyService.createHistoricTaskInstanceQuery().taskDescriptionLikeIgnoreCase("%task%").count());
+  	assertEquals(6, historyService.createHistoricTaskInstanceQuery().taskDescriptionLikeIgnoreCase("%Task%").count());
+  	assertEquals(6, historyService.createHistoricTaskInstanceQuery().taskDescriptionLikeIgnoreCase("%TASK%").count());
+  	assertEquals(6, historyService.createHistoricTaskInstanceQuery().taskDescriptionLikeIgnoreCase("%TaSk%").count());
+  	assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDescriptionLikeIgnoreCase("task%").count());
+  	assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDescriptionLikeIgnoreCase("gonzo%").count());
+  	assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskDescriptionLikeIgnoreCase("Gonzo%").count());
+  	assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDescriptionLikeIgnoreCase("%manage%").count());
+  }
+  
+  public void testQueryByAssigneeLikeIgnoreCase() {
+  	
+  	// Runtime
+  	assertEquals(1, taskService.createTaskQuery().taskAssigneeLikeIgnoreCase("%gonzo%").count());
+  	assertEquals(1, taskService.createTaskQuery().taskAssigneeLikeIgnoreCase("%GONZO%").count());
+  	assertEquals(1, taskService.createTaskQuery().taskAssigneeLikeIgnoreCase("%Gon%").count());
+  	assertEquals(1, taskService.createTaskQuery().taskAssigneeLikeIgnoreCase("gon%").count());
+  	assertEquals(1, taskService.createTaskQuery().taskAssigneeLikeIgnoreCase("%nzo%").count());
+  	assertEquals(0, taskService.createTaskQuery().taskAssigneeLikeIgnoreCase("%doesnotexist%").count());
+  	
+  	// History
+  	assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskAssigneeLikeIgnoreCase("%gonzo%").count());
+  	assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskAssigneeLikeIgnoreCase("%GONZO%").count());
+  	assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskAssigneeLikeIgnoreCase("%Gon%").count());
+  	assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskAssigneeLikeIgnoreCase("gon%").count());
+  	assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskAssigneeLikeIgnoreCase("%nzo%").count());
+  	assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskAssigneeLikeIgnoreCase("%doesnotexist%").count());
+  }
+  
+  public void testQueryByOwnerLikeIgnoreCase() {
+  	
+  	// Runtime
+  	assertEquals(6, taskService.createTaskQuery().taskOwnerLikeIgnoreCase("%gonzo%").count());
+  	assertEquals(6, taskService.createTaskQuery().taskOwnerLikeIgnoreCase("%GONZO%").count());
+  	assertEquals(6, taskService.createTaskQuery().taskOwnerLikeIgnoreCase("%Gon%").count());
+  	assertEquals(6, taskService.createTaskQuery().taskOwnerLikeIgnoreCase("gon%").count());
+  	assertEquals(6, taskService.createTaskQuery().taskOwnerLikeIgnoreCase("%nzo%").count());
+  	assertEquals(0, taskService.createTaskQuery().taskOwnerLikeIgnoreCase("%doesnotexist%").count());
+  	
+  	// History
+  	assertEquals(6, historyService.createHistoricTaskInstanceQuery().taskOwnerLikeIgnoreCase("%gonzo%").count());
+  	assertEquals(6, historyService.createHistoricTaskInstanceQuery().taskOwnerLikeIgnoreCase("%GONZO%").count());
+  	assertEquals(6, historyService.createHistoricTaskInstanceQuery().taskOwnerLikeIgnoreCase("%Gon%").count());
+  	assertEquals(6, historyService.createHistoricTaskInstanceQuery().taskOwnerLikeIgnoreCase("gon%").count());
+  	assertEquals(6, historyService.createHistoricTaskInstanceQuery().taskOwnerLikeIgnoreCase("%nzo%").count());
+  	assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskOwnerLikeIgnoreCase("%doesnotexist%").count());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
+  public void testQueryByBusinessKeyLikeIgnoreCase() {
+  	runtimeService.startProcessInstanceByKey("oneTaskProcess", "BUSINESS-KEY-1");
+  	runtimeService.startProcessInstanceByKey("oneTaskProcess", "Business-Key-2");
+  	runtimeService.startProcessInstanceByKey("oneTaskProcess", "KeY-3");
+    
+  	// Runtime
+  	assertEquals(3, taskService.createTaskQuery().processInstanceBusinessKeyLikeIgnoreCase("%key%").count());
+  	assertEquals(3, taskService.createTaskQuery().processInstanceBusinessKeyLikeIgnoreCase("%KEY%").count());
+  	assertEquals(3, taskService.createTaskQuery().processInstanceBusinessKeyLikeIgnoreCase("%EY%").count());
+  	assertEquals(2, taskService.createTaskQuery().processInstanceBusinessKeyLikeIgnoreCase("%business%").count());
+  	assertEquals(2, taskService.createTaskQuery().processInstanceBusinessKeyLikeIgnoreCase("business%").count());
+  	assertEquals(0, taskService.createTaskQuery().processInstanceBusinessKeyLikeIgnoreCase("%doesnotexist%").count());
+  	
+  	// History
+  	assertEquals(3, historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKeyLikeIgnoreCase("%key%").count());
+  	assertEquals(3, historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKeyLikeIgnoreCase("%KEY%").count());
+  	assertEquals(3, historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKeyLikeIgnoreCase("%EY%").count());
+  	assertEquals(2, historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKeyLikeIgnoreCase("%business%").count());
+  	assertEquals(2, historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKeyLikeIgnoreCase("business%").count());
+  	assertEquals(0, historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKeyLikeIgnoreCase("%doesnotexist%").count());
+  }
+  
+  @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
+  public void testQueryByProcessDefinitionKeyLikeIgnoreCase() {
+  	
+  	// Runtime
+  	runtimeService.startProcessInstanceByKey("oneTaskProcess");
+  	runtimeService.startProcessInstanceByKey("oneTaskProcess");
+  	runtimeService.startProcessInstanceByKey("oneTaskProcess");
+  	runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+  	assertEquals(4, taskService.createTaskQuery().processDefinitionKeyLikeIgnoreCase("%one%").count());
+  	assertEquals(4, taskService.createTaskQuery().processDefinitionKeyLikeIgnoreCase("%ONE%").count());
+  	assertEquals(4, taskService.createTaskQuery().processDefinitionKeyLikeIgnoreCase("ON%").count());
+  	assertEquals(0, taskService.createTaskQuery().processDefinitionKeyLikeIgnoreCase("%fake%").count());
+  	
+  	// History
+  	assertEquals(4, historyService.createHistoricTaskInstanceQuery().processDefinitionKeyLikeIgnoreCase("%one%").count());
+  	assertEquals(4, historyService.createHistoricTaskInstanceQuery().processDefinitionKeyLikeIgnoreCase("%ONE%").count());
+  	assertEquals(4, historyService.createHistoricTaskInstanceQuery().processDefinitionKeyLikeIgnoreCase("ON%").count());
+  	assertEquals(0, historyService.createHistoricTaskInstanceQuery().processDefinitionKeyLikeIgnoreCase("%fake%").count());
+  }
+  
+  public void testCombinationOfOrAndLikeIgnoreCase() {
+  	
+  	// Runtime
+  	assertEquals(12, taskService.createTaskQuery()
+  			.or()
+  				.taskNameLikeIgnoreCase("%task%")
+  				.taskDescriptionLikeIgnoreCase("%desc%")
+  				.taskAssigneeLikeIgnoreCase("Gonz%")
+  				.taskOwnerLike("G%")
+  			.endOr()
+  			.count());
+  	
+  	// History
+  	assertEquals(12, historyService.createHistoricTaskInstanceQuery()
+  			.or()
+  				.taskNameLikeIgnoreCase("%task%")
+  				.taskDescriptionLikeIgnoreCase("%desc%")
+  				.taskAssigneeLikeIgnoreCase("Gonz%")
+  				.taskOwnerLike("G%")
+  			.endOr()
+  			.count());
   }
   
   /**
@@ -2275,6 +2450,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       Task task = taskService.newTask();
       task.setName("testTask");
       task.setDescription("testTask description");
+      task.setOwner("gonzo");
       task.setPriority(3);
       taskService.saveTask(task);
       ids.add(task.getId());
@@ -2308,7 +2484,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     for (int i = 0; i < 2; i++) {
       task = taskService.newTask();
       task.setName("accountancyTask");
-      task.setName("accountancy description");
+      task.setDescription("accountancy description");
       taskService.saveTask(task);
       taskService.addCandidateGroup(task.getId(), "accountancy");
       ids.add(task.getId());

@@ -41,12 +41,28 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    *  The syntax is that of SQL: for example usage: nameLike(%activiti%)*/
   TaskQuery taskNameLike(String nameLike);
   
+  /** Only select tasks with a name matching the parameter.
+   *  The syntax is that of SQL: for example usage: nameLike(%activiti%)
+   *  
+   *  This method, unlike the {@link #taskNameLike(String)} method will 
+   *  not take in account the upper/lower case: both the input parameter as the column value are
+   *  lowercased when the query is executed. */
+  TaskQuery taskNameLikeIgnoreCase(String nameLike);
+  
   /** Only select tasks with the given description. */
   TaskQuery taskDescription(String description);
   
   /** Only select tasks with a description matching the parameter .
    *  The syntax is that of SQL: for example usage: descriptionLike(%activiti%)*/
   TaskQuery taskDescriptionLike(String descriptionLike);
+  
+  /** Only select tasks with a description matching the parameter .
+   *  The syntax is that of SQL: for example usage: descriptionLike(%activiti%)
+   *  
+   *  This method, unlike the {@link #taskDescriptionLike(String)} method will 
+   *  not take in account the upper/lower case: both the input parameter as the column value are
+   *  lowercased when the query is executed. */
+  TaskQuery taskDescriptionLikeIgnoreCase(String descriptionLike);
   
   /** Only select tasks with the given priority. */
   TaskQuery taskPriority(Integer priority);
@@ -67,6 +83,18 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    */
   TaskQuery taskAssigneeLike(String assigneeLike);
   
+  /** 
+   * Only select tasks which were last assigned to an assignee like
+   * the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   * 
+   * This method, unlike the {@link #taskAssigneeLike(String)} method will 
+   * not take in account the upper/lower case: both the input parameter as the column value are
+   * lowercased when the query is executed. 
+   */
+  TaskQuery taskAssigneeLikeIgnoreCase(String assigneeLikeIgnoreCase);
+  
+  
   /** Only select tasks for which the given user is the owner. */
   TaskQuery taskOwner(String owner);
   
@@ -76,6 +104,17 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    * The syntax that should be used is the same as in SQL, eg. %activiti%.
    */
   TaskQuery taskOwnerLike(String ownerLike);
+  
+  /** 
+   * Only select tasks which were last assigned to an owner like
+   * the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   * 
+   * This method, unlike the {@link #taskOwnerLike(String)} method will 
+   * not take in account the upper/lower case: both the input parameter as the column value are
+   * lowercased when the query is executed. 
+   */
+  TaskQuery taskOwnerLikeIgnoreCase(String ownerLikeIgnoreCase);
   
   /** Only select tasks which don't have an assignee. */
   TaskQuery taskUnassigned();
@@ -139,6 +178,15 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    * The syntax is that of SQL: for example usage: processInstanceBusinessKeyLike("%activiti%"). 
    */
   TaskQuery processInstanceBusinessKeyLike(String processInstanceBusinessKeyLike);
+  
+  /** Only select tasks with a business key  like the given value
+   * The syntax is that of SQL: for example usage: processInstanceBusinessKeyLike("%activiti%"). 
+   * 
+   * This method, unlike the {@link #processInstanceBusinessKeyLike(String)} method will 
+   * not take in account the upper/lower case: both the input parameter as the column value are
+   * lowercased when the query is executed. 
+   */
+  TaskQuery processInstanceBusinessKeyLikeIgnoreCase(String processInstanceBusinessKeyLikeIgnoreCase);
 
   /** Only select tasks for the given execution. */
   TaskQuery executionId(String executionId);
@@ -348,6 +396,18 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
    * The syntax that should be used is the same as in SQL, eg. %activiti%.
    */
   TaskQuery processDefinitionKeyLike(String processDefinitionKeyLike);
+  
+  /**
+   * Only select tasks which are part of a process instance which has a
+   * process definition key like the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   * 
+   * This method, unlike the {@link #processDefinitionKeyLike(String)} method will 
+   *  not take in account the upper/lower case: both the input parameter as the column value are
+   *  lowercased when the query is executed.
+   */
+  TaskQuery processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase);
+  
   
   /**
    * Only select tasks which are part of a process instance which has the given

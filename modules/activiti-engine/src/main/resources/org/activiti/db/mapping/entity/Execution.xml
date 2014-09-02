@@ -410,6 +410,9 @@
       <if test="nameLike != null">
         and RES.NAME_ like #{nameLike}
       </if>
+       <if test="nameLikeIgnoreCase != null">
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase}
+      </if>
       <if test="involvedUser != null">
         and EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{involvedUser})
       </if>
@@ -547,6 +550,9 @@
           </if>
           <if test="orQueryObject.nameLike != null">
             or RES.NAME_ like #{orQueryObject.nameLike}
+          </if>
+          <if test="orQueryObject.nameLikeIgnoreCase != null">
+            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}
           </if>
           <if test="orQueryObject.involvedUser != null">
             or EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{orQueryObject.involvedUser})

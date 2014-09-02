@@ -59,6 +59,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected boolean withoutTenantId;
   protected String name;
   protected String nameLike;
+  protected String nameLikeIgnoreCase;
   protected HistoricProcessInstanceQueryImpl orQueryObject;
   protected boolean inOrStatement = false;
   
@@ -308,6 +309,16 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
       this.orQueryObject.nameLike = nameLike;
     } else {
       this.nameLike = nameLike;
+    }
+    return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase) {
+    if (inOrStatement) {
+      this.orQueryObject.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
+    } else {
+      this.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
     }
     return this;
   }
@@ -603,8 +614,12 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public boolean isWithoutTenantId() {
     return withoutTenantId;
   }
+  
+  public String getNameLikeIgnoreCase() {
+		return nameLikeIgnoreCase;
+	}
 
-  public HistoricProcessInstanceQueryImpl getOrQueryObject() {
+	public HistoricProcessInstanceQueryImpl getOrQueryObject() {
     return orQueryObject;
   }
 }

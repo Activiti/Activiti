@@ -234,4 +234,9 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Only select process instances with a name like the given value.
    */
   HistoricProcessInstanceQuery processInstanceNameLike(String nameLike);
+  
+  /**
+   * Only select process instances with a name like the given value, ignoring upper/lower case.
+   */
+  HistoricProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase);
 }
