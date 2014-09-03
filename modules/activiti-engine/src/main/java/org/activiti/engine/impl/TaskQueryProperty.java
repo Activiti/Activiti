@@ -50,11 +50,14 @@ public class TaskQueryProperty implements QueryProperty {
   public static final TaskQueryProperty DESCRIPTION = new TaskQueryProperty("RES.DESCRIPTION_");
   public static final TaskQueryProperty PRIORITY = new TaskQueryProperty("RES.PRIORITY_");
   public static final TaskQueryProperty ASSIGNEE = new TaskQueryProperty("RES.ASSIGNEE_");
+  public static final TaskQueryProperty OWNER = new TaskQueryProperty("RES.OWNER_");
   public static final TaskQueryProperty CREATE_TIME = new TaskQueryProperty("RES.CREATE_TIME_");
   public static final TaskQueryProperty PROCESS_INSTANCE_ID = new TaskQueryProperty("RES.PROC_INST_ID_");
   public static final TaskQueryProperty EXECUTION_ID = new TaskQueryProperty("RES.EXECUTION_ID_");
+  public static final TaskQueryProperty PROCESS_DEFINITION_ID = new TaskQueryProperty("RES.PROC_DEF_ID_");
   public static final TaskQueryProperty DUE_DATE = new TaskQueryProperty("RES.DUE_DATE_");
   public static final TaskQueryProperty TENANT_ID = new TaskQueryProperty("RES.TENANT_ID_");
+  public static final TaskQueryProperty TASK_DEFINITION_KEY = new TaskQueryProperty("RES.TASK_DEF_KEY_");
   
   private String name;
 

@@ -829,6 +829,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
   
+  @Override
+  public TaskQuery taskDueDate(Date dueDate) {
+  	return dueDate(dueDate);
+  }
+  
   public TaskQuery dueBefore(Date dueBefore) {
     if(orActive) {
       orQueryObject.dueBefore = dueBefore;
@@ -838,6 +843,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       this.withoutDueDate = false;
     }
     return this;
+  }
+  
+  @Override
+  public TaskQuery taskDueBefore(Date dueDate) {
+  	return dueBefore(dueDate);
   }
   
   public TaskQuery dueAfter(Date dueAfter) {
@@ -851,6 +861,10 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
   
+  public TaskQuery taskDueAfter(Date dueDate) {
+    return dueAfter(dueDate);
+  }
+  
   public TaskQuery withoutDueDate() {
     if(orActive) {
       orQueryObject.withoutDueDate = true;
@@ -858,6 +872,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       this.withoutDueDate = true;
     }
     return this;
+  }
+  
+  @Override
+  public TaskQuery withoutTaskDueDate() {
+  	return withoutDueDate();
   }
 
   public TaskQuery excludeSubtasks() {
@@ -985,8 +1004,18 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return orderBy(TaskQueryProperty.EXECUTION_ID);
   }
   
+  @Override
+  public TaskQuery orderByProcessDefinitionId() {
+  	return orderBy(TaskQueryProperty.PROCESS_DEFINITION_ID);
+  }
+  
   public TaskQuery orderByTaskAssignee() {
     return orderBy(TaskQueryProperty.ASSIGNEE);
+  }
+  
+  @Override
+  public TaskQuery orderByTaskOwner() {
+  	return orderBy(TaskQueryProperty.OWNER);
   }
   
   public TaskQuery orderByTaskCreateTime() {
@@ -995,6 +1024,16 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   
   public TaskQuery orderByDueDate() {
     return orderBy(TaskQueryProperty.DUE_DATE);
+  }
+  
+  @Override
+  public TaskQuery orderByTaskDueDate() {
+  	return orderByDueDate();
+  }
+  
+  @Override
+  public TaskQuery orderByTaskDefinitionKey() {
+  	return orderBy(TaskQueryProperty.TASK_DEFINITION_KEY);
   }
   
   public TaskQuery orderByDueDateNullsFirst() {
