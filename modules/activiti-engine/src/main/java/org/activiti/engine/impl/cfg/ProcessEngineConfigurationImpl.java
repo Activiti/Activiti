@@ -246,7 +246,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected RepositoryService repositoryService = new RepositoryServiceImpl();
   protected RuntimeService runtimeService = new RuntimeServiceImpl();
-  protected HistoryService historyService = new HistoryServiceImpl();
+  protected HistoryService historyService = new HistoryServiceImpl(this);
   protected IdentityService identityService = new IdentityServiceImpl();
   protected TaskService taskService = new TaskServiceImpl(this);
   protected FormService formService = new FormServiceImpl();

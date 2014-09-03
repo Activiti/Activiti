@@ -22,6 +22,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.impl.AbstractQuery.NullHandlingOnOrder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -99,6 +100,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   public HistoricTaskInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
+  }
+  
+  public HistoricTaskInstanceQueryImpl(CommandExecutor commandExecutor, String databaseType) {
+    super(commandExecutor);
+    this.databaseType = databaseType;
   }
 
   @Override
@@ -658,6 +664,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
   
+  @Override
+  public HistoricTaskInstanceQuery dueDate(Date dueDate) {
+  	return taskDueDate(dueDate);
+  }
+  
   public HistoricTaskInstanceQuery taskDueAfter(Date dueAfter) {
     if (inOrStatement) {
       this.orQueryObject.dueAfter = dueAfter;
@@ -667,6 +678,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
   
+  @Override
+  public HistoricTaskInstanceQuery dueAfter(Date dueDate) {
+  	return taskDueAfter(dueDate);
+  }
+  
   public HistoricTaskInstanceQuery taskDueBefore(Date dueBefore) {
     if (inOrStatement) {
       this.orQueryObject.dueBefore = dueBefore;
@@ -674,6 +690,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.dueBefore = dueBefore;
     }
     return this;
+  }
+  
+  @Override
+  public HistoricTaskInstanceQuery dueBefore(Date dueDate) {
+  	return taskDueBefore(dueDate);
   }
   
   public HistoricTaskInstanceQuery taskCreatedOn(Date creationDate) {
@@ -737,6 +758,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.withoutDueDate = true;
     }
     return this;
+  }
+  
+  @Override
+  public HistoricTaskInstanceQuery withoutDueDate() {
+  	return withoutTaskDueDate();
   }
   
   public HistoricTaskInstanceQuery taskCategory(String category) {
@@ -930,6 +956,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     orderBy(HistoricTaskInstanceQueryProperty.START);
     return this;
   }
+  
+  @Override
+  public HistoricTaskInstanceQuery orderByTaskCreateTime() {
+  	return orderByHistoricTaskInstanceStartTime();
+  }
 
   public HistoricTaskInstanceQueryImpl orderByTaskName() {
     orderBy(HistoricTaskInstanceQueryProperty.TASK_NAME);
@@ -954,6 +985,16 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public HistoricTaskInstanceQuery orderByTaskDueDate() {
     orderBy(HistoricTaskInstanceQueryProperty.TASK_DUE_DATE);
     return this;
+  }
+  
+  @Override
+  public HistoricTaskInstanceQuery orderByDueDateNullsFirst() {
+  	return orderBy(HistoricTaskInstanceQueryProperty.TASK_DUE_DATE, NullHandlingOnOrder.NULLS_FIRST);
+  }
+  
+  @Override
+  public HistoricTaskInstanceQuery orderByDueDateNullsLast() {
+  	return orderBy(HistoricTaskInstanceQueryProperty.TASK_DUE_DATE, NullHandlingOnOrder.NULLS_LAST);
   }
   
   public HistoricTaskInstanceQueryImpl orderByDeleteReason() {
