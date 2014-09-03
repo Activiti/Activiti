@@ -21,6 +21,7 @@ import java.util.Set;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.task.TaskQuery;
 
 /**
  * Allows programmatic querying of {@link HistoricProcessInstance}s.
@@ -56,6 +57,11 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /** Only select historic process instances that are defined by a process
    * definition with the given deployment identifier.  */
   HistoricProcessInstanceQuery deploymentId(String deploymentId);
+  
+  /**
+   * Only select historic process instances that are defined by a process
+   * definition with one of the given deployment identifiers.  */
+  HistoricProcessInstanceQuery deploymentIdIn(List<String> deploymentIds);
 
   /** Only select historic process instances that are completely finished. */
   HistoricProcessInstanceQuery finished();

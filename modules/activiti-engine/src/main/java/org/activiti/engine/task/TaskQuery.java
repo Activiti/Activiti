@@ -435,6 +435,12 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery deploymentId(String deploymentId);
   
   /**
+   * Only select tasks which are part of a process instance which has one of the given
+   * deployment ids.
+   */
+  TaskQuery deploymentIdIn(List<String> deploymentIds);
+  
+  /**
    * Only select tasks with the given due date.
    */
   TaskQuery dueDate(Date dueDate);

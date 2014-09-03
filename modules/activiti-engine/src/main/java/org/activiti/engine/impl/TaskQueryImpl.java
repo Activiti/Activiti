@@ -79,6 +79,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String processDefinitionName;
   protected String processDefinitionNameLike;
   protected String deploymentId;
+  protected List<String> deploymentIds;
   protected String processInstanceBusinessKey;
   protected String processInstanceBusinessKeyLike;
   protected String processInstanceBusinessKeyLikeIgnoreCase;
@@ -808,6 +809,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
   
+  public TaskQuery deploymentIdIn(List<String> deploymentIds) {
+    if(orActive) {
+      orQueryObject.deploymentIds = deploymentIds;
+    } else {
+      this.deploymentIds = deploymentIds;
+    }
+    return this;
+  }
+  
   public TaskQuery dueDate(Date dueDate) {
     if(orActive) {
       orQueryObject.dueDate = dueDate;
@@ -1168,6 +1178,10 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
 
   public String getDeploymentId() {
     return deploymentId;
+  }
+  
+  public List<String> getDeploymentIds() {
+    return deploymentIds;
   }
 
   public String getProcessInstanceBusinessKeyLike() {

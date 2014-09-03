@@ -227,6 +227,21 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals(5, runtimeService.createProcessInstanceQuery().deploymentId(deployment.getId()).count());
   }
   
+  public void testQueryByDeploymentIdIn() {
+    List<String> deploymentIds = new ArrayList<String>();
+    deploymentIds.add(deployment.getId());
+    List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().deploymentIdIn(deploymentIds).list();
+    assertEquals(5, instances.size());
+    
+    ProcessInstance processInstance = instances.get(0);
+    assertEquals(deployment.getId(), processInstance.getDeploymentId());
+    assertEquals(new Integer(1), processInstance.getProcessDefinitionVersion());
+    assertEquals(PROCESS_DEFINITION_KEY, processInstance.getProcessDefinitionKey());
+    assertEquals("oneTaskProcessName", processInstance.getProcessDefinitionName());
+    
+    assertEquals(5, runtimeService.createProcessInstanceQuery().deploymentIdIn(deploymentIds).count());
+  }
+  
   public void testOrQueryByDeploymentId() {
     List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().or().deploymentId(deployment.getId()).processDefinitionId("undefined").endOr().list();
     assertEquals(5, instances.size());
@@ -235,7 +250,22 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals(new Integer(1), processInstance.getProcessDefinitionVersion());
     assertEquals(PROCESS_DEFINITION_KEY, processInstance.getProcessDefinitionKey());
     assertEquals("oneTaskProcessName", processInstance.getProcessDefinitionName());
-    assertEquals(5, runtimeService.createProcessInstanceQuery().deploymentId(deployment.getId()).count());
+    assertEquals(5, runtimeService.createProcessInstanceQuery().or().deploymentId(deployment.getId()).processDefinitionId("undefined").endOr().count());
+  }
+  
+  public void testOrQueryByDeploymentIdIn() {
+    List<String> deploymentIds = new ArrayList<String>();
+    deploymentIds.add(deployment.getId());
+    List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().or().deploymentIdIn(deploymentIds).processDefinitionId("undefined").endOr().list();
+    assertEquals(5, instances.size());
+    
+    ProcessInstance processInstance = instances.get(0);
+    assertEquals(deployment.getId(), processInstance.getDeploymentId());
+    assertEquals(new Integer(1), processInstance.getProcessDefinitionVersion());
+    assertEquals(PROCESS_DEFINITION_KEY, processInstance.getProcessDefinitionKey());
+    assertEquals("oneTaskProcessName", processInstance.getProcessDefinitionName());
+    
+    assertEquals(5, runtimeService.createProcessInstanceQuery().or().deploymentIdIn(deploymentIds).processDefinitionId("undefined").endOr().count());
   }
   
   public void testQueryByInvalidDeploymentId() {

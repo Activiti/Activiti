@@ -96,6 +96,12 @@ public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQu
    */
   HistoricTaskInstanceQuery deploymentId(String deploymentId);
   
+  /**
+   * Only select historic task instances which are part of a (historic) process instance 
+   * which has one of the given deployment ids.
+   */
+  HistoricTaskInstanceQuery deploymentIdIn(List<String> deploymentIds);
+  
   /** 
    * Only select historic task instances with the given task name.
    * This is the last name given to the task. 

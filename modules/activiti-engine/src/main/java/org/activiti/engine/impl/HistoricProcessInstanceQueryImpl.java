@@ -38,6 +38,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String processDefinitionId;
   protected String businessKey;
   protected String deploymentId;
+  protected List<String> deploymentIds;
   protected boolean finished = false;
   protected boolean unfinished = false;
   protected boolean deleted = false;
@@ -131,6 +132,15 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
       this.orQueryObject.deploymentId = deploymentId;
     } else {
       this.deploymentId = deploymentId;
+    }
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery deploymentIdIn(List<String> deploymentIds) {
+    if (inOrStatement) {
+      orQueryObject.deploymentIds = deploymentIds;
+    } else {
+      this.deploymentIds = deploymentIds;
     }
     return this;
   }
@@ -581,6 +591,10 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
 
   public String getDeploymentId() {
     return deploymentId;
+  }
+  
+  public List<String> getDeploymentIds() {
+    return deploymentIds;
   }
 
   public boolean isFinished() {
