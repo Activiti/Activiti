@@ -441,6 +441,44 @@ INFO  org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl  - class org.a
 	
 	</section>
 	
+	<section id="advanced.task.query.switching">
+	
+		<title>Advanced query API: seamless switching between runtime and historic task querying</title>
+	
+		<para>
+			One core component of any BPM user interface is the task list. Typically, end users work on open, runtime tasks, filtering 
+			their inbox with various setting. Often also the historic tasks need to be displayed in those lists, with similar filtering.
+			To make that code-wise easier, the <emphasis>TaskQuery</emphasis> and <emphasis>HistoricTaskInstanceQuery</emphasis> both have a shared parent interface, 
+			which contains all common operations (and most of the operations are common).  
+		</para>
+		
+		<para>
+			This common interface is the <emphasis>org.activiti.engine.task.TaskInfoQuery</emphasis> class.
+			Both <emphasis>org.activiti.engine.task.Task</emphasis> and <emphasis>org.activiti.engine.task.HistoricTaskInstance</emphasis> 
+			have a common superclass <emphasis>org.activiti.engine.task.TaskInfo</emphasis> (with common properties) which is returned from eg. the <emphasis>list()</emphasis> method.
+			However, Java generics are sometimes more harming than helping: if you want to use the <emphasis>TaskInfoQuery</emphasis> type directly, it would look like this:
+			<programlisting>
+TaskInfoQuery&lt;? extends TaskInfoQuery&lt;?,?&gt;, ? extends TaskInfo&gt; taskInfoQuery</programlisting>
+			Ugh, Right. To 'solve' this, a <emphasis>org.activiti.engine.task.TaskInfoQueryWrapper</emphasis> class that can be used to avoid the generics 
+			(the following code could come from REST code that returns a task list where the user cn switch between open and completed tasks):
+			<programlisting>
+TaskInfoQueryWrapper taskInfoQueryWrapper = null;
+if (runtimeQuery) {			
+	taskInfoQueryWrapper = new TaskInfoQueryWrapper(taskService.createTaskQuery());
+} else {
+	taskInfoQueryWrapper = new TaskInfoQueryWrapper(historyService.createHistoricTaskInstanceQuery());
+}
+
+List&lt;? extends TaskInfo&gt; taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or()
+	.taskNameLike("%k1%")
+	.taskDueAfter(new Date(now.getTime() + (3 * 24L * 60L * 60L * 1000L)))
+.endOr()
+.list();</programlisting>
+		</para>
+		
+	
+	</section>
+	
 	<section id="advanced.safe.bpmn.xml">
 	
 	   <title>Enable safe BPMN 2.0 xml</title>
