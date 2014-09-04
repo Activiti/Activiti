@@ -315,7 +315,7 @@
     <if test="processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null  || processInstanceBusinessKeyLikeIgnoreCase != null || (orQueryObject != null &amp;&amp; (orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null))">
         inner join ${prefix}ACT_RU_EXECUTION E on RES.PROC_INST_ID_ = E.ID_
     </if>
-    <if test="deploymentId != null || (orQueryObject != null &amp;&amp; orQueryObject.deploymentId != null)">
+    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)))">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <where> 
@@ -426,6 +426,13 @@
       </if>
       <if test="deploymentId != null">
         and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
+      </if>
+      <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
+        and DEPLOY_P.DEPLOYMENT_ID_ IN
+        <foreach item="deployment" index="index" collection="deploymentIds" 
+                 open="(" separator="," close=")">
+          #{deployment}
+        </foreach>
       </if>
       <if test="dueDate != null">
         and RES.DUE_DATE_ = #{dueDate}
@@ -685,6 +692,13 @@
             </if>
             <if test="orQueryObject.deploymentId != null">
               or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+            </if>
+            <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
+              or DEPLOY_P.DEPLOYMENT_ID_ IN
+              <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
+                       open="(" separator="," close=")">
+                #{deployment}
+              </foreach>
             </if>
             <if test="orQueryObject.dueDate != null">
               or RES.DUE_DATE_ = #{orQueryObject.dueDate}

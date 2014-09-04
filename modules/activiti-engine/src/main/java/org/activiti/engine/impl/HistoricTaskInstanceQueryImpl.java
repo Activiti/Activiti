@@ -42,6 +42,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String processDefinitionName;
   protected String processDefinitionNameLike;
   protected String deploymentId;
+  protected List<String> deploymentIds;
   protected String processInstanceId;
   protected String processInstanceBusinessKey;
   protected String processInstanceBusinessKeyLike;
@@ -236,6 +237,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.orQueryObject.deploymentId = deploymentId;
     } else {
       this.deploymentId = deploymentId;
+    }
+    return this;
+  }
+  
+  public HistoricTaskInstanceQuery deploymentIdIn(List<String> deploymentIds) {
+    if (inOrStatement) {
+      orQueryObject.deploymentIds = deploymentIds;
+    } else {
+      this.deploymentIds = deploymentIds;
     }
     return this;
   }
@@ -1091,6 +1101,9 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
   public String getDeploymentId() {
     return deploymentId;
+  }
+  public List<String> getDeploymentIds() {
+    return deploymentIds;
   }
   public String getProcessInstanceBusinessKeyLike() {
     return processInstanceBusinessKeyLike;

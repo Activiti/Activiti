@@ -15,10 +15,7 @@ package org.activiti.engine.history;
 
 import java.util.Date;
 
-import org.activiti.engine.query.Query;
-import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInfoQuery;
-import org.activiti.engine.task.TaskQuery;
 
 
 /**
@@ -27,7 +24,7 @@ import org.activiti.engine.task.TaskQuery;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface HistoricTaskInstanceQuery  extends TaskInfoQuery<HistoricTaskInstanceQuery, HistoricTaskInstance> {  
+public interface HistoricTaskInstanceQuery extends TaskInfoQuery<HistoricTaskInstanceQuery, HistoricTaskInstance> {  
 
   /** Only select historic task instances with the given task delete reason. */
   HistoricTaskInstanceQuery taskDeleteReason(String taskDeleteReason);

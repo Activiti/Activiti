@@ -45,6 +45,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected Set<String> processInstanceIds; 
   protected String processDefinitionKey;
   protected String deploymentId;
+  protected List<String> deploymentIds;
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
   protected boolean excludeSubprocesses;
@@ -208,6 +209,15 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
       this.orQueryObject.deploymentId = deploymentId;
     } else {
       this.deploymentId = deploymentId;
+    }
+    return this;
+  }
+  
+  public ProcessInstanceQueryImpl deploymentIdIn(List<String> deploymentIds) {
+    if (inOrStatement) {
+      this.orQueryObject.deploymentIds = deploymentIds;
+    } else {
+      this.deploymentIds = deploymentIds;
     }
     return this;
   }
@@ -575,6 +585,10 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
 
   public String getDeploymentId() {
     return deploymentId;
+  }
+  
+  public List<String> getDeploymentIds() {
+    return deploymentIds;
   }
 
   public boolean isIncludeProcessVariables() {
