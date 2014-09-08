@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -169,6 +170,12 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return variableInstances.keySet();
   }
 
+  public Map<String,VariableInstanceEntity> getVariableInstances()
+  {
+    ensureVariableInstancesInitialized();
+    return Collections.unmodifiableMap(variableInstances);
+  }
+  
   public void createVariablesLocal(Map<String, ? extends Object> variables) {
     if (variables!=null) {
       for (Map.Entry<String, ? extends Object> entry: variables.entrySet()) {
