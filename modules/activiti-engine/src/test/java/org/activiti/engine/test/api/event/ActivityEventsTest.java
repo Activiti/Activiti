@@ -12,11 +12,17 @@
  */
 package org.activiti.engine.test.api.event;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import org.activiti.engine.delegate.event.*;
+import org.activiti.engine.delegate.event.ActivitiActivityEvent;
+import org.activiti.engine.delegate.event.ActivitiErrorEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.delegate.event.impl.ActivitiActivityEventImpl;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.event.logger.EventLogger;
@@ -504,15 +510,14 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 
     // Check timeout-events have been dispatched
     assertEquals(3, listener.getEventsReceived().size());
-    ActivitiActivityEventImpl timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
-    assertEquals("innerTask1", timeOutEvent.getActivityId());
-    timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
-    assertEquals("innerTask2", timeOutEvent.getActivityId());
-    timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(2);
-    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
-    assertEquals("innerFork", timeOutEvent.getActivityId());
+    List<String> eventIdList = new ArrayList<String>();
+    for (ActivitiEvent event : listener.getEventsReceived()) {
+      assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, event.getType());
+      eventIdList.add(((ActivitiActivityEventImpl) event).getActivityId());
+    }
+    assertTrue(eventIdList.indexOf("innerTask1") >= 0);
+    assertTrue(eventIdList.indexOf("innerTask2") >= 0);
+    assertTrue(eventIdList.indexOf("innerFork") >= 0);
   }
 
   @Deployment
@@ -530,18 +535,15 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 
     // Check timeout-events have been dispatched
     assertEquals(4, listener.getEventsReceived().size());
-    ActivitiActivityEventImpl timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
-    assertEquals("innerTask1", timeOutEvent.getActivityId());
-    timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
-    assertEquals("innerTask2", timeOutEvent.getActivityId());
-    timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(2);
-    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
-    assertEquals("innerFork", timeOutEvent.getActivityId());
-    timeOutEvent = (ActivitiActivityEventImpl) listener.getEventsReceived().get(3);
-    assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
-    assertEquals("callActivity", timeOutEvent.getActivityId());
+    List<String> eventIdList = new ArrayList<String>();
+    for (ActivitiEvent event : listener.getEventsReceived()) {
+      assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, event.getType());
+      eventIdList.add(((ActivitiActivityEventImpl) event).getActivityId());
+    }
+    assertTrue(eventIdList.indexOf("innerTask1") >= 0);
+    assertTrue(eventIdList.indexOf("innerTask2") >= 0);
+    assertTrue(eventIdList.indexOf("innerFork") >= 0);
+    assertTrue(eventIdList.indexOf("callActivity") >= 0);
   }
 
   protected void assertDatabaseEventPresent(ActivitiEventType eventType) {
