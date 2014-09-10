@@ -6001,6 +6001,38 @@ public class MyTaskCreateListener implements TaskListener {
     </para>
     
 	</section>
+	<section id="failRetry">
+      
+        <title>Fail Retry</title>
+                
+        <para>
+		Activiti, in its default configuration, reruns a job 3 times in a row , without pause, in case of any exception in execution of a job. This holds also for asynchronous task jobs. 
+		In some cases more flexibility is required.
+		There are two parameters to be configured:
+		<itemizedlist>
+		   	<listitem>			
+				Number of retries 
+			</listitem>
+		   	<listitem>			
+				Delay between retries
+			</listitem>						
+		</itemizedlist>
+		These parameters can be configured by <literal>activiti:failedJobRetryTimeCycle</literal> element. Here is a sample usage:
+		
+		<programlisting>
+&lt;serviceTask id=&quot;failingServiceTask&quot; activiti:async=&quot;true&quot; activiti:class=&quot;org.activiti.engine.test.jobexecutor.RetryFailingDelegate&quot;>
+	&lt;extensionElements&gt;
+		&lt;activiti:failedJobRetryTimeCycle&gt;R5/PT7M&lt;/activiti:failedJobRetryTimeCycle&gt;
+	&lt;/extensionElements&gt;
+&lt;/serviceTask&gt;
+		</programlisting>
+		Time cycle expression follows ISO 8601 standard, just like timer event expressions. The above example, makes the job executor to retry the job 5 times and wait 7 minutes between before each retry.
+		</para>
+    
+    
+	</section>
+
+
 	<section id="exclusiveJobs">
       
         <title>Exclusive Jobs</title>
