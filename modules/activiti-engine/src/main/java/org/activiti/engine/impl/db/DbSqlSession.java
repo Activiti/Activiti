@@ -560,10 +560,6 @@ public class DbSqlSession implements Session {
 
   // deserialized objects /////////////////////////////////////////////////////
   
-  public void addDeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstanceEntity variableInstanceEntity) {
-    addDeserializedObject(new DeserializedObject(deserializedObject, serializedBytes, variableInstanceEntity));
-  }
-  
   public void addDeserializedObject(DeserializedObject deserializedObject) {
   	deserializedObjects.add(deserializedObject);
   }
