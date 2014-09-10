@@ -34,6 +34,8 @@
         <property name="processEngineConfiguration" ref="processEngineConfiguration"/>
     </bean>
 
+    <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService"/>
+
     <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
     
     <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
