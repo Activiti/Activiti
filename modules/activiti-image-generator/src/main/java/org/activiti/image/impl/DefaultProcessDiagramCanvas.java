@@ -1123,7 +1123,7 @@ public class DefaultProcessDiagramCanvas {
     	  double tX = graphicInfo.getX();
     	  if (centered)
         	  tX += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
-    	  tl.draw(g, tX, textY);
+    	  tl.draw(g, (float) tX, textY);
     	  textY += tl.getDescent() + tl.getLeading() + (interline - 1.0f) * tl.getAscent();
       }
   
