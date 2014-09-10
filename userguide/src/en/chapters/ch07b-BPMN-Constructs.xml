@@ -6006,9 +6006,8 @@ public class MyTaskCreateListener implements TaskListener {
         <title>Fail Retry</title>
                 
         <para>
-		Activiti, in its default configuration, reruns a job 3 times in a row , without pause, in case of any exception in execution of a job. This holds also for asynchronous task jobs. 
-		In some cases more flexibility is required.
-		There are two parameters to be configured:
+		Activiti, in its default configuration, reruns a job 3 times in case of any exception in execution of a job. This holds also for asynchronous task jobs. 
+		In some cases more flexibility is required. There are two parameters to be configured:
 		<itemizedlist>
 		   	<listitem>			
 				Number of retries 
