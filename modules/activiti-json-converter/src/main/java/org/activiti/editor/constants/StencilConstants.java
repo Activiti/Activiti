@@ -120,11 +120,10 @@ public interface StencilConstants {
 	final String PROPERTY_EXECUTION_LISTENER_CLASS = "execution_listener_class";
 	final String PROPERTY_EXECUTION_LISTENER_EXPRESSION = "execution_listener_expression";
 	final String PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION = "execution_listener_delegate_expression";
-        
-        final String PROPERTY_EXECUTION_LISTENER_FIELDS = "execution_listener_fields";
-        final String PROPERTY_EXECUTION_LISTENER_FIELD_NAME = "execution_listener_field_name";
-        final String PROPERTY_EXECUTION_LISTENER_FIELD_VALUE = "execution_listener_field_value";
-        final String PROPERTY_EXECUTION_LISTENER_FIELD_EXPRESSION = "execution_listener_field_expression";
+  final String PROPERTY_EXECUTION_LISTENER_FIELDS = "execution_listener_fields";
+  final String PROPERTY_EXECUTION_LISTENER_FIELD_NAME = "execution_listener_field_name";
+  final String PROPERTY_EXECUTION_LISTENER_FIELD_VALUE = "execution_listener_field_value";
+  final String PROPERTY_EXECUTION_LISTENER_FIELD_EXPRESSION = "execution_listener_field_expression";
 	
   final String PROPERTY_EVENT_LISTENERS = "eventlisteners";
   final String PROPERTY_EVENT_LISTENER_EVENTS = "event_listener_events";
