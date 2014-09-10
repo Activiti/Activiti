@@ -63,7 +63,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertEquals("StringTest", dataObj.getName());
     assertEquals("xsd:string", dataObj.getItemSubjectRef().getStructureRef());
     assertTrue(dataObj.getValue() instanceof String);
-    assertEquals("Testing123", dataObj.getValue());
+    assertEquals("Testing1&2&3", dataObj.getValue());
     
     dataObj = objectMap.get("dObj2");
     assertEquals("dObj2", dataObj.getId());
