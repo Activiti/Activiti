@@ -72,7 +72,6 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
     if (boundaryActivityBehavior instanceof BoundaryEventActivityBehavior) {
       BoundaryEventActivityBehavior boundaryEventActivityBehavior = (BoundaryEventActivityBehavior) boundaryActivityBehavior;
       if (boundaryEventActivityBehavior.isInterrupting()) {
-
         dispatchExecutionTimeOut(execution, commandContext);
       }
     }
@@ -98,14 +97,14 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
   }
 
   protected void dispatchActivityTimeOut(ActivityImpl activity, ExecutionEntity execution, CommandContext commandContext) {
-      commandContext.getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_TIMEOUT, activity.getId(),
-          (String) activity.getProperties().get("name"),
-          execution.getId(),
-          execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
-          (String) activity.getProperties().get("type"),
-          activity.getActivityBehavior().getClass().getCanonicalName())
-      );
+    commandContext.getEventDispatcher().dispatchEvent(
+      ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_TIMEOUT, activity.getId(),
+        (String) activity.getProperties().get("name"),
+        execution.getId(),
+        execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
+        (String) activity.getProperties().get("type"),
+        activity.getActivityBehavior().getClass().getCanonicalName())
+    );
   }
 
 }
