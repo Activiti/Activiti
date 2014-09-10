@@ -17,9 +17,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -49,8 +47,8 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	  super.tearDown();
 	}
 	
-	
-	public void testDatabaseEvents() throws JsonParseException, JsonMappingException, IOException {
+	@Deployment(resources = {"org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml"})
+	public void testDatabaseEvents() throws IOException {
 		
 		String testTenant = "testTenant";
 		
@@ -413,7 +411,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 		
 	}
 	
-	public void testDatabaseEventsNoTenant() throws JsonParseException, JsonMappingException, IOException {
+	public void testDatabaseEventsNoTenant() throws IOException {
 		
 		String deploymentId = repositoryService.createDeployment()
 				.addClasspathResource("org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml")

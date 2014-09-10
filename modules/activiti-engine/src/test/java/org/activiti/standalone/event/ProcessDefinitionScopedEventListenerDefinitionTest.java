@@ -77,8 +77,8 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 		List<ActivitiEvent> events = StaticTestActivitiEventListener.getEventsReceived();
 		assertFalse(events.isEmpty());
 		
-		boolean insertFound = true;
-		boolean deleteFound = true;
+		boolean insertFound = false;
+		boolean deleteFound = false;
 		
 		for(ActivitiEvent e : events) {
 			if(ActivitiEventType.ENTITY_CREATED == e.getType() ) {

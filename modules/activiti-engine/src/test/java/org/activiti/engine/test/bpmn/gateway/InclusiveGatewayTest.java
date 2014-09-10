@@ -185,16 +185,15 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     orders.add(new InclusiveGatewayTestOrder(300));
     orders.add(new InclusiveGatewayTestOrder(175));
 
-    ProcessInstance pi = null;
     try {
-      pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
+      runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
       fail();
     } catch (ActivitiException e) {
       // expect an exception to be thrown here
     }
 
     orders.set(1, new InclusiveGatewayTestOrder(175));
-    pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertNotNull(task);
     assertEquals(BEAN_TASK3_NAME, task.getName());
@@ -332,7 +331,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     
 
     for (Execution execution : runtimeService.createExecutionQuery().list()) {
-      System.out.println(((ExecutionEntity) execution).getActivityId());
+      System.out.println(execution.getActivityId());
     }
     
     assertEquals("Found executions: " + runtimeService.createExecutionQuery().list(), 0, runtimeService.createExecutionQuery().count());
@@ -387,7 +386,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     variableMap.put("a", 2);
     variableMap.put("b", 2);
     try {
-      processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
+      runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
       fail();
     } catch(ActivitiException e) {
       assertTrue(e.getMessage().contains("No outgoing sequence flow"));

@@ -3,7 +3,6 @@
  */
 package org.activiti.engine.test.jobexecutor;
 
-import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -68,7 +67,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
   public void testJobCommandsWith3Exceptions() {
     tweetExceptionHandler.setExceptionsRemaining(3);
 
-    String jobId = commandExecutor.execute(new Command<String>() {
+    commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
         MessageEntity message = createTweetExceptionMessage();

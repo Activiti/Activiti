@@ -25,14 +25,10 @@ import org.activiti.engine.task.TaskInfoQueryWrapper;
  */
 public class TaskInfoQueryTest extends PluggableActivitiTestCase {
 	
-	@Override
 	protected void tearDown() throws Exception {
-		
 		for (Task task : taskService.createTaskQuery().list()) {
 			taskService.deleteTask(task.getId(), true);
 		}
-		
-	  super.tearDown();
 	}
 
   public void testTaskInfoQuery() {

@@ -340,7 +340,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     // Fetch the task again and update
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
 
-    taskService.delegateTask(taskId, "joesmoe");
+    taskService.delegateTask(task.getId(), "joesmoe");
     
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
     assertEquals("johndoe", task.getOwner());
@@ -682,7 +682,7 @@ public void testCompleteWithParametersTask2() {
     assertEquals(new Integer(2), runtimeService.getVariable(processInstance.getId(), "sum"));
 
     // Fetch second task
-    task = taskService.createTaskQuery().singleResult();
+    taskService.createTaskQuery().singleResult();
 
   }
   
@@ -1079,7 +1079,7 @@ public void testCompleteWithParametersTask2() {
   }
 
   /**
-   * @see http://jira.codehaus.org/browse/ACT-1059
+   * @see <a href="http://jira.codehaus.org/browse/ACT-1059">http://jira.codehaus.org/browse/ACT-1059</a>
    */
   public void testSetDelegationState() {
     Task task = taskService.newTask();

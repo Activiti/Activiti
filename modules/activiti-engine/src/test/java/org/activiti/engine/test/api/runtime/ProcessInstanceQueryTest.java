@@ -389,8 +389,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
       }
     }
     assertTrue(superProcessFound);
-    assertTrue(subProcessFound == false);
-    assertTrue(nestedSubProcessFound == false);
+    assertFalse(subProcessFound);
+    assertFalse(nestedSubProcessFound);
     
     instanceList = runtimeService.createProcessInstanceQuery().excludeSubprocesses(false).list();
     assertEquals(8, instanceList.size());
@@ -1357,7 +1357,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     
     // Pass in null-value, should cause exception
     try {
-      instance = runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
+      runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
       fail("Exception expected");
     } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("value is null", ae.getMessage());
@@ -1365,7 +1365,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     
     // Pass in null name, should cause exception
     try {
-      instance = runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
+      runtimeService.createProcessInstanceQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
       fail("Exception expected");
     } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("name is null", ae.getMessage());
@@ -1383,7 +1383,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     
     // Pass in null-value, should cause exception
     try {
-      instance = runtimeService.createProcessInstanceQuery().variableValueNotEqualsIgnoreCase("upper", null).singleResult();
+      runtimeService.createProcessInstanceQuery().variableValueNotEqualsIgnoreCase("upper", null).singleResult();
       fail("Exception expected");
     } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("value is null", ae.getMessage());
@@ -1391,7 +1391,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     
     // Pass in null name, should cause exception
     try {
-      instance = runtimeService.createProcessInstanceQuery().variableValueNotEqualsIgnoreCase(null, "abcdefg").singleResult();
+      runtimeService.createProcessInstanceQuery().variableValueNotEqualsIgnoreCase(null, "abcdefg").singleResult();
       fail("Exception expected");
     } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("name is null", ae.getMessage());
