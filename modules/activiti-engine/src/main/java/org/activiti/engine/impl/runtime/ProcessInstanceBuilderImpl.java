@@ -70,8 +70,9 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
 	}
 
 	public ProcessInstance start() {
-	  if(processDefinitionId == null && processDefinitionKey == null)
+	  if (processDefinitionId == null && processDefinitionKey == null) {
 	    throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
+	  }
 		return runtimeService.startProcessInstance(this);
 	}
 

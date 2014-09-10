@@ -59,7 +59,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
   
   public StartProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
     this(processInstanceBuilder.getProcessDefinitionKey(), processInstanceBuilder.getProcessDefinitionId(),
-        processInstanceBuilder.getBusinessKey(),processInstanceBuilder.getVariables(),processInstanceBuilder.getTenantId());
+        processInstanceBuilder.getBusinessKey(), processInstanceBuilder.getVariables(), processInstanceBuilder.getTenantId());
     this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
   }
   
@@ -75,7 +75,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
       if (processDefinition == null) {
         throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
       }
-    } else if(processDefinitionKey != null && (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId))){
+    } else if (processDefinitionKey != null && (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId))){
       processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
         throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey +"'", ProcessDefinition.class);
