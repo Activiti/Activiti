@@ -24,7 +24,6 @@ import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polyline2D;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
@@ -607,7 +606,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
               dataObject.setId(dataIdNode.asText());
               dataObject.setName(dataNode.get(PROPERTY_DATA_NAME).asText());
 
-              itemSubjectRef.setStructureRef(BpmnXMLConstants.XSD_PREFIX + ":" + dataType);
+              itemSubjectRef.setStructureRef("xsd:" + dataType);
               dataObject.setItemSubjectRef(itemSubjectRef);
 
               if (dataObject instanceof DateDataObject) {
