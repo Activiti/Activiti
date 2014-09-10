@@ -105,7 +105,6 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-bpmn-converter</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
