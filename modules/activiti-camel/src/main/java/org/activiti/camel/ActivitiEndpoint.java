@@ -21,7 +21,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class has been modified to be consistent with the changes to CamelBehavior and its implementations. The set of changes
@@ -151,7 +151,7 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   }
   
   public boolean isSetProcessInitiator() {
-      return StringUtils.hasText(getProcessInitiatorHeaderName());
+      return StringUtils.isNotEmpty(getProcessInitiatorHeaderName());
   }
   
   public String getProcessInitiatorHeaderName() {
