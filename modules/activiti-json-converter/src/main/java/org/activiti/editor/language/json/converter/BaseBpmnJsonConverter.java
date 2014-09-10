@@ -314,6 +314,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       
       if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())) {
         propertyItemNode.put(listenerClass, listener.getImplementation());
+        // If this is a Task Listener then add field extensions
+        if(!isExecutionListener ) {
+            addTaskFieldExtensions(listener.getFieldExtensions(), propertyItemNode);
+        }
       } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())) {
         propertyItemNode.put(listenerExpression, listener.getImplementation());
       } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())) {
@@ -327,7 +331,27 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     listenersNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
     propertiesNode.put(propertyName, listenersNode);
   }
-  
+
+  protected void addTaskFieldExtensions(List<FieldExtension> extensions, ObjectNode propertiesNode) {
+      ObjectNode fieldExtensionsNode = objectMapper.createObjectNode();
+      ArrayNode itemsNode = objectMapper.createArrayNode();
+      for (FieldExtension extension : extensions) {
+          ObjectNode propertyItemNode = objectMapper.createObjectNode();
+          propertyItemNode.put(PROPERTY_TASK_LISTENER_FIELD_NAME, extension.getFieldName());
+          if (StringUtils.isNotEmpty(extension.getStringValue())) {
+              propertyItemNode.put(PROPERTY_TASK_LISTENER_FIELD_VALUE, extension.getStringValue());
+          }
+          if (StringUtils.isNotEmpty(extension.getExpression())) {
+              propertyItemNode.put(PROPERTY_TASK_LISTENER_FIELD_EXPRESSION, extension.getExpression());
+          }
+          itemsNode.add(propertyItemNode);
+      }
+
+      fieldExtensionsNode.put("totalCount", itemsNode.size());
+      fieldExtensionsNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
+      propertiesNode.put(PROPERTY_TASK_LISTENER_FIELDS, fieldExtensionsNode.toString());
+  }
+
   protected void addFieldExtensions(List<FieldExtension> extensions, ObjectNode propertiesNode) {
     ObjectNode fieldExtensionsNode = objectMapper.createObjectNode();
     ArrayNode itemsNode = objectMapper.createArrayNode();
