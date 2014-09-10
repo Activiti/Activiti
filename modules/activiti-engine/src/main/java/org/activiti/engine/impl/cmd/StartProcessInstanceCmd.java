@@ -25,6 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -41,6 +42,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
   protected Map<String, Object> variables;
   protected String businessKey;
   protected String tenantId;
+  protected String processInstanceName;
   
   public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables) {
     this.processDefinitionKey = processDefinitionKey;
@@ -53,6 +55,12 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
   		String businessKey, Map<String, Object> variables, String tenantId) {
   	this(processDefinitionKey, processDefinitionId, businessKey, variables);
   	this.tenantId = tenantId;
+  }
+  
+  public StartProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
+    this(processInstanceBuilder.getProcessDefinitionKey(), processInstanceBuilder.getProcessDefinitionId(),
+        processInstanceBuilder.getBusinessKey(),processInstanceBuilder.getVariables(),processInstanceBuilder.getTenantId());
+    this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
   }
   
   public ProcessInstance execute(CommandContext commandContext) {
@@ -94,6 +102,12 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     if (variables != null) {
       processInstance.setVariables(variables);
     }
+    
+    // now set processInstance name
+    if (processInstanceName != null) {
+      processInstance.setName(processInstanceName);
+    }
+    
     processInstance.start();
     
     return processInstance;
