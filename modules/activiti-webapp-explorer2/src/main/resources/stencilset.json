@@ -100,7 +100,15 @@
       "value" : "",
       "description" : "Priority of the user task.",
       "popular" : true
-    } ]
+    }, {
+      "id" : "categoryDefinition",
+      "type" : "String",
+      "title" : "Category",
+      "value" : "",
+      "description" : "Category of the user task.",
+      "popular" : true
+    }
+	 ]
   }, {
     "name" : "usertaskassignment",
     "properties" : [ {
@@ -136,6 +144,12 @@
           "title_de" : "PotentialOwner",
           "value" : "candidateGroups",
           "refToView" : ""
+        }, {
+          "id" : "c4",
+          "title" : "Owner",
+          "title_de" : "Owner",
+          "value" : "owner",
+          "refToView" : ""
         } ]
       }, {
         "id" : "resourceassignmentexpr",
@@ -150,6 +164,55 @@
       } ]
     } ]
   }, {
+    "name" : "customidentitylinks",
+    "properties" : [ {
+      "id" : "customidentitylinks",
+      "type" : "Complex",
+      "title" : "Identity Links",
+      "value" : "",
+      "description" : "Custom Assignment definition for the user task",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "identity_type",
+        "name" : "Identity Type",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 80,
+        "optional" : false,
+        "items" : [ {
+          "id" : "c1",
+          "title" : "User",
+          "title_de" : "User",
+          "value" : "user",
+          "refToView" : ""
+        }, {
+          "id" : "c2",
+          "title" : "Group",
+          "title_de" : "Group",
+          "value" : "group",
+          "refToView" : ""
+        }]
+      }, {
+        "id" : "identity_link_type",
+        "name" : "Identity Link Type",
+        "type" : "String",
+        "description" : "This defines the expression used for the resource assignment.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      }, {
+        "id" : "identitylinkexpr",
+        "name" : "Resource assignment expression",
+        "type" : "String",
+        "description" : "This defines the expression used for the resource assignment.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      } ]
+    } ]
+  },  {
     "name" : "formdefinition",
     "properties" : [ {
       "id" : "formproperties",
@@ -1225,7 +1288,7 @@
     "view" : "activity/usertask.svg",
     "icon" : "activity/list/type.user.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskassignment", "formdefinition", "tasklistenersbase", "asynchronousbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskassignment", "customidentitylinks", "formdefinition", "tasklistenersbase", "asynchronousbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
