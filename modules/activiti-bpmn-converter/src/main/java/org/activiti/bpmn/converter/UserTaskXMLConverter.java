@@ -158,26 +158,29 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
 	  xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_CUSTOM_RESOURCE, ACTIVITI_EXTENSIONS_NAMESPACE);
 	  xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME, identityType);
       
-      List<String> identityList = new ArrayList<String>();
-      
-      if(users!=null)
-      for(String userId: users){
-    	  identityList.add("user("+userId+")");
+    List<String> identityList = new ArrayList<String>();
+    
+    if (users!=null) {
+      for (String userId: users) {
+        identityList.add("user("+userId+")");
       }
-      
-      if(groups!=null)
-      for(String groupId: groups){
+    }
+    
+    if (groups!=null) {
+      for (String groupId: groups){
     	  identityList.add("group("+groupId+")");
       }
-      
-      String delimitedString = convertToDelimitedString(identityList);
-      
-      xtw.writeStartElement(ELEMENT_RESOURCE_ASSIGNMENT);
-      xtw.writeStartElement(ELEMENT_FORMAL_EXPRESSION);
-      xtw.writeCharacters(delimitedString);
-      xtw.writeEndElement(); // End ELEMENT_CUSTOM_RESOURCE
-      xtw.writeEndElement(); // End ELEMENT_RESOURCE_ASSIGNMENT
-      xtw.writeEndElement(); // End ELEMENT_FORMAL_EXPRESSION
+    }
+    
+    String delimitedString = convertToDelimitedString(identityList);
+    
+    xtw.writeStartElement(ELEMENT_RESOURCE_ASSIGNMENT);
+    xtw.writeStartElement(ELEMENT_FORMAL_EXPRESSION);
+    xtw.writeCharacters(delimitedString);
+    xtw.writeEndElement(); // End ELEMENT_FORMAL_EXPRESSION
+    xtw.writeEndElement(); // End ELEMENT_RESOURCE_ASSIGNMENT
+    
+    xtw.writeEndElement(); // End ELEMENT_CUSTOM_RESOURCE
   }
   
   @Override
