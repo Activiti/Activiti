@@ -35,6 +35,9 @@ import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
+
 
 /**
  * @author Frederik Heremans
@@ -953,5 +956,64 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
       runtimeService.startProcessInstanceByKey("catchPanicMessage");      
     }
   }
-   
+
+    @Deployment(resources={
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    public void testGetVariableUnexistingVariableNameWithCast() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        String variableValue = runtimeService.getVariable(processInstance.getId(), "unexistingVariable", String.class);
+        assertNull(variableValue);
+    }
+
+    @Deployment(resources={
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    public void testGetVariableExistingVariableNameWithCast() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("var1", true);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", params);
+        Boolean variableValue = runtimeService.getVariable(processInstance.getId(), "var1", Boolean.class);
+        assertTrue(variableValue);
+    }
+
+    @Deployment(resources={
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    public void testGetVariableExistingVariableNameWithInvalidCast() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("var1", true);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", params);
+        catchException(runtimeService).getVariable(processInstance.getId(), "var1", String.class);
+        Exception e = caughtException();
+        assertNotNull(e);
+        assertTrue(e instanceof ClassCastException);
+    }
+
+    @Deployment(resources={
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    public void testGetVariableLocalUnexistingVariableNameWithCast() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        String variableValue = runtimeService.getVariableLocal(processInstance.getId(), "var1", String.class);
+        assertNull(variableValue);
+    }
+
+    @Deployment(resources={
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    public void testGetVariableLocalExistingVariableNameWithCast() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("var1", true);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", params);
+        Boolean variableValue = runtimeService.getVariableLocal(processInstance.getId(), "var1", Boolean.class);
+        assertTrue(variableValue);
+    }
+
+    @Deployment(resources={
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    public void testGetVariableLocalExistingVariableNameWithInvalidCast() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("var1", true);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", params);
+        catchException(runtimeService).getVariableLocal(processInstance.getId(), "var1", String.class);
+        Exception e = caughtException();
+        assertNotNull(e);
+        assertTrue(e instanceof ClassCastException);
+    }
 }

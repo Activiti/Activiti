@@ -808,6 +808,16 @@ public class ExecutionImpl implements
     return null;
   }
 
+    @Override
+    public <T> T getVariable(String variableName, Class<T> variableClass) {
+        return variableClass.cast(getVariable(variableName));
+    }
+
+    @Override
+    public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
+        return variableClass.cast(getVariableLocal(variableName));
+    }
+
   public Set<String> getVariableNames() {
     return null;
   }
