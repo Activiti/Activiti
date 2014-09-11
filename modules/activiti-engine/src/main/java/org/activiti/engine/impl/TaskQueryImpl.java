@@ -918,7 +918,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
 
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
-      List<String> candidateGroupList = new java.util.ArrayList<String>(1);
+      List<String> candidateGroupList = new ArrayList<String>(1);
       candidateGroupList.add(candidateGroup);
       return candidateGroupList;
     } else if (candidateUser != null) {

@@ -53,7 +53,7 @@ import java.util.List;
  */
 @Configuration
 @ConditionalOnClass({ProcessEngine.class, EnableActiviti.class})
-@ConditionalOnBean(javax.sql.DataSource.class)
+@ConditionalOnBean(DataSource.class)
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @ConditionalOnMissingBean(ProcessEngine.class)
 public class ProcessEngineAutoConfiguration {

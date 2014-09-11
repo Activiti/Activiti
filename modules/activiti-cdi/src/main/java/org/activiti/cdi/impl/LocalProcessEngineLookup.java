@@ -12,8 +12,6 @@
  */
 package org.activiti.cdi.impl;
 
-import javax.enterprise.inject.Alternative;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;

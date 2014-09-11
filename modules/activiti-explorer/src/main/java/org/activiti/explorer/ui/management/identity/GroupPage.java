@@ -25,9 +25,7 @@ import org.activiti.explorer.ui.util.ThemeImageColumnGenerator;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
-
 
 /**
  * Page for managing groups.

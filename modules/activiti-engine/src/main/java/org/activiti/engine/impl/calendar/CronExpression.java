@@ -1062,7 +1062,7 @@ public class CronExpression implements Serializable, Cloneable {
             day -= lastdayOffset;
 
             //java.util.Calendar tcal = java.util.Calendar.getInstance(getTimeZone());
-            java.util.Calendar tcal = clockReader.getCurrentCalendar(getTimeZone());
+            Calendar tcal = clockReader.getCurrentCalendar(getTimeZone());
             tcal.set(Calendar.SECOND, 0);
             tcal.set(Calendar.MINUTE, 0);
             tcal.set(Calendar.HOUR_OF_DAY, 0);
@@ -1099,7 +1099,7 @@ public class CronExpression implements Serializable, Cloneable {
           day = ((Integer) daysOfMonth.first()).intValue();
 
           //java.util.Calendar tcal = java.util.Calendar.getInstance(getTimeZone());
-          java.util.Calendar tcal = clockReader.getCurrentCalendar(getTimeZone());
+          Calendar tcal = clockReader.getCurrentCalendar(getTimeZone());
           tcal.set(Calendar.SECOND, 0);
           tcal.set(Calendar.MINUTE, 0);
           tcal.set(Calendar.HOUR_OF_DAY, 0);
@@ -1360,9 +1360,9 @@ public class CronExpression implements Serializable, Cloneable {
    * @param hour
    */
   protected void setCalendarHour(Calendar cal, int hour) {
-    cal.set(java.util.Calendar.HOUR_OF_DAY, hour);
-    if (cal.get(java.util.Calendar.HOUR_OF_DAY) != hour && hour != 24) {
-      cal.set(java.util.Calendar.HOUR_OF_DAY, hour + 1);
+    cal.set(Calendar.HOUR_OF_DAY, hour);
+    if (cal.get(Calendar.HOUR_OF_DAY) != hour && hour != 24) {
+      cal.set(Calendar.HOUR_OF_DAY, hour + 1);
     }
   }
 

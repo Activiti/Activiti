@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.task;
 
-import java.util.List;
-
 /**
  * Allows programmatic querying of {@link Task}s;
  * 

@@ -13,12 +13,8 @@
 
 package org.activiti.camel.impl;
 
-import java.util.Map;
-
-import org.activiti.camel.ActivitiComponent;
 import org.activiti.camel.ActivitiEndpoint;
 import org.activiti.camel.CamelBehavior;
-import org.apache.camel.Exchange;
 
 /**
  * This implementation of the CamelBehavior abstract class works just like CamelBehaviour does; it copies variables 

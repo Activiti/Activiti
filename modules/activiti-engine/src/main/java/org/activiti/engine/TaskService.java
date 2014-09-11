@@ -21,7 +21,6 @@ import java.util.Map;
 import org.activiti.engine.query.NativeQuery;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
-import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
