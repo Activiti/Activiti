@@ -149,7 +149,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
     assertEquals("Input is one", task.getName());
     runtimeService.deleteProcessInstance(procId, null);
     
-    procId = runtimeService.startProcessInstanceByKey("exclusiveGwDefaultSequenceFlow", 
+    runtimeService.startProcessInstanceByKey("exclusiveGwDefaultSequenceFlow",
             CollectionUtil.singletonMap("input", 5)).getId();
     task = taskService.createTaskQuery().singleResult();
     assertEquals("Default input", task.getName());

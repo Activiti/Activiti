@@ -274,7 +274,7 @@ public class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 
 		// Invalid type name
 		try {
-			types = ActivitiEventType.getTypesFromString("WHOOPS,ENTITY_DELETED");
+			ActivitiEventType.getTypesFromString("WHOOPS,ENTITY_DELETED");
 			fail("Exception expected");
 		} catch(ActivitiIllegalArgumentException expected) {
 			// Expected exception

@@ -68,7 +68,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     taskService.deleteTasks(taskIds, true);
   }
   
-  public void tesBasicTaskPropertiesNotNull() {
+  public void testBasicTaskPropertiesNotNull() {
     Task task = taskService.createTaskQuery().taskId(taskIds.get(0)).singleResult();
     assertNotNull(task.getDescription());
     assertNotNull(task.getId());
@@ -698,7 +698,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, query.list().size());
   }
 
-  public void testQueryByCandidateOrAssigneed() {
+  public void testQueryByCandidateOrAssigned() {
     TaskQuery query = taskService.createTaskQuery().taskCandidateOrAssigned("kermit");
     assertEquals(11, query.count());
     List<Task> tasks = query.list();
@@ -714,18 +714,9 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     tasks = query.list();
     assertEquals(11, tasks.size());
 
-    // claim a task
-    taskService.claim(tasks.get(0).getId(), "kermit");
-    query = taskService.createTaskQuery().taskCandidateOrAssigned("kermit");
-    assertEquals(11, query.count());
-
-    taskService.claim(tasks.get(1).getId(), "fozzie");
-    query = taskService.createTaskQuery().taskCandidateOrAssigned("kermit");
-    assertEquals(10, query.count());
-
     query = taskService.createTaskQuery().taskCandidateOrAssigned("fozzie");
-    assertEquals(4, query.count());
-    assertEquals(4, query.list().size());
+    assertEquals(3, query.count());
+    assertEquals(3, query.list().size());
 
     // create a new task that no identity link and assignee to kermit
     Task task = taskService.newTask();
@@ -736,9 +727,9 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     taskService.saveTask(task);
 
     query = taskService.createTaskQuery().taskCandidateOrAssigned("kermit");
-    assertEquals(11, query.count());
+    assertEquals(12, query.count());
     tasks = query.list();
-    assertEquals(11, tasks.size());
+    assertEquals(12, tasks.size());
 
     Task assigneeToKermit = taskService.createTaskQuery().taskName("assigneeToKermit").singleResult();
     taskService.deleteTask(assigneeToKermit.getId());
@@ -747,7 +738,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     }
   }
   
-  public void testQueryByCandidateOrAssigneedOr() {
+  public void testQueryByCandidateOrAssignedOr() {
     TaskQuery query = taskService.createTaskQuery()
         .or()
         .taskId("invalid")
@@ -770,27 +761,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     tasks = query.list();
     assertEquals(11, tasks.size());
     
-    // claim a task
-    taskService.claim(tasks.get(0).getId(), "kermit");
-    query = taskService.createTaskQuery()
-        .or()
-        .taskId("invalid")
-        .taskCandidateOrAssigned("kermit");
-    assertEquals(11, query.count());
-    
-    taskService.claim(tasks.get(1).getId(), "fozzie");
-    query = taskService.createTaskQuery()
-        .or()
-        .taskId("invalid")
-        .taskCandidateOrAssigned("kermit");
-    assertEquals(10, query.count());
-    
     query = taskService.createTaskQuery()
         .or()
         .taskId("invalid")
         .taskCandidateOrAssigned("fozzie");
-    assertEquals(4, query.count());
-    assertEquals(4, query.list().size());
+    assertEquals(3, query.count());
+    assertEquals(3, query.list().size());
     
     // create a new task that no identity link and assignee to kermit
     Task task = taskService.newTask();
@@ -804,9 +780,9 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         .or()
         .taskId("invalid")
         .taskCandidateOrAssigned("kermit");
-    assertEquals(11, query.count());
+    assertEquals(12, query.count());
     tasks = query.list();
-    assertEquals(11, tasks.size());
+    assertEquals(12, tasks.size());
     
     Task assigneeToKermit = taskService.createTaskQuery()
         .or()

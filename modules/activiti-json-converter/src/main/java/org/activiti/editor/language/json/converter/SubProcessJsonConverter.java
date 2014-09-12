@@ -12,12 +12,14 @@
  */
 package org.activiti.editor.language.json.converter;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.ValuedDataObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -56,12 +58,29 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter {
     processor.processFlowElements(subProcess.getFlowElements(), model, subProcessShapesArrayNode, 
     		graphicInfo.getX(), graphicInfo.getY());
     flowElementNode.put("childShapes", subProcessShapesArrayNode);
+    
+    /*
+     * No point in copying the data conversion methods here. It would be helpful
+     * if BaseBpmnJsonConverter inherited from BpmnJsonConverter.
+     */
+    new BpmnJsonConverter().convertDataPropertiesToJson(subProcess.getDataObjects(), propertiesNode);
   }
   
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     SubProcess subProcess = new SubProcess();
     JsonNode childShapesArray = elementNode.get(EDITOR_CHILD_SHAPES);
     processor.processJsonElements(childShapesArray, modelNode, subProcess, shapeMap);
+    
+    /*
+     * No point in copying the data conversion methods here. It would be helpful
+     * if BaseBpmnJsonConverter inherited from BpmnJsonConverter.
+     */
+    JsonNode processDataPropertiesNode = elementNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_DATA_PROPERTIES);
+    if (processDataPropertiesNode != null) {
+      List<ValuedDataObject> dataObjects = new BpmnJsonConverter().convertJsonToDataProperties(processDataPropertiesNode, subProcess);
+      subProcess.setDataObjects(dataObjects);
+      subProcess.getFlowElements().addAll(dataObjects);
+    }
     return subProcess;
   }
 }

@@ -1,6 +1,6 @@
 package org.activiti.bpmn.converter;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamReader;
@@ -19,8 +19,6 @@ import org.activiti.bpmn.model.LongDataObject;
 import org.activiti.bpmn.model.StringDataObject;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * @author Lori Small
@@ -28,6 +26,7 @@ import org.joda.time.format.ISODateTimeFormat;
  */
 public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
   
+  private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
   protected boolean didWriteExtensionStartElement = false;
   
   public Class<? extends BaseElement> getBpmnElementType() {
@@ -61,7 +60,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
       } else if (dataType.equals("datetime")) {
         dataObject = new DateDataObject();
       } else {
-        // TODO should throw exception here for unsupported data type
+        LOGGER.error("Error converting {}, invalid data type: " + dataType, xtr.getAttributeValue(null, ATTRIBUTE_DATA_NAME));
       }
     
     } else {
@@ -86,7 +85,11 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
         ExtensionElement valueElement = valuesElement.get(0);
         if (StringUtils.isNotEmpty(valueElement.getElementText())) {
           if (dataObject instanceof DateDataObject) {
-            dataObject.setValue(DateTime.parse(valueElement.getElementText(), ISODateTimeFormat.dateOptionalTimeParser()).toDate());
+            try {
+              dataObject.setValue(sdf.parse(valueElement.getElementText()));
+            } catch (Exception e) {
+              LOGGER.error("Error converting {}", dataObject.getName(), e.getMessage());
+            }
           } else {
             dataObject.setValue(valueElement.getElementText());
           }
@@ -123,8 +126,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
       if (dataObject.getValue() != null) {
         String value = null;
         if (dataObject instanceof DateDataObject) {
-          DateTime dateTime = new DateTime((Date) dataObject.getValue());
-          value = ISODateTimeFormat.dateTimeNoMillis().print(dateTime);
+          value = sdf.format(dataObject.getValue());
         } else {
           value = dataObject.getValue().toString();
         }

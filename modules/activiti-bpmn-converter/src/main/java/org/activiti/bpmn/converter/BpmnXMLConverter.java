@@ -552,7 +552,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       
       boolean didWriteExtensionStartElement = ActivitiListenerExport.writeListeners(subProcess, false, xtw);
       
-      didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(subProcess, didWriteExtensionStartElement, xtw);
+      didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(subProcess, didWriteExtensionStartElement, model.getNamespaces(), xtw);
       if (didWriteExtensionStartElement) {
         // closing extensions element
         xtw.writeEndElement();

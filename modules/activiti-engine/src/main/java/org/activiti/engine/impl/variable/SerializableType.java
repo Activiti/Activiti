@@ -61,9 +61,9 @@ public class SerializableType extends ByteArrayType {
 	        // so that it can be serialized again if it was changed. 
 	        Context.getCommandContext()
 	          .getDbSqlSession()
-	          .addDeserializedObject(deserializedObject, bytes, (VariableInstanceEntity) valueFields);
+	          .addDeserializedObject(new DeserializedObject(this, deserializedObject, bytes, (VariableInstanceEntity) valueFields));
 	      }
-	      
+
 	      return deserializedObject;
 	    } catch (Exception e) {
 	      throw new ActivitiException("Couldn't deserialize object in variable '"+valueFields.getName()+"'", e);
@@ -77,21 +77,21 @@ public class SerializableType extends ByteArrayType {
   public void setValue(Object value, ValueFields valueFields) {
     byte[] byteArray = serialize(value, valueFields);
     valueFields.setCachedValue(value);
-    
+
     if (valueFields.getBytes() == null) {
       // TODO why the null check? won't this cause issues when setValue is called the second this with a different object?
       if (valueFields instanceof VariableInstanceEntity) {
         // register the deserialized object for dirty checking.
         Context.getCommandContext()
           .getDbSqlSession()
-          .addDeserializedObject(valueFields.getCachedValue(), byteArray, (VariableInstanceEntity)valueFields);
+          .addDeserializedObject(new DeserializedObject(this, valueFields.getCachedValue(), byteArray, (VariableInstanceEntity)valueFields));
       }
     }
-        
+
     super.setValue(byteArray, valueFields);
   }
 
-  public static byte[] serialize(Object value, ValueFields valueFields) {
+  public byte[] serialize(Object value, ValueFields valueFields) {
     if (value == null) {
       return null;
     }
@@ -120,8 +120,8 @@ public class SerializableType extends ByteArrayType {
       }
     };
   }
-  
-  private static ObjectOutputStream createObjectOutputStream(OutputStream os) throws IOException {
+
+	protected ObjectOutputStream createObjectOutputStream(OutputStream os) throws IOException {
     return new ObjectOutputStream(os);
   }
 }

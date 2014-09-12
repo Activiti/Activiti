@@ -3031,7 +3031,121 @@ assertEquals("Ship Order", task.getName());</programlisting>
             This allows Activiti to integrate with existing identity management solutions
             when it is embedded into an application.
           </para>
+
+        </section> <!-- task assignment extensions -->
+
+        <section id="bpmnUserTaskUserCustomIdentityLinkAssignmentExtension">
+          <title>Custom identity link types (Experimental)</title>
+
+          <link linkend="experimental">
+            <emphasis role="bold">[EXPERIMENTAL]</emphasis>
+          </link>
+
+          <para>
+            The BPMN standard supports a single assigned user or <emphasis role="bold">humanPerformer</emphasis> 
+            or a set of users that form a potential pool of <emphasis role="bold">potentialOwners</emphasis> 
+            as defined in <link linkend="bpmnUserTaskAssignment">User assignment</link>. In addition, Activiti defines
+            <link linkend="bpmnUserTaskUserAssignmentExtension">extension attribute elements</link> 
+            for the User Task that can represent the task <emphasis role="bold">assignee</emphasis> or 
+            <emphasis role="bold">candidate owner</emphasis>.
+          </para>
+
+          <para>
+          The supported Activiti identity link types are:
+            <programlisting>
+public class IdentityLinkType {
+  /* Activiti native roles */
+  public static final String ASSIGNEE = &quot;assignee&quot;;
+  public static final String CANDIDATE = &quot;candidate&quot;;
+  public static final String OWNER = &quot;owner&quot;;
+  public static final String STARTER = &quot;starter&quot;;
+  public static final String PARTICIPANT = &quot;participant&quot;;
+}
+            </programlisting>
+          </para>
           
+          <para>
+          The BPMN standard and Activiti example authorization identities are <emphasis role="bold">user</emphasis> 
+          and <emphasis role="bold">group</emphasis>. As mentioned in the previous section, the Activiti identity 
+          management implementation is not intended for production use, but should be extended depending upon the 
+          supported authorization scheme.
+          </para>
+          
+          <para>
+          If additional link types are required, custom resources can be defined as extension elements with 
+          the following syntax:
+            <programlisting>
+&lt;userTask id=&quot;theTask&quot; name=&quot;make profit&quot;&gt;
+  &lt;extensionElements&gt;
+    <emphasis role="bold">&lt;activiti:customResource activiti:name=&quot;businessAdministrator&quot;&gt;</emphasis>
+      &lt;resourceAssignmentExpression&gt;
+        &lt;formalExpression&gt;user(kermit), group(management)&lt;/formalExpression&gt;
+      &lt;/resourceAssignmentExpression&gt;
+    &lt;/activiti:customResource&gt;
+  &lt;/extensionElements&gt;
+&lt;/userTask&gt;
+            </programlisting>
+          </para>
+          
+          <para>
+          The custom link expressions are added to the <emphasis>TaskDefinition</emphasis> class:
+            <programlisting>
+  protected Map&lt;String, Set&lt;Expression&gt;&gt; customUserIdentityLinkExpressions = 
+      new HashMap&lt;String, Set&lt;Expression&gt;&gt;(); 
+  protected Map&lt;String, Set&lt;Expression&gt;&gt; customGroupIdentityLinkExpressions = 
+      new HashMap&lt;String, Set&lt;Expression&gt;&gt;();
+  
+  public Map&lt;String, 
+         Set&lt;Expression&gt;&gt; getCustomUserIdentityLinkExpressions() {
+    return customUserIdentityLinkExpressions;
+  }
+  
+  public void addCustomUserIdentityLinkExpression(String identityLinkType, 
+                                                  Set&lt;Expression&gt; idList) {
+    customUserIdentityLinkExpressions.put(identityLinkType, idList);
+  }
+  
+  public Map&lt;String, 
+         Set&lt;Expression&gt;&gt; getCustomGroupIdentityLinkExpressions() {
+    return customGroupIdentityLinkExpressions;
+  }
+  
+  public void addCustomGroupIdentityLinkExpression(String identityLinkType, 
+                                                   Set&lt;Expression&gt; idList) {
+    customGroupIdentityLinkExpressions.put(identityLinkType, idList);
+  }
+            </programlisting>
+          which are populated at runtime by the <emphasis>UserTaskActivityBehavior handleAssignments</emphasis> method.
+          </para>
+          
+          <para>
+          Finally, the <emphasis>IdentityLinkType</emphasis> class must be extended to support the custom identity 
+          link types:
+            <programlisting>
+package com.yourco.engine.task;
+
+public class IdentityLinkType
+    extends org.activiti.engine.task.IdentityLinkType
+{
+    public static final String ADMINISTRATOR = &quot;administrator&quot;;
+
+    public static final String EXCLUDED_OWNER = &quot;excludedOwner&quot;;
+}
+
+            </programlisting>
+          </para>
+
+          <para>
+          Here is an example db entry for a custom identity link type <emphasis>administrator</emphasis> with a single
+          user (<emphasis>gonzo</emphasis>) and group (<emphasis>engineering</emphasis>) values.
+            <mediaobject><imageobject><imagedata align="center" fileref="images/custom.identityLinkType.example.png"/></imageobject></mediaobject>
+          </para>          
+        </section> <!-- custom identity link type extensions -->
+
+        <section id="bpmnUserTaskUserCustomAssignmentTaskListeners">
+
+          <title>Custom Assignment via task listeners</title>
+
           <para>
             In case the previous approaches are not sufficient, it is possible to delegate to 
             custom assignment logic using a <link linkend="taskListeners">task listener</link>
@@ -3086,7 +3200,7 @@ public class FakeLdapService {
 }</programlisting>
           </para>
           
-        </section> <!-- task assignment extensions -->
+        </section> <!-- custom task lisener assignment -->
 
 		</section>
 		
@@ -6001,6 +6115,37 @@ public class MyTaskCreateListener implements TaskListener {
     </para>
     
 	</section>
+	<section id="failRetry">
+      
+        <title>Fail Retry</title>
+                
+        <para>
+		Activiti, in its default configuration, reruns a job 3 times in case of any exception in execution of a job. This holds also for asynchronous task jobs. 
+		In some cases more flexibility is required. There are two parameters to be configured:
+		<itemizedlist>
+		   	<listitem>			
+				Number of retries 
+			</listitem>
+		   	<listitem>			
+				Delay between retries
+			</listitem>						
+		</itemizedlist>
+		These parameters can be configured by <literal>activiti:failedJobRetryTimeCycle</literal> element. Here is a sample usage:
+		
+		<programlisting>
+&lt;serviceTask id=&quot;failingServiceTask&quot; activiti:async=&quot;true&quot; activiti:class=&quot;org.activiti.engine.test.jobexecutor.RetryFailingDelegate&quot;>
+	&lt;extensionElements&gt;
+		&lt;activiti:failedJobRetryTimeCycle&gt;R5/PT7M&lt;/activiti:failedJobRetryTimeCycle&gt;
+	&lt;/extensionElements&gt;
+&lt;/serviceTask&gt;
+		</programlisting>
+		Time cycle expression follows ISO 8601 standard, just like timer event expressions. The above example, makes the job executor to retry the job 5 times and wait 7 minutes between before each retry.
+		</para>
+    
+    
+	</section>
+
+
 	<section id="exclusiveJobs">
       
         <title>Exclusive Jobs</title>
@@ -6177,7 +6322,7 @@ Exactly the same way, the list of groups that is configured as a potential start
     </link>
     <para>
       BPMN provides the possibility to define data objects as part of a process or sub process element. According to the BPMN specification it's possible to include complex XML structures
-      that might be imported from XSD definitions. As a first start to support data objects in Activiti the folowing XSD types are supported:
+      that might be imported from XSD definitions. As a first start to support data objects in Activiti the following XSD types are supported:
     </para>
     <itemizedlist>
       <programlisting>

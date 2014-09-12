@@ -312,7 +312,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testProcessDefinitionEntitySerializable() {
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
-    ProcessDefinition processDefinition = ((RepositoryServiceImpl) repositoryService).getProcessDefinition(procDefId);
+    ProcessDefinition processDefinition = repositoryService.getProcessDefinition(procDefId);
     
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();

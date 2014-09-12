@@ -72,20 +72,39 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
     if (boundaryActivityBehavior instanceof BoundaryEventActivityBehavior) {
       BoundaryEventActivityBehavior boundaryEventActivityBehavior = (BoundaryEventActivityBehavior) boundaryActivityBehavior;
       if (boundaryEventActivityBehavior.isInterrupting()) {
-         
-        ActivityImpl activity = execution.getActivity();
-        if (activity != null && activity.getActivityBehavior() != null) {
-          commandContext.getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_TIMEOUT, execution.getActivity().getId(),
-              (String) activity.getProperties().get("name"),
-              execution.getId(), 
-              execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
-              (String) activity.getProperties().get("type"), 
-              activity.getActivityBehavior().getClass().getCanonicalName()));
-        }
+        dispatchExecutionTimeOut(execution, commandContext);
       }
     }
   }
-  
-  
+
+  protected void dispatchExecutionTimeOut(ExecutionEntity execution, CommandContext commandContext) {
+    // subprocesses
+    for (ExecutionEntity subExecution : execution.getExecutions()) {
+      dispatchExecutionTimeOut(subExecution, commandContext);
+    }
+
+    // call activities
+    ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
+    if (subProcessInstance != null) {
+      dispatchExecutionTimeOut(subProcessInstance, commandContext);
+    }
+
+    // activity with timer boundary event
+    ActivityImpl activity = execution.getActivity();
+    if (activity != null && activity.getActivityBehavior() != null) {
+      dispatchActivityTimeOut(activity, execution, commandContext);
+    }
+  }
+
+  protected void dispatchActivityTimeOut(ActivityImpl activity, ExecutionEntity execution, CommandContext commandContext) {
+    commandContext.getEventDispatcher().dispatchEvent(
+      ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_TIMEOUT, activity.getId(),
+        (String) activity.getProperties().get("name"),
+        execution.getId(),
+        execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
+        (String) activity.getProperties().get("type"),
+        activity.getActivityBehavior().getClass().getCanonicalName())
+    );
+  }
+
 }

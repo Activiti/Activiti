@@ -145,9 +145,15 @@ public interface StencilConstants {
 	final String PROPERTY_USERTASK_ASSIGNMENT = "usertaskassignment";
   final String PROPERTY_USERTASK_ASSIGNMENT_TYPE = "assignment_type";
   final String PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION = "resourceassignmentexpr";
+  final String PROPERTY_USERTASK_OWNER = "owner";
   final String PROPERTY_USERTASK_ASSIGNEE = "assignee";
   final String PROPERTY_USERTASK_CANDIDATE_USERS = "candidateUsers";
   final String PROPERTY_USERTASK_CANDIDATE_GROUPS = "candidateGroups";
+  
+  final String PROPERTY_USERTASK_CUSTOM_IDENTITY_LINKS = "customidentitylinks";
+  final String PROPERTY_USERTASK_IDENTITY_TYPE = "identity_type";
+  final String PROPERTY_USERTASK_IDENTITY_LINK_TYPE = "identity_link_type";
+  final String PROPERTY_USERTASK_IDENTITY_LINK_EXPRESSION = "identitylinkexpr";
 	
 	final String PROPERTY_SERVICETASK_CLASS = "servicetaskclass";
 	final String PROPERTY_SERVICETASK_EXPRESSION = "servicetaskexpression";
@@ -170,6 +176,12 @@ public interface StencilConstants {
   final String PROPERTY_FORM_FORM_VALUES = "formproperty_formvalues";
   final String PROPERTY_FORM_FORM_VALUE_ID = "formproperty_formvalue_id";
   final String PROPERTY_FORM_FORM_VALUE_NAME = "formproperty_formvalue_name";
+
+  final String PROPERTY_DATA_PROPERTIES = "dataproperties";
+  final String PROPERTY_DATA_ID = "dataproperty_id";
+  final String PROPERTY_DATA_NAME = "dataproperty_name";
+  final String PROPERTY_DATA_TYPE = "dataproperty_type";
+  final String PROPERTY_DATA_VALUE = "dataproperty_value";
 
 	final String PROPERTY_SCRIPT_FORMAT = "scriptformat";
 	final String PROPERTY_SCRIPT_TEXT = "scripttext";

@@ -25,7 +25,7 @@ public class FailingDelegate implements JavaDelegate {
 	public void execute(DelegateExecution execution) throws Exception {
 	  Boolean fail = (Boolean) execution.getVariable("fail");
 
-	  if (fail == null || fail == true) {
+	  if (fail == null || fail) {
 	      throw new ActivitiException(EXCEPTION_MESSAGE);
 	  }
 

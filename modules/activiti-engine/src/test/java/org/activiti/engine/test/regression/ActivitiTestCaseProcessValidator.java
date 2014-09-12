@@ -24,9 +24,8 @@ public class ActivitiTestCaseProcessValidator implements ProcessValidator {
       customParseValidator.executeParse(bpmnModel, process);
     }
  
-    ValidationError error = null;
     for (String errorRef : bpmnModel.getErrors().keySet()) {
-      error = new ValidationError();
+      ValidationError error = new ValidationError();
       error.setValidatorSetName("Manual BPMN parse validator");
       error.setProblem(errorRef);
       error.setActivityId(bpmnModel.getErrors().get(errorRef));

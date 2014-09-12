@@ -29,7 +29,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
 	@Override
 	protected void setUp() throws Exception {
 	  super.setUp();
-	  this.autoCleanedUpDeploymentIds.clear();;
+	  this.autoCleanedUpDeploymentIds.clear();
 	}
 	
 	@Override

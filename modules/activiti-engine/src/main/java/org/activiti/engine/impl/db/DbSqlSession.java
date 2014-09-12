@@ -120,9 +120,12 @@ public class DbSqlSession implements Session {
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
   protected String connectionMetadataDefaultCatalog;
   protected String connectionMetadataDefaultSchema;
+  
+  protected boolean isOptimizeDeleteOperationsEnabled;
 
   public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
+    this.isOptimizeDeleteOperationsEnabled = dbSqlSessionFactory.isOptimizeDeleteOperationsEnabled();
     this.sqlSession = dbSqlSessionFactory
       .getSqlSessionFactory()
       .openSession();
@@ -557,10 +560,6 @@ public class DbSqlSession implements Session {
 
   // deserialized objects /////////////////////////////////////////////////////
   
-  public void addDeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstanceEntity variableInstanceEntity) {
-    addDeserializedObject(new DeserializedObject(deserializedObject, serializedBytes, variableInstanceEntity));
-  }
-  
   public void addDeserializedObject(DeserializedObject deserializedObject) {
   	deserializedObjects.add(deserializedObject);
   }
@@ -634,7 +633,7 @@ public class DbSqlSession implements Session {
   protected List<DeleteOperation> optimizeDeleteOperations(List<DeleteOperation> deleteOperations) {
   	
   	// No optimization possible for 0 or 1 operations
-  	if (deleteOperations.size() <= 1) {
+  	if (!isOptimizeDeleteOperationsEnabled || deleteOperations.size() <= 1) {
   		return deleteOperations;
   	}
   	
@@ -1436,5 +1435,12 @@ public class DbSqlSession implements Session {
     return dbSqlSessionFactory;
   }
 
+	public boolean isOptimizeDeleteOperationsEnabled() {
+		return isOptimizeDeleteOperationsEnabled;
+	}
 
+	public void setOptimizeDeleteOperationsEnabled(boolean isOptimizeDeleteOperationsEnabled) {
+		this.isOptimizeDeleteOperationsEnabled = isOptimizeDeleteOperationsEnabled;
+	}
+  
 }

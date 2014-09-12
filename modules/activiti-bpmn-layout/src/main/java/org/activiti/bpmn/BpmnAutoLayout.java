@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.DataObject;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowElementsContainer;
@@ -288,7 +289,6 @@ public class BpmnAutoLayout {
 
       	// Always expanded when auto layouting
         subProcessGraphicInfo.setExpanded(true);
-        
       }
     }
   }
@@ -433,8 +433,8 @@ public class BpmnAutoLayout {
 				for (GraphicInfo graphicInfo : graphicInfos) {
 					graphicInfo.setX(graphicInfo.getX() + subProcessX + subProcessMargin);
 					graphicInfo.setY(graphicInfo.getY() + subProcessY + subProcessMargin);
-				}
-			} else {
+				} 
+			} else if (flowElement instanceof DataObject == false) {
 				
 				// Regular element
 				GraphicInfo graphicInfo = bpmnModel.getLocationMap().get(flowElement.getId());
@@ -480,7 +480,6 @@ public class BpmnAutoLayout {
   public void setGatewaySize(int gatewaySize) {
     this.gatewaySize = gatewaySize;
   }
-
   
   public int getTaskWidth() {
     return taskWidth;
