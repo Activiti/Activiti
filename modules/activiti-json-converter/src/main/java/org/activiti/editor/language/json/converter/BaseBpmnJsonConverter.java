@@ -718,7 +718,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
   
   protected String convertListToCommaSeparatedString(List<String> stringList) {
     String resultString = null;
-    if (stringList  != null && stringList.size() > 0) {
+    if (stringList  != null && !stringList.isEmpty()) {
       StringBuilder expressionBuilder = new StringBuilder();
       for (String singleItem : stringList) {
         if (expressionBuilder.length() > 0) {

@@ -47,12 +47,12 @@ public class ProcessExport implements BpmnXMLConstants {
 
     xtw.writeAttribute(ATTRIBUTE_PROCESS_EXECUTABLE, Boolean.toString(process.isExecutable()));
 
-    if (process.getCandidateStarterUsers().size() > 0) {
+    if (!process.getCandidateStarterUsers().isEmpty()) {
       xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS,
           BpmnXMLUtil.convertToDelimitedString(process.getCandidateStarterUsers()));
     }
 
-    if (process.getCandidateStarterGroups().size() > 0) {
+    if (!process.getCandidateStarterGroups().isEmpty()) {
       xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_GROUPS,
           BpmnXMLUtil.convertToDelimitedString(process.getCandidateStarterGroups()));
     }

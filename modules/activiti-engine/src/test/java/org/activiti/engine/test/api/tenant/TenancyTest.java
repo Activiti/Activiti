@@ -36,7 +36,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
 	protected void tearDown() throws Exception {
 	  super.tearDown();
 	  
-	  if (autoCleanedUpDeploymentIds.size() > 0) {
+	  if (!autoCleanedUpDeploymentIds.isEmpty()) {
 	  	for (String deploymentId : autoCleanedUpDeploymentIds) {
 	  		repositoryService.deleteDeployment(deploymentId, true);
 	  	}

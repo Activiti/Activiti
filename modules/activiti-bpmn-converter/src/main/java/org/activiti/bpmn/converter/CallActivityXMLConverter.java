@@ -80,7 +80,7 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
   }
   
   private boolean writeIOParameters(String elementName, List<IOParameter> parameterList, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
-    if (parameterList.size() == 0) return didWriteExtensionStartElement;
+    if (parameterList.isEmpty()) return didWriteExtensionStartElement;
     
     for (IOParameter ioParameter : parameterList) {
       if (didWriteExtensionStartElement == false) { 

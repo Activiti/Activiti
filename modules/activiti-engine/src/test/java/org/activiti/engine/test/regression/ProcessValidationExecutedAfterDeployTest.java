@@ -42,7 +42,7 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
       definitions = repositoryService.createProcessDefinitionQuery()
           .processDefinitionKey(processDefinitionKey).orderByProcessDefinitionVersion()
           .latestVersion().desc().list();
-      if (definitions.size() == 0) {
+      if (definitions.isEmpty()) {
         return null;
       }
     } catch (Exception e) {

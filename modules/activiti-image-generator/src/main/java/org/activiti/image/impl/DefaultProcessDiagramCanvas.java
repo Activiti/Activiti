@@ -742,7 +742,7 @@ public class DefaultProcessDiagramCanvas {
       if(currentHeight + height > boxHeight) {
         // The line we're about to add should NOT be added anymore, append three dots to previous one instead
         // to indicate more text is truncated
-        if (layouts.size() > 0) {
+        if (!layouts.isEmpty()) {
           layouts.remove(layouts.size() - 1);
           
           if(lastLine.length() >= 4) {

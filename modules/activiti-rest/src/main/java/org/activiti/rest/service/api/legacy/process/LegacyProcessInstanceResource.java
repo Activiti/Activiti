@@ -106,7 +106,7 @@ public class LegacyProcessInstanceResource extends SecuredResource {
         .asc()
         .list();
     
-    if(taskList != null && taskList.size() > 0) {
+    if(taskList != null && !taskList.isEmpty()) {
       ArrayNode tasksJSON = new ObjectMapper().createArrayNode();
       responseJSON.put("tasks", tasksJSON);
       for (HistoricTaskInstance historicTaskInstance : taskList) {
@@ -159,7 +159,7 @@ public class LegacyProcessInstanceResource extends SecuredResource {
         .asc()
         .list();
     
-    if(activityList != null && activityList.size() > 0) {
+    if(activityList != null && !activityList.isEmpty()) {
       ArrayNode activitiesJSON = new ObjectMapper().createArrayNode();
       responseJSON.put("activities", activitiesJSON);
       for (HistoricActivityInstance historicActivityInstance : activityList) {
@@ -190,7 +190,7 @@ public class LegacyProcessInstanceResource extends SecuredResource {
       Map<String, Object> variableMap = ActivitiUtil.getRuntimeService()
           .getVariables(processInstanceId);
       
-      if(variableMap != null && variableMap.size() > 0) {
+      if(variableMap != null && !variableMap.isEmpty()) {
         ArrayNode variablesJSON = new ObjectMapper().createArrayNode();
         responseJSON.put("variables", variablesJSON);
         for (String key : variableMap.keySet()) {
@@ -229,7 +229,7 @@ public class LegacyProcessInstanceResource extends SecuredResource {
         .desc()
         .list();
     
-    if(historyVariableList != null && historyVariableList.size() > 0) {
+    if(historyVariableList != null && !historyVariableList.isEmpty()) {
       ArrayNode variablesJSON = new ObjectMapper().createArrayNode();
       responseJSON.put("historyVariables", variablesJSON);
       for (HistoricDetail historicDetail : historyVariableList) {

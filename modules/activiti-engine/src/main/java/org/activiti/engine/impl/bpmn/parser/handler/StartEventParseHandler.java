@@ -94,7 +94,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
 
     // all start events share the same behavior:
     startEventActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(startEvent));
-    if (startEvent.getEventDefinitions().size() > 0) {
+    if (!startEvent.getEventDefinitions().isEmpty()) {
       EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
       if (eventDefinition instanceof TimerEventDefinition 
       		|| eventDefinition instanceof MessageEventDefinition
@@ -119,7 +119,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
               bpmnParse.getActivityBehaviorFactory().createEventSubProcessStartEventActivityBehavior(startEvent, startEventActivity.getId()); 
       startEventActivity.setActivityBehavior(activityBehavior);
       
-      if (startEvent.getEventDefinitions().size() > 0) {
+      if (!startEvent.getEventDefinitions().isEmpty()) {
         EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
         
         if (eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition 
@@ -133,7 +133,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
       
     } else { // "regular" subprocess
       
-      if(startEvent.getEventDefinitions().size() > 0) {
+      if(!startEvent.getEventDefinitions().isEmpty()) {
         logger.warn("event definitions only allowed on start event if subprocess is an event subprocess " + bpmnParse.getCurrentSubProcess().getId());
       }
       if (scope.getProperty(PROPERTYNAME_INITIAL) == null) {

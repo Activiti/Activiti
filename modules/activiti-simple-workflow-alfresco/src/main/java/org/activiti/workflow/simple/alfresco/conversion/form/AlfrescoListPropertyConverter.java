@@ -65,7 +65,7 @@ public class AlfrescoListPropertyConverter extends BaseAlfrescoFormPropertyConve
 		}
 		
 		// Create constraint for the values
-		if(dateDefinition.getEntries() != null && dateDefinition.getEntries().size() > 0) {
+		if(dateDefinition.getEntries() != null && !dateDefinition.getEntries().isEmpty()) {
 			M2Constraint valueConstraint = new M2Constraint();
 			valueConstraint.setType(AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_TYPE_LIST);
 			valueConstraint.setName(propertyName + AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_TYPE_LIST.toLowerCase());

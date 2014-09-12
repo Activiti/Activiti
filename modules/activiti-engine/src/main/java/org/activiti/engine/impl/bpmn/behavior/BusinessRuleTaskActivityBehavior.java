@@ -56,7 +56,7 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
       }
     }
     
-    if (rulesExpressions.size() > 0) {
+    if (!rulesExpressions.isEmpty()) {
       RulesAgendaFilter filter = new RulesAgendaFilter();
       Iterator<Expression> itRuleNames = rulesExpressions.iterator();
       while (itRuleNames.hasNext()) {
@@ -71,7 +71,7 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
     }
     
     Collection<Object> ruleOutputObjects = ksession.getObjects();
-    if (ruleOutputObjects != null && ruleOutputObjects.size() > 0) {
+    if (ruleOutputObjects != null && !ruleOutputObjects.isEmpty()) {
       Collection<Object> outputVariables = new ArrayList<Object>();
       for (Object object : ruleOutputObjects) {
         outputVariables.add(object);

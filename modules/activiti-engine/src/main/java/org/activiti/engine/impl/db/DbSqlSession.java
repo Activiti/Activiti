@@ -332,7 +332,7 @@ public class DbSqlSession implements Session {
     
     public void execute() {
     	
-    	if (persistentObjects.size() == 0) {
+    	if (persistentObjects.isEmpty()) {
     		return;
     	}
     	
@@ -373,7 +373,7 @@ public class DbSqlSession implements Session {
 
 		@Override
     public String toString() {
-      return "bulk delete of " + persistentObjects.size() + (persistentObjects.size() > 0 ? " entities of " + persistentObjects.get(0).getClass() : 0 );
+      return "bulk delete of " + persistentObjects.size() + (!persistentObjects.isEmpty() ? " entities of " + persistentObjects.get(0).getClass() : 0 );
     }
   }
   

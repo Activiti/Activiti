@@ -69,7 +69,7 @@ public class ParallelStepsDefinition extends AbstractStepListContainer<ParallelS
     setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
     
     steps = new ArrayList<ListStepDefinition<ParallelStepsDefinition>>();
-    if (definition.getStepList() != null && definition.getStepList().size() > 0) {
+    if (definition.getStepList() != null && !definition.getStepList().isEmpty()) {
       for (ListStepDefinition<ParallelStepsDefinition> stepDefinition : definition.getStepList()) {
         steps.add(stepDefinition.clone());
       }

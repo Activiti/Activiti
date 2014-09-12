@@ -43,7 +43,7 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
     BpmnModel bpmnModel = bpmnParse.getBpmnModel();
     ActivityImpl nestedActivity = null;
     EventDefinition eventDefinition = null;
-    if (event.getEventDefinitions().size() > 0) {
+    if (!event.getEventDefinitions().isEmpty()) {
       eventDefinition = event.getEventDefinitions().get(0);
     }
    

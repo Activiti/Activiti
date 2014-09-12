@@ -298,7 +298,7 @@ public class TaskDetailPanel extends DetailPanel {
   protected void initTaskForm() {
     // Check if task requires a form
     TaskFormData formData = formService.getTaskFormData(task.getId());
-    if(formData != null && formData.getFormProperties() != null && formData.getFormProperties().size() > 0) {
+    if(formData != null && formData.getFormProperties() != null && !formData.getFormProperties().isEmpty()) {
       taskForm = new FormPropertiesForm();
       taskForm.setSubmitButtonCaption(i18nManager.getMessage(Messages.TASK_COMPLETE));
       taskForm.setCancelButtonCaption(i18nManager.getMessage(Messages.TASK_RESET_FORM));

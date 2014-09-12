@@ -29,7 +29,7 @@ public class DiagramInterchangeInfoValidator extends ValidatorImpl {
 	
 	@Override
 	public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
-		if (bpmnModel.getLocationMap().size() > 0) {
+		if (!bpmnModel.getLocationMap().isEmpty()) {
 
 			// Location map
 			for (String bpmnReference : bpmnModel.getLocationMap().keySet()) {
@@ -50,7 +50,7 @@ public class DiagramInterchangeInfoValidator extends ValidatorImpl {
 			
 		}
 			
-		if (bpmnModel.getFlowLocationMap().size() > 0) {
+		if (!bpmnModel.getFlowLocationMap().isEmpty()) {
 			// flowlocation map
 			for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
 				if (bpmnModel.getFlowElement(bpmnReference) == null) {

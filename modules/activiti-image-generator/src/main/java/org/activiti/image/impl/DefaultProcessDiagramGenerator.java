@@ -90,7 +90,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
       public void draw(DefaultProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
         GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
         StartEvent startEvent = (StartEvent) flowNode;
-        if (startEvent.getEventDefinitions() != null && startEvent.getEventDefinitions().size() > 0) {
+        if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
           EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
           if (eventDefinition instanceof TimerEventDefinition) {
             processDiagramCanvas.drawTimerStartEvent(graphicInfo, scaleFactor);
@@ -111,7 +111,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
       public void draw(DefaultProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
         GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
         IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) flowNode;
-        if (intermediateCatchEvent.getEventDefinitions() != null && intermediateCatchEvent.getEventDefinitions().size() > 0) {
+        if (intermediateCatchEvent.getEventDefinitions() != null && !intermediateCatchEvent.getEventDefinitions()
+                                                                                           .isEmpty()) {
           if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
             processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(), graphicInfo, true, scaleFactor);
           } else if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
@@ -127,7 +128,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
       public void draw(DefaultProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
         GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
         ThrowEvent throwEvent = (ThrowEvent) flowNode;
-        if (throwEvent.getEventDefinitions() != null && throwEvent.getEventDefinitions().size() > 0) {
+        if (throwEvent.getEventDefinitions() != null && !throwEvent.getEventDefinitions().isEmpty()) {
           if (throwEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
             processDiagramCanvas.drawThrowingSignalEvent(graphicInfo, scaleFactor);
           }
@@ -143,7 +144,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
       public void draw(DefaultProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
         GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
         EndEvent endEvent = (EndEvent) flowNode;
-        if (endEvent.getEventDefinitions() != null && endEvent.getEventDefinitions().size() > 0) {
+        if (endEvent.getEventDefinitions() != null && !endEvent.getEventDefinitions().isEmpty()) {
           if (endEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
             processDiagramCanvas.drawErrorEndEvent(flowNode.getName(), graphicInfo, scaleFactor);
           }
@@ -275,7 +276,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
       public void draw(DefaultProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
         GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
         BoundaryEvent boundaryEvent = (BoundaryEvent) flowNode;
-        if (boundaryEvent.getEventDefinitions() != null && boundaryEvent.getEventDefinitions().size() > 0) {
+        if (boundaryEvent.getEventDefinitions() != null && !boundaryEvent.getEventDefinitions().isEmpty()) {
           if (boundaryEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
             
             processDiagramCanvas.drawCatchingTimerEvent(flowNode.getName(), graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);
@@ -812,7 +813,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
     }
     
     // Special case, see http://jira.codehaus.org/browse/ACT-1431
-    if (flowNodes.size() == 0 && bpmnModel.getPools().size() == 0 && nrOfLanes == 0) {
+    if (flowNodes.isEmpty() && bpmnModel.getPools().isEmpty() && nrOfLanes == 0) {
       // Nothing to show
       minX = 0;
       minY = 0;

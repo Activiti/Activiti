@@ -36,7 +36,7 @@ public class ActivitiVersion {
 	public boolean matches(String version) {
 		if (version.equals(mainVersion)) {
 			return true;
-		} else if (alternativeVersionStrings.size() > 0){
+		} else if (!alternativeVersionStrings.isEmpty()){
 			return alternativeVersionStrings.contains(version);
 		} else {
 			return false;

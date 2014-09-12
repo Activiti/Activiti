@@ -30,7 +30,7 @@ public class SignalValidator extends ValidatorImpl {
 	@Override
 	public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
 	  Collection<Signal> signals = bpmnModel.getSignals();
-	  if (signals != null && signals.size() > 0) {
+	  if (signals != null && !signals.isEmpty()) {
 	  	
 	  	for (Signal signal : signals) {
 	  		if (StringUtils.isEmpty(signal.getId())) {

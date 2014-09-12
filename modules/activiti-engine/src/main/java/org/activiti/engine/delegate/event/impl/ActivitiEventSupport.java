@@ -85,7 +85,7 @@ public class ActivitiEventSupport {
 		}
 
 		// Call global listeners
-		if (eventListeners.size() > 0) {
+		if (!eventListeners.isEmpty()) {
 			for (ActivitiEventListener listener : eventListeners) {
 				dispatchEvent(event, listener);
 			}
@@ -93,7 +93,7 @@ public class ActivitiEventSupport {
 
 		// Call typed listeners, if any
 		List<ActivitiEventListener> typed = typedListeners.get(event.getType());
-		if (typed != null && typed.size() > 0) {
+		if (typed != null && !typed.isEmpty()) {
 			for (ActivitiEventListener listener : typed) {
 				dispatchEvent(event, listener);
 			}

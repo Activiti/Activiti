@@ -43,14 +43,14 @@ public class IOSpecification extends BaseElement {
   
   public void setValues(IOSpecification otherSpec) {
     dataInputs = new ArrayList<DataSpec>();
-    if (otherSpec.getDataInputs() != null && otherSpec.getDataInputs().size() > 0) {
+    if (otherSpec.getDataInputs() != null && !otherSpec.getDataInputs().isEmpty()) {
       for (DataSpec dataSpec : otherSpec.getDataInputs()) {
         dataInputs.add(dataSpec.clone());
       }
     }
     
     dataOutputs = new ArrayList<DataSpec>();
-    if (otherSpec.getDataOutputs() != null && otherSpec.getDataOutputs().size() > 0) {
+    if (otherSpec.getDataOutputs() != null && !otherSpec.getDataOutputs().isEmpty()) {
       for (DataSpec dataSpec : otherSpec.getDataOutputs()) {
         dataOutputs.add(dataSpec.clone());
       }

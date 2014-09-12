@@ -61,7 +61,7 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
       executionVariables = execution.getVariables();
     }
     
-    if (variableNames != null && variableNames.size() > 0) {
+    if (variableNames != null && !variableNames.isEmpty()) {
       // if variableNames is not empty, return only variable names mentioned in it
       Map<String, Object> tempVariables = new HashMap<String, Object>();
       for (String variableName: variableNames) {

@@ -49,7 +49,7 @@ public class BoundaryEventParseHandler extends AbstractFlowNodeBpmnParseHandler<
     bpmnParse.setCurrentActivity(nestedActivity);
 
     EventDefinition eventDefinition = null;
-    if (boundaryEvent.getEventDefinitions().size() > 0) {
+    if (!boundaryEvent.getEventDefinitions().isEmpty()) {
       eventDefinition = boundaryEvent.getEventDefinitions().get(0);
     }
     

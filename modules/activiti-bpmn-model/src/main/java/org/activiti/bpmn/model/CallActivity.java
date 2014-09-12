@@ -54,14 +54,14 @@ public class CallActivity extends Activity {
     setCalledElement(otherElement.getCalledElement());
     
     inParameters = new ArrayList<IOParameter>();
-    if (otherElement.getInParameters() != null && otherElement.getInParameters().size() > 0) {
+    if (otherElement.getInParameters() != null && !otherElement.getInParameters().isEmpty()) {
       for (IOParameter parameter : otherElement.getInParameters()) {
         inParameters.add(parameter.clone());
       }
     }
     
     outParameters = new ArrayList<IOParameter>();
-    if (otherElement.getOutParameters() != null && otherElement.getOutParameters().size() > 0) {
+    if (otherElement.getOutParameters() != null && !otherElement.getOutParameters().isEmpty()) {
       for (IOParameter parameter : otherElement.getOutParameters()) {
         outParameters.add(parameter.clone());
       }

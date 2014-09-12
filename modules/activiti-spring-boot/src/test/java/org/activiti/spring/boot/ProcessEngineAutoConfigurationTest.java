@@ -66,7 +66,7 @@ public class ProcessEngineAutoConfigurationTest {
                         .list();
 
         Assert.assertNotNull(processDefinitionList);
-        Assert.assertTrue(processDefinitionList.size() > 0);
+        Assert.assertTrue(!processDefinitionList.isEmpty());
 
         ProcessDefinition processDefinition =
                 processDefinitionList.iterator().next();

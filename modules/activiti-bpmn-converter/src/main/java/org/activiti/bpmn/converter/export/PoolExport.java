@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 public class PoolExport implements BpmnXMLConstants {
 
   public static void writePools(BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    if (model.getPools().size() > 0) {
+    if (!model.getPools().isEmpty()) {
       xtw.writeStartElement(ELEMENT_COLLABORATION);
       xtw.writeAttribute(ATTRIBUTE_ID, "Collaboration");
       for (Pool pool : model.getPools()) {

@@ -194,7 +194,7 @@ public class BpmnParse implements BpmnXMLConstants {
       		LOGGER.warn("Process should be validated, but no process validator is configured on the process engine configuration!");
       	} else {
       		List<ValidationError> validationErrors = processValidator.validate(bpmnModel);
-      		if(validationErrors != null && validationErrors.size() > 0) {
+      		if(validationErrors != null && !validationErrors.isEmpty()) {
       			
       			StringBuilder warningBuilder = new StringBuilder();
 	      		StringBuilder errorBuilder = new StringBuilder();
@@ -396,7 +396,7 @@ public class BpmnParse implements BpmnXMLConstants {
       }
     }
 
-    if (processDefinitions.size() > 0) {
+    if (!processDefinitions.isEmpty()) {
       processDI();
     }
   }
@@ -451,7 +451,7 @@ public class BpmnParse implements BpmnXMLConstants {
   // /////////////////////////////////////////////////////////////////
 
   public void processDI() {
-    if (bpmnModel.getLocationMap().size() > 0) {
+    if (!bpmnModel.getLocationMap().isEmpty()) {
 
       // Verify if all referenced elements exist
       for (String bpmnReference : bpmnModel.getLocationMap().keySet()) {
@@ -539,7 +539,7 @@ public class BpmnParse implements BpmnXMLConstants {
       // it's an association, so nothing to do
     } else {
       GraphicInfo graphicInfo = null;
-      if (graphicList != null && graphicList.size() > 0) {
+      if (graphicList != null && !graphicList.isEmpty()) {
         graphicInfo = graphicList.get(0);
       } else {
         graphicInfo = new GraphicInfo();

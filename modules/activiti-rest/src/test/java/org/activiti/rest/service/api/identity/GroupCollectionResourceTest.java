@@ -88,7 +88,7 @@ public class GroupCollectionResourceTest extends BaseRestTestCase {
     } finally {
       
       // Delete groups after test passes or fails
-      if(savedGroups.size() > 0) {
+      if(!savedGroups.isEmpty()) {
         for(Group group : savedGroups) {
           identityService.deleteGroup(group.getId());
         }

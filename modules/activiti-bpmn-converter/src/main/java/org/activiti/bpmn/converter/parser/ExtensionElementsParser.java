@@ -33,7 +33,7 @@ public class ExtensionElementsParser implements BpmnXMLConstants {
   
   public void parse(XMLStreamReader xtr, List<SubProcess> activeSubProcessList, Process activeProcess, BpmnModel model) throws Exception {
     BaseElement parentElement = null;
-    if (activeSubProcessList.size() > 0) {
+    if (!activeSubProcessList.isEmpty()) {
       parentElement = activeSubProcessList.get(activeSubProcessList.size() - 1);
       
     } else {

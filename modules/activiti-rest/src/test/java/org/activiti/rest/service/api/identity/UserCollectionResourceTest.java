@@ -106,7 +106,7 @@ public class UserCollectionResourceTest extends BaseRestTestCase {
     } finally {
       
       // Delete user after test passes or fails
-      if(savedUsers.size() > 0) {
+      if(!savedUsers.isEmpty()) {
         for(User user : savedUsers) {
           identityService.deleteUser(user.getId());
         }
