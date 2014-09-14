@@ -52,8 +52,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String taskName;
   protected String taskNameLike;
   protected String taskNameLikeIgnoreCase;
-  protected List<String> taskNameList;
-  protected List<String> taskNameListIgnoreCase;
+  private List<String> taskNameList;
+  private List<String> taskNameListIgnoreCase;
   protected String taskParentTaskId;
   protected String taskDescription;
   protected String taskDescriptionLike;
