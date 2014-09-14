@@ -42,6 +42,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String name;
   protected String nameLike;
   protected String nameLikeIgnoreCase;
+  protected List<String> nameList;
+  protected List<String> nameListIgnoreCase;
   protected String description;
   protected String descriptionLike;
   protected String descriptionLikeIgnoreCase;
@@ -137,7 +139,77 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     return this;
   }
-  
+
+  @Override
+  public TaskQuery taskNameIn(List<String> nameList) {
+    if(nameList == null) {
+      throw new ActivitiIllegalArgumentException("Task name list is null");
+    }
+    if(nameList.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Task name list is empty");
+    }
+    for (String name : nameList) {
+      if (name == null) {
+        throw new ActivitiIllegalArgumentException("None of the given task names can be null");
+      }
+    }
+
+    if (name != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and name");
+    }
+    if (nameLike != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and nameLike");
+    }
+    if (nameLikeIgnoreCase != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and nameLikeIgnoreCase");
+    }
+
+    if(orActive) {
+      orQueryObject.nameList = nameList;
+    } else {
+      this.nameList = nameList;
+    }
+    return this;
+  }
+
+  @Override
+  public TaskQuery taskNameInIgnoreCase(List<String> nameList) {
+    if(nameList == null) {
+      throw new ActivitiIllegalArgumentException("Task name list is null");
+    }
+    if(nameList.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Task name list is empty");
+    }
+    for (String name : nameList) {
+      if (name == null) {
+        throw new ActivitiIllegalArgumentException("None of the given task names can be null");
+      }
+    }
+
+    if (name != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and name");
+    }
+    if (nameLike != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and nameLike");
+    }
+    if (nameLikeIgnoreCase != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and nameLikeIgnoreCase");
+    }
+
+    final int nameListSize = nameList.size();
+    final List<String> caseIgnoredNameList = new ArrayList<String>(nameListSize);
+    for (String name : nameList) {
+      caseIgnoredNameList.add(name.toLowerCase());
+    }
+
+    if (orActive) {
+      this.orQueryObject.nameListIgnoreCase = caseIgnoredNameList;
+    } else {
+      this.nameListIgnoreCase = caseIgnoredNameList;
+    }
+    return this;
+  }
+
   public TaskQueryImpl taskNameLike(String nameLike) {
     if (nameLike == null) {
       throw new ActivitiIllegalArgumentException("Task namelike is null");
@@ -163,7 +235,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
      }
      return this;
   }
-  
+
   public TaskQueryImpl taskDescription(String description) {
     if (description == null) {
       throw new ActivitiIllegalArgumentException("Description is null");
@@ -1089,6 +1161,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
   public String getNameLike() {
     return nameLike;
+  }
+  public List<String> getNameList() {
+    return nameList;
+  }
+  public List<String> getNameListIgnoreCase() {
+    return nameListIgnoreCase;
   }
   public String getAssignee() {
     return assignee;

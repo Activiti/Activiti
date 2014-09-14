@@ -14,6 +14,7 @@
 package org.activiti.engine.test.history;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -310,7 +311,19 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskName("unexistingname").endOr().count());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskNameLike("Clean u%").endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskNameLike("%unexistingname%").endOr().count());
-    
+    final  List<String> taskNameList = new ArrayList<String>(1);
+    taskNameList.add("Clean up");
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskNameIn(taskNameList).endOr().count());
+    taskNameList.clear();
+    taskNameList.add("unexistingname");
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskNameIn(taskNameList).endOr().count());
+    taskNameList.clear();
+    taskNameList.add("clean up");
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskNameInIgnoreCase(taskNameList).endOr().count());
+    taskNameList.clear();
+    taskNameList.add("unexistingname");
+    assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskNameInIgnoreCase(taskNameList).endOr().count());
+
     // Description
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskDescription("Historic task description").endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskDescription("unexistingdescription").endOr().count());
