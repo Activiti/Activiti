@@ -602,6 +602,7 @@
             <exclude>**/*TestCase.java</exclude>
           </excludes>
           <runOrder>alphabetical</runOrder>
+          <argLine>-Duser.language=en</argLine>
         </configuration>
       </plugin>
       <plugin>

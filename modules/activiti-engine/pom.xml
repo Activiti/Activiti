@@ -186,6 +186,7 @@
             <exclude>**/RepeatingServiceTaskTest.java</exclude>
           </excludes>
           <runOrder>alphabetical</runOrder>
+          <argLine>-Duser.language=en</argLine>
         </configuration>
       </plugin>
       <plugin>
@@ -458,6 +459,7 @@
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
+              <argLine>-Duser.language=en</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -523,6 +525,7 @@
 							<exclude>org/activiti/standalone/**</exclude>
 						</excludes>
 						<runOrder>alphabetical</runOrder>
+            <argLine>-Duser.language=en</argLine>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -574,6 +577,7 @@
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
+              <argLine>-Duser.language=en</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -664,6 +668,7 @@
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
+              <argLine>-Duser.language=en</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -710,6 +715,7 @@
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
+              <argLine>-Duser.language=en</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -733,6 +739,7 @@
               </includes>
               <excludes />
               <runOrder>alphabetical</runOrder>
+              <argLine>-Duser.language=en</argLine>
             </configuration>
           </plugin>
           <plugin>
