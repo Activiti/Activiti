@@ -2,6 +2,7 @@ package org.activiti.bpmn.converter;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -26,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
   
+  private final Pattern xmlChars = Pattern.compile("[<>&]");
   private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
   protected boolean didWriteExtensionStartElement = false;
   
@@ -130,7 +132,15 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
         } else {
           value = dataObject.getValue().toString();
         }
-        xtw.writeCharacters(value);
+
+        if (dataObject instanceof StringDataObject && xmlChars.matcher(value).find())
+        {
+          xtw.writeCData(value);
+        }
+        else
+        {
+          xtw.writeCharacters(value);
+        }
       }
       xtw.writeEndElement();
     }
