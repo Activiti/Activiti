@@ -70,7 +70,7 @@ import org.activiti.engine.impl.juel.Builder.Feature;
  * 
  * @author Christoph Beck
  */
-public class ExpressionFactoryImpl extends org.activiti.engine.impl.javax.el.ExpressionFactory {
+public class ExpressionFactoryImpl extends ExpressionFactory {
 	/**
 	 * A profile provides a default set of language features that will define the builder's
 	 * behavior. A profile can be adjusted using the <code>javax.el.methodInvocations</code>,

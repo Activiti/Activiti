@@ -19,6 +19,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.MessageEventDefinition;
@@ -54,11 +55,11 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
 
 				EventDefinition eventDefinition = boundaryEvent.getEventDefinitions().get(0);
 				if (!(eventDefinition instanceof TimerEventDefinition)
-				    && !(eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition)
+				    && !(eventDefinition instanceof ErrorEventDefinition)
 				    && !(eventDefinition instanceof SignalEventDefinition)
 				    && !(eventDefinition instanceof CancelEventDefinition)
 				    && !(eventDefinition instanceof MessageEventDefinition)
-				    && !(eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition)) {
+				    && !(eventDefinition instanceof CompensateEventDefinition)) {
 
 					addError(errors, Problems.BOUNDARY_EVENT_INVALID_EVENT_DEFINITION, process,
 					    boundaryEvent, "Invalid or unsupported event definition");

@@ -41,7 +41,7 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> exten
     }
   }
   
-  protected void createMultiInstanceLoopCharacteristics(BpmnParse bpmnParse, org.activiti.bpmn.model.Activity modelActivity) {
+  protected void createMultiInstanceLoopCharacteristics(BpmnParse bpmnParse, Activity modelActivity) {
     
     MultiInstanceLoopCharacteristics loopCharacteristics = modelActivity.getLoopCharacteristics();
     
