@@ -130,7 +130,7 @@ public class ExecutionEntityManager extends AbstractManager {
     List<ProcessInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectProcessInstanceWithVariablesByQueryCriteria", 
         executionQuery, executionQuery.getFirstResult(), executionQuery.getMaxResults());
     
-    if (instanceList != null && instanceList.size() > 0) {
+    if (instanceList != null && !instanceList.isEmpty()) {
       if (firstResult > 0) {
         if (firstResult <= instanceList.size()) {
           int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);

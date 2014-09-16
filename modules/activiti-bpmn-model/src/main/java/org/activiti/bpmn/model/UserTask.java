@@ -162,14 +162,14 @@ public class UserTask extends Task {
     setCustomUserIdentityLinks(otherElement.customUserIdentityLinks);
     
     formProperties = new ArrayList<FormProperty>();
-    if (otherElement.getFormProperties() != null && otherElement.getFormProperties().size() > 0) {
+    if (otherElement.getFormProperties() != null && !otherElement.getFormProperties().isEmpty()) {
       for (FormProperty property : otherElement.getFormProperties()) {
         formProperties.add(property.clone());
       }
     }
     
     taskListeners = new ArrayList<ActivitiListener>();
-    if (otherElement.getTaskListeners() != null && otherElement.getTaskListeners().size() > 0) {
+    if (otherElement.getTaskListeners() != null && !otherElement.getTaskListeners().isEmpty()) {
       for (ActivitiListener listener : otherElement.getTaskListeners()) {
         taskListeners.add(listener.clone());
       }

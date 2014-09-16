@@ -50,7 +50,7 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
 			BoundaryEvent boundaryEvent = boundaryEvents.get(i);
 
 			if (boundaryEvent.getEventDefinitions() != null
-			    && boundaryEvent.getEventDefinitions().size() > 0) {
+			    && !boundaryEvent.getEventDefinitions().isEmpty()) {
 
 				EventDefinition eventDefinition = boundaryEvent.getEventDefinitions().get(0);
 				if (!(eventDefinition instanceof TimerEventDefinition)
@@ -92,7 +92,8 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
 						if (j != i) {
 							BoundaryEvent otherBoundaryEvent = boundaryEvents.get(j);
 							if (otherBoundaryEvent.getAttachedToRefId() != null && otherBoundaryEvent.getAttachedToRefId().equals(boundaryEvent.getAttachedToRefId())) {
-								if (otherBoundaryEvent.getEventDefinitions() != null && otherBoundaryEvent.getEventDefinitions().size() > 0) {
+								if (otherBoundaryEvent.getEventDefinitions() != null && !otherBoundaryEvent
+                                        .getEventDefinitions().isEmpty()) {
 									EventDefinition otherEventDefinition = otherBoundaryEvent.getEventDefinitions().get(0);
 									if (otherEventDefinition instanceof MessageEventDefinition) {
 										MessageEventDefinition currentMessageEventDefinition = (MessageEventDefinition) eventDefinition;

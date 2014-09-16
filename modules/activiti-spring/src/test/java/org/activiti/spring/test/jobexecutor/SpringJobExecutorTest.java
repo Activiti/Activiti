@@ -38,7 +38,7 @@ public class SpringJobExecutorTest extends SpringActivitiTestCase {
 		waitForTasksToExpire();
 
 		List<Task> activeTasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
-		assertTrue(activeTasks.size() == 0);
+		assertTrue(activeTasks.isEmpty());
 	}
 
 	@Test

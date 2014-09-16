@@ -145,7 +145,7 @@ public class EventOverviewPanel extends DetailPanel {
           .orderByProcessInstanceStartTime()
           .desc()
           .list();
-      if (replayProcessInstanceList != null && replayProcessInstanceList.size() > 0) {
+      if (replayProcessInstanceList != null && !replayProcessInstanceList.isEmpty()) {
         replayHistoricInstance = replayProcessInstanceList.get(0);
       }
       
@@ -211,7 +211,7 @@ public class EventOverviewPanel extends DetailPanel {
           String processInstanceId = (String) instanceTable.getValue();
           ExplorerApp.get().setCrystalBallCurrentInstanceId(processInstanceId);
           List<EventLogEntry> eventLogEntries = managementService.getEventLogEntriesByProcessInstanceId(processInstanceId);
-          if (eventLogEntries == null || eventLogEntries.size() == 0) return;
+          if (eventLogEntries == null || eventLogEntries.isEmpty()) return;
           EventLogTransformer transformer = new EventLogTransformer(getTransformers());
           simulationEvents = transformer.transform(eventLogEntries);
           ExplorerApp.get().setCrystalBallSimulationEvents(simulationEvents);
@@ -236,7 +236,7 @@ public class EventOverviewPanel extends DetailPanel {
               .orderByProcessInstanceStartTime()
               .desc()
               .list();
-          if (replayProcessInstanceList != null && replayProcessInstanceList.size() > 0) {
+          if (replayProcessInstanceList != null && !replayProcessInstanceList.isEmpty()) {
             replayHistoricInstance = replayProcessInstanceList.get(0);
           }
           
@@ -261,7 +261,7 @@ public class EventOverviewPanel extends DetailPanel {
   }
   
   protected void initInstancesTable() {
-    if (instanceList == null || instanceList.size() == 0) {
+    if (instanceList == null || instanceList.isEmpty()) {
       noMembersTable = new Label(i18nManager.getMessage(Messages.ADMIN_RUNNING_NONE_FOUND));
       instanceLayout.addComponent(noMembersTable);
     
@@ -345,7 +345,7 @@ public class EventOverviewPanel extends DetailPanel {
 
       @Override
       public void buttonClick(ClickEvent event) {
-        if (SimulationRunContext.getEventCalendar().getEvents().size() > 0) {
+        if (!SimulationRunContext.getEventCalendar().getEvents().isEmpty()) {
           simulationDebugger.step();
           refreshEvents();
         }

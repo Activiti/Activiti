@@ -160,7 +160,7 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
   protected static String getExtensionValue(String key, ValuedDataObject dataObj) {
     Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
 
-    if (extensionElements.size() > 0) {
+    if (!extensionElements.isEmpty()) {
       return extensionElements.get(key).get(0).getElementText();
     }
     return null;
@@ -169,7 +169,7 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
   protected static ExtensionElement getExtensionElement(String key, ValuedDataObject dataObj) {
     Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
 
-    if (extensionElements.size() > 0) {
+    if (!extensionElements.isEmpty()) {
       return extensionElements.get(key).get(0);
     }
     return null;

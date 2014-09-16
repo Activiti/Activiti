@@ -55,7 +55,7 @@ public class AlfrescoTransitionsPropertyConverter extends BaseAlfrescoFormProper
 	  contentType.getProperties().add(property);
 		
 		// Create constraint for the values
-		if(def.getTransitions() != null && def.getTransitions().size() > 0) {
+		if(def.getTransitions() != null && !def.getTransitions().isEmpty()) {
 			M2Constraint valueConstraint = new M2Constraint();
 			valueConstraint.setType(AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_TYPE_LIST);
 			valueConstraint.setName(propertyName + AlfrescoConversionConstants.CONTENT_MODEL_CONSTRAINT_TYPE_LIST.toLowerCase());

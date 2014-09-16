@@ -66,7 +66,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
              .deploymentTenantId(deployment.getTenantId())
              .orderByDeploymentId().desc().list();
       	 
-      	 if (deploymentList.size() > 0) {
+      	 if (!deploymentList.isEmpty()) {
       		 existingDeployments.addAll(deploymentList);
       	 }
       }

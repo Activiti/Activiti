@@ -196,13 +196,13 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       propertiesNode.put(PROPERTY_DOCUMENTATION, mainProcess.getDocumentation());
     }
 
-    if (mainProcess.getDataObjects().size() > 0) {
+    if (!mainProcess.getDataObjects().isEmpty()) {
       convertDataPropertiesToJson(mainProcess.getDataObjects(), propertiesNode);
     }
     
     modelNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
     
-    if (model.getPools().size() > 0) {
+    if (!model.getPools().isEmpty()) {
       for (Pool pool : model.getPools()) {
         GraphicInfo poolGraphicInfo = model.getGraphicInfo(pool.getId());
         ObjectNode poolNode = BpmnJsonConverterUtil.createChildShape(pool.getId(), STENCIL_POOL, 
@@ -390,7 +390,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         fillSubShapes(subShapesMap, subProcess);
       }
       
-      if (subShapesMap.size() > 0) {
+      if (!subShapesMap.isEmpty()) {
         List<String> removeSubFlowsList = new ArrayList<String>();
         List<SequenceFlow> sequenceFlowList = process.findFlowElementsOfType(SequenceFlow.class);
         for (FlowElement flowElement : sequenceFlowList) {

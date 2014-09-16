@@ -113,7 +113,7 @@ public class FormDefinition implements FormPropertyDefinitionContainer {
     setDescription(formDefinition.getDescription());
     
     List<FormPropertyGroup> groupList = new ArrayList<FormPropertyGroup>();
-    if (formDefinition.getFormGroups() != null && formDefinition.getFormGroups().size() > 0) {
+    if (formDefinition.getFormGroups() != null && !formDefinition.getFormGroups().isEmpty()) {
       for (FormPropertyGroup propertyGroup : formDefinition.getFormGroups()) {
         groupList.add(propertyGroup.clone());
       }
@@ -121,7 +121,7 @@ public class FormDefinition implements FormPropertyDefinitionContainer {
     setFormGroups(groupList);
     
     formProperties = new ArrayList<FormPropertyDefinition>();
-    if (formDefinition.getFormGroups() != null && formDefinition.getFormGroups().size() > 0) {
+    if (formDefinition.getFormGroups() != null && !formDefinition.getFormGroups().isEmpty()) {
       for (FormPropertyDefinition propertyDefinition : formDefinition.getFormPropertyDefinitions()) {
         formProperties.add(propertyDefinition.clone());
       }

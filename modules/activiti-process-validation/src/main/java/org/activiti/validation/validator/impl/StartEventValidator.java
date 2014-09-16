@@ -39,7 +39,7 @@ public class StartEventValidator extends ProcessLevelValidator {
 		
 		// Multiple message start events supported, but only one of the other types 
 		for (StartEvent startEvent : startEvents) {
-			if (startEvent.getEventDefinitions() != null && startEvent.getEventDefinitions().size() > 0) {
+			if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
 				
 				EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
 				

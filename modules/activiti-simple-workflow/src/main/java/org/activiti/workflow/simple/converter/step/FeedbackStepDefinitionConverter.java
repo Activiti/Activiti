@@ -128,7 +128,8 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
     
     // When the list of feedback providers is fixed up front, we need to add a script listener
     // that injects these variables into the process (instead of having it provided by the end user in a form)
-    if (feedbackStepDefinition.getFeedbackProviders() != null && feedbackStepDefinition.getFeedbackProviders().size() > 0) {
+    if (feedbackStepDefinition.getFeedbackProviders() != null && !feedbackStepDefinition.getFeedbackProviders()
+                                                                                        .isEmpty()) {
       if (selectPeopleUserTask.getTaskListeners() == null) 
       {
         selectPeopleUserTask.setTaskListeners(new ArrayList<ActivitiListener>());

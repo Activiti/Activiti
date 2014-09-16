@@ -69,7 +69,7 @@ public class ChoiceStepsDefinition extends AbstractConditionStepListContainer<Ch
     setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
     
     steps = new ArrayList<ListConditionStepDefinition<ChoiceStepsDefinition>>();
-    if (definition.getStepList() != null && definition.getStepList().size() > 0) {
+    if (definition.getStepList() != null && !definition.getStepList().isEmpty()) {
       for (ListConditionStepDefinition<ChoiceStepsDefinition> stepDefinition : definition.getStepList()) {
         steps.add(stepDefinition.clone());
       }

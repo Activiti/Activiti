@@ -42,7 +42,7 @@ public class NavigationFragmentChangeListener implements FragmentChangedListener
       
       // Find appropriate handler based on the first part of the URI
       Navigator navigationHandler = null;
-      if (uriFragment.getUriParts() != null && uriFragment.getUriParts().size() > 0) {
+      if (uriFragment.getUriParts() != null && !uriFragment.getUriParts().isEmpty()) {
         navigationHandler = navigatorManager.getNavigator(uriFragment.getUriParts().get(0));
       }
       
@@ -55,7 +55,7 @@ public class NavigationFragmentChangeListener implements FragmentChangedListener
     
     } else if (ExplorerApp.get().getCurrentUriFragment() != null &&
         ExplorerApp.get().getCurrentUriFragment().getUriParts() != null &&
-            ExplorerApp.get().getCurrentUriFragment().getUriParts().size() > 0) {
+            !ExplorerApp.get().getCurrentUriFragment().getUriParts().isEmpty()) {
       
       Navigator navigationHandler = navigatorManager.getNavigator(ExplorerApp.get().getCurrentUriFragment().getUriParts().get(0));
       if (navigationHandler instanceof ProcessModelNavigator) {

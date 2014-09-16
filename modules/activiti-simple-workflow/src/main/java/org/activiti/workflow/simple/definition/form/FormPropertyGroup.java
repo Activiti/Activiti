@@ -112,7 +112,7 @@ public class FormPropertyGroup implements FormPropertyDefinitionContainer {
         setType(formGroup.getType());
 
         List<FormPropertyDefinition> definitionList = new ArrayList<FormPropertyDefinition>();
-        if (formGroup.getFormPropertyDefinitions() != null && formGroup.getFormPropertyDefinitions().size() > 0) {
+        if (formGroup.getFormPropertyDefinitions() != null && !formGroup.getFormPropertyDefinitions().isEmpty()) {
             for (FormPropertyDefinition propertyDefinition : formGroup.getFormPropertyDefinitions()) {
                 definitionList.add(propertyDefinition.clone());
             }

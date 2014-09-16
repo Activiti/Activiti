@@ -174,7 +174,7 @@ protected void initDemoProcessDefinitions() {
     String deploymentName = "Demo processes";
     List<Deployment> deploymentList = repositoryService.createDeploymentQuery().deploymentName(deploymentName).list();
     
-    if (deploymentList == null || deploymentList.size() == 0) {
+    if (deploymentList == null || deploymentList.isEmpty()) {
       repositoryService.createDeployment()
         .name(deploymentName)
         .addClasspathResource("createTimersProcess.bpmn20.xml")
@@ -197,7 +197,7 @@ protected void initDemoProcessDefinitions() {
   protected void createModelData(String name, String description, String jsonFile) {
     List<Model> modelList = repositoryService.createModelQuery().modelName("Demo model").list();
     
-    if (modelList == null || modelList.size() == 0) {
+    if (modelList == null || modelList.isEmpty()) {
     
       Model model = repositoryService.newModel();
       model.setName(name);

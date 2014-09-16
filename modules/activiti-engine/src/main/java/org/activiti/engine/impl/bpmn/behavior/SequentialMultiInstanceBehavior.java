@@ -91,7 +91,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     
     if(innerActivityBehavior instanceof SubProcessActivityBehavior) {
       // ACT-1185: end-event in subprocess may have inactivated execution
-      if(!execution.isActive() && execution.isEnded() && (execution.getExecutions() == null || execution.getExecutions().size() == 0)) {
+      if(!execution.isActive() && execution.isEnded() && (execution.getExecutions() == null || execution.getExecutions().isEmpty())) {
         execution.setActive(true);
       }
     }
