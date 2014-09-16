@@ -21,6 +21,7 @@ import java.util.TreeMap;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -307,11 +308,12 @@ public class AdminRunningInstancesPanel extends DetailPanel {
 	    	addDetailComponent(imageHeader);
     	}
 
-      ProcessDiagramGenerator diagramGenerator = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getProcessEngineConfiguration().getProcessDiagramGenerator();
+    	ProcessEngineConfiguration processEngineConfig = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getProcessEngineConfiguration();
+      ProcessDiagramGenerator diagramGenerator = processEngineConfig.getProcessDiagramGenerator();
 
       StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
         	.buildStreamResource(processInstance.getId(), processInstance.getProcessDefinitionId(), 
-        			repositoryService, runtimeService, diagramGenerator);
+        			repositoryService, runtimeService, diagramGenerator, processEngineConfig);
 
       currentEmbedded = new Embedded(null, diagram);
       currentEmbedded.setType(Embedded.TYPE_IMAGE);
@@ -364,7 +366,7 @@ public class AdminRunningInstancesPanel extends DetailPanel {
     List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery()
       .processInstanceId(processInstance.getId())
       .orderByHistoricTaskInstanceEndTime().desc()
-      .orderByHistoricTaskInstanceStartTime().desc()
+      .orderByTaskCreateTime().desc()
       .list();
     
     if(!tasks.isEmpty()) {

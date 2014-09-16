@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
@@ -41,10 +42,10 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
   	Date now = processEngineConfiguration.getClock().getCurrentTime();
   	
   	// 4 tasks with a due date
-  	Task task0 = createTask("task0", new Date(now.getTime() + (4L * 7L * 24L * 60L * 60L * 1000L))); // 4 weeks in future
-  	Task task1 = createTask("task1", new Date(now.getTime() + (2 * 24L * 60L * 60L * 1000L))); // 2 days in future
-  	Task task2 = createTask("task2", new Date(now.getTime() + (7L * 24L * 60L * 60L * 1000L))); // 1 week in future
-  	Task task3 = createTask("task3", new Date(now.getTime() + (24L * 60L * 60L * 1000L))); // 1 day in future
+  	createTask("task0", new Date(now.getTime() + (4L * 7L * 24L * 60L * 60L * 1000L))); // 4 weeks in future
+  	createTask("task1", new Date(now.getTime() + (2 * 24L * 60L * 60L * 1000L))); // 2 days in future
+  	createTask("task2", new Date(now.getTime() + (7L * 24L * 60L * 60L * 1000L))); // 1 week in future
+  	createTask("task3", new Date(now.getTime() + (24L * 60L * 60L * 1000L))); // 1 day in future
   	
   	// 2 tasks without a due date
   	createTask("task4", null);
@@ -100,56 +101,55 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
   	assertEquals("task1", tasks.get(4).getName());
   	assertEquals("task3", tasks.get(5).getName());
   	
-  	
-  	
-  	// And now the same, but for history!
-  	List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().asc().list();
-  	
-  	for (int i=0; i<4; i++) {
-  		assertNotNull(historicTasks.get(i).getDueDate());
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+    	// And now the same, but for history!
+    	List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().asc().list();
+    	
+    	for (int i=0; i<4; i++) {
+    		assertNotNull(historicTasks.get(i).getDueDate());
+    	}
+    	
+    	assertEquals("task3", historicTasks.get(0).getName());
+    	assertEquals("task1", historicTasks.get(1).getName());
+    	assertEquals("task2", historicTasks.get(2).getName());
+    	assertEquals("task0", historicTasks.get(3).getName());
+    	assertNull(historicTasks.get(4).getDueDate());
+    	assertNull(historicTasks.get(5).getDueDate());
+    	
+    	// The same, but now desc
+    	historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().desc().list();
+    	
+    	for (int i=0; i<4; i++) {
+    		assertNotNull(historicTasks.get(i).getDueDate());
+    	}
+    	
+    	assertEquals("task0", historicTasks.get(0).getName());
+    	assertEquals("task2", historicTasks.get(1).getName());
+    	assertEquals("task1", historicTasks.get(2).getName());
+    	assertEquals("task3", historicTasks.get(3).getName());
+    	assertNull(historicTasks.get(4).getDueDate());
+    	assertNull(historicTasks.get(5).getDueDate());
+    	
+    	// The same but now nulls first
+    	historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().asc().list();
+     	
+     	assertNull(historicTasks.get(0).getDueDate());
+     	assertNull(historicTasks.get(1).getDueDate());
+     	assertEquals("task3", historicTasks.get(2).getName());
+     	assertEquals("task1", historicTasks.get(3).getName());
+     	assertEquals("task2", historicTasks.get(4).getName());
+     	assertEquals("task0", historicTasks.get(5).getName());
+     	
+     	// And now desc
+     	historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().desc().list();
+    	
+    	assertNull(historicTasks.get(0).getDueDate());
+    	assertNull(historicTasks.get(1).getDueDate());
+    	assertEquals("task0", historicTasks.get(2).getName());
+    	assertEquals("task2", historicTasks.get(3).getName());
+    	assertEquals("task1", historicTasks.get(4).getName());
+    	assertEquals("task3", historicTasks.get(5).getName());
   	}
-  	
-  	assertEquals("task3", historicTasks.get(0).getName());
-  	assertEquals("task1", historicTasks.get(1).getName());
-  	assertEquals("task2", historicTasks.get(2).getName());
-  	assertEquals("task0", historicTasks.get(3).getName());
-  	assertNull(historicTasks.get(4).getDueDate());
-  	assertNull(historicTasks.get(5).getDueDate());
-  	
-  	// The same, but now desc
-  	historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().desc().list();
-  	
-  	for (int i=0; i<4; i++) {
-  		assertNotNull(historicTasks.get(i).getDueDate());
-  	}
-  	
-  	assertEquals("task0", historicTasks.get(0).getName());
-  	assertEquals("task2", historicTasks.get(1).getName());
-  	assertEquals("task1", historicTasks.get(2).getName());
-  	assertEquals("task3", historicTasks.get(3).getName());
-  	assertNull(historicTasks.get(4).getDueDate());
-  	assertNull(historicTasks.get(5).getDueDate());
-  	
-  	// The same but now nulls first
-  	historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().asc().list();
-   	
-   	assertNull(historicTasks.get(0).getDueDate());
-   	assertNull(historicTasks.get(1).getDueDate());
-   	assertEquals("task3", historicTasks.get(2).getName());
-   	assertEquals("task1", historicTasks.get(3).getName());
-   	assertEquals("task2", historicTasks.get(4).getName());
-   	assertEquals("task0", historicTasks.get(5).getName());
-   	
-   	// And now desc
-   	historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().desc().list();
-  	
-  	assertNull(historicTasks.get(0).getDueDate());
-  	assertNull(historicTasks.get(1).getDueDate());
-  	assertEquals("task0", historicTasks.get(2).getName());
-  	assertEquals("task2", historicTasks.get(3).getName());
-  	assertEquals("task1", historicTasks.get(4).getName());
-  	assertEquals("task3", historicTasks.get(5).getName());
-
   }
   
   private Task createTask(String name, Date dueDate) {

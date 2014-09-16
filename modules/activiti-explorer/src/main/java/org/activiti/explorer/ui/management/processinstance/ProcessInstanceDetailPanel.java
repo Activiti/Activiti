@@ -222,7 +222,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
         ProcessEngineConfiguration processEngineConfiguration = ProcessEngines.getDefaultProcessEngine().getProcessEngineConfiguration();
         ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
         StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
-          .buildStreamResource(processInstance, repositoryService, runtimeService, diagramGenerator);
+          .buildStreamResource(processInstance, repositoryService, runtimeService, diagramGenerator, processEngineConfiguration);
   
         if(diagram != null) {
           Label header = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
