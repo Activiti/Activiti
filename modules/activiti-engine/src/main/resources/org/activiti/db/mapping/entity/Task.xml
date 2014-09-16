@@ -331,6 +331,20 @@
       <if test="nameLikeIgnoreCase != null">
         and lower(RES.NAME_) like #{nameLikeIgnoreCase}
       </if>
+      <if test="nameList != null &amp;&amp; nameList.size() &gt; 0">
+        and RES.NAME_ IN
+        <foreach item="name" index="index" collection="nameList"
+                 open="(" separator="," close=")">
+          #{name}
+        </foreach>
+      </if>
+      <if test="nameListIgnoreCase != null &amp;&amp; nameListIgnoreCase.size() &gt; 0">
+        and lower(RES.NAME_) IN
+        <foreach item="name" index="index" collection="nameListIgnoreCase"
+                 open="(" separator="," close=")">
+          #{name}
+        </foreach>
+      </if>
       <if test="description != null">
         and RES.DESCRIPTION_ = #{description}
       </if>
@@ -596,6 +610,20 @@
             </if>
             <if test="orQueryObject.nameLikeIgnoreCase != null">
               or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}
+            </if>
+            <if test="orQueryObject.nameList != null &amp;&amp; orQueryObject.nameList.size() &gt; 0">
+              or RES.NAME_ IN
+              <foreach item="name" index="index" collection="orQueryObject.nameList"
+                      open="(" separator="," close=")">
+                #{name}
+              </foreach>
+            </if>
+            <if test="orQueryObject.nameListIgnoreCase != null &amp;&amp; orQueryObject.nameListIgnoreCase.size() &gt; 0">
+              or lower(RES.NAME_) IN
+              <foreach item="name" index="index" collection="orQueryObject.nameListIgnoreCase"
+                       open="(" separator="," close=")">
+                #{name}
+              </foreach>
             </if>
             <if test="orQueryObject.description != null">
               or RES.DESCRIPTION_ = #{orQueryObject.description}

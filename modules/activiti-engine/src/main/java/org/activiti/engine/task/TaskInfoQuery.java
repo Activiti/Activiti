@@ -35,6 +35,26 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /** Only select tasks with the given name */
   T taskName(String name);
+
+  /**
+   * Only select tasks with a name that is in the given list
+   *
+   * @throws ActivitiIllegalArgumentException
+   *   When passed name list is empty or <code>null</code> or contains <code>null String</code>.
+   */
+  T taskNameIn(List<String> nameList);
+
+  /**
+   * Only select tasks with a name that is in the given list
+   *
+   * This method, unlike the {@link #taskNameIn(List)} method will
+   * not take in account the upper/lower case: both the input parameters as the column value are
+   * lowercased when the query is executed.
+   *
+   * @throws ActivitiIllegalArgumentException
+   *   When passed name list is empty or <code>null</code> or contains <code>null String</code>.
+   */
+  T taskNameInIgnoreCase(List<String> nameList);
   
   /** Only select tasks with a name matching the parameter.
    *  The syntax is that of SQL: for example usage: nameLike(%activiti%)*/

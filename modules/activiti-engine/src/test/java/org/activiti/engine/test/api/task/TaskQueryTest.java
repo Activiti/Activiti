@@ -202,7 +202,163 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       // OK
     }
   }
-  
+
+  public void testQueryByNameIn() {
+    final List<String> taskNameList = new ArrayList<String>(2);
+    taskNameList.add("testTask");
+    taskNameList.add("gonzoTask");
+
+    TaskQuery query = taskService.createTaskQuery().taskNameIn(taskNameList);
+    assertEquals(7, query.list().size());
+    assertEquals(7, query.count());
+
+    try {
+      query.singleResult();
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
+  }
+
+  public void testQueryByNameInIgnoreCase() {
+    final List<String> taskNameList = new ArrayList<String>(2);
+    taskNameList.add("testtask");
+    taskNameList.add("gonzotask");
+
+    TaskQuery query = taskService.createTaskQuery().taskNameInIgnoreCase(taskNameList);
+    assertEquals(7, query.list().size());
+    assertEquals(7, query.count());
+
+    try {
+      query.singleResult();
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
+  }
+
+  public void testQueryByNameInOr() {
+    final List<String> taskNameList = new ArrayList<String>(2);
+    taskNameList.add("testTask");
+    taskNameList.add("gonzoTask");
+
+    TaskQuery query = taskService.createTaskQuery()
+        .or()
+        .taskNameIn(taskNameList)
+        .taskId("invalid");
+    assertEquals(7, query.list().size());
+    assertEquals(7, query.count());
+
+    try {
+      query.singleResult();
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
+  }
+
+  public void testQueryByNameInIgnoreCaseOr() {
+    final List<String> taskNameList = new ArrayList<String>(2);
+    taskNameList.add("testtask");
+    taskNameList.add("gonzotask");
+
+    TaskQuery query = taskService.createTaskQuery()
+        .or()
+        .taskNameInIgnoreCase(taskNameList)
+        .taskId("invalid");
+    assertEquals(7, query.list().size());
+    assertEquals(7, query.count());
+
+    try {
+      query.singleResult();
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
+  }
+
+  public void testQueryByInvalidNameIn() {
+    final List<String> taskNameList = new ArrayList<String>(1);
+    taskNameList.add("invalid");
+
+    TaskQuery query = taskService.createTaskQuery().taskNameIn(taskNameList);
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+
+    try {
+      taskService.createTaskQuery()
+          .or()
+          .taskId("invalid")
+          .taskNameIn(null).singleResult();
+      fail("expected exception");
+    } catch (ActivitiIllegalArgumentException e) {
+      // OK
+    }
+  }
+
+  public void testQueryByInvalidNameInIgnoreCase() {
+    final List<String> taskNameList = new ArrayList<String>(1);
+    taskNameList.add("invalid");
+
+    TaskQuery query = taskService.createTaskQuery().taskNameInIgnoreCase(taskNameList);
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+
+    try {
+      taskService.createTaskQuery()
+          .or()
+          .taskId("invalid")
+          .taskNameIn(null).singleResult();
+      fail("expected exception");
+    } catch (ActivitiIllegalArgumentException e) {
+      // OK
+    }
+  }
+
+  public void testQueryByInvalidNameInOr() {
+    final List<String> taskNameList = new ArrayList<String>(2);
+    taskNameList.add("invalid");
+
+    TaskQuery query = taskService.createTaskQuery()
+        .or()
+        .taskNameIn(taskNameList)
+        .taskId("invalid");
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+
+    try {
+      taskService.createTaskQuery()
+          .or()
+          .taskId("invalid")
+          .taskNameIn(null).singleResult();
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
+  }
+
+  public void testQueryByInvalidNameInIgnoreCaseOr() {
+    final List<String> taskNameList = new ArrayList<String>(2);
+    taskNameList.add("invalid");
+
+    TaskQuery query = taskService.createTaskQuery()
+        .or()
+        .taskNameInIgnoreCase(taskNameList)
+        .taskId("invalid");
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+
+    try {
+      taskService.createTaskQuery()
+          .or()
+          .taskId("invalid")
+          .taskNameIn(null).singleResult();
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
+  }
+
   public void testQueryByNameLike() {
     TaskQuery query = taskService.createTaskQuery().taskNameLike("gonzo%");
     assertNotNull(query.singleResult());
