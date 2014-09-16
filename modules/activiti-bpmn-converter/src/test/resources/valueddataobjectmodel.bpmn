@@ -3,7 +3,7 @@
   <process id="valuedDataObjectModel" name="Data Object Model" isExecutable="true">
     <dataObject id="dObj1" name="StringTest" itemSubjectRef="xsd:string">
       <extensionElements>
-        <activiti:value>Testing123</activiti:value>
+        <activiti:value><![CDATA[Testing1&2&3]]></activiti:value>
       </extensionElements>
     </dataObject>
     <dataObject id="dObj2" name="BooleanTest" itemSubjectRef="xsd:boolean">
