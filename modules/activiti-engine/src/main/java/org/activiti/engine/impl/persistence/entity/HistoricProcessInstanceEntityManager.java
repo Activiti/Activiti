@@ -125,7 +125,7 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
       List<HistoricProcessInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricProcessInstancesWithVariablesByQueryCriteria", 
           historicProcessInstanceQuery, historicProcessInstanceQuery.getFirstResult(), historicProcessInstanceQuery.getMaxResults());
       
-      if (instanceList != null && instanceList.size() > 0) {
+      if (instanceList != null && !instanceList.isEmpty()) {
         if (firstResult > 0) {
           if (firstResult <= instanceList.size()) {
             int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);

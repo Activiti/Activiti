@@ -151,11 +151,11 @@ public class ProcessDefinitionDiagramLayoutResource extends SecuredResource {
 
     // Draw lanes
 
-    if (processDefinition.getLaneSets() != null && processDefinition.getLaneSets().size() > 0) {
+    if (processDefinition.getLaneSets() != null && !processDefinition.getLaneSets().isEmpty()) {
       ArrayNode laneSetArray = new ObjectMapper().createArrayNode();
       for (LaneSet laneSet : processDefinition.getLaneSets()) {
         ArrayNode laneArray = new ObjectMapper().createArrayNode();
-        if (laneSet.getLanes() != null && laneSet.getLanes().size() > 0) {
+        if (laneSet.getLanes() != null && !laneSet.getLanes().isEmpty()) {
           for (Lane lane : laneSet.getLanes()) {
             ObjectNode laneJSON = new ObjectMapper().createObjectNode();
             laneJSON.put("id", lane.getId());
@@ -418,7 +418,7 @@ public class ProcessDefinitionDiagramLayoutResource extends SecuredResource {
           List<Execution> executionList = runtimeService.createExecutionQuery()
               .processInstanceId(processInstanceId)
               .activityId(activity.getId()).list();
-          if (executionList.size() > 0) {
+          if (!executionList.isEmpty()) {
             for (Execution execution : executionList) {
               ObjectNode processInstanceJSON = subProcessInstanceMap.get(execution.getId());
               processInstanceArray.add(processInstanceJSON);

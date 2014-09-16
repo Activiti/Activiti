@@ -77,7 +77,7 @@ public class BpmnModel {
   }
 
 	public Process getMainProcess() {
-	  if (getPools().size() > 0) {
+	  if (!getPools().isEmpty()) {
 	    return getProcess(getPools().get(0).getId());
 	  } else {
 	    return getProcess(null);

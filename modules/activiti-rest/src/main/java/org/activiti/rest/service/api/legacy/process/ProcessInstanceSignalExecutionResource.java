@@ -63,7 +63,7 @@ public class ProcessInstanceSignalExecutionResource extends SecuredResource {
 					  .singleResult();
 			
 			// signal receive task and attach variables if available
-			if (variables.size() > 0) {
+			if (!variables.isEmpty()) {
 			  runtimeService.signal(execution.getId(), variables);
 			} else {
 			  runtimeService.signal(execution.getId());

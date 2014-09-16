@@ -67,7 +67,7 @@ public class ActivitiConfiguration {
 		List<Resource> processDefinitionResources = new ArrayList<Resource>();
 		configurer.processDefinitionResources(processDefinitionResources);
 		SpringProcessEngineConfiguration engine = new SpringProcessEngineConfiguration();
-		if (processDefinitionResources.size() > 0) {
+		if (!processDefinitionResources.isEmpty()) {
 			engine.setDeploymentResources(processDefinitionResources
 			    .toArray(new Resource[processDefinitionResources.size()]));
 		}
@@ -176,7 +176,7 @@ public class ActivitiConfiguration {
 					resources.add(defaultClassPathResourceMatcher);
 				}
 
-				if (activitiConfigurers != null && activitiConfigurers.size() > 0) {
+				if (activitiConfigurers != null && !activitiConfigurers.isEmpty()) {
 					for (ActivitiConfigurer ac : activitiConfigurers) {
 						ac.processDefinitionResources(resources);
 					}
@@ -216,7 +216,7 @@ public class ActivitiConfiguration {
 
 		if (dataSourceMap != null) {
 		
-			if (dataSourceMap.size() > 0) {
+			if (!dataSourceMap.isEmpty()) {
 				for (DataSource d : dataSourceMap.values()) {
 					ds = d;
 				}
@@ -251,7 +251,7 @@ public class ActivitiConfiguration {
 
 	private static <T> T first(List<T> tList, ObjectFactory<T> tObjectFactory) {
 		T rt;
-		if (tList != null && tList.size() > 0) {
+		if (tList != null && !tList.isEmpty()) {
 			rt = tList.iterator().next();
 		} else {
 			rt = tObjectFactory.getObject();

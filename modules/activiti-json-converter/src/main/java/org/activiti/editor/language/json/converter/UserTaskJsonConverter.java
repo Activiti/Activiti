@@ -99,7 +99,7 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
       
     }
     
-    if(userTask.getCustomUserIdentityLinks().size() > 0 || userTask.getCustomGroupIdentityLinks().size() > 0){
+    if(!userTask.getCustomUserIdentityLinks().isEmpty() || !userTask.getCustomGroupIdentityLinks().isEmpty()){
   	  ObjectNode customIdentityLinksNode = objectMapper.createObjectNode();
         ArrayNode itemsNode = objectMapper.createArrayNode();
         

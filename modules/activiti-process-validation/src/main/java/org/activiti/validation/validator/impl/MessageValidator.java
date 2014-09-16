@@ -28,7 +28,7 @@ public class MessageValidator extends ValidatorImpl {
 
 	@Override
 	public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
-		if (bpmnModel.getMessages() != null && bpmnModel.getMessages().size() > 0) {
+		if (bpmnModel.getMessages() != null && !bpmnModel.getMessages().isEmpty()) {
 			for (Message message : bpmnModel.getMessages()) {
 				
 				// Item ref

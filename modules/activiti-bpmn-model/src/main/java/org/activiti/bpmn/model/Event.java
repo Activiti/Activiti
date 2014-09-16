@@ -38,7 +38,7 @@ public abstract class Event extends FlowNode {
     super.setValues(otherEvent);
     
     eventDefinitions = new ArrayList<EventDefinition>();
-    if (otherEvent.getEventDefinitions() != null && otherEvent.getEventDefinitions().size() > 0) {
+    if (otherEvent.getEventDefinitions() != null && !otherEvent.getEventDefinitions().isEmpty()) {
       for (EventDefinition eventDef : otherEvent.getEventDefinitions()) {
         eventDefinitions.add(eventDef.clone());
       }

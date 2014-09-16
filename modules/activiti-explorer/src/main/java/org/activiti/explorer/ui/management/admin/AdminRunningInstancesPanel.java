@@ -141,7 +141,7 @@ public class AdminRunningInstancesPanel extends DetailPanel {
   }
   
   protected void initDefinitionsTable() {
-    if(instanceList == null || instanceList.size() == 0) {
+    if(instanceList == null || instanceList.isEmpty()) {
     	noMembersTable = new Label(i18nManager.getMessage(Messages.ADMIN_RUNNING_NONE_FOUND));
       definitionsLayout.addComponent(noMembersTable);
     
@@ -367,7 +367,7 @@ public class AdminRunningInstancesPanel extends DetailPanel {
       .orderByHistoricTaskInstanceStartTime().desc()
       .list();
     
-    if(tasks.size() > 0) {
+    if(!tasks.isEmpty()) {
       
       // Finished icon
       taskTable.addContainerProperty("finished", Component.class, null, i18nManager.getMessage(Messages.ADMIN_FINISHED), null, Table.ALIGN_CENTER);
@@ -463,7 +463,7 @@ public class AdminRunningInstancesPanel extends DetailPanel {
     // variable sorting is done in-memory (which is ok, since normally there aren't that many vars)
     Map<String, Object> variables = new TreeMap<String, Object>(runtimeService.getVariables(processInstance.getId())); 
     
-    if(variables.size() > 0) {
+    if(!variables.isEmpty()) {
       
       variablesTable = new Table();
       variablesTable.setWidth(60, UNITS_PERCENTAGE);

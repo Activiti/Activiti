@@ -66,7 +66,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
         }
       }
 
-      if (transitionsToTake.size() > 0) {
+      if (!transitionsToTake.isEmpty()) {
         execution.takeAll(transitionsToTake, joinedExecutions);
 
       } else {
@@ -98,7 +98,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   List<? extends ActivityExecution> getLeaveExecutions(ActivityExecution parent) {
     List<ActivityExecution> executionlist = new ArrayList<ActivityExecution>();
     List<? extends ActivityExecution> subExecutions = parent.getExecutions();
-    if (subExecutions.size() == 0) {
+    if (subExecutions.isEmpty()) {
       executionlist.add(parent);
     } else {
       for (ActivityExecution concurrentExecution : subExecutions) {
@@ -144,7 +144,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       PvmActivity targetActivity, Set<PvmActivity> visitedActivities) {
 
     // if source has no outputs, it is the end of the process, and its parent process should be checked.
-    if (srcActivity.getOutgoingTransitions().size() == 0) {
+    if (srcActivity.getOutgoingTransitions().isEmpty()) {
       visitedActivities.add(srcActivity);
       if (!(srcActivity.getParent() instanceof PvmActivity)) {
         return false;
@@ -162,7 +162,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     visitedActivities.add(srcActivity);
 
     List<PvmTransition> transitionList = srcActivity.getOutgoingTransitions();
-    if (transitionList != null && transitionList.size() > 0) {
+    if (transitionList != null && !transitionList.isEmpty()) {
       for (PvmTransition pvmTransition : transitionList) {
         PvmActivity destinationActivity = pvmTransition.getDestination();
         if (destinationActivity != null && !visitedActivities.contains(destinationActivity)) {

@@ -187,7 +187,7 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
     String deploymentName = "Demo processes";
     List<Deployment> deploymentList = repositoryService.createDeploymentQuery().deploymentName(deploymentName).list();
     
-    if (deploymentList == null || deploymentList.size() == 0) {
+    if (deploymentList == null || deploymentList.isEmpty()) {
       repositoryService.createDeployment()
         .name(deploymentName)
         .addClasspathResource("org/activiti/explorer/demo/process/createTimersProcess.bpmn20.xml")
@@ -204,7 +204,7 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
     
     String reportDeploymentName = "Demo reports";
     deploymentList = repositoryService.createDeploymentQuery().deploymentName(reportDeploymentName).list();
-    if (deploymentList == null || deploymentList.size() == 0) {
+    if (deploymentList == null || deploymentList.isEmpty()) {
       repositoryService.createDeployment()
         .name(reportDeploymentName)
         .addClasspathResource("org/activiti/explorer/demo/process/reports/taskDurationForProcessDefinition.bpmn20.xml")
@@ -265,7 +265,7 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
           }
           
           List<Task> tasks = processEngine.getTaskService().createTaskQuery().list();
-          while (tasks.size() > 0) {
+          while (!tasks.isEmpty()) {
             for (Task task : tasks) {
               
               if (task.getAssignee() == null) {
@@ -300,7 +300,7 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
   protected void createModelData(String name, String description, String jsonFile) {
     List<Model> modelList = repositoryService.createModelQuery().modelName("Demo model").list();
     
-    if (modelList == null || modelList.size() == 0) {
+    if (modelList == null || modelList.isEmpty()) {
     
       Model model = repositoryService.newModel();
       model.setName(name);

@@ -283,19 +283,19 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     }
     
     executionListeners = new ArrayList<ActivitiListener>();
-    if (otherElement.getExecutionListeners() != null && otherElement.getExecutionListeners().size() > 0) {
+    if (otherElement.getExecutionListeners() != null && !otherElement.getExecutionListeners().isEmpty()) {
       for (ActivitiListener listener : otherElement.getExecutionListeners()) {
         executionListeners.add(listener.clone());
       }
     }
     
     candidateStarterUsers = new ArrayList<String>();
-    if (otherElement.getCandidateStarterUsers() != null && otherElement.getCandidateStarterUsers().size() > 0) {
+    if (otherElement.getCandidateStarterUsers() != null && !otherElement.getCandidateStarterUsers().isEmpty()) {
       candidateStarterUsers.addAll(otherElement.getCandidateStarterUsers());
     }
     
     candidateStarterGroups = new ArrayList<String>();
-    if (otherElement.getCandidateStarterGroups() != null && otherElement.getCandidateStarterGroups().size() > 0) {
+    if (otherElement.getCandidateStarterGroups() != null && !otherElement.getCandidateStarterGroups().isEmpty()) {
       candidateStarterGroups.addAll(otherElement.getCandidateStarterGroups());
     }
     
@@ -326,7 +326,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     }
     
     dataObjects = new ArrayList<ValuedDataObject>();
-    if (otherElement.getDataObjects() != null && otherElement.getDataObjects().size() > 0) {
+    if (otherElement.getDataObjects() != null && !otherElement.getDataObjects().isEmpty()) {
       for (ValuedDataObject dataObject : otherElement.getDataObjects()) {
           ValuedDataObject clone = dataObject.clone();
           dataObjects.add(clone);

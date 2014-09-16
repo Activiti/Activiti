@@ -155,7 +155,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         } else {
           // Finish a task
           List<Task> taskToComplete = taskService.createTaskQuery().taskAssignee(drivingUser).listPage(0, 1);
-          tasksAvailable = taskToComplete.size() > 0;
+          tasksAvailable = !taskToComplete.isEmpty();
           if(tasksAvailable) {
             retryFinishTask(taskToComplete.get(0).getId());
           }

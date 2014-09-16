@@ -62,7 +62,7 @@ public class ActivitiListener extends BaseElement {
     setImplementationType(otherListener.getImplementationType());
     
     fieldExtensions = new ArrayList<FieldExtension>();
-    if (otherListener.getFieldExtensions() != null && otherListener.getFieldExtensions().size() > 0) {
+    if (otherListener.getFieldExtensions() != null && !otherListener.getFieldExtensions().isEmpty()) {
       for (FieldExtension extension : otherListener.getFieldExtensions()) {
         fieldExtensions.add(extension.clone());
       }

@@ -95,14 +95,14 @@ public class ListConditionStepDefinition<T> extends AbstractStepDefinitionContai
     setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
     
     steps = new ArrayList<StepDefinition>();
-    if (definition.getSteps() != null && definition.getSteps().size() > 0) {
+    if (definition.getSteps() != null && !definition.getSteps().isEmpty()) {
       for (StepDefinition stepDefinition : definition.getSteps()) {
         steps.add(stepDefinition.clone());
       }
     }
     
     conditions = new ArrayList<ConditionDefinition>();
-    if (definition.getConditions() != null && definition.getConditions().size() > 0) {
+    if (definition.getConditions() != null && !definition.getConditions().isEmpty()) {
       for (ConditionDefinition condition : definition.getConditions()) {
         conditions.add(condition.clone());
       }

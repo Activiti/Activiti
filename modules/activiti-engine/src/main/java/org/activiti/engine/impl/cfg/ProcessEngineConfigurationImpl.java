@@ -841,7 +841,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     		log.info("Found {} auto-discoverable Process Engine Configurator{}", nrOfServiceLoadedConfigurators++, nrOfServiceLoadedConfigurators > 1 ? "s" : "");
     	}
     	
-    	if (allConfigurators.size() > 0) {
+    	if (!allConfigurators.isEmpty()) {
     		
     		// Order them according to the priorities (usefule for dependent configurator)
 	    	Collections.sort(allConfigurators, new Comparator<ProcessEngineConfigurator>() {

@@ -39,7 +39,7 @@ public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnPars
     ActivityImpl nestedActivityImpl = createActivityOnCurrentScope(bpmnParse, intermediateEvent, BpmnXMLConstants.ELEMENT_EVENT_THROW);
     
     EventDefinition eventDefinition = null;
-    if (intermediateEvent.getEventDefinitions().size() > 0) {
+    if (!intermediateEvent.getEventDefinitions().isEmpty()) {
       eventDefinition = intermediateEvent.getEventDefinitions().get(0);
     }
     

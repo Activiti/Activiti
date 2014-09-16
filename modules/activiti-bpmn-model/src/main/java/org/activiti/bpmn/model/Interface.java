@@ -40,7 +40,7 @@ public class Interface extends BaseElement {
     setImplementationRef(otherElement.getImplementationRef());
     
     operations = new ArrayList<Operation>();
-    if (otherElement.getOperations() != null && otherElement.getOperations().size() > 0) {
+    if (otherElement.getOperations() != null && !otherElement.getOperations().isEmpty()) {
       for (Operation operation : otherElement.getOperations()) {
         operations.add(operation.clone());
       }

@@ -42,7 +42,7 @@ public class SubprocessValidator extends ProcessLevelValidator {
 				}
 				
 				for (StartEvent startEvent : startEvents) {
-					if (startEvent.getEventDefinitions().size() > 0) {
+					if (!startEvent.getEventDefinitions().isEmpty()) {
 						addError(errors, Problems.SUBPROCESS_START_EVENT_EVENT_DEFINITION_NOT_ALLOWED, process, startEvent, "event definitions only allowed on start event if subprocess is an event subprocess");
 					}
 				}

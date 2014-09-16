@@ -85,9 +85,9 @@ public class ServiceTaskValidator extends ExternalInvocationTaskValidator {
 	        StringUtils.isNotEmpty(serviceTask.getOperationRef())) {
 	  	
 	  	boolean operationFound = false;
-	  	if (bpmnModel.getInterfaces() != null && bpmnModel.getInterfaces().size() > 0) {
+	  	if (bpmnModel.getInterfaces() != null && !bpmnModel.getInterfaces().isEmpty()) {
 	  		for (Interface bpmnInterface : bpmnModel.getInterfaces()) {
-	  			if (bpmnInterface.getOperations() != null && bpmnInterface.getOperations().size() > 0) {
+	  			if (bpmnInterface.getOperations() != null && !bpmnInterface.getOperations().isEmpty()) {
 	  				for (Operation operation : bpmnInterface.getOperations()) {
 	  					if (operation.getId() != null && operation.getId().equals(serviceTask.getOperationRef())) {
 	  						operationFound = true;
