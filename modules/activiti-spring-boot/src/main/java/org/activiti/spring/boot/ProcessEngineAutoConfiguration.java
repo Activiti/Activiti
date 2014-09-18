@@ -47,8 +47,8 @@ import org.springframework.util.StringUtils;
 
 /**
  * <p>
- * Auto configuration for using Activiti from a <A
- * href="http://spring.io/projects/spring-boot">Spring Boot application</a>.
+ * Auto configuration for using Activiti from a 
+ * <a href="http://spring.io/projects/spring-boot">Spring Boot application</a>.
  * Provides a configured {@link org.activiti.engine.ProcessEngine} if none other
  * is detected.
  * <p>
@@ -219,10 +219,8 @@ public class ProcessEngineAutoConfiguration {
 
 		@Override
 		public DataSource dataSource() {
-			Assert.isTrue(
-			        this.dataSources.length > 0,
-			        "you must have configured at least "
-			                + "one javax.sql.DataSource bean in your Spring application context.");
+			Assert.isTrue(this.dataSources.length > 0,
+			        "you must have configured at least one javax.sql.DataSource bean in your Spring application context.");
 			return this.dataSources[0];
 		}
 

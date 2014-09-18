@@ -16,7 +16,10 @@
         <activiti.artifact>
             org.activiti.spring.boot
         </activiti.artifact>
+        
+        <!-- Note that Spring framework version needs to match the one used in Spring Boot-->
         <spring.boot.version>1.2.0.M1</spring.boot.version>
+        <spring.framework.version>4.1.0.RELEASE</spring.framework.version>
     </properties>
 
 
@@ -98,10 +101,40 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-engine</artifactId>
+            <!-- Excluding these in favour of the Spring Boot dependencies -->
+             <exclusions>
+            	<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-beans</artifactId>
+        		</exclusion>
+        	</exclusions>
         </dependency>
          <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring</artifactId>
+            <!-- Excluding these in favour of the Spring Boot dependencies -->
+            <exclusions>
+            	<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-core</artifactId>
+        		</exclusion>
+            	<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-context</artifactId>
+        		</exclusion>
+        		<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-jdbc</artifactId>
+        		</exclusion>
+        		<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-tx</artifactId>
+        		</exclusion>
+        		<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-orm</artifactId>
+        		</exclusion>
+            </exclusions>
          </dependency>
       
         <dependency>
