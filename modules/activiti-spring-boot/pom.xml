@@ -154,6 +154,23 @@
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${spring.boot.version}</version>
+            <optional>true</optional> <!-- Having it on the classpath will enable JPA + Activiti, but it is not mandatory -->
+        </dependency>
+         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+            <optional>true</optional> 
+        </dependency>
+        <dependency>
+        	<groupId>org.activiti</groupId>
+        	<artifactId>activiti-rest</artifactId>
+        	<optional>true</optional>
+        </dependency>
     </dependencies>
 
     <profiles>
