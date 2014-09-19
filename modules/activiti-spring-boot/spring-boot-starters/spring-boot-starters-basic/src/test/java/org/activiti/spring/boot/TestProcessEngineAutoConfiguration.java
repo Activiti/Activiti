@@ -21,6 +21,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.List;
 
+/**
+ * @author Josh Long
+ */
 public class TestProcessEngineAutoConfiguration {
 
     private ConfigurableApplicationContext applicationContext;
@@ -61,21 +64,10 @@ public class TestProcessEngineAutoConfiguration {
     public void close() {
         this.applicationContext.close();
     }
-    @Test
-    public void testRunsWithRestApis() {
-        System.setProperty("spring.activiti.restApiEnabled", "true");
-        this.applicationContext = SpringApplication.run(SimpleDataSourceConfiguration.class);
-        // do RestTemplate or something
-    }
-    @Test
-    public void testRunsWithoutRestApis() {
-        System.setProperty("spring.activiti.restApiEnabled", "false");
-        this.applicationContext = SpringApplication.run(SimpleDataSourceConfiguration.class);
-    }
 
     @Before
     public void setUp() {
-
+        this.applicationContext = SpringApplication.run(SimpleDataSourceConfiguration.class);
     }
 
     @Test
