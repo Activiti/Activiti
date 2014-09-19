@@ -16,8 +16,9 @@
     <modules>
         <module>spring-boot-starters-basic</module>
         <module>spring-boot-starters-rest-api</module>
+        <module>spring-boot-starters-integration</module>
 <!--        <module>spring-boot-starters-actuator</module>
-        <module>spring-boot-starters-integration</module>-->
+-->
     </modules>
     <dependencies>
         <dependency>

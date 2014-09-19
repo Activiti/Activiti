@@ -17,8 +17,6 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-
-
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-rest</artifactId>
@@ -34,8 +32,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>spring-boot-starters-basic</artifactId>
@@ -52,7 +48,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-
         </dependency>
     </dependencies>
 

@@ -61,7 +61,7 @@ public class BasicProcessEngineAutoConfiguration {
 
     @Configuration
     public static class DefaultProcessEngineConfiguration
-            extends AbstractProcessEngineConfiguration {
+            extends AbstractProcessEngineConfiguration   {
 
         @Bean
         public SpringJobExecutor springJobExecutor(TaskExecutor taskExecutor) {
@@ -109,10 +109,10 @@ public class BasicProcessEngineAutoConfiguration {
         }
 
         @Bean
-        public ProcessEngine processEngine(SpringProcessEngineConfiguration configuration) throws Exception {
+        public ProcessEngineFactoryBean processEngine(SpringProcessEngineConfiguration configuration) throws Exception {
             ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
             processEngineFactoryBean.setProcessEngineConfiguration(configuration);
-            return processEngineFactoryBean.getObject();
+            return processEngineFactoryBean;
         }
 
         @Bean

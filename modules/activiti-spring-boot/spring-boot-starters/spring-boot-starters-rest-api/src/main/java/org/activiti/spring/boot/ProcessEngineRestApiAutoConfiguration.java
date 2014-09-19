@@ -28,7 +28,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  *
  * Auto-configuration and starter for the Activiti REST APIs.
- * 
  *
  * @author Josh Long
  */

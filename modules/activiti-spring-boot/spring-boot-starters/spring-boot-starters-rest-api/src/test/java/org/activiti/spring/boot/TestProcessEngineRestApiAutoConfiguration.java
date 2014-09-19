@@ -13,13 +13,17 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.ServletRegistration;
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * unit tests for the REST API integration.
@@ -30,7 +34,8 @@ public class TestProcessEngineRestApiAutoConfiguration {
 
     @Configuration
     @EnableAutoConfiguration
-    public static class SimpleDataSourceConfiguration {
+    public static class TestConfiguration {
+
         @Bean
         RestTemplate restTemplate() {
             return new RestTemplate();
@@ -56,6 +61,7 @@ public class TestProcessEngineRestApiAutoConfiguration {
         PlatformTransactionManager dataSourceTransactionManager(DataSource dataSource) {
             return new DataSourceTransactionManager(dataSource);
         }
+
     }
 
     private ConfigurableApplicationContext applicationContext;
@@ -68,7 +74,7 @@ public class TestProcessEngineRestApiAutoConfiguration {
 
     @Before
     public void setUp() {
-        this.applicationContext = SpringApplication.run(SimpleDataSourceConfiguration.class);
+        this.applicationContext = SpringApplication.run(TestConfiguration.class);
     }
 
     @Test
@@ -78,10 +84,28 @@ public class TestProcessEngineRestApiAutoConfiguration {
         }
         String authenticationChallenge = "http://localhost:8080/api/process-definitions";
 
-        RestTemplate restTemplate = this.applicationContext.getBean(RestTemplate.class );
-        ResponseEntity<Map> x = restTemplate.getForEntity(authenticationChallenge, Map.class );
-        org.junit.Assert.assertTrue(x.getStatusCode().equals(HttpStatus.FORBIDDEN));
+        RestTemplate restTemplate = this.applicationContext.getBean(RestTemplate.class);
+        final AtomicBoolean received403 = new AtomicBoolean() ;
+        received403.set(false);
+        restTemplate.setErrorHandler(new ResponseErrorHandler() {
+            @Override
+            public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {
+                return true
+                        ;
+            }
+
+            @Override
+            public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
+                if (clientHttpResponse.getStatusCode().equals( HttpStatus.FORBIDDEN))
+                    received403.set(true);
+            }
+        });
+        restTemplate.getForEntity(authenticationChallenge, Map.class);
+
+        org.junit.Assert.assertTrue(received403 .get() );
 
 
     }
+
+
 }
