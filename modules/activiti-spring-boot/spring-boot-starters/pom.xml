@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>Activiti - Spring Boot Starters</name>
+    <description>All you need to do is add one of these starters in a Spring Boot application.
+         Each "starter" isntalls functionality based on the Activiti workflow engine. Pick and choose. All
+        require the spring-boot-starter-basic starter, though.
+    </description>
+
+    <parent>
+        <groupId>org.activiti</groupId>
+        <artifactId>spring-boot</artifactId>
+        <version>5.16.4-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-boot-starters</artifactId>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>spring-boot-starters-basic</module>
+        <module>spring-boot-starters-rest-api</module>
+        <module>spring-boot-starters-actuator</module>
+        <module>spring-boot-starters-integration</module>
+    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+    </dependencies>
+</project>
