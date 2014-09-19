@@ -154,6 +154,36 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-rest</artifactId>
+               <!-- Excluding these in favour of the Spring Boot dependencies -->
+        <!--<exclusions>
+
+
+            <exclusion>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+            </exclusion>
+        </exclusions>-->
+        <optional>true</optional>
+    </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
@@ -175,6 +205,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${spring.boot.version}</version>
+            <optional>true</optional>
+            <!-- Having it on the classpath will enable JPA + Activiti, but it is not mandatory -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
             <version>${spring.boot.version}</version>
             <optional>true</optional>
             <!-- Having it on the classpath will enable JPA + Activiti, but it is not mandatory -->

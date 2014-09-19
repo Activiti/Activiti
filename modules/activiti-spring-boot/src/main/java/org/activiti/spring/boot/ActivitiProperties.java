@@ -10,8 +10,24 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ActivitiProperties {
 
     private boolean checkProcessDefinitions;
-
+    private boolean restApiEnabled;
     private String deploymentName;
+
+    public boolean isRestApiEnabled() {
+        return restApiEnabled;
+    }
+
+    public void setRestApiEnabled(boolean restApiEnabled) {
+        this.restApiEnabled = restApiEnabled;
+    }
+
+    public boolean isJpaEnabled() {
+        return jpaEnabled;
+    }
+
+    public void setJpaEnabled(boolean jpaEnabled) {
+        this.jpaEnabled = jpaEnabled;
+    }
 
     private String databaseSchemaUpdate  = "true" ;
 
@@ -21,7 +37,27 @@ public class ActivitiProperties {
 
     private String processDefinitionLocationSuffix = "**.bpmn20.xml";
 
-    private boolean jpa = true; // true by default
+    private String restApiMapping  = "/api/";
+
+    public String getRestApiMapping() {
+        return restApiMapping;
+    }
+
+    public void setRestApiMapping(String restApiMapping) {
+        this.restApiMapping = restApiMapping;
+    }
+
+    public String getRestApiServletName() {
+        return restApiServletName;
+    }
+
+    public void setRestApiServletName(String restApiServletName) {
+        this.restApiServletName = restApiServletName;
+    }
+
+    private String restApiServletName = "activitiRestApi";
+
+    private boolean jpaEnabled = true; // true by default
 
     public boolean isCheckProcessDefinitions() {
         return checkProcessDefinitions;
@@ -73,11 +109,4 @@ public class ActivitiProperties {
         this.processDefinitionLocationSuffix = processDefinitionLocationSuffix;
     }
 
-    public boolean isJpa() {
-        return jpa;
-    }
-
-    public void setJpa(boolean jpa) {
-        this.jpa = jpa;
-    }
 }

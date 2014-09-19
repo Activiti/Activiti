@@ -4,11 +4,12 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.List;
 
-public class TestAutoConfiguration {
+public class TestProcessEngineAutoConfiguration {
+
+    private ConfigurableApplicationContext applicationContext;
 
     @Configuration
     @EnableAutoConfiguration
@@ -48,20 +51,31 @@ public class TestAutoConfiguration {
         }
     }
 
-
     @Test
     public void testProcessEngine() throws Exception {
         ProcessEngine processEngine = applicationContext.getBean(ProcessEngine.class);
         Assert.assertNotNull("the processEngine should not be null!", processEngine);
     }
 
-    private ConfigurableApplicationContext applicationContext;
+    @After
+    public void close() {
+        this.applicationContext.close();
+    }
+    @Test
+    public void testRunsWithRestApis() {
+        System.setProperty("spring.activiti.restApiEnabled", "true");
+        this.applicationContext = SpringApplication.run(SimpleDataSourceConfiguration.class);
+        // do RestTemplate or something
+    }
+    @Test
+    public void testRunsWithoutRestApis() {
+        System.setProperty("spring.activiti.restApiEnabled", "false");
+        this.applicationContext = SpringApplication.run(SimpleDataSourceConfiguration.class);
+    }
 
     @Before
     public void setUp() {
-        this.applicationContext = new SpringApplicationBuilder(SimpleDataSourceConfiguration.class)
-                .web(false)
-                .run();
+
     }
 
     @Test
@@ -77,6 +91,4 @@ public class TestAutoConfiguration {
         ProcessDefinition processDefinition = processDefinitionList.iterator().next();
         Assert.assertEquals(processDefinition.getKey(), "waiter");
     }
-
-
 }

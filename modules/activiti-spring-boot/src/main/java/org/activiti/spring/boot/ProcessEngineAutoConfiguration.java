@@ -16,18 +16,22 @@
 package org.activiti.spring.boot;
 
 import org.activiti.engine.*;
+import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringJobExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
+import org.restlet.ext.servlet.ServerServlet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.StringUtils;
 
@@ -159,13 +163,44 @@ public class ProcessEngineAutoConfiguration {
             return super.identityServiceBean(processEngine);
         }
 
+        @Bean
+        @ConditionalOnMissingBean
+        public PlatformTransactionManager transactionManager(DataSource dataSource) {
+            return new DataSourceTransactionManager(dataSource);
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        public TaskExecutor taskExecutor() {
+            return new SimpleAsyncTaskExecutor();
+        }
+
     }
 
 
+    @ConditionalOnExpression("${spring.activiti.restApiEnabled:true}")
+    @Configuration
+    @ConditionalOnClass({ActivitiRestServicesApplication.class,
+            ServletRegistrationBean.class, ServerServlet.class})
+    public static class RestServiceAutoConfiguration {
+
+        @Autowired
+        private ActivitiProperties activitiProperties;
+
+        @Bean
+        public ServletRegistrationBean activitiRestRegistration() {
+            ServerServlet servlet = new ServerServlet();
+            ServletRegistrationBean registration = new ServletRegistrationBean(servlet,
+                    this.activitiProperties.getRestApiMapping());
+            registration.addInitParameter("org.restlet.application", "org.activiti.rest.service.application.ActivitiRestServicesApplication");
+            registration.setName(this.activitiProperties.getRestApiServletName());
+
+            return null;
+        }
+    }
+
 
 /*
-
-
     @Configuration
     @ConditionalOnClass({EntityManagerFactory.class})
     public static class JpaAutoConfiguration {
@@ -191,209 +226,6 @@ public class ProcessEngineAutoConfiguration {
             };
         }
 
-    }
-
-    */
-/**
- * This installs the Activiti REST endpoints. The REST endpoints can be used to
- * query the running workflow engine.
- *//*
-
-    @Configuration
-    @ConditionalOnClass({ServletRegistrationBean.class, ServerServlet.class})
-    public static class RestServiceAutoConfiguration {
-
-        @Bean
-        ServletRegistrationBean activitiRestRegistration(
-                @Value("${spring.activiti.rest.mapping:activiti-rest}") String name,
-                @Value("${spring.activiti.rest.mapping:'/activiti*/
-/*'}") String mapping) {
-            ServerServlet servlet = new ServerServlet();
-            ServletRegistrationBean registration = new ServletRegistrationBean(servlet, mapping);
-            registration.addInitParameter("org.restlet.application", "org.activiti.rest.service.application.ActivitiRestServicesApplication");
-            registration.setName(name);
-
-            return registration;
-        }
-    }
-*/
-
+    }*/
 }
 
-
-/*
-
-
-@Configuration
-class ActivitiConfiguration {
-
-    @Autowired(required = false)
-    private List<TaskExecutor> executors;
-
-    @Autowired(required = false)
-    private List<ActivitiConfigurer> activitiConfigurers;
-
-    @Autowired(required = false)
-    private Map<String, DataSource> dataSources;
-
-    @Autowired(required = false)
-    private List<PlatformTransactionManager> platformTransactionManagers;
-
-    @Autowired(required = false)
-    private List<SpringJobExecutor> springJobExecutors;
-
-    @Bean
-    public SpringProcessEngineConfiguration springProcessEngineConfiguration(
-
-    ) {
-        ActivitiConfigurer configurer = activitiConfigurer(activitiConfigurers);
-        List<Resource> processDefinitionResources = new ArrayList<Resource>();
-        configurer.processDefinitionResources(processDefinitionResources);
-        SpringProcessEngineConfiguration engine = new SpringProcessEngineConfiguration();
-        if (!processDefinitionResources.isEmpty()) {
-            engine.setDeploymentResources(processDefinitionResources
-                    .toArray(new Resource[processDefinitionResources.size()]));
-        }
-        DataSource dataSource = dataSource(configurer, dataSources);
-        engine.setDataSource(dataSource);
-        engine.setTransactionManager(platformTransactionManager(dataSource));
-        engine.setJobExecutor(springJobExecutor());
-        engine.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
-        configurer.postProcessSpringProcessEngineConfiguration(engine);
-        return engine;
-    }
-
-    @Bean
-    public ProcessEngineFactoryBean processEngine(SpringProcessEngineConfiguration springProcessEngineConfiguration) {
-        ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
-        processEngineFactoryBean.setProcessEngineConfiguration(springProcessEngineConfiguration);
-        return processEngineFactoryBean;
-    }
-
-    @Bean
-    public RuntimeService runtimeService(ProcessEngine processEngine) {
-        return processEngine.getRuntimeService();
-    }
-
-    @Bean
-    public RepositoryService repositoryService(ProcessEngine processEngine) {
-        return processEngine.getRepositoryService();
-    }
-
-    @Bean
-    public TaskService taskService(ProcessEngine processEngine) {
-        return processEngine.getTaskService();
-    }
-
-    @Bean
-    public HistoryService historyService(ProcessEngine processEngine) {
-        return processEngine.getHistoryService();
-    }
-
-    @Bean
-    public ManagementService managementService(ProcessEngine processEngine) {
-        return processEngine.getManagementService();
-    }
-
-    @Bean
-    public FormService formService(ProcessEngine processEngine) {
-        return processEngine.getFormService();
-    }
-
-    @Bean
-    public IdentityService identityService(ProcessEngine processEngine) {
-        return processEngine.getIdentityService();
-    }
-
-	*/
-/*
-     * @Bean public static ProcessScopeBeanFactoryPostProcessor processScope() {
-	 * return new ProcessScopeBeanFactoryPostProcessor(); }
-	 *
-	 * @Bean public SharedProcessInstanceFactoryBean
-	 * processInstanceFactoryBean(SharedProcessInstanceHolder
-	 * sharedProcessInstanceHolder) { return new
-	 * SharedProcessInstanceFactoryBean(sharedProcessInstanceHolder); }
-	 *
-	 * @Bean public SharedProcessInstanceHolder processScopeContextHolder() {
-	 * return new SharedProcessInstanceHolder(); }
-	 *//*
-
-
-*/
-/*	protected PlatformTransactionManager platformTransactionManager(final DataSource dataSource) {
-        return first(this.platformTransactionManagers,
-		    new ObjectFactory<PlatformTransactionManager>() {
-			    @Override
-			    public PlatformTransactionManager getObject() throws BeansException {
-				    return new DataSourceTransactionManager(dataSource);
-			    }
-		    });
-	}*//*
-
-
-    protected SpringJobExecutor springJobExecutor() {
-        return first(this.springJobExecutors,
-                new ObjectFactory<SpringJobExecutor>() {
-                    @Override
-                    public SpringJobExecutor getObject() throws BeansException {
-                        TaskExecutor taskExecutor = first(executors,
-                                new ObjectFactory<TaskExecutor>() {
-                                    @Override
-                                    public TaskExecutor getObject() throws BeansException {
-                                        return new SyncTaskExecutor();
-                                    }
-                                });
-                        return new SpringJobExecutor(taskExecutor);
-                    }
-                });
-    }
-
-    protected ActivitiConfigurer activitiConfigurer(final List<ActivitiConfigurer> activitiConfigurers) {
-
-        return new ActivitiConfigurer() {
-            @Override
-            public void processDefinitionResources(List<Resource> resourceList) {
-                List<Resource> resources = new ArrayList<Resource>();
-
-                // lets first see if any exist in the default place:
-                Resource defaultClassPathResourceMatcher = new ClassPathResource("classpath:/processes*/
-/**bpmn20.xml");
-
- if (defaultClassPathResourceMatcher.exists()) {
- resources.add(defaultClassPathResourceMatcher);
- }
-
- if (activitiConfigurers != null && !activitiConfigurers.isEmpty()) {
- for (ActivitiConfigurer ac : activitiConfigurers) {
- ac.processDefinitionResources(resources);
- }
- }
-
- resourceList.addAll(resources);
- }
-
- @Override public void postProcessSpringProcessEngineConfiguration(SpringProcessEngineConfiguration springProcessEngineConfiguration) {
- if (activitiConfigurers != null) {
- for (ActivitiConfigurer configurer : activitiConfigurers) {
- configurer.postProcessSpringProcessEngineConfiguration(springProcessEngineConfiguration);
- }
- }
- }
-
-
- };
- }
-
-
- private static <T> T first(List<T> tList, ObjectFactory<T> tObjectFactory) {
- T rt;
- if (tList != null && !tList.isEmpty()) {
- rt = tList.iterator().next();
- } else {
- rt = tObjectFactory.getObject();
- }
- return rt;
- }
- }
- */
