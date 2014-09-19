@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.EntityManagerFactory;
+import javax.servlet.Servlet;
 import javax.sql.DataSource;
 
 import org.activiti.engine.ProcessEngine;
@@ -28,27 +30,29 @@ import org.activiti.spring.annotations.EnableActiviti;
 import org.activiti.spring.boot.ProcessEngineAutoConfiguration.ActivitiProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.restlet.ext.servlet.ServerServlet;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.bind.RelaxedPropertyResolver;
+import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.EnvironmentAware;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
  * <p>
- * Auto configuration for using Activiti from a 
- * <a href="http://spring.io/projects/spring-boot">Spring Boot application</a>.
+ * Auto configuration for using Activiti from a <a
+ * href="http://spring.io/projects/spring-boot">Spring Boot application</a>.
  * Provides a configured {@link org.activiti.engine.ProcessEngine} if none other
  * is detected.
  * <p>
@@ -59,6 +63,7 @@ import org.springframework.util.StringUtils;
  * 
  *
  * @author Josh Long
+ * @author Joram Barrez
  */
 @Configuration
 @ConditionalOnClass({ ProcessEngine.class, EnableActiviti.class })
@@ -77,10 +82,12 @@ public class ProcessEngineAutoConfiguration {
 		private String databaseSchemaUpdate;
 
 		private String databaseSchema;
-		
+
 		private String processDefinitionLocationPrefix;
-		
+
 		private String processDefinitionLocationSuffix;
+
+		private boolean enableJpa = true; // true by default
 
 		public boolean isCheckProcessDefinitions() {
 			return checkProcessDefinitions;
@@ -131,12 +138,21 @@ public class ProcessEngineAutoConfiguration {
 		        String processDefinitionLocationSuffix) {
 			this.processDefinitionLocationSuffix = processDefinitionLocationSuffix;
 		}
-		
+
+		public boolean isEnableJpa() {
+			return enableJpa;
+		}
+
+		public void setEnableJpa(boolean enableJpa) {
+			this.enableJpa = enableJpa;
+		}
+
 	}
 
 	@Configuration
 	@EnableActiviti
-	public static class DefaultActivitiConfiguration implements ActivitiConfigurer {
+	public static class DefaultActivitiConfiguration implements
+	        ActivitiConfigurer {
 
 		private Log log = LogFactory.getLog(getClass());
 
@@ -144,12 +160,14 @@ public class ProcessEngineAutoConfiguration {
 
 		public static final String PROCESS_DEFINITIONS_DEFAULT_SUFFIX = "**.bpmn20.xml";
 
- 
 		@Autowired
 		private DataSource[] dataSources;
 
 		@Autowired
-		private ResourcePatternResolver applicationContext;
+		private PlatformTransactionManager transactionManager;
+
+		@Autowired
+		private ApplicationContext applicationContext;
 
 		@Autowired
 		private ActivitiProperties activitiProperties;
@@ -159,8 +177,13 @@ public class ProcessEngineAutoConfiguration {
 			List<Resource> resources;
 			String prefix, suffix;
 			try {
-				prefix = defaultText(activitiProperties.getProcessDefinitionLocationPrefix(), PROCESS_DEFINITIONS_DEFAULT_PREFIX);
-				suffix = defaultText(activitiProperties.getProcessDefinitionLocationSuffix(), PROCESS_DEFINITIONS_DEFAULT_SUFFIX);
+
+				prefix = defaultText(
+				        activitiProperties.getProcessDefinitionLocationPrefix(),
+				        PROCESS_DEFINITIONS_DEFAULT_PREFIX);
+				suffix = defaultText(
+				        activitiProperties.getProcessDefinitionLocationSuffix(),
+				        PROCESS_DEFINITIONS_DEFAULT_SUFFIX);
 				String path = prefix + suffix;
 
 				boolean checkProcDefs = activitiProperties
@@ -201,29 +224,75 @@ public class ProcessEngineAutoConfiguration {
 
 		@Override
 		public void postProcessSpringProcessEngineConfiguration(
-		        SpringProcessEngineConfiguration config) {
+		        SpringProcessEngineConfiguration processEngineConfiguration) {
 
-			config.setDeploymentName(defaultText(
+			// Deployment tweaks
+			processEngineConfiguration.setDeploymentName(defaultText(
 			        activitiProperties.getDeploymentName(),
-			        config.getDeploymentName()));
+			        processEngineConfiguration.getDeploymentName()));
 
-			config.setDeploymentName(defaultText(
+			// Database tweaks
+			processEngineConfiguration.setDatabaseSchema(defaultText(
 			        activitiProperties.getDatabaseSchema(),
-			        config.getDatabaseSchema()));
+			        processEngineConfiguration.getDatabaseSchema()));
 
-			config.setDeploymentName(defaultText(
+			processEngineConfiguration.setDatabaseSchema(defaultText(
 			        activitiProperties.getDatabaseSchemaUpdate(),
-			        config.getDatabaseSchemaUpdate()));
+			        processEngineConfiguration.getDatabaseSchemaUpdate()));
 
 		}
 
 		@Override
 		public DataSource dataSource() {
-			Assert.isTrue(this.dataSources.length > 0,
+			Assert.isTrue(
+			        this.dataSources.length > 0,
 			        "you must have configured at least one javax.sql.DataSource bean in your Spring application context.");
 			return this.dataSources[0];
 		}
 
-		 
 	}
+
+	@Configuration
+	@ConditionalOnClass({ EntityManagerFactory.class })
+	public static class ActivitiJpaConfiguration {
+
+		@Bean
+		InitializingBean configureJpaForActiviti(
+		        final EntityManagerFactory emf,
+		        final ActivitiProperties activitiProperties,
+		        final SpringProcessEngineConfiguration processEngineAutoConfiguration) {
+			return new InitializingBean() {
+
+				@Override
+				public void afterPropertiesSet() throws Exception {
+					if (activitiProperties.isEnableJpa()) {
+						processEngineAutoConfiguration
+						        .setJpaEntityManagerFactory(emf);
+						processEngineAutoConfiguration
+						        .setJpaHandleTransaction(false);
+						processEngineAutoConfiguration
+						        .setJpaCloseEntityManager(false);
+					}
+				}
+			};
+		}
+
+	}
+	
+	@Configuration
+	@ConditionalOnClass({ ServerServlet.class })
+	public static class ActivitiRestConfiguration {
+		@Bean
+		ServletRegistrationBean activitiRestRegistration() {
+			ServerServlet servlet = new ServerServlet() ;
+			ServletRegistrationBean registration = new ServletRegistrationBean( servlet , "/activiti/*");
+			registration.addInitParameter("org.restlet.application", "org.activiti.rest.service.application.ActivitiRestServicesApplication");
+			registration.setName( "activiti-rest");
+			 
+			return registration;
+		}
+	}
+
+	  
+	
 }
