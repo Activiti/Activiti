@@ -16,12 +16,14 @@
 package org.activiti.spring.boot;
 
 import org.activiti.engine.*;
- import org.activiti.spring.ProcessEngineFactoryBean;
+import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringJobExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
- import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.*;
-import org.springframework.boot.context.embedded.ServletRegistrationBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,6 +56,7 @@ import java.util.List;
  */
 @EnableConfigurationProperties(ActivitiProperties.class)
 @Configuration
+@AutoConfigureAfter(DataSourceAutoConfiguration.class)
 public class BasicProcessEngineAutoConfiguration {
 
     @Configuration
@@ -177,26 +180,6 @@ public class BasicProcessEngineAutoConfiguration {
 
 /*
 
-    @ConditionalOnExpression("${spring.activiti.restApiEnabled:true}")
-    @Configuration
-    @ConditionalOnClass({ActivitiRestServicesApplication.class,
-            ServletRegistrationBean.class, ServerServlet.class})
-    public static class RestServiceAutoConfiguration {
-
-        @Autowired
-        private ActivitiProperties activitiProperties;
-
-        @Bean
-        public ServletRegistrationBean activitiRestRegistration() {
-            ServerServlet servlet = new ServerServlet();
-            ServletRegistrationBean registration = new ServletRegistrationBean(servlet,
-                    this.activitiProperties.getRestApiMapping());
-            registration.addInitParameter("org.restlet.application", "org.activiti.rest.service.application.ActivitiRestServicesApplication");
-            registration.setName(this.activitiProperties.getRestApiServletName());
-
-            return null;
-        }
-    }
 */
 
 

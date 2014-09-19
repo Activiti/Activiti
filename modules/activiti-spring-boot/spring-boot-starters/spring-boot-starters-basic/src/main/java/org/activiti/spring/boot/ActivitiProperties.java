@@ -37,7 +37,7 @@ public class ActivitiProperties {
 
     private String processDefinitionLocationSuffix = "**.bpmn20.xml";
 
-    private String restApiMapping  = "/api/";
+    private String restApiMapping  = "/api/*";
 
     public String getRestApiMapping() {
         return restApiMapping;

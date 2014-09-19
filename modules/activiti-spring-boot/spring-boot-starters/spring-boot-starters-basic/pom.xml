@@ -11,7 +11,6 @@
 
     <artifactId>spring-boot-starters-basic</artifactId>
 
-    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
