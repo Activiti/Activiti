@@ -349,19 +349,25 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
   protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
 	
-      // type should be changed
-	 if ((variableInstance != null) && (!variableInstance.getType().isAbleToStore(value))) {
-		    VariableTypes variableTypes = Context
-		    	      .getProcessEngineConfiguration()
-		    	      .getVariableTypes();
-		    VariableType newType = variableTypes.findVariableType(value);
-		    variableInstance.setValue(null);
-		    variableInstance.setType(newType);
-		    variableInstance.forceUpdate();
-		    variableInstance.setValue(value);
-		    VariableInstanceEntity.touch(variableInstance);
-	  } else
-		  variableInstance.setValue(value);
+    // Always check if the type should be altered. It's possible that the previous type is lower in the type
+    // checking chain (eg. serializable) and will return true on isAbleToStore(), even though another type
+    // higher in the chain is eligable for storage.
+    
+    VariableTypes variableTypes = Context
+        .getProcessEngineConfiguration()
+        .getVariableTypes();
+    
+    VariableType newType = variableTypes.findVariableType(value);
+    
+	 if ((variableInstance != null) && (!variableInstance.getType().equals(newType))) {
+		variableInstance.setValue(null);
+		variableInstance.setType(newType);
+		variableInstance.forceUpdate();
+		variableInstance.setValue(value);
+		VariableInstanceEntity.touch(variableInstance);
+	  } else {
+	    variableInstance.setValue(value);
+	  }
 
     Context.getCommandContext().getHistoryManager()
       .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
