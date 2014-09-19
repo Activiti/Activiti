@@ -22,12 +22,14 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -48,6 +50,7 @@ import java.util.List;
  * @author Josh Long
  * @author Joram Barrez
  */
+@EnableConfigurationProperties(ActivitiProperties.class)
 @Configuration
 public class ProcessEngineAutoConfiguration {
 
@@ -60,19 +63,8 @@ public class ProcessEngineAutoConfiguration {
             return new SpringJobExecutor(taskExecutor);
         }
 
-
-        // @Value("${activiti.spring.processes.prefix:'classpath:/processes/'}")
-        private String prefix = "classpath:/processes/";
-
-        // @Value("${activiti.spring.processes.suffix:'**.bpmn20.xml'}")
-        private String suffix = "**.bpmn20.xml";
-
-        // @Value("${activiti.spring.processes.checkDeployed:'false'}")
-        protected void setCheckProcessDefinitionDeployments(String check) {
-            this.checkProcessDefinitionDeployments = Boolean.parseBoolean(check);
-        }
-
-        private boolean checkProcessDefinitionDeployments = true;
+        @Autowired
+        private ActivitiProperties activitiProperties;
 
         @Autowired
         private ResourcePatternResolver resourceLoader;
@@ -82,9 +74,33 @@ public class ProcessEngineAutoConfiguration {
         public SpringProcessEngineConfiguration activitiConfiguration(
                 DataSource dataSource, PlatformTransactionManager transactionManager, SpringJobExecutor springJobExecutor) throws IOException {
             List<Resource> procDefResources = this.discoverProcessDefinitionResources(
-                    this.resourceLoader, prefix, suffix, checkProcessDefinitionDeployments);
-            return super.processEngineConfigurationBean(
+                    this.resourceLoader, this.activitiProperties.getProcessDefinitionLocationPrefix(),
+                    this.activitiProperties.getProcessDefinitionLocationSuffix(),
+                    this.activitiProperties.isCheckProcessDefinitions());
+
+
+            SpringProcessEngineConfiguration conf = super.processEngineConfigurationBean(
                     procDefResources.toArray(new Resource[procDefResources.size()]), dataSource, transactionManager, springJobExecutor);
+
+            conf.setDeploymentName(defaultText(
+                    activitiProperties.getDeploymentName(),
+                    conf.getDeploymentName()));
+
+            conf.setDatabaseSchema(defaultText(
+                    activitiProperties.getDatabaseSchema(),
+                    conf.getDatabaseSchema()));
+
+            conf.setDatabaseSchemaUpdate(defaultText(
+                    activitiProperties.getDatabaseSchemaUpdate(),
+                    conf.getDatabaseSchemaUpdate()));
+
+            return conf;
+        }
+
+        private String defaultText(String deploymentName, String deploymentName1) {
+            if (StringUtils.hasText(deploymentName))
+                return deploymentName;
+            return deploymentName1;
         }
 
         @Bean

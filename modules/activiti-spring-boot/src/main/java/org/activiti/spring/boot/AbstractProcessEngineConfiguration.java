@@ -43,7 +43,6 @@ public abstract class AbstractProcessEngineConfiguration {
         if (null != springJobExecutor)
             engine.setJobExecutor(springJobExecutor);
 
-        engine.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
         return engine;
     }
 

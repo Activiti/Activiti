@@ -13,15 +13,15 @@ public class ActivitiProperties {
 
     private String deploymentName;
 
-    private String databaseSchemaUpdate;
+    private String databaseSchemaUpdate  = "true" ;
 
     private String databaseSchema;
 
-    private String processDefinitionLocationPrefix;
+    private String processDefinitionLocationPrefix = "classpath:/processes/";
 
-    private String processDefinitionLocationSuffix;
+    private String processDefinitionLocationSuffix = "**.bpmn20.xml";
 
-    private boolean jpa  = true; // true by default
+    private boolean jpa = true; // true by default
 
     public boolean isCheckProcessDefinitions() {
         return checkProcessDefinitions;
