@@ -28,11 +28,11 @@ import org.springframework.core.io.UrlResource;
 /**
  * @author Tom Baeyens
  */
-public class SpringConfigurationHelper {
+  class SpringConfigurationHelper {
   
   private static Logger log = LoggerFactory.getLogger(SpringConfigurationHelper.class);
 
-  public static ProcessEngine buildProcessEngine(URL resource) {
+  private static ProcessEngine buildProcessEngine(URL resource) {
     log.debug("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
     
     ApplicationContext applicationContext = new GenericXmlApplicationContext(new UrlResource(resource));
