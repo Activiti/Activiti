@@ -74,7 +74,7 @@ public class JPAEntityMappings {
       throw new ActivitiIllegalArgumentException("Object is not a JPA Entity: class='" + value.getClass() + "', " + value);
     }
     
-    // Extract the ID from the Entity instance using the metaData
+    // Extract the class from the Entity instance
     return metaData.getEntityClass().getName();
   }
   
