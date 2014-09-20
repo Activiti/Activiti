@@ -28,6 +28,11 @@ public class Activiti {
         return new IntegrationActivityBehavior(gateway);
     }
 
+    /**
+     * Any message that enters this {@link org.springframework.messaging.MessageHandler}
+     * containing a {@code executionId} parameter will trigger a
+     * {@link org.activiti.engine.RuntimeService#signal(String)}.
+     */
     public static MessageHandler signallingMessageHandler(final ProcessEngine processEngine) {
         return new MessageHandler() {
             @Override
