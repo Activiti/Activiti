@@ -35,13 +35,14 @@ import org.activiti.engine.impl.variable.VariableTypes;
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Tijs Rademakers
+ * @author Saeid Mirzaei
  */
 public abstract class VariableScopeImpl implements Serializable, VariableScope {
   
   private static final long serialVersionUID = 1L;
   
   protected Map<String, VariableInstanceEntity> variableInstances = null;
-  protected List<VariableInstanceEntity> variableInstanceList = null;
+  
   
   protected ELContext cachedElContext;
 
@@ -54,7 +55,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   protected void ensureVariableInstancesInitialized() {
     if (variableInstances==null) {
       variableInstances = new HashMap<String, VariableInstanceEntity>();
-      variableInstanceList = new ArrayList<VariableInstanceEntity>();
       
       CommandContext commandContext = Context.getCommandContext();
       if (commandContext == null) {
@@ -63,7 +63,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       List<VariableInstanceEntity> variableInstancesList = loadVariableInstances();
       for (VariableInstanceEntity variableInstance : variableInstancesList) {
         variableInstances.put(variableInstance.getName(), variableInstance);
-        variableInstanceList.add(variableInstance);
       }
     }
   }
@@ -211,13 +210,12 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   public void deleteVariablesInstanceForLeavingScope() {
     ensureVariableInstancesInitialized();
     
-    for (VariableInstanceEntity variableInstance: variableInstanceList) {
+    for (VariableInstanceEntity variableInstance: variableInstances.values()) {
         Context.getCommandContext().getHistoryManager()
           .recordVariableUpdate(variableInstance);
         
         variableInstance.delete();
     }
-    variableInstanceList.clear();
   }
   
   public void removeVariables(Collection<String> variableNames) {
@@ -323,7 +321,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
     if (variableInstance != null) {
       deleteVariableInstanceForExplicitUserCall(variableInstance, sourceActivityExecution);
-      variableInstanceList.remove(variableInstance);
     }
   }
 
@@ -373,7 +370,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     VariableInstanceEntity variableInstance = VariableInstanceEntity.createAndInsert(variableName, type, value);
     initializeVariableInstanceBackPointer(variableInstance);
     variableInstances.put(variableName, variableInstance);
-    variableInstanceList.add(variableInstance);
     
     // Record historic variable
     Context.getCommandContext().getHistoryManager()
