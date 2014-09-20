@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
  * flow into Spring Integration. Spring Integration flows
  * may ultimately return a reply message and that will signal the
  * execution.
- * 
+ *
  * @author Josh Long
  */
 public class ActivitiInboundGateway extends MessagingGatewaySupport {
