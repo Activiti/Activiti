@@ -1,2 +1,2 @@
 # Auto Configure
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.activiti.spring.boot.ProcessEngineMessagingAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.activiti.spring.boot.ProcessEngineIntegrationAutoConfiguration

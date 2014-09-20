@@ -15,7 +15,9 @@
             <script>
                 println 'about to finish the script task.'
                 println 'customerId=' + customerId
-                println 'spamId=' + spamId
+                println 'orderId=' + orderId
+                println 'projectId=' + projectId
+
             </script>
         </scriptTask>
         <sequenceFlow sourceRef="scriptTask" targetRef="end"/>
