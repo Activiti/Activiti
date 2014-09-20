@@ -17,8 +17,11 @@ package org.activiti.standalone.jpa;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -43,27 +46,29 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
   protected static ProcessEngine cachedProcessEngine;
 
-  private FieldAccessJPAEntity simpleEntityFieldAccess;
-  private PropertyAccessJPAEntity simpleEntityPropertyAccess;
-  private SubclassFieldAccessJPAEntity subclassFieldAccess;
-  private SubclassPropertyAccessJPAEntity subclassPropertyAccess;
+  private static FieldAccessJPAEntity simpleEntityFieldAccess;
+  private static PropertyAccessJPAEntity simpleEntityPropertyAccess;
+  private static SubclassFieldAccessJPAEntity subclassFieldAccess;
+  private static SubclassPropertyAccessJPAEntity subclassPropertyAccess;
   
-  private ByteIdJPAEntity byteIdJPAEntity;
-  private ShortIdJPAEntity shortIdJPAEntity;
-  private IntegerIdJPAEntity integerIdJPAEntity;
-  private LongIdJPAEntity longIdJPAEntity;
-  private FloatIdJPAEntity floatIdJPAEntity;
-  private DoubleIdJPAEntity doubleIdJPAEntity;
-  private CharIdJPAEntity charIdJPAEntity;
-  private StringIdJPAEntity stringIdJPAEntity;
-  private DateIdJPAEntity dateIdJPAEntity;
-  private SQLDateIdJPAEntity sqlDateIdJPAEntity;
-  private BigDecimalIdJPAEntity bigDecimalIdJPAEntity;
-  private BigIntegerIdJPAEntity bigIntegerIdJPAEntity;
-  private CompoundIdJPAEntity compoundIdJPAEntity;
+  private static ByteIdJPAEntity byteIdJPAEntity;
+  private static ShortIdJPAEntity shortIdJPAEntity;
+  private static IntegerIdJPAEntity integerIdJPAEntity;
+  private static LongIdJPAEntity longIdJPAEntity;
+  private static FloatIdJPAEntity floatIdJPAEntity;
+  private static DoubleIdJPAEntity doubleIdJPAEntity;
+  private static CharIdJPAEntity charIdJPAEntity;
+  private static StringIdJPAEntity stringIdJPAEntity;
+  private static DateIdJPAEntity dateIdJPAEntity;
+  private static SQLDateIdJPAEntity sqlDateIdJPAEntity;
+  private static BigDecimalIdJPAEntity bigDecimalIdJPAEntity;
+  private static BigIntegerIdJPAEntity bigIntegerIdJPAEntity;
+  private static CompoundIdJPAEntity compoundIdJPAEntity;
   
-  private FieldAccessJPAEntity entityToQuery;
-  private FieldAccessJPAEntity entityToUpdate;
+  private static FieldAccessJPAEntity entityToQuery;
+  private static FieldAccessJPAEntity entityToUpdate;
+  
+  private static boolean entitiesInitialized = false;
 
   private static EntityManagerFactory entityManagerFactory;
   
@@ -85,82 +90,87 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
   public void setupJPAEntities() {
     
-    EntityManager manager = entityManagerFactory.createEntityManager();
-    manager.getTransaction().begin();
-    
-    // Simple test data
-    simpleEntityFieldAccess = new FieldAccessJPAEntity();
-    simpleEntityFieldAccess.setId(1L);
-    simpleEntityFieldAccess.setValue("value1");
-    manager.persist(simpleEntityFieldAccess);
-
-    simpleEntityPropertyAccess = new PropertyAccessJPAEntity();
-    simpleEntityPropertyAccess.setId(1L);
-    simpleEntityPropertyAccess.setValue("value2");
-    manager.persist(simpleEntityPropertyAccess);
-
-    subclassFieldAccess = new SubclassFieldAccessJPAEntity();
-    subclassFieldAccess.setId(1L);
-    subclassFieldAccess.setValue("value3");
-    manager.persist(subclassFieldAccess);
-
-    subclassPropertyAccess = new SubclassPropertyAccessJPAEntity();
-    subclassPropertyAccess.setId(1L);
-    subclassPropertyAccess.setValue("value4");
-    manager.persist(subclassPropertyAccess);
-
-    // Test entities with all possible ID types
-    byteIdJPAEntity = new ByteIdJPAEntity();
-    byteIdJPAEntity.setByteId((byte)1);
-    manager.persist(byteIdJPAEntity);
-    
-    shortIdJPAEntity = new ShortIdJPAEntity();
-    shortIdJPAEntity.setShortId((short)123);
-    manager.persist(shortIdJPAEntity);
-    
-    integerIdJPAEntity = new IntegerIdJPAEntity();
-    integerIdJPAEntity.setIntId(123);
-    manager.persist(integerIdJPAEntity);
-    
-    longIdJPAEntity = new LongIdJPAEntity();
-    longIdJPAEntity.setLongId(123456789L);
-    manager.persist(longIdJPAEntity);
-    
-    floatIdJPAEntity = new FloatIdJPAEntity();
-    floatIdJPAEntity.setFloatId((float) 123.45678);
-    manager.persist(floatIdJPAEntity);
-    
-    doubleIdJPAEntity = new DoubleIdJPAEntity();
-    doubleIdJPAEntity.setDoubleId(12345678.987654);
-    manager.persist(doubleIdJPAEntity);
-       
-    charIdJPAEntity = new CharIdJPAEntity();
-    charIdJPAEntity.setCharId('g');
-    manager.persist(charIdJPAEntity);
-    
-    dateIdJPAEntity = new DateIdJPAEntity();
-    dateIdJPAEntity.setDateId(new java.util.Date());
-    manager.persist(dateIdJPAEntity);
-    
-    sqlDateIdJPAEntity = new SQLDateIdJPAEntity();
-    sqlDateIdJPAEntity.setDateId(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-    manager.persist(sqlDateIdJPAEntity);
-    
-    stringIdJPAEntity = new StringIdJPAEntity();
-    stringIdJPAEntity.setStringId("azertyuiop");
-    manager.persist(stringIdJPAEntity);
-    
-    bigDecimalIdJPAEntity = new BigDecimalIdJPAEntity();
-    bigDecimalIdJPAEntity.setBigDecimalId(new BigDecimal("12345678912345678900000.123456789123456789"));
-    manager.persist(bigDecimalIdJPAEntity);
-    
-    bigIntegerIdJPAEntity = new BigIntegerIdJPAEntity();
-    bigIntegerIdJPAEntity.setBigIntegerId(new BigInteger("12345678912345678912345678900000"));
-    manager.persist(bigIntegerIdJPAEntity);
-    
-    manager.flush();
-    manager.getTransaction().commit();
-    manager.close();
+    if(!entitiesInitialized) {
+      
+      EntityManager manager = entityManagerFactory.createEntityManager();
+      manager.getTransaction().begin();
+      
+      // Simple test data
+      simpleEntityFieldAccess = new FieldAccessJPAEntity();
+      simpleEntityFieldAccess.setId(1L);
+      simpleEntityFieldAccess.setValue("value1");
+      manager.persist(simpleEntityFieldAccess);
+  
+      simpleEntityPropertyAccess = new PropertyAccessJPAEntity();
+      simpleEntityPropertyAccess.setId(1L);
+      simpleEntityPropertyAccess.setValue("value2");
+      manager.persist(simpleEntityPropertyAccess);
+  
+      subclassFieldAccess = new SubclassFieldAccessJPAEntity();
+      subclassFieldAccess.setId(1L);
+      subclassFieldAccess.setValue("value3");
+      manager.persist(subclassFieldAccess);
+  
+      subclassPropertyAccess = new SubclassPropertyAccessJPAEntity();
+      subclassPropertyAccess.setId(1L);
+      subclassPropertyAccess.setValue("value4");
+      manager.persist(subclassPropertyAccess);
+  
+      // Test entities with all possible ID types
+      byteIdJPAEntity = new ByteIdJPAEntity();
+      byteIdJPAEntity.setByteId((byte)1);
+      manager.persist(byteIdJPAEntity);
+      
+      shortIdJPAEntity = new ShortIdJPAEntity();
+      shortIdJPAEntity.setShortId((short)123);
+      manager.persist(shortIdJPAEntity);
+      
+      integerIdJPAEntity = new IntegerIdJPAEntity();
+      integerIdJPAEntity.setIntId(123);
+      manager.persist(integerIdJPAEntity);
+      
+      longIdJPAEntity = new LongIdJPAEntity();
+      longIdJPAEntity.setLongId(123456789L);
+      manager.persist(longIdJPAEntity);
+      
+      floatIdJPAEntity = new FloatIdJPAEntity();
+      floatIdJPAEntity.setFloatId((float) 123.45678);
+      manager.persist(floatIdJPAEntity);
+      
+      doubleIdJPAEntity = new DoubleIdJPAEntity();
+      doubleIdJPAEntity.setDoubleId(12345678.987654);
+      manager.persist(doubleIdJPAEntity);
+         
+      charIdJPAEntity = new CharIdJPAEntity();
+      charIdJPAEntity.setCharId('g');
+      manager.persist(charIdJPAEntity);
+      
+      dateIdJPAEntity = new DateIdJPAEntity();
+      dateIdJPAEntity.setDateId(new java.util.Date());
+      manager.persist(dateIdJPAEntity);
+      
+      sqlDateIdJPAEntity = new SQLDateIdJPAEntity();
+      sqlDateIdJPAEntity.setDateId(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
+      manager.persist(sqlDateIdJPAEntity);
+      
+      stringIdJPAEntity = new StringIdJPAEntity();
+      stringIdJPAEntity.setStringId("azertyuiop");
+      manager.persist(stringIdJPAEntity);
+      
+      bigDecimalIdJPAEntity = new BigDecimalIdJPAEntity();
+      bigDecimalIdJPAEntity.setBigDecimalId(new BigDecimal("12345678912345678900000.123456789123456789"));
+      manager.persist(bigDecimalIdJPAEntity);
+      
+      bigIntegerIdJPAEntity = new BigIntegerIdJPAEntity();
+      bigIntegerIdJPAEntity.setBigIntegerId(new BigInteger("12345678912345678912345678900000"));
+      manager.persist(bigIntegerIdJPAEntity);
+      
+      manager.flush();
+      manager.getTransaction().commit();
+      manager.close();
+      
+      entitiesInitialized = true;
+    }
   }
   
   public void setupIllegalJPAEntities() {
@@ -327,6 +337,106 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     Object bigIntegerIdResult= runtimeService.getVariable(processInstanceAllTypes.getId(), "bigIntegerIdJPAEntity");
     assertTrue(bigIntegerIdResult instanceof BigIntegerIdJPAEntity);
     assertEquals(bigIntegerIdJPAEntity.getBigIntegerId(), ((BigIntegerIdJPAEntity)bigIntegerIdResult).getBigIntegerId());
+  }
+  
+  @Deployment(resources = {
+      "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml"
+  })
+  public void testStoreJPAEntityListAsVariable() {
+    setupJPAEntities();
+    // -----------------------------------------------------------------------------
+    // Simple test, Start process with lists of JPA entities as variables
+    // -----------------------------------------------------------------------------
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("simpleEntityFieldAccess", Arrays.asList(simpleEntityFieldAccess, simpleEntityFieldAccess, simpleEntityFieldAccess));
+    variables.put("simpleEntityPropertyAccess", Arrays.asList(simpleEntityPropertyAccess, simpleEntityPropertyAccess, simpleEntityPropertyAccess));
+    variables.put("subclassFieldAccess", Arrays.asList(subclassFieldAccess, subclassFieldAccess, subclassFieldAccess));
+    variables.put("subclassPropertyAccess", Arrays.asList(subclassPropertyAccess, subclassPropertyAccess, subclassPropertyAccess));
+    
+    // Start the process with the JPA-entities as variables. They will be stored in the DB.
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
+    
+    // Read entity with @Id on field
+    Object fieldAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
+    assertTrue(fieldAccessResult instanceof List<?>);
+    List<?> list = (List<?>) fieldAccessResult;
+    assertEquals(3L, list.size());
+    assertTrue(list.get(0) instanceof FieldAccessJPAEntity);
+    assertEquals(((FieldAccessJPAEntity)list.get(0)).getId(), simpleEntityFieldAccess.getId() );
+    
+    // Read entity with @Id on property
+    Object propertyAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityPropertyAccess");
+    assertTrue(propertyAccessResult instanceof List<?>);
+    list = (List<?>) propertyAccessResult;
+    assertEquals(3L, list.size());
+    assertTrue(list.get(0) instanceof PropertyAccessJPAEntity);
+    assertEquals(((PropertyAccessJPAEntity)list.get(0)).getId(), simpleEntityPropertyAccess.getId());
+    
+    // Read entity with @Id on field of mapped superclass 
+    Object subclassFieldResult = runtimeService.getVariable(processInstance.getId(), "subclassFieldAccess");
+    assertTrue(subclassFieldResult instanceof List<?>);
+    list = (List<?>) subclassFieldResult;
+    assertEquals(3L, list.size());
+    assertTrue(list.get(0) instanceof SubclassFieldAccessJPAEntity);
+    assertEquals(((SubclassFieldAccessJPAEntity)list.get(0)).getId(), simpleEntityPropertyAccess.getId());
+    
+    
+    // Read entity with @Id on property of mapped superclass 
+    Object subclassPropertyResult = runtimeService.getVariable(processInstance.getId(), "subclassPropertyAccess");
+    assertTrue(subclassPropertyResult instanceof List<?>);
+    list = (List<?>) subclassPropertyResult;
+    assertEquals(3L, list.size());
+    assertTrue(list.get(0) instanceof SubclassPropertyAccessJPAEntity);
+    assertEquals(((SubclassPropertyAccessJPAEntity)list.get(0)).getId(), simpleEntityPropertyAccess.getId());
+  }
+  
+  @Deployment(resources = {
+      "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml"
+  })
+  public void testStoreJPAEntityListAsVariableEdgeCases() {
+    setupJPAEntities();
+    
+    // Test using mixed JPA-entities which are not serializable, should not be picked up by JPA list type en therefor fail
+    // due to serialization error
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("simpleEntityFieldAccess", Arrays.asList(simpleEntityFieldAccess, simpleEntityPropertyAccess));
+
+    try {
+      runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
+      fail("Exception expected");
+    } catch(ActivitiException ae ) {
+      // Expected
+    }
+    
+    // Test updating value to an empty list and back
+    variables = new HashMap<String, Object>();
+    variables.put("list", Arrays.asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
+    
+    runtimeService.setVariable(processInstance.getId(), "list", new ArrayList<String>());
+    assertEquals(0L, ((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size());
+    
+    runtimeService.setVariable(processInstance.getId(), "list", Arrays.asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+    assertEquals(2L, ((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size());
+    assertTrue(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity);
+    
+    // Test updating to list of Strings
+    runtimeService.setVariable(processInstance.getId(), "list", Arrays.asList("TEST", "TESTING"));
+    assertEquals(2L, ((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size());
+    assertTrue(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof String);
+    
+    runtimeService.setVariable(processInstance.getId(), "list", Arrays.asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+    assertEquals(2L, ((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size());
+    assertTrue(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity);
+    
+    // Test updating to null
+    runtimeService.setVariable(processInstance.getId(), "list", null);
+    assertNull(runtimeService.getVariable(processInstance.getId(), "list"));
+    
+    runtimeService.setVariable(processInstance.getId(), "list", Arrays.asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+    assertEquals(2L, ((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size());
+    assertTrue(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity);
   }
   
   // http://jira.codehaus.org/browse/ACT-995
