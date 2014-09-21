@@ -14,11 +14,11 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>spring-boot-starters-basic</module>
-        <module>spring-boot-starters-rest-api</module>
-        <module>spring-boot-starters-integration</module>
-        <module>spring-boot-starters-actuator</module>
-        <module>spring-boot-starters-security</module>
+        <module>spring-boot-starter-basic</module>
+        <module>spring-boot-starter-rest-api</module>
+        <module>spring-boot-starter-integration</module>
+        <module>spring-boot-starter-actuator</module>
+        <module>spring-boot-starter-security</module>
     </modules>
     <dependencies>
         <dependency>
