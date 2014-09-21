@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @AutoConfigureAfter( BasicProcessEngineAutoConfiguration.class)
-public class ProcessEngineRestApiAutoConfiguration {
+public class RestApiAutoConfiguration {
 
     @ConditionalOnExpression("${spring.activiti.restApiEnabled:true}")
     @Configuration

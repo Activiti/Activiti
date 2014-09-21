@@ -1,6 +1,5 @@
 package org.activiti.spring.integration;
 
-import org.activiti.engine.ProcessEngine;
 import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.messaging.MessageHeaders;
 
@@ -14,22 +13,10 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class ProcessVariableHeaderMapper implements HeaderMapper<Map<String, Object>> {
 
-    private final ProcessEngine processEngine;
     private final Set<String> keysToPreserve = new ConcurrentSkipListSet<String>();
 
-    public ProcessVariableHeaderMapper(ProcessEngine processEngine, Set<String> sync) {
-        this.processEngine = processEngine;
-        keysToPreserve.addAll(sync);
-    }
-
-    private static Map<String, Object> sync(
-            Set<String> keys,
-            Map<String, Object> in,
-            Map<String, Object> out) {
-        for (String k : keys)
-            if (in.containsKey(k))
-                out.put(k, in.get(k));
-        return out;
+    public ProcessVariableHeaderMapper(Set<String> sync) {
+        this.keysToPreserve.addAll(sync);
     }
 
     @Override
@@ -45,5 +32,15 @@ public class ProcessVariableHeaderMapper implements HeaderMapper<Map<String, Obj
                 source,
                 new HashMap<String, Object>());
         return matches;
+    }
+
+    private static Map<String, Object> sync(
+            Set<String> keys,
+            Map<String, Object> in,
+            Map<String, Object> out) {
+        for (String k : keys)
+            if (in.containsKey(k))
+                out.put(k, in.get(k));
+        return out;
     }
 }

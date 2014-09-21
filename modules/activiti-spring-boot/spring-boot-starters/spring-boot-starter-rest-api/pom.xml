@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
-            <artifactId>spring-boot-starters-basic</artifactId>
+            <artifactId>spring-boot-starter-basic</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

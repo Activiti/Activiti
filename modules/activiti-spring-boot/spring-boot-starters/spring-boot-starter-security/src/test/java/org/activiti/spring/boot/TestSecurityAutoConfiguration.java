@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * @author Josh Long
  */
-public class TestProcessEngineAutoConfiguration {
+public class TestSecurityAutoConfiguration {
 
     private ConfigurableApplicationContext applicationContext;
 
@@ -83,4 +83,6 @@ public class TestProcessEngineAutoConfiguration {
         ProcessDefinition processDefinition = processDefinitionList.iterator().next();
         Assert.assertEquals(processDefinition.getKey(), "waiter");
     }
+
+
 }

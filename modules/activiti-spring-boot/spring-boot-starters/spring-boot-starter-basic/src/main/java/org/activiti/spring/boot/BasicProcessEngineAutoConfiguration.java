@@ -15,7 +15,6 @@
  */
 package org.activiti.spring.boot;
 
-import com.sun.org.apache.bcel.internal.generic.RET;
 import org.activiti.engine.*;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringJobExecutor;
@@ -77,13 +76,14 @@ public class BasicProcessEngineAutoConfiguration {
 
         @Bean
         @ConditionalOnBean(DataSource.class)
-        public SpringProcessEngineConfiguration activitiConfiguration(
-                DataSource dataSource, PlatformTransactionManager transactionManager, SpringJobExecutor springJobExecutor) throws IOException {
+        public SpringProcessEngineConfiguration activitiConfiguration(DataSource dataSource,
+                                                                      PlatformTransactionManager transactionManager,
+                                                                      SpringJobExecutor springJobExecutor) throws IOException {
+
             List<Resource> procDefResources = this.discoverProcessDefinitionResources(
                     this.resourceLoader, this.activitiProperties.getProcessDefinitionLocationPrefix(),
                     this.activitiProperties.getProcessDefinitionLocationSuffix(),
                     this.activitiProperties.isCheckProcessDefinitions());
-
 
             SpringProcessEngineConfiguration conf = super.processEngineConfigurationBean(
                     procDefResources.toArray(new Resource[procDefResources.size()]), dataSource, transactionManager, springJobExecutor);
