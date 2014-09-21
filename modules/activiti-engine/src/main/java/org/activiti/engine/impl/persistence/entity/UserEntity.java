@@ -116,5 +116,9 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
   public void setRevision(int revision) {
     this.revision = revision;
   }
+  
+  public boolean isPictureSet() {
+    return pictureByteArrayRef.getId() != null;
+  }
 
 }
