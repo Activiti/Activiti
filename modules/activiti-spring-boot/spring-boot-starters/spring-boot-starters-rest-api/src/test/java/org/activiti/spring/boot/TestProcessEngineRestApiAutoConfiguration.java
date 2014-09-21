@@ -61,11 +61,9 @@ public class TestProcessEngineRestApiAutoConfiguration {
         PlatformTransactionManager dataSourceTransactionManager(DataSource dataSource) {
             return new DataSourceTransactionManager(dataSource);
         }
-
     }
 
     private ConfigurableApplicationContext applicationContext;
-
 
     @After
     public void close() {
@@ -90,8 +88,7 @@ public class TestProcessEngineRestApiAutoConfiguration {
         restTemplate.setErrorHandler(new ResponseErrorHandler() {
             @Override
             public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {
-                return true
-                        ;
+                return true;
             }
 
             @Override
