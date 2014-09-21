@@ -15,6 +15,7 @@
  */
 package org.activiti.spring.boot;
 
+import com.sun.org.apache.bcel.internal.generic.RET;
 import org.activiti.engine.*;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringJobExecutor;
@@ -61,7 +62,7 @@ public class BasicProcessEngineAutoConfiguration {
 
     @Configuration
     public static class DefaultProcessEngineConfiguration
-            extends AbstractProcessEngineConfiguration   {
+            extends AbstractProcessEngineConfiguration {
 
         @Bean
         public SpringJobExecutor springJobExecutor(TaskExecutor taskExecutor) {
@@ -110,9 +111,7 @@ public class BasicProcessEngineAutoConfiguration {
 
         @Bean
         public ProcessEngineFactoryBean processEngine(SpringProcessEngineConfiguration configuration) throws Exception {
-            ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
-            processEngineFactoryBean.setProcessEngineConfiguration(configuration);
-            return processEngineFactoryBean;
+            return super.springProcessEngineBean(configuration);
         }
 
         @Bean
@@ -177,38 +176,4 @@ public class BasicProcessEngineAutoConfiguration {
         }
 
     }
-
-/*
-
-*/
-
-
-/*
-    @Configuration
-    @ConditionalOnClass({EntityManagerFactory.class})
-    public static class JpaAutoConfiguration {
-
-        @Bean
-        InitializingBean configureJpaForActiviti(
-                final EntityManagerFactory emf,
-                final ActivitiProperties activitiProperties,
-                final SpringProcessEngineConfiguration processEngineAutoConfiguration) {
-            return new InitializingBean() {
-
-                @Override
-                public void afterPropertiesSet() throws Exception {
-                    if (activitiProperties.isJpa()) {
-                        processEngineAutoConfiguration
-                                .setJpaEntityManagerFactory(emf);
-                        processEngineAutoConfiguration
-                                .setJpaHandleTransaction(false);
-                        processEngineAutoConfiguration
-                                .setJpaCloseEntityManager(false);
-                    }
-                }
-            };
-        }
-
-    }*/
 }
-

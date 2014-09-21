@@ -10,7 +10,17 @@
     </parent>
     
     <artifactId>spring-boot-starters-actuator</artifactId>
-	
 
- 
+    <dependencies>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>spring-boot-starters-basic</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+</dependencies>
+
 </project>

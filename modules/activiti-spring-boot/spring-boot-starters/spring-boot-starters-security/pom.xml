@@ -5,26 +5,30 @@
 
     <parent>
         <groupId>org.activiti</groupId>
-        <artifactId>spring-boot</artifactId>
+        <artifactId>spring-boot-starters</artifactId>
         <version>5.16.4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spring-boot-starters</artifactId>
+    <artifactId>spring-boot-starters-security</artifactId>
 
-    <packaging>pom</packaging>
 
-    <modules>
-        <module>spring-boot-starters-basic</module>
-        <module>spring-boot-starters-rest-api</module>
-        <module>spring-boot-starters-integration</module>
-        <module>spring-boot-starters-actuator</module>
-        <module>spring-boot-starters-security</module>
-    </modules>
     <dependencies>
         <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
