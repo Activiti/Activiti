@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="w"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:activiti="http://activiti.org/bpmn"
              targetNamespace="Examples">
 
     <process id="waiter">
@@ -10,7 +9,7 @@
 
         <sequenceFlow id="flow1" sourceRef="start" targetRef="print"/>
 
-        <userTask id="print" name="user"  />
+        <userTask id="print" name="user"/>
 
         <sequenceFlow id="flow2" sourceRef="print" targetRef="end"/>
 

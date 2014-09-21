@@ -57,8 +57,6 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
             processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(applicationContext));
         }
 
-
-
         this.processEngine = processEngineConfiguration.buildProcessEngine();
         return this.processEngine;
     }

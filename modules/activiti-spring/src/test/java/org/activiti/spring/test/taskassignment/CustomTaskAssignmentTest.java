@@ -23,30 +23,30 @@ import org.springframework.test.context.ContextConfiguration;
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/taskassignment/taskassignment-context.xml")
 public class CustomTaskAssignmentTest extends SpringActivitiTestCase {
-  
-  @Deployment
-  public void testSetAssigneeThroughSpringService() {
-    runtimeService.startProcessInstanceByKey("assigneeThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
-    assertEquals(1, taskService.createTaskQuery().taskAssignee("Kermit The Frog").count());
-  }
-  
-  @Deployment
-  public void testSetCandidateUsersThroughSpringService() {
-    runtimeService.startProcessInstanceByKey("candidateUsersThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("fozzie").count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("gonzo").count());
-    assertEquals(0, taskService.createTaskQuery().taskCandidateUser("mispiggy").count());
-  }
-  
-  
-  @Deployment
-  public void testSetCandidateGroupsThroughSpringService() {
-    runtimeService.startProcessInstanceByKey("candidateUsersThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
-    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("directors").count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("accountancy").count());
-    assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("sales").count());
-  }
-  
+
+    @Deployment
+    public void testSetAssigneeThroughSpringService() {
+        runtimeService.startProcessInstanceByKey("assigneeThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
+        assertEquals(1, taskService.createTaskQuery().taskAssignee("Kermit The Frog").count());
+    }
+
+    @Deployment
+    public void testSetCandidateUsersThroughSpringService() {
+        runtimeService.startProcessInstanceByKey("candidateUsersThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
+        assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
+        assertEquals(1, taskService.createTaskQuery().taskCandidateUser("fozzie").count());
+        assertEquals(1, taskService.createTaskQuery().taskCandidateUser("gonzo").count());
+        assertEquals(0, taskService.createTaskQuery().taskCandidateUser("mispiggy").count());
+    }
+
+
+    @Deployment
+    public void testSetCandidateGroupsThroughSpringService() {
+        runtimeService.startProcessInstanceByKey("candidateUsersThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
+        assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
+        assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("directors").count());
+        assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("accountancy").count());
+        assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("sales").count());
+    }
+
 }
