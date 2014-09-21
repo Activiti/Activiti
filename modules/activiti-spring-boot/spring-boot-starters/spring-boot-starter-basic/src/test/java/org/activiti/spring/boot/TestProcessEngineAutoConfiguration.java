@@ -33,7 +33,7 @@ public class TestProcessEngineAutoConfiguration {
     public static class SimpleDataSourceConfiguration {
 
         @Bean
-        public TaskExecutor taskExecutor() {
+        TaskExecutor taskExecutor() {
             return new SimpleAsyncTaskExecutor();
         }
 

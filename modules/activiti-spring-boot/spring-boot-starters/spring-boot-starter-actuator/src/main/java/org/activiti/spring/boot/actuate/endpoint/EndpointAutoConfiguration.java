@@ -1,6 +1,7 @@
 package org.activiti.spring.boot.actuate.endpoint;
 
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RepositoryService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,8 +16,13 @@ import org.springframework.context.annotation.Configuration;
 public class EndpointAutoConfiguration {
 
     @Bean
-    public ProcessEngineEndpoint processEngineMetric( ProcessEngine engine){
-        return new ProcessEngineEndpoint( engine)  ;
+    public ProcessEngineEndpoint processEngineEndpoint(ProcessEngine engine) {
+        return new ProcessEngineEndpoint(engine);
     }
 
+    @Bean
+    public ProcessEngineMvcEndpoint processEngineMvcEndpoint(
+            ProcessEngineEndpoint engineEndpoint, RepositoryService repositoryService) {
+        return new ProcessEngineMvcEndpoint(engineEndpoint, repositoryService);
+    }
 }

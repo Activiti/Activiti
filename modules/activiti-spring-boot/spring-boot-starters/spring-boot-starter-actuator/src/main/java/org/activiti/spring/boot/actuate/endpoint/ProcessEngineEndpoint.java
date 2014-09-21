@@ -7,6 +7,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
+/**
+ * Registers a Boot Actuator endpoint that provides information on the
+ * running process instance and renders BPMN diagrams of the deployed processes.
+ *
+ * @author Josh Long
+ */
 @ConfigurationProperties(prefix = "endpoints.activiti")
 public class ProcessEngineEndpoint extends AbstractEndpoint<List<HistoricDetail>> {
 
@@ -26,13 +32,3 @@ public class ProcessEngineEndpoint extends AbstractEndpoint<List<HistoricDetail>
                 .list();
     }
 }
-
-    /*  ProcessDefinition processDefinition = repositoryService
-                .createProcessDefinitionQuery().processDefinitionKey(pd).singleResult();
-        ProcessDiagramGenerator processDiagramGenerator = new DefaultProcessDiagramGenerator();
-        InputStream is = processDiagramGenerator
-                .generatePngDiagram(repositoryService
-                        .getBpmnModel(processDefinition.getId()));
-
-        return new InputStreamResource(is);
-        */
