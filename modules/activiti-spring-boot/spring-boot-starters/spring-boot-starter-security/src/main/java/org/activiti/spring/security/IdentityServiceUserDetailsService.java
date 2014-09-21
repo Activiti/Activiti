@@ -13,11 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-/***
- * Adapts Spring Security to the Activiti {@link org.activiti.engine.IdentityService}.
- * If you've already wired Activiti to a backend identity store then this is a convenient
- * way to tie the security for the other tiers of the application through common Spring Integration facilities.
- *
+/**
  * @author Josh Long
  */
 public class IdentityServiceUserDetailsService
@@ -30,19 +26,19 @@ public class IdentityServiceUserDetailsService
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username)
+    public UserDetails loadUserByUsername(String userId)
             throws UsernameNotFoundException {
         User user = null;
         try {
             user = this.identityService.createUserQuery()
-                    .userEmail(username)
+                    .userId(userId)
                     .singleResult();
         } catch (ActivitiException ex) {
             // don't care
         }
 
         if (null == user) {
-            throw new UsernameNotFoundException(String.format("user (%s) could not be found", username));
+            throw new UsernameNotFoundException(String.format("user (%s) could not be found", userId));
         }
 
         // if the results not null then its active...
@@ -60,8 +56,8 @@ public class IdentityServiceUserDetailsService
         }
 
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
+                user.getId(),
+                user.getPassword() ,
                 active, active, active, active,
                 grantedAuthorityList);
     }

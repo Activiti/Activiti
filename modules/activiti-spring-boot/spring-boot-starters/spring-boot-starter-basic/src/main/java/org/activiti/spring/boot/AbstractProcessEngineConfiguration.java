@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public abstract class AbstractProcessEngineConfiguration {
     public SpringProcessEngineConfiguration processEngineConfigurationBean(Resource[] processDefinitions,
                                                                            DataSource dataSource,
                                                                            PlatformTransactionManager transactionManager,
-                                                                           SpringJobExecutor springJobExecutor  )
+                                                                           SpringJobExecutor springJobExecutor)
             throws IOException {
 
         SpringProcessEngineConfiguration engine = new SpringProcessEngineConfiguration();
@@ -53,8 +54,10 @@ public abstract class AbstractProcessEngineConfiguration {
                     String.format("No process definitions were found using the specified " +
                             "path (%s). Are you sure " +
                             "you're using Activiti?", path));
+
+            return Arrays.asList(applicationContext.getResources(path));
         }
-        return Arrays.asList(applicationContext.getResources(path));
+        return new ArrayList<Resource>();
     }
 
     public RuntimeService runtimeServiceBean(ProcessEngine processEngine) {

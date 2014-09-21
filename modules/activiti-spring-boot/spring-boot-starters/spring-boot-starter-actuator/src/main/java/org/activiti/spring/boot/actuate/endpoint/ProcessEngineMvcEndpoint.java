@@ -33,6 +33,11 @@ public class ProcessEngineMvcEndpoint extends EndpointMvcAdapter {
         this.repositoryService = repositoryService;
     }
 
+    /**
+     * Look up the process definition by key. For example,
+     * this <A href="http://localhost:8080/activiti/processes/fulfillmentProcess">process-diagram for</A>
+     * a process definition named {@code fulfillmentProcess}.
+     */
     @RequestMapping(value = "/processes/{processDefinitionKey:.*}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
     public Resource processDefinitionDiagram(@PathVariable String processDefinitionKey) {

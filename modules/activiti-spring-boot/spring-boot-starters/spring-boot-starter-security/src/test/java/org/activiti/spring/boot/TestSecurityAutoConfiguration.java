@@ -1,13 +1,15 @@
 package org.activiti.spring.boot;
 
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -16,10 +18,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
-import java.util.List;
 
 /**
  * @author Josh Long
@@ -30,7 +33,39 @@ public class TestSecurityAutoConfiguration {
 
     @Configuration
     @EnableAutoConfiguration
-    public static class SimpleDataSourceConfiguration {
+    public static class SecurityConfiguration {
+
+        @Bean
+        public CommandLineRunner seedUsersAndGroups(final RuntimeService runtimeService, final IdentityService identityService) {
+            return new CommandLineRunner() {
+                @Override
+                public void run(String... strings) throws Exception {
+
+
+                    // install groups & users
+                    Group group = identityService.newGroup("user");
+                    group.setName("users");
+                    group.setType("security-role");
+                    identityService.saveGroup(group);
+
+                    User joram = identityService.newUser("jbarrez");
+                    joram.setFirstName("Joram");
+                    joram.setLastName("Barrez");
+                    joram.setPassword("joram");
+                    identityService.saveUser(joram);
+
+                    User josh = identityService.newUser("jlong");
+                    josh.setFirstName("Josh");
+                    josh.setLastName("Long");
+                    josh.setPassword("josh");
+                    identityService.saveUser(josh);
+
+                    identityService.createMembership("jbarrez", "user");
+                    identityService.createMembership("jlong", "user");
+
+                }
+            };
+        }
 
         @Bean
         public TaskExecutor taskExecutor() {
@@ -54,11 +89,6 @@ public class TestSecurityAutoConfiguration {
         }
     }
 
-    @Test
-    public void testProcessEngine() throws Exception {
-        ProcessEngine processEngine = applicationContext.getBean(ProcessEngine.class);
-        Assert.assertNotNull("the processEngine should not be null!", processEngine);
-    }
 
     @After
     public void close() {
@@ -67,22 +97,14 @@ public class TestSecurityAutoConfiguration {
 
     @Before
     public void setUp() {
-        this.applicationContext = SpringApplication.run(SimpleDataSourceConfiguration.class);
+        this.applicationContext = SpringApplication.run(SecurityConfiguration.class);
     }
 
     @Test
-    public void testLaunchingProcessDefinition() throws Exception {
-        RepositoryService repositoryService = this.applicationContext.getBean(RepositoryService.class);
-        Assert.assertNotNull("we should have a default repositoryService included", repositoryService);
-
-        List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionKey("waiter")
-                .list();
-        Assert.assertNotNull(processDefinitionList);
-        Assert.assertTrue(!processDefinitionList.isEmpty());
-        ProcessDefinition processDefinition = processDefinitionList.iterator().next();
-        Assert.assertEquals(processDefinition.getKey(), "waiter");
+    public void testSecurityIntegration() throws Exception {
+        UserDetailsService userDetailsService = this.applicationContext.getBean(UserDetailsService.class);
+        Assert.assertNotNull("the userDetailsService manager can't be null", userDetailsService);
+        UserDetails userDetails = userDetailsService.loadUserByUsername("jlong");
+        Assert.assertNotNull("userDetails for 'jlong' should not be null", userDetails);
     }
-
-
 }

@@ -19,9 +19,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @AutoConfigureBefore(org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class)
 public class SecurityAutoConfiguration {
 
-
     @Bean
-    UserDetailsService userDetailsService(IdentityService identityService) {
+    public UserDetailsService userDetailsService(IdentityService identityService) {
         return new IdentityServiceUserDetailsService(identityService);
     }
 }
