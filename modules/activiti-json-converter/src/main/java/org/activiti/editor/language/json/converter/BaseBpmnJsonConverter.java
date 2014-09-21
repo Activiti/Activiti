@@ -314,6 +314,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       
       if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())) {
         propertyItemNode.put(listenerClass, listener.getImplementation());
+        addFieldExtensions(listener.getFieldExtensions(), propertyItemNode, isExecutionListener);
+        
       } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())) {
         propertyItemNode.put(listenerExpression, listener.getImplementation());
       } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())) {
@@ -327,7 +329,44 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     listenersNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
     propertiesNode.put(propertyName, listenersNode);
   }
-  
+
+  protected void addFieldExtensions(List<FieldExtension> extensions, ObjectNode propertiesNode, boolean isExecutionListener) {
+    String fieldNameProperty = null;
+    String fieldValueProperty = null;
+    String fieldExpressionProperty = null;
+    String fieldProperty = null;
+    if (isExecutionListener) {
+      fieldNameProperty = PROPERTY_EXECUTION_LISTENER_FIELD_NAME;
+      fieldValueProperty = PROPERTY_EXECUTION_LISTENER_FIELD_VALUE;
+      fieldExpressionProperty = PROPERTY_EXECUTION_LISTENER_FIELD_EXPRESSION;
+      fieldProperty = PROPERTY_EXECUTION_LISTENER_FIELDS;
+      
+    } else {
+      fieldNameProperty = PROPERTY_TASK_LISTENER_FIELD_NAME;
+      fieldValueProperty = PROPERTY_TASK_LISTENER_FIELD_VALUE;
+      fieldExpressionProperty = PROPERTY_TASK_LISTENER_FIELD_EXPRESSION;
+      fieldProperty = PROPERTY_TASK_LISTENER_FIELDS;
+    }
+    
+    ObjectNode fieldExtensionsNode = objectMapper.createObjectNode();
+    ArrayNode itemsNode = objectMapper.createArrayNode();
+    for (FieldExtension extension : extensions) {
+      ObjectNode propertyItemNode = objectMapper.createObjectNode();
+      propertyItemNode.put(fieldNameProperty, extension.getFieldName());
+      if (StringUtils.isNotEmpty(extension.getStringValue())) {
+        propertyItemNode.put(fieldValueProperty, extension.getStringValue());
+      }
+      if (StringUtils.isNotEmpty(extension.getExpression())) {
+        propertyItemNode.put(fieldExpressionProperty, extension.getExpression());
+      }
+      itemsNode.add(propertyItemNode);
+    }
+
+    fieldExtensionsNode.put("totalCount", itemsNode.size());
+    fieldExtensionsNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
+    propertiesNode.put(fieldProperty, fieldExtensionsNode.toString());
+  }
+
   protected void addFieldExtensions(List<FieldExtension> extensions, ObjectNode propertiesNode) {
     ObjectNode fieldExtensionsNode = objectMapper.createObjectNode();
     ArrayNode itemsNode = objectMapper.createArrayNode();
@@ -679,7 +718,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
   
   protected String convertListToCommaSeparatedString(List<String> stringList) {
     String resultString = null;
-    if (stringList  != null && stringList.size() > 0) {
+    if (stringList  != null && !stringList.isEmpty()) {
       StringBuilder expressionBuilder = new StringBuilder();
       for (String singleItem : stringList) {
         if (expressionBuilder.length() > 0) {

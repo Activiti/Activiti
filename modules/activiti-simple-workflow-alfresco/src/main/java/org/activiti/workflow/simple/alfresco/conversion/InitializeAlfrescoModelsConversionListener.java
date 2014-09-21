@@ -123,7 +123,7 @@ public class InitializeAlfrescoModelsConversionListener implements WorkflowDefin
 					// No form-key is set, either use the default or generate of start-form if this
 					// is available
 					if(conversion.getWorkflowDefinition().getStartFormDefinition() != null
-							&& conversion.getWorkflowDefinition().getStartFormDefinition().getFormGroups().size() > 0) {
+							&& !conversion.getWorkflowDefinition().getStartFormDefinition().getFormGroups().isEmpty()) {
 						
 						// Create the content model for the start-task
 						M2Type type = new M2Type();

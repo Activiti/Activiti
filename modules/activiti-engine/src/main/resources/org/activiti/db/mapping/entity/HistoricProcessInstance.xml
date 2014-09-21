@@ -225,7 +225,7 @@
         left outer join ${prefix}ACT_HI_VARINST A_OR${index} on RES.PROC_INST_ID_ = A_OR${index}.PROC_INST_ID_
       </foreach>
     </if>
-    <if test="deploymentId != null || (orQueryObject != null &amp;&amp; orQueryObject.deploymentId != null)">
+    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)))">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <where>
@@ -249,6 +249,13 @@
       </if>
       <if test="deploymentId != null">
         and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
+      </if>
+      <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
+        and DEPLOY_P.DEPLOYMENT_ID_ IN
+        <foreach item="deployment" index="index" collection="deploymentIds" 
+                 open="(" separator="," close=")">
+          #{deployment}
+        </foreach>
       </if>
       <if test="startedBefore != null">
         and RES.START_TIME_ &lt;= #{startedBefore}
@@ -307,6 +314,9 @@
       </if>
       <if test="nameLike != null">
         and RES.NAME_ like #{nameLike}
+      </if>
+        <if test="nameLikeIgnoreCase != null">
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase}
       </if>
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
         <if test="queryVariableValue.name != null">
@@ -386,6 +396,13 @@
           <if test="orQueryObject.deploymentId != null">
             or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
           </if>
+          <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
+            or DEPLOY_P.DEPLOYMENT_ID_ IN
+            <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
+                     open="(" separator="," close=")">
+              #{deployment}
+            </foreach>
+          </if>
           <if test="orQueryObject.startedBefore != null">
             or RES.START_TIME_ &lt;= #{orQueryObject.startedBefore}
           </if>
@@ -446,6 +463,9 @@
           </if>
           <if test="orQueryObject.nameLike != null">
             or RES.NAME_ like #{orQueryObject.nameLike}
+          </if>
+          <if test="orQueryObject.nameLikeIgnoreCase != null">
+            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}
           </if>
           <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
             or

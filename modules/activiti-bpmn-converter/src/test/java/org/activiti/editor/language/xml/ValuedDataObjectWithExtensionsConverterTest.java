@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.Test;
 
 /**
- * @see http://jira.codehaus.org/browse/ACT-1847
+ * @see <a href="http://jira.codehaus.org/browse/ACT-1847">http://jira.codehaus.org/browse/ACT-1847</a>
  */
 public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConverterTest {
   
@@ -183,7 +183,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
     assertEquals("BooleanTest", dataObj.getName());
     assertEquals("xsd:boolean", dataObj.getItemSubjectRef().getStructureRef());
     assertTrue(dataObj.getValue() instanceof Boolean);
-    assertEquals(new Boolean(true), dataObj.getValue());
+    assertEquals(Boolean.TRUE, dataObj.getValue());
 
     /*
      * Verify DataObject attributes extension
@@ -213,7 +213,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
   protected static String getExtensionValue(String key, ValuedDataObject dataObj) {
     Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
 
-    if (extensionElements.size() > 0) {
+    if (!extensionElements.isEmpty()) {
       return extensionElements.get(key).get(0).getElementText();
     }
     return null;
@@ -222,7 +222,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
   protected static ExtensionElement getExtensionElement(String key, ValuedDataObject dataObj) {
     Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
 
-    if (extensionElements.size() > 0) {
+    if (!extensionElements.isEmpty()) {
       return extensionElements.get(key).get(0);
     }
     return null;
@@ -262,6 +262,6 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
       localization.setResourceBundleKeyForDescription(extensionAttributes.get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION)
               .get(0).getValue());
     }
-    return (Localization) localization;
+    return localization;
   }
 }

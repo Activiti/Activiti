@@ -60,7 +60,7 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
 		}
 		
 		// Current tenant
-		if (processDefinitionId != null) {
+		if (!data.containsKey(Fields.TENANT_ID) && processDefinitionId != null) {
 			DeploymentCache<ProcessDefinitionEntity> processDefinitionCache = Context.getProcessEngineConfiguration().getProcessDefinitionCache();
 			if (processDefinitionCache != null) {
 				ProcessDefinitionEntity processDefinitionEntity = processDefinitionCache.get(processDefinitionId);

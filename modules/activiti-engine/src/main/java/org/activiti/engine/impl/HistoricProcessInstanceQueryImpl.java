@@ -38,6 +38,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String processDefinitionId;
   protected String businessKey;
   protected String deploymentId;
+  protected List<String> deploymentIds;
   protected boolean finished = false;
   protected boolean unfinished = false;
   protected boolean deleted = false;
@@ -59,6 +60,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected boolean withoutTenantId;
   protected String name;
   protected String nameLike;
+  protected String nameLikeIgnoreCase;
   protected HistoricProcessInstanceQueryImpl orQueryObject;
   protected boolean inOrStatement = false;
   
@@ -130,6 +132,15 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
       this.orQueryObject.deploymentId = deploymentId;
     } else {
       this.deploymentId = deploymentId;
+    }
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery deploymentIdIn(List<String> deploymentIds) {
+    if (inOrStatement) {
+      orQueryObject.deploymentIds = deploymentIds;
+    } else {
+      this.deploymentIds = deploymentIds;
     }
     return this;
   }
@@ -308,6 +319,16 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
       this.orQueryObject.nameLike = nameLike;
     } else {
       this.nameLike = nameLike;
+    }
+    return this;
+  }
+  
+  @Override
+  public HistoricProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase) {
+    if (inOrStatement) {
+      this.orQueryObject.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
+    } else {
+      this.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
     }
     return this;
   }
@@ -571,6 +592,10 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public String getDeploymentId() {
     return deploymentId;
   }
+  
+  public List<String> getDeploymentIds() {
+    return deploymentIds;
+  }
 
   public boolean isFinished() {
     return finished;
@@ -603,8 +628,12 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public boolean isWithoutTenantId() {
     return withoutTenantId;
   }
+  
+  public String getNameLikeIgnoreCase() {
+		return nameLikeIgnoreCase;
+	}
 
-  public HistoricProcessInstanceQueryImpl getOrQueryObject() {
+	public HistoricProcessInstanceQueryImpl getOrQueryObject() {
     return orQueryObject;
   }
 }

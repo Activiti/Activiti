@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class PvmTestCase extends TestCase {
 
-  protected static final String EMPTY_LINE = "                                                                                           ";
+  protected static final String EMPTY_LINE = "\n";
 
   protected static Logger log = LoggerFactory.getLogger(PvmTestCase.class);
   
@@ -38,7 +38,7 @@ public abstract class PvmTestCase extends TestCase {
    */
   public void assertTextPresent(String expected, String actual) {
     if ( (actual==null)
-         || (actual.indexOf(expected)==-1)
+         || (!actual.contains(expected))
        ) {
       throw new AssertionFailedError("expected presence of ["+expected+"], but was ["+actual+"]");
     }

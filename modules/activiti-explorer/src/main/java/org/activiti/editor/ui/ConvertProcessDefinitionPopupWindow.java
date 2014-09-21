@@ -131,7 +131,7 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
                 i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMN_EXPLANATION));
           } else {
           
-            if (bpmnModel.getLocationMap().size() == 0) {
+            if (bpmnModel.getLocationMap().isEmpty()) {
               notificationManager.showErrorNotification(Messages.MODEL_IMPORT_INVALID_BPMNDI,
                   i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMNDI_EXPLANATION));
             } else {

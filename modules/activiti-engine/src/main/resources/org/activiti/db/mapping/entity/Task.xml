@@ -309,13 +309,13 @@
       </foreach>
       </if>
     
-    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionName != null || processDefinitionNameLike != null || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null))">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null ||  processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null))">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
-    <if test="processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null  || (orQueryObject != null &amp;&amp; (orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike))">
+    <if test="processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null  || processInstanceBusinessKeyLikeIgnoreCase != null || (orQueryObject != null &amp;&amp; (orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null))">
         inner join ${prefix}ACT_RU_EXECUTION E on RES.PROC_INST_ID_ = E.ID_
     </if>
-    <if test="deploymentId != null || (orQueryObject != null &amp;&amp; orQueryObject.deploymentId != null)">
+    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)))">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <where> 
@@ -328,11 +328,31 @@
       <if test="nameLike != null">
         and RES.NAME_ like #{nameLike}
       </if>
+      <if test="nameLikeIgnoreCase != null">
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase}
+      </if>
+      <if test="nameList != null &amp;&amp; nameList.size() &gt; 0">
+        and RES.NAME_ IN
+        <foreach item="name" index="index" collection="nameList"
+                 open="(" separator="," close=")">
+          #{name}
+        </foreach>
+      </if>
+      <if test="nameListIgnoreCase != null &amp;&amp; nameListIgnoreCase.size() &gt; 0">
+        and lower(RES.NAME_) IN
+        <foreach item="name" index="index" collection="nameListIgnoreCase"
+                 open="(" separator="," close=")">
+          #{name}
+        </foreach>
+      </if>
       <if test="description != null">
         and RES.DESCRIPTION_ = #{description}
       </if>
       <if test="descriptionLike != null">
         and RES.DESCRIPTION_ like #{descriptionLike}
+      </if>
+      <if test="descriptionLikeIgnoreCase != null">
+        and lower(RES.DESCRIPTION_) like #{descriptionLikeIgnoreCase}
       </if>
       <if test="priority != null">
         and RES.PRIORITY_ = #{priority}
@@ -349,11 +369,17 @@
       <if test="assigneeLike != null">
         and RES.ASSIGNEE_ like #{assigneeLike}
       </if>
+      <if test="assigneeLikeIgnoreCase != null">
+        and lower(RES.ASSIGNEE_) like #{assigneeLikeIgnoreCase}
+      </if>
       <if test="owner != null">
         and RES.OWNER_ = #{owner}
       </if>
       <if test="ownerLike != null">
         and RES.OWNER_ like #{ownerLike}
+      </if>
+       <if test="ownerLikeIgnoreCase != null">
+        and lower(RES.OWNER_) like #{ownerLikeIgnoreCase}
       </if>
       <if test="unassigned">
         and RES.ASSIGNEE_ IS NULL
@@ -372,6 +398,9 @@
       </if>
       <if test="processInstanceBusinessKeyLike != null">
         and E.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}
+      </if>      
+      <if test="processInstanceBusinessKeyLikeIgnoreCase != null">
+        and lower(E.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}
       </if>         
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
@@ -400,6 +429,9 @@
       <if test="processDefinitionKeyLike != null">
         and D.KEY_ like #{processDefinitionKeyLike}
       </if>
+      <if test="processDefinitionKeyLikeIgnoreCase != null">
+        and lower(D.KEY_) like #{processDefinitionKeyLikeIgnoreCase}
+      </if>
       <if test="processDefinitionName != null">
         and D.NAME_ = #{processDefinitionName}
       </if>
@@ -408,6 +440,13 @@
       </if>
       <if test="deploymentId != null">
         and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
+      </if>
+      <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
+        and DEPLOY_P.DEPLOYMENT_ID_ IN
+        <foreach item="deployment" index="index" collection="deploymentIds" 
+                 open="(" separator="," close=")">
+          #{deployment}
+        </foreach>
       </if>
       <if test="dueDate != null">
         and RES.DUE_DATE_ = #{dueDate}
@@ -569,11 +608,31 @@
             <if test="orQueryObject.nameLike != null">
               or RES.NAME_ like #{orQueryObject.nameLike}
             </if>
+            <if test="orQueryObject.nameLikeIgnoreCase != null">
+              or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}
+            </if>
+            <if test="orQueryObject.nameList != null &amp;&amp; orQueryObject.nameList.size() &gt; 0">
+              or RES.NAME_ IN
+              <foreach item="name" index="index" collection="orQueryObject.nameList"
+                      open="(" separator="," close=")">
+                #{name}
+              </foreach>
+            </if>
+            <if test="orQueryObject.nameListIgnoreCase != null &amp;&amp; orQueryObject.nameListIgnoreCase.size() &gt; 0">
+              or lower(RES.NAME_) IN
+              <foreach item="name" index="index" collection="orQueryObject.nameListIgnoreCase"
+                       open="(" separator="," close=")">
+                #{name}
+              </foreach>
+            </if>
             <if test="orQueryObject.description != null">
               or RES.DESCRIPTION_ = #{orQueryObject.description}
             </if>
             <if test="orQueryObject.descriptionLike != null">
               or RES.DESCRIPTION_ like #{orQueryObject.descriptionLike}
+            </if>
+             <if test="orQueryObject.descriptionLikeIgnoreCase != null">
+              or lower(RES.DESCRIPTION_) like #{orQueryObject.descriptionLikeIgnoreCase}
             </if>
             <if test="orQueryObject.priority != null">
               or RES.PRIORITY_ = #{orQueryObject.priority}
@@ -590,11 +649,17 @@
             <if test="orQueryObject.assigneeLike != null">
               or RES.ASSIGNEE_ like #{orQueryObject.assigneeLike}
             </if>
+            <if test="orQueryObject.assigneeLikeIgnoreCase != null">
+              or lower(RES.ASSIGNEE_) like #{orQueryObject.assigneeLikeIgnoreCase}
+            </if>
             <if test="orQueryObject.owner != null">
               or RES.OWNER_ = #{orQueryObject.owner}
             </if>
             <if test="orQueryObject.ownerLike != null">
               or RES.OWNER_ like #{orQueryObject.ownerLike}
+            </if>
+            <if test="orQueryObject.ownerLikeIgnoreCase != null">
+              or RES.OWNER_ like #{orQueryObject.ownerLikeIgnoreCase}
             </if>
             <if test="orQueryObject.unassigned">
               or RES.ASSIGNEE_ IS NULL
@@ -613,6 +678,9 @@
             </if>
             <if test="orQueryObject.processInstanceBusinessKeyLike != null">
               or E.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}
+            </if>      
+            <if test="orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
+              or lower(E.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}
             </if>         
             <if test="orQueryObject.executionId != null">
               or RES.EXECUTION_ID_ = #{orQueryObject.executionId}
@@ -641,6 +709,9 @@
             <if test="orQueryObject.processDefinitionKeyLike != null">
               or D.KEY_ like #{orQueryObject.processDefinitionKeyLike}
             </if>
+             <if test="orQueryObject.processDefinitionKeyLikeIgnoreCase != null">
+              or lower(D.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}
+            </if>
             <if test="orQueryObject.processDefinitionName != null">
               or D.NAME_ = #{orQueryObject.processDefinitionName}
             </if>
@@ -649,6 +720,13 @@
             </if>
             <if test="orQueryObject.deploymentId != null">
               or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+            </if>
+            <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
+              or DEPLOY_P.DEPLOYMENT_ID_ IN
+              <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
+                       open="(" separator="," close=")">
+                #{deployment}
+              </foreach>
             </if>
             <if test="orQueryObject.dueDate != null">
               or RES.DUE_DATE_ = #{orQueryObject.dueDate}

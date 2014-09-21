@@ -37,7 +37,7 @@ public class EventSubprocessValidator extends ProcessLevelValidator {
 			
 			List<StartEvent> startEvents = process.findFlowElementsInSubProcessOfType(eventSubprocess, StartEvent.class);
 			for (StartEvent startEvent : startEvents) {
-				if (startEvent.getEventDefinitions() != null && startEvent.getEventDefinitions().size() > 0) {
+				if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
 					 EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
 					 if (!(eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition) 
 		            && !(eventDefinition instanceof MessageEventDefinition)

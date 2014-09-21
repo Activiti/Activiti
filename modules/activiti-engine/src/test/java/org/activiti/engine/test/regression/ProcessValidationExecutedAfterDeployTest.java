@@ -2,7 +2,6 @@ package org.activiti.engine.test.regression;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.validation.ProcessValidator;
@@ -20,16 +19,16 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
 	protected ProcessValidator processValidator;
 	
 	private void disableValidation() {
-	  processValidator = ((ProcessEngineConfigurationImpl) processEngineConfiguration).getProcessValidator();
-	  ((ProcessEngineConfigurationImpl) processEngineConfiguration).setProcessValidator(null);
+	  processValidator = processEngineConfiguration.getProcessValidator();
+	  processEngineConfiguration.setProcessValidator(null);
   }
 	
 	private void enableValidation() {
-	  ((ProcessEngineConfigurationImpl) processEngineConfiguration).setProcessValidator(processValidator);
+	  processEngineConfiguration.setProcessValidator(processValidator);
   }
 	
 	private void clearDeploymentCache() {
-		((ProcessEngineConfigurationImpl) processEngineConfiguration).getProcessDefinitionCache().clear();
+		processEngineConfiguration.getProcessDefinitionCache().clear();
 	}
 	
 	protected void tearDown() throws Exception {
@@ -43,7 +42,7 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
       definitions = repositoryService.createProcessDefinitionQuery()
           .processDefinitionKey(processDefinitionKey).orderByProcessDefinitionVersion()
           .latestVersion().desc().list();
-      if (definitions.size() == 0) {
+      if (definitions.isEmpty()) {
         return null;
       }
     } catch (Exception e) {

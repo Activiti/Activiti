@@ -60,8 +60,8 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
       Map<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("name", "schema.version");
       parameters.put("value", "25.7");
-      parameters.put("revision", new Integer(1));
-      parameters.put("newRevision", new Integer(2));
+      parameters.put("revision", 1);
+      parameters.put("newRevision", 2);
       sqlSession.update("updateProperty", parameters);
       success = true;
     } catch (Exception e) {

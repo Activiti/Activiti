@@ -56,6 +56,11 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /** Only select historic process instances that are defined by a process
    * definition with the given deployment identifier.  */
   HistoricProcessInstanceQuery deploymentId(String deploymentId);
+  
+  /**
+   * Only select historic process instances that are defined by a process
+   * definition with one of the given deployment identifiers.  */
+  HistoricProcessInstanceQuery deploymentIdIn(List<String> deploymentIds);
 
   /** Only select historic process instances that are completely finished. */
   HistoricProcessInstanceQuery finished();
@@ -234,4 +239,9 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Only select process instances with a name like the given value.
    */
   HistoricProcessInstanceQuery processInstanceNameLike(String nameLike);
+  
+  /**
+   * Only select process instances with a name like the given value, ignoring upper/lower case.
+   */
+  HistoricProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase);
 }

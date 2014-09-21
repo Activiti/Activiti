@@ -121,7 +121,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
           variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, task.getId(), RestResponseFactory.VARIABLE_TASK, false));
         }
         
-        if(variablesToSet.size() > 0) {
+        if(!variablesToSet.isEmpty()) {
           if(sharedScope == RestVariableScope.LOCAL) {
             ActivitiUtil.getTaskService().setVariablesLocal(task.getId(), variablesToSet);
           } else {

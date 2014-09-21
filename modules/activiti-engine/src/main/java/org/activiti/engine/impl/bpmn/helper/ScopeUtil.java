@@ -167,7 +167,7 @@ public class ScopeUtil {
     
     List<CompensateEventSubscriptionEntity> eventSubscriptions = execution.getCompensateEventSubscriptions();
     
-    if(eventSubscriptions.size() > 0) {
+    if(!eventSubscriptions.isEmpty()) {
       
       ExecutionEntity eventScopeExecution = eventScope.createExecution();
       eventScopeExecution.setActive(false);      

@@ -62,7 +62,7 @@ public class SignalEventSubscriptionResource extends SecuredResource {
 			
 			for (Execution execution : executionList) {
 			  if (execution.getProcessInstanceId().equals(processInstanceId)) {
-			    if (variables.size() > 0) {
+			    if (!variables.isEmpty()) {
 			      ActivitiUtil.getRuntimeService().signalEventReceived(signalName, execution.getId(), variables);
 			    } else {
 			      ActivitiUtil.getRuntimeService().signalEventReceived(signalName, execution.getId());

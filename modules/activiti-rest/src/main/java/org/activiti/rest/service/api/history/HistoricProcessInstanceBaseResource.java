@@ -55,7 +55,7 @@ public class HistoricProcessInstanceBaseResource extends SecuredResource {
     if (queryRequest.getProcessInstanceId() != null) {
       query.processInstanceId(queryRequest.getProcessInstanceId());
     }
-    if (queryRequest.getProcessInstanceIds() != null && queryRequest.getProcessInstanceIds().size() > 0) {
+    if (queryRequest.getProcessInstanceIds() != null && !queryRequest.getProcessInstanceIds().isEmpty()) {
       query.processInstanceIds(new HashSet<String>(queryRequest.getProcessInstanceIds()));
     }
     if (queryRequest.getProcessDefinitionKey() != null) {

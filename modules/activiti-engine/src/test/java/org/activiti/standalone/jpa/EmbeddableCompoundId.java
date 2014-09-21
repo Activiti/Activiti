@@ -48,7 +48,7 @@ public class EmbeddableCompoundId implements Serializable {
   @Override
   public boolean equals(Object obj) {
     EmbeddableCompoundId other = (EmbeddableCompoundId) obj;
-    return idPart1 == other.idPart1 && idPart2.equals(idPart2);
+    return idPart1 == other.idPart1 && idPart2.equals(other.idPart2);
   }
   
   @Override

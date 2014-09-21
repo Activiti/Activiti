@@ -13,7 +13,6 @@
 package org.activiti.engine.test.api.task;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ import org.activiti.engine.test.Deployment;
 public class DelegateTaskTest extends PluggableActivitiTestCase {
 
 	/**
-	 * @see http://jira.codehaus.org/browse/ACT-380
+	 * @see <a href="http://jira.codehaus.org/browse/ACT-380">http://jira.codehaus.org/browse/ACT-380</a>
 	 */
 	@Deployment
 	public void testGetCandidates() {

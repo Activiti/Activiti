@@ -15,8 +15,10 @@ package org.activiti.camel;
 /**
  * @author Saeid Mirzaei  
  * @author Maciej Próchniak
+ * @author Arnold Schrijver
  */
 
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -25,6 +27,8 @@ import org.apache.camel.impl.DefaultProducer;
 
 public class ActivitiProducer extends DefaultProducer {
 
+  private IdentityService identityService;
+  
   private RuntimeService runtimeService;
 
   public static final String PROCESS_KEY_PROPERTY = "PROCESS_KEY_PROPERTY";
@@ -51,6 +55,10 @@ public class ActivitiProducer extends DefaultProducer {
     this.timeResolution = timeResolution;
   }
 
+  public void setIdentityService(IdentityService identityService) {
+      this.identityService = identityService;
+  }
+  
   public void process(Exchange exchange) throws Exception {
     if (shouldStartProcess()) {
       ProcessInstance pi = startProcess(exchange);
@@ -112,13 +120,30 @@ public class ActivitiProducer extends DefaultProducer {
 
 
   private ProcessInstance startProcess(Exchange exchange) {
+    ActivitiEndpoint endpoint = getActivitiEndpoint();
     String key = exchange.getProperty(PROCESS_KEY_PROPERTY, String.class);
-    if (key == null) {
-      return runtimeService.startProcessInstanceByKey(processKey, ExchangeUtils.prepareVariables(exchange, getActivitiEndpoint()));
-    } else {
-      return runtimeService.startProcessInstanceByKey(processKey, key, ExchangeUtils.prepareVariables(exchange, getActivitiEndpoint()));
+    try {
+        if (endpoint.isSetProcessInitiator()) {
+            setProcessInitiator(ExchangeUtils.prepareInitiator(exchange, endpoint));
+        }
+        if (key == null) {
+          return runtimeService.startProcessInstanceByKey(processKey, ExchangeUtils.prepareVariables(exchange, endpoint));
+        } else {
+          return runtimeService.startProcessInstanceByKey(processKey, key, ExchangeUtils.prepareVariables(exchange, endpoint));
+        }
+    } finally {
+        if (endpoint.isSetProcessInitiator()) {
+            setProcessInitiator(null);
+        }
     }
 
+  }
+  
+  private void setProcessInitiator(String processInitiator) {
+      if (identityService == null) {
+          throw new RuntimeException("IdentityService is missing and must be provided to set process initiator.");
+      }
+      identityService.setAuthenticatedUserId(processInitiator);
   }
 
   protected ActivitiEndpoint getActivitiEndpoint() {

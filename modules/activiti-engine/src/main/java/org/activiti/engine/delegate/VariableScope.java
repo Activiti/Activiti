@@ -30,6 +30,10 @@ public interface VariableScope {
 
   Object getVariableLocal(String variableName);
 
+  <T> T getVariable(String variableName, Class<T> variableClass);
+
+  <T> T getVariableLocal(String variableName, Class<T> variableClass);
+
   Set<String> getVariableNames();
 
   Set<String> getVariableNamesLocal();

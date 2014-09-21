@@ -111,7 +111,7 @@ public class SubProcess extends Activity implements FlowElementsContainer {
     }
     
     dataObjects = new ArrayList<ValuedDataObject>();
-    if (otherElement.getDataObjects() != null && otherElement.getDataObjects().size() > 0) {
+    if (otherElement.getDataObjects() != null && !otherElement.getDataObjects().isEmpty()) {
       for (ValuedDataObject dataObject : otherElement.getDataObjects()) {
           ValuedDataObject clone = dataObject.clone();
           dataObjects.add(clone);

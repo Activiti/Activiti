@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.16.2</version>
+    <version>5.16.4-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -42,6 +42,7 @@
             <buildDirectory>${project.build.directory}</buildDirectory>
           </systemPropertyVariables>
           <runOrder>alphabetical</runOrder>
+          <argLine>-Duser.language=en</argLine>
         </configuration>
       </plugin>
       <plugin>

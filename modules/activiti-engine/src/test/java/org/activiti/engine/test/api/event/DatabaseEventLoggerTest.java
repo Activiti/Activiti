@@ -49,8 +49,8 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 	  super.tearDown();
 	}
 	
-	
-	public void testDatabaseEvents() throws JsonParseException, JsonMappingException, IOException {
+	@Deployment(resources = {"org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml"})
+	public void testDatabaseEvents() throws IOException {
 		
 		String testTenant = "testTenant";
 		
@@ -413,7 +413,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 		
 	}
 	
-	public void testDatabaseEventsNoTenant() throws JsonParseException, JsonMappingException, IOException {
+	public void testDatabaseEventsNoTenant() throws IOException {
 		
 		String deploymentId = repositoryService.createDeployment()
 				.addClasspathResource("org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml")
@@ -505,6 +505,31 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
 		}
 		
+		
+	}
+	
+	public void testStandaloneTaskEvents() throws JsonParseException, JsonMappingException, IOException {
+		
+		Task task = taskService.newTask();
+		task.setAssignee("kermit");
+		task.setTenantId("myTenant");
+		taskService.saveTask(task);
+		
+		List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
+		assertEquals(2, events.size());
+		assertEquals("TASK_CREATED", events.get(0).getType());
+		assertEquals("TASK_ASSIGNED", events.get(1).getType());
+		
+		for (EventLogEntry eventLogEntry : events) {
+			Map<String, Object> data = objectMapper.readValue(eventLogEntry.getData(), new TypeReference<HashMap<String, Object>>(){});
+			assertEquals("myTenant", data.get(Fields.TENANT_ID));
+		}
+		
+		// Cleanup
+		taskService.deleteTask(task.getId(),true);
+		for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
+			managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
+		}
 		
 	}
 	

@@ -134,6 +134,10 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   public void setTaskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
   }
+  @Override
+  public Date getCreateTime() {
+  	return getStartTime(); // For backwards compatible reason implemented with createTime and startTime
+  }
   public String getFormKey() {
     return formKey;
   }

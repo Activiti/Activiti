@@ -259,13 +259,13 @@
     <if test="candidateUser != null || candidateGroups != null || (orQueryObject != null &amp;&amp; (orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null))">
       inner join ${prefix}ACT_HI_IDENTITYLINK HI on HI.TASK_ID_ = RES.ID_
     </if>
-    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null || (orQueryObject != null &amp;&amp; (orQueryObject.processFinished || orQueryObject.processUnfinished || orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null))">
+    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null || processInstanceBusinessKeyLikeIgnoreCase != null || (orQueryObject != null &amp;&amp; (orQueryObject.processFinished || orQueryObject.processUnfinished || orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null))">
       inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
     </if>
-    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionName != null || processDefinitionNameLike != null || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null))">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null))">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
-    <if test="deploymentId != null || (orQueryObject != null &amp;&amp; orQueryObject.deploymentId != null)">
+    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)))">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="var">
@@ -303,6 +303,9 @@
       <if test="processDefinitionKeyLike != null">
         and D.KEY_ like #{processDefinitionKeyLike}
       </if>
+       <if test="processDefinitionKeyLikeIgnoreCase != null">
+        and lower(D.KEY_) like #{processDefinitionKeyLikeIgnoreCase}
+      </if>
       <if test="processDefinitionName != null">
         and D.NAME_ = #{processDefinitionName}
       </if>
@@ -312,6 +315,13 @@
       <if test="deploymentId != null">
         and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
+      <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
+        and DEPLOY_P.DEPLOYMENT_ID_ IN
+        <foreach item="deployment" index="index" collection="deploymentIds" 
+                 open="(" separator="," close=")">
+          #{deployment}
+        </foreach>
+      </if>
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
@@ -320,6 +330,9 @@
       </if>
       <if test="processInstanceBusinessKeyLike != null">
         and HPI.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}
+      </if>
+       <if test="processInstanceBusinessKeyLikeIgnoreCase != null">
+        and lower(HPI.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}
       </if>
       <if test="taskDefinitionKey != null">
         and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
@@ -336,6 +349,23 @@
       <if test="taskNameLike != null">
         and RES.NAME_ like #{taskNameLike}
       </if>
+      <if test="taskNameLikeIgnoreCase != null">
+        and lower(RES.NAME_) like #{taskNameLikeIgnoreCase}
+      </if>
+      <if test="taskNameList != null &amp;&amp; taskNameList.size() &gt; 0">
+        and RES.NAME_ IN
+        <foreach item="taskName" index="index" collection="taskNameList"
+                 open="(" separator="," close=")">
+          #{taskName}
+        </foreach>
+      </if>
+      <if test="taskNameListIgnoreCase != null &amp;&amp; taskNameListIgnoreCase.size() &gt; 0">
+        and lower(RES.NAME_) IN
+        <foreach item="taskName" index="index" collection="taskNameListIgnoreCase"
+                 open="(" separator="," close=")">
+          #{taskName}
+        </foreach>
+      </if>
       <if test="taskParentTaskId != null">
         and RES.PARENT_TASK_ID_ = #{taskParentTaskId}
       </if>
@@ -344,6 +374,9 @@
       </if>
       <if test="taskDescriptionLike != null">
         and RES.DESCRIPTION_ like #{taskDescriptionLike}
+      </if>
+       <if test="taskDescriptionLikeIgnoreCase != null">
+        and lower(RES.DESCRIPTION_) like #{taskDescriptionLikeIgnoreCase}
       </if>
       <if test="taskDeleteReason != null">
         and RES.DELETE_REASON_ = #{taskDeleteReason}
@@ -357,11 +390,17 @@
       <if test="taskOwnerLike != null">
         and RES.OWNER_ like #{taskOwnerLike}
       </if>
+       <if test="taskOwnerLikeIgnoreCase != null">
+        and lower(RES.OWNER_) like #{taskOwnerLikeIgnoreCase}
+      </if>
       <if test="taskAssignee != null">
         and RES.ASSIGNEE_ = #{taskAssignee}
       </if>
       <if test="taskAssigneeLike != null">
         and RES.ASSIGNEE_ like #{taskAssigneeLike}
+      </if>
+      <if test="taskAssigneeLikeIgnoreCase != null">
+        and lower(RES.ASSIGNEE_) like #{taskAssigneeLikeIgnoreCase}
       </if>
       <if test="taskPriority != null">
         and RES.PRIORITY_ = #{taskPriority}
@@ -526,6 +565,9 @@
           <if test="orQueryObject.processDefinitionKeyLike != null">
             or D.KEY_ like #{orQueryObject.processDefinitionKeyLike}
           </if>
+          <if test="orQueryObject.processDefinitionKeyLikeIgnoreCase != null">
+            or lower(D.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}
+          </if>
           <if test="orQueryObject.processDefinitionName != null">
             or D.NAME_ = #{orQueryObject.processDefinitionName}
           </if>
@@ -535,6 +577,13 @@
           <if test="orQueryObject.deploymentId != null">
             or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
           </if>
+          <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
+            or DEPLOY_P.DEPLOYMENT_ID_ IN
+            <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
+                     open="(" separator="," close=")">
+              #{deployment}
+            </foreach>
+          </if>
           <if test="orQueryObject.processInstanceId != null">
             or RES.PROC_INST_ID_ = #{orQueryObject.processInstanceId}
           </if>
@@ -543,6 +592,9 @@
           </if>
           <if test="orQueryObject.processInstanceBusinessKeyLike != null">
             or HPI.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}
+          </if>
+          <if test="orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
+            or lower(HPI.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}
           </if>
           <if test="orQueryObject.taskDefinitionKey != null">
             or RES.TASK_DEF_KEY_ = #{orQueryObject.taskDefinitionKey}
@@ -559,6 +611,23 @@
           <if test="orQueryObject.taskNameLike != null">
             or RES.NAME_ like #{orQueryObject.taskNameLike}
           </if>
+           <if test="orQueryObject.taskNameLikeIgnoreCase != null">
+            or lower(RES.NAME_) like #{orQueryObject.taskNameLikeIgnoreCase}
+          </if>
+          <if test="orQueryObject.taskNameList != null &amp;&amp; orQueryObject.taskNameList.size() &gt; 0">
+            or RES.NAME_ IN
+            <foreach item="taskName" index="index" collection="orQueryObject.taskNameList"
+                     open="(" separator="," close=")">
+              #{taskName}
+            </foreach>
+          </if>
+          <if test="orQueryObject.taskNameListIgnoreCase != null &amp;&amp; orQueryObject.taskNameListIgnoreCase.size() &gt; 0">
+            or lower(RES.NAME_) IN
+            <foreach item="taskName" index="index" collection="orQueryObject.taskNameListIgnoreCase"
+                     open="(" separator="," close=")">
+              #{taskName}
+            </foreach>
+          </if>
           <if test="orQueryObject.taskParentTaskId != null">
             or RES.PARENT_TASK_ID_ = #{orQueryObject.taskParentTaskId}
           </if>
@@ -567,6 +636,9 @@
           </if>
           <if test="orQueryObject.taskDescriptionLike != null">
             or RES.DESCRIPTION_ like #{orQueryObject.taskDescriptionLike}
+          </if>
+           <if test="orQueryObject.taskDescriptionLikeIgnoreCase != null">
+            or lower(RES.DESCRIPTION_) like #{orQueryObject.taskDescriptionLikeIgnoreCase}
           </if>
           <if test="orQueryObject.taskDeleteReason != null">
             or RES.DELETE_REASON_ = #{orQueryObject.taskDeleteReason}
@@ -580,11 +652,17 @@
           <if test="orQueryObject.taskOwnerLike != null">
             or RES.OWNER_ like #{orQueryObject.taskOwnerLike}
           </if>
+          <if test="orQueryObject.taskOwnerLikeIgnoreCase != null">
+            or lower(RES.OWNER_) like #{orQueryObject.taskOwnerLikeIgnoreCase}
+          </if>
           <if test="orQueryObject.taskAssignee != null">
             or RES.ASSIGNEE_ = #{orQueryObject.taskAssignee}
           </if>
           <if test="orQueryObject.taskAssigneeLike != null">
             or RES.ASSIGNEE_ like #{orQueryObject.taskAssigneeLike}
+          </if>
+           <if test="orQueryObject.taskAssigneeLikeIgnoreCase != null">
+            or RES.ASSIGNEE_ like #{orQueryObject.taskAssigneeLikeIgnoreCase}
           </if>
           <if test="orQueryObject.taskPriority != null">
             or RES.PRIORITY_ = #{orQueryObject.taskPriority}

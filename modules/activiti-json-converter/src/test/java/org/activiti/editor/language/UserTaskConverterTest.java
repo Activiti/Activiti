@@ -49,7 +49,9 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertEquals("testKey", userTask.getFormKey());
     assertEquals("40", userTask.getPriority());
     assertEquals("2012-11-01", userTask.getDueDate());
+    assertEquals("defaultCategory", userTask.getCategory());
     
+    assertEquals("gonzo", userTask.getOwner());
     assertEquals("kermit", userTask.getAssignee());
     assertEquals(2, userTask.getCandidateUsers().size());
     assertTrue(userTask.getCandidateUsers().contains("kermit"));
@@ -57,6 +59,15 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertEquals(2, userTask.getCandidateGroups().size());
     assertTrue(userTask.getCandidateGroups().contains("management"));
     assertTrue(userTask.getCandidateGroups().contains("sales"));
+    
+    assertEquals(2, userTask.getCustomUserIdentityLinks().size());
+    assertEquals(1, userTask.getCustomGroupIdentityLinks().size());
+    
+    assertTrue(userTask.getCustomUserIdentityLinks().get("bizAdmin").contains("kermit"));
+    assertTrue(userTask.getCustomGroupIdentityLinks().get("bizAdmin").contains("management"));
+    assertTrue(userTask.getCustomGroupIdentityLinks().get("bizAdmin").contains("sales"));
+    assertTrue(userTask.getCustomUserIdentityLinks().get("manager").contains("fozzie"));
+    assertTrue(userTask.getCustomUserIdentityLinks().get("manager").contains("gonzo"));
     
     List<FormProperty> formProperties = userTask.getFormProperties();
     assertEquals(2, formProperties.size());
@@ -79,6 +90,9 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()));
     assertEquals("org.test.TestClass", listener.getImplementation());
     assertEquals("create", listener.getEvent());
+    assertEquals(2, listener.getFieldExtensions().size());
+    assertEquals("testField", listener.getFieldExtensions().get(0).getFieldName());
+    assertEquals("test", listener.getFieldExtensions().get(0).getStringValue());
     listener = (ActivitiListener) listeners.get(1);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${someExpression}", listener.getImplementation());

@@ -13,7 +13,12 @@
 package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  * @author Tijs Rademakers
@@ -30,6 +35,9 @@ public class UserTask extends Task {
   protected List<String> candidateGroups = new ArrayList<String>();
   protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
   protected List<ActivitiListener> taskListeners = new ArrayList<ActivitiListener>();
+  
+  protected Map<String, Set<String>> customUserIdentityLinks = new HashMap<String, Set<String>>(); 
+  protected Map<String, Set<String>> customGroupIdentityLinks = new HashMap<String, Set<String>>(); 
 
   public String getAssignee() {
     return assignee;
@@ -92,6 +100,46 @@ public class UserTask extends Task {
     this.taskListeners = taskListeners;
   }
   
+  public void addCustomUserIdentityLink(String userId, String type){
+	  Set<String> userIdentitySet = customUserIdentityLinks.get(type);
+	  
+	  if(userIdentitySet == null){
+		  userIdentitySet = new HashSet<String>();
+		  customUserIdentityLinks.put(type, userIdentitySet);
+	  }
+	  
+	  userIdentitySet.add(userId);
+  }
+  
+  public void addCustomGroupIdentityLink(String groupId, String type){
+	  Set<String> groupIdentitySet = customGroupIdentityLinks.get(type);
+	  
+	  if(groupIdentitySet == null){
+		  groupIdentitySet = new HashSet<String>();
+		  customGroupIdentityLinks.put(type, groupIdentitySet);
+	  }
+	  
+	  groupIdentitySet.add(groupId);
+  }
+  
+  public Map<String, Set<String>> getCustomUserIdentityLinks() {
+	return customUserIdentityLinks;
+  }
+  
+  public void setCustomUserIdentityLinks(
+		Map<String, Set<String>> customUserIdentityLinks) {
+	this.customUserIdentityLinks = customUserIdentityLinks;
+  }
+  
+  public Map<String, Set<String>> getCustomGroupIdentityLinks() {
+	return customGroupIdentityLinks;
+  }
+  
+  public void setCustomGroupIdentityLinks(
+		Map<String, Set<String>> customGroupIdentityLinks) {
+	this.customGroupIdentityLinks = customGroupIdentityLinks;
+  }
+  
   public UserTask clone() {
     UserTask clone = new UserTask();
     clone.setValues(this);
@@ -110,15 +158,18 @@ public class UserTask extends Task {
     setCandidateGroups(new ArrayList<String>(otherElement.getCandidateGroups()));
     setCandidateUsers(new ArrayList<String>(otherElement.getCandidateUsers()));
     
+    setCustomGroupIdentityLinks(otherElement.customGroupIdentityLinks);
+    setCustomUserIdentityLinks(otherElement.customUserIdentityLinks);
+    
     formProperties = new ArrayList<FormProperty>();
-    if (otherElement.getFormProperties() != null && otherElement.getFormProperties().size() > 0) {
+    if (otherElement.getFormProperties() != null && !otherElement.getFormProperties().isEmpty()) {
       for (FormProperty property : otherElement.getFormProperties()) {
         formProperties.add(property.clone());
       }
     }
     
     taskListeners = new ArrayList<ActivitiListener>();
-    if (otherElement.getTaskListeners() != null && otherElement.getTaskListeners().size() > 0) {
+    if (otherElement.getTaskListeners() != null && !otherElement.getTaskListeners().isEmpty()) {
       for (ActivitiListener listener : otherElement.getTaskListeners()) {
         taskListeners.add(listener.clone());
       }

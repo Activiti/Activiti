@@ -255,7 +255,7 @@ public class HistoricTaskDetailPanel extends DetailPanel {
     .taskParentTaskId(historicTask.getId())
     .list();
     
-    if (subTasks.size() > 0) {
+    if (!subTasks.isEmpty()) {
       initSubTaskGrid();
       populateSubTasks(subTasks);
     } else {
@@ -315,7 +315,7 @@ public class HistoricTaskDetailPanel extends DetailPanel {
       attachments.addAll(taskService.getProcessInstanceAttachments(historicTask.getProcessInstanceId()));
     }
     
-    if (attachments.size() > 0) {
+    if (!attachments.isEmpty()) {
       Table table = initRelatedContentTable();
       populateRelatedContent(table, attachments);
     } else {
@@ -349,7 +349,7 @@ public class HistoricTaskDetailPanel extends DetailPanel {
 
   protected void populateRelatedContent(Table table, List<Attachment> attachments) {
     
-    if (attachments.size() > 0) {
+    if (!attachments.isEmpty()) {
       table.setVisible(true);
     }
     

@@ -59,7 +59,9 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   // Execution entity/table
   protected String name;
   protected String nameLike;
+  protected String nameLikeIgnoreCase;
   protected String deploymentId;
+  protected List<String> deploymentIds;
   protected ExecutionQueryImpl orQueryObject;
   
   public ExecutionQueryImpl() {
@@ -359,6 +361,14 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public void setNameLike(String nameLike) {
     this.nameLike = nameLike;
   }
-	
+
+	public String getNameLikeIgnoreCase() {
+		return nameLikeIgnoreCase;
+	}
+
+	public void setNameLikeIgnoreCase(String nameLikeIgnoreCase) {
+		this.nameLikeIgnoreCase = nameLikeIgnoreCase;
+	}
+  
   
 }

@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.Test;
 
 /**
- * @see http://jira.codehaus.org/browse/ACT-2055
+ * @see <a href="http://jira.codehaus.org/browse/ACT-2055">http://jira.codehaus.org/browse/ACT-2055</a>
  */
 public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest {
   
@@ -160,7 +160,7 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
   protected static String getExtensionValue(String key, ValuedDataObject dataObj) {
     Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
 
-    if (extensionElements.size() > 0) {
+    if (!extensionElements.isEmpty()) {
       return extensionElements.get(key).get(0).getElementText();
     }
     return null;
@@ -169,7 +169,7 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
   protected static ExtensionElement getExtensionElement(String key, ValuedDataObject dataObj) {
     Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
 
-    if (extensionElements.size() > 0) {
+    if (!extensionElements.isEmpty()) {
       return extensionElements.get(key).get(0);
     }
     return null;
@@ -209,6 +209,6 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
       localization.setResourceBundleKeyForDescription(extensionAttributes.get(ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION)
               .get(0).getValue());
     }
-    return (Localization) localization;
+    return localization;
   }
 }

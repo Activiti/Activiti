@@ -8,16 +8,18 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-root</artifactId>
         <relativePath>../..</relativePath>
-        <version>5.16.2</version>
+        <version>5.16.4-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <spring.framework.version>4.0.6.RELEASE</spring.framework.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <activiti.artifact>
             org.activiti.spring.boot
         </activiti.artifact>
-        <spring.boot.version>1.0.2.RELEASE</spring.boot.version>
+        
+        <!-- Note that Spring framework version needs to match the one used in Spring Boot-->
+        <spring.boot.version>1.2.0.M1</spring.boot.version>
+        <spring.framework.version>4.1.0.RELEASE</spring.framework.version>
     </properties>
 
 
@@ -94,33 +96,53 @@
             </plugins>
         </pluginManagement>
     </build>
-
+ 
     <dependencies>
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-engine</artifactId>
+            <!-- Excluding these in favour of the Spring Boot dependencies -->
+             <exclusions>
+            	<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-beans</artifactId>
+        		</exclusion>
+        	</exclusions>
         </dependency>
          <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring</artifactId>
+            <!-- Excluding these in favour of the Spring Boot dependencies -->
+            <exclusions>
+            	<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-core</artifactId>
+        		</exclusion>
+            	<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-context</artifactId>
+        		</exclusion>
+        		<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-jdbc</artifactId>
+        		</exclusion>
+        		<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-tx</artifactId>
+        		</exclusion>
+        		<exclusion>
+          			<groupId>org.springframework</groupId>
+          			<artifactId>spring-orm</artifactId>
+        		</exclusion>
+            </exclusions>
          </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <scope>test</scope>
-            <version>${spring.boot.version}</version>
-        </dependency>
+      
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>${spring.boot.version}</version>
-            <scope>test</scope>
-        </dependency>
+        
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -129,14 +151,25 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-dependencies</artifactId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring.boot.version}</version>
-            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>${spring.boot.version}</version>
+            <optional>true</optional> <!-- Having it on the classpath will enable JPA + Activiti, but it is not mandatory -->
+        </dependency>
+         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+            <optional>true</optional> 
+        </dependency>
+        <dependency>
+        	<groupId>org.activiti</groupId>
+        	<artifactId>activiti-rest</artifactId>
+        	<optional>true</optional>
         </dependency>
     </dependencies>
 
@@ -165,4 +198,42 @@
             </build>
         </profile>
     </profiles>
+    
+    <repositories>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>http://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>http://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+    
 </project>

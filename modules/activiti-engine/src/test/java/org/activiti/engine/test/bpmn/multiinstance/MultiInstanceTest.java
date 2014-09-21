@@ -16,6 +16,7 @@ package org.activiti.engine.test.bpmn.multiinstance;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1105,6 +1106,55 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, processInstances.size());
     assertProcessEnded(processInstance.getId());
   }
-  
-  
+
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialEmptyCollection.bpmn20.xml" })
+  public void testSequentialEmptyCollection() {
+    Collection<String> collection = Collections.emptyList();
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("collection", collection);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSequentialEmptyCollection", variableMap);
+    assertNotNull(processInstance);
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNull(task);
+    assertProcessEnded(processInstance.getId());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialEmptyCollection.bpmn20.xml" })
+  public void testSequentialEmptyCollectionWithNonEmptyCollection() {
+    Collection<String> collection = Collections.singleton("Test");
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("collection", collection);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSequentialEmptyCollection", variableMap);
+    assertNotNull(processInstance);
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
+    assertProcessEnded(processInstance.getId());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml" })
+  public void testParalellEmptyCollection() throws Exception {
+    Collection<String> collection = Collections.emptyList();
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("collection", collection);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testParalellEmptyCollection", variableMap);
+    assertNotNull(processInstance);
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNull(task);
+    assertProcessEnded(processInstance.getId());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml" })
+  public void testParalellEmptyCollectionWithNonEmptyCollection() {
+    Collection<String> collection = Collections.singleton("Test");
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("collection", collection);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testParalellEmptyCollection", variableMap);
+    assertNotNull(processInstance);
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
+    assertProcessEnded(processInstance.getId());
+  }
+
 }

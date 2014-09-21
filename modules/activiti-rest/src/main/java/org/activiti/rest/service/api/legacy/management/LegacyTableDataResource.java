@@ -51,7 +51,7 @@ public class LegacyTableDataResource extends SecuredResource {
     if (sort == null) {
       TableMetaData tmd = ActivitiUtil.getManagementService().getTableMetaData(tableName);
       List<String> columnNames = tmd.getColumnNames();
-      if (columnNames.size() > 0) {
+      if (!columnNames.isEmpty()) {
         sort = columnNames.get(0);
       }
       else {

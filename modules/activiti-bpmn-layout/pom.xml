@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.16.2</version>
+    <version>5.16.4-SNAPSHOT</version>
   </parent>
 
   <build>
@@ -97,6 +97,11 @@
       <groupId>org.tinyjee.jgraphx</groupId>
       <artifactId>jgraphx</artifactId>
       <version>1.10.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

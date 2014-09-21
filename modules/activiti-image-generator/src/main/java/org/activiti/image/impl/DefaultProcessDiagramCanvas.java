@@ -403,15 +403,17 @@ public class DefaultProcessDiagramCanvas {
     g.setPaint(originalPaint);
     g.draw(innerCircle);
 
-    int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4));
-    int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 4));
-    if (scaleFactor == 1.0 && "timer".equals(eventType)) {
-      // move image one pixel to center timer image
-      imageX--;
-      imageY--;
+    if (image != null) {
+      int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4));
+      int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 4));
+      if (scaleFactor == 1.0 && "timer".equals(eventType)) {
+        // move image one pixel to center timer image
+        imageX--;
+        imageY--;
+      }
+      g.drawImage(image, imageX, imageY, (int) (image.getWidth() / scaleFactor), 
+          (int) (image.getHeight() / scaleFactor), null);
     }
-    g.drawImage(image, imageX, imageY, (int) (image.getWidth() / scaleFactor), 
-        (int) (image.getHeight() / scaleFactor), null);
   }
 
   public void drawCatchingTimerEvent(String name, GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
@@ -740,12 +742,14 @@ public class DefaultProcessDiagramCanvas {
       if(currentHeight + height > boxHeight) {
         // The line we're about to add should NOT be added anymore, append three dots to previous one instead
         // to indicate more text is truncated
-        layouts.remove(layouts.size() - 1);
-        
-        if(lastLine.length() >= 4) {
-          lastLine = lastLine.substring(0, lastLine.length() - 4) + "...";
+        if (!layouts.isEmpty()) {
+          layouts.remove(layouts.size() - 1);
+          
+          if(lastLine.length() >= 4) {
+            lastLine = lastLine.substring(0, lastLine.length() - 4) + "...";
+          }
+          layouts.add(new TextLayout(lastLine, g.getFont(), g.getFontRenderContext()));
         }
-        layouts.add(new TextLayout(lastLine, g.getFont(), g.getFontRenderContext()));
       } else {
         layouts.add(layout);
         lastLine = text.substring(previousPosition, measurer.getPosition());
@@ -1116,10 +1120,10 @@ public class DefaultProcessDiagramCanvas {
     	  TextLayout tl = lbm.nextLayout(wrapWidth);
     	  textY += tl.getAscent();
     	  Rectangle2D bb = tl.getBounds();
-    	  double tY = graphicInfo.getY();
+    	  double tX = graphicInfo.getX();
     	  if (centered)
-        	  tY += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
-    	  tl.draw(g, (float) tY, textY);
+        	  tX += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
+    	  tl.draw(g, (float) tX, textY);
     	  textY += tl.getDescent() + tl.getLeading() + (interline - 1.0f) * tl.getAscent();
       }
   

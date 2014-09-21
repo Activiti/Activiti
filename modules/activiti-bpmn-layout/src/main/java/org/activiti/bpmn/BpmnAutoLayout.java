@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.DataObject;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowElementsContainer;
@@ -85,6 +86,9 @@ public class BpmnAutoLayout {
     // Generate DI for each process
     for (Process process : bpmnModel.getProcesses()) {
       layout(process);
+      
+      // Operations that can only be done after all elements have received DI
+      translateNestedSubprocesses(process);
     }
   }
 
@@ -103,7 +107,7 @@ public class BpmnAutoLayout {
     
     // Process all elements
     for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
-      
+    	
       if (flowElement instanceof SequenceFlow) {
         handleSequenceFlow((SequenceFlow) flowElement);
       } else if (flowElement instanceof Event) {
@@ -282,29 +286,9 @@ public class BpmnAutoLayout {
       // The DI for the elements of a subprocess are generated without knowledge of the rest of the graph
       // So we must translate all it's elements with the x and y of the subprocess itself
       if (handledFlowElements.get(flowElementId) instanceof SubProcess) {
-        SubProcess subProcess =(SubProcess) handledFlowElements.get(flowElementId);
-        
-        // Always expanded when auto layouting
+
+      	// Always expanded when auto layouting
         subProcessGraphicInfo.setExpanded(true);
-        
-        // Translate
-        double subProcessX = cellState.getX();
-        double subProcessY = cellState.getY();
-        double translationX = subProcessX + subProcessMargin;
-        double translationY = subProcessY + subProcessMargin;
-        for (FlowElement subProcessElement : subProcess.getFlowElements()) {
-          if (subProcessElement instanceof SequenceFlow) {
-            List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(subProcessElement.getId());
-            for (GraphicInfo graphicInfo : graphicInfoList) {
-              graphicInfo.setX(graphicInfo.getX() + translationX);
-              graphicInfo.setY(graphicInfo.getY() + translationY);
-            }
-          } else {
-            GraphicInfo graphicInfo = bpmnModel.getLocationMap().get(subProcessElement.getId());
-            graphicInfo.setX(graphicInfo.getX() + translationX);
-            graphicInfo.setY(graphicInfo.getY() + translationY);
-          }
-        }
       }
     }
   }
@@ -420,6 +404,56 @@ public class BpmnAutoLayout {
     bpmnModel.addFlowGraphicInfoList(sequenceFlow.getId(), graphicInfoForWaypoints);
   }
   
+  /**
+   * Since subprocesses are autolayouted independently (see {@link #handleSubProcess(FlowElement)}),
+   * the elements have x and y coordinates relative to the bounds of the subprocess (thinking the subprocess 
+   * is on (0,0). This however, does not work for nested subprocesses, as they need to 
+   * take in account the x and y coordinates for each of the parent subproceses.
+   * 
+   * This method is to be called after fully layouting one process,
+   * since ALL elements need to have x and y.
+   */
+  protected void translateNestedSubprocesses(Process process) {
+  	for (SubProcess nestedSubProcess : process.findFlowElementsOfType(SubProcess.class, false)) {
+  		translateNestedSubprocessElements(nestedSubProcess);
+  	}
+  }
+  
+  protected void translateNestedSubprocessElements(SubProcess subProcess) {
+  	
+  	GraphicInfo subProcessGraphicInfo = bpmnModel.getLocationMap().get(subProcess.getId());
+  	double subProcessX = subProcessGraphicInfo.getX();
+  	double subProcessY = subProcessGraphicInfo.getY();
+  	
+  	List<SubProcess> nestedSubProcesses = new ArrayList<SubProcess>();
+  	for (FlowElement flowElement : subProcess.getFlowElements()) { 
+  		
+  		if (flowElement instanceof SequenceFlow) {
+				List<GraphicInfo> graphicInfos = bpmnModel.getFlowLocationMap().get(flowElement.getId());
+				for (GraphicInfo graphicInfo : graphicInfos) {
+					graphicInfo.setX(graphicInfo.getX() + subProcessX + subProcessMargin);
+					graphicInfo.setY(graphicInfo.getY() + subProcessY + subProcessMargin);
+				} 
+			} else if (flowElement instanceof DataObject == false) {
+				
+				// Regular element
+				GraphicInfo graphicInfo = bpmnModel.getLocationMap().get(flowElement.getId());
+				graphicInfo.setX(graphicInfo.getX() + subProcessX + subProcessMargin);
+				graphicInfo.setY(graphicInfo.getY() + subProcessY + subProcessMargin);
+			}
+  		
+  		if (flowElement instanceof SubProcess) {
+  			nestedSubProcesses.add((SubProcess) flowElement);
+  		}
+  		
+  	}
+  	
+  	// Continue for next level of nested subprocesses
+   	for (SubProcess nestedSubProcess : nestedSubProcesses) {
+  		translateNestedSubprocessElements(nestedSubProcess);
+  	}
+  }
+  
   // Getters and Setters
   
   
@@ -446,7 +480,6 @@ public class BpmnAutoLayout {
   public void setGatewaySize(int gatewaySize) {
     this.gatewaySize = gatewaySize;
   }
-
   
   public int getTaskWidth() {
     return taskWidth;

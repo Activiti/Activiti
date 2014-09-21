@@ -134,7 +134,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    if (((ExecutionEntity) execution).getTasks().size() != 0)
+    if (!((ExecutionEntity)execution).getTasks().isEmpty())
       throw new ActivitiException("UserTask should not be signalled before complete");
     leave(execution);
   }

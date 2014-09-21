@@ -15,13 +15,7 @@ package org.activiti.explorer.ui.task;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigator;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.custom.TaskListHeader;
 import org.activiti.explorer.ui.task.data.InboxListQuery;
-
-import com.vaadin.ui.Component;
-
-
-
 
 /**
  * The page displaying all tasks currently in ones inbox.

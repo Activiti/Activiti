@@ -37,8 +37,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
    */
    protected void createInstances(ActivityExecution execution) throws Exception {
     int nrOfInstances = resolveNrOfInstances(execution);
-    if (nrOfInstances <= 0) {
-      throw new ActivitiIllegalArgumentException("Invalid number of instances: must be positive integer value" 
+    if (nrOfInstances < 0) {
+      throw new ActivitiIllegalArgumentException("Invalid number of instances: must be non-negative integer value" 
               + ", but was " + nrOfInstances);
     }
     
@@ -122,7 +122,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     executionEntity.getParent().forceUpdate();
     
     List<ActivityExecution> joinedExecutions = executionEntity.findInactiveConcurrentExecutions(execution.getActivity());
-    if (joinedExecutions.size() == nrOfInstances || completionConditionSatisfied(execution)) {
+    if (joinedExecutions.size() >= nrOfInstances || completionConditionSatisfied(execution)) {
       
       // Removing all active child executions (ie because completionCondition is true)
       List<ExecutionEntity> executionsToRemove = new ArrayList<ExecutionEntity>();

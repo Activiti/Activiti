@@ -176,6 +176,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  selectStatements = new ConcurrentHashMap<Class<?>, String>();
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
+  protected boolean isOptimizeDeleteOperationsEnabled;
 
 
   public Class< ? > getSessionType() {
@@ -373,5 +374,13 @@ public class DbSqlSessionFactory implements SessionFactory {
 	public boolean isTablePrefixIsSchema() {
 	  return tablePrefixIsSchema;
   }
+
+	public boolean isOptimizeDeleteOperationsEnabled() {
+		return isOptimizeDeleteOperationsEnabled;
+	}
+
+	public void setOptimizeDeleteOperationsEnabled(boolean isOptimizeDeleteOperationsEnabled) {
+		this.isOptimizeDeleteOperationsEnabled = isOptimizeDeleteOperationsEnabled;
+	}
 	
 }

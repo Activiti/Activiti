@@ -104,6 +104,9 @@ public class DbSqlSession implements Session {
 	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.15.1"));
 	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16"));
 	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.1"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.2-SNAPSHOT"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.2"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.3.0"));
 	  
 	  /* Current */
 	  
@@ -118,9 +121,12 @@ public class DbSqlSession implements Session {
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
   protected String connectionMetadataDefaultCatalog;
   protected String connectionMetadataDefaultSchema;
+  
+  protected boolean isOptimizeDeleteOperationsEnabled;
 
   public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
+    this.isOptimizeDeleteOperationsEnabled = dbSqlSessionFactory.isOptimizeDeleteOperationsEnabled();
     this.sqlSession = dbSqlSessionFactory
       .getSqlSessionFactory()
       .openSession();
@@ -327,7 +333,7 @@ public class DbSqlSession implements Session {
     
     public void execute() {
     	
-    	if (persistentObjects.size() == 0) {
+    	if (persistentObjects.isEmpty()) {
     		return;
     	}
     	
@@ -368,7 +374,7 @@ public class DbSqlSession implements Session {
 
 		@Override
     public String toString() {
-      return "bulk delete of " + persistentObjects.size() + (persistentObjects.size() > 0 ? " entities of " + persistentObjects.get(0).getClass() : 0 );
+      return "bulk delete of " + persistentObjects.size() + (!persistentObjects.isEmpty() ? " entities of " + persistentObjects.get(0).getClass() : 0 );
     }
   }
   
@@ -555,10 +561,6 @@ public class DbSqlSession implements Session {
 
   // deserialized objects /////////////////////////////////////////////////////
   
-  public void addDeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstanceEntity variableInstanceEntity) {
-    addDeserializedObject(new DeserializedObject(deserializedObject, serializedBytes, variableInstanceEntity));
-  }
-  
   public void addDeserializedObject(DeserializedObject deserializedObject) {
   	deserializedObjects.add(deserializedObject);
   }
@@ -632,7 +634,7 @@ public class DbSqlSession implements Session {
   protected List<DeleteOperation> optimizeDeleteOperations(List<DeleteOperation> deleteOperations) {
   	
   	// No optimization possible for 0 or 1 operations
-  	if (deleteOperations.size() <= 1) {
+  	if (!isOptimizeDeleteOperationsEnabled || deleteOperations.size() <= 1) {
   		return deleteOperations;
   	}
   	
@@ -1434,5 +1436,12 @@ public class DbSqlSession implements Session {
     return dbSqlSessionFactory;
   }
 
+	public boolean isOptimizeDeleteOperationsEnabled() {
+		return isOptimizeDeleteOperationsEnabled;
+	}
 
+	public void setOptimizeDeleteOperationsEnabled(boolean isOptimizeDeleteOperationsEnabled) {
+		this.isOptimizeDeleteOperationsEnabled = isOptimizeDeleteOperationsEnabled;
+	}
+  
 }
