@@ -30,6 +30,9 @@ alter table ACT_RU_EVENT_SUBSCR
 alter table ACT_RE_PROCDEF
     drop constraint ACT_UNIQ_PROCDEF;
     
+--+ ignoreerror
+drop index ACT_UNIQ_PROCDEF;
+
 alter table ACT_RE_PROCDEF
     add constraint ACT_UNIQ_PROCDEF
     unique (KEY_,VERSION_, TENANT_ID_);          
