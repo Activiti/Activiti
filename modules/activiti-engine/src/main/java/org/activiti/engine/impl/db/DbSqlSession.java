@@ -1205,6 +1205,7 @@ public class DbSqlSession implements Session {
       Exception exception = null;
       byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
       String ddlStatements = new String(bytes);
+      boolean ignoreError=false;
       
       // Special DDL handling for certain databases
       try {
@@ -1230,6 +1231,9 @@ public class DbSqlSession implements Session {
         if (line.startsWith("# ")) {
           log.debug(line.substring(2));
           
+        } else if (line.equals("--+ ignoreerror")) {
+          ignoreError = true;
+
         } else if (line.startsWith("-- ")) {
           log.debug(line.substring(3));
           
@@ -1259,13 +1263,18 @@ public class DbSqlSession implements Session {
               jdbcStatement.execute(sqlStatement);
               jdbcStatement.close();
             } catch (Exception e) {
-              if (exception == null) {
-                exception = e;
-                exceptionSqlStatement = sqlStatement;
+              if (ignoreError) {
+                log.info("Ignored error during schema {}, statement '{}': {}", operation, sqlStatement, e.getMessage());
+              } else {
+                if (exception == null) {
+                  exception = e;
+                  exceptionSqlStatement = sqlStatement;
+                }
+                log.error("problem during schema {}, statement {}", operation, sqlStatement, e);
               }
-              log.error("problem during schema {}, statement {}", operation, sqlStatement, e);
             } finally {
               sqlStatement = null; 
+              ignoreError = false;
             }
           } else {
             sqlStatement = addSqlStatementPiece(sqlStatement, line);
