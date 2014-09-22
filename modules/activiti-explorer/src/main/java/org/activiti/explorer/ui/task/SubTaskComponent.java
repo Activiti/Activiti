@@ -209,7 +209,7 @@ public class SubTaskComponent extends CustomComponent {
   }
   
   protected void populateSubTasks(List<HistoricTaskInstance> subTasks) {
-    if (subTasks.size() > 0) {
+    if (!subTasks.isEmpty()) {
       for (final HistoricTaskInstance subTask : subTasks) {
         // icon
         Embedded icon = null;

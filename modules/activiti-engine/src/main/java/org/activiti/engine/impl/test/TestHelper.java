@@ -57,7 +57,7 @@ public abstract class TestHelper {
   
   private static Logger log = LoggerFactory.getLogger(TestHelper.class);
 
-  public static final String EMPTY_LINE = "                                                                                           ";
+  public static final String EMPTY_LINE = "\n";
 
   public static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_GE_PROPERTY"
@@ -259,7 +259,7 @@ public abstract class TestHelper {
       if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableName)) {
         Long count = tableCounts.get(tableName);
         if (count!=0L) {
-          outputMessage.append("  "+tableName + ": " + count + " record(s) ");
+          outputMessage.append("  ").append(tableName).append(": ").append(count).append(" record(s) ");
         }
       }
     }

@@ -70,7 +70,7 @@ public class Context {
   
   public static boolean isExecutionContextActive() {
   	Stack<ExecutionContext> stack = executionContextStackThreadLocal.get();
-  	return stack != null && stack.size() > 0;
+  	return stack != null && !stack.isEmpty();
   }
 
   public static void setExecutionContext(InterpretableExecution execution) {

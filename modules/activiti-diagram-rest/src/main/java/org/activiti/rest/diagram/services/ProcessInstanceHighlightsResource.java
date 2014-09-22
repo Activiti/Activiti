@@ -144,7 +144,7 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
       }
     } 
       
-    while (hisActInstList.size() > 0) {
+    while (!hisActInstList.isEmpty()) {
       HistoricActivityInstance histActInst = hisActInstList.removeFirst();
       ActivityImpl activity = activityMap.get(histActInst.getActivityId());
       if (activity != null) {

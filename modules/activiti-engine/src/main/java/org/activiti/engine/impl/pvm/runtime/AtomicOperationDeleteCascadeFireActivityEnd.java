@@ -13,12 +13,8 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
-
 
 /**
  * @author Tom Baeyens

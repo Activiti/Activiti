@@ -205,7 +205,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
   public void testSorting() {
     runtimeService.startProcessInstanceByKey("process");
 
-    int expectedActivityInstances = -1;
+    int expectedActivityInstances;
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       expectedActivityInstances = 2;
     } else {

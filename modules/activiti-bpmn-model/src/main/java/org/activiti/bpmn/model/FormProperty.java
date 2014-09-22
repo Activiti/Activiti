@@ -111,7 +111,7 @@ public class FormProperty extends BaseElement {
     setRequired(otherProperty.isRequired());
     
     formValues = new ArrayList<FormValue>();
-    if (otherProperty.getFormValues() != null && otherProperty.getFormValues().size() > 0) {
+    if (otherProperty.getFormValues() != null && !otherProperty.getFormValues().isEmpty()) {
       for (FormValue formValue : otherProperty.getFormValues()) {
         formValues.add(formValue.clone());
       }

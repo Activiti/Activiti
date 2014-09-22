@@ -145,7 +145,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableNameWithoutPrefix)) {
         Long count = tableCounts.get(tableName);
         if (count!=0L) {
-          outputMessage.append("  "+tableName + ": " + count + " record(s) ");
+          outputMessage.append("  ").append(tableName).append(": ").append(count).append(" record(s) ");
         }
       }
     }
@@ -295,7 +295,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
     
     EndEvent endEvent = new EndEvent();
     endEvent.setId("theEnd");
-    process.addFlowElement(endEvent);;
+    process.addFlowElement(endEvent);
     
     process.addFlowElement(new SequenceFlow("start", "theTask"));
     process.addFlowElement(new SequenceFlow("theTask", "theEnd"));
@@ -328,7 +328,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
     
     EndEvent endEvent = new EndEvent();
     endEvent.setId("theEnd");
-    process.addFlowElement(endEvent);;
+    process.addFlowElement(endEvent);
     
     process.addFlowElement(new SequenceFlow("start", "task1"));
     process.addFlowElement(new SequenceFlow("start", "task2"));

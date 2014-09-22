@@ -175,7 +175,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
           XMLStreamReader xtr = xif.createXMLStreamReader(definitionStream);
           BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
           
-          if (bpmnModel.getFlowLocationMap().size() > 0) {
+          if (!bpmnModel.getFlowLocationMap().isEmpty()) {
             
             int maxX = 0;
             int maxY = 0;
@@ -222,7 +222,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
         ProcessEngineConfiguration processEngineConfiguration = ProcessEngines.getDefaultProcessEngine().getProcessEngineConfiguration();
         ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
         StreamResource diagram = new ProcessDefinitionImageStreamResourceBuilder()
-          .buildStreamResource(processInstance, repositoryService, runtimeService, diagramGenerator);
+          .buildStreamResource(processInstance, repositoryService, runtimeService, diagramGenerator, processEngineConfiguration);
   
         if(diagram != null) {
           Label header = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
@@ -280,7 +280,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
       .orderByHistoricTaskInstanceStartTime().desc()
       .list();
     
-    if(tasks.size() > 0) {
+    if(!tasks.isEmpty()) {
       
       // Finished icon
       taskTable.addContainerProperty("finished", Component.class, null, "", null, Table.ALIGN_CENTER);
@@ -358,7 +358,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
     // variable sorting is done in-memory (which is ok, since normally there aren't that many vars)
     Map<String, Object> variables = new TreeMap<String, Object>(runtimeService.getVariables(processInstance.getId())); 
     
-    if(variables.size() > 0) {
+    if(!variables.isEmpty()) {
       
       Table variablesTable = new Table();
       variablesTable.setWidth(60, UNITS_PERCENTAGE);

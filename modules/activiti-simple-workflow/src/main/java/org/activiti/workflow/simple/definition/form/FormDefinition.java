@@ -19,6 +19,7 @@ import org.activiti.workflow.simple.definition.HumanStepDefinition;
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
@@ -48,7 +49,7 @@ public class FormDefinition implements FormPropertyDefinitionContainer {
 /**
    * @return All {@link FormPropertyDefinition}s that are not part of any {@link FormPropertyGroup}.
    */
-  @JsonSerialize(contentAs=FormPropertyDefinition.class)
+  @JsonDeserialize(contentAs=FormPropertyDefinition.class)
   @JsonProperty(value="formProperties")
   public List<FormPropertyDefinition> getFormPropertyDefinitions() {
     return formProperties;
@@ -112,7 +113,7 @@ public class FormDefinition implements FormPropertyDefinitionContainer {
     setDescription(formDefinition.getDescription());
     
     List<FormPropertyGroup> groupList = new ArrayList<FormPropertyGroup>();
-    if (formDefinition.getFormGroups() != null && formDefinition.getFormGroups().size() > 0) {
+    if (formDefinition.getFormGroups() != null && !formDefinition.getFormGroups().isEmpty()) {
       for (FormPropertyGroup propertyGroup : formDefinition.getFormGroups()) {
         groupList.add(propertyGroup.clone());
       }
@@ -120,7 +121,7 @@ public class FormDefinition implements FormPropertyDefinitionContainer {
     setFormGroups(groupList);
     
     formProperties = new ArrayList<FormPropertyDefinition>();
-    if (formDefinition.getFormGroups() != null && formDefinition.getFormGroups().size() > 0) {
+    if (formDefinition.getFormGroups() != null && !formDefinition.getFormGroups().isEmpty()) {
       for (FormPropertyDefinition propertyDefinition : formDefinition.getFormPropertyDefinitions()) {
         formProperties.add(propertyDefinition.clone());
       }

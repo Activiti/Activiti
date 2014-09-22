@@ -63,7 +63,7 @@ public class StartProcessInstanceClickListener implements ClickListener {
     // Check if process-definition defines a start-form
     
     StartFormData startFormData = formService.getStartFormData(processDefinition.getId());
-    if(startFormData != null && ((startFormData.getFormProperties() != null && startFormData.getFormProperties().size() > 0) || startFormData.getFormKey() != null)) {
+    if(startFormData != null && ((startFormData.getFormProperties() != null && !startFormData.getFormProperties().isEmpty()) || startFormData.getFormKey() != null)) {
       parentPage.showStartForm(processDefinition, startFormData);
     } else {
       // Just start the process-instance since it has no form.
@@ -78,7 +78,7 @@ public class StartProcessInstanceClickListener implements ClickListener {
         .taskAssignee(ExplorerApp.get().getLoggedInUser().getId())
         .processInstanceId(processInstance.getId())
         .list();
-      if (loggedInUsersTasks.size() > 0) {
+      if (!loggedInUsersTasks.isEmpty()) {
         ExplorerApp.get().getViewManager().showInboxPage(loggedInUsersTasks.get(0).getId());
       }
     }

@@ -120,11 +120,10 @@ public interface StencilConstants {
 	final String PROPERTY_EXECUTION_LISTENER_CLASS = "execution_listener_class";
 	final String PROPERTY_EXECUTION_LISTENER_EXPRESSION = "execution_listener_expression";
 	final String PROPERTY_EXECUTION_LISTENER_DELEGATEEXPRESSION = "execution_listener_delegate_expression";
-        
-        final String PROPERTY_EXECUTION_LISTENER_FIELDS = "execution_listener_fields";
-        final String PROPERTY_EXECUTION_LISTENER_FIELD_NAME = "execution_listener_field_name";
-        final String PROPERTY_EXECUTION_LISTENER_FIELD_VALUE = "execution_listener_field_value";
-        final String PROPERTY_EXECUTION_LISTENER_FIELD_EXPRESSION = "execution_listener_field_expression";
+  final String PROPERTY_EXECUTION_LISTENER_FIELDS = "execution_listener_fields";
+  final String PROPERTY_EXECUTION_LISTENER_FIELD_NAME = "execution_listener_field_name";
+  final String PROPERTY_EXECUTION_LISTENER_FIELD_VALUE = "execution_listener_field_value";
+  final String PROPERTY_EXECUTION_LISTENER_FIELD_EXPRESSION = "execution_listener_field_expression";
 	
   final String PROPERTY_EVENT_LISTENERS = "eventlisteners";
   final String PROPERTY_EVENT_LISTENER_EVENTS = "event_listener_events";
@@ -146,9 +145,15 @@ public interface StencilConstants {
 	final String PROPERTY_USERTASK_ASSIGNMENT = "usertaskassignment";
   final String PROPERTY_USERTASK_ASSIGNMENT_TYPE = "assignment_type";
   final String PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION = "resourceassignmentexpr";
+  final String PROPERTY_USERTASK_OWNER = "owner";
   final String PROPERTY_USERTASK_ASSIGNEE = "assignee";
   final String PROPERTY_USERTASK_CANDIDATE_USERS = "candidateUsers";
   final String PROPERTY_USERTASK_CANDIDATE_GROUPS = "candidateGroups";
+  
+  final String PROPERTY_USERTASK_CUSTOM_IDENTITY_LINKS = "customidentitylinks";
+  final String PROPERTY_USERTASK_IDENTITY_TYPE = "identity_type";
+  final String PROPERTY_USERTASK_IDENTITY_LINK_TYPE = "identity_link_type";
+  final String PROPERTY_USERTASK_IDENTITY_LINK_EXPRESSION = "identitylinkexpr";
 	
 	final String PROPERTY_SERVICETASK_CLASS = "servicetaskclass";
 	final String PROPERTY_SERVICETASK_EXPRESSION = "servicetaskexpression";
@@ -171,6 +176,12 @@ public interface StencilConstants {
   final String PROPERTY_FORM_FORM_VALUES = "formproperty_formvalues";
   final String PROPERTY_FORM_FORM_VALUE_ID = "formproperty_formvalue_id";
   final String PROPERTY_FORM_FORM_VALUE_NAME = "formproperty_formvalue_name";
+
+  final String PROPERTY_DATA_PROPERTIES = "dataproperties";
+  final String PROPERTY_DATA_ID = "dataproperty_id";
+  final String PROPERTY_DATA_NAME = "dataproperty_name";
+  final String PROPERTY_DATA_TYPE = "dataproperty_type";
+  final String PROPERTY_DATA_VALUE = "dataproperty_value";
 
 	final String PROPERTY_SCRIPT_FORMAT = "scriptformat";
 	final String PROPERTY_SCRIPT_TEXT = "scripttext";

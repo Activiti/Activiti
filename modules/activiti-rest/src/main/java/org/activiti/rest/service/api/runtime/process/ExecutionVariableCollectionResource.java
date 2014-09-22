@@ -150,7 +150,7 @@ public class ExecutionVariableCollectionResource extends BaseExecutionVariableRe
           variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, execution.getId(), RestResponseFactory.VARIABLE_EXECUTION, false));
         }
         
-        if(variablesToSet.size() > 0) {
+        if(!variablesToSet.isEmpty()) {
           if(sharedScope == RestVariableScope.LOCAL) {
             ActivitiUtil.getRuntimeService().setVariablesLocal(execution.getId(), variablesToSet);
           } else {

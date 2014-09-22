@@ -153,7 +153,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     boolean readyWithExtensionElement = false;
     while (readyWithExtensionElement == false && xtr.hasNext()) {
       xtr.next();
-      if (xtr.isCharacters()) {
+      if (xtr.isCharacters() || XMLStreamReader.CDATA == xtr.getEventType()) {
         if (StringUtils.isNotEmpty(xtr.getText().trim())) {
           extensionElement.setElementText(xtr.getText().trim());
         }
@@ -184,7 +184,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   }
  
   public static boolean writeExtensionElements(BaseElement baseElement, boolean didWriteExtensionStartElement, Map<String, String> namespaceMap, XMLStreamWriter xtw) throws Exception {
-    if (baseElement.getExtensionElements().size() > 0) {
+    if (!baseElement.getExtensionElements().isEmpty()) {
       if (didWriteExtensionStartElement == false) {
         xtw.writeStartElement(ELEMENT_EXTENSIONS);
         didWriteExtensionStartElement = true;

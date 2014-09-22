@@ -46,6 +46,9 @@ import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
+
 /**
  * @author Frederik Heremans
  * @author Joram Barrez
@@ -340,7 +343,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     // Fetch the task again and update
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
 
-    taskService.delegateTask(taskId, "joesmoe");
+    taskService.delegateTask(task.getId(), "joesmoe");
     
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
     assertEquals("johndoe", task.getOwner());
@@ -421,6 +424,40 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     existingTask = taskService.createTaskQuery().taskId(existingTask.getId()).singleResult();
     assertNull(existingTask);
   }
+  
+  public void testDeleteTaskIdentityLink() {
+    Task task = null;
+    try {
+      task = taskService.newTask();
+      task.setName("test");
+      taskService.saveTask(task);
+      
+      taskService.addCandidateGroup(task.getId(), "sales");
+      taskService.addCandidateUser(task.getId(), "kermit");
+      
+      assertNotNull(taskService.createTaskQuery().taskCandidateGroup("sales").singleResult());
+      assertNotNull(taskService.createTaskQuery().taskCandidateUser("kermit").singleResult());
+     
+      // Delete identity link for group
+      taskService.deleteGroupIdentityLink(task.getId(), "sales", "candidate");
+      
+      // Link should be removed
+      assertNull(taskService.createTaskQuery().taskCandidateGroup("sales").singleResult());
+      
+      // User link should remain unaffected
+      assertNotNull(taskService.createTaskQuery().taskCandidateUser("kermit").singleResult());
+      
+    } finally {
+      // Adhoc task not part of deployment, cleanup
+      if(task != null && task.getId() != null) {
+        taskService.deleteTask(task.getId());
+        if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+          historyService.deleteHistoricTaskInstance(task.getId());
+        }
+      }
+    }
+  }
+
 
   public void testClaimNullArguments() {
     try {
@@ -648,7 +685,7 @@ public void testCompleteWithParametersTask2() {
     assertEquals(new Integer(2), runtimeService.getVariable(processInstance.getId(), "sum"));
 
     // Fetch second task
-    task = taskService.createTaskQuery().singleResult();
+    taskService.createTaskQuery().singleResult();
 
   }
   
@@ -1045,7 +1082,7 @@ public void testCompleteWithParametersTask2() {
   }
 
   /**
-   * @see http://jira.codehaus.org/browse/ACT-1059
+   * @see <a href="http://jira.codehaus.org/browse/ACT-1059">http://jira.codehaus.org/browse/ACT-1059</a>
    */
   public void testSetDelegationState() {
     Task task = taskService.newTask();
@@ -1427,5 +1464,88 @@ public void testCompleteWithParametersTask2() {
     	assertEquals("form-changed.json", historicTaskInstance.getFormKey());
   	}
   }
-  
+
+    @Deployment(resources = {
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testGetVariableLocalWithCast() {
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+        Task currentTask = taskService.createTaskQuery().singleResult();
+
+        taskService.setVariableLocal(currentTask.getId(), "variable1", "value1");
+
+        String variable = taskService.getVariableLocal(currentTask.getId(), "variable1", String.class);
+
+        assertEquals("value1", variable);
+    }
+
+    @Deployment(resources = {
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testGetVariableLocalNotExistingWithCast() {
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+        Task currentTask = taskService.createTaskQuery().singleResult();
+
+        String variable = taskService.getVariableLocal(currentTask.getId(), "variable1", String.class);
+
+        assertNull(variable);
+    }
+
+    @Deployment(resources = {
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testGetVariableLocalWithInvalidCast() {
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+        Task currentTask = taskService.createTaskQuery().singleResult();
+
+        taskService.setVariableLocal(currentTask.getId(), "variable1", "value1");
+
+        catchException(taskService).getVariableLocal(currentTask.getId(), "variable1", Boolean.class);
+
+        Exception e = caughtException();
+        assertNotNull(e);
+        assertTrue(e instanceof ClassCastException);
+    }
+
+    @Deployment(resources = {
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testGetVariableWithCast() {
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+        Task currentTask = taskService.createTaskQuery().singleResult();
+
+        taskService.setVariable(currentTask.getId(), "variable1", "value1");
+
+        String variable = taskService.getVariable(currentTask.getId(), "variable1", String.class);
+
+        assertEquals("value1", variable);
+    }
+
+    @Deployment(resources = {
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testGetVariableNotExistingWithCast() {
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+        Task currentTask = taskService.createTaskQuery().singleResult();
+
+        String variable = taskService.getVariable(currentTask.getId(), "variable1", String.class);
+
+        assertNull(variable);
+    }
+
+    @Deployment(resources = {
+            "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testGetVariableWithInvalidCast() {
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+        Task currentTask = taskService.createTaskQuery().singleResult();
+
+        taskService.setVariable(currentTask.getId(), "variable1", "value1");
+
+        catchException(taskService).getVariable(currentTask.getId(), "variable1", Boolean.class);
+
+        Exception e = caughtException();
+        assertNotNull(e);
+        assertTrue(e instanceof ClassCastException);
+    }
 }

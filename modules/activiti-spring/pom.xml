@@ -9,7 +9,7 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-root</artifactId>
         <relativePath>../..</relativePath>
-        <version>5.17-SNAPSHOT</version>
+        <version>5.16.4-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -295,6 +295,7 @@
                                 <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-485 -->
                             </excludes>
                             <runOrder>alphabetical</runOrder>
+                            <argLine>-Duser.language=en</argLine>
                         </configuration>
                     </plugin>
                 </plugins>

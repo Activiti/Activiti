@@ -107,21 +107,21 @@ public abstract class Activity extends FlowNode {
     }
     
     dataInputAssociations = new ArrayList<DataAssociation>();
-    if (otherActivity.getDataInputAssociations() != null && otherActivity.getDataInputAssociations().size() > 0) {
+    if (otherActivity.getDataInputAssociations() != null && !otherActivity.getDataInputAssociations().isEmpty()) {
       for (DataAssociation association : otherActivity.getDataInputAssociations()) {
         dataInputAssociations.add(association.clone());
       }
     }
     
     dataOutputAssociations = new ArrayList<DataAssociation>();
-    if (otherActivity.getDataOutputAssociations() != null && otherActivity.getDataOutputAssociations().size() > 0) {
+    if (otherActivity.getDataOutputAssociations() != null && !otherActivity.getDataOutputAssociations().isEmpty()) {
       for (DataAssociation association : otherActivity.getDataOutputAssociations()) {
         dataOutputAssociations.add(association.clone());
       }
     }
     
     boundaryEvents = new ArrayList<BoundaryEvent>();
-    if (otherActivity.getBoundaryEvents() != null && otherActivity.getBoundaryEvents().size() > 0) {
+    if (otherActivity.getBoundaryEvents() != null && !otherActivity.getBoundaryEvents().isEmpty()) {
       for (BoundaryEvent event : otherActivity.getBoundaryEvents()) {
         boundaryEvents.add(event.clone());
       }

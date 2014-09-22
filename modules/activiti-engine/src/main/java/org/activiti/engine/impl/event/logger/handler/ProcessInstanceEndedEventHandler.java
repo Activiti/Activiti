@@ -23,7 +23,6 @@ public class ProcessInstanceEndedEventHandler extends AbstractDatabaseEventLogge
 		putInMapIfNotNull(data, Fields.BUSINESS_KEY, processInstanceEntity.getBusinessKey());
 		putInMapIfNotNull(data, Fields.PROCESS_DEFINITION_ID, processInstanceEntity.getProcessDefinitionId());
 		putInMapIfNotNull(data, Fields.NAME, processInstanceEntity.getName());
-		putInMapIfNotNull(data, Fields.TENANT_ID, processInstanceEntity.getTenantId());
 		putInMapIfNotNull(data, Fields.END_TIME, timeStamp);
 		
 		return createEventLogEntry(TYPE, processInstanceEntity.getProcessDefinitionId(), processInstanceEntity.getId(), null, null, data);

@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -169,6 +170,12 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return variableInstances.keySet();
   }
 
+  public Map<String,VariableInstanceEntity> getVariableInstances()
+  {
+    ensureVariableInstancesInitialized();
+    return Collections.unmodifiableMap(variableInstances);
+  }
+  
   public void createVariablesLocal(Map<String, ? extends Object> variables) {
     if (variables!=null) {
       for (Map.Entry<String, ? extends Object> entry: variables.entrySet()) {
@@ -342,19 +349,25 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
   protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
 	
-      // type should be changed
-	 if ((variableInstance != null) && (!variableInstance.getType().isAbleToStore(value))) {
-		    VariableTypes variableTypes = Context
-		    	      .getProcessEngineConfiguration()
-		    	      .getVariableTypes();
-		    VariableType newType = variableTypes.findVariableType(value);
-		    variableInstance.setValue(null);
-		    variableInstance.setType(newType);
-		    variableInstance.forceUpdate();
-		    variableInstance.setValue(value);
-		    VariableInstanceEntity.touch(variableInstance);
-	  } else
-		  variableInstance.setValue(value);
+    // Always check if the type should be altered. It's possible that the previous type is lower in the type
+    // checking chain (eg. serializable) and will return true on isAbleToStore(), even though another type
+    // higher in the chain is eligable for storage.
+    
+    VariableTypes variableTypes = Context
+        .getProcessEngineConfiguration()
+        .getVariableTypes();
+    
+    VariableType newType = variableTypes.findVariableType(value);
+    
+	 if ((variableInstance != null) && (!variableInstance.getType().equals(newType))) {
+		variableInstance.setValue(null);
+		variableInstance.setType(newType);
+		variableInstance.forceUpdate();
+		variableInstance.setValue(value);
+		VariableInstanceEntity.touch(variableInstance);
+	  } else {
+	    variableInstance.setValue(value);
+	  }
 
     Context.getCommandContext().getHistoryManager()
       .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
@@ -410,4 +423,12 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   public void setId(String id) {
     this.id = id;
   }
+
+    public <T> T getVariable(String variableName, Class<T> variableClass){
+        return variableClass.cast(getVariable(variableName));
+    }
+
+    public <T> T getVariableLocal(String variableName, Class<T> variableClass){
+        return variableClass.cast(getVariableLocal(variableName));
+    }
 }

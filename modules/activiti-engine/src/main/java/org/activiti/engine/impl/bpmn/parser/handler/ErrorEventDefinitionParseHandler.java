@@ -39,7 +39,7 @@ public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<E
   
   protected void executeParse(BpmnParse bpmnParse, ErrorEventDefinition eventDefinition) {
 
-    org.activiti.bpmn.model.ErrorEventDefinition modelErrorEvent = (org.activiti.bpmn.model.ErrorEventDefinition) eventDefinition;
+    ErrorEventDefinition modelErrorEvent = (ErrorEventDefinition) eventDefinition;
     if (bpmnParse.getBpmnModel().containsErrorRef(modelErrorEvent.getErrorCode())) {
       String errorCode = bpmnParse.getBpmnModel().getErrors().get(modelErrorEvent.getErrorCode());
       modelErrorEvent.setErrorCode(errorCode);
@@ -70,7 +70,7 @@ public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<E
     }
   }
   
-  protected void createErrorStartEventDefinition(org.activiti.bpmn.model.ErrorEventDefinition errorEventDefinition, ActivityImpl startEventActivity, ScopeImpl scope) {  
+  protected void createErrorStartEventDefinition(ErrorEventDefinition errorEventDefinition, ActivityImpl startEventActivity, ScopeImpl scope) {
     org.activiti.engine.impl.bpmn.parser.ErrorEventDefinition definition = new org.activiti.engine.impl.bpmn.parser.ErrorEventDefinition(startEventActivity.getId());
     if (StringUtils.isNotEmpty(errorEventDefinition.getErrorCode())) {
       definition.setErrorCode(errorEventDefinition.getErrorCode());
@@ -79,7 +79,7 @@ public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<E
     addErrorEventDefinition(definition, scope);
   }
   
-  public void createBoundaryErrorEventDefinition(org.activiti.bpmn.model.ErrorEventDefinition errorEventDefinition, boolean interrupting,
+  public void createBoundaryErrorEventDefinition(ErrorEventDefinition errorEventDefinition, boolean interrupting,
           ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
 
     nestedErrorEventActivity.setProperty("type", "boundaryError");

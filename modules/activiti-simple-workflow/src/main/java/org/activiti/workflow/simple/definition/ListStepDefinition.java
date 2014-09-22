@@ -70,7 +70,7 @@ public class ListStepDefinition<T> extends AbstractStepDefinitionContainer<ListS
     setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
     
     steps = new ArrayList<StepDefinition>();
-    if (definition.getSteps() != null && definition.getSteps().size() > 0) {
+    if (definition.getSteps() != null && !definition.getSteps().isEmpty()) {
       for (StepDefinition stepDefinition : definition.getSteps()) {
         steps.add(stepDefinition.clone());
       }

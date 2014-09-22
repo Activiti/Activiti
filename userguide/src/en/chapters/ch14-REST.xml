@@ -43,6 +43,11 @@
       This may have an impact on the deployment resources and their data-URL, as the URL can potentially contain escaped forward slashes.
       
       <emphasis role="bold">When issues are experienced with unexpected 400-results, set the following system-property: <literal>-Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true.</literal></emphasis></para>
+      
+      <para>
+      	It's a best practice to always set the <emphasis role="bold">Accept</emphasis> and <emphasis role="bold">Content-Type</emphasis> 
+      	(in case of posting/putting JSON) headers to <emphasis role="bold">application/json</emphasis> on the HTTP requests described below.
+      </para>
     </section>
     
      <section>
@@ -3039,7 +3044,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
     <section>
       <title>Get diagram for a process instance</title>
         <para>
-          <programlisting>GET runtime/process-instances/{processInstanceId}</programlisting>
+          <programlisting>GET runtime/process-instances/{processInstanceId}/diagram</programlisting>
         </para>
         <para>
             <table>

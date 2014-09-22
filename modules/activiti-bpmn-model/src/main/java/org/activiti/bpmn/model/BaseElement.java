@@ -112,10 +112,10 @@ public abstract class BaseElement implements HasExtensionAttributes {
     setId(otherElement.getId());
     
     extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
-    if (otherElement.getExtensionElements() != null && otherElement.getExtensionElements().size() > 0) {
+    if (otherElement.getExtensionElements() != null && !otherElement.getExtensionElements().isEmpty()) {
       for (String key : otherElement.getExtensionElements().keySet()) {
         List<ExtensionElement> otherElementList = otherElement.getExtensionElements().get(key);
-        if (otherElementList != null && otherElementList.size() > 0) {
+        if (otherElementList != null && !otherElementList.isEmpty()) {
           List<ExtensionElement> elementList = new ArrayList<ExtensionElement>();
           for (ExtensionElement extensionElement : otherElementList) {
             elementList.add(extensionElement.clone());
@@ -126,10 +126,10 @@ public abstract class BaseElement implements HasExtensionAttributes {
     }
     
     attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
-    if (otherElement.getAttributes() != null && otherElement.getAttributes().size() > 0) {
+    if (otherElement.getAttributes() != null && !otherElement.getAttributes().isEmpty()) {
       for (String key : otherElement.getAttributes().keySet()) {
         List<ExtensionAttribute> otherAttributeList = otherElement.getAttributes().get(key);
-        if (otherAttributeList != null && otherAttributeList.size() > 0) {
+        if (otherAttributeList != null && !otherAttributeList.isEmpty()) {
           List<ExtensionAttribute> attributeList = new ArrayList<ExtensionAttribute>();
           for (ExtensionAttribute extensionAttribute : otherAttributeList) {
             attributeList.add(extensionAttribute.clone());

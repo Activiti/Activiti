@@ -60,7 +60,7 @@ public class LegacyLoginResource extends ServerResource {
       else {
         message = "Can't find process engine which is needed to authenticate username and password.";
         List<ProcessEngineInfo> processEngineInfos = ProcessEngines.getProcessEngineInfos();
-        if (processEngineInfos.size() > 0) {
+        if (!processEngineInfos.isEmpty()) {
           message += "\nHowever " + processEngineInfos.size() + " other process engine(s) were found: ";
         }
         for (ProcessEngineInfo processEngineInfo : processEngineInfos)

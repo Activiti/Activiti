@@ -8,6 +8,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ValidationError;
+import org.activiti.validation.validator.ValidatorSet;
  
 /**
  * Sample Process Validator for Activiti Test case.
@@ -23,15 +24,19 @@ public class ActivitiTestCaseProcessValidator implements ProcessValidator {
       customParseValidator.executeParse(bpmnModel, process);
     }
  
-    ValidationError error = null;
     for (String errorRef : bpmnModel.getErrors().keySet()) {
-      error = new ValidationError();
+      ValidationError error = new ValidationError();
       error.setValidatorSetName("Manual BPMN parse validator");
       error.setProblem(errorRef);
       error.setActivityId(bpmnModel.getErrors().get(errorRef));
       errorList.add(error);
     }
     return errorList;
+  }
+  
+  @Override
+  public List<ValidatorSet> getValidatorSets() {
+    return null;
   }
  
   class CustomParseValidator {

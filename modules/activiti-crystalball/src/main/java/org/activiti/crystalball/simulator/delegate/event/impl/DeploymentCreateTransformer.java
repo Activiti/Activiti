@@ -13,15 +13,12 @@ package org.activiti.crystalball.simulator.delegate.event.impl;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.runtime.ProcessInstance;
 
 import java.util.HashMap;
 import java.util.Map;

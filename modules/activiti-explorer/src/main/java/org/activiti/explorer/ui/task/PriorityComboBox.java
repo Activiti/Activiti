@@ -14,13 +14,11 @@ package org.activiti.explorer.ui.task;
 
 import java.util.Arrays;
 
-import org.activiti.engine.task.Task;
 import org.activiti.explorer.Constants;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 
 import com.vaadin.ui.ComboBox;
-
 
 /**
  * @author Joram Barrez

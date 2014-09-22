@@ -37,7 +37,7 @@ public class EventBasedGatewayConverterTest extends AbstractConverterTest {
     EventGateway gateway = (EventGateway) flowElement;
     List<ActivitiListener> listeners = gateway.getExecutionListeners();
     assertEquals(1, listeners.size());
-    ActivitiListener listener = (ActivitiListener) listeners.get(0);
+    ActivitiListener listener = listeners.get(0);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()));
     assertEquals("org.test.TestClass", listener.getImplementation());
     assertEquals("start", listener.getEvent());

@@ -440,7 +440,160 @@ INFO  org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl  - class org.a
 	   </para>
 	
 	</section>
+
+	<section id="advanced.task.query.switching">
 	
+		<title>Advanced query API: seamless switching between runtime and historic task querying</title>
+	
+		<para>
+			One core component of any BPM user interface is the task list. Typically, end users work on open, runtime tasks, filtering 
+			their inbox with various setting. Often also the historic tasks need to be displayed in those lists, with similar filtering.
+			To make that code-wise easier, the <emphasis>TaskQuery</emphasis> and <emphasis>HistoricTaskInstanceQuery</emphasis> both have a shared parent interface, 
+			which contains all common operations (and most of the operations are common).  
+		</para>
+		
+		<para>
+			This common interface is the <emphasis>org.activiti.engine.task.TaskInfoQuery</emphasis> class.
+			Both <emphasis>org.activiti.engine.task.Task</emphasis> and <emphasis>org.activiti.engine.task.HistoricTaskInstance</emphasis> 
+			have a common superclass <emphasis>org.activiti.engine.task.TaskInfo</emphasis> (with common properties) which is returned from eg. the <emphasis>list()</emphasis> method.
+			However, Java generics are sometimes more harming than helping: if you want to use the <emphasis>TaskInfoQuery</emphasis> type directly, it would look like this:
+			<programlisting>
+TaskInfoQuery&lt;? extends TaskInfoQuery&lt;?,?&gt;, ? extends TaskInfo&gt; taskInfoQuery</programlisting>
+			Ugh, Right. To 'solve' this, a <emphasis>org.activiti.engine.task.TaskInfoQueryWrapper</emphasis> class that can be used to avoid the generics 
+			(the following code could come from REST code that returns a task list where the user cn switch between open and completed tasks):
+			<programlisting>
+TaskInfoQueryWrapper taskInfoQueryWrapper = null;
+if (runtimeQuery) {			
+	taskInfoQueryWrapper = new TaskInfoQueryWrapper(taskService.createTaskQuery());
+} else {
+	taskInfoQueryWrapper = new TaskInfoQueryWrapper(historyService.createHistoricTaskInstanceQuery());
+}
+
+List&lt;? extends TaskInfo&gt; taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or()
+	.taskNameLike("%k1%")
+	.taskDueAfter(new Date(now.getTime() + (3 * 24L * 60L * 60L * 1000L)))
+.endOr()
+.list();</programlisting>
+		</para>
+		
+	
+	</section>
+	
+    <section id="advanced.custom.session.manager">
+    
+        <title>Custom identity management by overriding standard SessionFactory</title>
+        
+        <para>
+          If you do not want to use a full <emphasis>ProcessEngineConfigurator</emphasis> implementation like in the 
+          <link linkend="chapter_ldap">LDAP integration</link>, but still want to plug in your custom identity management framework, 
+          then you can also override the <emphasis>SessionFactory</emphasis> classes directly in the <emphasis>ProcessEngineConfiguration</emphasis>. 
+          In Spring this can be easily done by adding the following to the <emphasis>ProcessEngineConfiguration</emphasis> bean definition:
+	       <programlisting>
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;...SomeProcessEngineConfigurationClass&quot;&gt;
+
+    ...
+        
+    &lt;property name=&quot;customSessionFactories&quot;&gt;
+        &lt;list&gt;
+            &lt;bean class=&quot;com.mycompany.MyGroupManagerFactory&quot;/&gt;
+            &lt;bean class=&quot;com.mycompany.MyUserManagerFactory&quot;/&gt;
+        &lt;/list&gt;
+    &lt;/property&gt;
+    
+    ...
+        
+&lt;/bean&gt;        	       
+	       </programlisting> 
+        </para>
+        
+        <para>
+          The <emphasis>MyGroupManagerFactory</emphasis> and <emphasis>MyUserManagerFactory</emphasis> need to implement the
+          <emphasis>org.activiti.engine.impl.interceptor.SessionFactory</emphasis> interface. The call to <emphasis>openSession()</emphasis>
+          returns the custom class implementation that does the actual identity management. For groups this is a class that
+          inherits from <emphasis>org.activiti.engine.impl.persistence.entity.GroupEntityManager</emphasis> and for managing users
+          it must inherit from <emphasis>org.activiti.engine.impl.persistence.entity.UserEntityManager</emphasis>
+          The following code sample contains a custom manager factory for groups:
+          <programlisting>
+package com.mycompany;
+
+import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
+
+public class MyGroupManagerFactory implements SessionFactory {
+
+	@Override
+	public Class&lt;?&gt; getSessionType() {
+		return GroupIdentityManager.class;
+	}
+
+	@Override
+	public Session openSession() {
+		return new MyCompanyGroupManager();
+	}
+
+}</programlisting>
+        </para>
+        
+        <para>
+          The <emphasis>MyCompanyGroupManager</emphasis> created by the factory is doing the actual work. You do not need
+          to override all members of <emphasis>GroupEntityManager</emphasis> though, just the ones required for your use case.
+          The following sample provides an indication of how this may look like (only a selection of members are shown):
+          <programlisting>
+public class MyCompanyGroupManager extends GroupEntityManager {
+	
+    private static Logger log = LoggerFactory.getLogger(MyCompanyGroupManager.class);
+
+    @Override
+    public List&lt;Group&gt; findGroupsByUser(String userId) {
+        log.debug("findGroupByUser called with userId: " + userId);
+        return super.findGroupsByUser(userId);
+    }
+    
+    @Override
+    public List&lt;Group&gt; findGroupByQueryCriteria(GroupQueryImpl query, Page page) {
+        log.debug("findGroupByQueryCriteria called, query: " + query + " page: " + page);
+        return super.findGroupByQueryCriteria(query, page);
+    }
+    
+    @Override
+    public long findGroupCountByQueryCriteria(GroupQueryImpl query) {
+        log.debug("findGroupCountByQueryCriteria called, query: " + query);
+        return super.findGroupCountByQueryCriteria(query);
+    }
+    
+    @Override
+    public Group createNewGroup(String groupId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void deleteGroup(String groupId) {
+        throw new UnsupportedOperationException();
+    }
+}</programlisting>
+        </para>
+        
+        <para>
+          Add your own implementation in the appropriate methods to plugin your own identity management solution.
+          You have to figure out which member of the base class must be overridden. For example the following call:
+          <programlisting>
+long potentialOwners = identityService.createUserQuery().memberOfGroup("management").count();
+          </programlisting>
+          leads to a call on the following member of the <emphasis>UserIdentityManager</emphasis> interface:
+          <programlisting>
+List&lt;User$gt; findUserByQueryCriteria(UserQueryImpl query, Page page);
+          </programlisting>
+        </para>
+        
+        <para>
+          The code for the <link linkend="chapter_ldap">LDAP integration</link> contains full examples of how to implement this.
+          Check out the code on Github, specifically the following classes 
+          <ulink url="https://github.com/Activiti/Activiti/blob/master/modules/activiti-ldap/src/main/java/org/activiti/ldap/LDAPGroupManager.java">LDAPGroupManager</ulink> and
+          <ulink url="https://github.com/Activiti/Activiti/blob/master/modules/activiti-ldap/src/main/java/org/activiti/ldap/LDAPUserManager.java">LDAPUserManager</ulink>.
+        </para>
+    </section>
+    
 	<section id="advanced.safe.bpmn.xml">
 	
 	   <title>Enable safe BPMN 2.0 xml</title>
