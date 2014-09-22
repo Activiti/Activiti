@@ -4706,6 +4706,18 @@ from("direct:start").to("activiti:camelProcess");
 	as you see the url has two parts, the first is constant string "activiti" and the second name is the name of the process. Obviously the process should already be
 	deployed and startable by engine configuration. 
 		</para>
+		<para>
+		It is also possible to set the initiator of the process to some authenticated user id that is provided in a Camel header. To achieve this first of all an initiator variable must be specified in the process definition:
+	<programlisting>
+&lt;startEvent id="start" activiti:initiator="initiator" /&gt;
+	</programlisting>		
+	    Then given that the user id is contained in a Camel header named <emphasis>CamelProcessInitiatorHeader</emphasis> the Camel route could be defined as follows:
+    <programlisting>
+from("direct:startWithInitiatorHeader")
+    .setHeader("CamelProcessInitiatorHeader", constant("kermit"))
+    .to("activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");
+    </programlisting>	    
+		</para>
 	</section>
     </section>
 
