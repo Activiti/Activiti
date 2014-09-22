@@ -22,6 +22,7 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -31,10 +32,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.List;
@@ -74,11 +77,9 @@ public class BasicProcessEngineAutoConfiguration {
         @Autowired
         private ResourcePatternResolver resourceLoader;
 
-        @Bean
-        @ConditionalOnBean(DataSource.class)
-        public SpringProcessEngineConfiguration activitiConfiguration(DataSource dataSource,
-                                                                      PlatformTransactionManager transactionManager,
-                                                                      SpringJobExecutor springJobExecutor) throws IOException {
+
+        protected SpringProcessEngineConfiguration configuration(DataSource dataSource, PlatformTransactionManager platformTransactionManager,
+                                                                 SpringJobExecutor springJobExecutor) throws IOException {
 
             List<Resource> procDefResources = this.discoverProcessDefinitionResources(
                     this.resourceLoader, this.activitiProperties.getProcessDefinitionLocationPrefix(),
@@ -86,7 +87,7 @@ public class BasicProcessEngineAutoConfiguration {
                     this.activitiProperties.isCheckProcessDefinitions());
 
             SpringProcessEngineConfiguration conf = super.processEngineConfigurationBean(
-                    procDefResources.toArray(new Resource[procDefResources.size()]), dataSource, transactionManager, springJobExecutor);
+                    procDefResources.toArray(new Resource[procDefResources.size()]), dataSource, platformTransactionManager, springJobExecutor);
 
             conf.setDeploymentName(defaultText(
                     activitiProperties.getDeploymentName(),
@@ -100,7 +101,55 @@ public class BasicProcessEngineAutoConfiguration {
                     activitiProperties.getDatabaseSchemaUpdate(),
                     conf.getDatabaseSchemaUpdate()));
 
+
             return conf;
+        }
+
+        /*
+
+                @Bean
+                @ConditionalOnMissingBean
+                public PlatformTransactionManager transactionManager(DataSource dataSource) {
+                    return new DataSourceTransactionManager(dataSource);
+                }
+
+                @Bean
+                @ConditionalOnBean (EntityManagerFactory.class)
+                @ConditionalOnMissingBean (PlatformTransactionManager.class)
+                public JpaTransactionManager jpaTransactionManager(EntityManagerFactory emf) {
+                    return new JpaTransactionManager(emf);
+                }
+        */
+
+        @Bean
+        @ConditionalOnClass(EntityManager.class)
+        @ConditionalOnMissingBean(PlatformTransactionManager.class)
+        public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
+            return new JpaTransactionManager(emf);
+        }
+
+        @Bean
+        @ConditionalOnBean({DataSource.class, EntityManager.class, JpaTransactionManager.class})
+        @ConditionalOnClass(EntityManager.class)
+        public SpringProcessEngineConfiguration jpaActivitiConfiguration(DataSource dataSource,
+                                                                         EntityManagerFactory entityManagerFactory,
+                                                                         JpaTransactionManager transactionManager,
+                                                                         SpringJobExecutor springJobExecutor) throws IOException {
+            SpringProcessEngineConfiguration config = this.configuration(dataSource, transactionManager, springJobExecutor);
+            config.setJpaHandleTransaction(false);
+            config.setJpaCloseEntityManager(false);
+            config.setTransactionManager(transactionManager);
+            config.setJpaEntityManagerFactory(entityManagerFactory);
+            return config;
+        }
+
+        @Bean
+        @ConditionalOnMissingBean({SpringProcessEngineConfiguration.class, JpaTransactionManager.class})
+        @ConditionalOnBean(DataSource.class)
+        public SpringProcessEngineConfiguration activitiConfiguration(DataSource dataSource,
+                                                                      PlatformTransactionManager transactionManager,
+                                                                      SpringJobExecutor springJobExecutor) throws IOException {
+            return this.configuration(dataSource, transactionManager, springJobExecutor);
         }
 
         private String defaultText(String deploymentName, String deploymentName1) {
@@ -163,11 +212,6 @@ public class BasicProcessEngineAutoConfiguration {
             return super.identityServiceBean(processEngine);
         }
 
-        @Bean
-        @ConditionalOnMissingBean
-        public PlatformTransactionManager transactionManager(DataSource dataSource) {
-            return new DataSourceTransactionManager(dataSource);
-        }
 
         @Bean
         @ConditionalOnMissingBean

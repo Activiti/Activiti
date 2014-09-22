@@ -15,7 +15,9 @@
  */
 package org.activiti.spring.boot;
 
+import org.activiti.rest.common.filter.RestAuthenticator;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
+import org.restlet.Request;
 import org.restlet.ext.servlet.ServerServlet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -26,13 +28,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
  * Auto-configuration and starter for the Activiti REST APIs.
  *
  * @author Josh Long
  */
 @Configuration
-@AutoConfigureAfter( BasicProcessEngineAutoConfiguration.class)
+@AutoConfigureAfter(BasicProcessEngineAutoConfiguration.class)
 public class RestApiAutoConfiguration {
 
     @ConditionalOnExpression("${spring.activiti.restApiEnabled:true}")
@@ -49,9 +50,28 @@ public class RestApiAutoConfiguration {
             ServerServlet servlet = new ServerServlet();
             ServletRegistrationBean registration = new ServletRegistrationBean(servlet,
                     this.activitiProperties.getRestApiMapping());
-            registration.addInitParameter("org.restlet.application", "org.activiti.rest.service.application.ActivitiRestServicesApplication");
+            registration.addInitParameter("org.restlet.application", DeferringActivitiRestServicesApplication.class.getName());
             registration.setName(this.activitiProperties.getRestApiServletName());
             return registration;
         }
     }
+
+
+    public static class DeferringActivitiRestServicesApplication
+            extends ActivitiRestServicesApplication {
+
+    }
+
+    public static class NoopRestAuthenticator implements RestAuthenticator {
+        @Override
+        public boolean requestRequiresAuthentication(Request request) {
+            return false;
+        }
+
+        @Override
+        public boolean isRequestAuthorized(Request request) {
+            return false;
+        }
+    }
+
 }

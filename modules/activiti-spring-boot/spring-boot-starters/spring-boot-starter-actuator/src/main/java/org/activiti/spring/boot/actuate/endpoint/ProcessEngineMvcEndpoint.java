@@ -1,5 +1,6 @@
 package org.activiti.spring.boot.actuate.endpoint;
 
+import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -35,7 +36,7 @@ public class ProcessEngineMvcEndpoint extends EndpointMvcAdapter {
 
     /**
      * Look up the process definition by key. For example,
-     * this <A href="http://localhost:8080/activiti/processes/fulfillmentProcess">process-diagram for</A>
+     * this is <A href="http://localhost:8080/activiti/processes/fulfillmentProcess">process-diagram for</A>
      * a process definition named {@code fulfillmentProcess}.
      */
     @RequestMapping(value = "/processes/{processDefinitionKey:.*}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
@@ -45,6 +46,12 @@ public class ProcessEngineMvcEndpoint extends EndpointMvcAdapter {
                 .processDefinitionKey(processDefinitionKey).singleResult();
         ProcessDiagramGenerator processDiagramGenerator = new DefaultProcessDiagramGenerator();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
+
+        if (bpmnModel.getLocationMap().size() == 0) {
+            BpmnAutoLayout autoLayout = new BpmnAutoLayout(bpmnModel);
+            autoLayout.execute();
+        }
+
         InputStream is = processDiagramGenerator.generateJpgDiagram(bpmnModel);
         return new InputStreamResource(is);
     }
