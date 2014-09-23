@@ -190,4 +190,43 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseRestTestCase {
       assertEquals("Could not find a process instance with id 'unexistingprocess'.", expected.getStatus().getDescription());
     }
   }
+  
+  /**
+   * Test deleting a single identity link for a process instance.
+   */
+  @Deployment(resources = { "org/activiti/rest/service/api/runtime/ProcessInstanceIdentityLinkResourceTest.process.bpmn20.xml" })
+  public void testDeleteSingleIdentityLink() throws Exception {
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "myType");
+    
+    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK,
+            processInstance.getId(), "kermit", "myType"));
+
+    client.delete();
+    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+    
+    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK,
+        processInstance.getId(), "kermit", "myType"));
+    
+    // Test with unexisting process identity link
+    try {
+      client.delete();
+      fail("Exception expected");
+    } catch(ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+      assertEquals("Could not find the requested identity link.", expected.getStatus().getDescription());
+    }
+    
+    // Test with unexisting process
+    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, "unexistingprocess",
+            RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType"));
+    try {
+      client.delete();
+      fail("Exception expected");
+    } catch (ResourceException expected) {
+      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
+      assertEquals("Could not find a process instance with id 'unexistingprocess'.", expected.getStatus().getDescription());
+    }
+  }
 }
