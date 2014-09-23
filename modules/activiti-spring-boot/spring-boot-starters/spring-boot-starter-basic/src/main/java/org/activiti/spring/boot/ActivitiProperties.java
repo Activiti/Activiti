@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring.activiti")
 public class ActivitiProperties {
 
-    private boolean checkProcessDefinitions;
+    private boolean checkProcessDefinitions = true ;
     private boolean restApiEnabled;
     private String deploymentName;
 

@@ -2,36 +2,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
     <parent>
         <groupId>org.activiti</groupId>
-        <artifactId>spring-boot-starters</artifactId>
+        <artifactId>spring-boot-samples</artifactId>
         <version>5.16.4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spring-boot-starter-actuator</artifactId>
+    <artifactId>spring-boot-sample-actuator</artifactId>
+
 
     <dependencies>
         <dependency>
             <groupId>org.activiti</groupId>
-            <artifactId>spring-boot-starter-basic</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-image-generator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-bpmn-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-bpmn-layout</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>5.16.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -40,5 +24,6 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+
 
 </project>
