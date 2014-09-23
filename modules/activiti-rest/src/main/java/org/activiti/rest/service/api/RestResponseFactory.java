@@ -790,7 +790,7 @@ public class RestResponseFactory {
       response.setPassword(user.getPassword());
     }
     
-    if(user.isPictureSet){
+    if(user.isPictureSet()){
       response.setPictureUrl(securedResource.createFullResourceUrl(RestUrls.URL_USER_PICTURE, user.getId()));
     }
     return response;
