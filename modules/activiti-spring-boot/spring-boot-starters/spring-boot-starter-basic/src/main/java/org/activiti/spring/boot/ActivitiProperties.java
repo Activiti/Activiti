@@ -12,6 +12,8 @@ public class ActivitiProperties {
     private boolean checkProcessDefinitions = true ;
     private boolean restApiEnabled;
     private String deploymentName;
+    private String mailServerHost = "localhost";
+    private int mailServerPort = 1025;
 
     public boolean isRestApiEnabled() {
         return restApiEnabled;
@@ -109,4 +111,20 @@ public class ActivitiProperties {
         this.processDefinitionLocationSuffix = processDefinitionLocationSuffix;
     }
 
+	public String getMailServerHost() {
+		return mailServerHost;
+	}
+
+	public void setMailServerHost(String mailServerHost) {
+		this.mailServerHost = mailServerHost;
+	}
+
+	public int getMailServerPort() {
+		return mailServerPort;
+	}
+
+	public void setMailServerPort(int mailServerPort) {
+		this.mailServerPort = mailServerPort;
+	}
+    
 }

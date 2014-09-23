@@ -58,6 +58,9 @@ public abstract class AbstractProcessEngineAutoConfiguration
         conf.setDatabaseSchemaUpdate(defaultText(
                 activitiProperties.getDatabaseSchemaUpdate(),
                 conf.getDatabaseSchemaUpdate()));
+        
+        conf.setMailServerHost(activitiProperties.getMailServerHost());
+        conf.setMailServerPort(activitiProperties.getMailServerPort());
 
 
         return conf;
