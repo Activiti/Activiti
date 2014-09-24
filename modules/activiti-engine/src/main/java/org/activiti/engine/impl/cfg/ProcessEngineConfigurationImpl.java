@@ -873,7 +873,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected void configuratorsBeforeInit() {
   	for (ProcessEngineConfigurator configurator : allConfigurators) {
-  		log.info("Executing configure() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
+  		log.info("Executing beforeInit() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
   		configurator.beforeInit(this);
   	}
   }
