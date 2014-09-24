@@ -7,12 +7,12 @@
     <sequenceFlow id="sid-AA1205FD-63BD-47BA-9FB3-AA9F7C1E31F0" sourceRef="usertask" targetRef="endEvent"></sequenceFlow>
     <userTask id="usertask" name="User task" activiti:async="true" activiti:exclusive="false" activiti:assignee="kermit" activiti:candidateUsers="kermit,fozzie" activiti:candidateGroups="management,sales" activiti:dueDate="2012-11-01" activiti:formKey="testKey" activiti:priority="40">
       <extensionElements>
-        <activiti:customResource activiti:name="businessAdministrator">
+        <activiti:customResource name="businessAdministrator">
          <resourceAssignmentExpression>
           <formalExpression>user(kermit), group(management)</formalExpression>
          </resourceAssignmentExpression>
         </activiti:customResource>
-        <activiti:customResource activiti:name="manager">
+        <activiti:customResource name="manager">
          <resourceAssignmentExpression>
           <formalExpression>group(management)</formalExpression>
          </resourceAssignmentExpression>
