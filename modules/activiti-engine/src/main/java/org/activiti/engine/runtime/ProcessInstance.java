@@ -26,7 +26,8 @@ import org.activiti.engine.repository.ProcessDefinition;
  * @author Tijs Rademakers
  */
 public interface ProcessInstance extends Execution {
-  
+
+
   /**
    * The id of the process definition of the process instance.
    */

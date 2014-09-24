@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 
 /**
  * Builder for creating new deployments.
@@ -88,5 +89,14 @@ public interface DeploymentBuilder {
    * Deploys all provided sources to the Activiti engine.
    */
   Deployment deploy();
-  
+
+    DeploymentEntity getDeployment();
+
+    boolean isDuplicateFilterEnabled();
+
+    boolean isBpmn20XsdValidationEnabled();
+
+    boolean isProcessValidationEnabled();
+
+    Date getProcessDefinitionsActivationDate();
 }

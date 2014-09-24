@@ -29,6 +29,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
 
 /**
  * @author Tom Baeyens
@@ -37,9 +38,9 @@ import org.activiti.engine.repository.Deployment;
 public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
   private static final long serialVersionUID = 1L;
-  protected DeploymentBuilderImpl deploymentBuilder;
+  protected DeploymentBuilder deploymentBuilder;
 
-  public DeployCmd(DeploymentBuilderImpl deploymentBuilder) {
+  public DeployCmd(DeploymentBuilder deploymentBuilder) {
     this.deploymentBuilder = deploymentBuilder;
   }
 

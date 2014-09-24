@@ -15,6 +15,8 @@ package org.activiti.engine.impl.context;
 
 import java.util.Stack;
 
+import org.activiti.engine.IProcessEngineConfiguration;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
@@ -28,7 +30,7 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 public class Context {
 
   protected static ThreadLocal<Stack<CommandContext>> commandContextThreadLocal = new ThreadLocal<Stack<CommandContext>>();
-  protected static ThreadLocal<Stack<ProcessEngineConfigurationImpl>> processEngineConfigurationStackThreadLocal = new ThreadLocal<Stack<ProcessEngineConfigurationImpl>>();
+  protected static ThreadLocal<Stack<IProcessEngineConfiguration>> processEngineConfigurationStackThreadLocal = new ThreadLocal<Stack<IProcessEngineConfiguration>>();
   protected static ThreadLocal<Stack<ExecutionContext>> executionContextStackThreadLocal = new ThreadLocal<Stack<ExecutionContext>>();
   protected static ThreadLocal<JobExecutorContext> jobExecutorContextThreadLocal = new ThreadLocal<JobExecutorContext>();
 
@@ -48,15 +50,15 @@ public class Context {
     getStack(commandContextThreadLocal).pop();
   }
 
-  public static ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-    Stack<ProcessEngineConfigurationImpl> stack = getStack(processEngineConfigurationStackThreadLocal);
+  public static IProcessEngineConfiguration getProcessEngineConfiguration() {
+    Stack<IProcessEngineConfiguration> stack = getStack(processEngineConfigurationStackThreadLocal);
     if (stack.isEmpty()) {
       return null;
     }
     return stack.peek();
   }
 
-  public static void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public static void setProcessEngineConfiguration(IProcessEngineConfiguration processEngineConfiguration) {
     getStack(processEngineConfigurationStackThreadLocal).push(processEngineConfiguration);
   }
 

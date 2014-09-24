@@ -74,7 +74,8 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     return new DeploymentBuilderImpl(this);
   }
 
-  public Deployment deploy(DeploymentBuilderImpl deploymentBuilder) {
+  @Override
+  public Deployment deploy(DeploymentBuilder deploymentBuilder) {
     return commandExecutor.execute(new DeployCmd<Deployment>(deploymentBuilder));
   }
 

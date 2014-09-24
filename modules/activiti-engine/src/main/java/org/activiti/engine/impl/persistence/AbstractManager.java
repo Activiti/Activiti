@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence;
 
+import org.activiti.engine.IProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -152,7 +153,7 @@ public abstract class AbstractManager implements Session {
     return getSession(HistoryManager.class);
   }
   
-  protected ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+  protected IProcessEngineConfiguration getProcessEngineConfiguration() {
   	return Context.getProcessEngineConfiguration();
   }
   
