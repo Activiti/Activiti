@@ -37,4 +37,6 @@ public interface User extends Serializable {
   
   String getPassword(); 
   void setPassword(String string);
+  
+  boolean isPictureSet();
 }
