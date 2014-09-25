@@ -26,35 +26,37 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:custom-camel-activiti-context.xml")
 public class CustomContextTest extends SpringActivitiTestCase {
 
-  MockEndpoint service1;
+	MockEndpoint service1;
 
-  MockEndpoint service2;
+	MockEndpoint service2;
 
-  public void setUp() {
+	public void setUp() {
 
-    CamelContext ctx = applicationContext.getBean(CamelContext.class);
-    service1 = (MockEndpoint) ctx.getEndpoint("mock:service1");
-    service1.reset();
-    service2 = (MockEndpoint) ctx.getEndpoint("mock:service2");
-    service2.reset();
+		CamelContext ctx = applicationContext.getBean(CamelContext.class);
+		service1 = (MockEndpoint) ctx.getEndpoint("mock:service1");
+		service1.reset();
+		service2 = (MockEndpoint) ctx.getEndpoint("mock:service2");
+		service2.reset();
 
-  }
+	}
 
-  @Deployment(resources = {"process/custom.bpmn20.xml"})
-  public void testRunProcess() throws Exception {
-    CamelContext ctx = applicationContext.getBean(CamelContext.class);
-    ProducerTemplate tpl = ctx.createProducerTemplate();
-    service1.expectedBodiesReceived("ala");
+	@Deployment(resources = { "process/custom.bpmn20.xml" })
+	public void testRunProcess() throws Exception {
+		CamelContext ctx = applicationContext.getBean(CamelContext.class);
+		ProducerTemplate tpl = ctx.createProducerTemplate();
+		service1.expectedBodiesReceived("ala");
 
-    String instanceId = (String) tpl.requestBody("direct:start", Collections.singletonMap("var1", "ala"));
+		String instanceId = (String) tpl.requestBody("direct:start",
+				Collections.singletonMap("var1", "ala"));
 
-    tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
+		tpl.sendBodyAndProperty("direct:receive", null,
+				ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
 
-    assertProcessEnded(instanceId);
+		assertProcessEnded(instanceId);
 
-    service1.assertIsSatisfied();
-    Map m = service2.getExchanges().get(0).getIn().getBody(Map.class);
-    assertEquals("ala", m.get("var1"));
-    assertEquals("var2", m.get("var2"));
-  }
+		service1.assertIsSatisfied();
+		Map m = service2.getExchanges().get(0).getIn().getBody(Map.class);
+		assertEquals("ala", m.get("var1"));
+		assertEquals("var2", m.get("var2"));
+	}
 }
