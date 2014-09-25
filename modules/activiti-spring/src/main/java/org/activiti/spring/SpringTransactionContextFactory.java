@@ -23,21 +23,21 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @author Frederik Heremans
  */
 public class SpringTransactionContextFactory implements TransactionContextFactory {
-  
-  protected PlatformTransactionManager transactionManager;
-  protected Integer transactionSynchronizationAdapterOrder;
-  
-  public SpringTransactionContextFactory(PlatformTransactionManager transactionManager) {
-    this(transactionManager, null);
-  }
 
-  public SpringTransactionContextFactory(PlatformTransactionManager transactionManager, Integer transactionSynchronizationAdapterOrder) {
-    this.transactionManager = transactionManager;
-    this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
-  }
+    protected PlatformTransactionManager transactionManager;
+    protected Integer transactionSynchronizationAdapterOrder;
 
-  public TransactionContext openTransactionContext(CommandContext commandContext) {
-    return new SpringTransactionContext(transactionManager, commandContext, transactionSynchronizationAdapterOrder);
-  }
+    public SpringTransactionContextFactory(PlatformTransactionManager transactionManager) {
+        this(transactionManager, null);
+    }
+
+    public SpringTransactionContextFactory(PlatformTransactionManager transactionManager, Integer transactionSynchronizationAdapterOrder) {
+        this.transactionManager = transactionManager;
+        this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
+    }
+
+    public TransactionContext openTransactionContext(CommandContext commandContext) {
+        return new SpringTransactionContext(transactionManager, commandContext, transactionSynchronizationAdapterOrder);
+    }
 
 }

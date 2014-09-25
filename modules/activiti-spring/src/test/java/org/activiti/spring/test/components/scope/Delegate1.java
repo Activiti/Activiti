@@ -1,7 +1,5 @@
 package org.activiti.spring.test.components.scope;
 
-import java.util.UUID;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -10,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 
 public class Delegate1 implements JavaDelegate, InitializingBean {

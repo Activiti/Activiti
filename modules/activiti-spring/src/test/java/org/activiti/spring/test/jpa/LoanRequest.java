@@ -13,11 +13,7 @@
 
 package org.activiti.spring.test.jpa;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * @author Frederik Heremans
@@ -25,50 +21,50 @@ import javax.persistence.Id;
 @Entity(name = "SPRING_TEST_ORDER")
 public class LoanRequest {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "ID_")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_")
+    private Long id;
 
-  @Column(name = "CUSTOMER_NAME_")
-  private String customerName;
+    @Column(name = "CUSTOMER_NAME_")
+    private String customerName;
 
-  @Column(name = "AMOUNT_")
-  private Long amount;
+    @Column(name = "AMOUNT_")
+    private Long amount;
 
-  @Column(name = "APPROVED_")
-  private boolean approved;
+    @Column(name = "APPROVED_")
+    private boolean approved;
 
-  public Long getId() {
-    return id;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public String getCustomerName() {
-    return customerName;
-  }
+    public String getCustomerName() {
+        return customerName;
+    }
 
-  public void setCustomerName(String customerName) {
-    this.customerName = customerName;
-  }
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 
-  public Long getAmount() {
-    return amount;
-  }
+    public Long getAmount() {
+        return amount;
+    }
 
-  public void setAmount(Long amount) {
-    this.amount = amount;
-  }
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
 
-  public boolean isApproved() {
-    return approved;
-  }
+    public boolean isApproved() {
+        return approved;
+    }
 
-  public void setApproved(boolean approved) {
-    this.approved = approved;
-  }
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
 
 }

@@ -21,12 +21,12 @@ import org.springframework.stereotype.Component;
  */
 @Component("startProcessInstanceDelegate")
 public class StartProcessInstanceTestDelegateWithInjection {
-  
+
     @Autowired
     private RuntimeService runtimeService;
-    
+
     public void startProcess() {
-      runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
     }
 
 }
