@@ -20,7 +20,9 @@ import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
+import org.activiti.engine.impl.variable.HistoricJPAEntityListVariableType;
 import org.activiti.engine.impl.variable.HistoricJPAEntityVariableType;
+import org.activiti.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
 
 
@@ -124,6 +126,10 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
           if (varUpdate.getVariableType() instanceof JPAEntityVariableType) {
             // Use HistoricJPAEntityVariableType to force caching of value to return from query
             varUpdate.setVariableType(HistoricJPAEntityVariableType.getSharedInstance());
+            varUpdate.getValue();
+          } else if (varUpdate.getVariableType() instanceof JPAEntityListVariableType) {
+            // Use HistoricJPAEntityListVariableType to force caching of list to return from query
+            varUpdate.setVariableType(HistoricJPAEntityListVariableType.getSharedInstance());
             varUpdate.getValue();
           }
         }

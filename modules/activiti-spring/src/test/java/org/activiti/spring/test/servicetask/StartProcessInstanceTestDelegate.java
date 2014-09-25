@@ -21,9 +21,9 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class StartProcessInstanceTestDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) throws Exception {
-    RuntimeService runtimeService = execution.getEngineServices().getRuntimeService();
-    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-  }
+    public void execute(DelegateExecution execution) throws Exception {
+        RuntimeService runtimeService = execution.getEngineServices().getRuntimeService();
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    }
 
 }

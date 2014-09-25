@@ -199,6 +199,7 @@ import org.activiti.engine.impl.variable.DoubleType;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.impl.variable.IntegerType;
+import org.activiti.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.LongStringType;
 import org.activiti.engine.impl.variable.LongType;
@@ -872,7 +873,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected void configuratorsBeforeInit() {
   	for (ProcessEngineConfigurator configurator : allConfigurators) {
-  		log.info("Executing configure() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
+  		log.info("Executing beforeInit() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
   		configurator.beforeInit(this);
   	}
   }
@@ -1307,8 +1308,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           variableTypes.addType(new JPAEntityVariableType(), serializableIndex);
         } else {
           variableTypes.addType(new JPAEntityVariableType());
-        }        
+        }   
       }
+        
+      jpaType = variableTypes.getVariableType(JPAEntityListVariableType.TYPE_NAME);
+      
+      // Add JPA-list type after regular JPA type if not already present
+      if(jpaType == null) {
+        variableTypes.addType(new JPAEntityListVariableType(), variableTypes.getTypeIndex(JPAEntityVariableType.TYPE_NAME));
+      }        
     }
   }
   

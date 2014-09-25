@@ -65,16 +65,12 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
             .findExclusiveJobsToExecute(job.getProcessInstanceId());
           for (JobEntity exclusiveJob : exclusiveJobs) {
             if (exclusiveJob != null) {
-              //lockJob(commandContext, exclusiveJob, lockOwner, lockTimeInMillis);
               jobIds.add(exclusiveJob.getId());
               finalJobs.add(exclusiveJob);
             }
           }
-          //lockJob(commandContext, job, lockOwner, lockTimeInMillis);
-          //jobIds.add(job.getId());
           
         } else {
-          //lockJob(commandContext, job, lockOwner, lockTimeInMillis);
           jobIds.add(job.getId());
           finalJobs.add(job);
         }
@@ -89,14 +85,6 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
     }
 
     return acquiredJobs;
-  }
-
-  protected void lockJob(CommandContext commandContext, JobEntity job, String lockOwner, int lockTimeInMillis) {    
-    job.setLockOwner(lockOwner);
-    GregorianCalendar gregorianCalendar = new GregorianCalendar();
-    gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
-    gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
-    job.setLockExpirationTime(gregorianCalendar.getTime());    
   }
   
   protected Date getLockExpirationTime(CommandContext commandContext, int lockTimeInMillis) {    
