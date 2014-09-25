@@ -5,6 +5,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Josh Long
  */
+@Ignore
 public class SecurityAutoConfigurationTest {
     private AnnotationConfigApplicationContext applicationContext;
 

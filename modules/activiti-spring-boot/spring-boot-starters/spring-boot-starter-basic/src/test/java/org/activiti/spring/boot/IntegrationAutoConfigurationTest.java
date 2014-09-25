@@ -10,6 +10,7 @@ import org.activiti.spring.integration.ActivitiInboundGateway;
 import org.activiti.spring.integration.IntegrationActivityBehavior;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -35,6 +36,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author Josh Long
  */
+@Ignore
 public class IntegrationAutoConfigurationTest {
 
     private AnnotationConfigApplicationContext applicationContext;

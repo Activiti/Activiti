@@ -1,6 +1,7 @@
 package org.activiti.spring.boot;
 
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.web.*;
 import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
@@ -13,6 +14,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.ServletRegistration;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -22,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author Josh Long
  */
+@Ignore
 public class RestApiAutoConfigurationTest {
 
     private AnnotationConfigEmbeddedWebApplicationContext applicationContext;

@@ -3,6 +3,7 @@ package org.activiti.spring.boot;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.spring.boot.actuate.endpoint.ProcessEngineEndpoint;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.actuate.autoconfigure.EndpointWebMvcAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.ManagementServerPropertiesAutoConfiguration;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
+@Ignore
 public class EndpointAutoConfigurationTest {
 
     private AnnotationConfigEmbeddedWebApplicationContext applicationContext;
