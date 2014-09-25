@@ -14,6 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -48,8 +49,9 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
       .getJobEntityManager()
       .findNextJobsToExecute(new Page(0, maxNonExclusiveJobsPerAcquisition));
 
+    List<String> jobIds = new ArrayList<String>();
+    List<JobEntity> finalJobs = new ArrayList<JobEntity>();
     for (JobEntity job: jobs) {
-      List<String> jobIds = new ArrayList<String>();
       if (job != null && !acquiredJobs.contains(job.getId())) {
         if (job.isExclusive() && job.getProcessInstanceId() != null) {
           // wait to get exclusive jobs within 100ms
@@ -63,19 +65,27 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
             .findExclusiveJobsToExecute(job.getProcessInstanceId());
           for (JobEntity exclusiveJob : exclusiveJobs) {
             if (exclusiveJob != null) {
-              lockJob(commandContext, exclusiveJob, lockOwner, lockTimeInMillis);
+              //lockJob(commandContext, exclusiveJob, lockOwner, lockTimeInMillis);
               jobIds.add(exclusiveJob.getId());
+              finalJobs.add(exclusiveJob);
             }
           }
+          //lockJob(commandContext, job, lockOwner, lockTimeInMillis);
+          //jobIds.add(job.getId());
           
         } else {
-          lockJob(commandContext, job, lockOwner, lockTimeInMillis);
+          //lockJob(commandContext, job, lockOwner, lockTimeInMillis);
           jobIds.add(job.getId());
+          finalJobs.add(job);
         }
-        
       }
-
-      acquiredJobs.addJobIdBatch(jobIds);
+    }
+    
+    if (jobIds.size() > 0) {
+      commandContext.getJobEntityManager().updateJobLock(lockOwner, getLockExpirationTime(
+          commandContext, lockTimeInMillis), jobIds);
+      
+      acquiredJobs.addJobIdBatch(finalJobs);
     }
 
     return acquiredJobs;
@@ -87,5 +97,12 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
     gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
     gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
     job.setLockExpirationTime(gregorianCalendar.getTime());    
+  }
+  
+  protected Date getLockExpirationTime(CommandContext commandContext, int lockTimeInMillis) {    
+    GregorianCalendar gregorianCalendar = new GregorianCalendar();
+    gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+    gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
+    return gregorianCalendar.getTime(); 
   }
 }

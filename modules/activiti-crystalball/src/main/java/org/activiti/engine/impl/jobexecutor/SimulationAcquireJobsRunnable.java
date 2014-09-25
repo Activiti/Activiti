@@ -20,6 +20,7 @@ import org.activiti.crystalball.simulator.SimulationRunContext;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class SimulationAcquireJobsRunnable extends AcquireJobsRunnable {
 		      try {
 		        AcquiredJobs acquiredJobs = commandExecutor.execute(jobExecutor.getAcquireJobsCmd());
 
-		        for (List<String> jobIds : acquiredJobs.getJobIdBatches()) {
+		        for (List<JobEntity> jobIds : acquiredJobs.getJobIdBatches()) {
 		          jobExecutor.executeJobs(jobIds);
 		        }
 

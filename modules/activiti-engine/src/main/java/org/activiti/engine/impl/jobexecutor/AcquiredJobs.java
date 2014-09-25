@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.impl.persistence.entity.JobEntity;
+
 
 /**
  * @author Tom Baeyens
@@ -24,14 +26,14 @@ import java.util.Set;
  */
 public class AcquiredJobs {
 
-  protected List<List<String>> acquiredJobBatches = new ArrayList<List<String>>();
-  protected Set<String> acquiredJobs = new HashSet<String>();
+  protected List<List<JobEntity>> acquiredJobBatches = new ArrayList<List<JobEntity>>();
+  protected Set<JobEntity> acquiredJobs = new HashSet<JobEntity>();
 
-  public List<List<String>> getJobIdBatches() {
+  public List<List<JobEntity>> getJobIdBatches() {
     return acquiredJobBatches;
   }
 
-  public void addJobIdBatch(List<String> jobIds) {
+  public void addJobIdBatch(List<JobEntity> jobIds) {
     acquiredJobBatches.add(jobIds);
     acquiredJobs.addAll(jobIds);
   }

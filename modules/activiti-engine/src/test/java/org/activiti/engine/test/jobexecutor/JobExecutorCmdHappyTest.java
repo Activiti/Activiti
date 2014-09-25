@@ -23,6 +23,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 
@@ -44,18 +45,22 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     });
 
     AcquiredJobs acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
-    List<List<String>> jobIdsList = acquiredJobs.getJobIdBatches();
+    List<List<JobEntity>> jobIdsList = acquiredJobs.getJobIdBatches();
     assertEquals(1, jobIdsList.size());
 
-    List<String> jobIds = jobIdsList.get(0);
+    List<JobEntity> jobs = jobIdsList.get(0);
+    List<String> jobIds = new ArrayList<String>();
+    for (JobEntity jobEntity : jobs) {
+      jobIds.add(jobEntity.getId());
+    }
 
     List<String> expectedJobIds = new ArrayList<String>();
     expectedJobIds.add(jobId);
 
-    assertEquals(expectedJobIds, new ArrayList<String>(jobIds));
+    assertEquals(expectedJobIds, jobIds);
     assertEquals(0, tweetHandler.getMessages().size());
 
-    commandExecutor.execute(new ExecuteJobsCmd(jobId));
+    commandExecutor.execute(new ExecuteJobsCmd(jobIds.get(0)));
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());
@@ -81,7 +86,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     });
 
     AcquiredJobs acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
-    List<List<String>> jobIdsList = acquiredJobs.getJobIdBatches();
+    List<List<JobEntity>> jobIdsList = acquiredJobs.getJobIdBatches();
     assertEquals(0, jobIdsList.size());
 
     List<String> expectedJobIds = new ArrayList<String>();
@@ -92,14 +97,18 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     jobIdsList = acquiredJobs.getJobIdBatches();
     assertEquals(1, jobIdsList.size());
 
-    List<String> jobIds = jobIdsList.get(0);
+    List<JobEntity> jobs = jobIdsList.get(0);
+    List<String> jobIds = new ArrayList<String>();
+    for (JobEntity jobEntity : jobs) {
+      jobIds.add(jobEntity.getId());
+    }
 
     expectedJobIds.add(jobId);
-    assertEquals(expectedJobIds, new ArrayList<String>(jobIds));
+    assertEquals(expectedJobIds, jobIds);
 
     assertEquals(0, tweetHandler.getMessages().size());
 
-    commandExecutor.execute(new ExecuteJobsCmd(jobId));
+    commandExecutor.execute(new ExecuteJobsCmd(jobIds.get(0)));
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());

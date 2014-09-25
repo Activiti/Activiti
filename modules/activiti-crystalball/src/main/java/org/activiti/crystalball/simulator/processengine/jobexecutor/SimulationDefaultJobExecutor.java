@@ -12,13 +12,14 @@
  */
 package org.activiti.crystalball.simulator.processengine.jobexecutor;
 
+import java.util.List;
+
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.impl.jobexecutor.AcquireJobsRunnable;
 import org.activiti.engine.impl.jobexecutor.DefaultJobExecutor;
 import org.activiti.engine.impl.jobexecutor.ExecuteJobsRunnable;
 import org.activiti.engine.impl.jobexecutor.SimulationAcquireJobsRunnable;
-
-import java.util.List;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
  * simulation is driven by simulation time. That's why JobExecutor 
@@ -45,7 +46,7 @@ public class SimulationDefaultJobExecutor extends DefaultJobExecutor {
 	 * do not execute new thread - simulation time can move too forward.
 	 * 
 	 */
-	public void executeJobs(List<String> jobIds) {
+	public void executeJobs(List<JobEntity> jobIds) {
 			(new ExecuteJobsRunnable(this, jobIds)).run();
 	}
 

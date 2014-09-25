@@ -15,6 +15,8 @@ package org.activiti.engine.impl.jobexecutor;
 
 import java.util.List;
 
+import org.activiti.engine.impl.persistence.entity.JobEntity;
+
 /**
  * <p>Strategy for handling jobs that were acquired but cannot be 
  * executed at this point (queue-size exceeded).</p> 
@@ -23,6 +25,6 @@ import java.util.List;
  */
 public interface RejectedJobsHandler {
 
-  public void jobsRejected(JobExecutor jobExecutor, List<String> jobIds);  
+  public void jobsRejected(JobExecutor jobExecutor, List<JobEntity> jobIds);  
   
 }

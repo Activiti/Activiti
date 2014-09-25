@@ -17,6 +17,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 import org.activiti.engine.impl.jobexecutor.ExecuteJobsRunnable;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.springframework.core.task.TaskExecutor;
 
 /**
@@ -59,7 +60,7 @@ public class SpringJobExecutor extends JobExecutor {
 	}
 
 	@Override
-	public void executeJobs(List<String> jobIds) {
+	public void executeJobs(List<JobEntity> jobIds) {
 		try {
 			taskExecutor.execute(new ExecuteJobsRunnable(this, jobIds));
 		} catch (RejectedExecutionException e) {

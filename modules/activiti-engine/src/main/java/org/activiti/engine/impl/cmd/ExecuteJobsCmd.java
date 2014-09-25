@@ -40,28 +40,38 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
 
   private static Logger log = LoggerFactory.getLogger(ExecuteJobsCmd.class);
   
+  protected JobEntity job;
   protected String jobId;
  
+  public ExecuteJobsCmd(JobEntity job) {
+    this.job = job;
+    if (job != null) {
+      this.jobId = job.getId();
+    }
+  }
+  
   public ExecuteJobsCmd(String jobId) {
     this.jobId = jobId;
   }
 
   public Object execute(CommandContext commandContext) {
     
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("jobId is null");
+    if (job == null && jobId == null) {
+      throw new ActivitiIllegalArgumentException("job is null");
     }
     
     if (log.isDebugEnabled()) {
       log.debug("Executing job {}", jobId);
     }
     
-    JobEntity job = commandContext
-      .getJobEntityManager()
-      .findJobById(jobId);
-    
     if (job == null) {
-      throw new JobNotFoundException(jobId);
+      job = commandContext
+          .getJobEntityManager()
+          .findJobById(jobId);
+    
+      if (job == null) {
+        throw new JobNotFoundException(jobId);
+      }
     }
     
     JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
@@ -84,7 +94,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       
       commandContext.getTransactionContext().addTransactionListener(
         TransactionState.ROLLED_BACK, 
-        new FailedJobListener(commandExecutor, jobId, exception));
+        new FailedJobListener(commandExecutor, job.getId(), exception));
       
       // Dispatch an event, indicating job execution failed in a try-catch block, to prevent the original
       // exception to be swallowed
@@ -107,8 +117,8 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     return null;
   }
   
-  public String getJobId() {
-		return jobId;
+  public JobEntity getJob() {
+		return job;
 	}
 
 }
