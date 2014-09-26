@@ -8,9 +8,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.spring.integration.ActivitiInboundGateway;
 import org.activiti.spring.integration.IntegrationActivityBehavior;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -36,28 +34,26 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author Josh Long
  */
-@Ignore
 public class IntegrationAutoConfigurationTest {
 
-    private AnnotationConfigApplicationContext applicationContext;
-
-    @After
-    public void close() {
-        this.applicationContext.close();
+    private AnnotationConfigApplicationContext context(Class<?>... clzz) {
+        AnnotationConfigApplicationContext annotationConfigApplicationContext
+                = new AnnotationConfigApplicationContext();
+        annotationConfigApplicationContext.register(clzz);
+        annotationConfigApplicationContext.refresh();
+        return annotationConfigApplicationContext;
     }
 
 
     @Test
     public void testLaunchingGatewayProcessDefinition() throws Exception {
-        this.applicationContext = new AnnotationConfigApplicationContext();
-        this.applicationContext.register(InboundGatewayConfiguration.class);
-        this.applicationContext.refresh();
+        AnnotationConfigApplicationContext applicationContext = this.context(InboundGatewayConfiguration.class);
 
+        RepositoryService repositoryService = applicationContext.getBean(RepositoryService.class);
+        RuntimeService runtimeService = applicationContext.getBean(RuntimeService.class);
+        ProcessEngine processEngine = applicationContext.getBean(ProcessEngine.class);
 
-        RepositoryService repositoryService = this.applicationContext.getBean(RepositoryService.class);
-        RuntimeService runtimeService = this.applicationContext.getBean(RuntimeService.class);
-        ProcessEngine processEngine = this.applicationContext.getBean(ProcessEngine.class);
-
+        Assert.assertNotNull("the process engine should not be null", processEngine);
         Assert.assertNotNull("we should have a default repositoryService included", repositoryService);
         String integrationGatewayProcess = "integrationGatewayProcess";
         List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery()
@@ -68,25 +64,25 @@ public class IntegrationAutoConfigurationTest {
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("customerId", 232);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(integrationGatewayProcess, vars);
+        Assert.assertNotNull("the processInstance should not be null", processInstance);
         org.junit.Assert.assertTrue(
-                this.applicationContext.getBean(InboundGatewayConfiguration.AnalysingService.class)
+                applicationContext.getBean(InboundGatewayConfiguration.AnalysingService.class)
                         .getStringAtomicReference().get().equals(projectId));
-        System.out.println("finished " + integrationGatewayProcess);
     }
 
     @Configuration
     @Import({DataSourceAutoConfiguration.class,
-            DataSourceProcessEngineAutoConfiguration.class,
+            DataSourceProcessEngineAutoConfiguration.DataSourceConfiguration.class,
             IntegrationAutoConfiguration.class})
     public static class BaseConfiguration {
 
         @Bean
-        RestTemplate restTemplate() {
+        public RestTemplate restTemplate() {
             return new RestTemplate();
         }
 
         @Bean
-        TaskExecutor taskExecutor() {
+        public TaskExecutor taskExecutor() {
             return new SimpleAsyncTaskExecutor();
         }
     }
@@ -96,17 +92,17 @@ public class IntegrationAutoConfigurationTest {
     @Import(BaseConfiguration.class)
     public static class InboundGatewayConfiguration {
         @Bean
-        IntegrationActivityBehavior activitiDelegate(ActivitiInboundGateway activitiInboundGateway) {
+        public IntegrationActivityBehavior activitiDelegate(ActivitiInboundGateway activitiInboundGateway) {
             return new IntegrationActivityBehavior(activitiInboundGateway);
         }
 
         @Bean
-        ActivitiInboundGateway inboundGateway(ProcessEngine processEngine) {
+        public ActivitiInboundGateway inboundGateway(ProcessEngine processEngine) {
             return new ActivitiInboundGateway(processEngine, "customerId", "projectId", "orderId");
         }
 
         @Bean
-        IntegrationFlow inboundProcess(ActivitiInboundGateway inboundGateway) {
+        public IntegrationFlow inboundProcess(ActivitiInboundGateway inboundGateway) {
             return IntegrationFlows
                     .from(inboundGateway)
                     .handle(new GenericHandler<ActivityExecution>() {
@@ -123,7 +119,7 @@ public class IntegrationAutoConfigurationTest {
 
 
         @Bean
-        AnalysingService service() {
+        public AnalysingService service() {
             return new AnalysingService();
         }
 

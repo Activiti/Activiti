@@ -25,7 +25,7 @@
 
         <sequenceFlow id="flow1" sourceRef="start" targetRef="service1"/>
 
-        <serviceTask id="service1"  activiti:delegateExpression="${delegateBean}" />
+        <serviceTask id="service1" activiti:delegateExpression="${delegateBean}"/>
 
         <sequenceFlow id="flow2" sourceRef="service1" targetRef="end"/>
 
