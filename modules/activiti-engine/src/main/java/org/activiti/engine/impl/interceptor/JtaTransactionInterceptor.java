@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author Guillaume Nodet
  */
 public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(JtaTransactionInterceptor.class);
 
   private final TransactionManager transactionManager;
@@ -41,13 +42,14 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
     this.transactionManager = transactionManager;
   }
 
+  @Override
   public <T> T execute(CommandConfig config, Command<T> command) {
     LOGGER.debug("Running command with propagation {}", config.getTransactionPropagation());
-    
+
     if (config.getTransactionPropagation() == TransactionPropagation.NOT_SUPPORTED) {
       return next.execute(config, command);
     }
-    
+
     boolean requiresNew = config.getTransactionPropagation() == TransactionPropagation.REQUIRES_NEW;
     Transaction oldTx = null;
     try {
@@ -146,12 +148,13 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
       } else {
         transactionManager.setRollbackOnly();
       }
-    } catch (SystemException e) {
-      LOGGER.debug("Error when rolling back transaction", e);
+    } catch (Throwable e) {
+      LOGGER.error("Error when rolling back transaction", e);
     }
   }
 
   private static class TransactionException extends RuntimeException {
+
     private static final long serialVersionUID = 1L;
 
     private TransactionException() {
