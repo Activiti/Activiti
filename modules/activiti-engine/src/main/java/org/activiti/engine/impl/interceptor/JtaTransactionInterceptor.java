@@ -65,13 +65,13 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
       try {
         result = next.execute(config, command);
       } catch (RuntimeException ex) {
-        doRollback(isNew);
+        doRollback(isNew, ex);
         throw ex;
       } catch (Error err) {
-        doRollback(isNew);
+        doRollback(isNew, err);
         throw err;
       } catch (Exception ex) {
-        doRollback(isNew);
+        doRollback(isNew, ex);
         throw new UndeclaredThrowableException(ex, "TransactionCallback threw undeclared checked exception");
       }
       if (isNew) {
@@ -133,23 +133,34 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
     } catch (SystemException e) {
       throw new TransactionException("Unable to commit transaction", e);
     } catch (RuntimeException e) {
-      doRollback(true);
+      doRollback(true, e);
       throw e;
     } catch (Error e) {
-      doRollback(true);
+      doRollback(true, e);
       throw e;
     }
   }
 
-  private void doRollback(boolean isNew) {
+  private void doRollback(boolean isNew, Throwable originalException) {
+    Throwable rollbackEx = null;
     try {
       if (isNew) {
         transactionManager.rollback();
       } else {
         transactionManager.setRollbackOnly();
       }
-    } catch (Throwable e) {
-      LOGGER.error("Error when rolling back transaction", e);
+    } catch (SystemException e) {
+      LOGGER.debug("Error when rolling back transaction", e);
+    } catch (RuntimeException e) {
+      rollbackEx = e;
+      throw e;
+    } catch (Error e) {
+      rollbackEx = e;
+      throw e;
+    } finally {
+      if (rollbackEx != null && originalException != null) {
+        LOGGER.error("Error when rolling back transaction caused by: " + originalException.getMessage(), originalException);
+      }
     }
   }
 
