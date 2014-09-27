@@ -15,6 +15,7 @@ package org.activiti.engine.impl.jobexecutor;
 
 import java.util.List;
 
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public class CallerRunsRejectedJobsHandler implements RejectedJobsHandler {
   
   private static Logger log = LoggerFactory.getLogger(CallerRunsRejectedJobsHandler.class);
 
-  public void jobsRejected(JobExecutor jobExecutor, List<String> jobIds) {
+  public void jobsRejected(JobExecutor jobExecutor, List<JobEntity> jobIds) {
     try {
       // execute rejected work in caller thread (potentially blocking job acquisition)
       new ExecuteJobsRunnable(jobExecutor, jobIds).run();

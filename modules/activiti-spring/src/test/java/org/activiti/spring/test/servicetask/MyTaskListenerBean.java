@@ -22,22 +22,22 @@ import org.activiti.engine.impl.el.FixedValue;
  * @author Bernd Ruecker (camunda)
  */
 public class MyTaskListenerBean implements TaskListener {
-  
-  private FixedValue someField;
-  
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.getExecution().setVariable("taskListenerVar", "working");
-    if (someField!=null) {
-      delegateTask.getExecution().setVariable("taskListenerField", someField.getValue(delegateTask));
+
+    private FixedValue someField;
+
+    public void notify(DelegateTask delegateTask) {
+        delegateTask.getExecution().setVariable("taskListenerVar", "working");
+        if (someField != null) {
+            delegateTask.getExecution().setVariable("taskListenerField", someField.getValue(delegateTask));
+        }
     }
-  }
 
-  public FixedValue getSomeField() {
-    return someField;
-  }
+    public FixedValue getSomeField() {
+        return someField;
+    }
 
-  public void setSomeField(FixedValue someField) {
-    this.someField = someField;
-  }
+    public void setSomeField(FixedValue someField) {
+        this.someField = someField;
+    }
 
 }

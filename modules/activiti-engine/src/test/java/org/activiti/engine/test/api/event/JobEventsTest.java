@@ -151,8 +151,6 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testJobCanceledEventOnBoundaryEvent() throws Exception {
-    Clock previousClock = processEngineConfiguration.getClock();
-
     Clock testClock = new DefaultClockImpl();
 
     processEngineConfiguration.setClock(testClock);
@@ -237,7 +235,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testTimerFiredForIntermediateTimer() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTimerFiredForIntermediateTimer");
+        runtimeService.startProcessInstanceByKey("testTimerFiredForIntermediateTimer");
 
         // Force timer to start the process
         Calendar tomorrow = Calendar.getInstance();

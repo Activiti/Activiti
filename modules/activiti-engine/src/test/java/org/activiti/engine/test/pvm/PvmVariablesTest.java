@@ -29,7 +29,7 @@ import org.junit.Test;
  */
 public class PvmVariablesTest extends PvmTestCase {
 
-  @Test
+  @Test //TODO JUnit 3 or 4???
   public void testVariables() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("a")

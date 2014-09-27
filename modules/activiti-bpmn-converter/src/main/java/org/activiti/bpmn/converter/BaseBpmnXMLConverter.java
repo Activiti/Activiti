@@ -128,14 +128,14 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       }
       
       if(currentFlowElement instanceof DataObject) {
-        if (activeSubProcessList.size() > 0) {
+        if (!activeSubProcessList.isEmpty()) {
           activeSubProcessList.get(activeSubProcessList.size() - 1).getDataObjects().add((ValuedDataObject)parsedElement);
         } else {
           activeProcess.getDataObjects().add((ValuedDataObject)parsedElement);
         }
       }
 
-      if(activeSubProcessList.size() > 0) {
+      if(!activeSubProcessList.isEmpty()) {
         activeSubProcessList.get(activeSubProcessList.size() - 1).addFlowElement(currentFlowElement);
       } else {
         activeProcess.addFlowElement(currentFlowElement);
@@ -268,7 +268,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     boolean readyWithExtensionElement = false;
     while (readyWithExtensionElement == false && xtr.hasNext()) {
       xtr.next();
-      if (xtr.isCharacters()) {
+      if (xtr.isCharacters() || XMLStreamReader.CDATA == xtr.getEventType()) {
         if (StringUtils.isNotEmpty(xtr.getText().trim())) {
           extensionElement.setElementText(xtr.getText().trim());
         }

@@ -55,9 +55,16 @@ public class SubProcessParser implements BpmnXMLConstants {
     if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(exclusiveString)) {
       notExclusive = true;
     }
+
+    boolean forCompensation = false;
+    String compensationString = xtr.getAttributeValue(null, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION);
+    if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(compensationString)) {
+      forCompensation = true;
+    }
 		
 		subProcess.setAsynchronous(async);
 		subProcess.setNotExclusive(notExclusive);
+    subProcess.setForCompensation(forCompensation);
     if(StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_DEFAULT))) {
       subProcess.setDefaultFlow(xtr.getAttributeValue(null, ATTRIBUTE_DEFAULT));
     }

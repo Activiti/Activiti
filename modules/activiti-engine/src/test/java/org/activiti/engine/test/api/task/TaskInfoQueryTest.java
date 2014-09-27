@@ -15,6 +15,7 @@ package org.activiti.engine.test.api.task;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInfo;
@@ -25,14 +26,10 @@ import org.activiti.engine.task.TaskInfoQueryWrapper;
  */
 public class TaskInfoQueryTest extends PluggableActivitiTestCase {
 	
-	@Override
 	protected void tearDown() throws Exception {
-		
 		for (Task task : taskService.createTaskQuery().list()) {
 			taskService.deleteTask(task.getId(), true);
 		}
-		
-	  super.tearDown();
 	}
 
   public void testTaskInfoQuery() {
@@ -58,16 +55,17 @@ public class TaskInfoQueryTest extends PluggableActivitiTestCase {
   	
   	assertEquals(3, taskInfos.size());
   	
-  	// History
-  	taskInfoQueryWrapper = new TaskInfoQueryWrapper(historyService.createHistoricTaskInstanceQuery());
-  	taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or()
-  		.taskNameLike("%k1%")
-  		.taskDueAfter(new Date(now.getTime() + (3 * 24L * 60L * 60L * 1000L)))
-  	.endOr()
-  	.list();
-  	
-  	assertEquals(3, taskInfos.size());
-  	
+  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+    	// History
+    	taskInfoQueryWrapper = new TaskInfoQueryWrapper(historyService.createHistoricTaskInstanceQuery());
+    	taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or()
+    		.taskNameLike("%k1%")
+    		.taskDueAfter(new Date(now.getTime() + (3 * 24L * 60L * 60L * 1000L)))
+    	.endOr()
+    	.list();
+    	
+    	assertEquals(3, taskInfos.size());
+  	}
   }
   
   private Task createTask(String name, Date dueDate) {

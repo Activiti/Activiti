@@ -91,6 +91,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       } catch (BpmnError error) {
         ErrorPropagation.propagateError(error, execution);
       }
+
+      if (resolveNrOfInstances(execution) == 0) {
+        leave(execution);
+      }
     } else {
         innerActivityBehavior.execute(execution);
     }
@@ -226,7 +230,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       value = parent.getVariableLocal(variableName);
       parent = parent.getParent();
     }
-    return (Integer) value;
+    return (Integer) (value != null ? value : 0);
   }
 
   protected Integer getLocalLoopVariable(ActivityExecution execution, String variableName) {

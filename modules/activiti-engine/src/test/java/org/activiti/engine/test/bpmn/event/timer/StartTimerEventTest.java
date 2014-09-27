@@ -192,7 +192,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobQuery.count());
     
     // Reset deployment cache
-    ((ProcessEngineConfigurationImpl) processEngineConfiguration).getProcessDefinitionCache().clear();
+    processEngineConfiguration.getProcessDefinitionCache().clear();
     
     // Start one instance of the process definition, this will trigger a cache reload
     runtimeService.startProcessInstanceByKey("startTimer");

@@ -34,7 +34,7 @@ public class IntermediateThrowEventValidator extends ProcessLevelValidator {
 		List<ThrowEvent> throwEvents = process.findFlowElementsOfType(ThrowEvent.class);
 		for (ThrowEvent throwEvent : throwEvents) {
 			 EventDefinition eventDefinition = null;
-		   if (throwEvent.getEventDefinitions().size() > 0) {
+		   if (!throwEvent.getEventDefinitions().isEmpty()) {
 		     eventDefinition = throwEvent.getEventDefinitions().get(0);
 		   }
 		   

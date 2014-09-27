@@ -146,5 +146,37 @@ public class JobEntityManager extends AbstractManager {
   	params.put("tenantId", newTenantId);
   	getDbSqlSession().update("updateJobTenantIdForDeployment", params);
   }
+  
+  public void updateJobLock(String lockOwner, Date expirationTime, List<String> jobIds) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("lockOwner", lockOwner);
+    params.put("lockExpirationTime", expirationTime);
+    params.put("jobIds", jobIds);
+    getDbSqlSession().update("updateJobLock", params);
+  }
+  
+  public class JobTest {
+    String lockOwner;
+    Date expirationTime;
+    List<String> jobIds;
+    public String getLockOwner() {
+      return lockOwner;
+    }
+    public void setLockOwner(String lockOwner) {
+      this.lockOwner = lockOwner;
+    }
+    public Date getExpirationTime() {
+      return expirationTime;
+    }
+    public void setExpirationTime(Date expirationTime) {
+      this.expirationTime = expirationTime;
+    }
+    public List<String> getJobIds() {
+      return jobIds;
+    }
+    public void setJobIds(List<String> jobIds) {
+      this.jobIds = jobIds;
+    }
+  }
 
 }

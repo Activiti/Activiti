@@ -59,6 +59,16 @@ public class NoExecutionVariableScope implements VariableScope {
     return null;
   }
 
+    @Override
+    public <T> T getVariable(String variableName, Class<T> variableClass) {
+        return null;
+    }
+
+    @Override
+    public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
+        return null;
+    }
+
   @SuppressWarnings("unchecked")
   public Set<String> getVariableNames() {
     return Collections.EMPTY_SET;

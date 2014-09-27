@@ -352,6 +352,20 @@
       <if test="taskNameLikeIgnoreCase != null">
         and lower(RES.NAME_) like #{taskNameLikeIgnoreCase}
       </if>
+      <if test="taskNameList != null &amp;&amp; taskNameList.size() &gt; 0">
+        and RES.NAME_ IN
+        <foreach item="taskName" index="index" collection="taskNameList"
+                 open="(" separator="," close=")">
+          #{taskName}
+        </foreach>
+      </if>
+      <if test="taskNameListIgnoreCase != null &amp;&amp; taskNameListIgnoreCase.size() &gt; 0">
+        and lower(RES.NAME_) IN
+        <foreach item="taskName" index="index" collection="taskNameListIgnoreCase"
+                 open="(" separator="," close=")">
+          #{taskName}
+        </foreach>
+      </if>
       <if test="taskParentTaskId != null">
         and RES.PARENT_TASK_ID_ = #{taskParentTaskId}
       </if>
@@ -599,6 +613,20 @@
           </if>
            <if test="orQueryObject.taskNameLikeIgnoreCase != null">
             or lower(RES.NAME_) like #{orQueryObject.taskNameLikeIgnoreCase}
+          </if>
+          <if test="orQueryObject.taskNameList != null &amp;&amp; orQueryObject.taskNameList.size() &gt; 0">
+            or RES.NAME_ IN
+            <foreach item="taskName" index="index" collection="orQueryObject.taskNameList"
+                     open="(" separator="," close=")">
+              #{taskName}
+            </foreach>
+          </if>
+          <if test="orQueryObject.taskNameListIgnoreCase != null &amp;&amp; orQueryObject.taskNameListIgnoreCase.size() &gt; 0">
+            or lower(RES.NAME_) IN
+            <foreach item="taskName" index="index" collection="orQueryObject.taskNameListIgnoreCase"
+                     open="(" separator="," close=")">
+              #{taskName}
+            </foreach>
           </if>
           <if test="orQueryObject.taskParentTaskId != null">
             or RES.PARENT_TASK_ID_ = #{orQueryObject.taskParentTaskId}

@@ -17,6 +17,7 @@ import java.util.List;
 import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,20 +30,20 @@ public class ExecuteJobsRunnable implements Runnable
 {
     private static Logger log = LoggerFactory.getLogger(ExecuteJobsRunnable.class);
 
-    private final List<String> jobIds;
+    private final List<JobEntity> jobs;
     private final JobExecutor jobExecutor;
 
-    public ExecuteJobsRunnable(JobExecutor jobExecutor, List<String> jobIds) {
+    public ExecuteJobsRunnable(JobExecutor jobExecutor, List<JobEntity> jobs) {
         this.jobExecutor = jobExecutor;
-        this.jobIds = jobIds;
+        this.jobs = jobs;
     }
 
     public void run() {
         final JobExecutorContext jobExecutorContext = new JobExecutorContext();
-        final List<String> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
+        final List<JobEntity> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
         final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
 
-        currentProcessorJobQueue.addAll(jobIds);
+        currentProcessorJobQueue.addAll(jobs);
 
         Context.setJobExecutorContext(jobExecutorContext);
         try {

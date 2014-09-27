@@ -159,7 +159,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
             .singleResult();
     HistoricProcessInstance historicProcessInstanceSuper = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("orderProcess")
             .singleResult();
-    assertEquals(historicProcessInstanceSuper.getId(), ((HistoricProcessInstanceEntity) historicProcessInstanceSub).getSuperProcessInstanceId());
+    assertEquals(historicProcessInstanceSuper.getId(), historicProcessInstanceSub.getSuperProcessInstanceId());
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml" })
@@ -559,7 +559,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     
     // Pass in null-value, should cause exception
     try {
-      instance = historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
+      historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
       fail("Exception expected");
     } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("value is null", ae.getMessage());
@@ -567,7 +567,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     
     // Pass in null name, should cause exception
     try {
-      instance = historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
+      historyService.createHistoricProcessInstanceQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
       fail("Exception expected");
     } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("name is null", ae.getMessage());

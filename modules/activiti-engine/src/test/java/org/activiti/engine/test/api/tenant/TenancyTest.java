@@ -29,14 +29,14 @@ public class TenancyTest extends PluggableActivitiTestCase {
 	@Override
 	protected void setUp() throws Exception {
 	  super.setUp();
-	  this.autoCleanedUpDeploymentIds.clear();;
+	  this.autoCleanedUpDeploymentIds.clear();
 	}
 	
 	@Override
 	protected void tearDown() throws Exception {
 	  super.tearDown();
 	  
-	  if (autoCleanedUpDeploymentIds.size() > 0) {
+	  if (!autoCleanedUpDeploymentIds.isEmpty()) {
 	  	for (String deploymentId : autoCleanedUpDeploymentIds) {
 	  		repositoryService.deleteDeployment(deploymentId, true);
 	  	}

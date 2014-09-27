@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/bpmn2.0">
+
+    <process id="integrationGatewayProcess">
+        <startEvent id="start"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="integrationGateway"/>
+        <serviceTask id="integrationGateway" activiti:delegateExpression="#{activitiDelegate}"/>
+        <sequenceFlow id="scriptFlow" sourceRef="integrationGateway" targetRef="scriptTask"/>
+        <scriptTask id="scriptTask" scriptFormat="groovy">
+            <script>
+                println 'customerId=' + customerId
+                println 'projectId=' + projectId
+            </script>
+        </scriptTask>
+        <sequenceFlow sourceRef="scriptTask" targetRef="analysingService"/>
+        <serviceTask id="analysingService" activiti:expression="#{analysingService.dump(projectId)}"/>
+        <sequenceFlow sourceRef="analysingService" targetRef="end"/>
+        <endEvent id="end"/>
+    </process>
+</definitions>

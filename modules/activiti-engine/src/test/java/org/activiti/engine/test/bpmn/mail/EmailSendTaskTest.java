@@ -159,7 +159,7 @@ public class EmailSendTaskTest extends EmailTestCase {
       }
       
       assertEquals(subject, mimeMessage.getHeader("Subject", null));
-      assertEquals("\"" + from + "\" <" +from.toString() + ">" , mimeMessage.getHeader("From", null));
+      assertEquals("\"" + from + "\" <" +from + ">" , mimeMessage.getHeader("From", null));
       assertTrue(getMessage(mimeMessage).contains(message));
       
       for (String t : to) {

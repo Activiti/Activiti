@@ -56,7 +56,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testQuery() {
-    Task task = (Task) taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee("gonzo").singleResult();
+    Task task = taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee("gonzo").singleResult();
     Map<String, Object> variableMap = task.getTaskLocalVariables();
     assertEquals(3, variableMap.size());
     assertEquals(0, task.getProcessVariables().size());
@@ -70,7 +70,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     List<Task> tasks = taskService.createTaskQuery().list();
     assertEquals(3, tasks.size());
     
-    task = (Task) taskService.createTaskQuery().includeProcessVariables().taskAssignee("gonzo").singleResult();
+    task = taskService.createTaskQuery().includeProcessVariables().taskAssignee("gonzo").singleResult();
     assertEquals(0, task.getProcessVariables().size());
     assertEquals(0, task.getTaskLocalVariables().size());
     
@@ -79,7 +79,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     startMap.put("binaryVariable", "This is a binary process variable".getBytes());
     runtimeService.startProcessInstanceByKey("oneTaskProcess", startMap);
     
-    task = (Task) taskService.createTaskQuery().includeProcessVariables().taskAssignee("kermit").singleResult();
+    task = taskService.createTaskQuery().includeProcessVariables().taskAssignee("kermit").singleResult();
     assertEquals(2, task.getProcessVariables().size());
     assertEquals(0, task.getTaskLocalVariables().size());
     assertTrue((Boolean) task.getProcessVariables().get("processVar"));
@@ -88,12 +88,12 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     taskService.setVariable(task.getId(), "anotherProcessVar", 123);
     taskService.setVariableLocal(task.getId(), "localVar", "test");
     
-    task = (Task) taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee("kermit").singleResult();
+    task = taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee("kermit").singleResult();
     assertEquals(0, task.getProcessVariables().size());
     assertEquals(1, task.getTaskLocalVariables().size());
     assertEquals("test", task.getTaskLocalVariables().get("localVar"));
     
-    task = (Task) taskService.createTaskQuery().includeProcessVariables().taskAssignee("kermit").singleResult();
+    task =  taskService.createTaskQuery().includeProcessVariables().taskAssignee("kermit").singleResult();
     assertEquals(3, task.getProcessVariables().size());
     assertEquals(0, task.getTaskLocalVariables().size());
     assertEquals(true, task.getProcessVariables().get("processVar"));
@@ -111,18 +111,18 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, tasks.get(0).getProcessVariables().size());
     assertEquals(0, tasks.get(0).getTaskLocalVariables().size());
     
-    task = (Task) taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee("kermit").taskVariableValueEquals("localVar", "test").singleResult();
+    task = taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee("kermit").taskVariableValueEquals("localVar", "test").singleResult();
     assertEquals(0, task.getProcessVariables().size());
     assertEquals(1, task.getTaskLocalVariables().size());
     assertEquals("test", task.getTaskLocalVariables().get("localVar"));
     
-    task = (Task) taskService.createTaskQuery().includeProcessVariables().taskAssignee("kermit").taskVariableValueEquals("localVar", "test").singleResult();
+    task = taskService.createTaskQuery().includeProcessVariables().taskAssignee("kermit").taskVariableValueEquals("localVar", "test").singleResult();
     assertEquals(3, task.getProcessVariables().size());
     assertEquals(0, task.getTaskLocalVariables().size());
     assertEquals(true, task.getProcessVariables().get("processVar"));
     assertEquals(123, task.getProcessVariables().get("anotherProcessVar"));
     
-    task = (Task) taskService.createTaskQuery().includeTaskLocalVariables().includeProcessVariables().taskAssignee("kermit").singleResult();
+    task = taskService.createTaskQuery().includeTaskLocalVariables().includeProcessVariables().taskAssignee("kermit").singleResult();
     assertEquals(3, task.getProcessVariables().size());
     assertEquals(1, task.getTaskLocalVariables().size());
     assertEquals("test", task.getTaskLocalVariables().get("localVar"));

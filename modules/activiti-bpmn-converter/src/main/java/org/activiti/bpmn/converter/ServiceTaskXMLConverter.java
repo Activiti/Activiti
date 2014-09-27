@@ -100,7 +100,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
   protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     ServiceTask serviceTask = (ServiceTask) element;
     
-    if (serviceTask.getCustomProperties().size() > 0) {
+    if (!serviceTask.getCustomProperties().isEmpty()) {
       for (CustomProperty customProperty : serviceTask.getCustomProperties()) {
         
         if (StringUtils.isEmpty(customProperty.getSimpleValue())) {

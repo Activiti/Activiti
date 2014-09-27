@@ -55,7 +55,7 @@ public class StartEvent extends Event {
     setFormKey(otherEvent.getFormKey());
     
     formProperties = new ArrayList<FormProperty>();
-    if (otherEvent.getFormProperties() != null && otherEvent.getFormProperties().size() > 0) {
+    if (otherEvent.getFormProperties() != null && !otherEvent.getFormProperties().isEmpty()) {
       for (FormProperty property : otherEvent.getFormProperties()) {
         formProperties.add(property.clone());
       }

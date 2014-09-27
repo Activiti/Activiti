@@ -87,7 +87,7 @@ public class ScriptBindings implements Bindings {
     return defaultBindings.put(name, value);
   }
 
-  public Set<java.util.Map.Entry<String, Object>> entrySet() {
+  public Set<Map.Entry<String, Object>> entrySet() {
     return variableScope.getVariables().entrySet();
   }
 

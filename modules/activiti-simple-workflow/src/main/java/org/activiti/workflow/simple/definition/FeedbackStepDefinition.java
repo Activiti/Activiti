@@ -121,7 +121,7 @@ public class FeedbackStepDefinition extends AbstractNamedStepDefinition {
     setDescription(stepDefinition.getDescription());
     setDescriptionForFeedbackProviders(stepDefinition.getDescriptionForFeedbackProviders());
     setFeedbackInitiator(stepDefinition.getFeedbackInitiator());
-    if (stepDefinition.getFeedbackProviders() != null && stepDefinition.getFeedbackProviders().size() > 0) {
+    if (stepDefinition.getFeedbackProviders() != null && !stepDefinition.getFeedbackProviders().isEmpty()) {
       setFeedbackProviders(new ArrayList<String>(stepDefinition.getFeedbackProviders()));
     }
     if (stepDefinition.getFormDefinitionForFeedbackProviders() != null) {

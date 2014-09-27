@@ -43,7 +43,7 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
                                                                        // true will keep the 'access-order', which is needed to have a real LRU cache
       private static final long serialVersionUID = 1L;
 
-      protected boolean removeEldestEntry(java.util.Map.Entry<String, T> eldest) {
+      protected boolean removeEldestEntry(Map.Entry<String, T> eldest) {
         boolean removeEldest = size() > limit;
         if (removeEldest) {
           logger.trace("Cache limit is reached, {} will be evicted",  eldest.getKey());

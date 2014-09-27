@@ -52,6 +52,17 @@
       ) 
   </update>
   
+  <update id="updateJobLock" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_JOB set
+      LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+      LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP}
+    where
+      ID_ in
+      <foreach item="jobId" index="index" collection="jobIds"
+               open="(" separator="," close=")">
+        #{jobId}
+      </foreach>
+  </update>
     
   <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
        Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->

@@ -7,6 +7,16 @@
     <sequenceFlow id="sid-AA1205FD-63BD-47BA-9FB3-AA9F7C1E31F0" sourceRef="usertask" targetRef="endEvent"></sequenceFlow>
     <userTask id="usertask" name="User task" activiti:async="true" activiti:exclusive="false" activiti:assignee="kermit" activiti:candidateUsers="kermit,fozzie" activiti:candidateGroups="management,sales" activiti:dueDate="2012-11-01" activiti:formKey="testKey" activiti:priority="40">
       <extensionElements>
+        <activiti:customResource activiti:name="businessAdministrator">
+         <resourceAssignmentExpression>
+          <formalExpression>user(kermit), group(management)</formalExpression>
+         </resourceAssignmentExpression>
+        </activiti:customResource>
+        <activiti:customResource activiti:name="manager">
+         <resourceAssignmentExpression>
+          <formalExpression>group(management)</formalExpression>
+         </resourceAssignmentExpression>
+        </activiti:customResource>
         <activiti:formProperty id="formId" name="formName" type="string" expression="${expression}" variable="variable"></activiti:formProperty>
         <activiti:formProperty id="formId2" name="anotherName" type="long"></activiti:formProperty>
         <activiti:formProperty id="formId3" name="enumName" type="enum">

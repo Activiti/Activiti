@@ -1,7 +1,5 @@
 package org.activiti.spring.test.jobexecutor;
 
-import java.util.List;
-
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -15,6 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
+
 /**
  * @author Pablo Ganga
  * @author Joram Barrez
@@ -24,36 +24,36 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration("classpath:org/activiti/spring/test/components/SpringjobExecutorTest-context.xml")
 public class SpringJobExecutorTest extends SpringActivitiTestCase {
 
-	@Autowired
-	protected RuntimeService runtimeService;
+    @Autowired
+    protected RuntimeService runtimeService;
 
-	@Autowired
-	protected TaskService taskService;
+    @Autowired
+    protected TaskService taskService;
 
-	@Test
-	public void testHappyJobExecutorPath() throws Exception {
+    @Test
+    public void testHappyJobExecutorPath() throws Exception {
 
-		ProcessInstance instance = runtimeService.startProcessInstanceByKey("process1");
-		assertNotNull(instance);
-		waitForTasksToExpire();
+        ProcessInstance instance = runtimeService.startProcessInstanceByKey("process1");
+        assertNotNull(instance);
+        waitForTasksToExpire();
 
-		List<Task> activeTasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
-		assertTrue(activeTasks.size() == 0);
-	}
+        List<Task> activeTasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
+        assertTrue(activeTasks.isEmpty());
+    }
 
-	@Test
-	public void testRollbackJobExecutorPath() throws Exception {
+    @Test
+    public void testRollbackJobExecutorPath() throws Exception {
 
-		ProcessInstance instance = runtimeService.startProcessInstanceByKey("errorProcess1");
-		assertNotNull(instance);
-		waitForTasksToExpire();
+        ProcessInstance instance = runtimeService.startProcessInstanceByKey("errorProcess1");
+        assertNotNull(instance);
+        waitForTasksToExpire();
 
-		List<Task> activeTasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
-		assertTrue(activeTasks.size() == 1);
-	}
+        List<Task> activeTasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
+        assertTrue(activeTasks.size() == 1);
+    }
 
-	private void waitForTasksToExpire() throws Exception {
-		Thread.sleep(10000L);
-	}
+    private void waitForTasksToExpire() throws Exception {
+        Thread.sleep(10000L);
+    }
 
 }

@@ -35,7 +35,7 @@ public class IntermediateCatchEventValidator extends ProcessLevelValidator {
 		List<IntermediateCatchEvent> intermediateCatchEvents = process.findFlowElementsOfType(IntermediateCatchEvent.class);
 		for (IntermediateCatchEvent intermediateCatchEvent : intermediateCatchEvents) {
 			 EventDefinition eventDefinition = null;
-		    if (intermediateCatchEvent.getEventDefinitions().size() > 0) {
+		    if (!intermediateCatchEvent.getEventDefinitions().isEmpty()) {
 		      eventDefinition = intermediateCatchEvent.getEventDefinitions().get(0);
 		    }
 		   

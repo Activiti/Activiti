@@ -105,7 +105,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
       }
     }
     
-    if (suspensionStateJobs.size() > 0) {
+    if (!suspensionStateJobs.isEmpty()) {
       
       // Header
       Label suspensionStateTitle = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_SUSPENSION_STATE));
@@ -148,7 +148,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
         XMLStreamReader xtr = xif.createXMLStreamReader(definitionStream);
         BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
         
-        if (bpmnModel.getFlowLocationMap().size() > 0) {
+        if (!bpmnModel.getFlowLocationMap().isEmpty()) {
           
           int maxX = 0;
           int maxY = 0;

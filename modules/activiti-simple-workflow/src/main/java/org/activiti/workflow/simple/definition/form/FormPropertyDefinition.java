@@ -110,7 +110,7 @@ public void setParameters(Map<String, Object> parameters) {
   
   protected Map<String, Object> cloneParameters() {
   	Map<String, Object> result = new HashMap<String, Object>();
-  	if(parameters != null && parameters.size() > 0) {
+  	if(parameters != null && !parameters.isEmpty()) {
   		result.putAll(parameters);
   	}
   	return result;

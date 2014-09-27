@@ -97,7 +97,7 @@ public class TaskTable extends Table implements TaskFormModelListener {
   }
 
   protected String getCommaSeperated(List<String> list) {
-	  if(list != null && list.size() > 0) {
+	  if(list != null && !list.isEmpty()) {
 	  	return StringUtils.join(list, ", ");
 	  }
 	  return null;

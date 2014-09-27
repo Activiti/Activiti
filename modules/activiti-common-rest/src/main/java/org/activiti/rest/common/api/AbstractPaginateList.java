@@ -83,7 +83,7 @@ public abstract class AbstractPaginateList {
     }
 
     // Sort order
-    if (sort != null && properties.size() > 0) {
+    if (sort != null && !properties.isEmpty()) {
       QueryProperty qp = properties.get(sort);
       if (qp == null) {
         throw new ActivitiIllegalArgumentException("Value for param 'sort' is not valid, '" + sort + "' is not a valid property");

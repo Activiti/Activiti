@@ -360,7 +360,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 				} else if (ELEMENT_DOCUMENTATION.equals(xtr.getLocalName())) {
 					
 					BaseElement parentElement = null;
-					if(activeSubProcessList.size() > 0) {
+					if(!activeSubProcessList.isEmpty()) {
 						parentElement = activeSubProcessList.get(activeSubProcessList.size() - 1);
 					} else if(activeProcess != null) {
 						parentElement = activeProcess;
@@ -396,7 +396,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
 				} else {
 
-					if (activeSubProcessList.size() > 0 && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
+					if (!activeSubProcessList.isEmpty() && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
 						
 						new MultiInstanceParser().parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1), model);
 					  
@@ -487,7 +487,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       
       for (Process process : model.getProcesses()) {
         
-        if(process.getFlowElements().size() == 0 && process.getLanes().size() == 0) {
+        if(process.getFlowElements().isEmpty() && process.getLanes().isEmpty()) {
           // empty process, ignore it 
           continue;
         }
@@ -552,7 +552,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       
       boolean didWriteExtensionStartElement = ActivitiListenerExport.writeListeners(subProcess, false, xtw);
       
-      didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(subProcess, didWriteExtensionStartElement, xtw);
+      didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(subProcess, didWriteExtensionStartElement, model.getNamespaces(), xtw);
       if (didWriteExtensionStartElement) {
         // closing extensions element
         xtw.writeEndElement();

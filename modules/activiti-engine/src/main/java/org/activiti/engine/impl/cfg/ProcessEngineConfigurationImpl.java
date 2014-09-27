@@ -104,6 +104,7 @@ import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.delegate.DefaultDelegateInterceptor;
@@ -198,6 +199,7 @@ import org.activiti.engine.impl.variable.DoubleType;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.impl.variable.IntegerType;
+import org.activiti.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.LongStringType;
 import org.activiti.engine.impl.variable.LongType;
@@ -380,6 +382,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    */
   protected int batchSizeProcessInstances = 25;
   protected int batchSizeTasks = 25;
+  
+  /**
+   * Experimental setting. Default is false.
+   * 
+   * If set to true, in the {@link DbSqlSession} during the handling of delete operations,
+   * those operations of the same type are merged together. 
+   * (eg if you have two 'DELETE from X where id=Y' and 'DELETE from X where id=W', it will be merged
+   * into one delete statement 'DELETE from X where id=Y or id=W'.
+   */
+  protected boolean isOptimizeDeleteOperationsEnabled;
   
   protected boolean enableEventDispatcher = true;
   protected ActivitiEventDispatcher eventDispatcher;
@@ -755,6 +767,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
       dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
       dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
+      dbSqlSessionFactory.setOptimizeDeleteOperationsEnabled(isOptimizeDeleteOperationsEnabled);
       addSessionFactory(dbSqlSessionFactory);
       
       addSessionFactory(new GenericManagerFactory(AttachmentEntityManager.class));
@@ -829,7 +842,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     		log.info("Found {} auto-discoverable Process Engine Configurator{}", nrOfServiceLoadedConfigurators++, nrOfServiceLoadedConfigurators > 1 ? "s" : "");
     	}
     	
-    	if (allConfigurators.size() > 0) {
+    	if (!allConfigurators.isEmpty()) {
     		
     		// Order them according to the priorities (usefule for dependent configurator)
 	    	Collections.sort(allConfigurators, new Comparator<ProcessEngineConfigurator>() {
@@ -860,7 +873,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected void configuratorsBeforeInit() {
   	for (ProcessEngineConfigurator configurator : allConfigurators) {
-  		log.info("Executing configure() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
+  		log.info("Executing beforeInit() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
   		configurator.beforeInit(this);
   	}
   }
@@ -1295,8 +1308,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           variableTypes.addType(new JPAEntityVariableType(), serializableIndex);
         } else {
           variableTypes.addType(new JPAEntityVariableType());
-        }        
+        }   
       }
+        
+      jpaType = variableTypes.getVariableType(JPAEntityListVariableType.TYPE_NAME);
+      
+      // Add JPA-list type after regular JPA type if not already present
+      if(jpaType == null) {
+        variableTypes.addType(new JPAEntityListVariableType(), variableTypes.getTypeIndex(JPAEntityVariableType.TYPE_NAME));
+      }        
     }
   }
   

@@ -113,7 +113,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       }
       
       List<ProcessDefinition> processDefinitions = query.list();
-      if(processDefinitions.size() == 0) {
+      if(processDefinitions.isEmpty()) {
         throw new ActivitiException("Cannot find process definition for key '"+processDefinitionKey+"'");
       }
       
@@ -160,7 +160,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
         
         int currentStartIndex = 0;
         List<ProcessInstance> processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
-        while (processInstances.size() > 0) {
+        while (!processInstances.isEmpty()) {
           
           for (ProcessInstance processInstance : processInstances) {
             AbstractSetProcessInstanceStateCmd processInstanceCmd = getProcessInstanceChangeStateCmd(processInstance);

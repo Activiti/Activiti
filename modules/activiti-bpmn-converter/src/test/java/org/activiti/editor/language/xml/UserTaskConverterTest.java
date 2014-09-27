@@ -55,6 +55,13 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertTrue(userTask.getCandidateGroups().contains("management"));
     assertTrue(userTask.getCandidateGroups().contains("sales"));
     
+    assertEquals(1, userTask.getCustomUserIdentityLinks().size());
+    assertEquals(2, userTask.getCustomGroupIdentityLinks().size());
+    assertTrue(userTask.getCustomUserIdentityLinks().get("businessAdministrator").contains("kermit"));
+    assertTrue(userTask.getCustomGroupIdentityLinks().get("manager").contains("management"));
+    assertTrue(userTask.getCustomGroupIdentityLinks().get("businessAdministrator").contains("management"));
+    
+    
     List<FormProperty> formProperties = userTask.getFormProperties();
     assertEquals(3, formProperties.size());
     FormProperty formProperty = formProperties.get(0);
@@ -79,15 +86,15 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     
     List<ActivitiListener> listeners = userTask.getTaskListeners();
     assertEquals(3, listeners.size());
-    ActivitiListener listener = (ActivitiListener) listeners.get(0);
+    ActivitiListener listener = listeners.get(0);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()));
     assertEquals("org.test.TestClass", listener.getImplementation());
     assertEquals("create", listener.getEvent());
-    listener = (ActivitiListener) listeners.get(1);
+    listener = listeners.get(1);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${someExpression}", listener.getImplementation());
     assertEquals("assignment", listener.getEvent());
-    listener = (ActivitiListener) listeners.get(2);
+    listener = listeners.get(2);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${someDelegateExpression}", listener.getImplementation());
     assertEquals("complete", listener.getEvent());

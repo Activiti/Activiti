@@ -3044,7 +3044,7 @@ to include in the query, with their format <link linkend="restQueryVariable"> de
     <section>
       <title>Get diagram for a process instance</title>
         <para>
-          <programlisting>GET runtime/process-instances/{processInstanceId}</programlisting>
+          <programlisting>GET runtime/process-instances/{processInstanceId}/diagram</programlisting>
         </para>
         <para>
             <table>

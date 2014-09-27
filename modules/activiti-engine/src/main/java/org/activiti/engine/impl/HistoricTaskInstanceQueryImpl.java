@@ -52,6 +52,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String taskName;
   protected String taskNameLike;
   protected String taskNameLikeIgnoreCase;
+  protected List<String> taskNameList;
+  protected List<String> taskNameListIgnoreCase;
   protected String taskParentTaskId;
   protected String taskDescription;
   protected String taskDescriptionLike;
@@ -264,6 +266,70 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.orQueryObject.taskName = taskName;
     } else {
       this.taskName = taskName;
+    }
+    return this;
+  }
+
+  public HistoricTaskInstanceQuery taskNameIn(List<String> taskNameList) {
+    if(taskNameList == null) {
+      throw new ActivitiIllegalArgumentException("Task name list is null");
+    }
+    if(taskNameList.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Task name list is empty");
+    }
+
+    if (taskName != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and taskName");
+    }
+    if (taskNameLike != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and taskNameLike");
+    }
+    if (taskNameLikeIgnoreCase != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and taskNameLikeIgnoreCase");
+    }
+
+    if(inOrStatement) {
+      orQueryObject.taskNameList = taskNameList;
+    } else {
+      this.taskNameList = taskNameList;
+    }
+    return this;
+  }
+
+  @Override
+  public HistoricTaskInstanceQuery taskNameInIgnoreCase(List<String> taskNameList) {
+    if(taskNameList == null) {
+      throw new ActivitiIllegalArgumentException("Task name list is null");
+    }
+    if(taskNameList.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Task name list is empty");
+    }
+    for (String taskName : taskNameList) {
+      if (taskName == null) {
+        throw new ActivitiIllegalArgumentException("None of the given task names can be null");
+      }
+    }
+
+    if (taskName != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and name");
+    }
+    if (taskNameLike != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and nameLike");
+    }
+    if (taskNameLikeIgnoreCase != null) {
+      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and nameLikeIgnoreCase");
+    }
+
+    final int nameListSize = taskNameList.size();
+    final List<String> caseIgnoredTaskNameList = new ArrayList<String>(nameListSize);
+    for (String taskName : taskNameList) {
+      caseIgnoredTaskNameList.add(taskName.toLowerCase());
+    }
+
+    if (inOrStatement) {
+      this.orQueryObject.taskNameListIgnoreCase = caseIgnoredTaskNameList;
+    } else {
+      this.taskNameListIgnoreCase = caseIgnoredTaskNameList;
     }
     return this;
   }
@@ -826,7 +892,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     if(candidateGroups == null) {
       throw new ActivitiIllegalArgumentException("Candidate group list is null");
     }
-    if(candidateGroups.size()== 0) {
+    if(candidateGroups.isEmpty()) {
       throw new ActivitiIllegalArgumentException("Candidate group list is empty");
     }
     
@@ -1048,7 +1114,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   
   public List<String> getCandidateGroups() {
     if (candidateGroup!=null) {
-      List<String> candidateGroupList = new java.util.ArrayList<String>(1);
+      List<String> candidateGroupList = new ArrayList<String>(1);
       candidateGroupList.add(candidateGroup);
       return candidateGroupList;
     } else if (candidateUser != null) {
@@ -1185,6 +1251,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
   public String getTaskNameLike() {
     return taskNameLike;
+  }
+  public List<String> getTaskNameList() {
+    return taskNameList;
+  }
+  public List<String> getTaskNameListIgnoreCase() {
+    return taskNameListIgnoreCase;
   }
   public String getTaskDescription() {
     return taskDescription;

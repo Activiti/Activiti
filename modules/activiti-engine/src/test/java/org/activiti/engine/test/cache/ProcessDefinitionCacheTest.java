@@ -182,7 +182,7 @@ public class ProcessDefinitionCacheTest extends PvmTestCase {
       .getId();
     
     // Start process instance on second process engine -> must use revised process definition
-    processDefinitionId = repositoryService2.createProcessDefinitionQuery().singleResult().getId();
+    repositoryService2.createProcessDefinitionQuery().singleResult().getId();
     runtimeService2.startProcessInstanceByKey("oneTaskProcess");
     task = taskService2.createTaskQuery().singleResult();
     assertEquals("revised task", task.getName());

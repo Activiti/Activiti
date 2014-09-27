@@ -128,8 +128,8 @@ public class HumanStepAssignment {
   
   public void setCandidateGroups(List<String> candidateGroups) {
 	  this.candidateGroups = candidateGroups;
-	  if(candidateGroups != null && candidateGroups.size() > 0) {
-	  	if(this.candidateUsers != null && this.candidateUsers.size() > 0) {
+	  if(candidateGroups != null && !candidateGroups.isEmpty()) {
+	  	if(this.candidateUsers != null && !this.candidateUsers.isEmpty()) {
 	  		setType(HumanStepAssignmentType.MIXED);
 	  	} else {
 	  		setType(HumanStepAssignmentType.GROUPS);
@@ -144,8 +144,8 @@ public class HumanStepAssignment {
   
   public void setCandidateUsers(List<String> candidateUsers) {
   	this.candidateUsers = candidateUsers;
-  	if(candidateUsers != null && candidateUsers.size() > 0) {
-  		if(this.candidateGroups != null && this.candidateGroups.size() > 0) {
+  	if(candidateUsers != null && !candidateUsers.isEmpty()) {
+  		if(this.candidateGroups != null && !this.candidateGroups.isEmpty()) {
   			setType(HumanStepAssignmentType.MIXED);
   		} else {
   			setType(HumanStepAssignmentType.USERS);

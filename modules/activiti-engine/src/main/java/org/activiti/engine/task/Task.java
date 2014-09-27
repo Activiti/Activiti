@@ -62,6 +62,9 @@ public interface Task extends TaskInfo {
   
   /** the parent task for which this task is a subtask */
   void setParentTaskId(String parentTaskId);
+  
+  /** Change the tenantId of the task */
+  void setTenantId(String tenantId);
 
   /** Change the form key of the task */
   void setFormKey(String formKey);

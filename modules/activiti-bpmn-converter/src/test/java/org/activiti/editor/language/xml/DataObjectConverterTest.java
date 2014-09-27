@@ -17,7 +17,7 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.Test;
 
 /**
- * @see http://jira.codehaus.org/browse/ACT-1847
+ * @see <a href="http://jira.codehaus.org/browse/ACT-1847">http://jira.codehaus.org/browse/ACT-1847</a>
  */
 public class DataObjectConverterTest extends AbstractConverterTest {
 

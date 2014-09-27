@@ -22,7 +22,6 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -68,7 +67,8 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     return imageResource;
   }
 
-  public StreamResource buildStreamResource(ProcessInstance processInstance, RepositoryService repositoryService, RuntimeService runtimeService, ProcessDiagramGenerator diagramGenerator) {
+  public StreamResource buildStreamResource(ProcessInstance processInstance, RepositoryService repositoryService, 
+      RuntimeService runtimeService, ProcessDiagramGenerator diagramGenerator, ProcessEngineConfiguration processEngineConfig) {
 
     StreamResource imageResource = null;
     
@@ -79,11 +79,10 @@ public class ProcessDefinitionImageStreamResourceBuilder {
       try {
         
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
-        ProcessEngineConfiguration processEngineConfiguration = Context.getProcessEngineConfiguration();
         InputStream definitionImageStream = diagramGenerator.generateDiagram(bpmnModel, "png",
           runtimeService.getActiveActivityIds(processInstance.getId()), Collections.<String>emptyList(), 
-          processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(), 
-          processEngineConfiguration.getClassLoader(), 1.0);
+          processEngineConfig.getActivityFontName(), processEngineConfig.getLabelFontName(), 
+          processEngineConfig.getClassLoader(), 1.0);
               
         if(definitionImageStream != null) {
           StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
@@ -102,7 +101,9 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     return imageResource;
   }
   
-  public StreamResource buildStreamResource(String processInstanceId, String processDefinitionId, RepositoryService repositoryService, RuntimeService runtimeService, ProcessDiagramGenerator diagramGenerator) {
+  public StreamResource buildStreamResource(String processInstanceId, String processDefinitionId, 
+      RepositoryService repositoryService, RuntimeService runtimeService, ProcessDiagramGenerator diagramGenerator,
+      ProcessEngineConfiguration processEngineConfig) {
 
     StreamResource imageResource = null;
     
@@ -111,11 +112,10 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
       
       BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
-      ProcessEngineConfiguration processEngineConfiguration = Context.getProcessEngineConfiguration();
       InputStream definitionImageStream = diagramGenerator.generateDiagram(bpmnModel, "png",
         runtimeService.getActiveActivityIds(processInstanceId), Collections.<String>emptyList(), 
-        processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(), 
-        processEngineConfiguration.getClassLoader(), 1.0);
+        processEngineConfig.getActivityFontName(), processEngineConfig.getLabelFontName(), 
+        processEngineConfig.getClassLoader(), 1.0);
       
       StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
       

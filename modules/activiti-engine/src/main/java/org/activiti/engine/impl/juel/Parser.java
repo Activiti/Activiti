@@ -25,11 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.juel.Builder.Feature;
 import org.activiti.engine.impl.juel.Scanner.ScanException;
 import org.activiti.engine.impl.juel.Scanner.Symbol;
 import org.activiti.engine.impl.juel.Scanner.Token;
-
 
 /**
  * Handcrafted top-down parser.
@@ -190,7 +188,7 @@ public class Parser {
 	}
 	
 	protected AstFunction createAstFunction(String name, int index, AstParameters params) {
-		return new AstFunction(name, index, params, context.isEnabled(Feature.VARARGS));
+		return new AstFunction(name, index, params, context.isEnabled(VARARGS));
 	}
 
 	protected AstIdentifier createAstIdentifier(String name, int index) {

@@ -38,7 +38,7 @@ public class AtomicOperationDeleteCascade implements AtomicOperation {
   @SuppressWarnings("unchecked")
   protected InterpretableExecution findFirstLeaf(InterpretableExecution execution) {
     List<InterpretableExecution> executions = (List<InterpretableExecution>) execution.getExecutions();
-    if (executions.size()>0) {
+    if (!executions.isEmpty()) {
       return findFirstLeaf(executions.get(0));
     }
     return execution;

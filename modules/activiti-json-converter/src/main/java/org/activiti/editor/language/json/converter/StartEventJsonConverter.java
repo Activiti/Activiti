@@ -53,7 +53,7 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
   
   protected String getStencilId(FlowElement flowElement) {
     Event event = (Event) flowElement;
-    if (event.getEventDefinitions().size() > 0) {
+    if (!event.getEventDefinitions().isEmpty()) {
       EventDefinition eventDefinition = event.getEventDefinitions().get(0);
       if (eventDefinition instanceof TimerEventDefinition) {
         return STENCIL_EVENT_START_TIMER;

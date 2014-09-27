@@ -359,7 +359,7 @@ public class UserDetailPanel extends DetailPanel implements MemberShipChangeList
           private static final long serialVersionUID = 1L;
           protected void submitted(SubmitEvent event) {
             Set<String> selectedGroups = selectionPopup.getSelectedGroupIds();
-            if (selectedGroups.size() > 0) {
+            if (!selectedGroups.isEmpty()) {
               for (String groupId : selectedGroups) {
                 identityService.createMembership(user.getId(), groupId);
               }

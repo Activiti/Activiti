@@ -134,7 +134,7 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
           lastConcurrent.setReplacedBy(concurrentRoot);
           
           // Move children of lastConcurrent one level up
-          if (lastConcurrent.getExecutions().size() > 0) {
+          if (!lastConcurrent.getExecutions().isEmpty()) {
             concurrentRoot.getExecutions().clear();
             for (ActivityExecution childExecution : lastConcurrent.getExecutions()) {
               InterpretableExecution childInterpretableExecution = (InterpretableExecution) childExecution;

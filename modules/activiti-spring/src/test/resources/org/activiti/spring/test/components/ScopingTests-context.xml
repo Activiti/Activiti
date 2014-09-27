@@ -7,8 +7,7 @@
        http://www.activiti.org/schema/spring/components http://www.activiti.org/schema/spring/components/activiti.xsd ">
 
 
-
-    <activiti:annotation-driven process-engine="processEngine" />
+    <activiti:annotation-driven process-engine="processEngine"/>
 
     <bean class="org.activiti.spring.test.components.scope.StatefulObject" id="c1" scope="process"/>
 

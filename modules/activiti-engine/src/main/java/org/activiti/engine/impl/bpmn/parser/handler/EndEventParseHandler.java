@@ -41,7 +41,7 @@ public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEv
     
     ActivityImpl endEventActivity = createActivityOnCurrentScope(bpmnParse, endEvent, BpmnXMLConstants.ELEMENT_EVENT_END);
     EventDefinition eventDefinition = null;
-    if (endEvent.getEventDefinitions().size() > 0) {
+    if (!endEvent.getEventDefinitions().isEmpty()) {
       eventDefinition = endEvent.getEventDefinitions().get(0);
     }
     

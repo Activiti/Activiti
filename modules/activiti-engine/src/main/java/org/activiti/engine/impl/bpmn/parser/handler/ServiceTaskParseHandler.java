@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
-import org.activiti.bpmn.converter.child.ActivitiFailedjobRetryParser;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.DataAssociation;
 import org.activiti.bpmn.model.ImplementationType;
@@ -26,7 +25,6 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * @author Joram Barrez

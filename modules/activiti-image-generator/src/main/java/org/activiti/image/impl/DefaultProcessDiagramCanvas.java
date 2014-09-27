@@ -742,7 +742,7 @@ public class DefaultProcessDiagramCanvas {
       if(currentHeight + height > boxHeight) {
         // The line we're about to add should NOT be added anymore, append three dots to previous one instead
         // to indicate more text is truncated
-        if (layouts.size() > 0) {
+        if (!layouts.isEmpty()) {
           layouts.remove(layouts.size() - 1);
           
           if(lastLine.length() >= 4) {
@@ -1120,10 +1120,10 @@ public class DefaultProcessDiagramCanvas {
     	  TextLayout tl = lbm.nextLayout(wrapWidth);
     	  textY += tl.getAscent();
     	  Rectangle2D bb = tl.getBounds();
-    	  double tY = graphicInfo.getY();
+    	  double tX = graphicInfo.getX();
     	  if (centered)
-        	  tY += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
-    	  tl.draw(g, (float) tY, textY);
+        	  tX += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
+    	  tl.draw(g, (float) tX, textY);
     	  textY += tl.getDescent() + tl.getLeading() + (interline - 1.0f) * tl.getAscent();
       }
   

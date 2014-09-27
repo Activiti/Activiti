@@ -20,6 +20,7 @@ import java.util.UUID;
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.ClockReader;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
@@ -108,7 +109,7 @@ public abstract class JobExecutor {
   
   protected abstract void startExecutingJobs();
   protected abstract void stopExecutingJobs(); 
-  protected abstract void executeJobs(List<String> jobIds);
+  protected abstract void executeJobs(List<JobEntity> jobIds);
   
   // getters and setters //////////////////////////////////////////////////////
 

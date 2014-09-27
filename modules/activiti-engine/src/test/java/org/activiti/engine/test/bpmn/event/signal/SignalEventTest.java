@@ -13,9 +13,6 @@
 
 package org.activiti.engine.test.bpmn.event.signal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,7 +28,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.validation.validator.Problems;
-import org.junit.Test;
 
 
 /**

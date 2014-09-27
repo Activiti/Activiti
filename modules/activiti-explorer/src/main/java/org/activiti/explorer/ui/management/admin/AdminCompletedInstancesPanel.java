@@ -137,7 +137,7 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
   }
   
   protected void initDefinitionsTable() {
-    if(instanceList == null || instanceList.size() == 0) {
+    if(instanceList == null || instanceList.isEmpty()) {
     	noMembersTable = new Label(i18nManager.getMessage(Messages.ADMIN_COMPLETED_NONE_FOUND));
       definitionsLayout.addComponent(noMembersTable);
     
@@ -364,7 +364,7 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
       .orderByHistoricTaskInstanceStartTime().desc()
       .list();
     
-    if(tasks.size() > 0) {
+    if(!tasks.isEmpty()) {
       
       // Finished icon
       taskTable.addContainerProperty("finished", Component.class, null, i18nManager.getMessage(Messages.ADMIN_FINISHED), null, Table.ALIGN_CENTER);
@@ -461,7 +461,7 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
     List<HistoricDetail> variables = historyService.createHistoricDetailQuery()
     		.processInstanceId(processInstance.getId()).orderByTime().desc().list(); 
     
-    if(variables.size() > 0) {
+    if(!variables.isEmpty()) {
       
       variablesTable = new Table();
       variablesTable.setWidth(60, UNITS_PERCENTAGE);
