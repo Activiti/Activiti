@@ -13,18 +13,35 @@
 
 package org.activiti.camel;
 
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
+import org.apache.camel.CamelContext;
+import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration("classpath:camel-activiti-context.xml")
+@ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class ParallelProcessTest extends SpringActivitiTestCase {
 
-  @Autowired
-  RuntimeService runtimeService;
+   @Autowired
+   CamelContext camelContext;
+
+   public void  setUp() throws Exception {
+	       camelContext.addRoutes(new RouteBuilder() {
+
+			@Override
+			public void configure() throws Exception {
+			    from("activiti:parallelCamelProcess:serviceTaskAsync1").to("seda:parallelQueue");
+			    from("seda:parallelQueue").to("bean:sleepBean?method=sleep");
+			    
+			    from("activiti:parallelCamelProcess:serviceTaskAsync2").to("seda:parallelQueue2");
+			    from("seda:parallelQueue2").to("bean:sleepBean?method=sleep");
+				
+				
+			}
+		});
+   }  
 
   @Deployment(resources = {"process/parallel.bpmn20.xml"})
   public void testRunProcess() throws Exception {

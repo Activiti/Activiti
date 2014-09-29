@@ -8,18 +8,34 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
+import org.apache.camel.LoggingLevel;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration("classpath:camel-activiti-context.xml")
+@ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class CamelVariableBodyMapTest extends SpringActivitiTestCase {
 	
-	MockEndpoint service1;
+   MockEndpoint service1;
+   @Autowired
+   CamelContext camelContext;
 	
-  public void setUp() {
-    CamelContext ctx = applicationContext.getBean(CamelContext.class);
-    service1 = (MockEndpoint) ctx.getEndpoint("mock:serviceBehavior");
+  public void setUp() throws Exception {
+	  camelContext.addRoutes(new RouteBuilder() {
+
+			@Override
+			public void configure() throws Exception {
+				from("activiti:HelloCamel:serviceTask1")
+				.log(LoggingLevel.INFO,"Received message on service task")
+				.to("mock:serviceBehavior");				
+			}
+		});	
+    
+    service1 = (MockEndpoint) camelContext.getEndpoint("mock:serviceBehavior");
     service1.reset();
+    
+    
   }
 	
 	@Deployment(resources = {"process/HelloCamelBodyMap.bpmn20.xml"})
