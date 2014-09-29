@@ -21,7 +21,6 @@ import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.test.pvm.activities.WaitState;
-import org.junit.Test;
 
 
 /**
@@ -29,7 +28,6 @@ import org.junit.Test;
  */
 public class PvmVariablesTest extends PvmTestCase {
 
-  @Test //TODO JUnit 3 or 4???
   public void testVariables() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("a")
