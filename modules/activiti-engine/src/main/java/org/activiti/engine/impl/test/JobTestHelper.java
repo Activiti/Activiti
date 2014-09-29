@@ -22,6 +22,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.test.ActivitiRule;
 
 
 
@@ -33,6 +34,11 @@ import org.activiti.engine.impl.jobexecutor.JobExecutor;
  
  
 public class JobTestHelper {
+
+  public static void waitForJobExecutorToProcessAllJobs(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
+    waitForJobExecutorToProcessAllJobs(activitiRule.getProcessEngine().getProcessEngineConfiguration(), activitiRule.getManagementService(), maxMillisToWait,
+            intervalMillis);
+  }
 
   public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService,
           long maxMillisToWait, long intervalMillis) {
@@ -69,6 +75,10 @@ public class JobTestHelper {
     }
   }
 
+  public static void waitForJobExecutorOnCondition(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis,
+          Callable<Boolean> condition) {
+    waitForJobExecutorOnCondition(activitiRule.getProcessEngine().getProcessEngineConfiguration(), maxMillisToWait, intervalMillis, condition);
+  }
   public static void waitForJobExecutorOnCondition(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis,
           Callable<Boolean> condition) {
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
@@ -97,6 +107,11 @@ public class JobTestHelper {
     } finally {
       jobExecutor.shutdown();
     }
+  }
+
+  public static boolean areJobsAvailable(ActivitiRule activitiRule) {
+    return areJobsAvailable(activitiRule.getManagementService());
+    
   }
 
   public static boolean areJobsAvailable(ManagementService managementService) {
