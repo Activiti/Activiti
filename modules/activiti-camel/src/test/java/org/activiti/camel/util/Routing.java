@@ -21,6 +21,6 @@ public enum Routing {
 	/**
 	 * Camel route should throw an exception and handle it.
 	 */
-	HANDLE_ERROR;
-	
+	HANDLE_ERROR
+
 }

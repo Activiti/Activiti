@@ -90,6 +90,6 @@ public class DeploymentResourceResponse {
     /**
      * A resource that is a process-definition image.
      */
-    PROCESS_IMAGE;
+    PROCESS_IMAGE
   }
 }

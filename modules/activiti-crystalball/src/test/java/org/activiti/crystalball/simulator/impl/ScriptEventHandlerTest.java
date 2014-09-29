@@ -1,9 +1,6 @@
 package org.activiti.crystalball.simulator.impl;
 
-import org.activiti.crystalball.examples.tutorial.step01.Counter;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 

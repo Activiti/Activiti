@@ -132,7 +132,7 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
     }
     setPropertyValue(PROPERTY_FORMKEY, userTask.getFormKey(), propertiesNode);
     setPropertyValue(PROPERTY_DUEDATE, userTask.getDueDate(), propertiesNode);
-    setPropertyValue(PROPERTY_CATEGORY, userTask.getCategory(), propertiesNode);;
+    setPropertyValue(PROPERTY_CATEGORY, userTask.getCategory(), propertiesNode);
     
     addFormProperties(userTask.getFormProperties(), propertiesNode);
   }

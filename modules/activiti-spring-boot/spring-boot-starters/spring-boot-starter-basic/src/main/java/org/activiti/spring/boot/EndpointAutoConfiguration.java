@@ -7,7 +7,6 @@ import org.activiti.spring.boot.actuate.endpoint.ProcessEngineMvcEndpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.endpoint.AbstractEndpoint;
 
 /**
  * The idea behind this module is that Spring Security could
