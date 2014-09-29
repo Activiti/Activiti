@@ -1,8 +1,8 @@
 package org.activiti.spring.boot;
 
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.*;
 import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -13,59 +13,78 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.ServletRegistration;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * unit tests for the REST API integration.
- *
  * @author Josh Long
  */
-@Ignore
 public class RestApiAutoConfigurationTest {
-
-    private AnnotationConfigEmbeddedWebApplicationContext applicationContext;
 
     @Configuration
     @Import({EmbeddedServletContainerAutoConfiguration.class,
-            DispatcherServletAutoConfiguration.class,
+            DispatcherServletAutoConfiguration.class, MultipartAutoConfiguration.class,
             ServerPropertiesAutoConfiguration.class,
-            HttpMessageConvertersAutoConfiguration.class,
-            WebMvcAutoConfiguration.class})
-    public static class EmbeddedContainerConfiguration {
-    }
+            DataSourceAutoConfiguration.class,
+            DataSourceProcessEngineAutoConfiguration.DataSourceConfiguration.class,
+            RestApiAutoConfiguration.class
 
-    @Configuration
-    @Import( RestApiAutoConfiguration.class)
-    public static class RestApiConfiguration {
-
+    })
+    protected static class BaseConfiguration {
         @Bean
         public RestTemplate restTemplate() {
             return new RestTemplate();
         }
+
+        @Bean
+        public ServerProperties serverProperties() {
+            ServerProperties properties = new ServerProperties();
+            properties.setPort(0);
+            return properties;
+        }
+
     }
 
+    /*   @Configuration
+       @Import({EmbeddedServletContainerAutoConfiguration.class,
+               DispatcherServletAutoConfiguration.class,
+               ServerPropertiesAutoConfiguration.class,
+               HttpMessageConvertersAutoConfiguration.class,
+               WebMvcAutoConfiguration.class,
+               DataSourceAutoConfiguration.class,
+               DataSourceProcessEngineAutoConfiguration.DataSourceConfiguration.class,
+               RestApiAutoConfiguration.class
+       })
+       public static class RestApiConfiguration {
+
+           @Bean
+           public RestTemplate restTemplate() {
+               return new RestTemplate();
+           }
+       }
+   */
     @After
     public void close() {
-        this.applicationContext.close();
+        if (this.context != null) {
+            this.context.close();
+        }
     }
+
+    private AnnotationConfigEmbeddedWebApplicationContext context;
 
     @Test
     public void testRestApiIntegration() throws Throwable {
 
-        this.applicationContext = new AnnotationConfigEmbeddedWebApplicationContext();
-        this.applicationContext.register(EmbeddedContainerConfiguration.class, RestApiConfiguration.class);
-        this.applicationContext.refresh();
+        this.context = new AnnotationConfigEmbeddedWebApplicationContext(
+                BaseConfiguration.class);
 
-        for (ServletRegistration servletRegistration : this.applicationContext.getBeansOfType(ServletRegistration.class).values()) {
-            System.out.println(servletRegistration);
-        }
-        String authenticationChallenge = "http://localhost:8080/api/process-definitions";
+        RestTemplate restTemplate = this.context.getBean(RestTemplate.class) ;
 
-        RestTemplate restTemplate = this.applicationContext.getBean(RestTemplate.class);
+
+        String authenticationChallenge = "http://localhost:" + this.context.getEmbeddedServletContainer().getPort() + "/api/process-definitions" ;
+
+
         final AtomicBoolean received403 = new AtomicBoolean();
         received403.set(false);
         restTemplate.setErrorHandler(new ResponseErrorHandler() {
@@ -81,10 +100,7 @@ public class RestApiAutoConfigurationTest {
             }
         });
         restTemplate.getForEntity(authenticationChallenge, Map.class);
-
         org.junit.Assert.assertTrue(received403.get());
-
-
     }
 
 
