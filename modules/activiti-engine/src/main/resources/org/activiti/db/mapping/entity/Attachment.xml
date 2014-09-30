@@ -21,7 +21,7 @@
   <!-- ATTACHMENT INSERT -->
 
   <insert id="insertAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
-    insert into ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_)
+    insert into ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_, TIME_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
@@ -32,7 +32,8 @@
       #{taskId ,jdbcType=VARCHAR},
       #{processInstanceId ,jdbcType=VARCHAR},
       #{url ,jdbcType=VARCHAR},
-      #{contentId ,jdbcType=VARCHAR}
+      #{contentId ,jdbcType=VARCHAR},
+      #{time ,jdbcType=TIMESTAMP}
     )
   </insert>
 
@@ -68,20 +69,29 @@
     <result property="url" column="URL_" jdbcType="VARCHAR" />
     <result property="contentId" column="CONTENT_ID_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
   </resultMap>
   
   <!-- ATTACHMENT SELECT -->
 
   <select id="selectAttachment" parameterType="string" resultMap="attachmentResultMap">
-    select * from ${prefix}ACT_HI_ATTACHMENT where ID_ = #{id,jdbcType=VARCHAR}
+    select *
+    from ${prefix}ACT_HI_ATTACHMENT
+    where ID_ = #{id,jdbcType=VARCHAR}
   </select>
   
   <select id="selectAttachmentsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
-    select * from ${prefix}ACT_HI_ATTACHMENT where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
+    select *
+    from ${prefix}ACT_HI_ATTACHMENT
+    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
   </select>
   
   <select id="selectAttachmentsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
-    select * from ${prefix}ACT_HI_ATTACHMENT where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
+    select *
+    from ${prefix}ACT_HI_ATTACHMENT
+    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
   </select>
 
 </mapper>

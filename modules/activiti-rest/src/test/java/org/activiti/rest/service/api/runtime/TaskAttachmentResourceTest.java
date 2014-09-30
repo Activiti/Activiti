@@ -134,6 +134,7 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
 
       assertTrue(responseNode.get("contentUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
+      assertFalse(responseNode.get("time").isNull());
       
       
       // Get binary attachment
@@ -155,6 +156,7 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
 
       assertTrue(responseNode.get("externalUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
+      assertFalse(responseNode.get("time").isNull());
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -358,6 +360,7 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
 
       assertTrue(responseNode.get("contentUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
+      assertFalse(responseNode.get("time").isNull());
       
       
     } finally {
@@ -417,6 +420,7 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
 
       assertTrue(responseNode.get("externalUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
+      assertFalse(responseNode.get("time").isNull());
       
     
     } finally {
@@ -545,6 +549,7 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
 
       assertTrue(responseNode.get("contentUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
+      assertFalse(responseNode.get("time").isNull());
       
       
       // Get binary attachment

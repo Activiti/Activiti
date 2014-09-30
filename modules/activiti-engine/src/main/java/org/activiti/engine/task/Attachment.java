@@ -13,6 +13,8 @@
 
 package org.activiti.engine.task;
 
+import java.util.Date;
+
 import org.activiti.engine.TaskService;
 
 
@@ -55,4 +57,11 @@ public interface Attachment {
   
   /** reference to the user who created this attachment. */
   String getUserId();
+
+  /** timestamp when this attachment was created */
+  Date getTime();
+  
+  /** timestamp when this attachment was created */
+  void setTime(Date time);
+
 }

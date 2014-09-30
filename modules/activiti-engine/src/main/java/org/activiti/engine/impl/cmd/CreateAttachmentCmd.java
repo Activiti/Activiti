@@ -70,6 +70,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     attachment.setProcessInstanceId(processInstanceId);
     attachment.setUrl(url);
     attachment.setUserId(Authentication.getAuthenticatedUserId());
+    attachment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
     
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.insert(attachment);

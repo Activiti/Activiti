@@ -120,6 +120,7 @@ create table ACT_HI_ATTACHMENT (
     PROC_INST_ID_ NVARCHAR2(64),
     URL_ NVARCHAR2(2000),
     CONTENT_ID_ NVARCHAR2(64),
+    TIME_ TIMESTAMP(6),
     primary key (ID_)
 );
 
