@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
 import junit.framework.AssertionFailedError;
@@ -26,6 +28,7 @@ import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -41,6 +44,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -198,15 +202,73 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   }
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis);
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    jobExecutor.start();
+
+    try {
+      Timer timer = new Timer();
+      InteruptTask task = new InteruptTask(Thread.currentThread());
+      timer.schedule(task, maxMillisToWait);
+      boolean areJobsAvailable = true;
+      try {
+        while (areJobsAvailable && !task.isTimeLimitExceeded()) {
+          Thread.sleep(intervalMillis);
+          try {
+            areJobsAvailable = areJobsAvailable();
+          } catch(Throwable t) {
+            // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
+            // isolation level doesn't allow READ of the table
+          }
+        }
+      } catch (InterruptedException e) {
+        // ignore
+      } finally {
+        timer.cancel();
+      }
+      if (areJobsAvailable) {
+        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
+      }
+
+    } finally {
+      jobExecutor.shutdown();
+    }
   }
 
   public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    JobTestHelper.waitForJobExecutorOnCondition(processEngineConfiguration, maxMillisToWait, intervalMillis, condition);
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    jobExecutor.start();
+
+    try {
+      Timer timer = new Timer();
+      InteruptTask task = new InteruptTask(Thread.currentThread());
+      timer.schedule(task, maxMillisToWait);
+      boolean conditionIsViolated = true;
+      try {
+        while (conditionIsViolated) {
+          Thread.sleep(intervalMillis);
+          conditionIsViolated = !condition.call();
+        }
+      } catch (InterruptedException e) {
+      } catch (Exception e) {
+        throw new ActivitiException("Exception while waiting on condition: "+e.getMessage(), e);
+      } finally {
+        timer.cancel();
+      }
+      if (conditionIsViolated) {
+        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
+      }
+
+    } finally {
+      jobExecutor.shutdown();
+    }
   }
 
   public boolean areJobsAvailable() {
-    return JobTestHelper.areJobsAvailable(managementService);
+    return !managementService
+      .createJobQuery()
+      .executable()
+      .list()
+      .isEmpty();
   }
   
   /**
@@ -303,5 +365,20 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   	ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
   			.deploymentId(deployment.getId()).singleResult();
   	return processDefinition.getId(); 
+  }
+
+  private static class InteruptTask extends TimerTask {
+    protected boolean timeLimitExceeded = false;
+    protected Thread thread;
+    public InteruptTask(Thread thread) {
+      this.thread = thread;
+    }
+    public boolean isTimeLimitExceeded() {
+      return timeLimitExceeded;
+    }
+    public void run() {
+      timeLimitExceeded = true;
+      thread.interrupt();
+    }
   }
 }
