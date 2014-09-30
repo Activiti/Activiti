@@ -14,12 +14,14 @@
 package org.activiti.camel;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,8 @@ public class CustomContextTest extends SpringActivitiTestCase {
 	MockEndpoint service2;
 
 	public void setUp() throws Exception {
-	       camelContext.addRoutes(new RouteBuilder() {
+   
+	      camelContext.addRoutes(new RouteBuilder() {
 
 	   		@Override
 	   		public void configure() throws Exception {	 
@@ -52,6 +55,7 @@ public class CustomContextTest extends SpringActivitiTestCase {
 	   	      from("direct:receive").to("activiti:camelProcess:receive");	   		  
 	   		}
 	   	});
+	       
 	    
 		
 		service1 = (MockEndpoint) camelContext.getEndpoint("mock:service1");
@@ -60,9 +64,20 @@ public class CustomContextTest extends SpringActivitiTestCase {
 		service2.reset();
 
 	}
+	
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r: routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
+    }
+  }
+	
 
 	@Deployment(resources = { "process/custom.bpmn20.xml" })
 	public void testRunProcess() throws Exception {
+	  
+	  
 		CamelContext ctx = applicationContext.getBean(CamelContext.class);
 		ProducerTemplate tpl = ctx.createProducerTemplate();
 		service1.expectedBodiesReceived("ala");

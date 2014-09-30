@@ -14,12 +14,14 @@
 package org.activiti.camel;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,11 @@ public class SimpleSpringProcessTest extends SpringActivitiTestCase {
 			public void configure() throws Exception {
 				 from("direct:startWithInitiatorHeader")
 		          .setHeader("CamelProcessInitiatorHeader", constant("kermit"))
-		          .to("activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");	
+		          .to("activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");
+				 from("direct:start").to("activiti:camelProcess");
+				 from("direct:receive").to("activiti:camelProcess:receive");
+				 from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true").to("mock:service2");
+				 from("activiti:camelProcess:serviceTask1").setBody().simple("property[var1]").to("mock:service1").setProperty("var2").constant("var2").setBody().mvel("properties");
 				
 			}
      });	  
@@ -52,6 +58,15 @@ public class SimpleSpringProcessTest extends SpringActivitiTestCase {
     service2.reset();
 
   }
+  
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r: routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
+    }
+  }
+  
 
   @Deployment(resources = {"process/example.bpmn20.xml"})
   public void testRunProcess() throws Exception {

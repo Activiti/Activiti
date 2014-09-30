@@ -6,35 +6,29 @@ package org.activiti.camel;
  */
 import java.util.List;
 
-import org.activiti.engine.impl.test.JobTestHelper;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.test.Deployment;
+import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.impl.DefaultCamelContext;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
-public class AsyncPingTest {
-
-   @Rule
-   public ActivitiRule activitiRule = new ActivitiRule();
+public class AsyncPingTest extends SpringActivitiTestCase {
 	  
+   @Autowired
+   CamelContext camelContext;
    
-   static CamelContext camelContext = new DefaultCamelContext();
+   @Autowired
+   RuntimeService runtimeService;
    
-   
-
-   @BeforeClass
-   public static void  setUp() throws Exception {
-	 
+   public void  setUp() throws Exception {
 	   
        camelContext.addRoutes(new RouteBuilder() {
 
@@ -45,21 +39,29 @@ public class AsyncPingTest {
 		});
   }
    
-  @Test
+   public void tearDown() throws Exception {
+     List<Route> routes = camelContext.getRoutes();
+     for (Route r: routes) {
+       camelContext.stopRoute(r.getId());
+       camelContext.removeRoute(r.getId());
+     }
+   }
+   
+  
   @Deployment(resources = {"process/asyncPing.bpmn20.xml"})
   public void testRunProcess() throws Exception {
-    ProcessInstance processInstance = activitiRule.getRuntimeService().startProcessInstanceByKey("asyncPingProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncPingProcess");
     
-    List<Execution> executionList = activitiRule.getRuntimeService().createExecutionQuery().list();
+    List<Execution> executionList = runtimeService.createExecutionQuery().list();
     Assert.assertEquals(1, executionList.size());
 
-    JobTestHelper.waitForJobExecutorToProcessAllJobs(activitiRule, 3000, 100);
+    waitForJobExecutorToProcessAllJobs( 3000, 100);
     Thread.sleep(1500);
     
-    executionList = activitiRule.getRuntimeService().createExecutionQuery().list();
+    executionList = runtimeService.createExecutionQuery().list();
     Assert.assertEquals(0, executionList.size());
    
-    Assert.assertEquals(0, activitiRule.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+    Assert.assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
   }
 
 }

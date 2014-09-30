@@ -33,7 +33,9 @@ public class InitiatorCamelCallTest extends SpringActivitiTestCase {
 
 		@Override
 		public void configure() throws Exception {
-			
+		  from("direct:startWithInitiatorHeader")
+      .setHeader("CamelProcessInitiatorHeader", constant("kermit"))
+      .to("activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");
 			
 		}
 	});

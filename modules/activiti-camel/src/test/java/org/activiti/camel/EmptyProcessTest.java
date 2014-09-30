@@ -13,11 +13,14 @@
 
 package org.activiti.camel;
 
+import java.util.List;
+
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.junit.BeforeClass;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +32,10 @@ public class EmptyProcessTest extends SpringActivitiTestCase {
   @Autowired
   CamelContext camelContext;
   
-  static boolean configured = false;
-	
+  	
   @BeforeClass
   public void  setUp() throws Exception {
-	  if  (configured)
-		  return;
-	  configured = true;
-      camelContext.addRoutes(new RouteBuilder() {
+	  camelContext.addRoutes(new RouteBuilder() {
 
 		@Override
 		public void configure() throws Exception {
@@ -46,6 +45,15 @@ public class EmptyProcessTest extends SpringActivitiTestCase {
 		}
 	});
  }
+  
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r: routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
+    }
+  }
+  
   
   @Deployment(resources = {"process/empty.bpmn20.xml"})
   public void testRunProcessWithHeader() throws Exception {

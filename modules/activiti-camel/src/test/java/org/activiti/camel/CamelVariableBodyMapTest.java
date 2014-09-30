@@ -1,6 +1,7 @@
 package org.activiti.camel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.runtime.ProcessInstance;
@@ -9,6 +10,7 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
 import org.apache.camel.LoggingLevel;
+import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +36,16 @@ public class CamelVariableBodyMapTest extends SpringActivitiTestCase {
     
     service1 = (MockEndpoint) camelContext.getEndpoint("mock:serviceBehavior");
     service1.reset();
-    
-    
   }
+  
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r: routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
+    }
+  }
+  
 	
 	@Deployment(resources = {"process/HelloCamelBodyMap.bpmn20.xml"})
 	public void testCamelBody() throws Exception {

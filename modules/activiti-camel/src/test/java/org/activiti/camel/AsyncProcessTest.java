@@ -24,6 +24,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -50,6 +51,15 @@ public class AsyncProcessTest extends SpringActivitiTestCase {
            }
 		});
 	}
+   
+  public void tearDown() throws Exception {
+     List<Route> routes = camelContext.getRoutes();
+     for (Route r: routes) {       
+       camelContext.stopRoute(r.getId());
+       camelContext.removeRoute(r.getId());
+     }
+   }
+
 
   @Deployment(resources = {"process/async.bpmn20.xml"})
   public void testRunProcess() throws Exception {
