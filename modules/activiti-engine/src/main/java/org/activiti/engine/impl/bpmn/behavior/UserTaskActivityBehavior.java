@@ -111,7 +111,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     }
     
     if (taskDefinition.getFormKeyExpression() != null) {
-    	final Object formKey = (String) taskDefinition.getFormKeyExpression().getValue(execution);
+    	final Object formKey = taskDefinition.getFormKeyExpression().getValue(execution);
     	if (formKey != null) {
     		if (formKey instanceof String) {
     			task.setFormKey((String) formKey);
