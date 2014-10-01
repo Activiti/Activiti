@@ -121,7 +121,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
           } else if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
             processDiagramCanvas.drawCatchingTimerEvent(flowNode.getName(), graphicInfo, true, scaleFactor);
           } else if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
-            processDiagramCanvas.drawCatchingMessageEvent(graphicInfo, true, scaleFactor);  
+            processDiagramCanvas.drawCatchingMessageEvent(flowNode.getName(), graphicInfo, true, scaleFactor);  
           }
         }
       }
@@ -293,7 +293,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
           } else if (boundaryEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
             processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(), graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);
           } else if (boundaryEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
-            processDiagramCanvas.drawCatchingMessageEvent(graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);  
+            processDiagramCanvas.drawCatchingMessageEvent(flowNode.getName(), graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);  
           }
         }
         

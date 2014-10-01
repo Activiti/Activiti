@@ -454,6 +454,11 @@ public class DefaultProcessDiagramCanvas {
     drawCatchingEvent(graphicInfo, isInterrupting, MESSAGE_CATCH_IMAGE, "message", scaleFactor);
   }
 
+  public void drawCatchingMessageEvent(String name, GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, isInterrupting, MESSAGE_CATCH_IMAGE, "message", scaleFactor);
+    drawLabel(name, graphicInfo);
+  }
+  
   public void drawThrowingSignalEvent(GraphicInfo graphicInfo, double scaleFactor) {
     drawCatchingEvent(graphicInfo, true, SIGNAL_THROW_IMAGE, "signal", scaleFactor);
   }
