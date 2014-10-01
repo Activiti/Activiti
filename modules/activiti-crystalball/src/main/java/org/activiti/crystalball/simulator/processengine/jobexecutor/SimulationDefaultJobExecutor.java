@@ -50,7 +50,7 @@ public class SimulationDefaultJobExecutor extends DefaultJobExecutor {
 			(new ExecuteJobsRunnable(this, jobIds)).run();
 	}
 
-	public  AcquireJobsRunnable getAcquireJobsRunnable() {
+	public AcquireJobsRunnable getAcquireJobsRunnable() {
 		return acquireJobsRunnable;
 	}
 	

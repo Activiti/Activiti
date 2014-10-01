@@ -25,13 +25,20 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Tom Baeyens
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
-public class ExecuteJobsRunnable implements Runnable
-{
+public class ExecuteJobsRunnable implements Runnable {
+	
     private static Logger log = LoggerFactory.getLogger(ExecuteJobsRunnable.class);
 
-    private final List<JobEntity> jobs;
-    private final JobExecutor jobExecutor;
+    private JobEntity job;
+    private List<JobEntity> jobs;
+    private JobExecutor jobExecutor;
+    
+    public ExecuteJobsRunnable(JobExecutor jobExecutor, JobEntity job) {
+    	this.jobExecutor = jobExecutor;
+    	this.job = job;
+    }
 
     public ExecuteJobsRunnable(JobExecutor jobExecutor, List<JobEntity> jobs) {
         this.jobExecutor = jobExecutor;
@@ -43,17 +50,25 @@ public class ExecuteJobsRunnable implements Runnable
         final List<JobEntity> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
         final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
 
-        currentProcessorJobQueue.addAll(jobs);
+        if (jobs != null) {
+        	currentProcessorJobQueue.addAll(jobs);
+        }
+        if (job != null) {
+        	currentProcessorJobQueue.add(job);
+        }
 
         Context.setJobExecutorContext(jobExecutorContext);
         try {
           while (!currentProcessorJobQueue.isEmpty()) {
 
+          	JobEntity currentJob = currentProcessorJobQueue.remove(0);
             try {
-              commandExecutor.execute(new ExecuteJobsCmd(currentProcessorJobQueue.remove(0)));
+              commandExecutor.execute(new ExecuteJobsCmd(currentJob));
             }
             catch (Throwable e) {
               log.error("exception during job execution: {}", e.getMessage(), e);
+            } finally {
+            	jobExecutor.jobDone(currentJob);
             }
           }
         }

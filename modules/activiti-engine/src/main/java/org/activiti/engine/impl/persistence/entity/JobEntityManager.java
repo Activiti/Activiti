@@ -97,6 +97,10 @@ public class JobEntityManager extends AbstractManager {
     return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
   }
   
+  public List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
+  	return getDbSqlSession().selectList("selectJobsByLockOwner", lockOwner, start, maxNrOfJobs);
+  }
+  
   @SuppressWarnings("unchecked")
   public List<Job> findJobsByExecutionId(String executionId) {
     return getDbSqlSession().selectList("selectJobsByExecutionId", executionId);
@@ -153,6 +157,14 @@ public class JobEntityManager extends AbstractManager {
     params.put("lockExpirationTime", expirationTime);
     params.put("jobIds", jobIds);
     getDbSqlSession().update("updateJobLock", params);
+  }
+  
+  public int updateJobLockForAllJobs(String lockOwner, Date expirationTime) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("lockOwner", lockOwner);
+    params.put("lockExpirationTime", expirationTime);
+    params.put("dueDate", Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    return getDbSqlSession().update("updateJobLockForAllJobs", params);
   }
   
   public class JobTest {
