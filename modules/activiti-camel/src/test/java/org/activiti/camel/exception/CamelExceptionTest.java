@@ -40,9 +40,8 @@ public class CamelExceptionTest extends SpringActivitiTestCase{
 
     @Override
     public void configure() throws Exception {
-        from("activiti:asyncCamelProcessRevisited:serviceTaskAsync1").to("bean:sleepBean?method=sleep").to("activiti:asyncCamelProcessRevisited:receive1");
+        from("activiti:exceptionInRoute:errorCamelTask").to("log:helloWorld");
           
-        from("activiti:asyncCamelProcessRevisited:serviceTaskAsync2").to("bean:sleepBean?method=sleep").to("bean:sleepBean?method=sleep").to("activiti:asyncCamelProcessRevisited:receive2");    
 
       }
      });
