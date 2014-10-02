@@ -22,9 +22,11 @@ import java.util.concurrent.FutureTask;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
@@ -116,6 +118,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
             try {
               endpoint.process(exchange);
             } catch (Exception e) {  
+              System.out.println("*******************  Exception happened in camel asynchronous task");
               throw new RuntimeException("Unable to process camel endpint asynchronously.");
             }
             return null;
@@ -123,15 +126,22 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
       });
       ExecutorService executor = Executors.newSingleThreadExecutor();
       executor.submit(future);
-      handleCamelException(exchange);
+      if (!handleCamelException(exchange, execution)) {
+          execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
+          leave(execution);
+      }
 
     } else {
       endpoint.process(exchange);
-      handleCamelException(exchange);
-      execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
+      if (!handleCamelException(exchange, execution)) {
+        execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
+        leave(execution);
+      }
+       
+
+        
     }
   
-    leave(execution);
   }
 
   protected ActivitiEndpoint createEndpoint(ActivityExecution execution) {
@@ -157,12 +167,19 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
     return ex;
   }
   
-  protected void handleCamelException(Exchange exchange) {
+  protected boolean handleCamelException(Exchange exchange, ActivityExecution execution) throws Exception {
     Exception camelException = exchange.getException();
     boolean notHandledByCamel = exchange.isFailed() && camelException != null;
     if (notHandledByCamel) {
-      throw new ActivitiException("Unhandled exception on camel route", camelException);
+      if (camelException instanceof BpmnError) {
+        ErrorPropagation.propagateError((BpmnError) camelException,
+            execution);
+        return true;
+      } else {
+        throw new ActivitiException("Unhandled exception on camel route", camelException);
+      }
     }
+    return false;
   }
   
   protected void copyVariablesToProperties(Map<String, Object> variables, Exchange exchange) {
