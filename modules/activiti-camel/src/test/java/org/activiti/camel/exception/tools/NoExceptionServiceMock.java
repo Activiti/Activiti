@@ -17,5 +17,9 @@ public class NoExceptionServiceMock implements JavaDelegate {
     isCalled = false;
   }
   
+  public static boolean isCalled() {
+    return isCalled;
+  }
+  
   
 }

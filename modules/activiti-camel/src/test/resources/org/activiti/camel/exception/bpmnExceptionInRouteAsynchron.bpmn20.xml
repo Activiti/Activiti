@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="exceptionInRoute" name="exception in Camel Route" isExecutable="true">
+  <process id="exceptionInRouteSynchron" name="exception in a synchron Camel Route" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
-    <serviceTask id="errorCamelTask" name="Error Camel Task" activiti:type="camel"></serviceTask>
+    <serviceTask id="errorCamelTask" name="Error Camel Task" activiti:type="camel" activiti:async="true"></serviceTask>
     <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="errorCamelTask">
-      <errorEventDefinition></errorEventDefinition>
+      <errorEventDefinition errorRef="testError"  />
     </boundaryEvent>
     <serviceTask id="happyPath" name="happyPath" activiti:class="org.activiti.camel.exception.tools.NoExceptionServiceMock"></serviceTask>
     <endEvent id="endevent2" name="End"></endEvent>
