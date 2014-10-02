@@ -52,18 +52,6 @@
       ) 
   </update>
   
-  <update id="updateJobLock" parameterType="java.util.Map">
-    update ${prefix}ACT_RU_JOB set
-      LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
-      LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP}
-    where
-      ID_ in
-      <foreach item="jobId" index="index" collection="jobIds"
-               open="(" separator="," close=")">
-        #{jobId}
-      </foreach>
-  </update>
-  
   <update id="updateJobLockForAllJobs" parameterType="java.util.Map">
     update ${prefix}ACT_RU_JOB set
       LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},

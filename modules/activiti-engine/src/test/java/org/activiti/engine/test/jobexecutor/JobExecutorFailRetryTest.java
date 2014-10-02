@@ -19,7 +19,7 @@ import org.activiti.engine.test.Deployment;
  * @author Saeid Mirzaei
  */
 
-public class JobExecutorFailRetryTest extends PluggableActivitiTestCase{
+public class JobExecutorFailRetryTest   extends PluggableActivitiTestCase{
 	
 	@Deployment
 	public void testFailedServiceTask() {
@@ -27,22 +27,22 @@ public class JobExecutorFailRetryTest extends PluggableActivitiTestCase{
 		// process throws no exception. Service task passes at the first time. 
 		RetryFailingDelegate.shallThrow = false;  // do not throw exception in Service delegate
 		RetryFailingDelegate.resetTimeList();
-  	runtimeService.startProcessInstanceByKey("failedJobRetry");
-  	
-  	waitForJobExecutorToProcessAllJobs(600, 200);
-  	System.out.println(RetryFailingDelegate.times.size());
-  	assertEquals(1, RetryFailingDelegate.times.size());  // check number of calls of delegate
-  	
-  	
-  	// process throws exception two times, with 6 seconds in between
-  	RetryFailingDelegate.shallThrow = true;  // do not throw exception in Service delegate
-  	RetryFailingDelegate.resetTimeList();
-  	runtimeService.startProcessInstanceByKey("failedJobRetry");
-  	
-  	waitForJobExecutorToProcessAllJobs(14000, 200);
-  	System.out.println(RetryFailingDelegate.times.size());
-  	assertEquals(2, RetryFailingDelegate.times.size());  // check number of calls of delegate
-  	long timeDiff = RetryFailingDelegate.times.get(1) - RetryFailingDelegate.times.get(0) ; 
-  	assertTrue(timeDiff > 6000 && timeDiff < 12000);  // check time difference between calls. Just roughly
-  }
+    	runtimeService.startProcessInstanceByKey("failedJobRetry");
+    	
+    	waitForJobExecutorToProcessAllJobs(600, 200);
+    	System.out.println(RetryFailingDelegate.times.size());
+    	assertEquals(1, RetryFailingDelegate.times.size());  // check number of calls of delegate
+    	
+    	
+    	// process throws exception two times, with 6 seconds in between
+    	RetryFailingDelegate.shallThrow = true;  // do not throw exception in Service delegate
+		RetryFailingDelegate.resetTimeList();
+    	runtimeService.startProcessInstanceByKey("failedJobRetry");
+    	
+    	waitForJobExecutorToProcessAllJobs(14000, 200);
+    	System.out.println(RetryFailingDelegate.times.size());
+    	assertEquals(2, RetryFailingDelegate.times.size());  // check number of calls of delegate
+    	long timeDiff = RetryFailingDelegate.times.get(1) - RetryFailingDelegate.times.get(0) ; 
+    	assertTrue(timeDiff > 6000 && timeDiff < 12000);  // check time difference between calls. Just roughly
+    }
 }

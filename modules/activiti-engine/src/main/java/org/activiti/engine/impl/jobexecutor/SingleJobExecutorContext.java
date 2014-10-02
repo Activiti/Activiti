@@ -12,17 +12,32 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
  * @author Joram Barrez
  */
-public interface JobExecutorContext {
+public class SingleJobExecutorContext implements JobExecutorContext {
 
-	boolean isExecutingExclusiveJob();
+  protected List<JobEntity> currentProcessorJobQueue = new LinkedList<JobEntity>();
+  protected JobEntity currentJob;
+        
+  public List<JobEntity> getCurrentProcessorJobQueue() {
+    return currentProcessorJobQueue;
+  }
+
+  public boolean isExecutingExclusiveJob() {
+    return currentJob == null ? false : currentJob.isExclusive();
+  }
      
-  void setCurrentJob(JobEntity currentJob);
+  public void setCurrentJob(JobEntity currentJob) {
+    this.currentJob = currentJob;
+  }
     
-  JobEntity getCurrentJob();
- 
+  public JobEntity getCurrentJob() {
+    return currentJob;
+  }
 }

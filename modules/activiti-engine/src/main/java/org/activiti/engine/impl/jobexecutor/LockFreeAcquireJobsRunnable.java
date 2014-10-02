@@ -164,7 +164,7 @@ public class LockFreeAcquireJobsRunnable implements AcquireJobsRunnable {
 				} catch (RejectedExecutionException e) {
 					// If the queue is full, the rejection handler will execute it in the current thread (ie: this thread)
 					// This takes care of throttling the load when the queue is full
-					jobExecutor.getRejectedJobsHandler().jobsRejected(jobExecutor, Arrays.asList(job));
+					jobExecutor.getRejectedJobsHandler().jobsRejected(jobExecutor, Arrays.asList(job.getId()));
 				}
 			}
 			

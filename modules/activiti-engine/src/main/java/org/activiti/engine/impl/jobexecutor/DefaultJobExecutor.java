@@ -19,7 +19,6 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +78,7 @@ public class DefaultJobExecutor extends JobExecutor {
     threadPoolExecutor = null;
   }
   
-  public void executeJobs(List<JobEntity> jobIds) {
+  public void executeJobs(List<String> jobIds) {
     try {
       threadPoolExecutor.execute(new ExecuteJobsRunnable(this, jobIds));
     } catch (RejectedExecutionException e) {

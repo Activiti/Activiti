@@ -141,12 +141,17 @@ public abstract class JobExecutor {
   
   /* Need to be implemented by concrete subclasses */
   
-	public abstract void executeJobs(List<JobEntity> jobIds);
+	public abstract void executeJobs(List<String> jobIds);
   protected abstract void startExecutingJobs();
   protected abstract void stopExecutingJobs(); 
   
   /* Can be overridden by subclasses if wanted */
   public void jobDone(JobEntity job) {
+  	// Default: do nothing
+  }
+  
+  /* Can be overridden by subclasses if wanted */
+  public void jobDone(String jobId) {
   	// Default: do nothing
   }
   

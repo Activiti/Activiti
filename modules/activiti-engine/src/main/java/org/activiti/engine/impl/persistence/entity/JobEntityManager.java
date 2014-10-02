@@ -28,7 +28,6 @@ import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.runtime.Job;
 
@@ -63,7 +62,6 @@ public class JobEntityManager extends AbstractManager {
   
   protected void hintJobExecutor(JobEntity job) {  
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
-    JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
 
     // notify job executor:      
     TransactionListener transactionListener = new JobAddedNotification(jobExecutor);
@@ -151,14 +149,6 @@ public class JobEntityManager extends AbstractManager {
   	getDbSqlSession().update("updateJobTenantIdForDeployment", params);
   }
   
-  public void updateJobLock(String lockOwner, Date expirationTime, List<String> jobIds) {
-    HashMap<String, Object> params = new HashMap<String, Object>();
-    params.put("lockOwner", lockOwner);
-    params.put("lockExpirationTime", expirationTime);
-    params.put("jobIds", jobIds);
-    getDbSqlSession().update("updateJobLock", params);
-  }
-  
   public int updateJobLockForAllJobs(String lockOwner, Date expirationTime) {
     HashMap<String, Object> params = new HashMap<String, Object>();
     params.put("lockOwner", lockOwner);
@@ -167,28 +157,4 @@ public class JobEntityManager extends AbstractManager {
     return getDbSqlSession().update("updateJobLockForAllJobs", params);
   }
   
-  public class JobTest {
-    String lockOwner;
-    Date expirationTime;
-    List<String> jobIds;
-    public String getLockOwner() {
-      return lockOwner;
-    }
-    public void setLockOwner(String lockOwner) {
-      this.lockOwner = lockOwner;
-    }
-    public Date getExpirationTime() {
-      return expirationTime;
-    }
-    public void setExpirationTime(Date expirationTime) {
-      this.expirationTime = expirationTime;
-    }
-    public List<String> getJobIds() {
-      return jobIds;
-    }
-    public void setJobIds(List<String> jobIds) {
-      this.jobIds = jobIds;
-    }
-  }
-
 }

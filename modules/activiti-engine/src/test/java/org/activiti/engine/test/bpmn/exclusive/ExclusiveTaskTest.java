@@ -12,11 +12,8 @@
  */
 package org.activiti.engine.test.bpmn.exclusive;
 
-import java.util.List;
-
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
 
@@ -63,14 +60,7 @@ public class ExclusiveTaskTest extends PluggableActivitiTestCase {
     // now there should be 3 exclusive jobs in the database:
     assertEquals(3, managementService.createJobQuery().count());
                    
-    try {
-      waitForJobExecutorToProcessAllJobs(6000L, 100L);
-    } catch (Exception e) {
-      List<Execution> executions = runtimeService.createExecutionQuery().list();
-      for (Execution execution : executions) {
-        System.out.println("****execution " + execution);
-      }
-    }
+    waitForJobExecutorToProcessAllJobs(6000L, 100L);
     
     // all the jobs are done
     assertEquals(0, managementService.createJobQuery().count());      

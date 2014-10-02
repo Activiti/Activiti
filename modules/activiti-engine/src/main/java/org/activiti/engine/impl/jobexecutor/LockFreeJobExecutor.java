@@ -118,7 +118,7 @@ private static Logger log = LoggerFactory.getLogger(LockFreeJobExecutor.class);
     threadPoolExecutor = null;
   }
   
-  public void executeJobs(List<JobEntity> jobIds) {
+  public void executeJobs(List<String> jobIds) {
   	// Not doing anything in this implementation, the acquire runnable puts work on the threadpool
   }
   

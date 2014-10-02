@@ -21,59 +21,85 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Tom Baeyens
  * @author Daniel Meyer
  * @author Joram Barrez
  */
 public class ExecuteJobsRunnable implements Runnable {
-	
-    private static Logger log = LoggerFactory.getLogger(ExecuteJobsRunnable.class);
 
-    private JobEntity job;
-    private List<JobEntity> jobs;
-    private JobExecutor jobExecutor;
-    
-    public ExecuteJobsRunnable(JobExecutor jobExecutor, JobEntity job) {
-    	this.jobExecutor = jobExecutor;
-    	this.job = job;
-    }
+	private static Logger log = LoggerFactory.getLogger(ExecuteJobsRunnable.class);
 
-    public ExecuteJobsRunnable(JobExecutor jobExecutor, List<JobEntity> jobs) {
-        this.jobExecutor = jobExecutor;
-        this.jobs = jobs;
-    }
+	private JobEntity job;
+	private List<String> jobIds;
+	private JobExecutor jobExecutor;
 
-    public void run() {
-        final JobExecutorContext jobExecutorContext = new JobExecutorContext();
-        final List<JobEntity> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
-        final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
+	public ExecuteJobsRunnable(JobExecutor jobExecutor, JobEntity job) {
+		this.jobExecutor = jobExecutor;
+		this.job = job;
+	}
 
-        if (jobs != null) {
-        	currentProcessorJobQueue.addAll(jobs);
-        }
-        if (job != null) {
-        	currentProcessorJobQueue.add(job);
-        }
+	public ExecuteJobsRunnable(JobExecutor jobExecutor, List<String> jobIds) {
+		this.jobExecutor = jobExecutor;
+		this.jobIds = jobIds;
+	}
 
-        Context.setJobExecutorContext(jobExecutorContext);
-        try {
-          while (!currentProcessorJobQueue.isEmpty()) {
+	public void run() {
+		if (jobIds != null) {
+			handleMultipleJobs();
+		}
+		if (job != null) {
+			handleSingleJob();
+		}
+	}
 
-          	JobEntity currentJob = currentProcessorJobQueue.remove(0);
-            try {
-              commandExecutor.execute(new ExecuteJobsCmd(currentJob));
-            }
-            catch (Throwable e) {
-              log.error("exception during job execution: {}", e.getMessage(), e);
-            } finally {
-            	jobExecutor.jobDone(currentJob);
-            }
-          }
-        }
-        finally {
-          Context.removeJobExecutorContext();
-        }
-    }
+	protected void handleSingleJob() {
+		final SingleJobExecutorContext jobExecutorContext = new SingleJobExecutorContext();
+		final List<JobEntity> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
+		final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
+
+		currentProcessorJobQueue.add(job);
+
+		Context.setJobExecutorContext(jobExecutorContext);
+		try {
+			while (!currentProcessorJobQueue.isEmpty()) {
+
+				JobEntity currentJob = currentProcessorJobQueue.remove(0);
+				try {
+					commandExecutor.execute(new ExecuteJobsCmd(currentJob));
+				} catch (Throwable e) {
+					log.error("exception during job execution: {}", e.getMessage(), e);
+				} finally {
+					jobExecutor.jobDone(currentJob);
+				}
+			}
+		} finally {
+			Context.removeJobExecutorContext();
+		}
+	}
+
+	protected void handleMultipleJobs() {
+		final MultipleJobsExecutorContext jobExecutorContext = new MultipleJobsExecutorContext();
+		final List<String> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
+		final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
+
+		currentProcessorJobQueue.addAll(jobIds);
+
+		Context.setJobExecutorContext(jobExecutorContext);
+		try {
+			while (!currentProcessorJobQueue.isEmpty()) {
+
+				String currentJobId = currentProcessorJobQueue.remove(0);
+				try {
+					commandExecutor.execute(new ExecuteJobsCmd(currentJobId));
+				} catch (Throwable e) {
+					log.error("exception during job execution: {}", e.getMessage(), e);
+				} finally {
+					jobExecutor.jobDone(currentJobId);
+				}
+			}
+		} finally {
+			Context.removeJobExecutorContext();
+		}
+	}
 }

@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +53,7 @@ public class AcquireJobsRunnableImpl implements AcquireJobsRunnable {
       try {
         AcquiredJobs acquiredJobs = commandExecutor.execute(jobExecutor.getAcquireJobsCmd());
         
-        for (List<JobEntity> jobIds : acquiredJobs.getJobIdBatches()) {
+        for (List<String> jobIds : acquiredJobs.getJobIdBatches()) {
           jobExecutor.executeJobs(jobIds);
         }
 
