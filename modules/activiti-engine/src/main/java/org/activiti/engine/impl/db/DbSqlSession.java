@@ -1205,20 +1205,20 @@ public class DbSqlSession implements Session {
       Exception exception = null;
       byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
       String ddlStatements = new String(bytes);
+      String databaseType = dbSqlSessionFactory.getDatabaseType();
       
       // Special DDL handling for certain databases
       try {
-	    	String databaseType = dbSqlSessionFactory.getDatabaseType();
-	    	if (databaseType.equals("mysql")) {
-		     DatabaseMetaData databaseMetaData = connection.getMetaData();
-		     int majorVersion = databaseMetaData.getDatabaseMajorVersion();
-		     int minorVersion = databaseMetaData.getDatabaseMinorVersion();
-		     log.info("Found MySQL: majorVersion=" + majorVersion + " minorVersion=" + minorVersion);
+	    	if ("mysql".equals(databaseType)) {
+	    	  DatabaseMetaData databaseMetaData = connection.getMetaData();
+	    	  int majorVersion = databaseMetaData.getDatabaseMajorVersion();
+	    	  int minorVersion = databaseMetaData.getDatabaseMinorVersion();
+	    	  log.info("Found MySQL: majorVersion=" + majorVersion + " minorVersion=" + minorVersion);
 		      
-		     // Special care for MySQL < 5.6
-		     if (majorVersion <= 5 && minorVersion < 6) {
-		       ddlStatements = updateDdlForMySqlVersionLowerThan56(ddlStatements);
-		     }
+	    	  // Special care for MySQL < 5.6
+	    	  if (majorVersion <= 5 && minorVersion < 6) {
+	    	    ddlStatements = updateDdlForMySqlVersionLowerThan56(ddlStatements);
+	    	  }
 	    	}
       } catch (Exception e) {
         log.info("Could not get database metadata", e);
@@ -1226,6 +1226,7 @@ public class DbSqlSession implements Session {
       
       BufferedReader reader = new BufferedReader(new StringReader(ddlStatements));
       String line = readNextTrimmedLine(reader);
+      boolean inOracleBeginStatement = false;
       while (line != null) {
         if (line.startsWith("# ")) {
           log.debug(line.substring(2));
@@ -1250,7 +1251,14 @@ public class DbSqlSession implements Session {
           
         } else if (line.length()>0) {
           
-          if (line.endsWith(";")) {
+          if ("oracle".equals(databaseType) && line.startsWith("begin")) {
+            inOracleBeginStatement = true;
+            
+          } else if ("oracle".equals(databaseType) && line.startsWith("/")) {
+            sqlStatement = addSqlStatementPiece(sqlStatement, line);
+            inOracleBeginStatement = false;
+            
+          } else if (line.endsWith(";") && inOracleBeginStatement == false) {
             sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
             Statement jdbcStatement = connection.createStatement();
             try {
